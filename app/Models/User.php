@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Clients\ClientDetail;
+use App\Models\Clients\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -27,7 +28,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password'
     ];
 
     /**
@@ -73,4 +74,31 @@ class User extends Authenticatable
 
         return $this->belongsTo(Jetstream::teamModel(), 'current_team_id');
     }
+
+    public function allLocations()
+    {
+        return Location::whereClientId($this->currentClientId())->get();
+    }
+
+    public function switchLocation($location){
+        $this->current_location_id = $location->id;
+        return $this->save();
+    }
+
+    public function currentClientId()
+    {
+        return ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first()->client_id;
+//        return $this->details()->whereName('associated_client')->first();
+    }
+
+    public function details()
+    {
+        return $this->hasMany('App\Models\UserDetails', 'user_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
+    }
+
 }

@@ -23,7 +23,6 @@ class ClientDetail extends Model
         'misc' => 'array'
     ];
 
-    //was lead. figured it was left over from copy pasta. updated to 'video' for consistency and clarity.
     public function client()
     {
         return $this->belongsTo('App\Models\Clients\Client', 'id', 'client_id');
