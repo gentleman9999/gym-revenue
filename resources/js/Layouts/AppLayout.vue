@@ -30,6 +30,9 @@
                                 <jet-nav-link :href="route('payment-gateways')" :active="route().current('payment-gateways')">
                                     Payment Gateways
                                 </jet-nav-link>
+                                <jet-nav-link :href="route('locations')" :active="route().current('locations')">
+                                    Locations
+                                </jet-nav-link>
                             </div>
                         </div>
 

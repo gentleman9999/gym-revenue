@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
         if ($request->user()) {
             $shared = [
                 'user.all_locations' => $request->user()->allLocations(),
+                'user.current_client_id' => $request->user()->currentClientId()
             ];
         }
         return array_merge(parent::share($request), $shared);

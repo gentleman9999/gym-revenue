@@ -30,3 +30,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/workout-generator', \App\
 Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\Http\Controllers\WorkoutGeneratorController::class.'@index')->name('payment-gateways');
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class.'@switch')->name('current-location.update');
+//@todo: need to add in ACL/middleware for CnB users
+Route::middleware(['auth:sanctum', 'verified'])->get('/locations', \App\Http\Controllers\LocationsController::class.'@index')->name('locations');
+Route::middleware(['auth:sanctum', 'verified'])->get('/locations/create', \App\Http\Controllers\LocationsController::class.'@create')->name('locations.create');
+Route::middleware(['auth:sanctum', 'verified'])->post('/locations', \App\Http\Controllers\LocationsController::class.'@store')->name('locations.store');
+Route::middleware(['auth:sanctum', 'verified'])->put('/locations', \App\Http\Controllers\LocationsController::class.'@update')->name('locations.update');

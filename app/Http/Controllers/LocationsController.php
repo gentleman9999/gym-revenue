@@ -13,21 +13,27 @@ class LocationsController extends Controller
     //
     public function index()
     {
-        return Inertia::render('Locations/Index', [
-            'users' => Location::all(),
+        return Inertia::render('Locations/Show', [
+            'locations' => Location::all(),
+        ]);
+    }
+    public function create()
+    {
+        return Inertia::render('Locations/Create', [
+//            'locations' => Location::all(),
         ]);
     }
 
-    public function store()
+    public function store(Request $request)
     {
         Location::create(
-            Request::validate([
+            $request->validate([
                 'name' => ['required', 'max:50'],
-                'client_id' => ['required', 'max:50', 'email'],
+                'client_id' => ['required'],
             ])
         );
 
-        return Redirect::route('locations.index');
+        return Redirect::route('locations');
     }
 
     /**
