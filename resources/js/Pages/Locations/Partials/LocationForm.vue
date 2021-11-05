@@ -1,15 +1,15 @@
 <template>
     <jet-form-section @submitted="form.post('/locations')">
-        <template #title>
-            Location Details
-        </template>
+<!--        <template #title>-->
+<!--            Location Details-->
+<!--        </template>-->
 
-        <template #description>
-            Create a new location.
-        </template>
+<!--        <template #description>-->
+<!--            {{ buttonText }} a location.-->
+<!--        </template>-->
         <template #form>
             <div class="col-span-6 sm:col-span-4">
-                <jet-label for="name" value="Location Name"/>
+                <jet-label for="name" value="Name"/>
                 <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus/>
                 <jet-input id="client_id" type="hidden" v-model="form.client_id"/>
 
