@@ -36,7 +36,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/locations', \App\Http\Con
 Route::middleware(['auth:sanctum', 'verified'])->get('/locations/create', \App\Http\Controllers\LocationsController::class.'@create')->name('locations.create');
 Route::middleware(['auth:sanctum', 'verified'])->get('/locations/{id}', \App\Http\Controllers\LocationsController::class.'@edit')->name('locations.edit');
 Route::middleware(['auth:sanctum', 'verified'])->post('/locations', \App\Http\Controllers\LocationsController::class.'@store')->name('locations.store');
-Route::middleware(['auth:sanctum', 'verified'])->put('/locations', \App\Http\Controllers\LocationsController::class.'@update')->name('locations.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/locations/{id}', \App\Http\Controllers\LocationsController::class.'@update')->name('locations.update');
+Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\Http\Controllers\LocationsController::class.'@delete')->name('locations.delete');
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::get('/leads', \App\Http\Controllers\DashboardController::class.'@index')->name('data.leads');

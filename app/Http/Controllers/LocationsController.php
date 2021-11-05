@@ -36,6 +36,7 @@ class LocationsController extends Controller
         ]);
     }
 
+
     public function store(Request $request)
     {
         Location::create(
@@ -44,6 +45,33 @@ class LocationsController extends Controller
                 'client_id' => ['required'],
             ])
         );
+
+        return Redirect::route('locations');
+    }
+
+    public function update(Request $request, $id)
+    {
+        if(!$id){
+            //TODO:flash error
+            return Redirect::route('locations');
+        }
+        $location = $request->validate([
+            'name' => ['required', 'max:50'],
+            'client_id' => ['required'],
+            'id' => ['required']
+        ]);
+        Location::findOrFail($id)->updateOrFail($location);
+
+        return Redirect::route('locations');
+    }
+    public function delete(Request $request, $id)
+    {
+        if(!$id){
+            //TODO:flash error
+            return Redirect::route('locations');
+        }
+
+        Location::findOrFail($id)->deleteOrFail();
 
         return Redirect::route('locations');
     }

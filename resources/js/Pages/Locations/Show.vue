@@ -6,18 +6,22 @@
             </h2>
         </template>
         <jet-bar-container>
-            <jet-bar-table :headers="['name', '', '']">
+            <jet-bar-table :headers="['name', '']">
                 <tr class="hover:bg-gray-50" v-for="location in locations" :key="location.id">
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
-                    <jet-bar-table-data>
-                        <Link class="text-indigo-600 hover:text-indigo-900"
-                              :href="route('locations.edit', location.id)">Edit
+
+                    <jet-bar-table-data class="flex flex-row justify-center space-x-2">
+                        <Link class="text-gray-400 hover:text-gray-500"
+                              :href="route('locations.edit', location.id)">
+                            <jet-bar-icon type="pencil" fill/>
+
                         </Link>
-                    </jet-bar-table-data>
-                    <jet-bar-table-data>
-                        <inertia-link href="#" class="text-gray-400 hover:text-gray-500">
-                            <jet-bar-icon type="trash" fill/>
-                        </inertia-link>
+<!--                        <Link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
+                            <button @click="$inertia.delete(route('locations.delete', location.id))" class="text-gray-400 hover:text-gray-500">
+
+                                <jet-bar-icon type="trash" fill/>
+                            </button>
+<!--                        </Link>-->
                     </jet-bar-table-data>
                 </tr>
 
@@ -27,21 +31,21 @@
 
             </jet-bar-table>
             <Link
-                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
+                class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
                 :href="route('locations.create')">
                 <span>Create</span>
                 <span class="hidden md:inline">Location</span>
             </Link>
 
         </jet-bar-container>
-            <!--            <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">-->
-            <!--                <label class="block text-gray-700">Trashed:</label>-->
-            <!--                <select v-model="form.trashed" class="mt-1 w-full form-select">-->
-            <!--                    <option :value="null"/>-->
-            <!--                    <option value="with">With Trashed</option>-->
-            <!--                    <option value="only">Only Trashed</option>-->
-            <!--                </select>-->
-            <!--            </search-filter>-->
+        <!--            <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">-->
+        <!--                <label class="block text-gray-700">Trashed:</label>-->
+        <!--                <select v-model="form.trashed" class="mt-1 w-full form-select">-->
+        <!--                    <option :value="null"/>-->
+        <!--                    <option value="with">With Trashed</option>-->
+        <!--                    <option value="only">Only Trashed</option>-->
+        <!--                </select>-->
+        <!--            </search-filter>-->
 
 
         <!--        <pagination class="mt-6" :links="locations.links"/>-->

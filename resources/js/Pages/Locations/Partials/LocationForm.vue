@@ -1,5 +1,5 @@
 <template>
-    <jet-form-section @submitted="form.post('/locations')">
+    <jet-form-section @submitted="handleSubmit">
 <!--        <template #title>-->
 <!--            Location Details-->
 <!--        </template>-->
@@ -49,18 +49,24 @@ export default {
     props: ['clientId', 'location'],
     setup(props, context) {
         let location = props.location;
-        let buttonText = 'Update';
+        let operation = 'Update';
         if (!location) {
             location = {
                 name: null,
                 client_id: props.clientId
             }
-            buttonText = 'Create';
+            operation = 'Create';
         }
-        console.log({props, context, location})
+
         const form = useForm(location)
 
-        return {form, buttonText}
+        let handleSubmit = () => form.put(`/locations/${location.id}`);
+        if(operation === 'Create'){
+            handleSubmit = () => form.post('/locations');
+        }
+
+
+        return {form, buttonText: operation, handleSubmit}
     },
 }
 </script>
