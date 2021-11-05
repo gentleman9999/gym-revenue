@@ -23,8 +23,15 @@ class LocationsController extends Controller
     //
     public function index()
     {
+        $client_id = request()->user()->currentClientId();
+
+        // @todo - insert Bouncer-based ACL here.
+        $locations = (!is_null($client_id))
+            ? Location::whereClientId($client_id)->get()
+            : Location::all();
+
         return Inertia::render('Locations/Show', [
-            'locations' => Location::all(),
+            'locations' => $locations,
         ]);
     }
 
