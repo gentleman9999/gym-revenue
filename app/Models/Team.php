@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Clients\ClientDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
@@ -27,6 +28,7 @@ class Team extends JetstreamTeam
      * @var string[]
      */
     protected $fillable = [
+        'user_id',
         'name',
         'personal_team',
     ];
@@ -41,4 +43,11 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    public function client_details()
+    {
+        return $this->hasMany(ClientDetail::class, 'value',  'id')
+            ->where('detail','=', 'team')
+            ->with('client');
+    }
 }

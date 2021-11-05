@@ -17,7 +17,7 @@ class ClientDetail extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['client_id', 'field', 'value', 'misc', 'active'];
+    protected $fillable = ['client_id', 'detail', 'value', 'misc', 'active'];
 
     protected $casts = [
         'misc' => 'array'
@@ -25,6 +25,6 @@ class ClientDetail extends Model
 
     public function client()
     {
-        return $this->belongsTo('App\Models\Clients\Client', 'id', 'client_id');
+        return $this->belongsTo('App\Models\Clients\Client', 'client_id', 'id');
     }
 }

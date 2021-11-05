@@ -1,30 +1,93 @@
 <template>
-    <app-layout title="Dashboard">
+    <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
-            </h2>
+            Dashboard
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <welcome />
-                </div>
-            </div>
-        </div>
+        <jet-bar-container>
+            <jet-bar-alert text="This is an alert message" />
+
+            <jet-bar-stats-container >
+                <jet-bar-stat-card title="Total Clients" :number="clients.length" type="warning">
+                    <template v-slot:icon>
+                        <jet-bar-icon type="users" fill />
+                    </template>
+                </jet-bar-stat-card>
+
+                <jet-bar-stat-card title="Total Revenue Funneled" number="$ 0" type="success">
+                    <template v-slot:icon>
+                        <jet-bar-icon type="money" fill />
+                    </template>
+                </jet-bar-stat-card>
+
+                <jet-bar-stat-card title="Total Profits" number="$ 0" type="info">
+                    <template v-slot:icon>
+                        <jet-bar-icon type="cart" fill />
+                    </template>
+                </jet-bar-stat-card>
+
+                <jet-bar-stat-card title="Total MCU Films" number="26" type="danger">
+                    <template v-slot:icon>
+                        <jet-bar-icon type="message" fill />
+                    </template>
+                </jet-bar-stat-card>
+            </jet-bar-stats-container>
+
+            <jet-bar-table :headers="['client', 'status', 'joined', '', '']" >
+                <tr class="hover:bg-gray-50" v-for="client in clients" :key="client.id">
+                    <jet-bar-table-data>{{ client.name }}</jet-bar-table-data>
+                    <jet-bar-table-data>
+                        <jet-bar-badge text="Active" type="success" v-if="client.active"/>
+                        <jet-bar-badge text="Not Active" type="danger" v-else/>
+                    </jet-bar-table-data>
+                    <jet-bar-table-data>{{ client.created_at}} </jet-bar-table-data>
+                    <jet-bar-table-data>
+                        <inertia-link href="#" class="text-indigo-600 hover:text-indigo-900">Edit</inertia-link>
+                    </jet-bar-table-data>
+                    <jet-bar-table-data>
+                        <inertia-link href="#" class="text-gray-400 hover:text-gray-500">
+                            <jet-bar-icon type="trash" fill />
+                        </inertia-link>
+                    </jet-bar-table-data>
+                </tr>
+            </jet-bar-table>
+
+        </jet-bar-container>
+
     </app-layout>
 </template>
 
 <script>
-    import { defineComponent } from 'vue'
-    import AppLayout from '@/Layouts/AppLayout.vue'
-    import Welcome from '@/Jetstream/Welcome.vue'
+import AppLayout from '@/Layouts/AppLayout'
+import JetBarContainer from "@/Components/JetBarContainer";
+import JetBarAlert from "@/Components/JetBarAlert";
+import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
+import JetBarStatCard from "@/Components/JetBarStatCard";
+import JetBarTable from "@/Components/JetBarTable";
+import JetBarTableData from "@/Components/JetBarTableData";
+import JetBarBadge from "@/Components/JetBarBadge";
+import JetBarIcon from "@/Components/JetBarIcon";
 
-    export default defineComponent({
-        components: {
-            AppLayout,
-            Welcome,
-        },
-    })
+export default {
+    components: {
+        AppLayout,
+        JetBarContainer,
+        JetBarAlert,
+        JetBarStatsContainer,
+        JetBarStatCard,
+        JetBarTable,
+        JetBarTableData,
+        JetBarBadge,
+        JetBarIcon,
+    },
+    props: [
+        'clients'
+    ],
+    data() {},
+    methods: {},
+    computed: {},
+    mounted() {
+        console.log('GymRevenue Dashboard');
+    }
+}
 </script>

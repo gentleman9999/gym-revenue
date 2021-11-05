@@ -1,5 +1,5 @@
 <template>
-    <svg class="w-12 h-12" viewBox="0 0 1649.000000 252.000000"
+    <svg class="" viewBox="0 0 1649.000000 252.000000"
          preserveAspectRatio="xMidYMid meet">
 
         <g transform="translate(0.000000,252.000000) scale(0.100000,-0.100000)"

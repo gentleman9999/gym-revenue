@@ -5,7 +5,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "fruitcake/laravel-cors": "^2.0",
         "goldspecdigital/laravel-eloquent-uuid": "^8.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -14,15 +14,19 @@
         "laravel/jetstream": "^2.4",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "laravel/vapor-cli": "^1.29",
+        "laravel/vapor-core": "^2.15",
         "league/flysystem-aws-s3-v3": "~1.0",
         "lorisleiva/laravel-actions": "^2.1",
         "maatwebsite/excel": "^3.1",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^7.0",
         "silber/bouncer": "v1.0.0-rc.10",
+        "spatie/laravel-event-sourcing": "^5.0",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
+        "arielmejiadev/jetbar": "^2.0",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",

@@ -1,19 +1,18 @@
 <template>
     <div>
         <Head :title="title" />
-
         <jet-banner />
-
-        <div class="min-h-screen bg-gray-100">
+        <div class="font-sans antialiased min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-8xl mx-4">
                     <div class="flex justify-between h-16">
                         <div class="flex">
+                            <button v-show="!showingSidebar" @click="showingSidebar = true" class="pr-2"><font-awesome-icon :icon="['fas', 'bars']" size="16"/></button>
                             <!-- Logo -->
                             <div class="flex-shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <jet-application-mark class="block h-9 w-auto" />
+                                    <jet-application-mark class="block h-8 w-auto" />
                                 </Link>
                             </div>
 
@@ -24,10 +23,14 @@
                                 </jet-nav-link>
 
                                 <!-- @todo - make these dynamic, as some users wont have access -->
-                                <jet-nav-link :href="route('analytics')" :active="route().current('analytics')">
+                                <!-- <jet-nav-link :href="route('analytics')" :active="route().current('analytics')"> -->
+                                <jet-nav-link href="#" :active="route().current('analytics')" @click="comingSoon()">
                                     Analytics
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('payment-gateways')" :active="route().current('payment-gateways')">
+                                <!-- <jet-nav-link :href="route('payment-gateways')" :active="route().current('payment-gateways')">
+                                    Payment Gateways
+                                </jet-nav-link> -->
+                                <jet-nav-link href="#" :active="route().current('payment-gateways')" @click="comingSoon()">
                                     Payment Gateways
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('locations')" :active="route().current('locations')">
@@ -130,6 +133,9 @@
                                     </template>
                                 </jet-dropdown>
                             </div>
+
+                            <!-- Notifications -->
+                            <noty-bell></noty-bell>
 
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
@@ -300,55 +306,86 @@
                 </div>
             </nav>
 
-            <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header"></slot>
+            <div class="font-sans antialiased bg-gray-100">
+                <jet-banner />
+
+                <div class="lg:flex flex-col lg:flex-row lg:min-h-screen w-full">
+
+                    <!-- Sidebar -->
+                    <jet-bar-sidebar v-show="showingSidebar" @toggle="showingSidebar = !showingSidebar"/>
+                    <!-- End Sidebar -->
+
+                    <div class="w-full">
+                        <!-- Content Container -->
+                        <main class="flex-1 relative z-0 overflow-y-auto py-6 focus:outline-none" tabindex="0">
+                            <div v-if="this.$slots.header" class="max-w-7xl mx-auto pt-3 px-4 sm:px-6 lg:px-8">
+                                <!-- Title -->
+                                <h1 class="text-lg font-semibold tracking-widest text-gray-900 uppercase dark-mode:text-white">
+                                    <slot name="header"></slot>
+                                </h1>
+                                <!-- End Title -->
+                            </div>
+                            <!-- Replace with your content -->
+                            <div>
+                                <!-- Content -->
+                                <div class="min-h-full lg:min-h-96 px-4 sm:px-0">
+                                    <slot></slot>
+                                </div>
+                                <!-- End Content -->
+                            </div>
+                            <!-- /End replace -->
+                        </main>
+                        <!-- Content Container -->
+                    </div>
                 </div>
-            </header>
-
-            <!-- Page Content -->
-            <main>
-                <slot></slot>
-            </main>
-
-
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import { defineComponent } from 'vue'
-    import JetApplicationMark from '@/Jetstream/ApplicationMark.vue'
-    import JetBanner from '@/Jetstream/Banner.vue'
-    import JetDropdown from '@/Jetstream/Dropdown.vue'
-    import JetDropdownLink from '@/Jetstream/DropdownLink.vue'
-    import JetNavLink from '@/Jetstream/NavLink.vue'
-    import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink.vue'
+
+    import { library } from '@fortawesome/fontawesome-svg-core';
+    import { faBars } from '@fortawesome/pro-solid-svg-icons'
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+    library.add(faBars)
+
+    import JetApplicationMark from '@/Jetstream/ApplicationMark'
+    import JetBanner from '@/Jetstream/Banner'
+    import JetDropdown from '@/Jetstream/Dropdown'
+    import JetDropdownLink from '@/Jetstream/DropdownLink'
+    import JetNavLink from '@/Jetstream/NavLink'
+    import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
+    import JetBarNavigationMenu from "@/Components/JetBarNavigationMenu";
+    import JetBarSidebar from "@/Components/JetBarSidebar";
     import { Head, Link } from '@inertiajs/inertia-vue3';
+    import NotyBell from "../Components/NotyBell";
 
     export default defineComponent({
-        props: {
-            title: String,
-        },
-
         components: {
-            Head,
+            Head, Link,
+            JetBarSidebar,
+            JetBarNavigationMenu,
             JetApplicationMark,
             JetBanner,
             JetDropdown,
             JetDropdownLink,
             JetNavLink,
             JetResponsiveNavLink,
-            Link,
+            FontAwesomeIcon,
+            NotyBell
         },
-
+        props: {
+            title: String,
+        },
         data() {
             return {
+                showingSidebar: true,
                 showingNavigationDropdown: false,
+                showingNotificationDropdown: false,
             }
         },
-
         methods: {
             switchToTeam(team) {
                 this.$inertia.put(route('current-team.update'), {
@@ -369,6 +406,14 @@
                 })
             },
 
+            comingSoon() {
+                new Noty({
+                    type: 'warning',
+                    theme: 'sunset',
+                    text: 'Feature Coming Soon!',
+                    timeout: 7500
+                }).show();
+            },
             logout() {
                 this.$inertia.post(route('logout'));
             },
