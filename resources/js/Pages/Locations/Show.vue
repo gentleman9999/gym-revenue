@@ -6,10 +6,15 @@
             </h2>
         </template>
         <jet-bar-container>
-            <jet-bar-table :headers="['name', '']">
-                <tr class="hover:bg-gray-50" v-for="location in locations" :key="location.id">
+            <jet-bar-table :headers="['name', 'city', 'state','active', '']">
+                <tr class="hover:bg-gray-50" v-for="location in locations" :key="location.id" @dblclick="$inertia.visit(route('locations.edit', location.id))">
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
-
+                    <jet-bar-table-data>{{ location.city }}</jet-bar-table-data>
+                    <jet-bar-table-data>{{ location.state }}</jet-bar-table-data>
+                    <jet-bar-table-data>
+                        <jet-bar-badge text="Active" type="success" v-if="location.active"/>
+                        <jet-bar-badge text="Inactive" type="danger" v-else/>
+                    </jet-bar-table-data>
                     <jet-bar-table-data class="flex flex-row justify-center space-x-2">
                         <Link class="text-gray-400 hover:text-gray-500"
                               :href="route('locations.edit', location.id)">
@@ -17,8 +22,8 @@
 
                         </Link>
 <!--                        <Link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
+                           <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
                             <button @click="$inertia.delete(route('locations.delete', location.id))" class="text-gray-400 hover:text-gray-500">
-
                                 <jet-bar-icon type="trash" fill/>
                             </button>
 <!--                        </Link>-->
@@ -33,8 +38,7 @@
             <Link
                 class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
                 :href="route('locations.create')">
-                <span>Create</span>
-                <span class="hidden md:inline">Location</span>
+                <span>Create Location</span>
             </Link>
 
         </jet-bar-container>

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Clients;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class UserDetails extends Model
+class LocationDetails extends Model
 {
     use SoftDeletes, Uuid;
 
@@ -16,15 +16,15 @@ class UserDetails extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['user_id', 'name', 'value', 'misc', 'active'];
+    protected $fillable = ['location_id', 'client_id',  'field', 'value', 'misc', 'active'];
 
     protected $casts = [
         'misc' => 'array'
     ];
 
-    public function user()
+    public function location()
     {
-        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+        return $this->belongsTo(Location::class);
     }
 
 }

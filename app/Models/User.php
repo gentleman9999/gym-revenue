@@ -87,7 +87,8 @@ class User extends Authenticatable
 
     public function currentClientId()
     {
-        return ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first()->client_id;
+        $detail = ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first();
+        return is_null($detail) ? null : $detail->client_id;
 //        return $this->details()->whereName('associated_client')->first();
     }
 

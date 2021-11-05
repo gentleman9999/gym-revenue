@@ -1,6 +1,7 @@
 <template>
     <app-layout title="Edit Location">
         <template #header>
+            <jet-bar-icon type="g0back" fill/>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Edit Location
             </h2>
@@ -21,6 +22,7 @@ import JetFormSection from '@/Jetstream/FormSection.vue'
 import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
+import JetBarIcon from '@/Components/JetBarIcon.vue'
 
 import LocationForm from '@/Pages/Locations/Partials/LocationForm.vue'
 
@@ -33,7 +35,8 @@ export default {
         JetInput,
         JetInputError,
         JetLabel,
-        LocationForm
+        JetBarIcon,
+        LocationForm,
     },
     props: ['locations']
 }

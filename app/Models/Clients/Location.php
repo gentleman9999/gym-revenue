@@ -5,6 +5,7 @@ namespace App\Models\Clients;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Location
@@ -13,12 +14,22 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Location extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['client_id', 'name'];
+    protected $fillable = ['client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip', 'active'];
 
     public function client()
     {
-        return $this->belongsTo('App\Models\Clients\Client', 'id', 'client_id');
+        return $this->belongsTo(Client::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(LocationDetails::class);
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(LocationDetails::class);
     }
 }

@@ -1,24 +1,54 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-<!--        <template #title>-->
-<!--            Location Details-->
-<!--        </template>-->
+        <!--        <template #title>-->
+        <!--            Location Details-->
+        <!--        </template>-->
 
-<!--        <template #description>-->
-<!--            {{ buttonText }} a location.-->
-<!--        </template>-->
+        <!--        <template #description>-->
+        <!--            {{ buttonText }} a location.-->
+        <!--        </template>-->
         <template #form>
-            <div class="col-span-6 sm:col-span-4">
-                <jet-label for="name" value="Name"/>
-                <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus/>
-                <jet-input id="client_id" type="hidden" v-model="form.client_id"/>
 
-                <jet-input-error :message="form.errors.name" class="mt-2"/>
-                <jet-input-error :message="form.errors.client_id" class="mt-2"/>
+                <div class="col-span-6">
+                    <jet-label for="name" value="Name"/>
+                    <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus/>
+                    <jet-input-error :message="form.errors.name" class="mt-2"/>
+                </div>
+                <div class="col-span-4">
+                    <jet-label for="city" value="City"/>
+                    <jet-input id="city" type="text" class="block w-full mt-1" v-model="form.city" autofocus/>
+                    <jet-input-error :message="form.errors.city" class="mt-2"/>
+                </div>
+                <div  class="col-span-1">
+                    <jet-label for="state" value="State"/>
+                    <jet-input id="state" type="text" class="block w-full mt-1" v-model="form.state" autofocus/>
+                    <jet-input-error :message="form.errors.state" class="mt-2"/>
+                </div>
+            <div  class="col-span-1">
+                <jet-label for="zip" value="ZIP Code"/>
+                <jet-input id="zip" type="text" class="block w-full mt-1" v-model="form.zip" autofocus/>
+                <jet-input-error :message="form.errors.zip" class="mt-2"/>
             </div>
+
+                <div class="col-span-6 space-y-2">
+                    <jet-label for="address1" value="Address"/>
+                    <jet-input id="address1" type="text" class="block w-full mt-1" v-model="form.address1" autofocus/>
+                    <jet-input-error :message="form.errors.address1" class="mt-2"/>
+                    <jet-input id="address2" type="text" class="block w-full mt-1" v-model="form.address2" autofocus/>
+                    <jet-input-error :message="form.errors.address2" class="mt-2"/>
+                </div>
+
+
+                <jet-input id="client_id" type="hidden" v-model="form.client_id"/>
+                <jet-input-error :message="form.errors.client_id" class="mt-2"/>
         </template>
 
         <template #actions>
+<!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
+            <jet-button type="button" @click="$inertia.visit(route('locations'))" :class="{ 'opacity-25': form.processing, 'bg-red-500': true }" :disabled="form.processing">
+                Cancel
+            </jet-button>
+            <div class="flex-grow" />
             <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 {{ buttonText }}
             </jet-button>
@@ -53,6 +83,11 @@ export default {
         if (!location) {
             location = {
                 name: null,
+                city: null,
+                state: null,
+                address1: null,
+                address2: null,
+                zip: null,
                 client_id: props.clientId
             }
             operation = 'Create';
@@ -61,7 +96,7 @@ export default {
         const form = useForm(location)
 
         let handleSubmit = () => form.put(`/locations/${location.id}`);
-        if(operation === 'Create'){
+        if (operation === 'Create') {
             handleSubmit = () => form.post('/locations');
         }
 
