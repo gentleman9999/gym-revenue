@@ -11,7 +11,7 @@
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
                     <jet-bar-table-data>
                         <Link class="text-indigo-600 hover:text-indigo-900"
-                              :href="route('locations.update', location.id)">Edit
+                              :href="route('locations.edit', location.id)">Edit
                         </Link>
                     </jet-bar-table-data>
                     <jet-bar-table-data>

@@ -24,6 +24,18 @@ class LocationsController extends Controller
         ]);
     }
 
+    public function edit($id)
+    {
+        if(!$id){
+            //TODO:flash error
+            return Redirect::route('locations');
+        }
+
+        return Inertia::render('Locations/Edit', [
+            'location' => Location::find($id),
+        ]);
+    }
+
     public function store(Request $request)
     {
         Location::create(

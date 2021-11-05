@@ -5,8 +5,7 @@
         </template>
 
         <template #description>
-            Create a new locations.
-            <!--TODO: consider outputting client logo and name here-->
+            Create a new location.
         </template>
         <template #form>
             <div class="col-span-6 sm:col-span-4">
@@ -21,7 +20,7 @@
 
         <template #actions>
             <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Create
+                {{ buttonText }}
             </jet-button>
         </template>
     </jet-form-section>
@@ -47,15 +46,21 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId'],
+    props: ['clientId', 'location'],
     setup(props, context) {
-        console.log({props, context})
-        const form = useForm({
-            name: null,
-            client_id: props.clientId
-        })
+        let location = props.location;
+        let buttonText = 'Update';
+        if (!location) {
+            location = {
+                name: null,
+                client_id: props.clientId
+            }
+            buttonText = 'Create';
+        }
+        console.log({props, context, location})
+        const form = useForm(location)
 
-        return {form}
+        return {form, buttonText}
     },
 }
 </script>

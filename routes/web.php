@@ -34,8 +34,10 @@ Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\H
 //@todo: need to add in ACL/middleware for CnB users
 Route::middleware(['auth:sanctum', 'verified'])->get('/locations', \App\Http\Controllers\LocationsController::class.'@index')->name('locations');
 Route::middleware(['auth:sanctum', 'verified'])->get('/locations/create', \App\Http\Controllers\LocationsController::class.'@create')->name('locations.create');
+Route::middleware(['auth:sanctum', 'verified'])->get('/locations/{id}', \App\Http\Controllers\LocationsController::class.'@edit')->name('locations.edit');
 Route::middleware(['auth:sanctum', 'verified'])->post('/locations', \App\Http\Controllers\LocationsController::class.'@store')->name('locations.store');
 Route::middleware(['auth:sanctum', 'verified'])->put('/locations', \App\Http\Controllers\LocationsController::class.'@update')->name('locations.update');
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::get('/leads', \App\Http\Controllers\DashboardController::class.'@index')->name('data.leads');
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class.'@index')->name('data.conversions');

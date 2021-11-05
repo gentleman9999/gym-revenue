@@ -2,20 +2,19 @@
     <app-layout title="Create Location">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Create Location
+                Edit Location
             </h2>
         </template>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <location-form :client-id="this.$page.props.user.current_client_id" />
+                <location-form :client-id="this.$page.props.user.current_client_id" :location="$page.props.location"/>
             </div>
         </div>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
@@ -36,6 +35,6 @@ export default {
         JetLabel,
         LocationForm
     },
-
+    props: ['locations']
 }
 </script>
