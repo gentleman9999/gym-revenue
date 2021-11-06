@@ -92,6 +92,11 @@ class User extends Authenticatable
 //        return $this->details()->whereName('associated_client')->first();
     }
 
+    public function isClientUser()
+    {
+        return !is_null($this->associated_client()->first());
+    }
+
     public function details()
     {
         return $this->hasMany('App\Models\UserDetails', 'user_id', 'id');
@@ -100,6 +105,16 @@ class User extends Authenticatable
     public function detail()
     {
         return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
+    }
+
+    public function default_team()
+    {
+        return $this->detail()->where('name', '=', 'default_team');
+    }
+
+    public function associated_client()
+    {
+        return $this->detail()->where('name', '=', 'associated_client');
     }
 
 }

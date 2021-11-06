@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,14 +25,30 @@ class LocationsController extends Controller
     public function index()
     {
         $client_id = request()->user()->currentClientId();
+        $is_client_user = request()->user()->isClientUser();
 
         // @todo - insert Bouncer-based ACL here.
+        $page_count = 5;
         $locations = (!is_null($client_id))
-            ? Location::whereClientId($client_id)->paginate(5)
-            : Location::all();
+            ? Location::whereClientId($client_id)
+            : new Location();
+
+        $locations = $locations->with('client')->paginate($page_count);
+
+        if((!is_null($client_id)))
+        {
+            $client = Client::find($client_id);
+            $title = "{$client->name} Locations";
+        }
+        else
+        {
+            $title = 'All Client Locations';
+        }
 
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
+            'title' => $title,
+            'isClientUser' => $is_client_user
         ]);
     }
 

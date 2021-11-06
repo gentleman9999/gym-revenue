@@ -1,13 +1,14 @@
 <template>
-    <app-layout title="Profile">
+    <app-layout :title="title">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Locations
             </h2>
         </template>
         <jet-bar-container>
-            <jet-bar-table :headers="['name', 'city', 'state','active', '']">
+            <jet-bar-table :headers="tableHeaders">
                 <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id" @dblclick="$inertia.visit(route('locations.edit', location.id))">
+                    <jet-bar-table-data v-if="!isClientUser">{{ location.client.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.city }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.state }}</jet-bar-table-data>
@@ -74,8 +75,6 @@ import Pagination from "@/Components/Pagination";
 
 
 export default defineComponent({
-    props: ['sessions', 'locations'],
-
     components: {
         AppLayout,
         JetSectionBorder,
@@ -91,5 +90,21 @@ export default defineComponent({
         JetBarIcon,
         Pagination
     },
+    props: ['sessions', 'locations', 'title', 'isClientUser'],
+    watch: {},
+    data() {
+        return {}
+    },
+    computed: {
+        tableHeaders() {
+            if(this.isClientUser) {
+                return ['name', 'city', 'state','active', ''];
+            }
+
+            return ['client', 'name', 'city', 'state','active', '']
+        }
+    },
+    methods: {},
+    mounted () {}
 })
 </script>
