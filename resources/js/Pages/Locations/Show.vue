@@ -7,7 +7,7 @@
         </template>
         <jet-bar-container>
             <jet-bar-table :headers="['name', 'city', 'state','active', '']">
-                <tr class="hover:bg-gray-50" v-for="location in locations" :key="location.id" @dblclick="$inertia.visit(route('locations.edit', location.id))">
+                <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id" @dblclick="$inertia.visit(route('locations.edit', location.id))">
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.city }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.state }}</jet-bar-table-data>
@@ -30,8 +30,8 @@
                     </jet-bar-table-data>
                 </tr>
 
-                <tr class="hover:bg-gray-50" v-if="!locations?.length">
-                    <jet-bar-table-data colspan="3">No Locations found.</jet-bar-table-data>
+                <tr class="hover:bg-gray-50" v-if="!locations?.data?.length">
+                    <jet-bar-table-data colspan="5">No Locations found.</jet-bar-table-data>
                 </tr>
 
             </jet-bar-table>
@@ -40,6 +40,7 @@
                 :href="route('locations.create')">
                 <span>Create Location</span>
             </Link>
+            <pagination class="mt-6" :links="locations.links"/>
 
         </jet-bar-container>
         <!--            <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">-->
@@ -52,7 +53,6 @@
         <!--            </search-filter>-->
 
 
-        <!--        <pagination class="mt-6" :links="locations.links"/>-->
     </app-layout>
 </template>
 
@@ -70,6 +70,7 @@ import JetBarTable from "@/Components/JetBarTable";
 import JetBarTableData from "@/Components/JetBarTableData";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
+import Pagination from "@/Components/Pagination";
 
 
 export default defineComponent({
@@ -88,6 +89,7 @@ export default defineComponent({
         JetBarTableData,
         JetBarBadge,
         JetBarIcon,
+        Pagination
     },
 })
 </script>
