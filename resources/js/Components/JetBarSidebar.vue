@@ -16,11 +16,17 @@
             <!-- Searchbar -->
             <jet-bar-sidebar-search />
             <!-- End Searchbar -->
-            <div :class="route().current('data.leads') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
+
+            <div :class="route().current('locations') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
+                <!-- <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
+                <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('locations')">Locations</jet-nav-link>
+            </div>
+
+            <div :class="route().current('data.leads') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('data.leads')">Leads</jet-nav-link>
             </div>
 
-            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
+            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
                 <!-- <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('data.conversions')">Conversions</jet-nav-link> -->
                 <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#" @click="comingSoon()">Conversions</jet-nav-link>
             </div>
@@ -29,15 +35,10 @@
                 <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('workout-generator')">Workout Generator</jet-nav-link>
             </div>
 
-            <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
-                <!-- <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
-                <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#" @click="comingSoon()">Sales Slideshow</jet-nav-link>
-            </div>
 
-            <div :class="route().current('locations') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
-                <!-- <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
-                <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('locations')">Locations</jet-nav-link>
-            </div>
+            <!-- <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
+                 <jet-nav-link class="text-sm font-semibold text-gray-900 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link>
+            </div> -->
 
             <jet-bar-responsive-links />
 

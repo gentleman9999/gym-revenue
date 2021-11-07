@@ -16,7 +16,7 @@ class Location extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip', 'active'];
+    protected $fillable = ['client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip', 'active', 'location_no', 'gymrevenue_id'];
 
     public function client()
     {

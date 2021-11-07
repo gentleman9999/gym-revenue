@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Clients\ClientSeeder;
+use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
 use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
@@ -26,5 +27,8 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client User Seeder');
         $this->call(ClientUserSeeder::class);
+
+        VarDumper::dump('Running Client Location Seeder');
+        $this->call(LocationSeeder::class);
     }
 }
