@@ -38,6 +38,11 @@ class Client extends Model
         return $this->hasOne(ClientDetail::class);
     }
 
+    public function default_team_name()
+    {
+        return $this->detail()->where('detail', '=', 'default-team');
+    }
+
     /**
      * The "booted" method of the model.
      *

@@ -69,7 +69,10 @@ class User extends Authenticatable
     public function currentTeam()
     {
         if (is_null($this->current_team_id) && $this->id) {
-            $this->switchTeam($this->personalTeam());
+            $default_team = $this->default_team()->first();
+            $team_record = Team::find($default_team->value);
+            $this->switchTeam($team_record);
+            //$this->switchTeam($this->personalTeam());
         }
 
         return $this->belongsTo(Jetstream::teamModel(), 'current_team_id');
