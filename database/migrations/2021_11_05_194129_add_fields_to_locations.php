@@ -14,10 +14,10 @@ class AddFieldsToLocations extends Migration
     public function up()
     {
         Schema::table('locations', function (Blueprint $table) {
-            $table->string('city');
-            $table->string('state', 2);
-            $table->string('zip', 5);
-            $table->string('address1');
+            $table->string('city')->nullable();
+            $table->string('state', 2)->nullable();
+            $table->string('zip', 5)->nullable();
+            $table->string('address1')->nullable();
             $table->string('address2')->nullable();
             $table->boolean('active')->default(1);
             $table->softDeletes();
