@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Clients\ClientSeeder;
 use Illuminate\Database\Seeder;
+use Symfony\Component\VarDumper\VarDumper;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,5 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        VarDumper::dump('Running Client Seeder');
+        $this->call(ClientSeeder::class);
     }
 }
