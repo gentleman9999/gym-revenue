@@ -105,6 +105,11 @@ class SecondaryTeamsSeeder extends Seeder
                 'name' => 'iFit Virginia',
                 'personal_team' => 0,
             ],
+            [
+                'user_id' => 12,
+                'name' => 'iFit Sales Team',
+                'personal_team' => 0,
+            ],
 
             [
                 'user_id' => 13,
