@@ -6,6 +6,22 @@
             </h2>
         </template>
         <jet-bar-container>
+            <div class="flex flex-row items-center mb-4">
+                <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
+                    <!--                    <label class="block text-gray-700">Trashed:</label>-->
+                    <!--                    <select v-model="filters.trashed" class="mt-1 w-full form-select">-->
+                    <!--                        <option :value="null"/>-->
+                    <!--                        <option value="with">With Trashed</option>-->
+                    <!--                        <option value="only">Only Trashed</option>-->
+                    <!--                    </select>-->
+                </search-filter>
+                <div class="flex-grow"/>
+                <Link
+                    class="btn justify-self-end"
+                    :href="route('locations.create')">
+                    <span>Create Location</span>
+                </Link>
+            </div>
             <jet-bar-table :headers="tableHeaders">
                 <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id"
                     @dblclick="$inertia.visit(route('locations.edit', location.id))">
@@ -38,22 +54,10 @@
                 </tr>
 
             </jet-bar-table>
-            <Link
-                class="btn mt-4"
-                :href="route('locations.create')">
-                <span>Create Location</span>
-            </Link>
+
             <pagination class="mt-6" :links="locations.links"/>
 
         </jet-bar-container>
-        <!--            <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">-->
-        <!--                <label class="block text-gray-700">Trashed:</label>-->
-        <!--                <select v-model="form.trashed" class="mt-1 w-full form-select">-->
-        <!--                    <option :value="null"/>-->
-        <!--                    <option value="with">With Trashed</option>-->
-        <!--                    <option value="only">Only Trashed</option>-->
-        <!--                </select>-->
-        <!--            </search-filter>-->
 
 
     </app-layout>
@@ -74,6 +78,10 @@ import JetBarTableData from "@/Components/JetBarTableData";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 import Pagination from "@/Components/Pagination";
+import SearchFilter from "@/Components/SearchFilter";
+import pickBy from 'lodash/pickBy'
+import throttle from 'lodash/throttle'
+import mapValues from 'lodash/mapValues'
 
 
 export default defineComponent({
@@ -90,13 +98,27 @@ export default defineComponent({
         JetBarTableData,
         JetBarBadge,
         JetBarIcon,
-        Pagination
+        Pagination,
+        SearchFilter
     },
-    props: ['sessions', 'locations', 'title', 'isClientUser'],
-    watch: {},
+    props: ['sessions', 'locations', 'title', 'isClientUser', 'filters'],
+    watch: {
+        form: {
+            deep: true,
+            handler: throttle(function () {
+                this.$inertia.get(this.route('locations'), pickBy(this.form), {preserveState: true, preserveScroll: true})
+            }, 150)
+        }
+    },
     data() {
-        return {}
+        return {
+            form: {
+                search: this.filters.search,
+                trashed: this.filters.trashed,
+            },
+        }
     },
+
     computed: {
         tableHeaders() {
             if (this.isClientUser) {
@@ -106,7 +128,11 @@ export default defineComponent({
             return ['client', 'name', 'city', 'state', 'active', '']
         }
     },
-    methods: {},
+    methods: {
+        reset() {
+            this.form = mapValues(this.form, () => null)
+        },
+    },
     mounted() {
     }
 })

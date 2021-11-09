@@ -22,7 +22,7 @@ class LocationsController extends Controller
     ];
 
     //
-    public function index()
+    public function index(Request $request)
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
@@ -33,22 +33,21 @@ class LocationsController extends Controller
             ? Location::whereClientId($client_id)
             : new Location();
 
-        $locations = $locations->with('client')->paginate($page_count);
+        $locations = $locations->with('client')->filter($request->only('search', 'trashed'))
+            ->paginate($page_count);
 
-        if((!is_null($client_id)))
-        {
+        if ((!is_null($client_id))) {
             $client = Client::find($client_id);
             $title = "{$client->name} Locations";
-        }
-        else
-        {
+        } else {
             $title = 'All Client Locations';
         }
 
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
-            'isClientUser' => $is_client_user
+            'isClientUser' => $is_client_user,
+            'filters' => $request->all('search', 'trashed')
         ]);
     }
 
