@@ -24,7 +24,7 @@
             </div>
             <jet-bar-table :headers="tableHeaders">
                 <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id"
-                    @dblclick="$inertia.visit(route('locations.edit', location.id))">
+                    @dblclick="!location?.deleted_at && $inertia.visit(route('locations.edit', location.id))">
                     <jet-bar-table-data v-if="!isClientUser">{{ location.client.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.city }}</jet-bar-table-data>
@@ -35,22 +35,22 @@
                     </jet-bar-table-data>
                     <jet-bar-table-data class="flex flex-row justify-center space-x-2">
                         <Link class="text-gray-400 hover:text-gray-500"
-                              :href="route('locations.edit', location.id)">
+                              :href="route('locations.edit', location.id)" v-if="!location?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
 
                         </Link>
                         <!--                        <Link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
-                        <button @click="$inertia.delete(route('locations.delete', location.id))"
+                        <button @click=" location?.deleted_at ? $inertia.post(route('locations.restore', location.id)) : $inertia.delete(route('locations.delete', location.id))"
                                 class="text-gray-400 hover:text-gray-500">
-                            <jet-bar-icon type="trash" fill/>
+                            <jet-bar-icon :type="location?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>
                         <!--                        </Link>-->
                     </jet-bar-table-data>
                 </tr>
 
                 <tr class="hover:bg-gray-50" v-if="!locations?.data?.length">
-                    <jet-bar-table-data colspan="5">No Locations found.</jet-bar-table-data>
+                    <jet-bar-table-data colspan="6">No Locations found.</jet-bar-table-data>
                 </tr>
 
             </jet-bar-table>

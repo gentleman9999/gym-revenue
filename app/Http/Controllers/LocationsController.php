@@ -116,6 +116,18 @@ class LocationsController extends Controller
         return Redirect::route('locations');
     }
 
+    public function restore(Request $request, $id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::route('locations');
+        }
+        $location = Location::withTrashed()->findOrFail($id);
+        $location->restore();
+
+        return Redirect::route('locations');
+    }
+
     /**
      * Update the authenticated user's current location.
      *

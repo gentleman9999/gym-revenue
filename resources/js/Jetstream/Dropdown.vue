@@ -1,7 +1,7 @@
 <template>
     <div class="relative">
-        <div @click="open = ! open">
-            <slot name="trigger"></slot>
+        <div @click="open = ! open" class="h-full">
+            <slot name="trigger" ></slot>
         </div>
 
         <!-- Full Screen Dropdown Overlay -->
