@@ -45,11 +45,11 @@
 
         <template #actions>
 <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <jet-button type="button" @click="$inertia.visit(route('locations'))" :class="{ 'opacity-25': form.processing, 'bg-red-500': true }" :disabled="form.processing">
+            <jet-button type="button" @click="$inertia.visit(route('locations'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
                 Cancel
             </jet-button>
             <div class="flex-grow" />
-            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing">
                 {{ buttonText }}
             </jet-button>
         </template>

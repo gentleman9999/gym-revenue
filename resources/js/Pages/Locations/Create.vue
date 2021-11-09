@@ -26,7 +26,7 @@ import JetLabel from '@/Jetstream/Label.vue'
 import LocationForm from '@/Pages/Locations/Partials/LocationForm.vue'
 
 
-export default {
+export default defineComponent({
     components: {
         AppLayout,
         JetButton,
@@ -37,5 +37,5 @@ export default {
         LocationForm
     },
 
-}
+})
 </script>

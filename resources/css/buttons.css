@@ -1,0 +1,350 @@
+/* base:*/
+.btn {
+    @apply inline-flex border-transparent flex-wrap items-center justify-center text-center cursor-pointer select-none transition duration-200 ease-in-out flex-shrink-0;
+    @apply px-4 py-2 text-xs rounded-md;
+    &:focus {
+        @apply outline-none;
+    }
+
+    /* disabled */
+    &-disabled,
+    &[disabled] {
+        @apply pointer-events-none;
+    }
+
+    /* shapes */
+    &-square {
+        @apply h-12 w-12 p-0;
+    }
+    &-circle {
+        @apply rounded-full h-12 w-12 p-0;
+    }
+    &-xs {
+        @apply px-2 h-6;
+        font-size: 0.75rem;
+    }
+    &-sm {
+        @apply px-3 h-8;
+        font-size: 0.875rem;
+    }
+    &-md {
+        @apply px-4 h-12;
+        font-size: 0.875rem;
+    }
+    &-lg {
+        @apply px-6 h-16;
+        font-size: 1.125rem;
+    }
+    &-wide {
+        @apply w-64;
+    }
+    &-block {
+        @apply w-full;
+    }
+    &-square{
+        &.btn-xs {
+            @apply h-6 w-6 p-0;
+        }
+        &.btn-sm {
+            @apply h-8 w-8 p-0;
+        }
+        &.btn-md {
+            @apply h-12 w-12 p-0;
+        }
+        &.btn-lg {
+            @apply h-16 w-16 p-0;
+        }
+    }
+    &-circle{
+        &.btn-xs {
+            @apply rounded-full h-6 w-6 p-0;
+        }
+        &.btn-sm {
+            @apply rounded-full h-8 w-8 p-0;
+        }
+        &.btn-md {
+            @apply rounded-full h-12 w-12 p-0;
+        }
+        &.btn-lg {
+            @apply rounded-full h-16 w-16 p-0;
+        }
+    }
+
+    /* loading */
+    &.loading {
+        &,
+        &:hover {
+            @apply pointer-events-none;
+        }
+        &:before {
+            @apply h-4 w-4 rounded-full mr-2 border-2;
+            animation: spin 2s linear infinite;
+            content: "";
+            border-top-color: transparent;
+            border-left-color: transparent;
+            border-bottom-color: currentColor;
+            border-right-color: currentColor;
+        }
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .btn.loading:before{
+        animation: spin 10s linear infinite;
+    }
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* group */
+.btn-group {
+    @apply flex flex-wrap;
+    & > input[type="radio"].btn {
+        @apply appearance-none;
+    }
+    & > input[type="radio"].btn:before {
+        content: attr(data-title);
+    }
+}
+/*theme: */
+.btn {
+    @apply font-semibold uppercase tracking-widest;
+    border-width: var(--border-btn, 1px);
+    animation: button-pop var(--animation-btn, 0.25s) ease-out;
+    text-transform: var(--btn-text-case, uppercase);
+    &:active:hover,
+    &:active:focus{
+        animation: none;
+    }
+    &:active:hover,
+    &:active:focus{
+        transform: scale( var(--btn-focus-scale, 0.95) );
+    }
+
+    /* default btn */
+    & {
+        @apply bg-gray-800 border-gray-800 text-white;
+        &:hover,
+        &-active {
+            @apply bg-gray-700 border-gray-700
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--nf));
+        }
+    }
+    /* brand colors */
+    &-primary {
+        @apply bg-primary border-primary text-white;
+        &:hover,
+        &.btn-active {
+            @apply bg-primary-600 border-primary-600;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--p));
+        }
+    }
+    &-secondary {
+        @apply bg-secondary border-secondary text-white;
+        &:hover,
+        &.btn-active {
+            @apply bg-secondary-600 border-secondary-600;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--s));
+        }
+    }
+    &-accent {
+        @apply bg-accent border-accent text-white;
+        &:hover,
+        &.btn-active {
+            @apply bg-accent-600 border-accent-600;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--a));
+        }
+    }
+
+
+    /* btn with state colors */
+    &-info {
+        @apply bg-info-300 border-info-300 text-gray-800;
+        &:hover,
+        &.btn-active {
+            @apply bg-info-400 border-info-400;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--in));
+        }
+    }
+    &-success {
+        @apply bg-success-300 border-success-300 text-gray-800;
+        &:hover,
+        &.btn-active {
+            @apply bg-success-400 border-success-400;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--su));
+        }
+    }
+    &-warning {
+        @apply bg-warning-300 border-warning-300 text-gray-800;
+        &:hover,
+        &.btn-active {
+            @apply bg-warning-400 border-warning-400;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--wa));
+        }
+    }
+    &-error {
+        @apply bg-error-300 border-error-300 text-gray-800;
+        &:hover,
+        &.btn-active {
+            @apply bg-error-400 border-error-400;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--er));
+        }
+    }
+
+    /* glass */
+    &.glass{
+        &:hover,
+        &.btn-active {
+            --glass-opacity: 25%;
+            --glass-border-opacity: 15%;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px currentColor;
+        }
+    }
+
+    /* btn variants */
+    &-ghost {
+        @apply bg-transparent text-current border border-transparent;
+        &:hover,
+        &.btn-active {
+            @apply bg-white bg-opacity-20 border-opacity-0;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px currentColor;
+        }
+    }
+    &-link {
+        @apply bg-transparent border-transparent text-primary;
+        &:hover,
+        &.btn-active {
+            @apply underline bg-transparent border-transparent;
+        }
+        &:focus-visible {
+            box-shadow: 0 0 0 2px currentColor;
+        }
+    }
+
+    /* outline */
+    &-outline {
+        @apply bg-transparent text-white border-current;
+        &:hover {
+            @apply bg-white border-white text-gray-700;
+        }
+        &.btn-primary {
+            @apply text-primary;
+            &:hover {
+                @apply bg-primary-600 text-white border-primary-600;
+            }
+        }
+        &.btn-secondary {
+            @apply text-secondary;
+            &:hover {
+                @apply bg-secondary-600 text-white border-secondary-600;
+            }
+        }
+        &.btn-accent {
+            @apply text-accent;
+            &:hover {
+                @apply bg-accent-600 text-white border-accent-600;
+            }
+        }
+        &.btn-success {
+            @apply text-success;
+            &:hover {
+                @apply bg-success text-white border-success;
+            }
+        }
+        &.btn-info {
+            @apply text-info;
+            &:hover {
+                @apply bg-info text-white border-info;
+            }
+        }
+        &.btn-warning {
+            @apply text-warning;
+            &:hover {
+                @apply bg-warning text-white border-warning;
+            }
+        }
+        &.btn-error {
+            @apply text-error;
+            &:hover {
+                @apply bg-error text-white border-error;
+            }
+        }
+    }
+
+    /* disabled */
+    &-disabled,
+    &[disabled] {
+        @apply bg-gray-800 border-opacity-0 bg-opacity-20 text-white text-opacity-20;
+    }
+
+
+
+    /* loading */
+    &.loading {
+        &.btn-square:before,
+        &.btn-circle:before {
+            @apply mr-0;
+        }
+        &.btn-xl:before,
+        &.btn-lg:before {
+            @apply h-5 w-5;
+        }
+        &.btn-sm:before,
+        &.btn-xs:before {
+            @apply h-3 w-3;
+        }
+    }
+}
+/* group */
+.btn-group {
+    & > input[type="radio"]:checked.btn,
+    & > .btn-active {
+        @apply bg-primary border-primary text-white;
+        &:focus-visible {
+            box-shadow: 0 0 0 2px hsl(var(--b1)), 0 0 0 4px hsl(var(--p));
+        }
+    }
+    & > .btn:not(:first-child) {
+        @apply rounded-l-none -ml-px;
+    }
+    & > .btn:not(:last-child) {
+        @apply rounded-r-none;
+    }
+}
+
+@keyframes button-pop {
+    0% {
+        transform: scale( var(--btn-focus-scale, 0.95) );
+    }
+    40% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

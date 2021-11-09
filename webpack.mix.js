@@ -15,6 +15,20 @@ mix.js('resources/js/app.js', 'public/js').vue()
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
+        require('postcss-nested')({
+            "bubble": [
+                "screen"
+            ]
+        }),
+        require('autoprefixer'),
+        // require('cssnano')({
+        //     "preset": [
+        //         "default",
+        //         {
+        //             "mergeRules": false
+        //         }
+        //     ]
+        // }),
     ])
     .sass('resources/sass/app.scss', 'public/sass')
     .webpackConfig(require('./webpack.config'));

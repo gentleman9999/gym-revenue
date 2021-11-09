@@ -1,6 +1,12 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
+//add default to colors so we don't always need -500 for base shade
+Object.entries(colors).forEach(([name, color])=>color.DEFAULT = color[500]);
 
 module.exports = {
+    experimental: {
+        applyComplexClasses: true,
+    },
     mode: 'jit',
     purge: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
@@ -11,6 +17,18 @@ module.exports = {
     ],
 
     theme: {
+        colors: {
+            ...colors,
+            primary: colors.blue,
+            secondary: colors.red,
+            accent: colors.yellow,
+            info: colors.sky,
+            error: colors.red,
+            warning: colors.yellow,
+            success: colors.green,
+            transparent: 'transparent',
+            current: 'currentColor'
+        },
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],

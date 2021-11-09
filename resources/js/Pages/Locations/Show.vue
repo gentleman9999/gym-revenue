@@ -7,7 +7,8 @@
         </template>
         <jet-bar-container>
             <jet-bar-table :headers="tableHeaders">
-                <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id" @dblclick="$inertia.visit(route('locations.edit', location.id))">
+                <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id"
+                    @dblclick="$inertia.visit(route('locations.edit', location.id))">
                     <jet-bar-table-data v-if="!isClientUser">{{ location.client.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.city }}</jet-bar-table-data>
@@ -22,12 +23,13 @@
                             <jet-bar-icon type="pencil" fill/>
 
                         </Link>
-<!--                        <Link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
-                           <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
-                            <button @click="$inertia.delete(route('locations.delete', location.id))" class="text-gray-400 hover:text-gray-500">
-                                <jet-bar-icon type="trash" fill/>
-                            </button>
-<!--                        </Link>-->
+                        <!--                        <Link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
+                        <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
+                        <button @click="$inertia.delete(route('locations.delete', location.id))"
+                                class="text-gray-400 hover:text-gray-500">
+                            <jet-bar-icon type="trash" fill/>
+                        </button>
+                        <!--                        </Link>-->
                     </jet-bar-table-data>
                 </tr>
 
@@ -37,7 +39,7 @@
 
             </jet-bar-table>
             <Link
-                class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
+                class="btn mt-4"
                 :href="route('locations.create')">
                 <span>Create Location</span>
             </Link>
@@ -97,14 +99,15 @@ export default defineComponent({
     },
     computed: {
         tableHeaders() {
-            if(this.isClientUser) {
-                return ['name', 'city', 'state','active', ''];
+            if (this.isClientUser) {
+                return ['name', 'city', 'state', 'active', ''];
             }
 
-            return ['client', 'name', 'city', 'state','active', '']
+            return ['client', 'name', 'city', 'state', 'active', '']
         }
     },
     methods: {},
-    mounted () {}
+    mounted() {
+    }
 })
 </script>
