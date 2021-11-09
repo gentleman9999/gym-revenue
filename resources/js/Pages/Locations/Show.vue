@@ -8,12 +8,12 @@
         <jet-bar-container>
             <div class="flex flex-row items-center mb-4">
                 <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
-                    <!--                    <label class="block text-gray-700">Trashed:</label>-->
-                    <!--                    <select v-model="filters.trashed" class="mt-1 w-full form-select">-->
-                    <!--                        <option :value="null"/>-->
-                    <!--                        <option value="with">With Trashed</option>-->
-                    <!--                        <option value="only">Only Trashed</option>-->
-                    <!--                    </select>-->
+                    <div class="block py-2 text-xs text-gray-400">Trashed:</div>
+                    <select v-model="form.trashed" class="mt-1 w-full form-select">
+                        <option :value="null"/>
+                        <option value="with">With Trashed</option>
+                        <option value="only">Only Trashed</option>
+                    </select>
                 </search-filter>
                 <div class="flex-grow"/>
                 <Link
@@ -106,7 +106,10 @@ export default defineComponent({
         form: {
             deep: true,
             handler: throttle(function () {
-                this.$inertia.get(this.route('locations'), pickBy(this.form), {preserveState: true, preserveScroll: true})
+                this.$inertia.get(this.route('locations'), pickBy(this.form), {
+                    preserveState: true,
+                    preserveScroll: true
+                })
             }, 150)
         }
     },

@@ -12,7 +12,7 @@
         <div v-show="showingNavigationDropdown" @click="showingNavigationDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
 
         <!-- Sidebar Links -->
-        <nav :class="{'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown}" class="flex-grow lg:block px-4 pb-4 lg:pb-0 lg:overflow-y-auto z-10">
+        <nav :class="{'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown}" class="flex-grow lg:block px-4 pb-4 lg:pb-0 lg:overflow-y-auto">
             <!-- Searchbar -->
             <jet-bar-sidebar-search />
             <!-- End Searchbar -->

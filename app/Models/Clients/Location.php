@@ -39,10 +39,10 @@ class Location extends Model
             $query->where(function ($query) use ($search) {
                 $query->where('city', 'like', '%' . $search . '%')
                     ->orWhere('state', 'like', '%' . $search . '%')
-                    ->orWhere('name', 'like', '%' . $search . '%');
-//                    ->orWhereHas('organization', function ($query) use ($search) {
-//                        $query->where('name', 'like', '%'.$search.'%');
-//                    });
+                    ->orWhere('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('client', function ($query) use ($search) {
+                        $query->where('name', 'like', '%'.$search.'%');
+                    });
             });
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
