@@ -13,8 +13,11 @@ class LeadsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
+        $page_count = 10;
+        $leads = [];
+
         return Inertia::render('Leads/Index', [
-            //'locations' => $locations,
+            'leads' => $leads,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             //'filters' => $request->all('search', 'trashed')

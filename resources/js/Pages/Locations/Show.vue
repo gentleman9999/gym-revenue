@@ -56,7 +56,6 @@
             </jet-bar-table>
 
             <pagination class="mt-6" :links="locations.links"/>
-
         </jet-bar-container>
     </app-layout>
 </template>

@@ -5,7 +5,26 @@
                 Leads
             </h2>
         </template>
-        <jet-bar-container></jet-bar-container>
+        <jet-bar-container>
+            <div class="flex flex-row items-center mb-4">
+                <div class="flex-grow"/>
+                <Link
+                    class="btn justify-self-end"
+                    :href="route('data.leads.create')">
+                    <span>Create Lead</span>
+                </Link>
+            </div>
+            <jet-bar-table :headers="tableHeaders">
+                <tr class="hover:bg-gray-50" v-if="leads.length === 0">
+                    <jet-bar-table-data></jet-bar-table-data>
+                    <jet-bar-table-data></jet-bar-table-data>
+                    <jet-bar-table-data>No Data Available</jet-bar-table-data>
+                    <jet-bar-table-data></jet-bar-table-data>
+                    <jet-bar-table-data></jet-bar-table-data>
+                    <jet-bar-table-data></jet-bar-table-data>
+                </tr>
+            </jet-bar-table>
+        </jet-bar-container>
     </app-layout>
 </template>
 
@@ -46,7 +65,18 @@ export default defineComponent({
         Pagination,
         SearchFilter
     },
-    props: ['sessions', 'locations', 'title', 'isClientUser', 'filters'],
+    props: ['leads', 'title', 'isClientUser', 'filters'],
+    computed: {
+        tableHeaders() {
+            /*
+            if (this.isClientUser) {
+                return ['name', 'city', 'state', 'active', ''];
+            }
+             */
+
+            return ['date', 'first_name', 'last_name', 'location', 'lead_type', ''];
+        }
+    },
 });
 </script>
 
