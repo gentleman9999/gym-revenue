@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clients\Client;
+use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
+use App\Models\TeamDetail;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -29,12 +32,13 @@ class LocationsController extends Controller
 
         // @todo - insert Bouncer-based ACL here.
         $page_count = 5;
-        $locations = (!is_null($client_id))
-            ? Location::whereClientId($client_id)
-            : new Location();
 
-        $locations = $locations->with('client')->filter($request->only('search', 'trashed'))
-            ->paginate($page_count);
+        if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
+        {
+            $locations = $locations->with('client')
+                ->filter($request->only('search', 'trashed'))
+                ->paginate($page_count);
+        }
 
         if ((!is_null($client_id))) {
             $client = Client::find($client_id);
@@ -142,5 +146,72 @@ class LocationsController extends Controller
         }
 
         return redirect(config('fortify.home'), 303);
+    }
+
+    private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
+    {
+        $results = [];
+        /**
+         * BUSINESS RULES
+         * 1. All Locations
+         *  - Cape & Bay user
+         *  - The active_team is the current client's default_team (gets all the client's locations)
+         * 2. Scoped Locations
+         *  - The active_team is not the current client's default_team
+         *      so get the teams listed in team_details
+         * 3. No Locations
+         *  - The active_team is not the current client's default_team
+         *      but there are no locations assigned in team_details
+         *  - (Bug or Feature?) - The current client is null (cape & bay)
+         *      but the user is not a cape & bay user.
+         */
+
+        /*$locations = (!is_null($client_id))
+            ? Location::whereClientId($client_id)
+            : new Location();
+        */
+
+        if((!is_null($client_id)))
+        {
+            $current_team = request()->user()->currentTeam()->first();
+            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $default_team_name = $client->default_team_name->value;
+
+            // The active_team is the current client's default_team (gets all the client's locations)
+            if($current_team->name == $default_team_name)
+            {
+                $results = Location::whereClientId($client_id);
+            }
+            else
+            {
+                // The active_team is not the current client's default_team
+                $team_locations = TeamDetail::whereTeamId($current_team->id)
+                    ->where('name', '=', 'team-location')->whereActive(1)
+                    ->get();
+
+                if(count($team_locations) > 0)
+                {
+                    $in_query = [];
+                    // so get the teams listed in team_details
+                    foreach($team_locations as $team_location)
+                    {
+                        $in_query[] = $team_location->value;
+                    }
+
+                    $results = Location::whereClientId($client_id)
+                        ->whereIn('gymrevenue_id', $in_query);
+                }
+            }
+        }
+        else
+        {
+            // Cape & Bay user
+            if(!$is_client_user)
+            {
+                $results = new Location();
+            }
+        }
+
+        return $results;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Clients;
+namespace Database\Seeders\Users;
 
 use App\Models\Clients\Client;
 use App\Models\Team;

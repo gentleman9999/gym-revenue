@@ -2,14 +2,15 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Clients\ClientSeeder;
-use Database\Seeders\Clients\LocationSeeder;
-use Database\Seeders\Clients\SecondaryClientUsersSeeder;
-use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Users\CapeAndBayUserSeeder;
-use Database\Seeders\Users\ClientUserSeeder;
+use Database\Seeders\Clients\TeamLocationsSeeder;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Clients\ClientSeeder;
 use Symfony\Component\VarDumper\VarDumper;
+use Database\Seeders\Users\ClientUserSeeder;
+use Database\Seeders\Clients\LocationSeeder;
+use Database\Seeders\Users\CapeAndBayUserSeeder;
+use Database\Seeders\Clients\SecondaryTeamsSeeder;
+use Database\Seeders\Users\SecondaryClientUsersSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,5 +39,8 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Secondary Users Seeder');
         $this->call(SecondaryClientUsersSeeder::class);
+
+        VarDumper::dump('Running Client Team/Location Assignments Seeder');
+        $this->call(TeamLocationsSeeder::class);
     }
 }

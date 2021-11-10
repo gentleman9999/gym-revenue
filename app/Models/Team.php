@@ -50,4 +50,25 @@ class Team extends JetstreamTeam
             ->where('detail','=', 'team')
             ->with('client');
     }
+
+    public static function fetchTeamIDFromName(string $name)
+    {
+        $model = new self;
+
+        return $model->getTeamIDFromName($name);
+    }
+
+    public function getTeamIDFromName(string $name)
+    {
+        $results = false;
+
+        $record = $this->select('id')->where('name', '=', $name)->first();
+
+        if(!is_null($record))
+        {
+            $results = $record->id;
+        }
+
+        return $results;
+    }
 }
