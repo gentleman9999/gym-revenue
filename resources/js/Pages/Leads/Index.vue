@@ -7,6 +7,14 @@
         </template>
         <jet-bar-container>
             <div class="flex flex-row items-center mb-4">
+                <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
+                    <div class="block py-2 text-xs text-gray-400">Trashed:</div>
+                    <select v-model="form.trashed" class="mt-1 w-full form-select">
+                        <option :value="null"/>
+                        <option value="with">With Trashed</option>
+                        <option value="only">Only Trashed</option>
+                    </select>
+                </search-filter>
                 <div class="flex-grow"/>
                 <Link
                     class="btn justify-self-end"
@@ -15,7 +23,7 @@
                 </Link>
             </div>
             <jet-bar-table :headers="tableHeaders">
-                <tr class="hover:bg-gray-50" v-if="leads.length === 0">
+                <tr class="hover:bg-gray-50" v-if="leads.data.length === 0">
                     <jet-bar-table-data></jet-bar-table-data>
                     <jet-bar-table-data></jet-bar-table-data>
                     <jet-bar-table-data>No Data Available</jet-bar-table-data>
@@ -23,7 +31,36 @@
                     <jet-bar-table-data></jet-bar-table-data>
                     <jet-bar-table-data></jet-bar-table-data>
                 </tr>
+                <tr class="hover:bg-gray-50" v-else v-for="(lead, idx) in leads.data" :key="idx">
+                    <jet-bar-table-data>{{ getDate(lead.created_at) }}</jet-bar-table-data>
+                    <jet-bar-table-data>{{ lead.first_name }}</jet-bar-table-data>
+                    <jet-bar-table-data>{{ lead.last_name }}</jet-bar-table-data>
+                    <jet-bar-table-data>{{ lead.location.name }}</jet-bar-table-data>
+                    <jet-bar-table-data>{{ lead.lead_type }}</jet-bar-table-data>
+                    <jet-bar-table-data class="flex flex-row justify-center space-x-2">
+                        <jet-bar-badge text="Available" type="success"/>
+                        <button class="text-gray-400 hover:text-gray-500" v-if="!lead?.deleted_at" @click="launchModal(idx)">
+                            <jet-bar-icon type="message" fill/>
+                        </button>
+                        <Link class="text-gray-400 hover:text-gray-500"
+                              :href="route('data.leads.edit', lead.id)" v-if="!lead?.deleted_at">
+                            <jet-bar-icon type="pencil" fill/>
+                        </Link>
+                    </jet-bar-table-data>
+                </tr>
             </jet-bar-table>
+            <pagination class="mt-6" :links="leads.links"/>
+
+            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" modal-theme="light">
+                <lead-interaction v-if="activeLead !== ''" :lead-id="leads.data[activeLead].id"
+                                  :first-name="leads.data[activeLead].first_name"
+                                  :last-name="leads.data[activeLead].last_name"
+                                  :email="leads.data[activeLead].email"
+                                  :phone="leads.data[activeLead].mobile_phone"
+                                  :details="leads.data[activeLead]['details_desc']"
+                ></lead-interaction>
+                <!-- <iframe width="100%" height="415" :src="route('data.leads.show', this.activeLead)" frameborder="0" allowfullscreen></iframe> -->
+            </sweet-modal>
         </jet-bar-container>
     </app-layout>
 </template>
@@ -47,6 +84,8 @@ import SearchFilter from "@/Components/SearchFilter";
 import pickBy from 'lodash/pickBy'
 import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
+import SweetModal from "../../Components/SweetModal3/SweetModal";
+import LeadInteraction from "./Partials/LeadInteractionContainer"
 
 export default defineComponent({
     components: {
@@ -63,9 +102,31 @@ export default defineComponent({
         JetBarBadge,
         JetBarIcon,
         Pagination,
-        SearchFilter
+        SearchFilter,
+        SweetModal,
+        LeadInteraction
     },
     props: ['leads', 'title', 'isClientUser', 'filters'],
+    watch: {
+        form: {
+            deep: true,
+            handler: throttle(function () {
+                this.$inertia.get(this.route('data.leads'), pickBy(this.form), {
+                    preserveState: true,
+                    preserveScroll: true
+                })
+            }, 150)
+        }
+    },
+    data() {
+        return {
+            form: {
+                search: this.filters.search,
+                trashed: this.filters.trashed,
+            },
+            activeLead: ''
+        }
+    },
     computed: {
         tableHeaders() {
             /*
@@ -77,6 +138,23 @@ export default defineComponent({
             return ['date', 'first_name', 'last_name', 'location', 'lead_type', ''];
         }
     },
+    methods: {
+        getDate(date) {
+            let newdate = new Date(date);
+
+            return newdate.toDateString();
+        },
+        reset() {
+            this.form = mapValues(this.form, () => null)
+        },
+        launchModal(pos) {
+            this.activeLead = pos;
+            this.$refs.showViewModal.open();
+        }
+    },
+    mounted() {
+
+    }
 });
 </script>
 

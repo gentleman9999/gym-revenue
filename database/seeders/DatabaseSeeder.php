@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Clients\TeamLocationsSeeder;
+use Database\Seeders\Data\LeadProspectSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -42,5 +43,8 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Team/Location Assignments Seeder');
         $this->call(TeamLocationsSeeder::class);
+
+        VarDumper::dump('Running Leads Dummy Data Seeder');
+        $this->call(LeadProspectSeeder::class);
     }
 }

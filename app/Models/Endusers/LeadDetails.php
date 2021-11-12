@@ -18,10 +18,10 @@ class LeadDetails extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['client_id', 'detail', 'value', 'misc', 'active'];
+    protected $fillable = ['client_id','lead_id', 'field', 'value', 'misc', 'active'];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 
     public function client()

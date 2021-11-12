@@ -43,5 +43,8 @@ Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore',
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::get('/leads', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads');
     Route::get('/leads/create', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads.create');
+    Route::get('/leads/show/{id}', \App\Http\Controllers\Data\LeadsController::class.'@show')->name('data.leads.show');
+    Route::get('/leads/edit/{id}', \App\Http\Controllers\Data\LeadsController::class.'@edit')->name('data.leads.edit');
+    Route::put('/leads/{id}', \App\Http\Controllers\Data\LeadsController::class.'@update')->name('data.leads.update');
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class.'@index')->name('data.conversions');
 });

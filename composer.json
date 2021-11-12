@@ -20,6 +20,7 @@
         "lorisleiva/laravel-actions": "^2.1",
         "maatwebsite/excel": "^3.1",
         "predis/predis": "^1.1",
+        "prologue/alerts": "^0.4.1",
         "pusher/pusher-php-server": "^7.0",
         "silber/bouncer": "v1.0.0-rc.10",
         "spatie/laravel-event-sourcing": "^5.0",
