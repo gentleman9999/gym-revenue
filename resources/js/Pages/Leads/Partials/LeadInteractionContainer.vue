@@ -21,7 +21,7 @@
                                 <li class="mb-4"><p><b>Email -</b> {{ email }}</p></li>
                                 <li><p><b>Phone -</b> {{ phone }}</p></li>
                             </ul>
-                            <div class="flex flex-row mt-8">
+                            <div class="flex flex-row mt-8" v-if="claimedByUser">
                                 <div class="mr-4"><jet-button type="button" success @click="activeContactMethod = 'email'">Email</jet-button></div>
                                 <div class="mr-4"><jet-button type="button" error @click="activeContactMethod = 'phone'">Call</jet-button></div>
                                 <div class="mr-4"><jet-button type="button" info @click="activeContactMethod = 'sms'">SMS</jet-button></div>
@@ -91,11 +91,19 @@
                     <template #form>
                         <div class="col-span-6">
                             <ul class="w-full">
-                                <li class="mb-4" v-for="detail in details">
+                                <li class="mb-4" v-for="detail in dynamicDetails">
                                     <p v-if="detail.field === 'manual_create'"><b>Lead Was Manually Created inside GymRevenue By {{ detail.value }} On -</b> {{ detail.created_at }}</p>
                                     <p v-if="detail.field === 'claimed'"><b>Lead Claimed By {{ detail.misc['user_id'] }} On -</b> {{ detail.created_at }}</p>
                                     <p v-if="detail.field === 'created'"><b>Lead Created On -</b> {{ detail.value }}</p>
                                     <p v-if="detail.field === 'updated'"><b>Lead Updated On -</b> {{ detail.created_at }} by {{ detail.value }}</p>
+                                    <p v-if="detail.field === 'emailed_by_rep'"><b>Lead Was Emailed On -</b> {{ detail.created_at }} by {{ detail.misc['user_email'] }}</p>
+                                    <p v-if="detail.field === 'emailed_by_rep'"><b>Subject - </b> {{ detail.misc.subject }}</p>
+                                    <p class="mb-4" v-if="detail.field === 'emailed_by_rep'"><b>Message - </b> {{ detail.misc.message }}</p>
+                                    <p v-if="detail.field === 'called_by_rep'"><b>Lead Was Called On -</b> {{ detail.created_at }} by {{ detail.misc['user_email'] }}</p>
+                                    <p v-if="detail.field === 'called_by_rep'"><b>Outcome - </b> {{ detail.misc.outcome }}</p>
+                                    <p class="mb-4" v-if="detail.field === 'called_by_rep'"><b>Notes - </b> {{ detail.misc.notes }}</p>
+                                    <p v-if="detail.field === 'sms_by_rep'"><b>Lead Was Text Messaged On -</b> {{ detail.created_at }} by {{ detail.misc['user_email'] }}</p>
+                                    <p class="mb-4" v-if="detail.field === 'sms_by_rep'"><b>Message - </b> {{ detail.misc.message }}</p>
                                 </li>
                             </ul>
                         </div>
@@ -119,7 +127,7 @@ export default defineComponent({
         JetButton,
         FormSection
     },
-    props: ['leadId', 'firstName', 'lastName', 'email', 'phone', 'details'],
+    props: ['userId','leadId', 'firstName', 'lastName', 'email', 'phone', 'details'],
     watch: {
         smsMsg(msg) {
             this.charsUsed = msg.length;
@@ -136,6 +144,7 @@ export default defineComponent({
             charsLeft: 130,
             emailSubject: '',
             emailBody: '',
+            dynamicDetails: '',
             phoneCallOption: '',
             phoneCallNotes: '',
             phoneCallOptions: {
@@ -150,6 +159,18 @@ export default defineComponent({
         }
     },
     computed: {
+        claimedByUser() {
+            let r = false;
+
+            for(let idx in this.details) {
+                let d = this.details[idx];
+                if(d.field === 'claimed') {
+                    r = (d.value == this.userId);
+                }
+            }
+
+            return r;
+        },
         submitText() {
             let text = '';
 
@@ -178,13 +199,140 @@ export default defineComponent({
             this.phoneCallNotes = '';
         },
         fetchLeadInfo() {
-            //this.loading = true;
+            this.dynamicDetails = this.details;
         },
         callLead() {
-            this.comingSoon();
+            window.open(`tel:${this.phone}`)
         },
         submitLog() {
-            this.comingSoon();
+            let _this = this;
+            switch(this.activeContactMethod) {
+                case 'email':
+                    axios.post(`/data/leads/contact/${this.leadId}`, {
+                        //'user_id': this.userId,
+                        subject: this.emailSubject,
+                        message: this.emailBody,
+                        method: this.activeContactMethod
+                    }, ).then(({data}) => {
+                        if(data.success) {
+                            alert('Sweet!');
+                            let newDetails = [];
+                            newDetails.push({
+                                id: 'temp',
+                                'client_id': _this.details[0]['client_id'],
+                                field: 'emailed_by_rep',
+                                value: _this.userId,
+                                misc: {
+                                    subject: _this.emailSubject,
+                                    message: _this.emailBody,
+                                    'user_email': data.email
+                                },
+                                'created_at': data.time
+                            })
+
+                            for(let x in _this.dynamicDetails) {
+                                newDetails.push(_this.dynamicDetails[x])
+                            }
+                            _this.dynamicDetails = newDetails;
+                        }
+                        else {
+                            if('message' in data) {
+                                alert(data.message);
+                            }
+                            else {
+                                alert('Your email was not saved or executed. Please try again');
+                            }
+                        }
+
+                    })
+                        .catch(err => {
+                            alert('Ooops an error prevents us from sending your email. Please try again!')
+                        })
+                    break;
+
+                case 'phone':
+                    axios.post(`/data/leads/contact/${this.leadId}`, {
+                        //'user_id': this.userId,
+                        outcome: this.phoneCallOptions[this.phoneCallOption],
+                        notes: this.phoneCallNotes,
+                        method: this.activeContactMethod
+                    },).then(({data}) => {
+                        if(data.success) {
+                            alert('Awesome!')
+                            let newDetails = [];
+                            newDetails.push({
+                                id: 'temp',
+                                'client_id': _this.details[0]['client_id'],
+                                field: 'called_by_rep',
+                                value: _this.userId,
+                                misc: {
+                                    outcome: _this.phoneCallOptions[_this.phoneCallOption],
+                                    notes: _this.phoneCallNotes,
+                                    'user_email': data.email
+                                },
+                                'created_at': data.time
+                            })
+
+                            for(let x in _this.dynamicDetails) {
+                                newDetails.push(_this.dynamicDetails[x])
+                            }
+                            _this.dynamicDetails = newDetails;
+                        }
+                        else {
+                            if('message' in data) {
+                                alert(data.message);
+                            }
+                            else {
+                                alert('Your phone call was not saved or executed. Please try again');
+                            }
+                        }
+                    })
+                        .catch(err => {
+                            alert('Ooops an error prevents us from logging your phone call. Please try again!')
+                        })
+                    break;
+
+                case 'sms':
+                    axios.post(`/data/leads/contact/${this.leadId}`, {
+                        //'user_id': this.userId,
+                        message: this.smsMsg,
+                        method: this.activeContactMethod
+                    }).then(({data}) => {
+                        if(data.success) {
+                            alert('Bodacious!')
+                            let newDetails = [];
+                            newDetails.push({
+                                id: 'temp',
+                                'client_id': _this.details[0]['client_id'],
+                                field: 'sms_by_rep',
+                                value: _this.userId,
+                                misc: {
+                                    message: _this.smsMsg,
+                                    'user_email': data.email
+                                },
+                                'created_at': data.time
+                            })
+
+                            for(let x in _this.dynamicDetails) {
+                                newDetails.push(_this.dynamicDetails[x])
+                            }
+                            _this.dynamicDetails = newDetails;
+                        }
+                        else {
+                            if('message' in data) {
+                                alert(data.message);
+                            }
+                            else {
+                                alert('Your text message was not saved or executed. Please try again');
+                            }
+                        }
+                    })
+                        .catch(err => {
+                            alert('Ooops an error prevents us from sending your text message. Please try again!')
+                        })
+                    break;
+            }
+
         },
         comingSoon() {
             new Noty({

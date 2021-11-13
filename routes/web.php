@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function
         Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class.'@edit')->name('data.leads.edit');
         Route::put('/{id}', \App\Http\Controllers\Data\LeadsController::class.'@update')->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class.'@assign')->name('data.leads.assign');
+        Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class.'@contact')->name('data.leads.contact');
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class.'@index')->name('data.conversions');

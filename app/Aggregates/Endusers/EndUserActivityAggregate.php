@@ -3,6 +3,9 @@
 namespace App\Aggregates\Endusers;
 
 use App\Models\User;
+use App\StorableEvents\Endusers\LeadWasCalledByRep;
+use App\StorableEvents\Endusers\LeadWasEmailedByRep;
+use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\UpdateLead;
@@ -41,6 +44,24 @@ class EndUserActivityAggregate extends AggregateRoot
     public function claimLead(string $user_id, string $client_id)
     {
         $this->recordThat(new LeadClaimedByRep($this->uuid(), $user_id, $client_id));
+        return $this;
+    }
+
+    public function emailLead(array $data, string $user)
+    {
+        $this->recordThat(new LeadWasEmailedByRep($this->uuid(), $data, $user));
+        return $this;
+    }
+
+    public function logPhoneCallWithLead(array $data, string $user)
+    {
+        $this->recordThat(new LeadWasCalledByRep($this->uuid(), $data, $user));
+        return $this;
+    }
+
+    public function textMessageLead(array $data, string $user)
+    {
+        $this->recordThat(new LeadWasTextMessagedByRep($this->uuid(), $data, $user));
         return $this;
     }
 }

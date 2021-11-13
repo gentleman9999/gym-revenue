@@ -57,6 +57,7 @@ class LeadsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+
         $locations = [];
         foreach ($locations_records as $location)
         {
@@ -276,5 +277,48 @@ class LeadsController extends Controller
         }
 
         return $results;
+    }
+
+    public function contact($lead_id)
+    {
+        $results = ['success' => false];
+
+        $lead = Lead::find($lead_id);
+
+        if($lead)
+        {
+            if(array_key_exists('method', request()->all()))
+            {
+                $aggy = EndUserActivityAggregate::retrieve($lead_id);
+                $data = request()->all();
+
+                switch(request()->get('method'))
+                {
+                    case 'email':
+                        $aggy->emailLead($data, auth()->user()->id)->persist();
+                        $results = ['success' => true, 'time' => date('Y-m-d'), 'email' => auth()->user()->email];
+                        break;
+
+                    case 'phone':
+                        $aggy->logPhoneCallWithLead($data, auth()->user()->id)->persist();
+                        $results = ['success' => true, 'time' => date('Y-m-d'), 'email' => auth()->user()->email];
+                        break;
+
+                    case 'sms':
+                        $aggy->textMessageLead($data, auth()->user()->id)->persist();
+                        $results = ['success' => true, 'time' => date('Y-m-d'), 'email' => auth()->user()->email];
+                        break;
+
+                    default:
+                        $results['message'] = 'Invalid communication method. Select Another.';
+                }
+            }
+        }
+        else
+        {
+            $results['message'] = 'Could not find the lead requested.';
+        }
+
+        return response($results, 200);
     }
 }

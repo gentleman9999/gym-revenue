@@ -24,7 +24,8 @@
         "pusher/pusher-php-server": "^7.0",
         "silber/bouncer": "v1.0.0-rc.10",
         "spatie/laravel-event-sourcing": "^5.0",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "twilio/sdk": "^6.31"
     },
     "require-dev": {
         "arielmejiadev/jetbar": "^2.0",

@@ -55,8 +55,9 @@
             </jet-bar-table>
             <pagination class="mt-6" :links="leads.links"/>
 
-            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" modal-theme="light">
+            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" modal-theme="light" @close="activeLead = ''">
                 <lead-interaction v-if="activeLead !== ''" :lead-id="leads.data[activeLead].id"
+                                  :user-id="$page.props.user.id"
                                   :first-name="leads.data[activeLead].first_name"
                                   :last-name="leads.data[activeLead].last_name"
                                   :email="leads.data[activeLead].email"
