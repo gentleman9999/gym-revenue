@@ -38,7 +38,11 @@
                     <jet-bar-table-data>{{ lead.location.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ lead.lead_type }}</jet-bar-table-data>
                     <jet-bar-table-data class="flex flex-row justify-center space-x-2">
-                        <jet-bar-badge text="Available" type="success"/>
+                        <!-- Availability to be claimed by a Rep status -->
+                        <div :style="checkClaimDetail(idx) === 'Available' ? 'cursor:pointer' : ''" @click="assignLeadToUser(idx)">
+                            <jet-bar-badge :text="checkClaimDetail(idx)" :type="checkClaimDetailColor(idx)"/>
+                        </div>
+
                         <button class="text-gray-400 hover:text-gray-500" v-if="!lead?.deleted_at" @click="launchModal(idx)">
                             <jet-bar-icon type="message" fill/>
                         </button>
@@ -124,7 +128,8 @@ export default defineComponent({
                 search: this.filters.search,
                 trashed: this.filters.trashed,
             },
-            activeLead: ''
+            activeLead: '',
+            assigning: '',
         }
     },
     computed: {
@@ -150,6 +155,69 @@ export default defineComponent({
         launchModal(pos) {
             this.activeLead = pos;
             this.$refs.showViewModal.open();
+        },
+        checkClaimDetail(pos) {
+            let result = 'Available'
+            let lead = this.leads.data[pos];
+
+            if(this.assigning === pos) {
+                return 'Assigning...';
+            }
+
+            for(let d in lead['details_desc']) {
+                let detail = lead['details_desc'][d];
+                if(detail.field === 'claimed') {
+                    if(parseInt(detail.value) === parseInt(this.$page.props.user.id)) {
+                        return 'Yours'
+                    }
+                    else {
+                        return 'Claimed'
+                    }
+                }
+            }
+
+            return result;
+        },
+        checkClaimDetailColor(pos) {
+            let result = 'success'
+            let lead = this.leads.data[pos];
+
+            console.log('lead '+pos, lead);
+
+            if(this.assigning === pos) {
+                return 'warning';
+            }
+
+            for(let d in lead['details_desc']) {
+                let detail = lead['details_desc'][d];
+                if(detail.field === 'claimed') {
+                    if(parseInt(detail.value) === parseInt(this.$page.props.user.id)) {
+                        return 'info'
+                    }
+                    else {
+                        return 'danger'
+                    }
+                }
+            }
+
+            return result;
+        },
+        assignLeadToUser(pos) {
+            if(this.checkClaimDetail(pos) === 'Available') {
+
+                this.assigning = pos;
+                this.$inertia.visit(route('data.leads.assign'), {
+                    method: 'post',
+                    data: {
+                        'lead_id': this.leads.data[pos].id,
+                        'user_id': this.$page.props.user.id,
+                        'client_id': this.leads.data[pos].client_id
+                    }
+                })
+            }
+            else {
+                console.log('Unable to execute assign on this lead!');
+            }
         }
     },
     mounted() {

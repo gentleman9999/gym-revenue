@@ -41,10 +41,15 @@ Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\
 Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore', \App\Http\Controllers\LocationsController::class.'@restore')->name('locations.restore');
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
-    Route::get('/leads', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads');
-    Route::get('/leads/create', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads.create');
-    Route::get('/leads/show/{id}', \App\Http\Controllers\Data\LeadsController::class.'@show')->name('data.leads.show');
-    Route::get('/leads/edit/{id}', \App\Http\Controllers\Data\LeadsController::class.'@edit')->name('data.leads.edit');
-    Route::put('/leads/{id}', \App\Http\Controllers\Data\LeadsController::class.'@update')->name('data.leads.update');
+    Route::prefix('leads')->group( function() {
+        Route::get('/', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads');
+        Route::get('/create', \App\Http\Controllers\Data\LeadsController::class.'@create')->name('data.leads.create');
+        Route::post('/create', \App\Http\Controllers\Data\LeadsController::class.'@store')->name('data.leads.store');
+        Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class.'@show')->name('data.leads.show');
+        Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class.'@edit')->name('data.leads.edit');
+        Route::put('/{id}', \App\Http\Controllers\Data\LeadsController::class.'@update')->name('data.leads.update');
+        Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class.'@assign')->name('data.leads.assign');
+    });
+
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class.'@index')->name('data.conversions');
 });

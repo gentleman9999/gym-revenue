@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         if ($request->user()) {
             $shared = [
+                'user.id' => $request->user()->id,
                 'user.all_locations' => $request->user()->allLocations(),
                 'user.current_client_id' => $request->user()->currentClientId()
             ];

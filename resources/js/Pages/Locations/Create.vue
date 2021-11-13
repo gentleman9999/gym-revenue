@@ -8,7 +8,7 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <location-form :client-id="this.$page.props.user.current_client_id" />
+                <location-form :client-id="$page.props.user.current_client_id" />
             </div>
         </div>
     </app-layout>

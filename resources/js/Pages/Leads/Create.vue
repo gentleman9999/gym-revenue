@@ -1,31 +1,29 @@
 <template>
-    <app-layout title="Edit Lead">
+    <app-layout title="Create New Lead">
         <template #header>
-            <jet-bar-icon type="g0back" fill/>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Edit Lead
+                Create New Lead
             </h2>
         </template>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <lead-form :client-id="this.$page.props.user.current_client_id" :lead="lead"/>
+                <lead-form :client-id="$page.props.user.current_client_id" :locations="locations"/>
             </div>
         </div>
     </app-layout>
 </template>
 
 <script>
+import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
 import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
-import JetBarIcon from '@/Components/JetBarIcon.vue'
 
-import LeadForm from '@/Pages/Leads/Partials/LeadEditForm.vue'
-import {defineComponent} from 'vue'
+import LeadForm from '@/Pages/Leads/Partials/LeadCreateForm.vue'
 
 
 export default defineComponent({
@@ -36,9 +34,13 @@ export default defineComponent({
         JetInput,
         JetInputError,
         JetLabel,
-        JetBarIcon,
-        LeadForm,
+        LeadForm
     },
-    props: ['lead']
+    props: ['locations'],
+    mounted() {
+        console.log('Fuck ', this.$page.props.user.current_client_id)
+    }
+
+
 })
 </script>

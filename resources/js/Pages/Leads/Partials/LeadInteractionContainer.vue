@@ -67,9 +67,9 @@
                             </div>
                             <div v-if="activeContactMethod !== ''">
                                 <div class="flex flex-row">
-                                    <div class="mr-4" v-if="activeContactMethod === 'phone'"><jet-button type="button" warning><i class="fad fa-phone-volume"></i> Call Lead</jet-button></div>
-                                    <div class="mr-4"><jet-button type="button" success><i class="fad fa-books-medical"></i> {{ submitText }}</jet-button></div>
-                                    <div class="mr-4"><jet-button type="button" error><i class="fad fa-trash"></i> Clear </jet-button></div>
+                                    <div class="mr-4" v-if="activeContactMethod === 'phone'"><jet-button type="button" warning @click="callLead()"><i class="fad fa-phone-volume"></i> Call Lead</jet-button></div>
+                                    <div class="mr-4"><jet-button type="button" success @click="submitLog()"><i class="fad fa-books-medical"></i> {{ submitText }}</jet-button></div>
+                                    <div class="mr-4"><jet-button type="button" error @click="clearForm()"><i class="fad fa-trash"></i> Clear </jet-button></div>
                                 </div>
                             </div>
                         </div>
@@ -92,6 +92,8 @@
                         <div class="col-span-6">
                             <ul class="w-full">
                                 <li class="mb-4" v-for="detail in details">
+                                    <p v-if="detail.field === 'manual_create'"><b>Lead Was Manually Created inside GymRevenue By {{ detail.value }} On -</b> {{ detail.created_at }}</p>
+                                    <p v-if="detail.field === 'claimed'"><b>Lead Claimed By {{ detail.misc['user_id'] }} On -</b> {{ detail.created_at }}</p>
                                     <p v-if="detail.field === 'created'"><b>Lead Created On -</b> {{ detail.value }}</p>
                                     <p v-if="detail.field === 'updated'"><b>Lead Updated On -</b> {{ detail.created_at }} by {{ detail.value }}</p>
                                 </li>
@@ -135,6 +137,7 @@ export default defineComponent({
             emailSubject: '',
             emailBody: '',
             phoneCallOption: '',
+            phoneCallNotes: '',
             phoneCallOptions: {
                 '': 'Select an Outcome',
                 contacted: 'Spoke with Lead.',
@@ -167,8 +170,29 @@ export default defineComponent({
         }
     },
     methods: {
+        clearForm() {
+            this.smsMsg = '';
+            this.emailSubject = '';
+            this.emailBody = '';
+            this.phoneCallOption = '';
+            this.phoneCallNotes = '';
+        },
         fetchLeadInfo() {
             //this.loading = true;
+        },
+        callLead() {
+            this.comingSoon();
+        },
+        submitLog() {
+            this.comingSoon();
+        },
+        comingSoon() {
+            new Noty({
+                type: 'warning',
+                theme: 'sunset',
+                text: 'Feature Coming Soon!',
+                timeout: 7500
+            }).show();
         }
     },
     mounted() {

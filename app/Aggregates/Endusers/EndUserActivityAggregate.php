@@ -3,8 +3,10 @@
 namespace App\Aggregates\Endusers;
 
 use App\Models\User;
+use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\UpdateLead;
+use App\StorableEvents\Endusers\LeadClaimedByRep;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
@@ -23,9 +25,22 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
+    public function manualNewLead(array $lead, string $user_id)
+    {
+        $this->recordThat(new ManualLeadMade($this->uuid(), $lead, $user_id));
+
+        return $this;
+    }
+
     public function updateLead(array $lead, User $updating_user)
     {
         $this->recordThat(new UpdateLead($this->uuid(), $lead, $updating_user->id));
+        return $this;
+    }
+
+    public function claimLead(string $user_id, string $client_id)
+    {
+        $this->recordThat(new LeadClaimedByRep($this->uuid(), $user_id, $client_id));
         return $this;
     }
 }
