@@ -4,6 +4,7 @@ const colors = require('tailwindcss/colors');
 Object.entries(colors).forEach(([name, color])=>color.DEFAULT = color[500]);
 
 module.exports = {
+    darkMode: 'class', //'media',
     experimental: {
         applyComplexClasses: true,
     },
