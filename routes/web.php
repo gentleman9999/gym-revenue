@@ -40,6 +40,9 @@ Route::middleware(['auth:sanctum', 'verified'])->put('/locations/{id}', \App\Htt
 Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\Http\Controllers\LocationsController::class.'@delete')->name('locations.delete');
 Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore', \App\Http\Controllers\LocationsController::class.'@restore')->name('locations.restore');
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( function() {
+    Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@index')->name('comms.dashboard');
+});
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::prefix('leads')->group( function() {
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads');
