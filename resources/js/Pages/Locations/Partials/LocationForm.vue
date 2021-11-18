@@ -95,11 +95,10 @@ export default {
 
         const form = useForm(location)
 
-        let handleSubmit = () => form.put(`/locations/${location.id}`);
+        let handleSubmit = () => form.put(route('locations.update', location.id));
         if (operation === 'Create') {
-            handleSubmit = () => form.post('/locations');
+            handleSubmit = () => form.post(route('locations.store'));
         }
-
 
         return {form, buttonText: operation, handleSubmit}
     },

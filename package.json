@@ -19,6 +19,7 @@
         "autoprefixer": "^10.4.0",
         "axios": "^0.21",
         "laravel-mix": "^6.0.6",
+        "laravel-vapor": "^0.5.1",
         "lodash": "^4.17.21",
         "postcss": "^8.1.14",
         "postcss-import": "^12.0.1",

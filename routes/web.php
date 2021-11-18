@@ -54,3 +54,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class.'@index')->name('data.conversions');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group( function() {
+    Route::get('/', \App\Http\Controllers\FilesController::class.'@index')->name('files');
+    Route::get('/upload', \App\Http\Controllers\FilesController::class.'@upload')->name('files.upload');
+});

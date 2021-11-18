@@ -25,7 +25,7 @@
             <jet-bar-sidebar-search/>
             <!-- End Searchbar -->
 
-            <div :class="{active: route().current('locations')}" class="block px-4 py-2 mt-2"
+            <div :class="{active: route().current('locations')}" class="nav-link-container"
                  v-if="$page.props.user.current_client_id !== null">
                 <!-- <jet-nav-link class="nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
                 <jet-nav-link
@@ -34,7 +34,7 @@
                 </jet-nav-link>
             </div>
 
-            <div :class="{active: route().current('data.leads')}" class="block px-4 py-2 mt-2"
+            <div :class="{active: route().current('data.leads')}" class="nav-link-container"
                 v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
                     class="nav-link"
@@ -43,7 +43,7 @@
             </div>
 
             <div :class="{active: route().current('data.conversions')}"
-                 class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
+                 class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <!-- <jet-nav-link class="nav-link" :href="route('data.conversions')">Conversions</jet-nav-link> -->
                 <jet-nav-link
                     class="nav-link"
@@ -53,12 +53,18 @@
 
             <div
                 :class="{active: route().current('workout-generator')}"
-                class="block px-4 py-2 mt-2">
+                class="nav-link-container">
                 <jet-nav-link class="nav-link" :href="route('workout-generator')">Workout Generator</jet-nav-link>
             </div>
 
+            <div
+                :class="{active: route().current('file-manager')}"
+                class="nav-link-container">
+                <jet-nav-link class="nav-link" :href="route('files')">File Manager</jet-nav-link>
+            </div>
 
-            <!-- <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
+
+            <!-- <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container">
                  <jet-nav-link class="nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link>
             </div> -->
 
@@ -73,6 +79,9 @@
 <style scoped>
 .nav-link {
     @apply text-sm font-semibold text-gray-900 rounded-lg dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:bg-gray-600 dark:focus:text-white dark:hover:text-white dark:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:ring;
+}
+.nav-link-container{
+    @apply block px-4 py-2 mt-2;
 }
 
 .active {
