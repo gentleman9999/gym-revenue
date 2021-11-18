@@ -6,7 +6,7 @@
         </button>
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95" >
             <div v-if="showingSidebarManageTeamsDropdown" class="absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg z-20">
-                <div class="px-2 py-2 bg-white rounded-md shadow dark-mode:bg-gray-800">
+                <div class="px-2 py-2 bg-base-300 rounded-md shadow dark-mode:bg-gray-800">
 
                     <!-- Team Switcher -->
                     <div class="block px-4 py-2 text-xs text-gray-400">
@@ -44,7 +44,7 @@
         </button>
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95" >
             <div v-if="showingSidebarManageAccountDropdown" class="absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg z-20">
-                <div class="px-2 py-2 bg-white rounded-md shadow dark-mode:bg-gray-800">
+                <div class="px-2 py-2 bg-base-300 rounded-md shadow dark-mode:bg-gray-800">
                     <inertia-link :href="route('profile.show')" :class="route().current('profile.show') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 lg:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">Profile</inertia-link>
                     <inertia-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 lg:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">API Tokens</inertia-link>
                     <form @submit.prevent="logout">

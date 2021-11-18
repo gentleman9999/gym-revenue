@@ -23,7 +23,7 @@
                 </Link>
             </div>
             <jet-bar-table :headers="tableHeaders">
-                <tr class="hover:bg-gray-50" v-if="leads.data.length === 0">
+                <tr class="hover:bg-base-100" v-if="leads.data.length === 0">
                     <jet-bar-table-data></jet-bar-table-data>
                     <jet-bar-table-data></jet-bar-table-data>
                     <jet-bar-table-data>No Data Available</jet-bar-table-data>
@@ -31,7 +31,7 @@
                     <jet-bar-table-data></jet-bar-table-data>
                     <jet-bar-table-data></jet-bar-table-data>
                 </tr>
-                <tr class="hover:bg-gray-50" v-else v-for="(lead, idx) in leads.data" :key="idx">
+                <tr class="hover:bg-base-100" v-else v-for="(lead, idx) in leads.data" :key="idx">
                     <jet-bar-table-data>{{ getDate(lead.created_at) }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ lead.first_name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ lead.last_name }}</jet-bar-table-data>

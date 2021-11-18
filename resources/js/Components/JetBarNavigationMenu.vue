@@ -1,5 +1,5 @@
 <template>
-    <header class="hidden lg:flex justify-between items-center py-4 px-6 bg-white border-b border-gray-200">
+    <header class="hidden lg:flex justify-between items-center py-4 px-6 bg-base-300 border-b border-base-100">
         <!-- Searchbar -->
         <div class="flex items-center">
             <div class="relative mr-4 lg:mx-0">
@@ -29,7 +29,7 @@
                 <div v-show="showingNotificationDropdown" @click="showingNotificationDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
 
                 <!-- Notifications links -->
-                <div v-show="showingNotificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-10" style="width: 20rem; display: none;">
+                <div v-show="showingNotificationDropdown" class="absolute right-0 mt-2 w-80 bg-base-300 rounded-lg shadow-xl border border-base-100 overflow-hidden z-10" style="width: 20rem; display: none;">
                     <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 -mx-2">
                         <figure class="w-1/6">
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
@@ -73,7 +73,7 @@
                     <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
                 </button>
                 <span v-else @click="showingUserDropdown = ! showingUserDropdown" class="inline-flex rounded-md">
-                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-base-300 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                         {{ $page.props.user.name }}
 
                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -86,7 +86,7 @@
 
                 <!-- User menu links -->
                 <div v-show="showingUserDropdown"
-                     class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl border border-gray-200 z-10"
+                     class="absolute right-0 mt-2 w-48 bg-base-300 rounded-md overflow-hidden shadow-xl border border-base-100 z-10"
                      style="display: none;">
 
                     <template v-if="$page.props.jetstream.hasTeamFeatures">

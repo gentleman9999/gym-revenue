@@ -23,7 +23,7 @@
                 </Link>
             </div>
             <jet-bar-table :headers="tableHeaders">
-                <tr class="hover:bg-gray-50" v-for="location in locations.data" :key="location.id"
+                <tr class="hover:bg-base-100" v-for="location in locations.data" :key="location.id"
                     @dblclick="!location?.deleted_at && $inertia.visit(route('locations.edit', location.id))">
                     <jet-bar-table-data v-if="!isClientUser">{{ location.client.name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
@@ -49,7 +49,7 @@
                     </jet-bar-table-data>
                 </tr>
 
-                <tr class="hover:bg-gray-50" v-if="!locations?.data?.length">
+                <tr class="hover:bg-base-100" v-if="!locations?.data?.length">
                     <jet-bar-table-data colspan="6">No Locations found.</jet-bar-table-data>
                 </tr>
 

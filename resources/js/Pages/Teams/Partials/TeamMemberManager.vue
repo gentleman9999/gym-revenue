@@ -32,9 +32,9 @@
                         <jet-label for="roles" value="Role" />
                         <jet-input-error :message="addTeamMemberForm.errors.role" class="mt-2" />
 
-                        <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
+                        <div class="relative z-0 mt-1 border border-base-100 rounded-lg cursor-pointer">
                             <button type="button" class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                            :class="{'border-t border-gray-200 rounded-t-none': i > 0, 'rounded-b-none': i != Object.keys(availableRoles).length - 1}"
+                                            :class="{'border-t border-base-100 rounded-t-none': i > 0, 'rounded-b-none': i != Object.keys(availableRoles).length - 1}"
                                             @click="addTeamMemberForm.role = role.key"
                                             v-for="(role, i) in availableRoles"
                                             :key="role.key">
@@ -165,9 +165,9 @@
 
             <template #content>
                 <div v-if="managingRoleFor">
-                    <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
+                    <div class="relative z-0 mt-1 border border-base-100 rounded-lg cursor-pointer">
                         <button type="button" class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                        :class="{'border-t border-gray-200 rounded-t-none': i > 0, 'rounded-b-none': i !== Object.keys(availableRoles).length - 1}"
+                                        :class="{'border-t border-base-100 rounded-t-none': i > 0, 'rounded-b-none': i !== Object.keys(availableRoles).length - 1}"
                                         @click="updateRoleForm.role = role.key"
                                         v-for="(role, i) in availableRoles"
                                         :key="role.key">

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center p-4 bg-white border rounded-lg shadow-xs dark:bg-gray-800">
+    <div class="flex items-center p-4 bg-base-300 border rounded-lg shadow-xs dark:bg-gray-800">
         <div v-if="this.$slots.icon" class="p-3 mr-4 rounded-full" :class="cardIconColors">
             <slot name="icon" />
         </div>

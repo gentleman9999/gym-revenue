@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center">
-    <div class="flex w-full bg-white shadow rounded">
+    <div class="flex w-full bg-base-300 shadow rounded">
       <dropdown align="left" width="60">
         <template #trigger>
           <span class="inline-flex rounded-md h-full">
@@ -17,10 +17,10 @@
                 font-medium
                 rounded-md
                 text-gray-500
-                bg-white
-                hover:bg-gray-50 hover:text-gray-700
-                focus:outline-none focus:bg-gray-50
-                active:bg-gray-50
+                bg-base-300
+                hover:bg-base-100 hover:text-gray-700
+                focus:outline-none focus:bg-base-100
+                active:bg-base-100
                 transition
               "
             >
@@ -48,7 +48,7 @@
 
             <div
               slot="dropdown"
-              class="px-4 py-6 w-screen shadow-xl bg-white rounded"
+              class="px-4 py-6 w-screen shadow-xl bg-base-300 rounded"
               :style="{ maxWidth: `100%` }"
             >
               <slot />

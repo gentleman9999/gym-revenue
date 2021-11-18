@@ -2,8 +2,8 @@
     <div>
         <Head :title="title" />
         <jet-banner />
-        <div class="font-sans antialiased min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
+        <div class="font-sans antialiased min-h-screen">
+            <nav class="bg-base-300 border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-8xl mx-4">
                     <div class="flex justify-between h-16">
@@ -42,7 +42,7 @@
                                 <jet-dropdown align="right" width="60" v-if="$page.props.user.all_locations.length > 1">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-base-300 hover:bg-base-100 hover:text-gray-700 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
                                                 {{ $page.props.user.all_locations.find(location => location.id ===$page.props.user.current_location_id )?.name }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -81,7 +81,7 @@
                                 <jet-dropdown align="right" width="60" v-if="$page.props.jetstream.hasTeamFeatures">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-base-300 hover:bg-base-100 hover:text-gray-700 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
                                                 {{ $page.props.user.current_team.name }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -143,7 +143,7 @@
                                         </button>
 
                                         <span v-else class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-base-300 hover:text-gray-700 focus:outline-none transition">
                                                 {{ $page.props.user.name }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -221,7 +221,7 @@
                     </div>
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="pt-4 pb-1 border-t border-base-100">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex-shrink-0 mr-3" >
                                 <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
@@ -251,7 +251,7 @@
 
                             <!-- Team Management -->
                             <template v-if="$page.props.jetstream.hasTeamFeatures">
-                                <div class="border-t border-gray-200"></div>
+                                <div class="border-t border-base-100"></div>
 
                                 <div class="block px-4 py-2 text-xs text-gray-400">
                                     Manage Team
@@ -266,7 +266,7 @@
                                     Create New Team
                                 </jet-responsive-nav-link>
 
-                                <div class="border-t border-gray-200"></div>
+                                <div class="border-t border-base-100"></div>
 
                                 <!-- Extra Features -->
                                 <!-- @todo - make these dynamic, as some users wont have access -->
@@ -303,7 +303,7 @@
                 </div>
             </nav>
 
-            <div class="font-sans antialiased bg-gray-100">
+            <div class="font-sans antialiased">
                 <jet-banner />
 
                 <div class="lg:flex flex-col lg:flex-row lg:min-h-screen w-full">

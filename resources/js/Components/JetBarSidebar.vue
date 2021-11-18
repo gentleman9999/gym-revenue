@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col w-full lg:w-64 text-gray-700 bg-white dark-mode:text-gray-200 dark-mode:bg-gray-800 flex-shrink-0 lg:border-r">
+    <div class="flex flex-col w-full lg:w-64 text-gray-700 bg-base-300 dark-mode:text-gray-200 dark-mode:bg-gray-800 flex-shrink-0 lg:border-r">
         <div class="flex-shrink-0 px-4 lg:px-8 py-4 flex flex-row items-center justify-between">
             <button class="rounded-lg lg:hidden rounded-lg focus:outline-none focus:shadow-outline" @click="showingNavigationDropdown = !showingNavigationDropdown">
                 <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">

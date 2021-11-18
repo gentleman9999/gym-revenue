@@ -34,7 +34,7 @@
             </jet-bar-stats-container>
 
             <jet-bar-table :headers="['client', 'status', 'joined', '', '']" >
-                <tr class="hover:bg-gray-50" v-for="client in clients" :key="client.id">
+                <tr class="hover:bg-base-100" v-for="client in clients" :key="client.id">
                     <jet-bar-table-data>{{ client.name }}</jet-bar-table-data>
                     <jet-bar-table-data>
                         <jet-bar-badge text="Active" type="success" v-if="client.active"/>

@@ -8,7 +8,7 @@
 
         <div class="py-16">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="workout-generator-container">
                         <workout-form
                             @submit="generateRoutine"
@@ -16,7 +16,7 @@
                         ></workout-form>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mt-10" v-show="showRoutine">
+                <div class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg mt-10" v-show="showRoutine">
                     <div class="workout-routine-container">
                         <generated-workout v-if="showRoutine"
                                            :workout="solution"

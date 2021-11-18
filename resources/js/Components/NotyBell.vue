@@ -12,7 +12,7 @@
         <div v-show="showingNotificationDropdown" @click="showingNotificationDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
 
         <!-- Notifications links -->
-        <div v-show="showingNotificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-10" style="width: 20rem; display: none;">
+        <div v-show="showingNotificationDropdown" class="absolute right-0 mt-2 w-80 bg-base-300 rounded-lg shadow-xl border border-base-100 overflow-hidden z-10" style="width: 20rem; display: none;">
             <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 -mx-2">
                 <figure class="w-1/6">
                     <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
