@@ -18,71 +18,79 @@
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <jet-nav-link href="#" :active="route().current('data.conversions')" @click="comingSoon()">
+                                    Getting Started
                                 </jet-nav-link>
 
-                                <!-- @todo - make these dynamic, as some users wont have access -->
-                                <!-- <jet-nav-link :href="route('analytics')" :active="route().current('analytics')"> -->
-                                <jet-nav-link href="#" :active="route().current('analytics')" @click="comingSoon()">
-                                    Analytics
+                                <jet-nav-link href="#" :active="route().current('data.conversions')" @click="comingSoon()">
+                                    Overview
                                 </jet-nav-link>
-                                <!-- <jet-nav-link :href="route('payment-gateways')" :active="route().current('payment-gateways')">
-                                    Payment Gateways
-                                </jet-nav-link> -->
-                                <jet-nav-link href="#" :active="route().current('payment-gateways')" @click="comingSoon()">
-                                    Payment Gateways
+
+                                <jet-nav-link href="#" :active="route().current('data.conversions')" @click="comingSoon()">
+                                    Favorites
+                                </jet-nav-link>
+
+                                <jet-nav-link href="#" :active="route().current('data.conversions')" @click="comingSoon()">
+                                    Alerts
+                                </jet-nav-link>
+
+                                <div class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition">
+                                    <!-- Locations Dropdown -->
+                                    <jet-dropdown align="right" width="60" v-if="$page.props.user.all_locations.length > 0">
+                                        <template #trigger>
+                                        <span class="inline-flex rounded-md">
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
+                                                Club
+
+                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                        </template>
+
+                                        <template #content>
+                                            <div class="w-60">
+                                                <!-- Team Management -->
+                                                <template v-if="$page.props.jetstream.hasTeamFeatures">
+                                                    <!-- Location Switcher -->
+                                                    <div class="block px-4 py-2 text-xs text-gray-400">
+                                                        Change Club
+                                                        <br />
+                                                        <small>Active Club:</small>
+                                                        <small>{{ $page.props.user.all_locations.find(location => location.id ===$page.props.user.current_location_id )?.name }}</small>
+                                                    </div>
+
+                                                    <template v-for="location in $page.props.user.all_locations" :key="location.id">
+                                                        <form @submit.prevent="switchToLocation(location)">
+                                                            <jet-dropdown-link as="button">
+                                                                <div class="flex items-center">
+                                                                    <svg v-if="location.id == $page.props.user.current_location_id" class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                                    <div>{{ location.name }}</div>
+                                                                </div>
+                                                            </jet-dropdown-link>
+                                                        </form>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </jet-dropdown>
+                                </div>
+
+                                <jet-nav-link href="#" :active="route().current('data.conversions')" @click="comingSoon()">
+                                    Shared
                                 </jet-nav-link>
                             </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <div class="ml-3 relative">
-                                <!-- Locations Dropdown -->
-                                <jet-dropdown align="right" width="60" v-if="$page.props.user.all_locations.length > 1">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
-                                                {{ $page.props.user.all_locations.find(location => location.id ===$page.props.user.current_location_id )?.name }}
-
-                                                <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <div class="w-60">
-                                            <!-- Team Management -->
-                                            <template v-if="$page.props.jetstream.hasTeamFeatures">
-                                                <!-- Location Switcher -->
-                                                <div class="block px-4 py-2 text-xs text-gray-400">
-                                                    Switch Locations
-                                                </div>
-
-                                                <template v-for="location in $page.props.user.all_locations" :key="location.id">
-                                                    <form @submit.prevent="switchToLocation(location)">
-                                                        <jet-dropdown-link as="button">
-                                                            <div class="flex items-center">
-                                                                <svg v-if="location.id == $page.props.user.current_location_id" class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                                <div>{{ location.name }}</div>
-                                                            </div>
-                                                        </jet-dropdown-link>
-                                                    </form>
-                                                </template>
-                                            </template>
-                                        </div>
-                                    </template>
-                                </jet-dropdown>
-                            </div>
-                            <div class="ml-3 relative">
                                 <!-- Teams Dropdown -->
                                 <jet-dropdown align="right" width="60" v-if="$page.props.jetstream.hasTeamFeatures">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
-                                                {{ $page.props.user.current_team.name }}
+                                                Switch Team
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -95,11 +103,13 @@
                                         <div class="w-60">
                                             <!-- Team Management -->
                                             <template v-if="$page.props.jetstream.hasTeamFeatures">
+                                                <!--
                                                 <div class="block px-4 py-2 text-xs text-gray-400">
                                                     Manage Team
                                                 </div>
+                                                -->
 
-                                                <!-- Team Settings -->
+                                                <!-- Team Settings
                                                 <jet-dropdown-link :href="route('teams.show', $page.props.user.current_team)">
                                                     Team Settings
                                                 </jet-dropdown-link>
@@ -109,10 +119,11 @@
                                                 </jet-dropdown-link>
 
                                                 <div class="border-t border-gray-100"></div>
-
+                                                -->
                                                 <!-- Team Switcher -->
                                                 <div class="block px-4 py-2 text-xs text-gray-400">
-                                                    Switch Teams
+                                                    <small>Current Team</small>
+                                                    <small>{{ $page.props.user.current_team.name }}</small>
                                                 </div>
 
                                                 <template v-for="team in $page.props.user.all_teams" :key="team.id">
@@ -131,8 +142,39 @@
                                 </jet-dropdown>
                             </div>
 
-                            <!-- Notifications -->
+                            <div class="ml-3 relative">
+                                <button @click="comingSoon()">
+                                    <font-awesome-icon :icon="['fas', 'search']" size="16"/>
+                                </button>
+                            </div>
+                            <div class="ml-3 relative">
+                                <button @click="comingSoon()">
+                                    <font-awesome-icon :icon="['fas', 'plus-circle']" size="16"/>
+                                </button>
+                            </div>
+                            <div class="ml-3 relative">
+                                <button @click="comingSoon()">
+                                    <font-awesome-icon :icon="['fas', 'question-circle']" size="16"/>
+                                </button>
+                            </div>
+                            <div class="ml-3 relative">
+                                <button @click="comingSoon()">
+                                    <font-awesome-icon :icon="['fas', 'th']" size="16"/>
+                                </button>
+                            </div>
+                            <div class="ml-3 relative">
+                                <button @click="comingSoon()">
+                                    <font-awesome-icon :icon="['fas', 'user-circle']" size="16"/>
+                                </button>
+                            </div>
                             <noty-bell></noty-bell>
+                            <div class="ml-3 relative">
+                                <button @click="comingSoon()">
+                                    <font-awesome-icon :icon="['far', 'file-medical']" size="16"/>
+                                </button>
+                            </div>
+                            <!-- Notifications -->
+
 
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
@@ -344,9 +386,10 @@
     import { defineComponent } from 'vue'
 
     import { library } from '@fortawesome/fontawesome-svg-core';
-    import { faBars } from '@fortawesome/pro-solid-svg-icons'
+    import { faBars, faSearch, faPlusCircle, faQuestionCircle, faTh, faUserCircle } from '@fortawesome/pro-solid-svg-icons'
+    import { faFileMedical } from '@fortawesome/pro-regular-svg-icons'
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-    library.add(faBars)
+    library.add(faBars, faFileMedical, faSearch, faPlusCircle, faQuestionCircle, faTh, faUserCircle)
 
     import JetApplicationMark from '@/Jetstream/ApplicationMark'
     import JetBanner from '@/Jetstream/Banner'
