@@ -2,4 +2,53 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import 'buttons.css';
+body {
+    position: relative;
+}
+
+/* Apply defaults to forms */
+[type='text'] {
+    @apply input input-bordered border-2;
+}
+[type='email'] {
+    @apply input input-bordered border-2;
+}
+[type='url'] {
+    @apply input input-bordered border-2;
+}
+[type='password'] {
+    @apply input input-bordered border-2;
+}
+[type='number'] {
+    @apply input input-bordered border-2;
+}
+[type='date'] {
+    @apply input input-bordered border-2;
+}
+[type='datetime-local'] {
+    @apply input input-bordered border-2;
+}
+[type='month'] {
+    @apply input input-bordered border-2;
+}
+[type='search'] {
+    @apply input input-bordered border-2;
+}
+[type='tel'] {
+    @apply input input-bordered border-2;
+}
+[type='time'] {
+    @apply input input-bordered border-2;
+}
+[type='week'] {
+    @apply input input-bordered border-2;
+}
+[type='checkbox'] {
+    @apply checkbox;
+}
+textarea {
+    @apply textarea textarea-bordered border-2;
+}
+select {
+    @apply select select-bordered border-2;
+}

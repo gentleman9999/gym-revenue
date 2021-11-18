@@ -1,7 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 //add default to colors so we don't always need -500 for base shade
-Object.entries(colors).forEach(([name, color])=>color.DEFAULT = color[500]);
+Object.entries(colors).forEach(([name, color]) => color.DEFAULT = color[500]);
 
 module.exports = {
     experimental: {
@@ -15,7 +15,9 @@ module.exports = {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
-
+    daisyui: {
+        themes: ['light', 'dark']
+    },
     theme: {
         colors: {
             ...colors,
@@ -73,5 +75,9 @@ module.exports = {
         },
     },
 
-    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+    plugins: [
+        // require('@tailwindcss/forms'),
+        // require('@tailwindcss/typography'),
+        require('daisyui')
+    ],
 };
