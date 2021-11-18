@@ -13,8 +13,12 @@ class MassCommunicationsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
-        return Inertia::render('Comms/MassCommsDashboard', [
+        $active_audience = 'all';
 
+        return Inertia::render('Comms/MassCommsDashboard', [
+            'title' => 'Mass Communications',
+            'audiences' => ['all' => "All Audiences"],
+            'activeAudience' => $active_audience
         ]);
     }
 }
