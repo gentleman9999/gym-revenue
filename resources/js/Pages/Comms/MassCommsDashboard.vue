@@ -57,29 +57,29 @@
                         <div class="mr-1">
                             <Link
                                 class="btn justify-self-end"
-                                href="#" @click="comingSoon()">
-                                <span>Emails Templates <span class="bg-info p-1">0</span> <span class=" p-1 bg-success">0</span></span>
+                                :href="route('comms.email-templates')">
+                                <span>Email Templates <span class="bg-info p-1">{{ stats['email_templates'].created }}</span> <span class=" p-1 bg-success">{{ stats['email_templates'].active }}</span></span>
                             </Link>
                         </div>
                         <div class="mr-1 ">
                             <Link
                                 class="btn justify-self-end"
-                                href="#" @click="comingSoon()">
-                            <span>SMS Templates <span class="bg-info p-1">0</span> <span class=" p-1 bg-success">0</span></span>
+                                :href="route('comms.sms-templates')">
+                            <span>SMS Templates <span class="bg-info p-1">{{ stats['sms_templates'].created }}</span> <span class=" p-1 bg-success">{{ stats['sms_templates'].active }}</span></span>
                             </Link>
                         </div>
                         <div class="mr-1 mt-1 sm:mt-0">
                             <Link
                                 class="btn justify-self-end"
-                                href="#" @click="comingSoon()">
-                            <span>Email Campaigns <span class="bg-info p-1">0</span> <span class=" p-1 bg-success">0</span></span>
+                                :href="route('comms.email-campaigns')">
+                            <span>Email Campaigns <span class="bg-info p-1">{{ stats['email_campaigns'].created }}</span> <span class=" p-1 bg-success">{{ stats['email_campaigns'].active }}</span></span>
                             </Link>
                         </div>
                         <div class="mt-1 md:mt-0">
                             <Link
                                 class="btn justify-self-end"
-                                href="#" @click="comingSoon()">
-                            <span>SMS Campaigns <span class="bg-info p-1">0</span> <span class=" p-1 bg-success">0</span></span>
+                                :href="route('comms.sms-campaigns')">
+                            <span>SMS Campaigns <span class="bg-info p-1">{{ stats['sms_campaigns'].created }}</span> <span class=" p-1 bg-success">{{ stats['sms_campaigns'].active }}</span></span>
                             </Link>
                         </div>
                     </div>
@@ -111,13 +111,13 @@
                             <div class="border-b-2 border-gray-300">
                                 <h2 class="px-2 bg-secondary"> Total Audience</h2>
                                 <div class="text-center bg-secondary">
-                                    <h1 class=" ">0</h1>
+                                    <h1 class="text-2xl">{{ stats['total_audience'] }}</h1>
                                 </div>
                             </div>
 
                             <h2 class=" px-2"> Total Audience Breakdown</h2>
                             <div v-for="(lbl, slug) in audiences">
-                                 <p class="m-2"><b>{{ lbl }}</b> : 0</p>
+                                 <p class="m-2"><b>{{ lbl }}</b> :{{ stats['audience_breakdown'][slug] }}</p>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@ export default defineComponent({
         JetDropdownLink,
         JetBarContainer
     },
-    props: ['title', 'audiences', 'activeAudience'],
+    props: ['title', 'audiences', 'activeAudience', 'stats'],
     setup(props) {},
     watch: {},
     data() {
