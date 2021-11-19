@@ -1,23 +1,23 @@
 <template>
-    <div class="flex flex-col  bg-base-300 dark-mode: dark-mode:bg-gray-800 flex-shrink-0 transition" style="transition-property: width;"
-         :class="{'w-full lg:w-64': showingNavigationDropdown, 'lg:w-20': !showingNavigationDropdown}">
-        <div class="flex-shrink-0 px-4 lg:px-8 py-4 flex flex-row items-center justify-between">
-            <button class="rounded-lg lg:hidden rounded-lg focus:outline-none focus:shadow-outline"
-                    @click="showingNavigationDropdown = !showingNavigationDropdown">
-                <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
-                    <path fill-rule="evenodd"
-                          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z"
-                          clip-rule="evenodd"></path>
-                    <path fill-rule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <button @click="toggle()">
+    <div class="fixed inset-0 z-10 lg:position-unset flex flex-col bg-gradient-to-b from-gray-700 to-base-300 flex-shrink-0 transform transition transition-transform" style="transition-property: width, transform;"
+         :class="{'w-full lg:w-72 translate-x-0': expanded, ' translate-x-full lg:translate-x-0 lg:w-20': !expanded}">
+        <div class="flex-shrink-0 px-4  py-4 flex flex-row items-center justify-between">
+<!--            <button class="rounded-lg lg:hidden rounded-lg focus:outline-none focus:shadow-outline"-->
+<!--                    @click="expanded = !expanded">-->
+<!--                <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">-->
+<!--                    <path fill-rule="evenodd"-->
+<!--                          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z"-->
+<!--                          clip-rule="evenodd"></path>-->
+<!--                    <path fill-rule="evenodd"-->
+<!--                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"-->
+<!--                          clip-rule="evenodd"></path>-->
+<!--                </svg>-->
+<!--            </button>-->
+            <button @click="toggle()" class="btn btn-ghost ">
                 <font-awesome-icon :icon="['fas', 'bars']" size="lg"/>
             </button>
         </div>
-<!--        <div v-show="showingNavigationDropdown" @click="showingNavigationDropdown = false"-->
+<!--        <div v-show="expanded" @click="expanded = false"-->
 <!--             class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 
         <!-- Sidebar Links -->
@@ -157,7 +157,8 @@
 import { defineComponent, ref} from "vue";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks";
 // import JetBarSidebarSearch from "../JetBarSidebarSearch";
-import JetNavLink from '@/Jetstream/NavLink'
+import JetNavLink from '@/Jetstream/NavLink';
+import {  Link } from "@inertiajs/inertia-vue3";
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faBars, faCog} from '@fortawesome/pro-solid-svg-icons'
@@ -176,6 +177,7 @@ library.add(faBars, faDumbbell, faChartLine, faCalendarAlt, faPaste, faSatellite
 
 export default defineComponent({
     name: "SideNav",
+    emits: ['toggle'],
     components: {
         JetNavLink,
         JetBarResponsiveLinks,
@@ -183,9 +185,8 @@ export default defineComponent({
         FontAwesomeIcon,
     },
 
-    setup(){
-        let showingNavigationDropdown = ref(false);
-        let    showingSidebarNavigationDropdown = ref(false);
+    setup(props, {emit}){
+        let expanded = ref(false);
         const comingSoon =() => {
             new Noty({
                 type: 'warning',
@@ -195,10 +196,11 @@ export default defineComponent({
             }).show();
         }
         const toggle = () => {
-            showingNavigationDropdown.value = !showingNavigationDropdown.value;
-            this.$emit('toggle');
+            expanded.value = !expanded.value;
+            console.log({expanded: expanded.value});
+            emit('toggle');
         }
-        return {comingSoon, toggle, showingNavigationDropdown, showingSidebarNavigationDropdown};
+        return {comingSoon, toggle, expanded};
     }
 });
 </script>

@@ -3,14 +3,14 @@
         <Head :title="title" />
         <jet-banner />
         <div class="font-sans antialiased min-h-screen">
-            <top-nav/>
+            <top-nav @toggle-side-nav="toggleSideNav"/>
             <div class="font-sans antialiased">
                 <jet-banner />
 
                 <div class="lg:flex flex-col lg:flex-row lg:min-h-screen w-full">
 
                     <!-- Sidebar -->
-                    <side-nav @toggle="showingSidebar = !showingSidebar"/>
+                    <side-nav @toggle="showingSidebar = !showingSidebar" ref="sideNav"/>
                     <!-- End Sidebar -->
 
                     <div class="w-full">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-    import { defineComponent } from 'vue'
+    import { defineComponent, ref } from 'vue'
     import JetApplicationMark from '@/Jetstream/ApplicationMark'
     import JetBanner from '@/Jetstream/Banner'
     import JetNavLink from '@/Jetstream/NavLink'
@@ -77,6 +77,10 @@
             }
         },
         methods: {
+            toggleSideNav(){
+                this.$refs.sideNav.toggle();
+                // console.log('toggleSideNav!!!!!!!', this.$refs);
+            },
             switchToTeam(team) {
                 this.$inertia.put(route('current-team.update'), {
                     'team_id': team.id
