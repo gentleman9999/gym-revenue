@@ -71,7 +71,7 @@
                 leading-5
 
                 hover:border-base-100-300
-                focus:outline-none focus: focus:border-base-100-300
+                focus:outline-none focus:border-base-100-300
                 transition
               "
             >
