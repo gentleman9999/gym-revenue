@@ -23,8 +23,8 @@
         computed: {
             classes() {
                 return this.active
-                    ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-400 text-base font-medium text-indigo-700 bg-indigo-50 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition'
-                    : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium  hover:bg-base-100 hover:border-gray-300 focus:outline-none focus: focus:bg-base-100 focus:border-gray-300 transition'
+                    ? 'block pl-3 pr-4 py-2 border-l-4 border-indigo-400 text-base font-medium  bg-indigo-50 focus:outline-none focus: focus:bg-indigo-100 focus:border-indigo-700 transition'
+                    : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium  hover:bg-base-100 hover:border-base-100-300 focus:outline-none focus: focus:bg-base-100 focus:border-base-100-300 transition'
             }
         }
     })

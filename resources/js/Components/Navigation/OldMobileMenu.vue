@@ -96,7 +96,7 @@
               Sales Slideshow
             </jet-responsive-nav-link>
 
-            <div class="border-t border-gray-100"></div>
+            <div class="border-t border-base-100-100"></div>
 
             <!-- Team Switcher -->
             <div class="block px-4 py-2 text-xs ">

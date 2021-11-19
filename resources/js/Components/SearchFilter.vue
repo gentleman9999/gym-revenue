@@ -70,8 +70,6 @@
       class="
         ml-3
         text-sm
-        hover:
-        focus:text-indigo-500
       "
       type="button"
       @click="$emit('reset')"

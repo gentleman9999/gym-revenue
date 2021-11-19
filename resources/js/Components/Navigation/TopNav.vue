@@ -70,8 +70,8 @@
                 font-medium
                 leading-5
 
-                hover:border-gray-300
-                focus:outline-none focus: focus:border-gray-300
+                hover:border-base-100-300
+                focus:outline-none focus: focus:border-base-100-300
                 transition
               "
             >

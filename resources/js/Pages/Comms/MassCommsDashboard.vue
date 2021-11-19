@@ -108,13 +108,13 @@
             <!-- Page Content -->
             <div class="comms-content mt-4 flex flex-col lg:flex-row lg-w-full">
                 <div class="left-section flex flex-col lg-w-30 mb-3 lg:mb-0 lg:mr-3">
-                    <div class="total-audience-breakdown border-2 border-gray-300">
+                    <div class="total-audience-breakdown border-2 border-base-100-300">
                         <div class="flex flex-col">
                             <h2 class=" m-2"> Total Audience</h2>
                             <div class="text-center">
                                 <h1 class=" ">0</h1>
                             </div>
-                            <div class="border-b-2 border-gray-300 m-2"></div>
+                            <div class="border-b-2 border-base-100-300 m-2"></div>
                             <h2 class=" m-2"> Total Audience Breakdown</h2>
                             <div v-for="(lbl, slug) in audiences">
                                  <p class="m-2"><b>{{ lbl }}</b> : 0</p>
@@ -124,8 +124,8 @@
                 </div>
 
                 <div class="right-section flex flex-col lg-w-70 mt-3 lg:mt-0 lg:ml-3">
-                    <div class="current-feed border-2 border-gray-300">
-                        <div class="bg-blue-200 border-b-2 border-gray-300 py-2">
+                    <div class="current-feed border-2 border-base-100-300">
+                        <div class="bg-blue-200 border-b-2 border-base-100-300 py-2">
                             <h1 class="ml-2 bg-blue-200">Your Feed</h1>
                         </div>
                         <div class="text-center">

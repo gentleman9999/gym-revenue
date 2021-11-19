@@ -18,7 +18,7 @@
                     <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
                 </figure>
                 <p class="text-sm mx-2 w-full">
-                    <span class="font-bold" href="#">Sarah Sidle</span> replied on the <span class="font-bold text-indigo-400">Upload Image</span> article. 2m
+                    <span class="font-bold" href="#">Sarah Sidle</span> replied on the <span class="font-bold ">Upload Image</span> article. 2m
                 </p>
             </a>
             <a href="#" class="flex items-center px-4 py-3  hover:bg-base-100 -mx-2">
@@ -34,7 +34,7 @@
                     <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
                 </figure>
                 <p class="text-sm mx-2 w-full">
-                    <span class="font-bold" href="#">Jane Doe</span> Like Your reply on <span class="font-bold text-indigo-400" href="#">Test with TDD</span> artical . 1h
+                    <span class="font-bold" href="#">Jane Doe</span> Like Your reply on <span class="font-bold " href="#">Test with TDD</span> artical . 1h
                 </p>
             </a>
             <a href="#" class="flex items-center px-4 py-3  hover:bg-base-100 -mx-2">

@@ -35,7 +35,7 @@
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
                         </figure>
                         <p class="text-sm mx-2 w-full">
-                            <span class="font-bold" href="#">Sara Salah</span> replied on the <span class="font-bold text-indigo-400">Upload Image</span> article. 2m
+                            <span class="font-bold" href="#">Sara Salah</span> replied on the <span class="font-bold ">Upload Image</span> article. 2m
                         </p>
                     </a>
                     <a href="#" class="flex items-center px-4 py-3  hover:bg-base-100 -mx-2">
@@ -51,7 +51,7 @@
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
                         </figure>
                         <p class="text-sm mx-2 w-full">
-                            <span class="font-bold" href="#">Jane Doe</span> Like Your reply on <span class="font-bold text-indigo-400" href="#">Test with TDD</span> artical . 1h
+                            <span class="font-bold" href="#">Jane Doe</span> Like Your reply on <span class="font-bold " href="#">Test with TDD</span> artical . 1h
                         </p>
                     </a>
                     <a href="#" class="flex items-center px-4 py-3  hover:bg-base-100 -mx-2">
@@ -69,7 +69,7 @@
 
             <!-- Dropdown Menu -->
             <div class="relative">
-                <button v-if="$page.props.jetstream.managesProfilePhotos" @click="showingUserDropdown = ! showingUserDropdown" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                <button v-if="$page.props.jetstream.managesProfilePhotos" @click="showingUserDropdown = ! showingUserDropdown" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-base-100-300 transition duration-150 ease-in-out">
                     <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
                 </button>
                 <span v-else @click="showingUserDropdown = ! showingUserDropdown" class="inline-flex rounded-md">
@@ -97,7 +97,7 @@
 
                         <inertia-link :href="route('teams.show', $page.props.user.current_team)" class="block px-4 py-2 text-sm  hover:bg-base-100">Team Settings</inertia-link>
                         <inertia-link :href="route('teams.create')" v-if="$page.props.jetstream.canCreateTeams" class="block px-4 py-2 text-sm  hover:bg-base-100">Create New Team</inertia-link>
-                        <div class="border-t border-gray-100"></div>
+                        <div class="border-t border-base-100-100"></div>
                         <!-- Team Switcher -->
                         <div class="block px-4 py-2 text-xs ">
                             Switch Teams
@@ -114,7 +114,7 @@
                             </form>
                         </template>
 
-                        <div class="border-t border-gray-100"></div>
+                        <div class="border-t border-base-100-100"></div>
 
                     </template>
 

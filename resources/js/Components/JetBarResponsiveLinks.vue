@@ -14,7 +14,7 @@
                     </div>
                     <inertia-link :href="route('teams.show', $page.props.user.current_team)" :class="route().current('teams.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white dark-mode: lg:mt-0 focus: hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">Team Settings</inertia-link>
                     <inertia-link :href="route('teams.create')" :class="route().current('teams.create') ? 'bg-base-100' : 'bg-transparent'" v-if="$page.props.jetstream.canCreateTeams" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white dark-mode: lg:mt-0 focus: hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">Create New Team</inertia-link>
-                    <div class="border-t border-gray-100"></div>
+                    <div class="border-t border-base-100-100"></div>
                     <!-- Team Switcher -->
                     <div class="block px-4 py-2 text-xs ">
                         Switch Teams

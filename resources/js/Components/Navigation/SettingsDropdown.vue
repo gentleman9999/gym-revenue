@@ -8,7 +8,7 @@
           text-sm
           border-2 border-transparent
           rounded-full
-          focus:outline-none focus:border-gray-300
+          focus:outline-none focus:border-base-100-300
           transition
         "
       >
@@ -76,7 +76,7 @@
         API Tokens
       </jet-dropdown-link>
 
-      <div class="border-t border-gray-100"></div>
+      <div class="border-t border-base-100-100"></div>
       <!-- Extra Features -->
       <!-- @todo - make these dynamic, as some users wont have access -->
       <div class="block px-4 py-2 text-xs ">Extras</div>
@@ -87,7 +87,7 @@
         Sales Slideshow
       </jet-dropdown-link>
 
-      <div class="border-t border-gray-100"></div>
+      <div class="border-t border-base-100-100"></div>
 
       <!-- Authentication -->
       <form @submit.prevent="logout">

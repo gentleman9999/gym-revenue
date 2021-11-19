@@ -42,7 +42,7 @@
                     </jet-bar-table-data>
                     <jet-bar-table-data>{{ client.created_at}} </jet-bar-table-data>
                     <jet-bar-table-data>
-                        <inertia-link href="#" class="text-indigo-600 hover:text-indigo-900">Edit</inertia-link>
+                        <inertia-link href="#" class="">Edit</inertia-link>
                     </jet-bar-table-data>
                     <jet-bar-table-data>
                         <inertia-link href="#" class=" hover:">
