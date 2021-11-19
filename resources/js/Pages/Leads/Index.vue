@@ -17,9 +17,9 @@
                 </search-filter>
                 <div class="flex-grow"/>
                 <Link
-                    class="btn justify-self-end"
+                    class="btn btn-success justify-self-end"
                     :href="route('data.leads.create')">
-                    <span>Create Lead</span>
+                    <span>Add Lead</span>
                 </Link>
             </div>
             <jet-bar-table :headers="tableHeaders">
