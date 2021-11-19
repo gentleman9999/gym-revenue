@@ -36,10 +36,13 @@
                     <jet-bar-table-data>{{ lead.first_name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ lead.last_name }}</jet-bar-table-data>
                     <jet-bar-table-data>{{ lead.location.name }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ lead.lead_type }}</jet-bar-table-data>
+                    <jet-bar-table-data>
+                        <div class="badge" :class="badgeClasses(lead.lead_type)">{{ lead.lead_type }}</div>
+                    </jet-bar-table-data>
                     <jet-bar-table-data class="flex flex-row justify-center space-x-2">
                         <!-- Availability to be claimed by a Rep status -->
-                        <div :style="checkClaimDetail(idx) === 'Available' ? 'cursor:pointer' : ''" @click="assignLeadToUser(idx)">
+                        <div :style="checkClaimDetail(idx) === 'Available' ? 'cursor:pointer' : ''"
+                             @click="assignLeadToUser(idx)">
                             <jet-bar-badge :text="checkClaimDetail(idx)" :type="checkClaimDetailColor(idx)"/>
                         </div>
 
@@ -55,7 +58,8 @@
             </jet-bar-table>
             <pagination class="mt-6" :links="leads.links"/>
 
-            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" modal-theme="light" @close="activeLead = ''">
+            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" modal-theme="light"
+                         @close="activeLead = ''">
                 <lead-interaction v-if="activeLead !== ''" :lead-id="leads.data[activeLead].id"
                                   :user-id="$page.props.user.id"
                                   :first-name="leads.data[activeLead].first_name"
@@ -145,6 +149,17 @@ export default defineComponent({
         }
     },
     methods: {
+        badgeClasses(lead_type) {
+            return {
+                'badge-primary': lead_type === 'facebook',
+                'badge-secondary': lead_type === 'snapchat',
+                'badge-accent': lead_type === 'instagram',
+                'badge-success': lead_type === 'grand_opening',
+                'badge-error': lead_type === 'streaming_preview',
+                'badge-warning': lead_type === 'personal_training',
+
+            }
+        },
         getDate(date) {
             let newdate = new Date(date);
 
@@ -161,17 +176,16 @@ export default defineComponent({
             let result = 'Available'
             let lead = this.leads.data[pos];
 
-            if(this.assigning === pos) {
+            if (this.assigning === pos) {
                 return 'Assigning...';
             }
 
-            for(let d in lead['details_desc']) {
+            for (let d in lead['details_desc']) {
                 let detail = lead['details_desc'][d];
-                if(detail.field === 'claimed') {
-                    if(parseInt(detail.value) === parseInt(this.$page.props.user.id)) {
+                if (detail.field === 'claimed') {
+                    if (parseInt(detail.value) === parseInt(this.$page.props.user.id)) {
                         return 'Yours'
-                    }
-                    else {
+                    } else {
                         return 'Claimed'
                     }
                 }
@@ -183,19 +197,18 @@ export default defineComponent({
             let result = 'success'
             let lead = this.leads.data[pos];
 
-            console.log('lead '+pos, lead);
+            console.log('lead ' + pos, lead);
 
-            if(this.assigning === pos) {
+            if (this.assigning === pos) {
                 return 'warning';
             }
 
-            for(let d in lead['details_desc']) {
+            for (let d in lead['details_desc']) {
                 let detail = lead['details_desc'][d];
-                if(detail.field === 'claimed') {
-                    if(parseInt(detail.value) === parseInt(this.$page.props.user.id)) {
+                if (detail.field === 'claimed') {
+                    if (parseInt(detail.value) === parseInt(this.$page.props.user.id)) {
                         return 'info'
-                    }
-                    else {
+                    } else {
                         return 'danger'
                     }
                 }
@@ -204,7 +217,7 @@ export default defineComponent({
             return result;
         },
         assignLeadToUser(pos) {
-            if(this.checkClaimDetail(pos) === 'Available') {
+            if (this.checkClaimDetail(pos) === 'Available') {
 
                 this.assigning = pos;
                 this.$inertia.visit(route('data.leads.assign'), {
@@ -215,8 +228,7 @@ export default defineComponent({
                         'client_id': this.leads.data[pos].client_id
                     }
                 })
-            }
-            else {
+            } else {
                 console.log('Unable to execute assign on this lead!');
             }
         }

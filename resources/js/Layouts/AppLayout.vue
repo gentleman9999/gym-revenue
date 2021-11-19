@@ -4,14 +4,13 @@
         <jet-banner />
         <div class="font-sans antialiased min-h-screen">
             <top-nav/>
-<!--            <side-nav/>-->
             <div class="font-sans antialiased">
                 <jet-banner />
 
                 <div class="lg:flex flex-col lg:flex-row lg:min-h-screen w-full">
 
                     <!-- Sidebar -->
-                    <jet-bar-sidebar @toggle="showingSidebar = !showingSidebar"/>
+                    <side-nav @toggle="showingSidebar = !showingSidebar"/>
                     <!-- End Sidebar -->
 
                     <div class="w-full">
@@ -49,7 +48,6 @@
     import JetNavLink from '@/Jetstream/NavLink'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
     import JetBarNavigationMenu from "@/Components/JetBarNavigationMenu";
-    import JetBarSidebar from "@/Components/JetBarSidebar";
     import TopNav from "@/Components/Navigation/TopNav";
     import SideNav from "@/Components/Navigation/SideNav";
     import { Head, Link } from '@inertiajs/inertia-vue3';
@@ -57,8 +55,8 @@
 
     export default defineComponent({
         components: {
-            Head, Link,
-            JetBarSidebar,
+            Head,
+            Link,
             JetBarNavigationMenu,
             JetApplicationMark,
             JetBanner,
