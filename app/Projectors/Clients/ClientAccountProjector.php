@@ -5,10 +5,16 @@ namespace App\Projectors\Clients;
 use App\Actions\Jetstream\AddTeamMember;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\ClientDetail;
+use App\Models\Comms\EmailTemplateDetails;
+use App\Models\Comms\EmailTemplates;
+use App\Models\Comms\SmsTemplateDetails;
+use App\Models\Comms\SmsTemplates;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
+use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -50,5 +56,88 @@ class ClientAccountProjector extends Projector
                 $newTeamMember, ['role' => 'Admin']
             );
         }
+    }
+
+    public function onEmailTemplateCreated(EmailTemplateCreated $event)
+    {
+        // Make Email Details Record
+        $template = EmailTemplates::find($event->template);
+        $detail = EmailTemplateDetails::create([
+            'email_template_id' => $event->template,
+            'detail' => 'created',
+            'value' => $event->created,
+        ]);
+        if($event->created == 'auto')
+        {
+            $detail->misc = ['msg' => 'Template was auto-generated'];
+        }
+        else
+        {
+            $user = User::find($event->created);
+            $detail->misc = ['msg' => 'Template was created by '.$user->name.' on '.date('Y-m-d')];
+        }
+
+        // also set the email provider gateway slug
+        EmailTemplateDetails::create([
+            'email_template_id' => $event->template,
+            'detail' => 'email_gateway',
+            'value' => 'default_cnb',
+            'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
+        ]);
+
+        // make client_details record
+        ClientDetail::create([
+            'client_id' => $template->client_id,
+            'detail' => 'email_template',
+            'value' => $template->id,
+        ]);
+
+        ClientDetail::create([
+            'client_id' => $template->client_id,
+            'detail' => 'email_gateway',
+            'value' => 'default_cnb',
+            'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
+        ]);
+    }
+
+    public function onSMSTemplateCreated(SMSTemplateCreated $event)
+    {
+        // Make Email Details Record
+        $template = SmsTemplates::find($event->template);
+        $detail = SmsTemplateDetails::create([
+            'sms_template_id' => $event->template,
+            'detail' => 'created',
+            'value' => $event->created,
+        ]);
+        if($event->created == 'auto')
+        {
+            $detail->misc = ['msg' => 'Template was auto-generated'];
+        }
+        else
+        {
+            $user = User::find($event->created);
+            $detail->misc = ['msg' => 'Template was created by '.$user->name.' on '.date('Y-m-d')];
+        }
+
+        SmsTemplateDetails::create([
+            'sms_template_id' => $event->template,
+            'detail' => 'sms_gateway',
+            'value' => 'default_cnb',
+            'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']
+        ]);
+
+        // make client_details record
+        ClientDetail::create([
+            'client_id' => $template->client_id,
+            'detail' => 'sms_template',
+            'value' => $template->id,
+        ]);
+
+        ClientDetail::create([
+            'client_id' => $template->client_id,
+            'detail' => 'sms_gateway',
+            'value' => 'default_cnb',
+            'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']
+        ]);
     }
 }

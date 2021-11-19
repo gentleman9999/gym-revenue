@@ -5,6 +5,8 @@ namespace App\Aggregates\Clients;
 use App\Exceptions\Clients\ClientAccountException;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
+use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use App\StorableEvents\Clients\TeamCreated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -37,6 +39,18 @@ class ClientAggregate extends AggregateRoot
             $this->recordThat(new DefaultClientTeamCreated($this->uuid(), $name));
         }
 
+        return $this;
+    }
+
+    public function createNewEmailTemplate(string $template_id, string $created_by = null)
+    {
+        $this->recordThat(new EmailTemplateCreated($this->uuid(), $template_id, $created_by));
+        return $this;
+    }
+
+    public function createNewSMSTemplate(string $template_id, string $created_by = null)
+    {
+        $this->recordThat(new SMSTemplateCreated($this->uuid(), $template_id, $created_by));
         return $this;
     }
 
