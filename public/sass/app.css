@@ -185,61 +185,72 @@
     opacity: 0.3;
   }
 }
+
 @-webkit-keyframes noty_modal_out {
   100% {
     opacity: 0;
   }
 }
+
 @keyframes noty_modal_out {
   100% {
     opacity: 0;
   }
 }
+
 @-webkit-keyframes noty_anim_in {
   100% {
     transform: translate(0);
     opacity: 1;
   }
 }
+
 @keyframes noty_anim_in {
   100% {
     transform: translate(0);
     opacity: 1;
   }
 }
+
 @-webkit-keyframes noty_anim_out {
   100% {
     transform: translate(50%);
     opacity: 0;
   }
 }
+
 @keyframes noty_anim_out {
   100% {
     transform: translate(50%);
     opacity: 0;
   }
 }
+
 @-webkit-keyframes noty_anim_height {
   100% {
     height: 0;
   }
 }
+
 @keyframes noty_anim_height {
   100% {
     height: 0;
   }
 }
+
 .noty_theme__sunset.noty_bar {
   margin: 4px 0;
   overflow: hidden;
   border-radius: 2px;
   position: relative;
 }
+
 .noty_theme__sunset.noty_bar .noty_body {
   padding: 10px;
   font-size: 14px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
+
 .noty_theme__sunset.noty_bar .noty_buttons {
   padding: 10px;
 }
@@ -249,6 +260,7 @@
   background-color: #073B4C;
   color: #fff;
 }
+
 .noty_theme__sunset.noty_type__alert .noty_progressbar,
 .noty_theme__sunset.noty_type__notification .noty_progressbar {
   background-color: #fff;
@@ -263,6 +275,7 @@
   background-color: #EF476F;
   color: #fff;
 }
+
 .noty_theme__sunset.noty_type__error .noty_progressbar {
   opacity: 0.4;
 }
@@ -272,6 +285,7 @@
   background-color: #118AB2;
   color: #fff;
 }
+
 .noty_theme__sunset.noty_type__info .noty_progressbar,
 .noty_theme__sunset.noty_type__information .noty_progressbar {
   opacity: 0.6;

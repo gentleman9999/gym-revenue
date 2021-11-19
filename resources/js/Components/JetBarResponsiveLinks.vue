@@ -79,6 +79,7 @@ export default {
             })
         },
         logout() {
+            console.log('test');
             this.$inertia.post(route('logout'));
         },
     }

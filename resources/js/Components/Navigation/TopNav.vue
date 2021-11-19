@@ -130,7 +130,7 @@
 
                     <!-- Settings Dropdown -->
                     <div class="ml-3 relative">
-                        <settings-dropdown/>
+                        <settings-dropdown :logout="logout"/>
                     </div>
                 </div>
 
@@ -248,8 +248,8 @@ export default defineComponent({
         }
         return {
             showingSidebar,
-            showingNavigationDropdown, 
-            showingNotificationDropdown, 
+            showingNavigationDropdown,
+            showingNotificationDropdown,
             logout,
             comingSoon,
             toggleSideNav
