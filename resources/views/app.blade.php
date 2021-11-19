@@ -21,7 +21,7 @@
     <body class="font-sans antialiased">
         @inertia
 
-        <footer style="background-color: #0074C8; color: #fff">
+        <footer class="bg-base-200 p-4 text-gray-400">
             <div class="text-muted ml-auto mr-auto text-center">
                 <div class="inner-footer">
                     <b>

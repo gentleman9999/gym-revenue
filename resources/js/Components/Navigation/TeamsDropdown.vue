@@ -18,8 +18,6 @@
             leading-4
             font-medium
             rounded-md
-            text-gray-50
-            hover:bg-base-100 hover:
             focus:outline-none
             transition
           "

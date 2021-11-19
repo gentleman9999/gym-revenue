@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col  bg-base-300 dark-mode: dark-mode:bg-gray-800 flex-shrink-0 transition" style="transition-property: width;"
-         :class="{'w-full lg:w-64': showingNavigationDropdown, 'w-20': !showingNavigationDropdown}">
+         :class="{'w-full lg:w-64': showingNavigationDropdown, 'lg:w-20': !showingNavigationDropdown}">
         <div class="flex-shrink-0 px-4 lg:px-8 py-4 flex flex-row items-center justify-between">
             <button class="rounded-lg lg:hidden rounded-lg focus:outline-none focus:shadow-outline"
                     @click="showingNavigationDropdown = !showingNavigationDropdown">

@@ -30,7 +30,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <button type="button" class="text-sm  hover: underline cursor-pointer" @click.prevent="toggleRecovery">
+                <button type="button" class="text-sm  underline cursor-pointer" @click.prevent="toggleRecovery">
                     <template v-if="! recovery">
                         Use a recovery code
                     </template>

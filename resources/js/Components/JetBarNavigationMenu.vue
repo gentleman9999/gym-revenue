@@ -73,7 +73,7 @@
                     <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
                 </button>
                 <span v-else @click="showingUserDropdown = ! showingUserDropdown" class="inline-flex rounded-md">
-                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md  hover: focus:outline-none transition ease-in-out duration-150">
+                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md  focus:outline-none transition ease-in-out duration-150">
                         {{ $page.props.user.name }}
 
                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

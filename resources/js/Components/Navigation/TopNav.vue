@@ -70,7 +70,7 @@
                 font-medium
                 leading-5
 
-                hover: hover:border-gray-300
+                hover:border-gray-300
                 focus:outline-none focus: focus:border-gray-300
                 transition
               "
@@ -145,7 +145,7 @@
               p-2
               rounded-md
 
-              hover: hover:bg-base-100
+              hover:bg-base-100
               focus:outline-none focus:bg-base-100 focus:
               transition
             "

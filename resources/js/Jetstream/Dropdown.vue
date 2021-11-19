@@ -1,5 +1,5 @@
 <template>
-    <div class="relative">
+    <div class="relative dropdown">
         <div @click="open = ! open" class="h-full">
             <slot name="trigger" ></slot>
         </div>
