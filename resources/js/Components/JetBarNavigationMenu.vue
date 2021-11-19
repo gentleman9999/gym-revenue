@@ -9,7 +9,7 @@
                     </svg>
                 </span>
 
-                <input class="form-input w-32 sm:w-64 rounded-md pl-10 pr-4 p-2 bg-base-100 border-1 border-transparent focus:bg-transparent focus:border-indigo-300" type="text" placeholder="Search">
+                <input class="form-input w-32 sm:w-64 rounded-md pl-10 pr-4 p-2 bg-base-100 border-1 border-transparent focus:bg-transparent focus:border-primary" type="text" placeholder="Search">
             </div>
         </div>
         <!-- End Searchbar -->

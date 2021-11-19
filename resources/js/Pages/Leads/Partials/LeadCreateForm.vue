@@ -23,7 +23,7 @@
             </div>
             <div class="col-span-4">
                 <jet-label for="club_id" value="Club"/>
-                <select class="w-full border-base-100-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" v-model="form['gr_location_id']" required>
+                <select class="w-full border-base-100-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md shadow-sm" v-model="form['gr_location_id']" required>
                     <option value="">Select a Club</option>
                     <option v-for="(name, clubId) in locations" :value="clubId">{{ name }}</option>
                 </select>
