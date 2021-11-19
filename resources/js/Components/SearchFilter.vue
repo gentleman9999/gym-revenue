@@ -18,7 +18,7 @@
                 rounded-md
                 text-gray-500
                 bg-base-300
-                hover:bg-base-100 hover:text-gray-700
+                hover:bg-base-100 hover:
                 focus:outline-none focus:bg-base-100
                 active:bg-base-100
                 transition
@@ -70,7 +70,7 @@
       class="
         ml-3
         text-sm text-gray-500
-        hover:text-gray-700
+        hover:
         focus:text-indigo-500
       "
       type="button"

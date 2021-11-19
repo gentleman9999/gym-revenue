@@ -15,7 +15,7 @@
             font-medium
             rounded-md
             text-gray-500
-            hover:bg-base-100 hover:text-gray-700
+            hover:bg-base-100 hover:
             focus:outline-none focus:bg-gray-50
             active:bg-gray-50
             transition

@@ -73,7 +73,7 @@
                     <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
                 </button>
                 <span v-else @click="showingUserDropdown = ! showingUserDropdown" class="inline-flex rounded-md">
-                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-base-300 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-base-300 hover: focus:outline-none transition ease-in-out duration-150">
                         {{ $page.props.user.name }}
 
                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -105,7 +105,7 @@
 
                         <template v-for="team in $page.props.user.all_teams" :key="team.id">
                             <form @submit.prevent="switchToTeam(team)">
-                                <button class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out w-full">
+                                <button class="block px-4 py-2 text-sm leading-5  hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out w-full">
                                     <div class="flex items-center">
                                         <svg v-if="team.id == $page.props.user.current_team_id" class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         <div>{{ team.name }}</div>

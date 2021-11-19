@@ -11,27 +11,36 @@ const mix = require('laravel-mix');
  |
  */
 
+const postCssPlugins =[
+    require('postcss-import'),
+    require('tailwindcss'),
+    require('postcss-nested')({
+        "bubble": [
+            "screen"
+        ]
+    }),
+    require('autoprefixer'),
+    //TODO: optimize via cssnano only on prod build
+    // require('cssnano')({
+    //     "preset": [
+    //         "default",
+    //         {
+    //             "mergeRules": false
+    //         }
+    //     ]
+    // }),
+]
+
 mix.js('resources/js/app.js', 'public/js').vue()
-    .postCss('resources/css/app.css', 'public/css', [
-        require('postcss-import'),
-        require('tailwindcss'),
-        require('postcss-nested')({
-            "bubble": [
-                "screen"
-            ]
-        }),
-        require('autoprefixer'),
-        // require('cssnano')({
-        //     "preset": [
-        //         "default",
-        //         {
-        //             "mergeRules": false
-        //         }
-        //     ]
-        // }),
-    ])
+    .postCss('resources/css/app.css', 'public/css', postCssPlugins)
     .sass('resources/sass/app.scss', 'public/sass')
-    .webpackConfig(require('./webpack.config'));
+    .webpackConfig(require('./webpack.config'))
+    .sourceMaps();
+
+//https://github.com/laravel-mix/laravel-mix/issues/2778
+mix.options({
+    postCss: postCssPlugins
+})
 
 if (mix.inProduction()) {
     mix.version();

@@ -34,7 +34,7 @@
             rounded-md
             text-gray-500
             bg-base-300
-            hover:text-gray-700
+            hover:
             focus:outline-none
             transition
           "

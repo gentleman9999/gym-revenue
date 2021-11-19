@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-col  bg-base-300 dark-mode:text-gray-200 dark-mode:bg-gray-800 flex-shrink-0 lg:border-r"
-         :class="{'w-full lg:w-64': showingNavigationDropdown, 'w-16': !showingNavigationDropdown}">
+    <div class="flex flex-col  bg-base-300 dark-mode:text-gray-200 dark-mode:bg-gray-800 flex-shrink-0 lg:border-r transition" style="transition-property: width;"
+         :class="{'w-full lg:w-64': showingNavigationDropdown, 'w-20': !showingNavigationDropdown}">
         <div class="flex-shrink-0 px-4 lg:px-8 py-4 flex flex-row items-center justify-between">
             <button class="rounded-lg lg:hidden rounded-lg focus:outline-none focus:shadow-outline"
                     @click="showingNavigationDropdown = !showingNavigationDropdown">
@@ -14,14 +14,14 @@
                 </svg>
             </button>
             <button @click="toggle()">
-                <font-awesome-icon :icon="['fas', 'bars']" size="16"/>
+                <font-awesome-icon :icon="['fas', 'bars']" size="lg"/>
             </button>
         </div>
-        <div v-show="showingNavigationDropdown" @click="showingNavigationDropdown = false"
-             class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
+<!--        <div v-show="showingNavigationDropdown" @click="showingNavigationDropdown = false"-->
+<!--             class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 
         <!-- Sidebar Links -->
-        <nav class="flex-grow lg:block px-4 pb-4 lg:pb-0 lg:overflow-y-auto">
+        <nav class="flex-grow lg:block pb-4 lg:pb-0 lg:overflow-y-auto">
             <!-- Searchbar
             <jet-bar-sidebar-search />
              End Searchbar -->
@@ -29,12 +29,12 @@
             <!-- @todo - Not Ready Yet -->
             <!-- Message Center (working title) -->
             <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'"
-                 class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
+                 class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     href="#" @click="comingSoon()">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'comments-alt']" size="16"/>
+                        <font-awesome-icon :icon="['fad', 'comments-alt']" size="lg"/>
                         Notifications
                     </p>
                 </jet-nav-link>
@@ -42,12 +42,12 @@
 
             <!-- Analytics (Working Title) -->
             <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'"
-                 class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
+                 class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     href="#" @click="comingSoon()">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'paste']" size="16"/>
+                        <font-awesome-icon :icon="['fad', 'paste']" size="xl"/>
                         ToDo List
                     </p>
                 </jet-nav-link>
@@ -55,47 +55,47 @@
             <!-- End Not Ready Yet -->
 
             <!-- Clubs -->
-            <div :class="route().current('locations') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2"
+            <div :class="route().current('locations') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container"
                  v-if="$page.props.user.current_client_id !== null">
-                <!-- <jet-nav-link class="nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
+                <!-- <jet-nav-link class="jet-nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     :href="route('locations')">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'dumbbell']" size="16"/>
+                        <font-awesome-icon :icon="['fad', 'dumbbell']" size="lg"/>
                         Clubs
                     </p>
                 </jet-nav-link>
             </div>
 
             <!-- Leads -->
-            <div :class="route().current('data.leads') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2"
+            <div :class="route().current('data.leads') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container"
                  v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     :href="route('data.leads')">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'chart-line']" size="16"/>
+                        <font-awesome-icon :icon="['fad', 'chart-line']" size="lg"/>
                         Leads
                     </p>
                 </jet-nav-link>
             </div>
 
             <!--
-            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
+            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
 
-                <jet-nav-link class="nav-link" href="#" @click="comingSoon()">Conversions</jet-nav-link>
+                <jet-nav-link class="jet-nav-link" href="#" @click="comingSoon()">Conversions</jet-nav-link>
             </div>
             -->
 
             <!-- Workout Generator Preview -->
             <div :class="route().current('workout-generator') ? 'bg-gray-200' : 'bg-transparent'"
-                 class="block px-4 py-2 mt-2">
+                 class="nav-link-container">
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     :href="route('workout-generator')">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'calendar-alt']" size="16"/>
+                        <font-awesome-icon :icon="['fad', 'calendar-alt']" size="lg"/>
                         Workout Generator
                     </p>
                 </jet-nav-link>
@@ -103,30 +103,30 @@
 
             <!-- Mass Communicator -->
             <div :class="route().current('comms.dashboard') ? 'bg-gray-200' : 'bg-transparent'"
-                 class="block px-4 py-2 mt-2">
+                 class="nav-link-container">
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     :href="route('comms.dashboard')">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'satellite-dish']" size="16"/>
+                        <font-awesome-icon :icon="['fad', 'satellite-dish']" size="lg"/>
                         Mass Communicator
                     </p>
                 </jet-nav-link>
             </div>
 
 
-            <!-- <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="block px-4 py-2 mt-2">
-                 <jet-nav-link class="nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link>
+            <!-- <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container">
+                 <jet-nav-link class="jet-nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link>
             </div> -->
 
             <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'"
-                 class="block px-4 py-2 mt-2" v-if="$page.props.user.current_client_id !== null">
+                 class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
-                    class="nav-link"
+                    class="jet-nav-link"
                     href="#" @click="comingSoon()">
                     <p>
-                        <font-awesome-icon :icon="['fas', 'cog']" size="16"/>
-                        Settings
+                        <font-awesome-icon :icon="['fas', 'cog']" size="lg"/>
+                        <span>Settings</span>
                     </p>
                 </jet-nav-link>
             </div>
@@ -134,16 +134,22 @@
             <jet-bar-responsive-links/>
 
         </nav>
-        <div v-show="showingSidebarNavigationDropdown" @click="showingSidebarNavigationDropdown = false"
-             class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
+<!--        <div v-show="showingSidebarNavigationDropdown" @click="showingSidebarNavigationDropdown = false"-->
+<!--             class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
         <!-- End Sidebar Links -->
     </div>
 </template>
 
 
-<style>
-.nav-link {
-    @apply text-sm font-semibold rounded-lg;
+<style scoped>
+.jet-nav-link {
+    @apply text-sm font-semibold rounded-lg btn  btn-ghost hover:bg-primary hover:text-white rounded-none pl-8 ;
+    & p > svg {
+        @apply mr-8;
+    }
+}
+.nav-link-container{
+    @apply block py-2 mt-2 whitespace-nowrap ;
 }
 </style>
 

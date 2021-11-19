@@ -17,7 +17,7 @@
 
                     <div class="ml-4 leading-tight">
                         <div>{{ $page.props.user.name }}</div>
-                        <div class="text-sm text-gray-700">{{ $page.props.user.email }}</div>
+                        <div class="text-sm ">{{ $page.props.user.email }}</div>
                     </div>
                 </div>
             </div>
