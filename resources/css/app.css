@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 body {
-    position: relative;
+    @apply relative bg-gradient-to-b from-base-300 to-base-100;
 }
 
 /* Apply defaults to forms */

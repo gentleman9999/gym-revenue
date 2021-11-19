@@ -1,4 +1,6 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const plugin = require('tailwindcss/plugin');
+
 // const colors = require('tailwindcss/colors');
 //add default to colors so we don't always need -500 for base shade
 // Object.entries(colors).forEach(([name, color]) => color.DEFAULT = color[500]);
@@ -30,7 +32,15 @@ module.exports = {
     plugins: [
         // require('@tailwindcss/forms'),
         // require('@tailwindcss/typography'),
-        require('daisyui')
+        require('daisyui'),
+        plugin(function({ addUtilities }) {
+            const newUtilities = {
+                '.position-unset': {
+                    position: 'unset',
+                },
+            }
+            addUtilities(newUtilities)
+        })
     ],
     daisyui: {
         themes: [{
@@ -47,8 +57,8 @@ module.exports = {
                 'neutral': '#1c1c1c',
                 'neutral-focus': '#073a76',
                 'neutral-content': '#ffffff',
-                'base-100': '#2b2b2b',
-                'base-200': '#242424',
+                'base-100': '#242424',
+                'base-200': '#202020',
                 'base-300': '#1c1c1c',
                 'base-content': '#ffffff',
                 'info': '#2094f3',
