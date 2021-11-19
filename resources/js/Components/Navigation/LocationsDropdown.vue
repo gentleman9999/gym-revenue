@@ -16,8 +16,8 @@
             rounded-md
             text-gray-500
             hover:bg-base-100 hover:
-            focus:outline-none focus:bg-gray-50
-            active:bg-gray-50
+            focus:outline-none focus:bg-base-100
+            active:bg-base-100
             transition
           "
         >

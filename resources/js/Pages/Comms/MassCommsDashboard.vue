@@ -16,7 +16,7 @@
                         <jet-dropdown align="right" v-if="true">
                             <template #trigger>
                                 <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-base-100 hover:text-gray-700 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
                                         {{ (activeAudience in audiences) ? 'Audience: ' +audiences[activeAudience] : 'Audiences'}}
 
                                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

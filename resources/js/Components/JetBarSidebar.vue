@@ -28,7 +28,7 @@
 
             <!-- @todo - Not Ready Yet -->
             <!-- Message Center (working title) -->
-            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'"
+            <div :class="route().current('data.conversions') ? 'bg-primary' : 'bg-transparent'"
                  class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
                     class="jet-nav-link"
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Analytics (Working Title) -->
-            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'"
+            <div :class="route().current('data.conversions') ? 'bg-primary' : 'bg-transparent'"
                  class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
                     class="jet-nav-link"
@@ -55,7 +55,7 @@
             <!-- End Not Ready Yet -->
 
             <!-- Clubs -->
-            <div :class="route().current('locations') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container"
+            <div :class="route().current('locations') ? 'bg-primary' : 'bg-transparent'" class="nav-link-container"
                  v-if="$page.props.user.current_client_id !== null">
                 <!-- <jet-nav-link class="jet-nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link> -->
                 <jet-nav-link
@@ -69,7 +69,7 @@
             </div>
 
             <!-- Leads -->
-            <div :class="route().current('data.leads') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container"
+            <div :class="route().current('data.leads') ? 'bg-primary' : 'bg-transparent'" class="nav-link-container"
                  v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
                     class="jet-nav-link"
@@ -82,14 +82,14 @@
             </div>
 
             <!--
-            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
+            <div :class="route().current('data.conversions') ? 'bg-primary' : 'bg-transparent'" class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
 
                 <jet-nav-link class="jet-nav-link" href="#" @click="comingSoon()">Conversions</jet-nav-link>
             </div>
             -->
 
             <!-- Workout Generator Preview -->
-            <div :class="route().current('workout-generator') ? 'bg-gray-200' : 'bg-transparent'"
+            <div :class="route().current('workout-generator') ? 'bg-primary' : 'bg-transparent'"
                  class="nav-link-container">
                 <jet-nav-link
                     class="jet-nav-link"
@@ -102,7 +102,7 @@
             </div>
 
             <!-- Mass Communicator -->
-            <div :class="route().current('comms.dashboard') ? 'bg-gray-200' : 'bg-transparent'"
+            <div :class="route().current('comms.dashboard') ? 'bg-primary' : 'bg-transparent'"
                  class="nav-link-container">
                 <jet-nav-link
                     class="jet-nav-link"
@@ -115,11 +115,11 @@
             </div>
 
 
-            <!-- <div :class="route().current('sales-slideshow') ? 'bg-gray-200' : 'bg-transparent'" class="nav-link-container">
+            <!-- <div :class="route().current('sales-slideshow') ? 'bg-primary' : 'bg-transparent'" class="nav-link-container">
                  <jet-nav-link class="jet-nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link>
             </div> -->
 
-            <div :class="route().current('data.conversions') ? 'bg-gray-200' : 'bg-transparent'"
+            <div :class="route().current('data.conversions') ? 'bg-primary' : 'bg-transparent'"
                  class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
                 <jet-nav-link
                     class="jet-nav-link"

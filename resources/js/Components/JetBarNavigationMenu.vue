@@ -9,7 +9,7 @@
                     </svg>
                 </span>
 
-                <input class="form-input w-32 sm:w-64 rounded-md pl-10 pr-4 p-2 bg-gray-100 border-1 border-transparent focus:bg-transparent focus:border-indigo-300" type="text" placeholder="Search">
+                <input class="form-input w-32 sm:w-64 rounded-md pl-10 pr-4 p-2 bg-base-100 border-1 border-transparent focus:bg-transparent focus:border-indigo-300" type="text" placeholder="Search">
             </div>
         </div>
         <!-- End Searchbar -->
@@ -30,7 +30,7 @@
 
                 <!-- Notifications links -->
                 <div v-show="showingNotificationDropdown" class="absolute right-0 mt-2 w-80 bg-base-300 rounded-lg shadow-xl border border-base-100 overflow-hidden z-10" style="width: 20rem; display: none;">
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 -mx-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-base-100 -mx-2">
                         <figure class="w-1/6">
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
                         </figure>
@@ -38,7 +38,7 @@
                             <span class="font-bold" href="#">Sara Salah</span> replied on the <span class="font-bold text-indigo-400">Upload Image</span> article. 2m
                         </p>
                     </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 -mx-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-base-100 -mx-2">
                         <figure class="w-1/6">
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80" alt="avatar">
                         </figure>
@@ -46,7 +46,7 @@
                             <span class="font-bold" href="#">Slick Net</span> start following you . 45m
                         </p>
                     </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 -mx-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-base-100 -mx-2">
                         <figure class="w-1/6">
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80" alt="avatar">
                         </figure>
@@ -54,7 +54,7 @@
                             <span class="font-bold" href="#">Jane Doe</span> Like Your reply on <span class="font-bold text-indigo-400" href="#">Test with TDD</span> artical . 1h
                         </p>
                     </a>
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 -mx-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-base-100 -mx-2">
                         <figure class="w-1/6">
                             <img class="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=398&amp;q=80" alt="avatar">
                         </figure>
@@ -95,8 +95,8 @@
                             Manage Team
                         </div>
 
-                        <inertia-link :href="route('teams.show', $page.props.user.current_team)" class="block px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">Team Settings</inertia-link>
-                        <inertia-link :href="route('teams.create')" v-if="$page.props.jetstream.canCreateTeams" class="block px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">Create New Team</inertia-link>
+                        <inertia-link :href="route('teams.show', $page.props.user.current_team)" class="block px-4 py-2 text-sm text-gray-500 hover:bg-base-100">Team Settings</inertia-link>
+                        <inertia-link :href="route('teams.create')" v-if="$page.props.jetstream.canCreateTeams" class="block px-4 py-2 text-sm text-gray-500 hover:bg-base-100">Create New Team</inertia-link>
                         <div class="border-t border-gray-100"></div>
                         <!-- Team Switcher -->
                         <div class="block px-4 py-2 text-xs text-gray-400">
@@ -105,7 +105,7 @@
 
                         <template v-for="team in $page.props.user.all_teams" :key="team.id">
                             <form @submit.prevent="switchToTeam(team)">
-                                <button class="block px-4 py-2 text-sm leading-5  hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out w-full">
+                                <button class="block px-4 py-2 text-sm leading-5  hover:bg-base-100 focus:outline-none focus:bg-base-100 transition duration-150 ease-in-out w-full">
                                     <div class="flex items-center">
                                         <svg v-if="team.id == $page.props.user.current_team_id" class="mr-2 h-5 w-5 text-green-400" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         <div>{{ team.name }}</div>
@@ -122,12 +122,12 @@
                         Manage Account
                     </div>
 
-                    <inertia-link :href="route('profile.show')" class="block px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">Profile</inertia-link>
+                    <inertia-link :href="route('profile.show')" class="block px-4 py-2 text-sm text-gray-500 hover:bg-base-100">Profile</inertia-link>
 
-                    <inertia-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures" class="block px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">API Tokens</inertia-link>
+                    <inertia-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures" class="block px-4 py-2 text-sm text-gray-500 hover:bg-base-100">API Tokens</inertia-link>
 
                     <form @submit.prevent="logout">
-                        <button class="block px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 w-full text-left focus:outline-none">
+                        <button class="block px-4 py-2 text-sm text-gray-500 hover:bg-base-100 w-full text-left focus:outline-none">
                             Log Out
                         </button>
                     </form>
