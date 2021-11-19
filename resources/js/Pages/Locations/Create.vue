@@ -1,7 +1,7 @@
 <template>
     <app-layout title="Create Location">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Create Location
             </h2>
         </template>

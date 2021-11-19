@@ -19,7 +19,7 @@
                         <main class="flex-1 relative z-0 overflow-y-auto py-6 focus:outline-none" tabindex="0">
                             <div v-if="this.$slots.header" class="max-w-7xl mx-auto pt-3 px-4 sm:px-6 lg:px-8">
                                 <!-- Title -->
-                                <h1 class="text-lg font-semibold tracking-widest text-gray-900 uppercase dark-mode:text-white">
+                                <h1 class="text-lg font-semibold tracking-widest  uppercase dark-mode:text-white">
                                     <slot name="header"></slot>
                                 </h1>
                                 <!-- End Title -->

@@ -45,7 +45,7 @@
                         <inertia-link href="#" class="text-indigo-600 hover:text-indigo-900">Edit</inertia-link>
                     </jet-bar-table-data>
                     <jet-bar-table-data>
-                        <inertia-link href="#" class="text-gray-400 hover:text-gray-500">
+                        <inertia-link href="#" class=" hover:">
                             <jet-bar-icon type="trash" fill />
                         </inertia-link>
                     </jet-bar-table-data>

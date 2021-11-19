@@ -14,7 +14,7 @@
             leading-4
             font-medium
             rounded-md
-            text-gray-500
+
             hover:bg-base-100 hover:
             focus:outline-none focus:bg-base-100
             active:bg-base-100
@@ -44,7 +44,7 @@
         <!-- Team Management -->
         <template v-if="$page.props.jetstream.hasTeamFeatures">
           <!-- Location Switcher -->
-          <div class="block px-4 py-2 text-xs text-gray-400">
+          <div class="block px-4 py-2 text-xs ">
             Change Club
             <br />
             <small>Active Club:</small>

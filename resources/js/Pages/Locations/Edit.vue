@@ -2,7 +2,7 @@
     <app-layout title="Edit Location">
         <template #header>
             <jet-bar-icon type="g0back" fill/>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Edit Location
             </h2>
         </template>

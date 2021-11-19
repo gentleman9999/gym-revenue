@@ -47,7 +47,7 @@
         <!-- Team Management -->
         <template v-if="$page.props.jetstream.hasTeamFeatures">
           <!--
-                                                <div class="block px-4 py-2 text-xs text-gray-400">
+                                                <div class="block px-4 py-2 text-xs ">
                                                     Manage Team
                                                 </div>
                                                 -->
@@ -64,7 +64,7 @@
                                                 <div class="border-t border-gray-100"></div>
                                                 -->
           <!-- Team Switcher -->
-          <div class="block px-4 py-2 text-xs text-gray-400">
+          <div class="block px-4 py-2 text-xs ">
             <small>Current Team</small>
             <small>{{ $page.props.user.current_team.name }}</small>
           </div>

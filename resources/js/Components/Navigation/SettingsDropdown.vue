@@ -32,9 +32,6 @@
             leading-4
             font-medium
             rounded-md
-            text-gray-500
-            bg-base-300
-            hover:
             focus:outline-none
             transition
           "
@@ -59,7 +56,7 @@
 
     <template #content>
       <!-- Account Management -->
-      <div class="block px-4 py-2 text-xs text-gray-400">Manage Account</div>
+      <div class="block px-4 py-2 text-xs ">Manage Account</div>
 
       <jet-dropdown-link :href="route('profile.show')">
         Profile
@@ -82,7 +79,7 @@
       <div class="border-t border-gray-100"></div>
       <!-- Extra Features -->
       <!-- @todo - make these dynamic, as some users wont have access -->
-      <div class="block px-4 py-2 text-xs text-gray-400">Extras</div>
+      <div class="block px-4 py-2 text-xs ">Extras</div>
       <jet-dropdown-link :href="route('workout-generator')">
         Workout Generator
       </jet-dropdown-link>

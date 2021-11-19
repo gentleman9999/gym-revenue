@@ -2,7 +2,7 @@
     <app-layout title="Edit Lead">
         <template #header>
             <jet-bar-icon type="g0back" fill/>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Edit Lead
             </h2>
         </template>

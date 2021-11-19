@@ -69,7 +69,7 @@
                 text-sm
                 font-medium
                 leading-5
-                text-gray-500
+
                 hover: hover:border-gray-300
                 focus:outline-none focus: focus:border-gray-300
                 transition
@@ -144,9 +144,9 @@
               justify-center
               p-2
               rounded-md
-              text-gray-400
-              hover:text-gray-500 hover:bg-base-100
-              focus:outline-none focus:bg-base-100 focus:text-gray-500
+
+              hover: hover:bg-base-100
+              focus:outline-none focus:bg-base-100 focus:
               transition
             "
           >

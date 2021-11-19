@@ -52,3 +52,6 @@ textarea {
 select {
     @apply select select-bordered border-2;
 }
+input:focus{
+    @apply focus:ring focus:ring-primary;
+}

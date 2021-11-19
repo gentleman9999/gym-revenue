@@ -30,10 +30,10 @@
           </div>
 
           <div>
-            <div class="font-medium text-base text-gray-800">
+            <div class="font-medium text-base ">
               {{ $page.props.user.name }}
             </div>
-            <div class="font-medium text-sm text-gray-500">
+            <div class="font-medium text-sm ">
               {{ $page.props.user.email }}
             </div>
           </div>
@@ -66,7 +66,7 @@
           <template v-if="$page.props.jetstream.hasTeamFeatures">
             <div class="border-t border-base-100"></div>
 
-            <div class="block px-4 py-2 text-xs text-gray-400">Manage Team</div>
+            <div class="block px-4 py-2 text-xs ">Manage Team</div>
 
             <!-- Team Settings -->
             <jet-responsive-nav-link
@@ -88,7 +88,7 @@
 
             <!-- Extra Features -->
             <!-- @todo - make these dynamic, as some users wont have access -->
-            <div class="block px-4 py-2 text-xs text-gray-400">Extras</div>
+            <div class="block px-4 py-2 text-xs ">Extras</div>
             <jet-responsive-nav-link :href="route('workout-generator')">
               Workout Generator
             </jet-responsive-nav-link>
@@ -99,7 +99,7 @@
             <div class="border-t border-gray-100"></div>
 
             <!-- Team Switcher -->
-            <div class="block px-4 py-2 text-xs text-gray-400">
+            <div class="block px-4 py-2 text-xs ">
               Switch Teams
             </div>
 

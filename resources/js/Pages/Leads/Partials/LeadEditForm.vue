@@ -29,7 +29,7 @@
                 Cancel
             </jet-button>
             <div class="flex-grow" />
-            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing">
+            <jet-button :class="{ 'opacity-25': form.processing }" class="btn-primary" :disabled="form.processing"  :loading="form.processing">
                 {{ buttonText }}
             </jet-button>
         </template>

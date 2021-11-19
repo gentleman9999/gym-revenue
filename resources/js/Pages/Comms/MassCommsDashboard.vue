@@ -2,7 +2,7 @@
     <app-layout :title="title">
         <template #header>
             <div class="text-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                <h2 class="font-semibold text-xl  leading-tight">
                     Mass Communication Dashboard
                 </h2>
                 <small>Send SMS and Emails in Bulk here!</small>
@@ -16,7 +16,7 @@
                         <jet-dropdown align="right" v-if="true">
                             <template #trigger>
                                 <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-base-100 hover:text-gray-700 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
                                         {{ (activeAudience in audiences) ? 'Audience: ' +audiences[activeAudience] : 'Audiences'}}
 
                                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -31,7 +31,7 @@
                                     <!-- Team Management -->
                                     <template v-if="true">
                                         <!-- Location Switcher -->
-                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                        <div class="block px-4 py-2 text-xs ">
                                             Select an Audience
                                         </div>
 
@@ -110,12 +110,12 @@
                 <div class="left-section flex flex-col lg-w-30 mb-3 lg:mb-0 lg:mr-3">
                     <div class="total-audience-breakdown border-2 border-gray-300">
                         <div class="flex flex-col">
-                            <h2 class="text-gray-800 m-2"> Total Audience</h2>
+                            <h2 class=" m-2"> Total Audience</h2>
                             <div class="text-center">
-                                <h1 class="text-gray-800 ">0</h1>
+                                <h1 class=" ">0</h1>
                             </div>
                             <div class="border-b-2 border-gray-300 m-2"></div>
-                            <h2 class="text-gray-800 m-2"> Total Audience Breakdown</h2>
+                            <h2 class=" m-2"> Total Audience Breakdown</h2>
                             <div v-for="(lbl, slug) in audiences">
                                  <p class="m-2"><b>{{ lbl }}</b> : 0</p>
                             </div>

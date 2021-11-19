@@ -1,14 +1,14 @@
 <template>
     <app-layout :title="title">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Leads
             </h2>
         </template>
         <jet-bar-container>
             <div class="flex flex-row items-center mb-4">
                 <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
-                    <div class="block py-2 text-xs text-gray-400">Trashed:</div>
+                    <div class="block py-2 text-xs ">Trashed:</div>
                     <select v-model="form.trashed" class="mt-1 w-full form-select">
                         <option :value="null"/>
                         <option value="with">With Trashed</option>
@@ -43,10 +43,10 @@
                             <jet-bar-badge :text="checkClaimDetail(idx)" :type="checkClaimDetailColor(idx)"/>
                         </div>
 
-                        <button class="text-gray-400 hover:text-gray-500" v-if="!lead?.deleted_at" @click="launchModal(idx)">
+                        <button class=" hover:" v-if="!lead?.deleted_at" @click="launchModal(idx)">
                             <jet-bar-icon type="message" fill/>
                         </button>
-                        <Link class="text-gray-400 hover:text-gray-500"
+                        <Link class=" hover:"
                               :href="route('data.leads.edit', lead.id)" v-if="!lead?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
                         </Link>

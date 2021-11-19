@@ -16,7 +16,7 @@
                 leading-4
                 font-medium
                 rounded-md
-                text-gray-500
+
                 bg-base-300
                 hover:bg-base-100 hover:
                 focus:outline-none focus:bg-base-100
@@ -44,7 +44,7 @@
 
         <template #content>
           <div class="w-60">
-            <div class="block px-4 py-2 text-xs text-gray-400">Filters</div>
+            <div class="block px-4 py-2 text-xs ">Filters</div>
 
             <div
               slot="dropdown"
@@ -69,7 +69,7 @@
     <button
       class="
         ml-3
-        text-sm text-gray-500
+        text-sm
         hover:
         focus:text-indigo-500
       "

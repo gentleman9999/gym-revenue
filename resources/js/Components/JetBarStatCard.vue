@@ -4,10 +4,10 @@
             <slot name="icon" />
         </div>
         <div>
-            <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p class="mb-2 text-sm font-medium  dark:">
                 {{ title }}
             </p>
-            <p class="text-lg font-semibold  dark:text-gray-200">
+            <p class="text-lg font-semibold  dark:">
                 {{ number }}
             </p>
         </div>

@@ -1,14 +1,14 @@
 <template>
     <app-layout :title="title">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Locations
             </h2>
         </template>
         <jet-bar-container>
             <div class="flex flex-row items-center mb-4">
                 <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
-                    <div class="block py-2 text-xs text-gray-400">Trashed:</div>
+                    <div class="block py-2 text-xs ">Trashed:</div>
                     <select v-model="form.trashed" class="mt-1 w-full form-select">
                         <option :value="null"/>
                         <option value="with">With Trashed</option>
@@ -34,15 +34,15 @@
                         <jet-bar-badge text="Inactive" type="danger" v-else/>
                     </jet-bar-table-data>
                     <jet-bar-table-data class="flex flex-row justify-center space-x-2">
-                        <Link class="text-gray-400 hover:text-gray-500"
+                        <Link class=" hover:"
                               :href="route('locations.edit', location.id)" v-if="!location?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
 
                         </Link>
-                        <!--                        <Link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
+                        <!--                        <Link :href="route('locations.delete', location.id)" class=" hover:">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
                         <button @click=" location?.deleted_at ? $inertia.post(route('locations.restore', location.id)) : $inertia.delete(route('locations.delete', location.id))"
-                                class="text-gray-400 hover:text-gray-500">
+                                class=" hover:">
                             <jet-bar-icon :type="location?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>
                         <!--                        </Link>-->

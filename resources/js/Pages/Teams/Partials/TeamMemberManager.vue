@@ -15,7 +15,7 @@
 
                 <template #form>
                     <div class="col-span-6">
-                        <div class="max-w-xl text-sm text-gray-600">
+                        <div class="max-w-xl text-sm ">
                             Please provide the email address of the person you would like to add to this team.
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                                 <div :class="{'opacity-50': addTeamMemberForm.role && addTeamMemberForm.role != role.key}">
                                     <!-- Role Name -->
                                     <div class="flex items-center">
-                                        <div class="text-sm text-gray-600" :class="{'font-semibold': addTeamMemberForm.role == role.key}">
+                                        <div class="text-sm " :class="{'font-semibold': addTeamMemberForm.role == role.key}">
                                             {{ role.name }}
                                         </div>
 
@@ -49,7 +49,7 @@
                                     </div>
 
                                     <!-- Role Description -->
-                                    <div class="mt-2 text-xs text-gray-600 text-left">
+                                    <div class="mt-2 text-xs  text-left">
                                         {{ role.description }}
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                 <template #content>
                     <div class="space-y-6">
                         <div class="flex items-center justify-between" v-for="invitation in team.team_invitations" :key="invitation.id">
-                            <div class="text-gray-600">{{ invitation.email }}</div>
+                            <div class="">{{ invitation.email }}</div>
 
                             <div class="flex items-center">
                                 <!-- Cancel Team Invitation -->
@@ -127,13 +127,13 @@
 
                             <div class="flex items-center">
                                 <!-- Manage Team Member Role -->
-                                <button class="ml-2 text-sm text-gray-400 underline"
+                                <button class="ml-2 text-sm  underline"
                                         @click="manageRole(user)"
                                         v-if="userPermissions.canAddTeamMembers && availableRoles.length">
                                     {{ displayableRole(user.membership.role) }}
                                 </button>
 
-                                <div class="ml-2 text-sm text-gray-400" v-else-if="availableRoles.length">
+                                <div class="ml-2 text-sm " v-else-if="availableRoles.length">
                                     {{ displayableRole(user.membership.role) }}
                                 </div>
 
@@ -174,7 +174,7 @@
                             <div :class="{'opacity-50': updateRoleForm.role && updateRoleForm.role !== role.key}">
                                 <!-- Role Name -->
                                 <div class="flex items-center">
-                                    <div class="text-sm text-gray-600" :class="{'font-semibold': updateRoleForm.role === role.key}">
+                                    <div class="text-sm " :class="{'font-semibold': updateRoleForm.role === role.key}">
                                         {{ role.name }}
                                     </div>
 
@@ -182,7 +182,7 @@
                                 </div>
 
                                 <!-- Role Description -->
-                                <div class="mt-2 text-xs text-gray-600">
+                                <div class="mt-2 text-xs ">
                                     {{ role.description }}
                                 </div>
                             </div>
