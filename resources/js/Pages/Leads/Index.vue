@@ -153,8 +153,11 @@ export default defineComponent({
             return {
                 'badge-primary': lead_type === 'facebook',
                 'badge-secondary': lead_type === 'snapchat',
+                'badge-info': lead_type === 'free_trial',
                 'badge-accent': lead_type === 'instagram',
                 'badge-success': lead_type === 'grand_opening',
+                'badge-outline': lead_type === 'contact_us',
+                'badge-ghost': lead_type === 'app_referral',
                 'badge-error': lead_type === 'streaming_preview',
                 'badge-warning': lead_type === 'personal_training',
 
