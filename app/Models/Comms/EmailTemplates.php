@@ -55,4 +55,21 @@ class EmailTemplates extends Model
 
         // @todo - model boot updated - aggy to set in client_details and email_template_details that it was auto generated ('auto' created_by_user_id)
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('created_by_user_id', 'like', '%' . $search . '%')
+                ;
+            });
+        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
+            if ($trashed === 'with') {
+                $query->withTrashed();
+            } elseif ($trashed === 'only') {
+                $query->onlyTrashed();
+            }
+        });
+    }
 }

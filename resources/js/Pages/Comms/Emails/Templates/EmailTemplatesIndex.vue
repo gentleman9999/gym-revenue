@@ -50,6 +50,10 @@
                         </div>
                     </div>
                     <gym-revenue-table :headers="tableHeaders">
+                        <template #prethead>
+                            <div class="p-4 bg-base-100"></div>
+                            <div class="p-4 bg-base-100"></div>
+                        </template>
                         <tr class="hover:bg-base-100" v-if="templates.data.length === 0">
                             <jet-bar-table-data></jet-bar-table-data>
                             <jet-bar-table-data></jet-bar-table-data>
@@ -57,6 +61,18 @@
                             <jet-bar-table-data>No Data Available.</jet-bar-table-data>
                             <jet-bar-table-data></jet-bar-table-data>
                             <jet-bar-table-data></jet-bar-table-data>
+                        </tr>
+                        <tr class="hover:bg-base-100" v-else v-for="(template, idx) in templates.data" :key="idx">
+                            <jet-bar-table-data>{{ template.name }}</jet-bar-table-data>
+                            <jet-bar-table-data>
+                                <div class="badge" :class="badgeClasses(template.active)">{{ (template.active) ? 'Live' : 'Draft' }}</div>
+                            </jet-bar-table-data>
+                            <jet-bar-table-data>Regular</jet-bar-table-data>
+                            <jet-bar-table-data>{{ template.updated_at }}</jet-bar-table-data>
+                            <jet-bar-table-data>{{ template.created_by_user_id }}</jet-bar-table-data>
+                            <jet-bar-table-data>
+                                <font-awesome-icon :icon="['far', 'ellipsis-h']" size="24"/>
+                            </jet-bar-table-data>
                         </tr>
                     </gym-revenue-table>
                 </div>
@@ -78,10 +94,12 @@ import JetBarTableData from "@/Components/JetBarTableData";
 import GymRevenueTable from "@/Components/GymRevenueTable";
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDoubleLeft } from '@fortawesome/pro-regular-svg-icons'
+import { faChevronDoubleLeft, faEllipsisH } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import mapValues from "lodash/mapValues";
-library.add(faChevronDoubleLeft)
+import throttle from "lodash/throttle";
+import pickBy from "lodash/pickBy";
+library.add(faChevronDoubleLeft, faEllipsisH)
 
 export default defineComponent({
     name: "EmailTemplatesIndex",
@@ -98,7 +116,17 @@ export default defineComponent({
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {},
-    watch: {},
+    watch: {
+        form: {
+            deep: true,
+            handler: throttle(function () {
+                this.$inertia.get(this.route('comms.email-templates'), pickBy(this.form), {
+                    preserveState: true,
+                    preserveScroll: true
+                })
+            }, 150)
+        }
+    },
     data() {
         return {
             form: {
@@ -128,6 +156,13 @@ export default defineComponent({
         },
         reset() {
             this.form = mapValues(this.form, () => null)
+        },
+        badgeClasses(status) {
+            return {
+                'badge-success': status,
+                'badge-warning': !status,
+
+            }
         },
     },
     mounted() {}
