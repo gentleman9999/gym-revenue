@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Clients\TeamLocationsSeeder;
+use Database\Seeders\Comm\EmailTemplateSeeder;
+use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\Clients\ClientSeeder;
@@ -23,6 +25,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
 
@@ -46,5 +49,12 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Leads Dummy Data Seeder');
         $this->call(LeadProspectSeeder::class);
+
+        VarDumper::dump('Running Email Template  Seeder');
+        $this->call(EmailTemplateSeeder::class);
+
+
+        VarDumper::dump('Running SMS Template  Seeder');
+        $this->call(SMSTemplateSeeder::class);
     }
 }

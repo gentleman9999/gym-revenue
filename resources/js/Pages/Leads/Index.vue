@@ -139,12 +139,6 @@ export default defineComponent({
     },
     computed: {
         tableHeaders() {
-            /*
-            if (this.isClientUser) {
-                return ['name', 'city', 'state', 'active', ''];
-            }
-             */
-
             return ['date', 'first_name', 'last_name', 'location', 'lead_type', ''];
         }
     },
