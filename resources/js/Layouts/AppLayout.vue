@@ -2,8 +2,8 @@
     <div>
         <Head :title="title" />
         <jet-banner />
-        <div class="font-sans antialiased min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
+        <div class="font-sans antialiased min-h-screen">
+            <nav class="bg-base-300 border-b bg-primary border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-8xl mx-4">
                     <div class="flex justify-between h-16">
