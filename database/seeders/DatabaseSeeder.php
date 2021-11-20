@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Clients\EmailCampaignsSeeder;
+use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
@@ -53,8 +55,14 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Email Template  Seeder');
         $this->call(EmailTemplateSeeder::class);
 
-
         VarDumper::dump('Running SMS Template  Seeder');
         $this->call(SMSTemplateSeeder::class);
+
+        VarDumper::dump('Running Email Campaign  Seeder');
+        $this->call(EmailCampaignsSeeder::class);
+
+        VarDumper::dump('Running SMS Campaign  Seeder');
+        $this->call(SMSCampaignsSeeder::class);
+
     }
 }

@@ -19,6 +19,10 @@ class EmailCampaignDetails extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'client_id', 'email_campaign_id', 'detail', 'value', 'misc', 'active'
+    ];
 
+    protected $casts = [
+        'misc' => 'array'
     ];
 }

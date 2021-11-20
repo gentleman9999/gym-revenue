@@ -4,6 +4,10 @@ namespace App\Aggregates\Clients;
 
 use App\Exceptions\Clients\ClientAccountException;
 use App\Models\UserDetails;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
@@ -48,9 +52,33 @@ class ClientAggregate extends AggregateRoot
         return $this;
     }
 
+    public function createNewEmailCampaign(string $template_id, string $created_by = null)
+    {
+        $this->recordThat(new EmailCampaignCreated($this->uuid(), $template_id, $created_by));
+        return $this;
+    }
+
+    public function assignEmailTemplateToCampaign($template_id, $campaign_id, $created_by_user_id)
+    {
+        $this->recordThat(new EmailTemplateAssignedToEmailCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
+        return $this;
+    }
+
     public function createNewSMSTemplate(string $template_id, string $created_by = null)
     {
         $this->recordThat(new SMSTemplateCreated($this->uuid(), $template_id, $created_by));
+        return $this;
+    }
+
+    public function createNewSMSCampaign(string $template_id, string $created_by = null)
+    {
+        $this->recordThat(new SMSCampaignCreated($this->uuid(), $template_id, $created_by));
+        return $this;
+    }
+
+    public function assignSmsTemplateToCampaign($template_id, $campaign_id, $created_by_user_id)
+    {
+        $this->recordThat(new SMSTemplateAssignedToSMSCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
         return $this;
     }
 
