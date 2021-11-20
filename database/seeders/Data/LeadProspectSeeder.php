@@ -6,7 +6,6 @@ use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
-use Database\Factories\Endusers\LeadFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -56,8 +55,9 @@ class LeadProspectSeeder extends Seeder
                             EndUserActivityAggregate::retrieve($prospect->id)
                                 ->createNewLead($prospect->toArray())
                                 ->persist();
-
-                            LeadDetails::factory()->count(random_int(0,20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();
+                            if (env('SEED_LEAD_DETAILS', false)) {
+                                LeadDetails::factory()->count(random_int(0, 20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();
+                            }
                         }
 
                     }

@@ -24,6 +24,7 @@ class LeadDetailsFactory extends Factory
      */
     public function definition()
     {
+        VarDumper::dump('Generating Lead Details');
         $email = $this->faker->email();
         return [
             'id' => Uuid::uuid4()->toString(),
