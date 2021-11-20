@@ -1,10 +1,8 @@
 <template>
-    <div class="">
-        <ul class="w-full steps">
-            <CommsHistoryStep v-for="detail in details" :detail="detail" @click="selectedDetail = detail"/>
-        </ul>
-        <CommsHistoryDetail :detail="selectedDetail" v-if="selectedDetail"/>
-    </div>
+    <ul class="w-full steps">
+        <CommsHistoryStep v-for="detail in details" :detail="detail" @click="selectedDetail = detail"/>
+    </ul>
+    <CommsHistoryDetail :detail="selectedDetail" v-if="selectedDetail"/>
 </template>
 <script>
 import {ref} from "vue";

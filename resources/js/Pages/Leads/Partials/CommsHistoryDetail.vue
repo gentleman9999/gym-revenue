@@ -3,6 +3,7 @@
         <div class="header">
             <h1>{{ heading }}</h1>
             <p>{{detail.created_at}}</p>
+            <p>{{detail.misc.user.email}}</p>
         </div>
 
         <div class="form-control" v-if="detail.field === 'emailed_by_rep'">
@@ -56,10 +57,14 @@
 <style scoped>
 .header {
     @apply bg-primary px-4 py-4 -ml-4 rounded-lg;
+    h1 {
+        @apply font-bold text-2xl;
+    }
+    p{
+        @apply opacity-50;
+    }
 }
-h1 {
-    @apply font-bold text-2xl;
-}
+
 </style>
 <script>
 
