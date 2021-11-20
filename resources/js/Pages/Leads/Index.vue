@@ -1,17 +1,14 @@
 <template>
     <app-layout :title="title">
-        <template #header>
-            <h2 class="font-semibold text-xl  leading-tight">
-                Leads
-            </h2>
-            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex pt-6">
-                <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition" href="">Dashboard</a>
-                <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition" href="">Calendar</a>
-                <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition" href="">Leads</a>
-                <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition" href="">Tasks</a>
-                <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition" href="">Contacts</a>
-                <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition" href="">Consultants</a>
+        <jet-bar-container>
+
+            <div class="bg-base-200 w-full rounded-lg p-4">
+
                 <div class="flex flex-row items-center mb-4">
+                    <h2 class="font-semibold text-xl  leading-tight">
+                        Leads
+                    </h2>
+                    <div class="flex-grow" />
                     <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
                         <div class="block py-2 text-xs ">Trashed:</div>
                         <select v-model="form.trashed" class="mt-1 w-full form-select">
@@ -20,25 +17,35 @@
                             <option value="only">Only Trashed</option>
                         </select>
                     </search-filter>
+                    <div
+                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition">
+
+                    </div>
+                </div>
+
+                <div class="flex flex-row items-center mb-4">
+                    <div class="hidden space-x-8 sm:-my-px sm:flex pt-6">
+                        <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                           href="">Dashboard</a>
+                        <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                           href="">Calendar</a>
+                        <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                           href="">Leads</a>
+                        <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                           href="">Tasks</a>
+                        <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                           href="">Contacts</a>
+                        <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                           href="">Consultants</a>
+                    </div>
+
                     <div class="flex-grow"/>
-                <div class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"></div></div>
-        </template>
-        <jet-bar-container>
-            <div class="flex flex-row items-center mb-4">
-                <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
-                    <div class="block py-2 text-xs ">Trashed:</div>
-                    <select v-model="form.trashed" class="mt-1 w-full form-select">
-                        <option :value="null"/>
-                        <option value="with">With Trashed</option>
-                        <option value="only">Only Trashed</option>
-                    </select>
-                </search-filter>
-                <div class="flex-grow"/>
-                <Link
-                    class="btn btn-success justify-self-end"
-                    :href="route('data.leads.create')">
-                    <span>Add Lead</span>
-                </Link>
+                    <Link
+                        class="btn btn-success justify-self-end"
+                        :href="route('data.leads.create')">
+                        <span>Add Lead</span>
+                    </Link>
+                </div>
             </div>
             <jet-bar-table :headers="tableHeaders">
                 <tr class="hover:bg-base-100" v-if="leads.data.length === 0">
@@ -76,7 +83,8 @@
             </jet-bar-table>
             <pagination class="mt-6" :links="leads.links"/>
 
-            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" overlayTheme="dark" modal-theme="dark"
+            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" overlayTheme="dark"
+                         modal-theme="dark"
                          @close="activeLead = ''">
                 <lead-interaction v-if="activeLead !== ''" :lead-id="leads.data[activeLead].id"
                                   :user-id="$page.props.user.id"
