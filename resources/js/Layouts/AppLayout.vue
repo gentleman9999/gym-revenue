@@ -13,7 +13,7 @@
                     <side-nav @toggle="showingSidebar = !showingSidebar" ref="sideNav"/>
                     <!-- End Sidebar -->
 
-                    <div class="w-full">
+                    <div class="w-full relative">
                         <!-- Content Container -->
                         <main class="flex-1 relative z-0 overflow-y-auto py-6 focus:outline-none" tabindex="0">
                             <div v-if="this.$slots.header" class="max-w-7xl mx-auto pt-3 px-4 sm:px-6 lg:px-8">

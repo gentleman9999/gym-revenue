@@ -4,7 +4,8 @@
             <font-awesome-icon :icon="icon"/>
         </div>
         <div>
-            <p>{{ heading }}</p>
+            <p class="opacity-50">{{ heading }}</p>
+            <p class="font-bold">{{ date }}</p>
         </div>
     </li>
 </template>
@@ -14,25 +15,15 @@
 }
 
 .after {
-    --tw-bg-opacity: 1;
-    background-color: hsla(var(--p)/var(--tw-bg-opacity, 1));
-    --tw-text-opacity: 1;
-    color: hsla(var(--pc)/var(--tw-text-opacity, 1));
+    @apply bg-primary text-primary-content
 }
 
 .after {
+    @apply bg-primary rounded-full grid relative text-base-content;
     z-index: 1;
-    --tw-bg-opacity: 1;
-    @apply bg-primary;
-    border-radius: 9999px;
-    display: block;
-    display: grid;
     place-items: center;
     place-self: center;
     height: 2rem;
-    position: relative;
-    --tw-text-opacity: 1;
-    color: hsla(var(--bc)/var(--tw-text-opacity, 1));
     width: 2rem;
     grid-column-start: 1;
     grid-row-start: 1;
@@ -83,9 +74,14 @@ export default {
                 heading = 'Updated';
                 icon = 'user-edit';
                 break;
+            case "manual_create":
+                heading = "Created";
+                break;
         }
 
-        return {heading, icon}
+        const date = new Date(props.detail.created_at).toLocaleString();
+
+        return {heading, icon, date}
     }
 }
 </script>

@@ -85,6 +85,7 @@
 
             <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" overlayTheme="dark"
                          modal-theme="dark"
+                         enable-mobile-fullscreen
                          @close="activeLead = ''">
                 <lead-interaction v-if="activeLead !== ''" :lead-id="leads.data[activeLead].id"
                                   :user-id="$page.props.user.id"

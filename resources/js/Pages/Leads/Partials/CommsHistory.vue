@@ -3,6 +3,7 @@
         <CommsHistoryStep v-for="detail in details" :detail="detail" @click="selectedDetail = detail"/>
     </ul>
     <CommsHistoryDetail :detail="selectedDetail" v-if="selectedDetail"/>
+    <span v-else class="block py-8 w-full text-center self-center m-auto opacity-50 text-xl">Click on an item above to learn more</span>
 </template>
 <script>
 import {ref} from "vue";

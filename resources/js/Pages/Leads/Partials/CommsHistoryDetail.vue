@@ -2,8 +2,9 @@
     <div>
         <div class="header">
             <h1>{{ heading }}</h1>
-            <p>{{detail.created_at}}</p>
-            <p>{{detail.misc.user.email}}</p>
+            <p>{{date}}</p>
+            <p v-if="detail?.misc?.user?.email">REP: {{detail.misc.user.email}}</p>
+            <p v-else-if="detail?.misc?.user_id">REP: {{detail.misc.user_id}}</p>
         </div>
 
         <div class="form-control" v-if="detail.field === 'emailed_by_rep'">
@@ -30,7 +31,7 @@
                 <span class="label-text">Outcome</span>
             </label>
             <div type="text" readonly class="input input-ghost h-full" style="height:100%;">
-                {{ detail.misc.outcome }}
+                {{ outcome }}
             </div>
         </div>
 
@@ -56,7 +57,7 @@
 </template>
 <style scoped>
 .header {
-    @apply bg-primary px-4 py-4 -ml-4 rounded-lg;
+    @apply bg-primary px-4 py-4 rounded-lg;
     h1 {
         @apply font-bold text-2xl;
     }
@@ -67,6 +68,7 @@
 
 </style>
 <script>
+import { computed} from 'vue';
 
 export default {
     props: {
@@ -76,30 +78,50 @@ export default {
     },
     setup(props) {
         const field = props.detail.field;
-        let heading = null;
+        const heading = computed(()=>{
+            switch (props.detail.field) {
+                case "called_by_rep":
+                    return 'Phone Call';
+                case "emailed_by_rep":
+                    return 'Email';
+                case "sms_by_rep":
+                    return 'Text Message';
+                case "claimed":
+                    return 'Lead Claimed';
+                case "created":
+                    return 'Lead Created';
+                case "updated":
+                    return 'Lead Updated';
+                case "manual_create":
+                    return  "Lead Manually Created in Gym Revenue";
+                default:
+                    console.error('what is this field?!?!', field);
+                    break;
+            }
+        });
 
-        switch (field) {
-            case "called_by_rep":
-                heading = 'Phone Call';
-                break;
-            case "emailed_by_rep":
-                heading = 'Email';
-                break;
-            case "sms_by_rep":
-                heading = 'Text Message';
-                break;
-            case "claimed":
-                heading = 'Claimed';
-                break;
-            case "created":
-                heading = 'Created';
-                break;
-            case "updated":
-                heading = 'Updated';
-                break;
-        }
+        const outcome = computed(()=>{
+            switch(props.detail.misc?.outcome){
+                case 'contacted':
+                    return 'Spoke with Lead.';
+                case 'voicemail':
+                    return 'Left a Voicemail';
+                case 'hung-up':
+                    return 'Lead Hung Up';
+                case 'wrong-number':
+                    return 'Wrong Number';
+                case 'appointment':
+                    return 'An Appointment Was Scheduled';
+                case 'sale':
+                    return 'Made the Sale over the Phone!';
+            }
+        });
 
-        return {heading}
+        const date = computed(()=>{
+            return new Date(props.detail.created_at).toLocaleString();
+        })
+
+        return {heading, date, outcome}
     }
 }
 </script>
