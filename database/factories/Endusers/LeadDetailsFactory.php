@@ -24,14 +24,17 @@ class LeadDetailsFactory extends Factory
      */
     public function definition()
     {
+        $email = $this->faker->email();
         return [
             'id' => Uuid::uuid4()->toString(),
             'field' => $this->faker->randomElement(['called_by_rep', 'sms_by_rep', 'emailed_by_rep']),
             'created_at' => $this->faker->dateTimeThisMonth(),
             'active' => true,
+            'value' => $this->faker->dateTimeThisMonth(),
             'misc' => [
                 'notes' => $this->faker->paragraph(),
-                'message' => $this->faker->paragraph(),
+                'subject' => $this->faker->sentence(),
+                'message' => $this->faker->paragraph(6),
                 'outcome' => $this->faker->randomElement([
                     'contacted',
                     'voicemail',
@@ -40,7 +43,7 @@ class LeadDetailsFactory extends Factory
                     'appointment',
                     'sale'
                 ]),
-                "user" => ['email' => $this->faker->email()]
+                "user" => ['email' => $email]
             ]
         ];
     }
