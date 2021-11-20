@@ -64,6 +64,7 @@ class ClientAccountProjector extends Projector
         $template = EmailTemplates::find($event->template);
         $detail = EmailTemplateDetails::create([
             'email_template_id' => $event->template,
+            'client_id' => $event->client,
             'detail' => 'created',
             'value' => $event->created,
         ]);
@@ -80,6 +81,7 @@ class ClientAccountProjector extends Projector
         // also set the email provider gateway slug
         EmailTemplateDetails::create([
             'email_template_id' => $event->template,
+            'client_id' => $event->client,
             'detail' => 'email_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
@@ -87,13 +89,13 @@ class ClientAccountProjector extends Projector
 
         // make client_details record
         ClientDetail::create([
-            'client_id' => $template->client_id,
+            'client_id' => $event->client,
             'detail' => 'email_template',
             'value' => $template->id,
         ]);
 
         ClientDetail::create([
-            'client_id' => $template->client_id,
+            'client_id' => $event->client,
             'detail' => 'email_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
@@ -106,6 +108,7 @@ class ClientAccountProjector extends Projector
         $template = SmsTemplates::find($event->template);
         $detail = SmsTemplateDetails::create([
             'sms_template_id' => $event->template,
+            'client_id' => $event->client,
             'detail' => 'created',
             'value' => $event->created,
         ]);
@@ -121,6 +124,7 @@ class ClientAccountProjector extends Projector
 
         SmsTemplateDetails::create([
             'sms_template_id' => $event->template,
+            'client_id' => $event->client,
             'detail' => 'sms_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']
@@ -128,13 +132,13 @@ class ClientAccountProjector extends Projector
 
         // make client_details record
         ClientDetail::create([
-            'client_id' => $template->client_id,
+            'client_id' => $event->client,
             'detail' => 'sms_template',
             'value' => $template->id,
         ]);
 
         ClientDetail::create([
-            'client_id' => $template->client_id,
+            'client_id' => $event->client,
             'detail' => 'sms_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']

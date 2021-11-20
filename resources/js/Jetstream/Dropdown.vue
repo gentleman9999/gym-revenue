@@ -5,7 +5,7 @@
         </div>
 
         <!-- Full Screen Dropdown Overlay -->
-        <div v-show="open" class="fixed inset-0 z-40 bg-gray-800 opacity-30" @click="open = false">
+        <div v-show="open" class="s inset-0 z-40 bg-gray-800 opacity-30" @click="open = false">
         </div>
 
         <transition
