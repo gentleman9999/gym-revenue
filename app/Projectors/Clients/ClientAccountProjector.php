@@ -5,6 +5,10 @@ namespace App\Projectors\Clients;
 use App\Actions\Jetstream\AddTeamMember;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\ClientDetail;
+use App\Models\Clients\Features\EmailCampaignDetails;
+use App\Models\Clients\Features\EmailCampaigns;
+use App\Models\Clients\Features\SmsCampaignDetails;
+use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplateDetails;
@@ -12,6 +16,10 @@ use App\Models\Comms\SmsTemplates;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
@@ -102,6 +110,54 @@ class ClientAccountProjector extends Projector
         ]);
     }
 
+    public function onEmailCampaignCreated(EmailCampaignCreated $event)
+    {
+        // Make Email Details Record
+        $template = EmailCampaigns::find($event->template);
+        $detail = EmailCampaignDetails::create([
+            'email_campaign_id' => $event->template,
+            'client_id' => $event->client,
+            'detail' => 'created',
+            'value' => $event->created,
+        ]);
+        if($event->created == 'auto')
+        {
+            $detail->misc = ['msg' => 'Template was auto-generated'];
+        }
+        else
+        {
+            $user = User::find($event->created);
+            $detail->misc = ['msg' => 'Template was created by '.$user->name.' on '.date('Y-m-d')];
+        }
+
+        // make client_details record
+        ClientDetail::create([
+            'client_id' => $event->client,
+            'detail' => 'email_campaign',
+            'value' => $template->id,
+        ]);
+    }
+
+    public function onEmailTemplateAssignedToEmailCampaign(EmailTemplateAssignedToEmailCampaign $event)
+    {
+        $detail = EmailCampaignDetails::create([
+            'email_campaign_id' => $event->campaign,
+            'detail' => 'template_assigned',
+            'value' =>$event->template,
+        ]);
+
+        if($event->user == 'auto')
+        {
+            $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
+        }
+        else
+        {
+            $user = User::find($event->user);
+            $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $created_by_user_id];
+        }
+        $detail->save();
+    }
+
     public function onSMSTemplateCreated(SMSTemplateCreated $event)
     {
         // Make Email Details Record
@@ -143,5 +199,53 @@ class ClientAccountProjector extends Projector
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']
         ]);
+    }
+
+    public function onSMSCampaignCreated(SMSCampaignCreated $event)
+    {
+        // Make Email Details Record
+        $template = SmsCampaigns::find($event->template);
+        $detail = SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->template,
+            'client_id' => $event->client,
+            'detail' => 'created',
+            'value' => $event->created,
+        ]);
+        if($event->created == 'auto')
+        {
+            $detail->misc = ['msg' => 'Template was auto-generated'];
+        }
+        else
+        {
+            $user = User::find($event->created);
+            $detail->misc = ['msg' => 'Template was created by '.$user->name.' on '.date('Y-m-d')];
+        }
+
+        // make client_details record
+        ClientDetail::create([
+            'client_id' => $event->client,
+            'detail' => 'sms_campaign',
+            'value' => $template->id,
+        ]);
+    }
+
+    public function onSMSTemplateAssignedToSMSCampaign(SMSTemplateAssignedToSMSCampaign $event)
+    {
+        $detail = SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->campaign,
+            'detail' => 'template_assigned',
+            'value' =>$event->template,
+        ]);
+
+        if($event->user == 'auto')
+        {
+            $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
+        }
+        else
+        {
+            $user = User::find($event->user);
+            $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $created_by_user_id];
+        }
+        $detail->save();
     }
 }

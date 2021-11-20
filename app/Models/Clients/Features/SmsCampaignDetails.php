@@ -19,6 +19,10 @@ class SmsCampaignDetails extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'client_id', 'sms_campaign_id', 'detail', 'value', 'misc', 'active'
+    ];
 
+    protected $casts = [
+        'misc' => 'array'
     ];
 }
