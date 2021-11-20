@@ -83,6 +83,24 @@ class MassCommunicationsController extends Controller
              */
             $results = $template_model;
         }
+        else
+        {
+            if(!$is_client_user)
+            {
+                $template_model = ($type == 'email') ? new EmailTemplates() : new SmsTemplates();
+                $template_model = $template_model->whereNull('client_id');
+                /**
+                 * STEPS
+                 * 2.
+                 * @todo - also add team_id if team_id or null if default team
+                 * @todo - if the team has scoped clubs, get the query's details for clubs and filter
+                 *
+                 */
+                $results = $template_model;
+            }
+        }
+
+
 
         return $results;
     }
@@ -189,7 +207,7 @@ class MassCommunicationsController extends Controller
             'data' => []
         ];
 
-        $templates_model = $this->setupTemplatesObject($is_client_user, 'email', $client_id);
+        $templates_model = $this->setupTemplatesObject($is_client_user, 'sms', $client_id);
 
         if(!empty($templates_model))
         {

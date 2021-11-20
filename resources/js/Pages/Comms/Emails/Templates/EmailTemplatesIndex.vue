@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="inner-template-index-content mt-4">
+            <div class="inner-template-index-content mt-4 pb-10">
                 <div class="template-table border-2 border-base-300 rounded-t-md">
                     <div class="flex flex-col bg-secondary rounded-t-md">
                         <div class="border-b-2 border-gray-300 py-4">
@@ -70,9 +70,38 @@
                             <jet-bar-table-data>Regular</jet-bar-table-data>
                             <jet-bar-table-data>{{ template.updated_at }}</jet-bar-table-data>
                             <jet-bar-table-data>{{ template.created_by_user_id }}</jet-bar-table-data>
-                            <jet-bar-table-data>
-                                <font-awesome-icon :icon="['far', 'ellipsis-h']" size="24"/>
+                            <jet-bar-table-data><div class="ml-3 relative">
+                                <jet-dropdown align="right" width="40">
+                                    <template #trigger>
+                                        <span class="inline-flex rounded-md">
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
+                                                <font-awesome-icon :icon="['far', 'ellipsis-h']" size="24"/>
+                                            </button>
+                                        </span>
+                                    </template>
+                                    <template #content>
+                                        <div class="w-60">
+                                            <div class="block px-4 py-2 text-xs ">
+                                                Available Actions
+                                                <br />
+                                            </div>
+                                            <div class="h-40 lg:h-auto overflow-y-scroll">
+                                                <template v-for="(option, slug) in actionOptions" :key="slug">
+                                                    <form @submit.prevent="option.click">
+                                                        <jet-dropdown-link as="button">
+                                                            <div class="flex items-center">
+                                                                <div>{{ option.label }}</div>
+                                                            </div>
+                                                        </jet-dropdown-link>
+                                                    </form>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </jet-dropdown>
+                            </div>
                             </jet-bar-table-data>
+
                         </tr>
                     </gym-revenue-table>
                 </div>
@@ -142,7 +171,26 @@ export default defineComponent({
             }
 
             return [];
+        },
+        actionOptions() {
+            return {
+                edit: {
+                    url: '#',
+                    label: 'Edit',
+                    click: () => this.comingSoon(),
+                },
+                selfSend: {
+                    url: '#',
+                    label: 'Send You a Test Email',
+                    click: () => this.comingSoon(),
+                },
+                delete: {
+                    url: '#',
+                    label: 'Delete',
+                    click: () => this.comingSoon(),
+                },
 
+            }
         }
     },
     methods: {

@@ -50,6 +50,10 @@
                         </div>
                     </div>
                     <gym-revenue-table :headers="tableHeaders">
+                        <template #prethead>
+                            <div class="p-4 bg-base-100"></div>
+                            <div class="p-4 bg-base-100"></div>
+                        </template>
                         <tr class="hover:bg-base-100" v-if="templates.data.length === 0">
                             <jet-bar-table-data></jet-bar-table-data>
                             <jet-bar-table-data></jet-bar-table-data>
@@ -57,6 +61,47 @@
                             <jet-bar-table-data>No Data Available.</jet-bar-table-data>
                             <jet-bar-table-data></jet-bar-table-data>
                             <jet-bar-table-data></jet-bar-table-data>
+                        </tr>
+                        <tr class="hover:bg-base-100" v-else v-for="(template, idx) in templates.data" :key="idx">
+                            <jet-bar-table-data>{{ template.name }}</jet-bar-table-data>
+                            <jet-bar-table-data>
+                                <div class="badge" :class="badgeClasses(template.active)">{{ (template.active) ? 'Live' : 'Draft' }}</div>
+                            </jet-bar-table-data>
+                            <jet-bar-table-data>Regular</jet-bar-table-data>
+                            <jet-bar-table-data>{{ template.updated_at }}</jet-bar-table-data>
+                            <jet-bar-table-data>{{ template.created_by_user_id }}</jet-bar-table-data>
+                            <jet-bar-table-data><div class="ml-3 relative">
+                                <jet-dropdown align="right" width="40">
+                                    <template #trigger>
+                                        <span class="inline-flex rounded-md">
+                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
+                                                <font-awesome-icon :icon="['far', 'ellipsis-h']" size="24"/>
+                                            </button>
+                                        </span>
+                                    </template>
+                                    <template #content>
+                                        <div class="w-60">
+                                            <div class="block px-4 py-2 text-xs ">
+                                                Available Actions
+                                                <br />
+                                            </div>
+                                            <div class="h-40 lg:h-auto overflow-y-scroll">
+                                                <template v-for="(option, slug) in actionOptions" :key="slug">
+                                                    <form @submit.prevent="option.click">
+                                                        <jet-dropdown-link as="button">
+                                                            <div class="flex items-center">
+                                                                <div>{{ option.label }}</div>
+                                                            </div>
+                                                        </jet-dropdown-link>
+                                                    </form>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </jet-dropdown>
+                            </div>
+                            </jet-bar-table-data>
+
                         </tr>
                     </gym-revenue-table>
                 </div>
@@ -77,10 +122,10 @@ import JetBarTableData from "@/Components/JetBarTableData";
 import GymRevenueTable from "@/Components/GymRevenueTable";
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDoubleLeft } from '@fortawesome/pro-regular-svg-icons'
+import { faChevronDoubleLeft, faEllipsisH } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import mapValues from "lodash/mapValues";
-library.add(faChevronDoubleLeft)
+library.add(faChevronDoubleLeft, faEllipsisH)
 
 export default defineComponent({
     name: "SMSTemplatesIndex",
@@ -114,6 +159,26 @@ export default defineComponent({
 
             return [];
 
+        },
+        actionOptions() {
+            return {
+                edit: {
+                    url: '#',
+                    label: 'Edit',
+                    click: () => this.comingSoon(),
+                },
+                selfSend: {
+                    url: '#',
+                    label: 'Send You a Test Text',
+                    click: () => this.comingSoon(),
+                },
+                del: {
+                    url: '#',
+                    label: 'Delete',
+                    click: () => this.comingSoon(),
+                },
+
+            }
         }
     },
     methods: {
@@ -127,6 +192,13 @@ export default defineComponent({
         },
         reset() {
             this.form = mapValues(this.form, () => null)
+        },
+        badgeClasses(status) {
+            return {
+                'badge-success': status,
+                'badge-warning': !status,
+
+            }
         },
     },
     mounted() {}

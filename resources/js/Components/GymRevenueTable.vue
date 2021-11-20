@@ -4,7 +4,7 @@
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="shadow overflow-hidden border-b border-base-100">
                     <slot name="prethead" />
-                    <div class="py-4 px-4">
+                    <div class="pt-4 pb-40 px-4">
                         <table class="min-w-full divide-y divide-base-100">
                             <thead class="bg-secondary">
                                 <tr class="rounded-md">
