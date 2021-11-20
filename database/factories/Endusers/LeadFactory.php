@@ -24,13 +24,18 @@ class LeadFactory extends Factory
      */
     public function definition()
     {
+        $first_name = $this->faker->firstName();
+        $last_name = $this->faker->lastName();
+        $username = "{$first_name}.{$last_name}";
+        $domain = $this->faker->freeEmailDomain;
+        $email = "{$username}@{$domain}";
         return [
             'id' => Uuid::uuid4()->toString(),
             'client_id' => 0,
             'gr_location_id' => 'CB01',
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email,
             'mobile_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()) ,
             'ip_address' => $this->faker->ipv4(),
             'lead_type' => 'free_trial'

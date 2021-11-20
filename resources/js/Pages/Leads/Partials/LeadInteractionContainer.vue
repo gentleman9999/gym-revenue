@@ -90,22 +90,7 @@
 
                     <template #form>
                         <div class="col-span-6">
-                            <ul class="w-full">
-                                <li class="mb-4" v-for="detail in dynamicDetails">
-                                    <p v-if="detail.field === 'manual_create'"><b>Lead Was Manually Created inside GymRevenue By {{ detail.value }} On -</b> {{ detail.created_at }}</p>
-                                    <p v-if="detail.field === 'claimed'"><b>Lead Claimed By {{ detail.misc['user_id'] }} On -</b> {{ detail.created_at }}</p>
-                                    <p v-if="detail.field === 'created'"><b>Lead Created On -</b> {{ detail.value }}</p>
-                                    <p v-if="detail.field === 'updated'"><b>Lead Updated On -</b> {{ detail.created_at }} by {{ detail.value }}</p>
-                                    <p v-if="detail.field === 'emailed_by_rep'"><b>Lead Was Emailed On -</b> {{ detail.created_at }} by {{ detail.misc['user_email'] }}</p>
-                                    <p v-if="detail.field === 'emailed_by_rep'"><b>Subject - </b> {{ detail.misc.subject }}</p>
-                                    <p class="mb-4" v-if="detail.field === 'emailed_by_rep'"><b>Message - </b> {{ detail.misc.message }}</p>
-                                    <p v-if="detail.field === 'called_by_rep'"><b>Lead Was Called On -</b> {{ detail.created_at }} by {{ detail.misc['user_email'] }}</p>
-                                    <p v-if="detail.field === 'called_by_rep'"><b>Outcome - </b> {{ detail.misc.outcome }}</p>
-                                    <p class="mb-4" v-if="detail.field === 'called_by_rep'"><b>Notes - </b> {{ detail.misc.notes }}</p>
-                                    <p v-if="detail.field === 'sms_by_rep'"><b>Lead Was Text Messaged On -</b> {{ detail.created_at }} by {{ detail.misc['user_email'] }}</p>
-                                    <p class="mb-4" v-if="detail.field === 'sms_by_rep'"><b>Message - </b> {{ detail.misc.message }}</p>
-                                </li>
-                            </ul>
+                            <CommsHistory :details="details"/>
                         </div>
                     </template>
                 </form-section>
@@ -114,15 +99,24 @@
     </div>
 </template>
 
+<!--<style scoped>-->
+
+<!--.steps .step:before{-->
+<!--    @apply bg-primary;-->
+<!--}-->
+<!--</style>-->
+
 <script>
 import { defineComponent } from 'vue'
 import JetInput from '@/Jetstream/Input.vue';
 import JetButton from '@/Jetstream/Button.vue';
 import FormSection from '@/Jetstream/FormSection.vue'
+import CommsHistory from "./CommsHistory";
 
 export default defineComponent({
     name: "LeadInteractionContainer",
     components: {
+        CommsHistory,
         JetInput,
         JetButton,
         FormSection
@@ -349,6 +343,3 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-
-</style>
