@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Comm;
 
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
+use App\Models\Clients\Features\EmailCampaigns;
+use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -54,6 +57,48 @@ class MassCommunicationsController extends Controller
                 'admins' => 10,
                 'employees' => 15
             ];
+        }
+
+        return $results;
+    }
+
+    private function setupCampaignsObject(bool $is_client_user, string $type, string $client_id = null)
+    {
+        $results = [];
+
+        if((!is_null($client_id)))
+        {
+            // Get the current client or its cape and bay
+            $current_team = request()->user()->currentTeam()->first();
+            $client = Client::whereId($client_id)->with('default_team_name')->first();
+
+            // Get the correct Model
+            $template_model = ($type == 'email') ? new EmailCampaigns() : new SmsCampaigns();
+            // Query for all templates with that client id
+            $template_model = $template_model->whereClientId($client_id);
+
+            /**
+             * STEPS
+             * 2.
+             * @todo - also add team_id if team_id or null if default team
+             * @todo - if the team has scoped clubs, get the query's details for clubs and filter
+             *
+             */
+            $results = $template_model;
+        }
+        else {
+            if (!$is_client_user) {
+                $template_model = ($type == 'email') ? new EmailCampaigns() : new SmsCampaigns();
+                $template_model = $template_model->whereNull('client_id');
+                /**
+                 * STEPS
+                 * 2.
+                 * @todo - also add team_id if team_id or null if default team
+                 * @todo - if the team has scoped clubs, get the query's details for clubs and filter
+                 *
+                 */
+                $results = $template_model;
+            }
         }
 
         return $results;
@@ -191,9 +236,27 @@ class MassCommunicationsController extends Controller
 
     public function ec_index()
     {
+        $client_id = request()->user()->currentClientId();
+        $is_client_user = request()->user()->isClientUser();
+
+        $page_count = 10;
+        $campaigns = [
+            'data' => []
+        ];
+
+        $campaigns_model = $this->setupCampaignsObject($is_client_user, 'email', $client_id);
+
+        if(!empty($campaigns_model))
+        {
+            $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
+                ->filter(request()->only('search', 'trashed'))
+                ->paginate($page_count);
+        }
+
         return Inertia::render('Comms/Emails/Campaigns/EmailCampaignsIndex', [
             'title' => 'Email Campaigns',
-            'filters' => request()->all('search', 'trashed')
+            'filters' => request()->all('search', 'trashed'),
+            'campaigns' => $campaigns
         ]);
     }
 
@@ -225,9 +288,27 @@ class MassCommunicationsController extends Controller
 
     public function sc_index()
     {
+        $client_id = request()->user()->currentClientId();
+        $is_client_user = request()->user()->isClientUser();
+
+        $page_count = 10;
+        $campaigns = [
+            'data' => []
+        ];
+
+        $campaigns_model = $this->setupCampaignsObject($is_client_user, 'sms', $client_id);
+
+        if(!empty($campaigns_model))
+        {
+            $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
+            ->filter(request()->only('search', 'trashed'))
+                ->paginate($page_count);
+        }
+
         return Inertia::render('Comms/SMS/Campaigns/SmsCampaignsIndex', [
             'title' => 'SMS Templates',
-            'filters' => request()->all('search', 'trashed')
+            'filters' => request()->all('search', 'trashed'),
+            'campaigns' => $campaigns
         ]);
     }
 }
