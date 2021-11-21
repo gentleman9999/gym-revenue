@@ -5,7 +5,7 @@
             <p><i>Enter a subject and a message in the body and click Create Message to send to your customer.</i></p>
             <div class="flex flex-col mb-4">
                 <label>Email Subject</label>
-                <input class="form-control" v-model="emailSubject" type="text" />
+                <input class="form-control" v-model="emailSubject" type="text"/>
             </div>
             <div class="flex flex-col mb-4">
                 <label>Email Message</label>
@@ -14,7 +14,8 @@
         </div>
         <div v-if="activeContactMethod === 'phone'">
             <p>Contact Via Phone Call</p>
-            <p><i>Use the text box below to jot down notes during the call with your customer. On your phone, or voice-enabled browser, click "Call Lead" to contact them instantly!</i></p>
+            <p><i>Use the text box below to jot down notes during the call with your customer. On your phone, or
+                voice-enabled browser, click "Call Lead" to contact them instantly!</i></p>
             <div class="flex flex-col mb-4">
                 <label>Call Outcome</label>
                 <select class="form-control" v-model="phoneCallOption">
@@ -28,7 +29,8 @@
         </div>
         <div v-if="activeContactMethod === 'sms'">
             <p> Contact Via SMS</p>
-            <p><i>This feature is best utilized to remind them of their upcoming appointment or to send them their enrollment URL.</i></p>
+            <p><i>This feature is best utilized to remind them of their upcoming appointment or to send them their
+                enrollment URL.</i></p>
             <div>
                 <label>Message</label>
                 <textarea class="form-control" v-model="smsMsg" rows="4" cols="40" :maxlength="charLimit"></textarea>
@@ -39,20 +41,28 @@
         </div>
         <div v-if="activeContactMethod !== ''">
             <div class="flex flex-row">
-                <div class="mr-4" v-if="activeContactMethod === 'phone'"><jet-button type="button" warning @click="callLead()"><i class="fad fa-phone-volume"></i> Call Lead</jet-button></div>
-                <div class="mr-4"><jet-button type="button" success @click="submitLog()"><i class="fad fa-books-medical"></i> {{ submitText }}</jet-button></div>
-                <div class="mr-4"><jet-button type="button" error @click="clearForm()"><i class="fad fa-trash"></i> Clear </jet-button></div>
+                <div class="mr-4" v-if="activeContactMethod === 'phone'">
+                    <jet-button type="button" warning @click="callLead()"><i class="fad fa-phone-volume"></i> Call Lead
+                    </jet-button>
+                </div>
+                <div class="mr-4">
+                    <jet-button type="button" success @click="submitLog()"><i class="fad fa-books-medical"></i>
+                        {{ submitText }}
+                    </jet-button>
+                </div>
+                <div class="mr-4">
+                    <jet-button type="button" error @click="clearForm()"><i class="fad fa-trash"></i> Clear</jet-button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import JetInput from '@/Jetstream/Input.vue';
 import JetButton from '@/Jetstream/Button.vue';
 import FormSection from '@/Jetstream/FormSection.vue'
-import CommsHistory from "./CommsHistory";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faUserCircle} from '@fortawesome/pro-solid-svg-icons';
 import {library} from "@fortawesome/fontawesome-svg-core";
@@ -66,7 +76,7 @@ export default defineComponent({
         FormSection,
         FontAwesomeIcon
     },
-    props: ['activeContactMethod', 'userId','leadId' , 'details'],
+    props: ['activeContactMethod', 'userId', 'leadId', 'details'],
     watch: {
         smsMsg(msg) {
             this.charsUsed = msg.length;
@@ -100,8 +110,7 @@ export default defineComponent({
         submitText() {
             let text = '';
 
-            switch(this.activeContactMethod)
-            {
+            switch (this.activeContactMethod) {
                 case 'email':
                     text = 'Create Message';
                     break;
@@ -132,16 +141,17 @@ export default defineComponent({
         },
         submitLog() {
             let _this = this;
-            switch(this.activeContactMethod) {
+            switch (this.activeContactMethod) {
                 case 'email':
                     axios.post(`/data/leads/contact/${this.leadId}`, {
                         //'user_id': this.userId,
                         subject: this.emailSubject,
                         message: this.emailBody,
                         method: this.activeContactMethod
-                    }, ).then(({data}) => {
-                        if(data.success) {
+                    },).then(({data}) => {
+                        if (data.success) {
                             alert('Sweet!');
+                            console.log(_this.details)
                             let newDetails = [];
                             newDetails.push({
                                 id: 'temp',
@@ -156,22 +166,21 @@ export default defineComponent({
                                 'created_at': data.time
                             })
 
-                            for(let x in _this.dynamicDetails) {
+                            for (let x in _this.dynamicDetails) {
                                 newDetails.push(_this.dynamicDetails[x])
                             }
                             _this.dynamicDetails = newDetails;
-                        }
-                        else {
-                            if('message' in data) {
+                        } else {
+                            if ('message' in data) {
                                 alert(data.message);
-                            }
-                            else {
+                            } else {
                                 alert('Your email was not saved or executed. Please try again');
                             }
                         }
 
                     })
                         .catch(err => {
+                            console.error(err);
                             alert('Ooops an error prevents us from sending your email. Please try again!')
                         })
                     break;
@@ -183,7 +192,7 @@ export default defineComponent({
                         notes: this.phoneCallNotes,
                         method: this.activeContactMethod
                     },).then(({data}) => {
-                        if(data.success) {
+                        if (data.success) {
                             alert('Awesome!')
                             let newDetails = [];
                             newDetails.push({
@@ -199,21 +208,20 @@ export default defineComponent({
                                 'created_at': data.time
                             })
 
-                            for(let x in _this.dynamicDetails) {
+                            for (let x in _this.dynamicDetails) {
                                 newDetails.push(_this.dynamicDetails[x])
                             }
                             _this.dynamicDetails = newDetails;
-                        }
-                        else {
-                            if('message' in data) {
+                        } else {
+                            if ('message' in data) {
                                 alert(data.message);
-                            }
-                            else {
+                            } else {
                                 alert('Your phone call was not saved or executed. Please try again');
                             }
                         }
                     })
                         .catch(err => {
+                            console.error(err);
                             alert('Ooops an error prevents us from logging your phone call. Please try again!')
                         })
                     break;
@@ -224,7 +232,7 @@ export default defineComponent({
                         message: this.smsMsg,
                         method: this.activeContactMethod
                     }).then(({data}) => {
-                        if(data.success) {
+                        if (data.success) {
                             alert('Bodacious!')
                             let newDetails = [];
                             newDetails.push({
@@ -239,21 +247,20 @@ export default defineComponent({
                                 'created_at': data.time
                             })
 
-                            for(let x in _this.dynamicDetails) {
+                            for (let x in _this.dynamicDetails) {
                                 newDetails.push(_this.dynamicDetails[x])
                             }
                             _this.dynamicDetails = newDetails;
-                        }
-                        else {
-                            if('message' in data) {
+                        } else {
+                            if ('message' in data) {
                                 alert(data.message);
-                            }
-                            else {
+                            } else {
                                 alert('Your text message was not saved or executed. Please try again');
                             }
                         }
                     })
                         .catch(err => {
+                            console.error(err);
                             alert('Ooops an error prevents us from sending your text message. Please try again!')
                         })
                     break;
