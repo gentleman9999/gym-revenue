@@ -26,17 +26,17 @@
                 <div class="flex flex-row items-center mb-4">
                     <div class="hidden space-x-8 sm:-my-px sm:flex pt-6">
                         <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                           href="">Dashboard</a>
+                           href="#" @click="comingSoon()">Dashboard</a>
                         <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                           href="">Calendar</a>
+                           href="#" @click="comingSoon()">Calendar</a>
                         <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                           href="">Leads</a>
+                           href="#" @click="comingSoon()">Leads</a>
                         <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                           href="">Tasks</a>
+                           href="#" @click="comingSoon()">Tasks</a>
                         <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                           href="">Contacts</a>
+                           href="#" @click="comingSoon()">Contacts</a>
                         <a class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                           href="">Consultants</a>
+                           href="#" @click="comingSoon()">Consultants</a>
                     </div>
 
                     <div class="flex-grow"/>
@@ -235,6 +235,14 @@ export default defineComponent({
             } else {
                 console.log('Unable to execute assign on this lead!');
             }
+        },
+        comingSoon() {
+            new Noty({
+                type: 'warning',
+                theme: 'sunset',
+                text: 'Feature Coming Soon!',
+                timeout: 7500
+            }).show();
         }
     },
     mounted() {
