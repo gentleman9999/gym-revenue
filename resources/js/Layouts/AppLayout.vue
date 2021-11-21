@@ -26,9 +26,11 @@
                             <!-- Replace with your content -->
                             <div>
                                 <!-- Content -->
-                                <div class="min-h-full lg:min-h-96 px-4 sm:px-0">
-                                    <slot></slot>
-                                </div>
+                                <transition name="page">
+                                    <div v-if="animate" class="min-h-full lg:min-h-96 px-4 sm:px-0">
+                                        <slot></slot>
+                                    </div>
+                                </transition>
                                 <!-- End Content -->
                             </div>
                             <!-- /End replace -->
@@ -41,8 +43,21 @@
     </div>
 </template>
 
+<style>
+.page-enter-active,
+.page-leave-active {
+    transition: all .6s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+    opacity: 0;
+}
+
+</style>
+
 <script>
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref, onMounted} from 'vue'
 import JetApplicationMark from '@/Jetstream/ApplicationMark'
 import JetBanner from '@/Jetstream/Banner'
 import JetNavLink from '@/Jetstream/NavLink'
@@ -70,6 +85,8 @@ export default defineComponent({
         title: String,
     },
     setup() {
+        const animate = ref(false);
+        onMounted(()=>animate.value=true);
         const showingSidebar = ref(true);
         const showingNavigationDropdown = ref(false);
         const showingNotificationDropdown = ref(false);
@@ -81,7 +98,29 @@ export default defineComponent({
            sideNav.value.toggle();
         };
 
-        return {showingSidebar, showingNavigationDropdown, showingNotificationDropdown, toggleSideNav, sideNav};
+        return {showingSidebar, showingNavigationDropdown, showingNotificationDropdown, toggleSideNav, sideNav, animate};
+    },
+    methods: {
+        beforeLeave(el) {
+            console.log("before leave");
+        },
+        beforeEnter(el) {
+            console.log("before enter");
+        },
+        enter(el, done) {
+            console.log("entered");
+            done();
+        },
+        afterEnter(el) {
+            console.log("after entered");
+        },
+        // burgerIsClicked(menuIsOpen) {
+        //     this.showMobileMenu = menuIsOpen;
+        // },
+        // footerLoaded() {
+        //     //console.log("Footer is loaded");
+        //     this.loading = false;
+        // },
     }
 })
 </script>
