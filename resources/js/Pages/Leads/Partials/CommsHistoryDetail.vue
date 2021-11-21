@@ -73,7 +73,8 @@ import { computed} from 'vue';
 export default {
     props: {
         detail: {
-            type: Object
+            type: Object,
+            required: true
         }
     },
     setup(props) {

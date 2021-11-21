@@ -71,9 +71,10 @@
                             <jet-bar-badge :text="checkClaimDetail(idx)" :type="checkClaimDetailColor(idx)"/>
                         </div>
 
-                        <button class=" hover:" v-if="!lead?.deleted_at" @click="launchModal(idx)">
+                        <Link class=" hover:"
+                              :href="route('data.leads.show', lead.id)" v-if="!lead?.deleted_at">
                             <jet-bar-icon type="message" fill/>
-                        </button>
+                        </Link>
                         <Link class=" hover:"
                               :href="route('data.leads.edit', lead.id)" v-if="!lead?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
@@ -82,21 +83,6 @@
                 </tr>
             </jet-bar-table>
             <pagination class="mt-6" :links="leads.links"/>
-
-            <sweet-modal title="Lead Interactions" width="85%" ref="showViewModal" overlayTheme="dark"
-                         modal-theme="dark"
-                         enable-mobile-fullscreen
-                         @close="activeLead = ''">
-                <lead-interaction v-if="activeLead !== ''" :lead-id="leads.data[activeLead].id"
-                                  :user-id="$page.props.user.id"
-                                  :first-name="leads.data[activeLead].first_name"
-                                  :last-name="leads.data[activeLead].last_name"
-                                  :email="leads.data[activeLead].email"
-                                  :phone="leads.data[activeLead].mobile_phone"
-                                  :details="leads.data[activeLead]['details_desc']"
-                ></lead-interaction>
-                <!-- <iframe width="100%" height="415" :src="route('data.leads.show', this.activeLead)" frameborder="0" allowfullscreen></iframe> -->
-            </sweet-modal>
         </jet-bar-container>
     </app-layout>
 </template>
@@ -120,7 +106,6 @@ import SearchFilter from "@/Components/SearchFilter";
 import pickBy from 'lodash/pickBy'
 import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
-import SweetModal from "../../Components/SweetModal3/SweetModal";
 import LeadInteraction from "./Partials/LeadInteractionContainer"
 
 export default defineComponent({
@@ -139,7 +124,6 @@ export default defineComponent({
         JetBarIcon,
         Pagination,
         SearchFilter,
-        SweetModal,
         LeadInteraction
     },
     props: ['leads', 'title', 'isClientUser', 'filters'],
@@ -191,10 +175,6 @@ export default defineComponent({
         },
         reset() {
             this.form = mapValues(this.form, () => null)
-        },
-        launchModal(pos) {
-            this.activeLead = pos;
-            this.$refs.showViewModal.open();
         },
         checkClaimDetail(pos) {
             let result = 'Available'

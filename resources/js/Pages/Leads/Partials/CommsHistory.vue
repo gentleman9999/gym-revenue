@@ -18,7 +18,8 @@ export default {
     },
     props: {
         details: {
-            type: Array
+            type: Array,
+            required: true
         }
     },
     setup(props) {

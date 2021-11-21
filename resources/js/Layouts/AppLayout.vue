@@ -3,7 +3,7 @@
         <Head :title="title"/>
         <jet-banner/>
         <div class="font-sans antialiased min-h-screen">
-            <top-nav @toggle-side-nav="toggleSideNav"/>
+            <top-nav @toggle-side-nav="toggleSideNav" />
             <div class="font-sans antialiased">
                 <jet-banner/>
 
@@ -74,13 +74,14 @@ export default defineComponent({
         const showingNavigationDropdown = ref(false);
         const showingNotificationDropdown = ref(false);
 
-        const sideNav = ref();
+        const sideNav = ref(null);
 
         const toggleSideNav = () => {
+            // console.log('Toggle Size Nav', sideNav);
            sideNav.value.toggle();
         };
 
-        return {showingSidebar, showingNavigationDropdown, showingNotificationDropdown, toggleSideNav};
+        return {showingSidebar, showingNavigationDropdown, showingNotificationDropdown, toggleSideNav, sideNav};
     }
 })
 </script>

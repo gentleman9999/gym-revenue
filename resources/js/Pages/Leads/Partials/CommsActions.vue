@@ -66,7 +66,7 @@ export default defineComponent({
         FormSection,
         FontAwesomeIcon
     },
-    props: ['activeContactMethod', 'userId','leadId', 'firstName', 'lastName', 'email', 'phone', 'details'],
+    props: ['activeContactMethod', 'userId','leadId' , 'details'],
     watch: {
         smsMsg(msg) {
             this.charsUsed = msg.length;
@@ -97,18 +97,6 @@ export default defineComponent({
         }
     },
     computed: {
-        claimedByUser() {
-            let r = false;
-
-            for(let idx in this.details) {
-                let d = this.details[idx];
-                if(d.field === 'claimed') {
-                    r = (d.value == this.userId);
-                }
-            }
-
-            return r;
-        },
         submitText() {
             let text = '';
 

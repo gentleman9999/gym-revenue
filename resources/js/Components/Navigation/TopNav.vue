@@ -138,18 +138,8 @@
                 <div class="-mr-2 flex items-center sm:hidden">
                     <button
                         @click="toggleSideNav"
-                        class="
-              inline-flex
-              items-center
-              justify-center
-              p-2
-              rounded-md
-
-              hover:bg-base-100
-              focus:outline-none focus:bg-base-100 focus:
-              transition
-            "
-                    >
+                        class="p-4 inline-flex items-center justify-center p-2 rounded-md hover:bg-base-100 focus:outline-none focus:bg-base-100 focus: transition"
+>
                         <svg
                             class="h-6 w-6"
                             stroke="currentColor"
@@ -225,7 +215,7 @@ export default defineComponent({
     props: {
         title: String,
     },
-    setup(props, {emit}){
+    setup(props, {emit}) {
 
         const showingSidebar = ref(false);
         const showingNavigationDropdown = ref(false);
@@ -253,7 +243,7 @@ export default defineComponent({
             logout,
             comingSoon,
             toggleSideNav
-         };
+        };
     }
 });
 </script>

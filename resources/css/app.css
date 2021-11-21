@@ -5,6 +5,9 @@
 body {
     @apply relative bg-gradient-to-b from-base-300 to-base-100;
 }
+.sweet-modal-overlay{
+    @apply mt-16;
+}
 
 /* Apply defaults to forms */
 [type='text'] {
