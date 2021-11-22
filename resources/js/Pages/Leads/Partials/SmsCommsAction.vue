@@ -1,18 +1,16 @@
 <template>
     <base-comms-action :lead-id="leadId" submit-text="Send Message" :form="form" @done="$emit('done')">
+        <div v-if="!hideHelpText">
+            <p> Contact Via SMS</p>
+            <p><i>This feature is best utilized to remind them of their upcoming appointment or to send them their
+                enrollment URL.</i></p>
+        </div>
         <div>
-            <div v-if="!hideHelpText">
-                <p> Contact Via SMS</p>
-                <p><i>This feature is best utilized to remind them of their upcoming appointment or to send them their
-                    enrollment URL.</i></p>
-            </div>
-            <div>
-                <label>Message</label>
-                <textarea class="form-control" v-model="form.message" rows="4" cols="40"
-                          :maxlength="charLimit"></textarea>
-                <div class="col-md-12" style="text-align: right">
-                    <small>Character Count - {{ charsUsed }}/{{ charLimit }}</small>
-                </div>
+            <label>Message</label>
+            <textarea class="form-control w-full" v-model="form.message" rows="4" cols="40"
+                      :maxlength="charLimit"></textarea>
+            <div class="col-md-12" style="text-align: right">
+                <small>Character Count - {{ charsUsed }}/{{ charLimit }}</small>
             </div>
         </div>
     </base-comms-action>

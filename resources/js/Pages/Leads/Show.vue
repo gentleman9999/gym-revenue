@@ -1,5 +1,8 @@
 <template>
     <app-layout :title="title">
+        <div v-if="$page.flash" class="red">
+            {{ JSON.stringify($page.flash )}}
+        </div>
         <jet-bar-container>
             <lead-interaction :lead-id="lead.id"
                               :user-id="$page.props.user.id"
@@ -31,7 +34,7 @@ export default defineComponent({
             type:Object,
             required: true
         }
-    }
+    },
 });
 </script>
 

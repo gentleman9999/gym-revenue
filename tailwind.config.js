@@ -1,9 +1,9 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 const plugin = require('tailwindcss/plugin');
 
-// const colors = require('tailwindcss/colors');
+const colors = require('tailwindcss/colors');
 //add default to colors so we don't always need -500 for base shade
-// Object.entries(colors).forEach(([name, color]) => color.DEFAULT = color[500]);
+Object.entries(colors).forEach(([name, color]) => color.DEFAULT = color[500]);
 
 module.exports = {
     dark: false,
@@ -23,6 +23,7 @@ module.exports = {
     ],
     theme: {
         extend: {
+            colors,
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },

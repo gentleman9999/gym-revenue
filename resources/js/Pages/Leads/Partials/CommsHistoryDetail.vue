@@ -54,15 +54,15 @@
         </div>
         <div class="response"  v-if="detail.field === 'emailed_by_rep'">
             <h1 class="">Reply</h1>
-            <email-comms-action :lead-id="detail.lead_id" hide-help-text hide-subject :subject="detail.misc.subject"/>
+            <email-comms-action :lead-id="detail.lead_id" hide-help-text hide-subject :subject="detail.misc.subject" @done="$emit('done')"/>
         </div>
         <div class="response"  v-if="detail.field === 'called_by_rep'">
             <h1 class="">Follow Up</h1>
-            <phone-comms-action :lead-id="detail.lead_id" :phone="detail.phone" hide-help-text/>
+            <phone-comms-action :lead-id="detail.lead_id" :phone="detail.phone" hide-help-text @done="$emit('done')"/>
         </div>
         <div class="response"  v-if="detail.field === 'sms_by_rep'">
             <h1 class="">Reply</h1>
-            <sms-comms-action :lead-id="detail.lead_id" hide-help-text/>
+            <sms-comms-action :lead-id="detail.lead_id" hide-help-text @done="$emit('done')"/>
         </div>
     </div>
 </template>
@@ -99,6 +99,7 @@ export default {
             required: true
         }
     },
+    emits: ['done'],
     setup(props) {
         const heading = computed(() => {
             switch (props.detail.field) {

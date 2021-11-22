@@ -1,5 +1,5 @@
 <template>
-    <li class="step step-primary hover:bg-base-100 py-4 cursor-pointer w-32">
+    <li class="step step-primary hover:bg-base-100 py-4 cursor-pointer w-32 rounded transition-colors duration-300 ease-in-out" :class="{active}">
         <div class="after">
             <font-awesome-icon :icon="icon"/>
         </div>
@@ -10,6 +10,9 @@
     </li>
 </template>
 <style scoped>
+.step.active{
+    @apply bg-success;
+}
 .step::after {
     content: unset;
 }
@@ -52,6 +55,10 @@ export default {
         detail: {
             type: Object,
             required: true
+        },
+        active: {
+            type: Boolean,
+            default: false,
         }
     },
     setup(props) {

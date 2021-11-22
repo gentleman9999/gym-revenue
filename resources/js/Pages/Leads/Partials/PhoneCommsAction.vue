@@ -1,21 +1,19 @@
 <template>
     <base-comms-action :lead-id="leadId" submit-text="Submit" :form="form" @done="$emit('done')">
-        <div>
-            <div v-if="!hideHelpText">
-                <p>Contact Via Phone Call</p>
-                <p><i>Use the text box below to jot down notes during the call with your customer. On your phone, or
-                    voice-enabled browser, click "Call Lead" to contact them instantly!</i></p>
-            </div>
-            <div class="flex flex-col mb-4">
-                <label>Call Outcome</label>
-                <select class="form-control" v-model="form.outcome">
-                    <option v-for="(txt, val) in phoneCallOptions" :value="val">{{ txt }}</option>
-                </select>
-            </div>
-            <div class="flex flex-col mb-4">
-                <label>Call Log/Notes</label>
-                <textarea class="form-control" v-model="form.notes" rows="4" cols="38"></textarea>
-            </div>
+        <div v-if="!hideHelpText">
+            <p>Contact Via Phone Call</p>
+            <p><i>Use the text box below to jot down notes during the call with your customer. On your phone, or
+                voice-enabled browser, click "Call Lead" to contact them instantly!</i></p>
+        </div>
+        <div class="flex flex-col mb-4">
+            <label>Call Outcome</label>
+            <select class="form-control" v-model="form.outcome">
+                <option v-for="(txt, val) in phoneCallOptions" :value="val">{{ txt }}</option>
+            </select>
+        </div>
+        <div class="flex flex-col mb-4">
+            <label>Call Log/Notes</label>
+            <textarea class="form-control" v-model="form.notes" rows="4" cols="38"></textarea>
         </div>
         <template #buttons>
             <div class="mr-4">

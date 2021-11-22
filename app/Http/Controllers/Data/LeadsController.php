@@ -315,11 +315,6 @@ class LeadsController extends Controller
 //            TODO: flash error
 //            $results['message'] = 'Could not find the lead requested.';
         }
-//
-//        return Inertia::render('Leads/Show', [
-//            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
-//        ]);
-//        Redirect::route('data.leads.show', ['id' => $lead_id]);
-        return redirect()->back();
+        return redirect()->back()->with('lead.selectedDetailIndex', 0);
     }
 }
