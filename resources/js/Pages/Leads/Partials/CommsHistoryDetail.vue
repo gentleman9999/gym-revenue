@@ -2,9 +2,9 @@
     <div>
         <div class="header">
             <h1>{{ heading }}</h1>
-            <p>{{date}}</p>
-            <p v-if="detail?.misc?.user?.email">REP: {{detail.misc.user.email}}</p>
-            <p v-else-if="detail?.misc?.user_id">REP: {{detail.misc.user_id}}</p>
+            <p>{{ date }}</p>
+            <p v-if="detail?.misc?.user?.email">REP: {{ detail.misc.user.email }}</p>
+            <p v-else-if="detail?.misc?.user_id">REP: {{ detail.misc.user_id }}</p>
         </div>
 
         <div class="form-control" v-if="detail.field === 'emailed_by_rep'">
@@ -52,25 +52,47 @@
                 {{ detail.misc.message }}
             </div>
         </div>
-
+        <div class="response"  v-if="detail.field === 'emailed_by_rep'">
+            <h1 class="">Reply</h1>
+            <email-comms-action :lead-id="detail.lead_id" hide-help-text hide-subject :subject="detail.misc.subject"/>
+        </div>
+        <div class="response"  v-if="detail.field === 'called_by_rep'">
+            <h1 class="">Follow Up</h1>
+            <phone-comms-action :lead-id="detail.lead_id" :phone="detail.phone" hide-help-text/>
+        </div>
+        <div class="response"  v-if="detail.field === 'sms_by_rep'">
+            <h1 class="">Reply</h1>
+            <sms-comms-action :lead-id="detail.lead_id" hide-help-text/>
+        </div>
     </div>
 </template>
 <style scoped>
 .header {
     @apply bg-primary px-4 py-4 rounded-lg;
+
     h1 {
         @apply font-bold text-2xl;
     }
-    p{
+
+    p {
         @apply opacity-50;
     }
 }
-
+.response{
+    @apply rounded-lg bg-primary m-4 p-4;
+    h1{
+        @apply text-center text-xl font-bold;
+    }
+}
 </style>
 <script>
-import { computed} from 'vue';
+import {computed} from 'vue';
+import EmailCommsAction from "./EmailCommsAction";
+import PhoneCommsAction from "./PhoneCommsAction";
+import SmsCommsAction from "./SmsCommsAction";
 
 export default {
+    components: {SmsCommsAction, PhoneCommsAction, EmailCommsAction},
     props: {
         detail: {
             type: Object,
@@ -78,8 +100,7 @@ export default {
         }
     },
     setup(props) {
-        const field = props.detail.field;
-        const heading = computed(()=>{
+        const heading = computed(() => {
             switch (props.detail.field) {
                 case "called_by_rep":
                     return 'Phone Call';
@@ -94,15 +115,15 @@ export default {
                 case "updated":
                     return 'Lead Updated';
                 case "manual_create":
-                    return  "Lead Manually Created in Gym Revenue";
+                    return "Lead Manually Created in Gym Revenue";
                 default:
-                    console.error('what is this field?!?!', field);
+                    console.error('what is this field?!?!', props.detail.field);
                     break;
             }
         });
 
-        const outcome = computed(()=>{
-            switch(props.detail.misc?.outcome){
+        const outcome = computed(() => {
+            switch (props.detail.misc?.outcome) {
                 case 'contacted':
                     return 'Spoke with Lead.';
                 case 'voicemail':
@@ -118,7 +139,7 @@ export default {
             }
         });
 
-        const date = computed(()=>{
+        const date = computed(() => {
             return new Date(props.detail.created_at).toLocaleString();
         })
 

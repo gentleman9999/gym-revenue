@@ -33,13 +33,12 @@
                                  enable-mobile-fullscreen
                                  @close="activeContactMethod = ''">
                         <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
-                            <CommsActions :activeContactMethod="activeContactMethod" :lead-id="leadId" :details="details"/>
+                            <CommsActions :activeContactMethod="activeContactMethod" :phone="phone" :lead-id="leadId"
+                                          @done="$refs.showViewModal.close()"/>
                         </div>
                     </sweet-modal>
                 </div>
-
             </div>
-
         </div>
     </div>
 </template>

@@ -30,10 +30,19 @@
 }
 </style>
 <script>
+import {computed} from 'vue';
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import { faChevronDoubleDown, faUserPlus, faUserEdit, faComment, faEnvelope, faPhoneAlt } from '@fortawesome/pro-solid-svg-icons';
+import {
+    faChevronDoubleDown,
+    faComment,
+    faEnvelope,
+    faPhoneAlt,
+    faUserEdit,
+    faUserPlus
+} from '@fortawesome/pro-solid-svg-icons';
 import {library} from "@fortawesome/fontawesome-svg-core";
-library.add(faChevronDoubleDown, faUserPlus, faComment,faEnvelope, faUserEdit, faPhoneAlt);
+
+library.add(faChevronDoubleDown, faUserPlus, faComment, faEnvelope, faUserEdit, faPhoneAlt);
 
 export default {
     components: {
@@ -46,41 +55,43 @@ export default {
         }
     },
     setup(props) {
-        const field = props.detail.field;
-        let heading = null;
-        let icon = null;
+        const heading = computed(() => {
+            switch (props.detail.field) {
+                case "called_by_rep":
+                    return 'Phone Call';
+                case "emailed_by_rep":
+                    return 'Email';
+                case "sms_by_rep":
+                    return 'Text Message';
+                case "claimed":
+                    return 'Claimed';
+                case "created":
+                    return 'Created';
+                case "updated":
+                    return 'Updated';
+                case "manual_create":
+                    return "Created";
+            }
+        })
+        const icon = computed(() => {
+            switch (props.detail.field) {
+                case "called_by_rep":
+                    return 'phone-alt'
+                case "emailed_by_rep":
+                    return 'envelope';
+                case "sms_by_rep":
+                    return 'comment';
+                case "claimed":
+                    return 'chevron-double-down';
+                case "manual_create":
+                case "created":
+                    return "user-plus";
+                case "updated":
+                    return 'user-edit';
+            }
+        })
 
-        switch (field) {
-            case "called_by_rep":
-                heading = 'Phone Call';
-                icon = 'phone-alt'
-                break;
-            case "emailed_by_rep":
-                heading = 'Email';
-                icon = 'envelope';
-                break;
-            case "sms_by_rep":
-                heading = 'Text Message';
-                icon = 'comment';
-                break;
-            case "claimed":
-                heading = 'Claimed';
-                icon='chevron-double-down';
-                break;
-            case "created":
-                heading = 'Created';
-                icon = "user-plus";
-                break;
-            case "updated":
-                heading = 'Updated';
-                icon = 'user-edit';
-                break;
-            case "manual_create":
-                heading = "Created";
-                break;
-        }
-
-        const date = new Date(props.detail.created_at).toLocaleString();
+        const date = computed(() => new Date(props.detail.created_at).toLocaleString());
 
         return {heading, icon, date}
     }
