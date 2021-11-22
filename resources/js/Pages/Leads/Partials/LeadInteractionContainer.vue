@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
-                        <CommsHistory :details="details"/>
+                        <CommsHistory :details="details" ref="commsHistoryRef"/>
                     </div>
                     <sweet-modal :title="modalTitle" width="85%" ref="showViewModal" overlayTheme="dark"
                                  modal-theme="dark"
@@ -101,6 +101,10 @@ export default defineComponent({
         }
     },
     methods: {
+        goToLeadDetailIndex(index){
+            console.log('goToLeadDetailIndex',index );
+            this.$refs.commsHistoryRef.goToLeadDetailIndex(index);
+        },
         fetchLeadInfo() {
             this.dynamicDetails = this.details;
         },
@@ -116,7 +120,7 @@ export default defineComponent({
     watch: {
         activeContactMethod(val) {
             val && this.$refs.showViewModal.open()
-        }
+        },
     },
     mounted() {
         this.fetchLeadInfo()

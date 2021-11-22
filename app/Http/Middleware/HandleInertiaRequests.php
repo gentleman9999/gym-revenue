@@ -36,14 +36,34 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
+
         $shared = [];
         if ($request->user()) {
             $shared = [
                 'user.id' => $request->user()->id,
                 'user.all_locations' => $request->user()->allLocations(),
-                'user.current_client_id' => $request->user()->currentClientId()
+                'user.current_client_id' => $request->user()->currentClientId(),
             ];
         }
-        return array_merge(parent::share($request), $shared);
+
+        return array_merge(parent::share($request), [
+            'flash' => function () use ($request) {
+                return [
+                    'selectedLeadDetailIndex' => $request->session()->get('selectedLeadDetailIndex'),
+                ];
+            },
+        ], $shared);
+
+
+
+
+//        $shared['flash'] = [];
+//        if(!empty($request->session()->get('selectedLeadDetailIndex'))){
+//            dd('works');
+//            $shared['flash']['selectedLeadDetailIndex'] = $request->session()->get('selectedLeadDetailIndex');
+//        }
+////        $shared[ 'flash'] = ['selectedLeadDetailIndex'=>$request->session()->get('selectedLeadDetailIndex')];
+//        $shared['flash']['foo'] = 'bar';
+//        return array_merge(parent::share($request), $shared);
     }
 }

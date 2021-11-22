@@ -48,6 +48,7 @@ export default defineComponent({
     setup(props, {emit}){
         const submit = async () => {
             await props.form.post(route('data.leads.contact', props.leadId));
+            props.form.reset();
             emit('done');
             //TODO: we should have a NOTY provider or a way to set defaults instead of specifying theme everywhere
             new Noty({

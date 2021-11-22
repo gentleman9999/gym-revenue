@@ -1,8 +1,5 @@
 <template>
-    <app-layout :title="title">
-        <div v-if="$page.flash" class="red">
-            {{ JSON.stringify($page.flash )}}
-        </div>
+    <app-layout title="View Leads">
         <jet-bar-container>
             <lead-interaction :lead-id="lead.id"
                               :user-id="$page.props.user.id"
@@ -11,13 +8,15 @@
                               :email="lead.email"
                               :phone="lead.mobile_phone"
                               :details="lead['details_desc']"
+                              ref="leadInteractionRef"
+                              :selectedLeadDetailIndex="selectedLeadDetailIndex"
             />
         </jet-bar-container>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import {defineComponent, ref, onMounted, watch, watchEffect} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetBarContainer from "@/Components/JetBarContainer";
 import LeadInteraction from "./Partials/LeadInteractionContainer";
@@ -33,8 +32,22 @@ export default defineComponent({
         lead:{
             type:Object,
             required: true
-        }
+        },
+        flash:{
+            type: Object
+        },
     },
+    setup(props){
+        const leadInteractionRef = ref();
+        const selectedLeadDetailIndex = props.flash?.selectedLeadDetailIndex;
+
+        watchEffect(()=>{
+            leadInteractionRef.value?.goToLeadDetailIndex(props.flash?.selectedLeadDetailIndex);
+        }, );
+
+
+        return {leadInteractionRef};
+    }
 });
 </script>
 

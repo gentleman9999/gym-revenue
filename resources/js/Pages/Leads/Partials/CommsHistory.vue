@@ -5,7 +5,7 @@
             <CommsHistoryStep v-for="detail in details" :detail="detail" @click="selectedDetail = detail"
                               :active="selectedDetail?.id=== detail.id"/>
         </ul>
-        <CommsHistoryDetail :detail="selectedDetail" v-if="selectedDetail" @done="setSelectedDetailIndex(0)"/>
+        <CommsHistoryDetail :detail="selectedDetail" v-if="selectedDetail"/>
         <span v-else class="block py-8 w-full text-center self-center m-auto opacity-50 text-xl">Click on an item above to learn more</span>
     </div>
 </template>
@@ -29,16 +29,13 @@ export default {
     setup(props) {
         const selectedDetail = ref(null);
 
-        const setSelectedDetailIndex = (index) => {
-            if ( index in props.details) {
-                console.log('setSelectedDetailIndex', index);
+        const goToLeadDetailIndex = (index) => {
+            if (index in props.details) {
                 selectedDetail.value = props.details[index];
-                console.log('selectedDetail set to', props.details[index]);
-
             }
         }
 
-        return {selectedDetail, setSelectedDetailIndex}
+        return {selectedDetail, goToLeadDetailIndex}
     }
 }
 </script>

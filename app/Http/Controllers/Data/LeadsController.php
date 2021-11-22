@@ -158,7 +158,7 @@ class LeadsController extends Controller
         }
 
         return Inertia::render('Leads/Show', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first()
         ]);
     }
 
@@ -281,7 +281,6 @@ class LeadsController extends Controller
 
     public function contact($lead_id)
     {
-        $results = ['success' => false];
         $lead = Lead::find($lead_id);
 
         if($lead)
@@ -315,6 +314,8 @@ class LeadsController extends Controller
 //            TODO: flash error
 //            $results['message'] = 'Could not find the lead requested.';
         }
-        return redirect()->back()->with('lead.selectedDetailIndex', 0);
+//        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
+//        return redirect()->back()->with('selectedLeadDetailIndex', '0');
+        return Redirect::back()->with('selectedLeadDetailIndex', 0);
     }
 }
