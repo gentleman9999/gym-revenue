@@ -23,9 +23,9 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Email Password Reset Link
-                </jet-button>
+                </Button>
             </div>
         </form>
     </jet-authentication-card>
@@ -36,7 +36,7 @@
     import { Head } from '@inertiajs/inertia-vue3';
     import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
     import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/Jetstream/Button.vue'
+    import Button from '@/Components/Button.vue'
 
     import JetLabel from '@/Jetstream/Label.vue'
     import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
@@ -46,7 +46,7 @@
             Head,
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
-            JetButton,
+            Button,
 
             JetLabel,
             JetValidationErrors

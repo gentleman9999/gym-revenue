@@ -7,12 +7,12 @@
         <div class="flex flex-row">
             <slot name="buttons"/>
             <div class="mr-4">
-                <jet-button type="submit" success ><i class="fad fa-books-medical"></i>
+                <Button type="submit" success ><i class="fad fa-books-medical"></i>
                     {{ submitText }}
-                </jet-button>
+                </Button>
             </div>
             <div class="mr-4">
-                <jet-button type="button" error @click="form.reset()"><i class="fad fa-trash"></i> Clear</jet-button>
+                <Button type="button" error @click="form.reset()"><i class="fad fa-trash"></i> Clear</Button>
             </div>
         </div>
     </form>
@@ -21,14 +21,14 @@
 <script>
 import {computed, defineComponent} from 'vue'
 ;
-import JetButton from '@/Jetstream/Button.vue';
+import Button from '@/Components/Button.vue';
 import {useForm} from '@inertiajs/inertia-vue3'
 
 
 export default defineComponent({
     components: {
 
-        JetButton,
+        Button,
     },
     props: {
         leadId: {

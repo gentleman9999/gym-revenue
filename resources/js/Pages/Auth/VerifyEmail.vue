@@ -16,9 +16,9 @@
 
         <form @submit.prevent="submit">
             <div class="mt-4 flex items-center justify-between">
-                <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Resend Verification Email
-                </jet-button>
+                </Button>
 
                 <inertia-link :href="route('logout')" method="post" as="button" class="underline text-sm  hover:">Log Out</inertia-link>
             </div>
@@ -30,7 +30,7 @@
     import { defineComponent } from 'vue'
     import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
     import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/Jetstream/Button.vue'
+    import Button from '@/Components/Button.vue'
     import { Head } from '@inertiajs/inertia-vue3';
 
     export default defineComponent({
@@ -38,7 +38,7 @@
             Head,
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
-            JetButton,
+            Button,
         },
 
         props: {

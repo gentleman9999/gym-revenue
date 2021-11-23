@@ -25,13 +25,13 @@
 
         <template #actions>
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <jet-button type="button" @click="$inertia.visit(route('data.leads'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
+            <Button type="button" @click="$inertia.visit(route('data.leads'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
                 Cancel
-            </jet-button>
+            </Button>
             <div class="flex-grow" />
-            <jet-button :class="{ 'opacity-25': form.processing }" class="btn-primary" :disabled="form.processing"  :loading="form.processing">
+            <Button :class="{ 'opacity-25': form.processing }" class="btn-primary" :disabled="form.processing"  :loading="form.processing">
                 {{ buttonText }}
-            </jet-button>
+            </Button>
         </template>
     </jet-form-section>
 </template>
@@ -41,7 +41,7 @@ import {useForm} from '@inertiajs/inertia-vue3'
 
 
 import AppLayout from '@/Layouts/AppLayout.vue'
-import JetButton from '@/Jetstream/Button.vue'
+import Button from '@/Components/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
 
 import JetInputError from '@/Jetstream/InputError.vue'
@@ -50,7 +50,7 @@ import JetLabel from '@/Jetstream/Label.vue'
 export default {
     components: {
         AppLayout,
-        JetButton,
+        Button,
         JetFormSection,
 
         JetInputError,

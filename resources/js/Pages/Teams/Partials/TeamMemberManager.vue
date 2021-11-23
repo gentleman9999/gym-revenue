@@ -63,9 +63,9 @@
                         Added.
                     </jet-action-message>
 
-                    <jet-button :class="{ 'opacity-25': addTeamMemberForm.processing }" :disabled="addTeamMemberForm.processing">
+                    <Button :class="{ 'opacity-25': addTeamMemberForm.processing }" :disabled="addTeamMemberForm.processing">
                         Add
-                    </jet-button>
+                    </Button>
                 </template>
             </jet-form-section>
         </div>
@@ -196,9 +196,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
+                <Button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
                     Save
-                </jet-button>
+                </Button>
             </template>
         </jet-dialog-modal>
 
@@ -250,7 +250,7 @@
     import { defineComponent } from 'vue'
     import JetActionMessage from '@/Jetstream/ActionMessage.vue'
     import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import JetButton from '@/Jetstream/Button.vue'
+    import Button from '@/Components/Button.vue'
     import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
 
     import JetDialogModal from '@/Jetstream/DialogModal.vue'
@@ -265,7 +265,7 @@
         components: {
             JetActionMessage,
             JetActionSection,
-            JetButton,
+            Button,
             JetConfirmationModal,
 
             JetDialogModal,

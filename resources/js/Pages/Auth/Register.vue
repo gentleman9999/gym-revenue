@@ -64,9 +64,9 @@
                     Already registered?
                 </inertia-link>
 
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Register
-                </jet-button>
+                </Button>
             </div>
         </form>
         <form v-else>
@@ -79,7 +79,7 @@
 import {defineComponent} from 'vue'
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-import JetButton from '@/Jetstream/Button.vue'
+import Button from '@/Components/Button.vue'
 
 
 import JetLabel from '@/Jetstream/Label.vue'
@@ -90,7 +90,7 @@ export default defineComponent({
         Head,
         JetAuthenticationCard,
         JetAuthenticationCardLogo,
-        JetButton,
+        Button,
         JetLabel,
         JetValidationErrors,
     },

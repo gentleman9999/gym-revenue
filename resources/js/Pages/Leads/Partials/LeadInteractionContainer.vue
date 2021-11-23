@@ -14,14 +14,14 @@
                         <!--                        </ul>-->
                         <div class="flex flex-row mt-8 self-center" v-if="claimedByUser">
                             <div class="mr-4">
-                                <jet-button type="button" success @click="activeContactMethod = 'email'">Email
-                                </jet-button>
+                                <Button type="button" success @click="activeContactMethod = 'email'">Email
+                                </Button>
                             </div>
                             <div class="mr-4">
-                                <jet-button type="button" error @click="activeContactMethod = 'phone'">Call</jet-button>
+                                <Button type="button" error @click="activeContactMethod = 'phone'">Call</Button>
                             </div>
                             <div class="mr-4">
-                                <jet-button type="button" info @click="activeContactMethod = 'sms'">SMS</jet-button>
+                                <Button type="button" info @click="activeContactMethod = 'sms'">SMS</Button>
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
 <script>
 import {defineComponent} from 'vue'
 ;
-import JetButton from '@/Jetstream/Button.vue';
+import Button from '@/Components/Button.vue';
 import FormSection from '@/Jetstream/FormSection.vue'
 import CommsHistory from "./CommsHistory";
 import CommsActions from "./CommsActions";
@@ -63,7 +63,7 @@ export default defineComponent({
         CommsHistory,
         CommsActions,
 
-        JetButton,
+        Button,
         FormSection,
         FontAwesomeIcon,
         SweetModal
