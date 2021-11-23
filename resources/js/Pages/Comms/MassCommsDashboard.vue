@@ -156,7 +156,6 @@
 
 <script>
 import {defineComponent} from 'vue'
-import {Link} from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetDropdown from '@/Jetstream/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
@@ -165,7 +164,6 @@ import JetBarContainer from "@/Components/JetBarContainer";
 export default defineComponent({
     name: "MassCommsDashboard",
     components: {
-        Link,
         AppLayout,
         JetDropdown,
         JetBarContainer

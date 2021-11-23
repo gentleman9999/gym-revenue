@@ -31,7 +31,7 @@
     import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
     import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
     import JetButton from '@/Jetstream/Button.vue'
-    import { Head, Link } from '@inertiajs/inertia-vue3';
+    import { Head } from '@inertiajs/inertia-vue3';
 
     export default defineComponent({
         components: {
@@ -39,7 +39,6 @@
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
             JetButton,
-            Link,
         },
 
         props: {

@@ -67,7 +67,6 @@ import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Button from '@/Jetstream/Button.vue'
-import {Link} from '@inertiajs/inertia-vue3';
 import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
@@ -86,7 +85,6 @@ export default defineComponent({
     components: {
         AppLayout,
         JetSectionBorder,
-        Link,
         Button,
         JetBarContainer,
         JetBarAlert,

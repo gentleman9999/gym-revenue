@@ -9,13 +9,10 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import { Link } from '@inertiajs/inertia-vue3';
     import JetApplicationMark from "@/Jetstream/ApplicationMark";
-
 
     export default defineComponent({
         components: {
-            Link,
             JetApplicationMark
         },
     })

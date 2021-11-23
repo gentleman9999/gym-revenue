@@ -84,7 +84,6 @@ import JetButton from '@/Jetstream/Button.vue'
 
 import JetLabel from '@/Jetstream/Label.vue'
 import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
-import {Head, Link} from '@inertiajs/inertia-vue3';
 
 export default defineComponent({
     components: {
@@ -94,7 +93,6 @@ export default defineComponent({
         JetButton,
         JetLabel,
         JetValidationErrors,
-        Link,
     },
     props: ['showRegistration', 'errorMsg', 'role', 'team', 'teamId', 'client', 'clientId', 'extraImg'],
     data() {

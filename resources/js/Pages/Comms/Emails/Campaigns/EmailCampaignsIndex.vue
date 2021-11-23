@@ -121,7 +121,6 @@
 
 <script>
 import {defineComponent} from "vue";
-import {Link} from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetDropdown from '@/Jetstream/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
@@ -140,7 +139,6 @@ library.add(faChevronDoubleLeft, faEllipsisH)
 export default defineComponent({
     name: "EmailCampaignsIndex",
     components: {
-        Link,
         AppLayout,
         JetDropdown,
         SearchFilter,

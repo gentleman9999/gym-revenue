@@ -187,7 +187,7 @@ import JetNavLink from "@/Jetstream/NavLink";
 import TeamsDropdown from "@/Components/Navigation/TeamsDropdown";
 import LocationsDropdown from "@/Components/Navigation/LocationsDropdown";
 import SettingsDropdown from "@/Components/Navigation/SettingsDropdown";
-import {Head, Link} from "@inertiajs/inertia-vue3";
+import {Head} from "@inertiajs/inertia-vue3";
 import NotyBell from "@/Components/NotyBell";
 
 library.add(
@@ -203,7 +203,6 @@ library.add(
 export default defineComponent({
     components: {
         Head,
-        Link,
         JetApplicationMark,
         JetNavLink,
         FontAwesomeIcon,
