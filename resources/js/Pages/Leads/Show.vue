@@ -17,7 +17,7 @@
 
 <script>
 import {defineComponent, ref, onMounted, watch, watchEffect} from 'vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
+import AppLayout from '@/Layouts/AppLayout'
 import JetBarContainer from "@/Components/JetBarContainer";
 import LeadInteraction from "./Partials/LeadInteractionContainer";
 

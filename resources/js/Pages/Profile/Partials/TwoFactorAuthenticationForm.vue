@@ -91,11 +91,11 @@
 
 <script>
 import {defineComponent} from 'vue'
-import JetActionSection from '@/Jetstream/ActionSection.vue'
-import Button from '@/Components/Button.vue'
-import JetConfirmsPassword from '@/Jetstream/ConfirmsPassword.vue'
+import JetActionSection from '@/Jetstream/ActionSection'
+import Button from '@/Components/Button'
+import JetConfirmsPassword from '@/Jetstream/ConfirmsPassword'
 
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
 export default defineComponent({
     components: {

@@ -46,8 +46,8 @@
 <script>
 import {defineComponent} from 'vue'
 ;
-import Button from '@/Components/Button.vue';
-import FormSection from '@/Jetstream/FormSection.vue'
+import Button from '@/Components/Button';
+import FormSection from '@/Jetstream/FormSection'
 import CommsHistory from "./CommsHistory";
 import CommsActions from "./CommsActions";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";

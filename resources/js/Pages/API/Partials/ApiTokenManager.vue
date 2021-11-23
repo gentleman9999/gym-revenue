@@ -172,19 +172,19 @@
 
 <script>
 import {defineComponent} from 'vue'
-import JetActionMessage from '@/Jetstream/ActionMessage.vue'
-import JetActionSection from '@/Jetstream/ActionSection.vue'
-import Button from '@/Components/Button.vue'
-import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
+import JetActionMessage from '@/Jetstream/ActionMessage'
+import JetActionSection from '@/Jetstream/ActionSection'
+import Button from '@/Components/Button'
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal'
 
-import JetDialogModal from '@/Jetstream/DialogModal.vue'
-import JetFormSection from '@/Jetstream/FormSection.vue'
+import JetDialogModal from '@/Jetstream/DialogModal'
+import JetFormSection from '@/Jetstream/FormSection'
 
 
-import JetInputError from '@/Jetstream/InputError.vue'
-import JetLabel from '@/Jetstream/Label.vue'
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
-import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
+import JetInputError from '@/Jetstream/InputError'
+import JetLabel from '@/Jetstream/Label'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import JetSectionBorder from '@/Jetstream/SectionBorder'
 
 export default defineComponent({
     components: {

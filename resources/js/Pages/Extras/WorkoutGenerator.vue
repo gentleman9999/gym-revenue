@@ -40,10 +40,10 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import AppLayout from '@/Layouts/AppLayout.vue'
+    import AppLayout from '@/Layouts/AppLayout'
 
-    import WorkoutForm from '@/Presenters/WorkoutGenerator/WorkoutForm.vue'
-    import GeneratedWorkout from '@/Presenters/WorkoutGenerator/GeneratedWorkout.vue'
+    import WorkoutForm from '@/Presenters/WorkoutGenerator/WorkoutForm'
+    import GeneratedWorkout from '@/Presenters/WorkoutGenerator/GeneratedWorkout'
 
     import SweetModal from "../../Components/SweetModal3/SweetModal";
     import { library } from '@fortawesome/fontawesome-svg-core';

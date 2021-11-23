@@ -95,9 +95,9 @@
 
 <script>
 import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-import Button from '@/Components/Button.vue'
+import AppLayout from '@/Layouts/AppLayout'
+import JetSectionBorder from '@/Jetstream/SectionBorder'
+import Button from '@/Components/Button'
 import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";

@@ -45,10 +45,10 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
+    import JetActionSection from '@/Jetstream/ActionSection'
+    import JetConfirmationModal from '@/Jetstream/ConfirmationModal'
 
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
     export default defineComponent({
         props: ['team'],

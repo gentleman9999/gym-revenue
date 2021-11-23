@@ -40,13 +40,13 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import AppLayout from '@/Layouts/AppLayout.vue'
-    import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'
-    import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-    import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
-    import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue'
-    import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
-    import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
+    import AppLayout from '@/Layouts/AppLayout'
+    import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm'
+    import JetSectionBorder from '@/Jetstream/SectionBorder'
+    import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm'
+    import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm'
+    import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm'
+    import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm'
 
     export default defineComponent({
         props: ['sessions'],

@@ -88,13 +88,13 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetActionMessage from '@/Jetstream/ActionMessage.vue'
-    import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import Button from '@/Components/Button.vue'
-    import JetDialogModal from '@/Jetstream/DialogModal.vue'
+    import JetActionMessage from '@/Jetstream/ActionMessage'
+    import JetActionSection from '@/Jetstream/ActionSection'
+    import Button from '@/Components/Button'
+    import JetDialogModal from '@/Jetstream/DialogModal'
 
-    import JetInputError from '@/Jetstream/InputError.vue'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
+    import JetInputError from '@/Jetstream/InputError'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
     export default defineComponent({
         props: ['sessions'],

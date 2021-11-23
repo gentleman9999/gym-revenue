@@ -28,9 +28,9 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-    import Button from '@/Components/Button.vue'
+    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
+    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
+    import Button from '@/Components/Button'
     import { Head } from '@inertiajs/inertia-vue3';
 
     export default defineComponent({

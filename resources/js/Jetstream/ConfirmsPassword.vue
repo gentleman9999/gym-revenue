@@ -37,10 +37,10 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import Button from '@/Components/Button.vue'
-    import JetDialogModal from './DialogModal.vue'
-    import JetInputError from './InputError.vue'
-    import JetSecondaryButton from './SecondaryButton.vue'
+    import Button from '@/Components/Button'
+    import JetDialogModal from './DialogModal'
+    import JetInputError from './InputError'
+    import JetSecondaryButton from './SecondaryButton'
 
     export default defineComponent({
         emits: ['confirmed'],

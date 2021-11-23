@@ -54,12 +54,12 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import JetDialogModal from '@/Jetstream/DialogModal.vue'
+    import JetActionSection from '@/Jetstream/ActionSection'
+    import JetDialogModal from '@/Jetstream/DialogModal'
 
 
-    import JetInputError from '@/Jetstream/InputError.vue'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
+    import JetInputError from '@/Jetstream/InputError'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
     export default defineComponent({
         components: {
