@@ -14,10 +14,7 @@
             leading-4
             font-medium
             rounded-md
-
-            hover:bg-base-100 hover:
-            focus:outline-none focus:bg-base-100
-            active:bg-base-100
+            focus:outline-none
             transition
           "
         >

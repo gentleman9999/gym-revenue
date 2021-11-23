@@ -1,11 +1,12 @@
 <template>
     <div class="dropdown" :class="alignmentClasses">
-        <div class="h-full">
+        <div class="h-full" tabindex="0">
             <slot name="trigger"></slot>
         </div>
         <div
             class="dropdown-content mt-2 shadow rounded-box"
             :class="[widthClass, contentClasses]"
+            tabindex="0"
         >
             <slot name="content"></slot>
         </div>

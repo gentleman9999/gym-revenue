@@ -65,39 +65,41 @@
                         <tr class="hover" v-else v-for="(template, idx) in templates.data" :key="idx">
                             <td>{{ template.name }}</td>
                             <td>
-                                <div class="badge" :class="badgeClasses(template.active)">{{ (template.active) ? 'Live' : 'Draft' }}</div>
+                                <div class="badge" :class="badgeClasses(template.active)">
+                                    {{ (template.active) ? 'Live' : 'Draft' }}
+                                </div>
                             </td>
                             <td>Regular</td>
                             <td>{{ template.updated_at }}</td>
                             <td>{{ template.created_by_user_id }}</td>
-                            <td><div class="ml-3 relative">
-                                <jet-dropdown align="end" width="40">
-                                    <template #trigger>
+                            <td>
+                                <div class="ml-3 relative">
+                                    <jet-dropdown align="end" width="40">
+                                        <template #trigger>
                                         <span class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
+                                            <button type="button"
+                                                    class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
                                                 <font-awesome-icon :icon="['far', 'ellipsis-h']" size="24"/>
                                             </button>
                                         </span>
-                                    </template>
-                                    <template #content>
-                                        <div class="w-60">
-                                            <div class="block px-4 py-2 text-xs ">
-                                                Available Actions
-                                                <br />
-                                            </div>
-                                            <ul class="menu compact">
-                                                <li v-for="(option, slug) in actionOptions" :key="slug">
-                                                    <form>
+                                        </template>
+                                        <template #content>
+                                            <div class="w-60">
+                                                <div class="block px-4 py-2 text-xs ">
+                                                    Available Actions
+                                                    <br/>
+                                                </div>
+                                                <ul class="menu compact">
+                                                    <li v-for="(option, slug) in actionOptions" :key="slug">
                                                         <inertia-link @click="option.click">
                                                             {{ option.label }}
                                                         </inertia-link>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </template>
-                                </jet-dropdown>
-                            </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </template>
+                                    </jet-dropdown>
+                                </div>
                             </td>
 
                         </tr>
@@ -116,10 +118,11 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
 import GymRevenueTable from "@/Components/GymRevenueTable";
 
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDoubleLeft, faEllipsisH } from '@fortawesome/pro-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import mapValues from "lodash/mapValues";
+
 library.add(faChevronDoubleLeft, faEllipsisH)
 
 export default defineComponent({
@@ -133,7 +136,8 @@ export default defineComponent({
         JetBarContainer,
     },
     props: ['title', 'filters', 'templates'],
-    setup(props) {},
+    setup(props) {
+    },
     watch: {},
     data() {
         return {
@@ -145,7 +149,7 @@ export default defineComponent({
     },
     computed: {
         tableHeaders() {
-            if(this.templates.data.length > 0) {
+            if (this.templates.data.length > 0) {
                 return ['name', 'status', 'type', 'date updated', 'updated by', '']
             }
 
@@ -193,7 +197,8 @@ export default defineComponent({
             }
         },
     },
-    mounted() {}
+    mounted() {
+    }
 });
 </script>
 
