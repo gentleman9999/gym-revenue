@@ -8,7 +8,7 @@
                     <h2 class="font-semibold text-xl  leading-tight">
                         Leads
                     </h2>
-                    <div class="flex-grow" />
+                    <div class="flex-grow"/>
                     <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
                         <div class="block py-2 text-xs ">Trashed:</div>
                         <select v-model="form.trashed" class="mt-1 w-full form-select">
@@ -47,29 +47,32 @@
                     </Link>
                 </div>
             </div>
-            <jet-bar-table :headers="tableHeaders">
-                <tr class="hover:bg-base-100" v-if="leads.data.length === 0">
-                    <jet-bar-table-data></jet-bar-table-data>
-                    <jet-bar-table-data></jet-bar-table-data>
-                    <jet-bar-table-data>No Data Available</jet-bar-table-data>
-                    <jet-bar-table-data></jet-bar-table-data>
-                    <jet-bar-table-data></jet-bar-table-data>
-                    <jet-bar-table-data></jet-bar-table-data>
+            <gym-revenue-table :headers="tableHeaders">
+                <tr v-if="leads.data.length === 0">
+                    <td></td>
+                    <td></td>
+                    <td>No Data Available</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
-                <tr class="hover:bg-base-100" v-else v-for="(lead, idx) in leads.data" :key="idx">
-                    <jet-bar-table-data>{{ getDate(lead.created_at) }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ lead.first_name }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ lead.last_name }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ lead.location.name }}</jet-bar-table-data>
-                    <jet-bar-table-data>
+                <tr class="hover" v-else v-for="(lead, idx) in leads.data" :key="idx">
+                    <td>{{ getDate(lead.created_at) }}</td>
+                    <td>{{ lead.first_name }}</td>
+                    <td>{{ lead.last_name }}</td>
+                    <td>{{ lead.location.name }}</td>
+                    <td>
                         <div class="badge" :class="badgeClasses(lead.lead_type)">{{ lead.lead_type }}</div>
-                    </jet-bar-table-data>
-                    <jet-bar-table-data class="flex flex-row justify-center space-x-2">
-                        <!-- Availability to be claimed by a Rep status -->
+                    </td>
+                    <td>
                         <div :style="checkClaimDetail(idx) === 'Available' ? 'cursor:pointer' : ''"
                              @click="assignLeadToUser(idx)">
                             <jet-bar-badge :text="checkClaimDetail(idx)" :type="checkClaimDetailColor(idx)"/>
                         </div>
+                    </td>
+                    <td class="flex flex-row justify-center space-x-2">
+                        <!-- Availability to be claimed by a Rep status -->
+
 
                         <Link class=" hover:"
                               :href="route('data.leads.show', lead.id)" v-if="!lead?.deleted_at">
@@ -79,10 +82,11 @@
                               :href="route('data.leads.edit', lead.id)" v-if="!lead?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
                         </Link>
-                    </jet-bar-table-data>
+                    </td>
                 </tr>
-            </jet-bar-table>
-            <pagination class="mt-6" :links="leads.links"/>
+                <pagination #pagination class="mt-6" :links="leads.links"/>
+
+            </gym-revenue-table>
         </jet-bar-container>
     </app-layout>
 </template>
@@ -97,8 +101,7 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
 import JetBarStatCard from "@/Components/JetBarStatCard";
-import JetBarTable from "@/Components/JetBarTable";
-import JetBarTableData from "@/Components/JetBarTableData";
+import GymRevenueTable from "@/Components/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 import Pagination from "@/Components/Pagination";
@@ -118,13 +121,12 @@ export default defineComponent({
         JetBarAlert,
         JetBarStatsContainer,
         JetBarStatCard,
-        JetBarTable,
-        JetBarTableData,
         JetBarBadge,
         JetBarIcon,
         Pagination,
         SearchFilter,
-        LeadInteraction
+        LeadInteraction,
+        GymRevenueTable
     },
     props: ['leads', 'title', 'isClientUser', 'filters'],
     watch: {
@@ -150,7 +152,7 @@ export default defineComponent({
     },
     computed: {
         tableHeaders() {
-            return ['date', 'first_name', 'last_name', 'location', 'lead_type', ''];
+            return ['date', 'first_name', 'last_name', 'location', 'lead_type', 'status', ''];
         }
     },
     methods: {

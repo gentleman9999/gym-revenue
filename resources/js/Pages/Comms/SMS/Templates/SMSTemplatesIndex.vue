@@ -54,23 +54,23 @@
                             <div class="p-4 bg-base-100"></div>
                             <div class="p-4 bg-base-100"></div>
                         </template>
-                        <tr class="hover:bg-base-100" v-if="templates.data.length === 0">
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data>No Data Available.</jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
+                        <tr v-if="templates.data.length === 0">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>No Data Available.</td>
+                            <td></td>
+                            <td></td>
                         </tr>
-                        <tr class="hover:bg-base-100" v-else v-for="(template, idx) in templates.data" :key="idx">
-                            <jet-bar-table-data>{{ template.name }}</jet-bar-table-data>
-                            <jet-bar-table-data>
+                        <tr class="hover" v-else v-for="(template, idx) in templates.data" :key="idx">
+                            <td>{{ template.name }}</td>
+                            <td>
                                 <div class="badge" :class="badgeClasses(template.active)">{{ (template.active) ? 'Live' : 'Draft' }}</div>
-                            </jet-bar-table-data>
-                            <jet-bar-table-data>Regular</jet-bar-table-data>
-                            <jet-bar-table-data>{{ template.updated_at }}</jet-bar-table-data>
-                            <jet-bar-table-data>{{ template.created_by_user_id }}</jet-bar-table-data>
-                            <jet-bar-table-data><div class="ml-3 relative">
+                            </td>
+                            <td>Regular</td>
+                            <td>{{ template.updated_at }}</td>
+                            <td>{{ template.created_by_user_id }}</td>
+                            <td><div class="ml-3 relative">
                                 <jet-dropdown align="right" width="40">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -100,7 +100,7 @@
                                     </template>
                                 </jet-dropdown>
                             </div>
-                            </jet-bar-table-data>
+                            </td>
 
                         </tr>
                     </gym-revenue-table>
@@ -118,7 +118,6 @@ import JetDropdown from '@/Jetstream/Dropdown'
 import JetDropdownLink from '@/Jetstream/DropdownLink'
 import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
-import JetBarTableData from "@/Components/JetBarTableData";
 import GymRevenueTable from "@/Components/GymRevenueTable";
 
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -137,7 +136,6 @@ export default defineComponent({
         FontAwesomeIcon,
         GymRevenueTable,
         JetBarContainer,
-        JetBarTableData,
         JetDropdownLink
     },
     props: ['title', 'filters', 'templates'],

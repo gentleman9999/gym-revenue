@@ -22,18 +22,18 @@
                     <span>Create Location</span>
                 </Link>
             </div>
-            <jet-bar-table :headers="tableHeaders">
-                <tr class="hover:bg-base-100" v-for="location in locations.data" :key="location.id"
+            <gym-revenue-table :headers="tableHeaders">
+                <tr v-for="location in locations.data" :key="location.id" class="hover"
                     @dblclick="!location?.deleted_at && $inertia.visit(route('locations.edit', location.id))">
-                    <jet-bar-table-data v-if="!isClientUser">{{ location.client.name }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ location.name }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ location.city }}</jet-bar-table-data>
-                    <jet-bar-table-data>{{ location.state }}</jet-bar-table-data>
-                    <jet-bar-table-data>
+                    <td v-if="!isClientUser">{{ location.client.name }}</td>
+                    <td>{{ location.name }}</td>
+                    <td>{{ location.city }}</td>
+                    <td>{{ location.state }}</td>
+                    <td>
                         <jet-bar-badge text="Active" type="success" v-if="location.active"/>
                         <jet-bar-badge text="Inactive" type="danger" v-else/>
-                    </jet-bar-table-data>
-                    <jet-bar-table-data class="flex flex-row justify-center space-x-2">
+                    </td>
+                    <td class="flex flex-row justify-center space-x-2">
                         <Link class=" hover:"
                               :href="route('locations.edit', location.id)" v-if="!location?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
@@ -46,16 +46,16 @@
                             <jet-bar-icon :type="location?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>
                         <!--                        </Link>-->
-                    </jet-bar-table-data>
+                    </td>
                 </tr>
 
-                <tr class="hover:bg-base-100" v-if="!locations?.data?.length">
-                    <jet-bar-table-data colspan="6">No Locations found.</jet-bar-table-data>
+                <tr v-if="!locations?.data?.length">
+                    <td colspan="6">No Locations found.</td>
                 </tr>
+                <pagination #pagination class="mt-6" :links="locations.links"/>
 
-            </jet-bar-table>
+            </gym-revenue-table>
 
-            <pagination class="mt-6" :links="locations.links"/>
         </jet-bar-container>
     </app-layout>
 </template>
@@ -70,8 +70,6 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
 import JetBarStatCard from "@/Components/JetBarStatCard";
-import JetBarTable from "@/Components/JetBarTable";
-import JetBarTableData from "@/Components/JetBarTableData";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 import Pagination from "@/Components/Pagination";
@@ -79,6 +77,7 @@ import SearchFilter from "@/Components/SearchFilter";
 import pickBy from 'lodash/pickBy'
 import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
+import GymRevenueTable from "@/Components/GymRevenueTable";
 
 
 export default defineComponent({
@@ -91,12 +90,11 @@ export default defineComponent({
         JetBarAlert,
         JetBarStatsContainer,
         JetBarStatCard,
-        JetBarTable,
-        JetBarTableData,
         JetBarBadge,
         JetBarIcon,
         Pagination,
-        SearchFilter
+        SearchFilter,
+        GymRevenueTable
     },
     props: ['sessions', 'locations', 'title', 'isClientUser', 'filters'],
     watch: {
