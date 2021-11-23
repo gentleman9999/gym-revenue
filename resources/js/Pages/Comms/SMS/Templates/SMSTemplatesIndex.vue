@@ -71,7 +71,7 @@
                             <td>{{ template.updated_at }}</td>
                             <td>{{ template.created_by_user_id }}</td>
                             <td><div class="ml-3 relative">
-                                <jet-dropdown align="right" width="40">
+                                <jet-dropdown align="end" width="40">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
@@ -85,17 +85,15 @@
                                                 Available Actions
                                                 <br />
                                             </div>
-                                            <div class="h-40 lg:h-auto overflow-y-scroll">
-                                                <template v-for="(option, slug) in actionOptions" :key="slug">
-                                                    <form @submit.prevent="option.click">
-                                                        <jet-dropdown-link as="button">
-                                                            <div class="flex items-center">
-                                                                <div>{{ option.label }}</div>
-                                                            </div>
-                                                        </jet-dropdown-link>
+                                            <ul class="menu compact">
+                                                <li v-for="(option, slug) in actionOptions" :key="slug">
+                                                    <form>
+                                                        <Link @click="option.click">
+                                                            {{ option.label }}
+                                                        </Link>
                                                     </form>
-                                                </template>
-                                            </div>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </template>
                                 </jet-dropdown>
@@ -115,7 +113,6 @@ import {defineComponent} from "vue";
 import {Link} from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetDropdown from '@/Jetstream/Dropdown'
-import JetDropdownLink from '@/Jetstream/DropdownLink'
 import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
 import GymRevenueTable from "@/Components/GymRevenueTable";
@@ -136,7 +133,6 @@ export default defineComponent({
         FontAwesomeIcon,
         GymRevenueTable,
         JetBarContainer,
-        JetDropdownLink
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {},

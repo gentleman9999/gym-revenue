@@ -1,5 +1,5 @@
 <template>
-    <jet-dropdown align="right" width="48">
+    <jet-dropdown align="end" width="48">
         <template #trigger>
             <button
                 v-if="$page.props.jetstream.managesProfilePhotos"
@@ -57,42 +57,57 @@
         <template #content>
             <!-- Account Management -->
             <div class="block px-4 py-2 text-xs ">Manage Account</div>
+            <ul class="menu compact">
+                <li>
+                    <Link :href="route('profile.show')">
+                        Profile
+                    </Link>
+                </li>
+                <li>
+                    <!-- @todo - make these dynamic, as some users wont have access -->
+                    <Link :href="route('profile.show')">
+                        User Management
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('profile.show')">
+                        Invoices
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        :href="route('api-tokens.index')"
+                        v-if="$page.props.jetstream.hasApiFeatures"
+                    >
+                        API Tokens
+                    </Link>
+                </li>
+            </ul>
 
-            <jet-dropdown-link :href="route('profile.show')">
-                Profile
-            </jet-dropdown-link>
-            <!-- @todo - make these dynamic, as some users wont have access -->
-            <jet-dropdown-link :href="route('profile.show')">
-                User Management
-            </jet-dropdown-link>
-            <jet-dropdown-link :href="route('profile.show')">
-                Invoices
-            </jet-dropdown-link>
-
-            <jet-dropdown-link
-                :href="route('api-tokens.index')"
-                v-if="$page.props.jetstream.hasApiFeatures"
-            >
-                API Tokens
-            </jet-dropdown-link>
 
             <div class="border-t border-base-100-100"></div>
             <!-- Extra Features -->
             <!-- @todo - make these dynamic, as some users wont have access -->
             <div class="block px-4 py-2 text-xs ">Extras</div>
-            <jet-dropdown-link :href="route('workout-generator')">
-                Workout Generator
-            </jet-dropdown-link>
-            <jet-dropdown-link :href="route('workout-generator')">
-                Sales Slideshow
-            </jet-dropdown-link>
+            <ul class="menu compact">
+                <li>
+                    <Link :href="route('workout-generator')">
+                        Workout Generator
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('workout-generator')">
+                        Sales Slideshow
+                    </Link>
+                </li>
+            </ul>
 
             <div class="border-t border-base-100-100"></div>
-
-            <!-- Authentication -->
-            <form @submit.prevent="logout">
-                <jet-dropdown-link as="button"> Log Out</jet-dropdown-link>
-            </form>
+            <ul class="menu compact">
+                <li>
+                        <Link href="#" @click="logout"> Log Out</Link>
+                </li>
+            </ul>
         </template>
     </jet-dropdown>
 </template>
@@ -100,12 +115,10 @@
 <script>
 import {defineComponent} from "vue";
 import JetDropdown from "@/Jetstream/Dropdown";
-import JetDropdownLink from "@/Jetstream/DropdownLink";
 
 export default defineComponent({
     components: {
         JetDropdown,
-        JetDropdownLink,
     },
     props: {
         logout: {
