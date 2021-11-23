@@ -16,11 +16,11 @@
                     </select>
                 </search-filter>
                 <div class="flex-grow"/>
-                <Link
+                <inertia-link
                     class="btn justify-self-end"
                     :href="route('locations.create')">
                     <span>Create Location</span>
-                </Link>
+                </inertia-link>
             </div>
             <gym-revenue-table :headers="tableHeaders">
                 <tr v-for="location in locations.data" :key="location.id" class="hover"
@@ -34,18 +34,18 @@
                         <jet-bar-badge text="Inactive" type="danger" v-else/>
                     </td>
                     <td class="flex flex-row justify-center space-x-2">
-                        <Link class=" hover:"
+                        <inertia-link class=" hover:"
                               :href="route('locations.edit', location.id)" v-if="!location?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
 
-                        </Link>
-                        <!--                        <Link :href="route('locations.delete', location.id)" class=" hover:">-->
+                        </inertia-link>
+                        <!--                        <inertia-link :href="route('locations.delete', location.id)" class=" hover:">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
                         <button @click=" location?.deleted_at ? $inertia.post(route('locations.restore', location.id)) : $inertia.delete(route('locations.delete', location.id))"
                                 class=" hover:">
                             <jet-bar-icon :type="location?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>
-                        <!--                        </Link>-->
+                        <!--                        </inertia-link>-->
                     </td>
                 </tr>
 

@@ -31,7 +31,7 @@ export default defineComponent({
     setup() {
 
         const closeOnEscape = (e) => {
-            document.activeElement.blur();
+            // document.activeElement.blur();
         }
 
         onMounted(() => document.addEventListener('keydown', closeOnEscape))

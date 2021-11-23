@@ -3,18 +3,18 @@
 
     <div class="relative flex items-top justify-center min-h-screen bg-base-100 dark:bg-gray-900 sm:items-center sm:pt-0">
         <div v-if="canLogin" class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-            <Link v-if="$page.props.user" :href="route('dashboard')" class="text-sm  underline">
+            <inertia-link v-if="$page.props.user" :href="route('dashboard')" class="text-sm  underline">
                 Dashboard
-            </Link>
+            </inertia-link>
 
             <template v-else>
-                <Link :href="route('login')" class="text-sm  underline">
+                <inertia-link :href="route('login')" class="text-sm  underline">
                     Log in
-                </Link>
+                </inertia-link>
 
-                <Link v-if="canRegister" :href="route('register')" class="ml-4 text-sm  underline">
+                <inertia-link v-if="canRegister" :href="route('register')" class="ml-4 text-sm  underline">
                     Register
-                </Link>
+                </inertia-link>
             </template>
         </div>
 

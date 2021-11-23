@@ -60,9 +60,9 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Link :href="route('login')" class="underline text-sm  hover:">
+                <inertia-link :href="route('login')" class="underline text-sm  hover:">
                     Already registered?
-                </Link>
+                </inertia-link>
 
                 <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Register

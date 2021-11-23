@@ -1,7 +1,7 @@
 <template>
-    <Link :href="'/'">
+    <inertia-link :href="'/'">
         <jet-application-mark />
-    </Link>
+    </inertia-link>
     <div class="subtitle">
         <p><small>Conceptual Prototype</small></p>
     </div>

@@ -2,9 +2,9 @@
     <nav class="navbar sticky top-0 z-20 lg:flex p-0 bg-secondary">
         <!-- Logo -->
         <div class="flex-shrink-0 flex items-center bg-primary self-stretch w-72 justify-center">
-            <Link :href="route('dashboard')">
+            <inertia-link :href="route('dashboard')">
                 <jet-application-mark class="block h-8 w-auto"/>
-            </Link>
+            </inertia-link>
         </div>
 
         <!-- Primary Navigation Menu -->
@@ -20,9 +20,9 @@
                     </button> -->
                     <!-- Logo -->
                     <!-- <div class="flex-shrink-0 flex items-center bg-primary">
-                                          <Link :href="route('dashboard')">
+                                          <inertia-link :href="route('dashboard')">
                                               <jet-application-mark class="block h-8 w-auto" />
-                                          </Link>
+                                          </inertia-link>
                                       </div> -->
 
                     <!-- Navigation Links -->

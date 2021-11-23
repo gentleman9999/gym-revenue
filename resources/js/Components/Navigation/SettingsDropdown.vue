@@ -59,28 +59,28 @@
             <div class="block px-4 py-2 text-xs ">Manage Account</div>
             <ul class="menu compact">
                 <li>
-                    <Link :href="route('profile.show')">
+                    <inertia-link :href="route('profile.show')">
                         Profile
-                    </Link>
+                    </inertia-link>
                 </li>
                 <li>
                     <!-- @todo - make these dynamic, as some users wont have access -->
-                    <Link :href="route('profile.show')">
+                    <inertia-link :href="route('profile.show')">
                         User Management
-                    </Link>
+                    </inertia-link>
                 </li>
                 <li>
-                    <Link :href="route('profile.show')">
+                    <inertia-link :href="route('profile.show')">
                         Invoices
-                    </Link>
+                    </inertia-link>
                 </li>
                 <li>
-                    <Link
+                    <inertia-link
                         :href="route('api-tokens.index')"
                         v-if="$page.props.jetstream.hasApiFeatures"
                     >
                         API Tokens
-                    </Link>
+                    </inertia-link>
                 </li>
             </ul>
 
@@ -91,21 +91,21 @@
             <div class="block px-4 py-2 text-xs ">Extras</div>
             <ul class="menu compact">
                 <li>
-                    <Link :href="route('workout-generator')">
+                    <inertia-link :href="route('workout-generator')">
                         Workout Generator
-                    </Link>
+                    </inertia-link>
                 </li>
                 <li>
-                    <Link :href="route('workout-generator')">
+                    <inertia-link :href="route('workout-generator')">
                         Sales Slideshow
-                    </Link>
+                    </inertia-link>
                 </li>
             </ul>
 
             <div class="border-t border-base-100-100"></div>
             <ul class="menu compact">
                 <li>
-                        <Link href="#" @click="logout"> Log Out</Link>
+                        <inertia-link href="#" @click="logout"> Log Out</inertia-link>
                 </li>
             </ul>
         </template>

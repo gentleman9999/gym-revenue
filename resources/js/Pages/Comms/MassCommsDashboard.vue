@@ -41,14 +41,14 @@
 
                                 <ul class="menu compact">
                                     <li v-for="(lbl, slug) in audiences" :key="slug">
-                                        <Link href="#" @click="comingSoon">
+                                        <inertia-link href="#" @click="comingSoon">
                                             <svg v-if="activeAudience === slug" class="mr-2 h-5 w-5 text-green-400"
                                                  fill="none" stroke-linecap="round" stroke-linejoin="round"
                                                  stroke-width="2" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
                                             {{ lbl }}
-                                        </Link>
+                                        </inertia-link>
                                     </li>
                                 </ul>
                             </template>
@@ -59,16 +59,16 @@
                 <div class="top-navigation flex flex-col xl:flex-row xl:justify-between">
                     <div class="flex flex-wrap xl:flex-row justify-center xl:justify-start">
                         <div class="mr-1">
-                            <Link
+                            <inertia-link
                                 class="btn justify-self-end"
                                 :href="route('comms.email-templates')">
                                 <span>Email Templates <span class="bg-info p-1">{{
                                         stats['email_templates'].created
                                     }}</span> <span class=" p-1 bg-success">{{ stats['email_templates'].active }}</span></span>
-                            </Link>
+                            </inertia-link>
                         </div>
                         <div class="mr-1 ">
-                            <Link
+                            <inertia-link
                                 class="btn justify-self-end"
                                 :href="route('comms.sms-templates')">
                                 <span>SMS Templates <span class="bg-info p-1">{{
@@ -76,19 +76,19 @@
                                     }}</span> <span class=" p-1 bg-success">{{
                                         stats['sms_templates'].active
                                     }}</span></span>
-                            </Link>
+                            </inertia-link>
                         </div>
                         <div class="mr-1 mt-1 sm:mt-0">
-                            <Link
+                            <inertia-link
                                 class="btn justify-self-end"
                                 :href="route('comms.email-campaigns')">
                                 <span>Email Campaigns <span class="bg-info p-1">{{
                                         stats['email_campaigns'].created
                                     }}</span> <span class=" p-1 bg-success">{{ stats['email_campaigns'].active }}</span></span>
-                            </Link>
+                            </inertia-link>
                         </div>
                         <div class="mt-1 md:mt-0">
-                            <Link
+                            <inertia-link
                                 class="btn justify-self-end"
                                 :href="route('comms.sms-campaigns')">
                                 <span>SMS Campaigns <span class="bg-info p-1">{{
@@ -96,24 +96,24 @@
                                     }}</span> <span class=" p-1 bg-success">{{
                                         stats['sms_campaigns'].active
                                     }}</span></span>
-                            </Link>
+                            </inertia-link>
                         </div>
                     </div>
 
                     <div class="flex flex-row justify-center xl:justify-end">
                         <div class="mt-2 mr-1 xl:mt-0">
-                            <Link
+                            <inertia-link
                                 class="btn justify-self-end"
                                 href="#" @click="comingSoon()">
                                 <span>+ New Email</span>
-                            </Link>
+                            </inertia-link>
                         </div>
                         <div class="mt-2 ml-1 xl:mt-0">
-                            <Link
+                            <inertia-link
                                 class="btn justify-self-end"
                                 href="#" @click="comingSoon()">
                                 <span>+ New SMS</span>
-                            </Link>
+                            </inertia-link>
                         </div>
                     </div>
                 </div>

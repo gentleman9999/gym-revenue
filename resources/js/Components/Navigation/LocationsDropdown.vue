@@ -60,7 +60,7 @@
                             v-for="location in $page.props.user.all_locations"
                             :key="location.id"
                         >
-                            <Link href="#" @click="switchToLocation(location)">
+                            <inertia-link href="#" @click="switchToLocation(location)">
                                 <svg
                                     v-if="location.id == $page.props.user.current_location_id"
                                     class="mr-2 h-5 w-5 text-green-400"
@@ -76,7 +76,7 @@
                                     ></path>
                                 </svg>
                                 {{ location.name }}
-                            </Link>
+                            </inertia-link>
                         </li>
                     </ul>
                 </template>

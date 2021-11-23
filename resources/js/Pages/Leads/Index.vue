@@ -40,11 +40,11 @@
                     </div>
 
                     <div class="flex-grow"/>
-                    <Link
+                    <inertia-link
                         class="btn btn-success justify-self-end"
                         :href="route('data.leads.create')">
                         <span>Add Lead</span>
-                    </Link>
+                    </inertia-link>
                 </div>
             </div>
             <gym-revenue-table :headers="tableHeaders">
@@ -74,14 +74,14 @@
                         <!-- Availability to be claimed by a Rep status -->
 
 
-                        <Link class=" hover:"
+                        <inertia-link class=" hover:"
                               :href="route('data.leads.show', lead.id)" v-if="!lead?.deleted_at">
                             <jet-bar-icon type="message" fill/>
-                        </Link>
-                        <Link class=" hover:"
+                        </inertia-link>
+                        <inertia-link class=" hover:"
                               :href="route('data.leads.edit', lead.id)" v-if="!lead?.deleted_at">
                             <jet-bar-icon type="pencil" fill/>
-                        </Link>
+                        </inertia-link>
                     </td>
                 </tr>
                 <template #pagination>

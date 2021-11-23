@@ -11,11 +11,11 @@
         <jet-bar-container>
             <div class="flex flex-col pb-2">
                 <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-left">
-                    <Link
+                    <inertia-link
                         class="btn justify-self-end"
                         :href="route('comms.dashboard')">
                         <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="16"/> Back</span>
-                    </Link>
+                    </inertia-link>
                 </div>
             </div>
             <div class="top-navigation flex flex-col xl:flex-row xl-justify-between">
@@ -34,11 +34,11 @@
 
                 <div class="flex flex-row justify-center xl-justify-right">
                     <div class="mt-2 ml-1 xl:mt-0">
-                        <Link
+                        <inertia-link
                             class="btn justify-self-end"
                             href="#" @click="comingSoon()">
                             <span>+ New Template</span>
-                        </Link>
+                        </inertia-link>
                     </div>
                 </div>
             </div>
@@ -88,9 +88,9 @@
                                             <ul class="menu compact">
                                                 <li v-for="(option, slug) in actionOptions" :key="slug">
                                                     <form>
-                                                        <Link @click="option.click">
+                                                        <inertia-link @click="option.click">
                                                             {{ option.label }}
-                                                        </Link>
+                                                        </inertia-link>
                                                     </form>
                                                 </li>
                                             </ul>
