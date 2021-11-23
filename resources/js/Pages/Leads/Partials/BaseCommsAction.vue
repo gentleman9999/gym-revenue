@@ -20,14 +20,14 @@
 
 <script>
 import {computed, defineComponent} from 'vue'
-import JetInput from '@/Jetstream/Input.vue';
+;
 import JetButton from '@/Jetstream/Button.vue';
 import {useForm} from '@inertiajs/inertia-vue3'
 
 
 export default defineComponent({
     components: {
-        JetInput,
+
         JetButton,
     },
     props: {

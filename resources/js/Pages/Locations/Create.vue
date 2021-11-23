@@ -19,7 +19,7 @@ import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
+
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 
@@ -31,7 +31,7 @@ export default defineComponent({
         AppLayout,
         JetButton,
         JetFormSection,
-        JetInput,
+
         JetInputError,
         JetLabel,
         LocationForm

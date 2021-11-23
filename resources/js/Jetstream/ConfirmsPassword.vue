@@ -13,7 +13,7 @@
                 {{ content }}
 
                 <div class="mt-4">
-                    <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                    <input type="password" class="mt-1 block w-3/4" placeholder="Password"
                                 ref="password"
                                 v-model="form.password"
                                 @keyup.enter="confirmPassword" />
@@ -39,7 +39,6 @@
     import { defineComponent } from 'vue'
     import JetButton from './Button.vue'
     import JetDialogModal from './DialogModal.vue'
-    import JetInput from './Input.vue'
     import JetInputError from './InputError.vue'
     import JetSecondaryButton from './SecondaryButton.vue'
 
@@ -61,7 +60,7 @@
         components: {
             JetButton,
             JetDialogModal,
-            JetInput,
+
             JetInputError,
             JetSecondaryButton,
         },

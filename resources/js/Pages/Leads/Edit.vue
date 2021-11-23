@@ -19,7 +19,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
+
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetBarIcon from '@/Components/JetBarIcon.vue'
@@ -33,7 +33,7 @@ export default defineComponent({
         AppLayout,
         JetButton,
         JetFormSection,
-        JetInput,
+
         JetInputError,
         JetLabel,
         JetBarIcon,

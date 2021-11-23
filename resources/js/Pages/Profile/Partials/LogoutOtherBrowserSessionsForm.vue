@@ -63,7 +63,7 @@
                     Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
 
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                        <inputtype="password" class="mt-1 block w-3/4" placeholder="Password"
                                     ref="password"
                                     v-model="form.password"
                                     @keyup.enter="logoutOtherBrowserSessions" />
@@ -92,7 +92,7 @@
     import JetActionSection from '@/Jetstream/ActionSection.vue'
     import JetButton from '@/Jetstream/Button.vue'
     import JetDialogModal from '@/Jetstream/DialogModal.vue'
-    import JetInput from '@/Jetstream/Input.vue'
+
     import JetInputError from '@/Jetstream/InputError.vue'
     import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 
@@ -104,7 +104,7 @@
             JetActionSection,
             JetButton,
             JetDialogModal,
-            JetInput,
+
             JetInputError,
             JetSecondaryButton,
         },

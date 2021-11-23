@@ -11,35 +11,35 @@
 
                 <div class="col-span-6">
                     <jet-label for="name" value="Name"/>
-                    <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus/>
+                    <input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus/>
                     <jet-input-error :message="form.errors.name" class="mt-2"/>
                 </div>
                 <div class="col-span-4">
                     <jet-label for="city" value="City"/>
-                    <jet-input id="city" type="text" class="block w-full mt-1" v-model="form.city" autofocus/>
+                    <input id="city" type="text" class="block w-full mt-1" v-model="form.city" autofocus/>
                     <jet-input-error :message="form.errors.city" class="mt-2"/>
                 </div>
                 <div  class="col-span-1">
                     <jet-label for="state" value="State"/>
-                    <jet-input id="state" type="text" class="block w-full mt-1" v-model="form.state" autofocus/>
+                    <input id="state" type="text" class="block w-full mt-1" v-model="form.state" autofocus/>
                     <jet-input-error :message="form.errors.state" class="mt-2"/>
                 </div>
             <div  class="col-span-1">
                 <jet-label for="zip" value="ZIP Code"/>
-                <jet-input id="zip" type="text" class="block w-full mt-1" v-model="form.zip" autofocus/>
+                <input id="zip" type="text" class="block w-full mt-1" v-model="form.zip" autofocus/>
                 <jet-input-error :message="form.errors.zip" class="mt-2"/>
             </div>
 
                 <div class="col-span-6 space-y-2">
                     <jet-label for="address1" value="Address"/>
-                    <jet-input id="address1" type="text" class="block w-full mt-1" v-model="form.address1" autofocus/>
+                    <input id="address1" type="text" class="block w-full mt-1" v-model="form.address1" autofocus/>
                     <jet-input-error :message="form.errors.address1" class="mt-2"/>
-                    <jet-input id="address2" type="text" class="block w-full mt-1" v-model="form.address2" autofocus/>
+                    <input id="address2" type="text" class="block w-full mt-1" v-model="form.address2" autofocus/>
                     <jet-input-error :message="form.errors.address2" class="mt-2"/>
                 </div>
 
 
-                <jet-input id="client_id" type="hidden" v-model="form.client_id"/>
+                <input id="client_id" type="hidden" v-model="form.client_id"/>
                 <jet-input-error :message="form.errors.client_id" class="mt-2"/>
         </template>
 
@@ -63,7 +63,7 @@ import {useForm} from '@inertiajs/inertia-vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
+
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 
@@ -72,7 +72,7 @@ export default {
         AppLayout,
         JetButton,
         JetFormSection,
-        JetInput,
+
         JetInputError,
         JetLabel,
     },

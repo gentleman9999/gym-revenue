@@ -84,7 +84,9 @@
                         </Link>
                     </td>
                 </tr>
-                <pagination #pagination class="mt-6" :links="leads.links"/>
+                <template #pagination>
+                    <pagination class="mt-6" :links="leads.links"/>
+                </template>
 
             </gym-revenue-table>
         </jet-bar-container>

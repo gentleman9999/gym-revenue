@@ -3,22 +3,22 @@
         <template #form>
             <div class="col-span-3">
                 <jet-label for="first_name" value="First Name"/>
-                <jet-input id="" type="text" class="block w-full mt-1" v-model="form['first_name']" autofocus required/>
+                <input id="" type="text" class="block w-full mt-1" v-model="form['first_name']" autofocus required/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
             <div class="col-span-3">
                 <jet-label for="last_name" value="Last Name"/>
-                <jet-input id="last_name" type="text" class="block w-full mt-1" v-model="form['last_name']" autofocus required/>
+                <input id="last_name" type="text" class="block w-full mt-1" v-model="form['last_name']" autofocus required/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
             <div  class="col-span-3">
                 <jet-label for="email" value="Email"/>
-                <jet-input id="email" type="email" class="block w-full mt-1" v-model="form.email" autofocus/>
+                <input id="email" type="email" class="block w-full mt-1" v-model="form.email" autofocus/>
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
             <div  class="col-span-3">
                 <jet-label for="mobile_phone" value="Phone"/>
-                <jet-input id="mobile_phone" type="text" class="block w-full mt-1" v-model="form['mobile_phone']" autofocus/>
+                <input id="mobile_phone" type="text" class="block w-full mt-1" v-model="form['mobile_phone']" autofocus/>
                 <jet-input-error :message="form.errors['mobile_phone']" class="mt-2"/>
             </div>
             <div class="col-span-4">
@@ -51,7 +51,7 @@ import {useForm} from '@inertiajs/inertia-vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
+
 import JetDropdown from '@/Jetstream/Dropdown.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
@@ -61,7 +61,7 @@ export default {
         AppLayout,
         JetButton,
         JetFormSection,
-        JetInput,
+
         JetDropdown,
         JetInputError,
         JetLabel,

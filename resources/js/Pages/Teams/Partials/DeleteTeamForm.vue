@@ -14,9 +14,9 @@
             </div>
 
             <div class="mt-5">
-                <jet-danger-button @click="confirmTeamDeletion">
+                <button class="error" @click="confirmTeamDeletion">
                     Delete Team
-                </jet-danger-button>
+                </button>
             </div>
 
             <!-- Delete Team Confirmation Modal -->
@@ -34,9 +34,9 @@
                         Cancel
                     </jet-secondary-button>
 
-                    <jet-danger-button class="ml-2" @click="deleteTeam" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <button class="ml-2 error" @click="deleteTeam" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Delete Team
-                    </jet-danger-button>
+                    </button>
                 </template>
             </jet-confirmation-modal>
         </template>
@@ -47,7 +47,7 @@
     import { defineComponent } from 'vue'
     import JetActionSection from '@/Jetstream/ActionSection.vue'
     import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
-    import JetDangerButton from '@/Jetstream/DangerButton.vue'
+
     import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 
     export default defineComponent({
@@ -56,7 +56,7 @@
         components: {
             JetActionSection,
             JetConfirmationModal,
-            JetDangerButton,
+
             JetSecondaryButton,
         },
 

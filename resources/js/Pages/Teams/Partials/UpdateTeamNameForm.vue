@@ -27,7 +27,7 @@
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Team Name" />
 
-                <jet-input id="name"
+                <input id="name"
                             type="text"
                             class="mt-1 block w-full"
                             v-model="form.name"
@@ -54,7 +54,6 @@
     import JetActionMessage from '@/Jetstream/ActionMessage'
     import JetButton from '@/Jetstream/Button'
     import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
     import JetInputError from '@/Jetstream/InputError'
     import JetLabel from '@/Jetstream/Label'
 
@@ -63,7 +62,6 @@
             JetActionMessage,
             JetButton,
             JetFormSection,
-            JetInput,
             JetInputError,
             JetLabel,
         },

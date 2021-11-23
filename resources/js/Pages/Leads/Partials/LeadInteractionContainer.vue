@@ -45,7 +45,7 @@
 
 <script>
 import {defineComponent} from 'vue'
-import JetInput from '@/Jetstream/Input.vue';
+;
 import JetButton from '@/Jetstream/Button.vue';
 import FormSection from '@/Jetstream/FormSection.vue'
 import CommsHistory from "./CommsHistory";
@@ -62,7 +62,7 @@ export default defineComponent({
     components: {
         CommsHistory,
         CommsActions,
-        JetInput,
+
         JetButton,
         FormSection,
         FontAwesomeIcon,

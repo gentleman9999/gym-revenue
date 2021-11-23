@@ -24,7 +24,7 @@
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Team Name" />
-                <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus />
+                <input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
         </template>
@@ -41,7 +41,7 @@
     import { defineComponent } from 'vue'
     import JetButton from '@/Jetstream/Button.vue'
     import JetFormSection from '@/Jetstream/FormSection.vue'
-    import JetInput from '@/Jetstream/Input.vue'
+
     import JetInputError from '@/Jetstream/InputError.vue'
     import JetLabel from '@/Jetstream/Label.vue'
 
@@ -49,7 +49,7 @@
         components: {
             JetButton,
             JetFormSection,
-            JetInput,
+
             JetInputError,
             JetLabel,
         },

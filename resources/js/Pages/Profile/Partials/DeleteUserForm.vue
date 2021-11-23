@@ -14,9 +14,9 @@
             </div>
 
             <div class="mt-5">
-                <jet-danger-button @click="confirmUserDeletion">
+                <button class="error" @click="confirmUserDeletion">
                     Delete Account
-                </jet-danger-button>
+                </button>
             </div>
 
             <!-- Delete Account Confirmation Modal -->
@@ -29,7 +29,7 @@
                     Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
 
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                        <inputtype="password" class="mt-1 block w-3/4" placeholder="Password"
                                     ref="password"
                                     v-model="form.password"
                                     @keyup.enter="deleteUser" />
@@ -43,9 +43,9 @@
                         Cancel
                     </jet-secondary-button>
 
-                    <jet-danger-button class="ml-2" @click="deleteUser" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <button class="ml-2 error" @click="deleteUser" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Delete Account
-                    </jet-danger-button>
+                    </button>
                 </template>
             </jet-dialog-modal>
         </template>
@@ -56,17 +56,17 @@
     import { defineComponent } from 'vue'
     import JetActionSection from '@/Jetstream/ActionSection.vue'
     import JetDialogModal from '@/Jetstream/DialogModal.vue'
-    import JetDangerButton from '@/Jetstream/DangerButton.vue'
-    import JetInput from '@/Jetstream/Input.vue'
+
+
     import JetInputError from '@/Jetstream/InputError.vue'
     import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 
     export default defineComponent({
         components: {
             JetActionSection,
-            JetDangerButton,
+
             JetDialogModal,
-            JetInput,
+
             JetInputError,
             JetSecondaryButton,
         },

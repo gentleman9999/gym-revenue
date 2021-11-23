@@ -52,7 +52,9 @@
                 <tr v-if="!locations?.data?.length">
                     <td colspan="6">No Locations found.</td>
                 </tr>
-                <pagination #pagination class="mt-6" :links="locations.links"/>
+                <template #pagination>
+                    <pagination  class="mt-6" :links="locations.links"/>
+                </template>
 
             </gym-revenue-table>
 
