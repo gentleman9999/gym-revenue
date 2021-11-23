@@ -114,7 +114,7 @@
 <script>
 import {defineComponent} from "vue";
 import AppLayout from '@/Layouts/AppLayout.vue'
-import JetDropdown from '@/Jetstream/Dropdown'
+import JetDropdown from '@/Components/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
 import GymRevenueTable from "@/Components/GymRevenueTable";

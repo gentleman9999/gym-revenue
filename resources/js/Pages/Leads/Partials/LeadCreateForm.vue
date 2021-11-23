@@ -52,7 +52,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import Button from '@/Components/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
 
-import JetDropdown from '@/Jetstream/Dropdown.vue'
+import JetDropdown from '@/Components/Dropdown'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 

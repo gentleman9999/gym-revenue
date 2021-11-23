@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import Dropdown from "@/Jetstream/Dropdown";
+import Dropdown from "@/Components/Dropdown";
 import { defineComponent } from "vue";
 
 export default defineComponent({

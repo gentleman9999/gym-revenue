@@ -84,7 +84,7 @@
 
 <script>
 import {defineComponent} from "vue";
-import JetDropdown from "@/Jetstream/Dropdown";
+import JetDropdown from "@/Components/Dropdown";
 import {Inertia} from '@inertiajs/inertia';
 
 
