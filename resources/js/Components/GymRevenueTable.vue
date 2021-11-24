@@ -5,7 +5,7 @@
                 <div class="shadow border-b border-base-100 bg-base-300 ">
                     <slot name="prethead"/>
                     <div class="py-4 px-4">
-                        <table class="table" :class="{'table-zebra': zebra}">
+                        <table class="table w-full" :class="{'table-zebra': zebra}">
                             <thead>
                             <tr>
                                 <th v-for="(header, index) in headers" :key="index" scope="col">
