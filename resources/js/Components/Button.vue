@@ -1,6 +1,5 @@
 <template>
     <button :type="type" class="btn"
-
             :class="{'btn-outline': outline, 'btn-ghost': ghost, 'btn-circle': circle, 'btn-square': square, 'loading': loading,  'btn-primary': primary, 'btn-secondary': secondary, 'btn-accent': accent, 'btn-info': info, 'btn-success': success, 'btn-warning': warning, 'btn-error': error, 'btn-xs': size === 'xs', 'btn-sm': size==='sm', 'btn-lg': size==='lg'}">
         <slot></slot>
     </button>
@@ -63,7 +62,7 @@ export default defineComponent({
             type: Boolean,
             default: false
         },
-        size:{
+        size: {
             type: String,
         }
     }

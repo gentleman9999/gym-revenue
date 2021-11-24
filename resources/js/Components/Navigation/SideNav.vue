@@ -158,7 +158,6 @@ import { defineComponent, ref} from "vue";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks";
 // import JetBarSidebarSearch from "../JetBarSidebarSearch";
 import JetNavLink from '@/Jetstream/NavLink';
-import {  Link } from "@inertiajs/inertia-vue3";
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faBars, faCog} from '@fortawesome/pro-solid-svg-icons'

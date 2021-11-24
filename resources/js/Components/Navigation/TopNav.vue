@@ -2,9 +2,9 @@
     <nav class="navbar sticky top-0 z-20 lg:flex p-0 bg-secondary">
         <!-- Logo -->
         <div class="flex-shrink-0 flex items-center bg-primary self-stretch w-72 justify-center">
-            <Link :href="route('dashboard')">
+            <inertia-link :href="route('dashboard')">
                 <jet-application-mark class="block h-8 w-auto"/>
-            </Link>
+            </inertia-link>
         </div>
 
         <!-- Primary Navigation Menu -->
@@ -20,9 +20,9 @@
                     </button> -->
                     <!-- Logo -->
                     <!-- <div class="flex-shrink-0 flex items-center bg-primary">
-                                          <Link :href="route('dashboard')">
+                                          <inertia-link :href="route('dashboard')">
                                               <jet-application-mark class="block h-8 w-auto" />
-                                          </Link>
+                                          </inertia-link>
                                       </div> -->
 
                     <!-- Navigation Links -->
@@ -187,7 +187,7 @@ import JetNavLink from "@/Jetstream/NavLink";
 import TeamsDropdown from "@/Components/Navigation/TeamsDropdown";
 import LocationsDropdown from "@/Components/Navigation/LocationsDropdown";
 import SettingsDropdown from "@/Components/Navigation/SettingsDropdown";
-import {Head, Link} from "@inertiajs/inertia-vue3";
+import {Head} from "@inertiajs/inertia-vue3";
 import NotyBell from "@/Components/NotyBell";
 
 library.add(
@@ -203,7 +203,6 @@ library.add(
 export default defineComponent({
     components: {
         Head,
-        Link,
         JetApplicationMark,
         JetNavLink,
         FontAwesomeIcon,

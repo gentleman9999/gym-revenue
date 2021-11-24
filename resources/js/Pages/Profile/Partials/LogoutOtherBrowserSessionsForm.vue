@@ -44,9 +44,9 @@
             </div>
 
             <div class="flex items-center mt-5">
-                <jet-button @click="confirmLogout">
+                <Button @click="confirmLogout">
                     Log Out Other Browser Sessions
-                </jet-button>
+                </Button>
 
                 <jet-action-message :on="form.recentlySuccessful" class="ml-3">
                     Done.
@@ -63,7 +63,7 @@
                     Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
 
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                        <inputtype="password" class="mt-1 block w-3/4" placeholder="Password"
                                     ref="password"
                                     v-model="form.password"
                                     @keyup.enter="logoutOtherBrowserSessions" />
@@ -77,9 +77,9 @@
                         Cancel
                     </jet-secondary-button>
 
-                    <jet-button class="ml-2" @click="logoutOtherBrowserSessions" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <Button class="ml-2" @click="logoutOtherBrowserSessions" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Log Out Other Browser Sessions
-                    </jet-button>
+                    </Button>
                 </template>
             </jet-dialog-modal>
         </template>
@@ -88,13 +88,13 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetActionMessage from '@/Jetstream/ActionMessage.vue'
-    import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import JetDialogModal from '@/Jetstream/DialogModal.vue'
-    import JetInput from '@/Jetstream/Input.vue'
-    import JetInputError from '@/Jetstream/InputError.vue'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
+    import JetActionMessage from '@/Jetstream/ActionMessage'
+    import JetActionSection from '@/Jetstream/ActionSection'
+    import Button from '@/Components/Button'
+    import JetDialogModal from '@/Jetstream/DialogModal'
+
+    import JetInputError from '@/Jetstream/InputError'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
     export default defineComponent({
         props: ['sessions'],
@@ -102,9 +102,9 @@
         components: {
             JetActionMessage,
             JetActionSection,
-            JetButton,
+            Button,
             JetDialogModal,
-            JetInput,
+
             JetInputError,
             JetSecondaryButton,
         },

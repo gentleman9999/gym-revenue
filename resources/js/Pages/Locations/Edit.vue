@@ -16,24 +16,24 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import JetButton from '@/Jetstream/Button.vue'
-import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
-import JetInputError from '@/Jetstream/InputError.vue'
-import JetLabel from '@/Jetstream/Label.vue'
-import JetBarIcon from '@/Components/JetBarIcon.vue'
+import AppLayout from '@/Layouts/AppLayout'
+import Button from '@/Components/Button'
+import JetFormSection from '@/Jetstream/FormSection'
 
-import LocationForm from '@/Pages/Locations/Partials/LocationForm.vue'
+import JetInputError from '@/Jetstream/InputError'
+import JetLabel from '@/Jetstream/Label'
+import JetBarIcon from '@/Components/JetBarIcon'
+
+import LocationForm from '@/Pages/Locations/Partials/LocationForm'
 import {defineComponent} from 'vue'
 
 
 export default defineComponent({
     components: {
         AppLayout,
-        JetButton,
+        Button,
         JetFormSection,
-        JetInput,
+
         JetInputError,
         JetLabel,
         JetBarIcon,

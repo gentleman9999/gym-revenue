@@ -18,7 +18,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { Head } from '@inertiajs/inertia-vue3';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
+import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
 
 export default defineComponent({
     props: ['terms'],

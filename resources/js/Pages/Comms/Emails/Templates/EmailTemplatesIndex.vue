@@ -11,11 +11,11 @@
         <jet-bar-container>
             <div class="flex flex-col pb-2">
                 <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-left">
-                    <Link
+                    <inertia-link
                         class="btn justify-self-end"
                         :href="route('comms.dashboard')">
                         <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="16"/> Back</span>
-                    </Link>
+                    </inertia-link>
                 </div>
             </div>
             <div class="top-navigation flex flex-col xl:flex-row xl-justify-between">
@@ -34,11 +34,11 @@
 
                 <div class="flex flex-row justify-center xl-justify-right">
                     <div class="mt-2 ml-1 xl:mt-0">
-                        <Link
+                        <inertia-link
                             class="btn justify-self-end"
                             href="#" @click="comingSoon()">
                             <span>+ New Template</span>
-                        </Link>
+                        </inertia-link>
                     </div>
                 </div>
             </div>
@@ -54,53 +54,53 @@
                             <div class="p-4 bg-base-100"></div>
                             <div class="p-4 bg-base-100"></div>
                         </template>
-                        <tr class="hover:bg-base-100" v-if="templates.data.length === 0">
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data>No Data Available.</jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
-                            <jet-bar-table-data></jet-bar-table-data>
+                        <tr v-if="templates.data.length === 0">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>No Data Available.</td>
+                            <td></td>
+                            <td></td>
                         </tr>
-                        <tr class="hover:bg-base-100" v-else v-for="(template, idx) in templates.data" :key="idx">
-                            <jet-bar-table-data>{{ template.name }}</jet-bar-table-data>
-                            <jet-bar-table-data>
-                                <div class="badge" :class="badgeClasses(template.active)">{{ (template.active) ? 'Live' : 'Draft' }}</div>
-                            </jet-bar-table-data>
-                            <jet-bar-table-data>Regular</jet-bar-table-data>
-                            <jet-bar-table-data>{{ template.updated_at }}</jet-bar-table-data>
-                            <jet-bar-table-data>{{ template.created_by_user_id }}</jet-bar-table-data>
-                            <jet-bar-table-data><div class="ml-3 relative">
-                                <jet-dropdown align="right" width="40">
-                                    <template #trigger>
+                        <tr class="hover" v-else v-for="(template, idx) in templates.data" :key="idx">
+                            <td>{{ template.name }}</td>
+                            <td>
+                                <div class="badge" :class="badgeClasses(template.active)">
+                                    {{ (template.active) ? 'Live' : 'Draft' }}
+                                </div>
+                            </td>
+                            <td>Regular</td>
+                            <td>{{ template.updated_at }}</td>
+                            <td>{{ template.created_by_user_id }}</td>
+                            <td>
+                                <div class="ml-3 relative">
+                                    <jet-dropdown align="end" width="40">
+                                        <template #trigger>
                                         <span class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
+                                            <button type="button"
+                                                    class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
                                                 <font-awesome-icon :icon="['far', 'ellipsis-h']" size="24"/>
                                             </button>
                                         </span>
-                                    </template>
-                                    <template #content>
-                                        <div class="w-60">
-                                            <div class="block px-4 py-2 text-xs ">
-                                                Available Actions
-                                                <br />
+                                        </template>
+                                        <template #content>
+                                            <div class="w-60">
+                                                <div class="block px-4 py-2 text-xs ">
+                                                    Available Actions
+                                                    <br/>
+                                                </div>
+                                                <ul class="menu compact">
+                                                    <li v-for="(option, slug) in actionOptions" :key="slug">
+                                                        <inertia-link @click="option.click">
+                                                            {{ option.label }}
+                                                        </inertia-link>
+                                                    </li>
+                                                </ul>
                                             </div>
-                                            <div class="h-40 lg:h-auto overflow-y-scroll">
-                                                <template v-for="(option, slug) in actionOptions" :key="slug">
-                                                    <form @submit.prevent="option.click">
-                                                        <jet-dropdown-link as="button">
-                                                            <div class="flex items-center">
-                                                                <div>{{ option.label }}</div>
-                                                            </div>
-                                                        </jet-dropdown-link>
-                                                    </form>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </jet-dropdown>
-                            </div>
-                            </jet-bar-table-data>
+                                        </template>
+                                    </jet-dropdown>
+                                </div>
+                            </td>
 
                         </tr>
                     </gym-revenue-table>
@@ -113,38 +113,34 @@
 
 <script>
 import {defineComponent} from "vue";
-import {Link} from '@inertiajs/inertia-vue3';
-import AppLayout from '@/Layouts/AppLayout.vue'
-import JetDropdown from '@/Jetstream/Dropdown'
-import JetDropdownLink from '@/Jetstream/DropdownLink'
+import AppLayout from '@/Layouts/AppLayout'
+import JetDropdown from '@/Components/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
-import JetBarTableData from "@/Components/JetBarTableData";
 import GymRevenueTable from "@/Components/GymRevenueTable";
 
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDoubleLeft, faEllipsisH } from '@fortawesome/pro-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import mapValues from "lodash/mapValues";
 import throttle from "lodash/throttle";
 import pickBy from "lodash/pickBy";
+
 library.add(faChevronDoubleLeft, faEllipsisH)
 
 export default defineComponent({
     name: "EmailTemplatesIndex",
     components: {
-        Link,
         AppLayout,
         JetDropdown,
         SearchFilter,
         FontAwesomeIcon,
         GymRevenueTable,
         JetBarContainer,
-        JetBarTableData,
-        JetDropdownLink
     },
     props: ['title', 'filters', 'templates'],
-    setup(props) {},
+    setup(props) {
+    },
     watch: {
         form: {
             deep: true,
@@ -166,7 +162,7 @@ export default defineComponent({
     },
     computed: {
         tableHeaders() {
-            if(this.templates.data.length > 0) {
+            if (this.templates.data.length > 0) {
                 return ['name', 'status', 'type', 'date updated', 'updated by', '']
             }
 
@@ -213,7 +209,8 @@ export default defineComponent({
             }
         },
     },
-    mounted() {}
+    mounted() {
+    }
 });
 </script>
 

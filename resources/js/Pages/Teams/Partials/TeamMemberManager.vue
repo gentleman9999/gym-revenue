@@ -23,7 +23,7 @@
                     <!-- Member Email -->
                     <div class="col-span-6 sm:col-span-4">
                         <jet-label for="email" value="Email" />
-                        <jet-input id="email" type="email" class="mt-1 block w-full" v-model="addTeamMemberForm.email" />
+                        <input id="email" type="email" class="mt-1 block w-full" v-model="addTeamMemberForm.email" />
                         <jet-input-error :message="addTeamMemberForm.errors.email" class="mt-2" />
                     </div>
 
@@ -63,9 +63,9 @@
                         Added.
                     </jet-action-message>
 
-                    <jet-button :class="{ 'opacity-25': addTeamMemberForm.processing }" :disabled="addTeamMemberForm.processing">
+                    <Button :class="{ 'opacity-25': addTeamMemberForm.processing }" :disabled="addTeamMemberForm.processing">
                         Add
-                    </jet-button>
+                    </Button>
                 </template>
             </jet-form-section>
         </div>
@@ -196,9 +196,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
+                <Button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
                     Save
-                </jet-button>
+                </Button>
             </template>
         </jet-dialog-modal>
 
@@ -217,9 +217,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="leaveTeam" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing">
+                <button class="error ml-2" @click="leaveTeam" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing">
                     Leave
-                </jet-danger-button>
+                </button>
             </template>
         </jet-confirmation-modal>
 
@@ -238,9 +238,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="removeTeamMember" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing">
+                <button class="error ml-2" @click="removeTeamMember" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing">
                     Remove
-                </jet-danger-button>
+                </button>
             </template>
         </jet-confirmation-modal>
     </div>
@@ -248,29 +248,29 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetActionMessage from '@/Jetstream/ActionMessage.vue'
-    import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
-    import JetDangerButton from '@/Jetstream/DangerButton.vue'
-    import JetDialogModal from '@/Jetstream/DialogModal.vue'
-    import JetFormSection from '@/Jetstream/FormSection.vue'
-    import JetInput from '@/Jetstream/Input.vue'
-    import JetInputError from '@/Jetstream/InputError.vue'
-    import JetLabel from '@/Jetstream/Label.vue'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
-    import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
+    import JetActionMessage from '@/Jetstream/ActionMessage'
+    import JetActionSection from '@/Jetstream/ActionSection'
+    import Button from '@/Components/Button'
+    import JetConfirmationModal from '@/Jetstream/ConfirmationModal'
+
+    import JetDialogModal from '@/Jetstream/DialogModal'
+    import JetFormSection from '@/Jetstream/FormSection'
+
+    import JetInputError from '@/Jetstream/InputError'
+    import JetLabel from '@/Jetstream/Label'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+    import JetSectionBorder from '@/Jetstream/SectionBorder'
 
     export default defineComponent({
         components: {
             JetActionMessage,
             JetActionSection,
-            JetButton,
+            Button,
             JetConfirmationModal,
-            JetDangerButton,
+
             JetDialogModal,
             JetFormSection,
-            JetInput,
+
             JetInputError,
             JetLabel,
             JetSecondaryButton,

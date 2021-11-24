@@ -1,7 +1,6 @@
 <template>
   <!-- Teams Dropdown -->
   <jet-dropdown
-    align="right"
     width="60"
   >
     <template #trigger>
@@ -51,13 +50,13 @@
                                                 -->
 
           <!-- Team Settings
-                                                <jet-dropdown-link :href="route('teams.show', $page.props.user.current_team)">
+                                                <inertia-link :href="route('teams.show', $page.props.user.current_team)">
                                                     Team Settings
-                                                </jet-dropdown-link>
+                                                </inertia-link>
 
-                                                <jet-dropdown-link :href="route('teams.create')" v-if="$page.props.jetstream.canCreateTeams">
+                                                <inertia-link :href="route('teams.create')" v-if="$page.props.jetstream.canCreateTeams">
                                                     Create New Team
-                                                </jet-dropdown-link>
+                                                </inertia-link>
 
                                                 <div class="border-t border-base-100-100"></div>
                                                 -->
@@ -67,29 +66,27 @@
             <small>{{ $page.props.user.current_team.name }}</small>
           </div>
 
-          <template v-for="team in $page.props.user.all_teams" :key="team.id">
-            <form @submit.prevent="switchToTeam(team)">
-              <jet-dropdown-link as="button">
-                <div class="flex items-center">
-                  <svg
-                    v-if="team.id == $page.props.user.current_team_id"
-                    class="mr-2 h-5 w-5 text-green-400"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  <div>{{ team.name }}</div>
-                </div>
-              </jet-dropdown-link>
-            </form>
-          </template>
+            <ul class="menu compact">
+                <li  v-for="team in $page.props.user.all_teams" :key="team.id">
+                    <inertia-link href="#" @click="switchToTeam(team)" class="flex items-center">
+                            <svg
+                                v-if="team.id == $page.props.user.current_team_id"
+                                class="mr-2 h-5 w-5 text-green-400"
+                                fill="none"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                ></path>
+                            </svg>
+                            {{ team.name }}
+                    </inertia-link>
+                </li>
+            </ul>
         </template>
       </div>
     </template>
@@ -98,14 +95,12 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetDropdown from "@/Jetstream/Dropdown";
-import JetDropdownLink from "@/Jetstream/DropdownLink";
+import JetDropdown from "@/Components/Dropdown";
 import { Inertia } from '@inertiajs/inertia';
 
 export default defineComponent({
   components: {
     JetDropdown,
-    JetDropdownLink,
   },
   setup(props){
     function switchToTeam(team) {

@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center">
     <div class="flex w-full bg-base-300 shadow rounded">
-      <dropdown align="left" width="60">
+      <dropdown align="start" width="60">
         <template #trigger>
           <span class="inline-flex rounded-md h-full">
             <button
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import Dropdown from "@/Jetstream/Dropdown";
+import Dropdown from "@/Components/Dropdown";
 import { defineComponent } from "vue";
 
 export default defineComponent({

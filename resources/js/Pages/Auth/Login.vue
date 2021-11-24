@@ -15,29 +15,29 @@
         <form @submit.prevent="submit">
             <div>
                 <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
+                <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
             </div>
 
             <div class="mt-4">
                 <jet-label for="password" value="Password" />
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
+                <input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
             </div>
 
             <div class="block mt-4">
                 <label class="flex items-center">
-                    <jet-checkbox name="remember" v-model:checked="form.remember" />
+                    <input type="checkbox" class="checkbox" name="remember" v-model="form.remember" />
                     <span class="ml-2 text-sm ">Remember me</span>
                 </label>
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
+                <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
                     Forgot your password?
-                </Link>
+                </inertia-link>
 
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
-                </jet-button>
+                </Button>
             </div>
         </form>
     </jet-authentication-card>
@@ -45,26 +45,23 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import JetInput from '@/Jetstream/Input.vue'
-    import JetCheckbox from '@/Jetstream/Checkbox.vue'
-    import JetLabel from '@/Jetstream/Label.vue'
-    import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
-    import { Head, Link } from '@inertiajs/inertia-vue3';
+    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
+    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
+    import Button from '@/Components/Button'
+
+
+    import JetLabel from '@/Jetstream/Label'
+    import JetValidationErrors from '@/Jetstream/ValidationErrors'
+    import { Head } from '@inertiajs/inertia-vue3';
 
     export default defineComponent({
         components: {
             Head,
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
-            JetCheckbox,
+            Button,
             JetLabel,
             JetValidationErrors,
-            Link,
         },
 
         props: {
