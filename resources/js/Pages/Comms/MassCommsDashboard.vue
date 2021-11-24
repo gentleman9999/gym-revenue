@@ -144,9 +144,16 @@
                         <div class="bg-primary border-b-2 border-gray-300 py-2">
                             <h1 class="ml-2 bg-primary">Your Feed</h1>
                         </div>
-                        <div class="text-center">
-                            There's nothing here! Do something about it.
-                        </div>
+                        <gym-revenue-table :headers="tableHeaders">
+                            <tr v-if="historyFeed.length === 0">
+                                <td>No Data Available.</td>
+                            </tr>
+                            <tr class="hover" v-else v-for="(log, idx) in historyFeed" :key="idx">
+                                <td>{{ log.type }}</td>
+                                <td>{{ log.date }}</td>
+                                <td>{{ log.by }}</td>
+                            </tr>
+                        </gym-revenue-table>
                     </div>
                 </div>
             </div>
@@ -159,6 +166,7 @@ import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout'
 import JetDropdown from '@/Components/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
+import GymRevenueTable from "@/Components/GymRevenueTable";
 
 
 export default defineComponent({
@@ -166,16 +174,26 @@ export default defineComponent({
     components: {
         AppLayout,
         JetDropdown,
+        GymRevenueTable,
         JetBarContainer
     },
-    props: ['title', 'audiences', 'activeAudience', 'stats'],
+    props: ['title', 'audiences', 'activeAudience', 'stats', 'historyFeed'],
     setup(props) {
     },
     watch: {},
     data() {
         return {};
     },
-    computed: {},
+    computed: {
+        tableHeaders() {
+            if (this.historyFeed.length > 0) {
+                return ['action', 'date', 'by']
+            }
+
+            return [];
+
+        },
+    },
     methods: {
         comingSoon() {
             new Noty({

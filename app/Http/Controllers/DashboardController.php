@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clients\Client;
+use App\Services\Dashboard\HomeDashboardService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
     protected Client $clients;
+    protected  HomeDashboardService $service;
 
-    public function __construct(Client $clients)
+    public function __construct(Client $clients, HomeDashboardService $service)
     {
         $this->clients = $clients;
+        $this->service = $service;
     }
 
     public function index()
@@ -23,9 +26,13 @@ class DashboardController extends Controller
         if(!is_null($client_detail))
         {
             $clients = collect([$client_detail->client->toArray()]);
+            $account = $client_detail->client->name;
+            $widgets = $this->service->getDashboardWidgets();
         }
         else {
+            $account = 'Cape & Bay';
             $clients = $this->clients->all();
+            $widgets = $this->service->getDashboardWidgets();
         }
 
         if(count($clients) > 0)
@@ -39,7 +46,9 @@ class DashboardController extends Controller
         }
 
         return Inertia::render('Dashboard', [
-            'clients' => $clients
+            'clients' => $clients,
+            'accountName' => $account,
+            'widgets' => $widgets
         ]);
     }
 }

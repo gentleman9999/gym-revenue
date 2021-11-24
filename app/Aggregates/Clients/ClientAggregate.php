@@ -2,6 +2,8 @@
 
 namespace App\Aggregates\Clients;
 
+use App\Aggregates\Clients\Traits\ClientApplies;
+use App\Aggregates\Clients\Traits\ClientGetters;
 use App\Exceptions\Clients\ClientAccountException;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
@@ -17,20 +19,12 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class ClientAggregate extends AggregateRoot
 {
+    use ClientGetters, ClientApplies;
+
     protected string $default_team = '';
     protected array $teams = [];
 
     protected static bool $allowConcurrency = true;
-
-    public function applyDefaultClientTeamCreated(DefaultClientTeamCreated $event)
-    {
-        $this->default_team = $event->team;
-    }
-
-    public function applyTeamCreated(TeamCreated $event)
-    {
-        $this->teams[$event->team] = $event->name;
-    }
 
     public function createDefaultTeam(string $name)
     {

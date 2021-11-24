@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import {computed, defineComponent} from 'vue'
-;
+import {computed, defineComponent} from 'vue';
+
 import Button from '@/Components/Button';
 import {useForm} from '@inertiajs/inertia-vue3'
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Comm;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
 use App\Models\Clients\Features\EmailCampaigns;
@@ -157,10 +158,12 @@ class MassCommunicationsController extends Controller
 
         if(!is_null($client_id))
         {
+            $aggy = ClientAggregate::retrieve($client_id);
+            $history_log = $aggy->getCommunicationHistoryLog();
             $aud_options = [
                 'all' => 'All Audiences',
                 'prospects' => 'Prospects',
-                'conversions' => 'Conversions'
+                'conversions' => 'Conversions',
             ];
 
             // @todo - make a function that crunches these datas
@@ -168,6 +171,7 @@ class MassCommunicationsController extends Controller
         }
         else
         {
+            $history_log = [];
             $aud_options = [
                 'all' => 'All Audiences',
                 'admins' => 'Cape & Bay Admins',
@@ -204,7 +208,8 @@ class MassCommunicationsController extends Controller
             'title' => 'Mass Communications',
             'audiences' => $aud_options,
             'activeAudience' => $active_audience,
-            'stats' => $stats
+            'stats' => $stats,
+            'historyFeed' => $history_log
         ]);
     }
 

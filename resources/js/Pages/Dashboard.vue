@@ -1,19 +1,25 @@
 <template>
     <app-layout>
         <template #header>
-            Dashboard
+            <div class="flex flex-row justify-between">
+                <div><p>Dashboard</p></div>
+                <div><p>{{ accountName }}</p></div>
+            </div>
+
         </template>
 
         <jet-bar-container>
-            <jet-bar-alert text="This is an alert message" />
+            <!-- @todo - leave this here and make it contextual, dynamic, pusher-enabled? -->
+            <!-- <jet-bar-alert text="This is an alert message" /> -->
 
-            <jet-bar-stats-container >
-                <jet-bar-stat-card title="Total Clients" :number="clients.length" type="warning">
+            <jet-bar-stats-container>
+                <jet-bar-stat-card v-for="(widget, idx) in widgets" :title="widget.title" :number="widget.value" :type="widget.type">
                     <template v-slot:icon>
-                        <jet-bar-icon type="users" fill />
+                        <jet-bar-icon :type="widget.icon" fill />
                     </template>
                 </jet-bar-stat-card>
 
+                <!--
                 <jet-bar-stat-card title="Total Revenue Funneled" number="$ 0" type="success">
                     <template v-slot:icon>
                         <jet-bar-icon type="money" fill />
@@ -31,6 +37,7 @@
                         <jet-bar-icon type="message" fill />
                     </template>
                 </jet-bar-stat-card>
+                -->
             </jet-bar-stats-container>
 
             <gym-revenue-table :headers="['client', 'status', 'joined', '', '']" >
@@ -79,7 +86,9 @@ export default {
         JetBarIcon,
     },
     props: [
-        'clients'
+        'clients',
+        'accountName',
+        'widgets'
     ],
     data() {},
     methods: {},
