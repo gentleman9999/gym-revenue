@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center">
-    <div class="flex w-full bg-white shadow rounded">
-      <dropdown align="left" width="60">
+    <div class="flex w-full bg-base-300 shadow rounded">
+      <dropdown align="start" width="60">
         <template #trigger>
           <span class="inline-flex rounded-md h-full">
             <button
@@ -16,11 +16,11 @@
                 leading-4
                 font-medium
                 rounded-md
-                text-gray-500
-                bg-white
-                hover:bg-gray-50 hover:text-gray-700
-                focus:outline-none focus:bg-gray-50
-                active:bg-gray-50
+
+                bg-base-300
+                hover:bg-base-100 hover:
+                focus:outline-none focus:bg-base-100
+                active:bg-base-100
                 transition
               "
             >
@@ -44,11 +44,11 @@
 
         <template #content>
           <div class="w-60">
-            <div class="block px-4 py-2 text-xs text-gray-400">Filters</div>
+            <div class="block px-4 py-2 text-xs ">Filters</div>
 
             <div
               slot="dropdown"
-              class="px-4 py-6 w-screen shadow-xl bg-white rounded"
+              class="px-4 py-6 w-screen shadow-xl bg-base-300 rounded"
               :style="{ maxWidth: `100%` }"
             >
               <slot />
@@ -69,9 +69,7 @@
     <button
       class="
         ml-3
-        text-sm text-gray-500
-        hover:text-gray-700
-        focus:text-indigo-500
+        text-sm
       "
       type="button"
       @click="$emit('reset')"
@@ -82,7 +80,7 @@
 </template>
 
 <script>
-import Dropdown from "@/Jetstream/Dropdown";
+import Dropdown from "@/Components/Dropdown";
 import { defineComponent } from "vue";
 
 export default defineComponent({

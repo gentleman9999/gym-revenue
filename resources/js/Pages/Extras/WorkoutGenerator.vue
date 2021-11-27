@@ -1,14 +1,14 @@
 <template>
     <app-layout title="GymRevenue - Workout Generator">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Workout Generator (Preview)
             </h2>
         </template>
 
         <div class="py-16">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="workout-generator-container">
                         <workout-form
                             @submit="generateRoutine"
@@ -16,7 +16,7 @@
                         ></workout-form>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mt-10" v-show="showRoutine">
+                <div class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg mt-10" v-show="showRoutine">
                     <div class="workout-routine-container">
                         <generated-workout v-if="showRoutine"
                                            :workout="solution"
@@ -40,10 +40,10 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import AppLayout from '@/Layouts/AppLayout.vue'
+    import AppLayout from '@/Layouts/AppLayout'
 
-    import WorkoutForm from '@/Presenters/WorkoutGenerator/WorkoutForm.vue'
-    import GeneratedWorkout from '@/Presenters/WorkoutGenerator/GeneratedWorkout.vue'
+    import WorkoutForm from '@/Presenters/WorkoutGenerator/WorkoutForm'
+    import GeneratedWorkout from '@/Presenters/WorkoutGenerator/GeneratedWorkout'
 
     import SweetModal from "../../Components/SweetModal3/SweetModal";
     import { library } from '@fortawesome/fontawesome-svg-core';

@@ -1,7 +1,7 @@
 <template>
     <app-layout title="Create New Lead">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl  leading-tight">
                 Create New Lead
             </h2>
         </template>
@@ -16,22 +16,22 @@
 
 <script>
 import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import JetButton from '@/Jetstream/Button.vue'
-import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
-import JetInputError from '@/Jetstream/InputError.vue'
-import JetLabel from '@/Jetstream/Label.vue'
+import AppLayout from '@/Layouts/AppLayout'
+import Button from '@/Components/Button'
+import JetFormSection from '@/Jetstream/FormSection'
 
-import LeadForm from '@/Pages/Leads/Partials/LeadCreateForm.vue'
+import JetInputError from '@/Jetstream/InputError'
+import JetLabel from '@/Jetstream/Label'
+
+import LeadForm from '@/Pages/Leads/Partials/LeadCreateForm'
 
 
 export default defineComponent({
     components: {
         AppLayout,
-        JetButton,
+        Button,
         JetFormSection,
-        JetInput,
+
         JetInputError,
         JetLabel,
         LeadForm

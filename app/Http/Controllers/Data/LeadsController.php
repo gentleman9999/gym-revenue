@@ -158,7 +158,7 @@ class LeadsController extends Controller
         }
 
         return Inertia::render('Leads/Show', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first()
         ]);
     }
 
@@ -281,8 +281,6 @@ class LeadsController extends Controller
 
     public function contact($lead_id)
     {
-        $results = ['success' => false];
-
         $lead = Lead::find($lead_id);
 
         if($lead)
@@ -291,34 +289,33 @@ class LeadsController extends Controller
             {
                 $aggy = EndUserActivityAggregate::retrieve($lead_id);
                 $data = request()->all();
-
                 switch(request()->get('method'))
                 {
                     case 'email':
                         $aggy->emailLead($data, auth()->user()->id)->persist();
-                        $results = ['success' => true, 'time' => date('Y-m-d'), 'email' => auth()->user()->email];
                         break;
 
                     case 'phone':
                         $aggy->logPhoneCallWithLead($data, auth()->user()->id)->persist();
-                        $results = ['success' => true, 'time' => date('Y-m-d'), 'email' => auth()->user()->email];
                         break;
 
                     case 'sms':
                         $aggy->textMessageLead($data, auth()->user()->id)->persist();
-                        $results = ['success' => true, 'time' => date('Y-m-d'), 'email' => auth()->user()->email];
                         break;
 
                     default:
-                        $results['message'] = 'Invalid communication method. Select Another.';
+                        //TODO:flash error
+//                        $results['message'] = 'Invalid communication method. Select Another.';
                 }
             }
         }
         else
         {
-            $results['message'] = 'Could not find the lead requested.';
+//            TODO: flash error
+//            $results['message'] = 'Could not find the lead requested.';
         }
-
-        return response($results, 200);
+//        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
+//        return redirect()->back()->with('selectedLeadDetailIndex', '0');
+        return Redirect::back()->with('selectedLeadDetailIndex', 0);
     }
 }

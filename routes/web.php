@@ -16,12 +16,15 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+    return redirect('login');
+    /*
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+    */
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', \App\Http\Controllers\DashboardController::class.'@index')->name('dashboard');
@@ -40,6 +43,13 @@ Route::middleware(['auth:sanctum', 'verified'])->put('/locations/{id}', \App\Htt
 Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\Http\Controllers\LocationsController::class.'@delete')->name('locations.delete');
 Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore', \App\Http\Controllers\LocationsController::class.'@restore')->name('locations.restore');
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( function() {
+    Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@index')->name('comms.dashboard');
+    Route::get('/email-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_index')->name('comms.email-templates');
+    Route::get('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_index')->name('comms.email-campaigns');
+    Route::get('/sms-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@sc_index')->name('comms.sms-campaigns');
+    Route::get('/sms-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@st_index')->name('comms.sms-templates');
+});
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::prefix('leads')->group( function() {
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads');

@@ -17,7 +17,9 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     {
         //Mail::to($addy)->send(new NewGrandOpeningLead($payload));
         $lead = Lead::find($event->lead);
-        Mail::to($lead->email)->send(new EmailFromRep($event->data, $event->lead, $event->user));
+        if(env('ENABLE_LEAD_REACTOR_MAIl', true)){
+            Mail::to($lead->email)->send(new EmailFromRep($event->data, $event->lead, $event->user));
+        }
     }
 
     public function onLeadWasTextMessagedByRep(LeadWasTextMessagedByRep $event)
@@ -25,6 +27,8 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $lead = Lead::find($event->lead);
         $msg = $event->data['message'];
 
-        FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
+        if(env('ENABLE_LEAD_REACTOR_SMS', true)){
+            FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
+        }
     }
 }

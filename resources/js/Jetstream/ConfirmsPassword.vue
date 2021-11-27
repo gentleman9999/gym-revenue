@@ -13,7 +13,7 @@
                 {{ content }}
 
                 <div class="mt-4">
-                    <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                    <input type="password" class="mt-1 block w-3/4" placeholder="Password"
                                 ref="password"
                                 v-model="form.password"
                                 @keyup.enter="confirmPassword" />
@@ -27,9 +27,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="confirmPassword" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button class="ml-2" @click="confirmPassword" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     {{ button }}
-                </jet-button>
+                </Button>
             </template>
         </jet-dialog-modal>
     </span>
@@ -37,11 +37,10 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetButton from './Button.vue'
-    import JetDialogModal from './DialogModal.vue'
-    import JetInput from './Input.vue'
-    import JetInputError from './InputError.vue'
-    import JetSecondaryButton from './SecondaryButton.vue'
+    import Button from '@/Components/Button'
+    import JetDialogModal from './DialogModal'
+    import JetInputError from './InputError'
+    import JetSecondaryButton from './SecondaryButton'
 
     export default defineComponent({
         emits: ['confirmed'],
@@ -59,9 +58,9 @@
         },
 
         components: {
-            JetButton,
+            Button,
             JetDialogModal,
-            JetInput,
+
             JetInputError,
             JetSecondaryButton,
         },

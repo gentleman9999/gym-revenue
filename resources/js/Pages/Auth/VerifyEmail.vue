@@ -6,7 +6,7 @@
             <jet-authentication-card-logo />
         </template>
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="mb-4 text-sm ">
             Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
         </div>
 
@@ -16,11 +16,11 @@
 
         <form @submit.prevent="submit">
             <div class="mt-4 flex items-center justify-between">
-                <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Resend Verification Email
-                </jet-button>
+                </Button>
 
-                <Link :href="route('logout')" method="post" as="button" class="underline text-sm text-gray-600 hover:text-gray-900">Log Out</Link>
+                <inertia-link :href="route('logout')" method="post" as="button" class="underline text-sm  hover:">Log Out</inertia-link>
             </div>
         </form>
     </jet-authentication-card>
@@ -28,18 +28,17 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import { Head, Link } from '@inertiajs/inertia-vue3';
+    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
+    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
+    import Button from '@/Components/Button'
+    import { Head } from '@inertiajs/inertia-vue3';
 
     export default defineComponent({
         components: {
             Head,
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
-            JetButton,
-            Link,
+            Button,
         },
 
         props: {

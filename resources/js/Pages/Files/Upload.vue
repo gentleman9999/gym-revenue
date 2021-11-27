@@ -1,7 +1,7 @@
 <template>
-    <app-layout title="Create Location">
+    <app-layout title="Upload Files">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl leading-tight">
                 Upload Files
             </h2>
         </template>
@@ -17,9 +17,7 @@
 <script>
 import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import JetButton from '@/Jetstream/Button.vue'
 import JetFormSection from '@/Jetstream/FormSection.vue'
-import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 
@@ -31,9 +29,7 @@ export default defineComponent({
     components: {
         FileUploadForm,
         AppLayout,
-        JetButton,
         JetFormSection,
-        JetInput,
         JetInputError,
         JetLabel,
         LocationForm

@@ -1,19 +1,25 @@
 <template>
     <app-layout>
         <template #header>
-            Dashboard
+            <div class="flex flex-row justify-between">
+                <div><p>Dashboard</p></div>
+                <div><p>{{ accountName }}</p></div>
+            </div>
+
         </template>
 
         <jet-bar-container>
-            <jet-bar-alert text="This is an alert message" />
+            <!-- @todo - leave this here and make it contextual, dynamic, pusher-enabled? -->
+            <!-- <jet-bar-alert text="This is an alert message" /> -->
 
-            <jet-bar-stats-container >
-                <jet-bar-stat-card title="Total Clients" :number="clients.length" type="warning">
+            <jet-bar-stats-container>
+                <jet-bar-stat-card v-for="(widget, idx) in widgets" :title="widget.title" :number="widget.value" :type="widget.type">
                     <template v-slot:icon>
-                        <jet-bar-icon type="users" fill />
+                        <jet-bar-icon :type="widget.icon" fill />
                     </template>
                 </jet-bar-stat-card>
 
+                <!--
                 <jet-bar-stat-card title="Total Revenue Funneled" number="$ 0" type="success">
                     <template v-slot:icon>
                         <jet-bar-icon type="money" fill />
@@ -31,26 +37,27 @@
                         <jet-bar-icon type="message" fill />
                     </template>
                 </jet-bar-stat-card>
+                -->
             </jet-bar-stats-container>
 
-            <jet-bar-table :headers="['client', 'status', 'joined', '', '']" >
-                <tr class="hover:bg-gray-50" v-for="client in clients" :key="client.id">
-                    <jet-bar-table-data>{{ client.name }}</jet-bar-table-data>
-                    <jet-bar-table-data>
+            <gym-revenue-table :headers="['client', 'status', 'joined', '', '']" >
+                <tr class="hover" v-for="client in clients" :key="client.id">
+                    <td>{{ client.name }}</td>
+                    <td>
                         <jet-bar-badge text="Active" type="success" v-if="client.active"/>
                         <jet-bar-badge text="Not Active" type="danger" v-else/>
-                    </jet-bar-table-data>
-                    <jet-bar-table-data>{{ client.created_at}} </jet-bar-table-data>
-                    <jet-bar-table-data>
-                        <inertia-link href="#" class="text-indigo-600 hover:text-indigo-900">Edit</inertia-link>
-                    </jet-bar-table-data>
-                    <jet-bar-table-data>
-                        <inertia-link href="#" class="text-gray-400 hover:text-gray-500">
+                    </td>
+                    <td>{{ client.created_at}} </td>
+                    <td>
+                        <inertia-link href="#" class="">Edit</inertia-link>
+                    </td>
+                    <td>
+                        <inertia-link href="#" class=" hover:">
                             <jet-bar-icon type="trash" fill />
                         </inertia-link>
-                    </jet-bar-table-data>
+                    </td>
                 </tr>
-            </jet-bar-table>
+            </gym-revenue-table>
 
         </jet-bar-container>
 
@@ -63,8 +70,7 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
 import JetBarStatCard from "@/Components/JetBarStatCard";
-import JetBarTable from "@/Components/JetBarTable";
-import JetBarTableData from "@/Components/JetBarTableData";
+import GymRevenueTable from "@/Components/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 
@@ -75,13 +81,14 @@ export default {
         JetBarAlert,
         JetBarStatsContainer,
         JetBarStatCard,
-        JetBarTable,
-        JetBarTableData,
+        GymRevenueTable,
         JetBarBadge,
         JetBarIcon,
     },
     props: [
-        'clients'
+        'clients',
+        'accountName',
+        'widgets'
     ],
     data() {},
     methods: {},

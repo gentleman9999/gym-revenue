@@ -17,39 +17,39 @@
 
                     <div class="ml-4 leading-tight">
                         <div>{{ $page.props.user.name }}</div>
-                        <div class="text-sm text-gray-700">{{ $page.props.user.email }}</div>
+                        <div class="text-sm ">{{ $page.props.user.email }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Team Name" />
-                <jet-input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus />
+                <input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
         </template>
 
         <template #actions>
-            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <Button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 Create
-            </jet-button>
+            </Button>
         </template>
     </jet-form-section>
 </template>
 
 <script>
     import { defineComponent } from 'vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import JetFormSection from '@/Jetstream/FormSection.vue'
-    import JetInput from '@/Jetstream/Input.vue'
-    import JetInputError from '@/Jetstream/InputError.vue'
-    import JetLabel from '@/Jetstream/Label.vue'
+    import Button from '@/Components/Button'
+    import JetFormSection from '@/Jetstream/FormSection'
+
+    import JetInputError from '@/Jetstream/InputError'
+    import JetLabel from '@/Jetstream/Label'
 
     export default defineComponent({
         components: {
-            JetButton,
+            Button,
             JetFormSection,
-            JetInput,
+
             JetInputError,
             JetLabel,
         },

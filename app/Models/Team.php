@@ -51,6 +51,13 @@ class Team extends JetstreamTeam
             ->with('client');
     }
 
+    public function default_team_details()
+    {
+        return $this->hasOne(ClientDetail::class, 'value',  'name')
+            ->where('detail','=', 'default-team')
+            ->with('client');
+    }
+
     public static function fetchTeamIDFromName(string $name)
     {
         $model = new self;
@@ -70,5 +77,14 @@ class Team extends JetstreamTeam
         }
 
         return $results;
+    }
+
+    public function isClientsDefaultTeam()
+    {
+        $proof = $this->default_team_details()->first();
+
+        //dd('Bitch', $proof);
+
+        return (!is_null($proof));
     }
 }

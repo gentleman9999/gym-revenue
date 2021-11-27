@@ -6,7 +6,7 @@
             <jet-authentication-card-logo />
         </template>
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="mb-4 text-sm ">
             This is a secure area of the application. Please confirm your password before continuing.
         </div>
 
@@ -15,13 +15,13 @@
         <form @submit.prevent="submit">
             <div>
                 <jet-label for="password" value="Password" />
-                <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" autofocus />
+                <input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" autofocus />
             </div>
 
             <div class="flex justify-end mt-4">
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Confirm
-                </jet-button>
+                </Button>
             </div>
         </form>
     </jet-authentication-card>
@@ -30,20 +30,20 @@
 <script>
     import { defineComponent } from 'vue';
     import { Head } from '@inertiajs/inertia-vue3';
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import JetInput from '@/Jetstream/Input.vue'
-    import JetLabel from '@/Jetstream/Label.vue'
-    import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
+    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
+    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
+    import Button from '@/Components/Button'
+
+    import JetLabel from '@/Jetstream/Label'
+    import JetValidationErrors from '@/Jetstream/ValidationErrors'
 
     export default defineComponent({
         components: {
             Head,
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
-            JetButton,
-            JetInput,
+            Button,
+
             JetLabel,
             JetValidationErrors
         },

@@ -1,13 +1,13 @@
 <template>
-    <div class="flex items-center p-4 bg-white border rounded-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
+    <div class="flex items-center p-4 bg-base-300 border rounded-lg shadow-xs dark:bg-gray-800">
         <div v-if="this.$slots.icon" class="p-3 mr-4 rounded-full" :class="cardIconColors">
             <slot name="icon" />
         </div>
         <div>
-            <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p class="mb-2 text-sm font-medium  dark:">
                 {{ title }}
             </p>
-            <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            <p class="text-lg font-semibold  dark:">
                 {{ number }}
             </p>
         </div>

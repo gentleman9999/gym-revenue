@@ -15,7 +15,7 @@
 
                 <template #form>
                     <div class="col-span-6">
-                        <div class="max-w-xl text-sm text-gray-600">
+                        <div class="max-w-xl text-sm ">
                             Please provide the email address of the person you would like to add to this team.
                         </div>
                     </div>
@@ -23,7 +23,7 @@
                     <!-- Member Email -->
                     <div class="col-span-6 sm:col-span-4">
                         <jet-label for="email" value="Email" />
-                        <jet-input id="email" type="email" class="mt-1 block w-full" v-model="addTeamMemberForm.email" />
+                        <input id="email" type="email" class="mt-1 block w-full" v-model="addTeamMemberForm.email" />
                         <jet-input-error :message="addTeamMemberForm.errors.email" class="mt-2" />
                     </div>
 
@@ -32,16 +32,16 @@
                         <jet-label for="roles" value="Role" />
                         <jet-input-error :message="addTeamMemberForm.errors.role" class="mt-2" />
 
-                        <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
+                        <div class="relative z-0 mt-1 border border-base-100 rounded-lg cursor-pointer">
                             <button type="button" class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                            :class="{'border-t border-gray-200 rounded-t-none': i > 0, 'rounded-b-none': i != Object.keys(availableRoles).length - 1}"
+                                            :class="{'border-t border-base-100 rounded-t-none': i > 0, 'rounded-b-none': i != Object.keys(availableRoles).length - 1}"
                                             @click="addTeamMemberForm.role = role.key"
                                             v-for="(role, i) in availableRoles"
                                             :key="role.key">
                                 <div :class="{'opacity-50': addTeamMemberForm.role && addTeamMemberForm.role != role.key}">
                                     <!-- Role Name -->
                                     <div class="flex items-center">
-                                        <div class="text-sm text-gray-600" :class="{'font-semibold': addTeamMemberForm.role == role.key}">
+                                        <div class="text-sm " :class="{'font-semibold': addTeamMemberForm.role == role.key}">
                                             {{ role.name }}
                                         </div>
 
@@ -49,7 +49,7 @@
                                     </div>
 
                                     <!-- Role Description -->
-                                    <div class="mt-2 text-xs text-gray-600 text-left">
+                                    <div class="mt-2 text-xs  text-left">
                                         {{ role.description }}
                                     </div>
                                 </div>
@@ -63,9 +63,9 @@
                         Added.
                     </jet-action-message>
 
-                    <jet-button :class="{ 'opacity-25': addTeamMemberForm.processing }" :disabled="addTeamMemberForm.processing">
+                    <Button :class="{ 'opacity-25': addTeamMemberForm.processing }" :disabled="addTeamMemberForm.processing">
                         Add
-                    </jet-button>
+                    </Button>
                 </template>
             </jet-form-section>
         </div>
@@ -87,7 +87,7 @@
                 <template #content>
                     <div class="space-y-6">
                         <div class="flex items-center justify-between" v-for="invitation in team.team_invitations" :key="invitation.id">
-                            <div class="text-gray-600">{{ invitation.email }}</div>
+                            <div class="">{{ invitation.email }}</div>
 
                             <div class="flex items-center">
                                 <!-- Cancel Team Invitation -->
@@ -127,13 +127,13 @@
 
                             <div class="flex items-center">
                                 <!-- Manage Team Member Role -->
-                                <button class="ml-2 text-sm text-gray-400 underline"
+                                <button class="ml-2 text-sm  underline"
                                         @click="manageRole(user)"
                                         v-if="userPermissions.canAddTeamMembers && availableRoles.length">
                                     {{ displayableRole(user.membership.role) }}
                                 </button>
 
-                                <div class="ml-2 text-sm text-gray-400" v-else-if="availableRoles.length">
+                                <div class="ml-2 text-sm " v-else-if="availableRoles.length">
                                     {{ displayableRole(user.membership.role) }}
                                 </div>
 
@@ -165,16 +165,16 @@
 
             <template #content>
                 <div v-if="managingRoleFor">
-                    <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
+                    <div class="relative z-0 mt-1 border border-base-100 rounded-lg cursor-pointer">
                         <button type="button" class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                        :class="{'border-t border-gray-200 rounded-t-none': i > 0, 'rounded-b-none': i !== Object.keys(availableRoles).length - 1}"
+                                        :class="{'border-t border-base-100 rounded-t-none': i > 0, 'rounded-b-none': i !== Object.keys(availableRoles).length - 1}"
                                         @click="updateRoleForm.role = role.key"
                                         v-for="(role, i) in availableRoles"
                                         :key="role.key">
                             <div :class="{'opacity-50': updateRoleForm.role && updateRoleForm.role !== role.key}">
                                 <!-- Role Name -->
                                 <div class="flex items-center">
-                                    <div class="text-sm text-gray-600" :class="{'font-semibold': updateRoleForm.role === role.key}">
+                                    <div class="text-sm " :class="{'font-semibold': updateRoleForm.role === role.key}">
                                         {{ role.name }}
                                     </div>
 
@@ -182,7 +182,7 @@
                                 </div>
 
                                 <!-- Role Description -->
-                                <div class="mt-2 text-xs text-gray-600">
+                                <div class="mt-2 text-xs ">
                                     {{ role.description }}
                                 </div>
                             </div>
@@ -196,9 +196,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
+                <Button class="ml-2" @click="updateRole" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing">
                     Save
-                </jet-button>
+                </Button>
             </template>
         </jet-dialog-modal>
 
@@ -217,9 +217,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="leaveTeam" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing">
+                <button class="error ml-2" @click="leaveTeam" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing">
                     Leave
-                </jet-danger-button>
+                </button>
             </template>
         </jet-confirmation-modal>
 
@@ -238,9 +238,9 @@
                     Cancel
                 </jet-secondary-button>
 
-                <jet-danger-button class="ml-2" @click="removeTeamMember" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing">
+                <button class="error ml-2" @click="removeTeamMember" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing">
                     Remove
-                </jet-danger-button>
+                </button>
             </template>
         </jet-confirmation-modal>
     </div>
@@ -248,29 +248,29 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetActionMessage from '@/Jetstream/ActionMessage.vue'
-    import JetActionSection from '@/Jetstream/ActionSection.vue'
-    import JetButton from '@/Jetstream/Button.vue'
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
-    import JetDangerButton from '@/Jetstream/DangerButton.vue'
-    import JetDialogModal from '@/Jetstream/DialogModal.vue'
-    import JetFormSection from '@/Jetstream/FormSection.vue'
-    import JetInput from '@/Jetstream/Input.vue'
-    import JetInputError from '@/Jetstream/InputError.vue'
-    import JetLabel from '@/Jetstream/Label.vue'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
-    import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
+    import JetActionMessage from '@/Jetstream/ActionMessage'
+    import JetActionSection from '@/Jetstream/ActionSection'
+    import Button from '@/Components/Button'
+    import JetConfirmationModal from '@/Jetstream/ConfirmationModal'
+
+    import JetDialogModal from '@/Jetstream/DialogModal'
+    import JetFormSection from '@/Jetstream/FormSection'
+
+    import JetInputError from '@/Jetstream/InputError'
+    import JetLabel from '@/Jetstream/Label'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+    import JetSectionBorder from '@/Jetstream/SectionBorder'
 
     export default defineComponent({
         components: {
             JetActionMessage,
             JetActionSection,
-            JetButton,
+            Button,
             JetConfirmationModal,
-            JetDangerButton,
+
             JetDialogModal,
             JetFormSection,
-            JetInput,
+
             JetInputError,
             JetLabel,
             JetSecondaryButton,

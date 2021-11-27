@@ -6,7 +6,7 @@
         </jet-section-title>
 
         <div class="mt-5 md:mt-0 md:col-span-2">
-            <div class="px-4 py-5 sm:p-6 bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6 bg-base-300 shadow sm:rounded-lg">
                 <slot name="content"></slot>
             </div>
         </div>
@@ -15,7 +15,7 @@
 
 <script>
     import { defineComponent } from 'vue'
-    import JetSectionTitle from './SectionTitle.vue'
+    import JetSectionTitle from './SectionTitle'
 
     export default defineComponent({
         components: {

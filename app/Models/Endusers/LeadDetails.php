@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class LeadDetails extends Model
 {
-    use SoftDeletes, Uuid;
+    use hasFactory, SoftDeletes, Uuid;
 
     protected $primaryKey = 'id';
 
@@ -19,6 +19,7 @@ class LeadDetails extends Model
     public $incrementing = false;
 
     protected $fillable = ['client_id','lead_id', 'field', 'value', 'misc', 'active'];
+//    protected $fillable = ['client_id','lead_id', 'field', 'value', 'misc', 'active', 'created_at'];//only needed for seeding data
 
     protected $casts = [
         'misc' => 'array',
@@ -27,5 +28,10 @@ class LeadDetails extends Model
     public function client()
     {
         return $this->belongsTo('App\Models\Clients\Client', 'client_id', 'id');
+    }
+
+    public function lead()
+    {
+        return $this->belongsTo('App\Models\Endusers\Lead', 'lead_id', 'id');
     }
 }

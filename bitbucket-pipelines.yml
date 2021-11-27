@@ -1,0 +1,80 @@
+# This is a sample build configuration for PHP.
+# Check our guides at https://confluence.atlassian.com/x/e8YWN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: lorisleiva/laravel-docker:8.0
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: (Pretend) Unit Testing
+          caches:
+            - cposer
+            - node
+          script:
+            - composer config bitbucket-oauth.bitbucket.org $BITBUCKET_CLIENT $BITBUCKET_SECRET
+            - composer config -g github-oauth.github.com 235902933cf6ad227b534e7bf60decae368f8ea8
+            - composer install --no-interaction --prefer-dist  --optimize-autoloader --no-dev
+            - php artisan config:clear
+            - php artisan event-sourcing:clear-event-handlers
+      - step:
+          name: Deploy to Production
+          size: 2x
+          caches:
+            - cposer
+            - node
+            - docker
+          deployment: production
+          trigger: manual
+          script:
+            - composer config bitbucket-oauth.bitbucket.org $BITBUCKET_CLIENT $BITBUCKET_SECRET
+            - composer config -g github-oauth.github.com 235902933cf6ad227b534e7bf60decae368f8ea8
+            - ln -f -s .env.example .env
+            - composer install --no-interaction --prefer-dist  --optimize-autoloader --no-dev
+            - npm install && npm run prod
+            - php artisan config:clear
+            - vendor/bin/vapor env:pull production
+            - cp .env.production .env.pipelines
+            - php artisan event-sourcing:clear-event-handlers
+            - vendor/bin/vapor deploy production
+          services:
+            - docker
+            - redis
+    staging:
+      - step:
+          name: Deploy To Staging
+          caches:
+            - cposer
+            - node
+            - docker
+          deployment: staging
+          script:
+            - composer config bitbucket-oauth.bitbucket.org $BITBUCKET_CLIENT $BITBUCKET_SECRET
+            - composer config -g github-oauth.github.com 235902933cf6ad227b534e7bf60decae368f8ea8
+            - composer install --no-interaction --prefer-dist  --optimize-autoloader
+            - npm install && npm run dev
+            - php artisan config:clear
+            - vendor/bin/vapor env:pull staging
+            - cp .env.staging .env.pipelines
+            - php artisan event-sourcing:clear-event-handlers
+            - vendor/bin/vapor deploy staging
+          services:
+            - docker
+definitions:
+  services:
+    docker:
+      memory: 3072
+    redis:
+      image: redis:3.2
+    mysql:
+      image: mysql:5.8
+      environment:
+        MYSQL_DATABASE: 'tf_api_test'
+        MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        MYSQL_USER: 'homestead'
+        MYSQL_PASSWORD: 'secret'
+  caches:
+    cposer: vendor
+

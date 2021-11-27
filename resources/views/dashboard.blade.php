@@ -26,7 +26,7 @@
 
         <x-jet-bar-table :headers="['name', 'title', 'status', 'role', '', '']">
             <template x-data="{ total:3 }" x-for="index in total">
-                <tr class="hover:bg-gray-50">
+                <tr class="hover:">
                     <x-jet-bar-table-data>
                         Jane Cooper
                     </x-jet-bar-table-data>
