@@ -68,4 +68,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group( function() {
     Route::get('/', \App\Http\Controllers\FilesController::class.'@index')->name('files');
     Route::get('/upload', \App\Http\Controllers\FilesController::class.'@upload')->name('files.upload');
+    Route::post('/', \App\Http\Controllers\FilesController::class.'@store')->name('files.store');
+
 });
