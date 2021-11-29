@@ -89,6 +89,7 @@
                             v-for="(file, i) in form.files"
                             :file="file"
                             :key="file"
+                            :client-id="clientId"
                             @remove="removeFile"
                             @input="fileUploadUpdated"
                             :ref="
@@ -102,7 +103,6 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </section>
 
-            <input id="client_id" type="hidden" v-model="form.client_id" />
             <jet-input-error :message="form.errors.client_id" class="mt-2" />
         </template>
 
@@ -148,7 +148,6 @@ import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     clientId: { type: String, required: true },
-    location: { type: String, required: true },
 });
 
 const uploadDragoverTracking = ref(false);
@@ -214,7 +213,7 @@ const formInvalid = computed(() => {
 
 // const handleSubmit = () => form.post(`/files`);
 
-const allFiles = computed(() => fileRefs.value.map((fileRef) => fileRef.form));
+const allFiles = computed(() => fileRefs.value.map((fileRef) => fileRef.form.data()));
 
 const handleSubmit = () => {
     Inertia.post(route("files.store"), allFiles.value);

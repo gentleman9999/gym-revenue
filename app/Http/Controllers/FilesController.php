@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class FilesController extends Controller
@@ -17,11 +18,10 @@ class FilesController extends Controller
 
         $page_count = 5;
 
-//        $files = File::with('client')
-//            ->whereClientId($client_id)
-//            ->filter($request->only('search', 'trashed'))
-//            ->paginate($page_count);
-        $files = ['data' => [['uuid' => '123kj-sdcv2-asdf-313ef', 'name' =>'test.pdf']]];
+        $files = File::with('client')
+            ->whereClientId($client_id)
+            ->filter($request->only('search', 'trashed'))
+            ->paginate($page_count);
 
         return Inertia::render('Files/Show', [
             'files' => $files
@@ -37,17 +37,24 @@ class FilesController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            '*.uuid' => 'required',
+            '*.id' => 'uuid|required',
             '*.url' => 'url|required',
-            '*.filename' => 'required',
-            '*.original_filename' => 'required',
+            '*.filename' => 'max:255|required',
+            '*.original_filename' => 'max:255|required',
             '*.extension' => 'required|string|min:3|max:4',
-            '*.bucket' => 'required',
-            '*.key' => 'required',
-            '*.is_public' =>'boolean|required',
-            '*.size' => 'integer|min:1|required'//TODO: add max size
+            '*.bucket' => 'max:255|required',
+            '*.key' => 'max:255|required',
+//            '*.is_public' =>'boolean|required',
+            '*.size' => 'integer|min:1|required',//TODO: add max size
+            '*.client_id' => 'exists:clients,id|required'
         ]);
-        dd($data);
+        $success = File::insert($data);
+//        if($success !== true){
+//            TODO: flash error or something
+//        }
+        return Redirect::route('files');
+
+//        dd($data);
     }
 
     public function delete(Request $request)

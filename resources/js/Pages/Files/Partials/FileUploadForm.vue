@@ -102,7 +102,7 @@ const emit = defineEmits(["remove"]);
 const uploadProgress = ref(null);
 
 const form = useForm({
-    uuid: null,
+    id: null,
     key: null,
     url: null,
     extension: null,
@@ -111,7 +111,7 @@ const form = useForm({
     original_filename: props.file.name,
     client_id: props.clientId,
     size: props.file.size,
-    is_public: true,
+    // is_public: true,
 });
 
 const removeFile = (file) => {
@@ -128,7 +128,7 @@ const handleSubmit = async () => {
             uploadProgress.value = Math.round(progress * 100);
         },
     });
-    form.uuid = response.uuid;
+    form.id = response.uuid;
     form.key = response.key;
     form.url = response.url;
     form.extension = response.extension;

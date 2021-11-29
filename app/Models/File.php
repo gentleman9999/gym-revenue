@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Clients\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,7 @@ class File extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['client_id', 'name']; //'deleted_at'
+    protected $fillable = ['uuid', 'client_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size',  'isPublic']; //'deleted_at'
 
     public function client()
     {

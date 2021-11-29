@@ -26,7 +26,7 @@
                 <tr class="hover" v-for="file in files?.data" :key="file.id"
                     @dblclick="!file?.deleted_at && $inertia.visit(route('locations.edit', file.id))">
 <!--                    <td v-if="!isClientUser">{{ file.client.name }}</td>-->
-                    <td>{{ file.name }}</td>
+                    <td>{{ file.filename }}</td>
                     <td>
                         <jet-bar-badge text="Active" type="success" v-if="file.active"/>
                         <jet-bar-badge text="Inactive" type="danger" v-else/>
@@ -118,7 +118,7 @@ export default defineComponent({
             //     return ['name', 'city', 'state', 'active', ''];
             // }
 
-            return ['client', 'name', 'active', '']
+            return [ 'filename', 'active', '']
         }
     },
     methods: {
