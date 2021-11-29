@@ -17,7 +17,11 @@ class File extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['uuid', 'client_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size',  'isPublic']; //'deleted_at'
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected $fillable = ['id', 'client_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size',  'isPublic']; //'deleted_at'
 
     public function client()
     {

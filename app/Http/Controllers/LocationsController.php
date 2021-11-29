@@ -117,7 +117,7 @@ class LocationsController extends Controller
             User::whereCurrentLocationId($id)->update(['current_location_id' => $default_location->id]);
         }
 
-        return Redirect::route('locations');
+        return Redirect::back();
     }
 
     public function restore(Request $request, $id)
@@ -129,7 +129,7 @@ class LocationsController extends Controller
         $location = Location::withTrashed()->findOrFail($id);
         $location->restore();
 
-        return Redirect::route('locations');
+        return Redirect::back();
     }
 
     /**

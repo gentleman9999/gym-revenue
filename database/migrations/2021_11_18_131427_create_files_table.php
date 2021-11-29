@@ -20,7 +20,7 @@ class CreateFilesTable extends Migration
             $table->string('original_filename');
             $table->string('extension');
             $table->string('bucket');
-            $table->text('url');
+            $table->text('url')->nullable();
             $table->string('key');
             $table->integer('size');
 //            $table->string('isPublic');

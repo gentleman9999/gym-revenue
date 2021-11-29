@@ -104,7 +104,6 @@ const uploadProgress = ref(null);
 const form = useForm({
     id: null,
     key: null,
-    url: null,
     extension: null,
     bucket: null,
     filename: props.file.name,
@@ -124,13 +123,14 @@ const removeFile = (file) => {
 // const handleSubmit = () => form.post(`/files`);
 const handleSubmit = async () => {
     let response = await Vapor.store(props.file, {
+        // visibility: form.isPublic ? 'public-read' : null,
+        visibility: 'public-read',
         progress: (progress) => {
             uploadProgress.value = Math.round(progress * 100);
         },
     });
     form.id = response.uuid;
     form.key = response.key;
-    form.url = response.url;
     form.extension = response.extension;
     form.bucket = response.bucket;
 };

@@ -198,16 +198,18 @@ onBeforeUpdate(() => {
 });
 const uploadedFiles = computed(() =>
     fileRefs.value.filter((ref) => {
-        console.log({ form: ref.form, uuid: ref.form.uuid });
-        return ref.form.uuid !== null;
+        console.log({ form: ref.form, id: ref.form.id });
+        return ref.form.id !== null && ref.form.id !== undefined ;
     })
 );
 const numUploadedFiles = computed(() => uploadedFiles.value.length);
 const numFiles = computed(() => fileRefs.value.length);
 const formInvalid = computed(() => {
     if (numUploadedFiles.value !== numFiles.value) {
+        console.error('length of numFiles and numUoloadedFiles different');
         return true;
     }
+    console.error('form.files.length', form.files.length);
     return form.files.length === 0;
 });
 
@@ -219,7 +221,7 @@ const handleSubmit = () => {
     Inertia.post(route("files.store"), allFiles.value);
 };
 
-const removeRouteGaurd = Inertia.on("before", ({ detail: { visit } }) => {
+const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
     const { method } = visit;
     if (method === "get" && numUploadedFiles.value) {
         return confirm(
@@ -228,5 +230,5 @@ const removeRouteGaurd = Inertia.on("before", ({ detail: { visit } }) => {
     }
 });
 
-onUnmounted(removeRouteGaurd);
+onUnmounted(removeRouteGuard);
 </script>

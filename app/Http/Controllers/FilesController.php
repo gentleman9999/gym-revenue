@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class FilesController extends Controller
@@ -38,7 +40,6 @@ class FilesController extends Controller
     {
         $data = $request->validate([
             '*.id' => 'uuid|required',
-            '*.url' => 'url|required',
             '*.filename' => 'max:255|required',
             '*.original_filename' => 'max:255|required',
             '*.extension' => 'required|string|min:3|max:4',
@@ -48,7 +49,17 @@ class FilesController extends Controller
             '*.size' => 'integer|min:1|required',//TODO: add max size
             '*.client_id' => 'exists:clients,id|required'
         ]);
-        $success = File::insert($data);
+        foreach($data as $row){
+//
+            $file = File::create($row);
+            $file->url = Storage::disk('s3')->url($file->key);
+            $file->save();
+
+            FileAggregate::retrieve($file->id)
+                ->createFile($request->user()->id, $file->key, $file->client_id)
+                ->persist();
+        }
+//        $success = File::insert($data);
 //        if($success !== true){
 //            TODO: flash error or something
 //        }
@@ -57,9 +68,53 @@ class FilesController extends Controller
 //        dd($data);
     }
 
-    public function delete(Request $request)
+    public function trash(Request $request, $id)
     {
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::back();
+        }
 
+        $file = File::findOrFail($id);
+        $file->deleteOrFail();
+
+        FileAggregate::retrieve($file->id)
+            ->trashFile($request->user()->id)
+            ->persist();
+
+        return Redirect::route('files');
+    }
+
+    public function delete(Request $request, $id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::back();
+        }
+
+        $file = File::findOrFail($id);
+        $file->forceDelete();
+
+        FileAggregate::retrieve($file->id)
+            ->deleteFile($request->user()->id, $file->key)
+            ->persist();
+
+        return Redirect::route('files');
+    }
+
+    public function restore(Request $request, $id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::route('files');
+        }
+        $file = File::withTrashed()->findOrFail($id);
+        $file->restore();
+        FileAggregate::retrieve($file->id)
+            ->restoreFile($request->user()->id)
+            ->persist();
+
+        return Redirect::back();
     }
 
 }

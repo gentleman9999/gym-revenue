@@ -27,10 +27,8 @@
                     @dblclick="!file?.deleted_at && $inertia.visit(route('locations.edit', file.id))">
 <!--                    <td v-if="!isClientUser">{{ file.client.name }}</td>-->
                     <td>{{ file.filename }}</td>
-                    <td>
-                        <jet-bar-badge text="Active" type="success" v-if="file.active"/>
-                        <jet-bar-badge text="Inactive" type="danger" v-else/>
-                    </td>
+                    <td>{{ new Date(file.created_at).toLocaleString() }}</td>
+                    <td>{{ prettyBytes(file.size) }}</td>
                     <td class="flex flex-row justify-center space-x-2">
 <!--                        <inertia-link class="text-gray-400 hover:text-gray-500"-->
 <!--                              :href="route('locations.edit', file.id)" v-if="!file?.deleted_at">-->
@@ -39,7 +37,7 @@
 <!--                        </inertia-link>-->
                         <!--                        <inertia-link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
-                        <button @click=" file?.deleted_at ? $inertia.post(route('locations.restore', file.id)) : $inertia.delete(route('locations.delete', file.id))">
+                        <button @click=" file?.deleted_at ? $inertia.post(route('files.restore', file.id)) : $inertia.delete(route('files.trash', file.id))">
                             <jet-bar-icon :type="file?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>
                         <!--                        </inertia-link>-->
@@ -59,6 +57,7 @@
 
 <script>
 import {defineComponent} from 'vue'
+import prettyBytes from "pretty-bytes";
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Button from '@/Components/Button.vue'
@@ -92,6 +91,9 @@ export default defineComponent({
         SearchFilter
     },
     props: ['sessions', 'files', 'title', 'isClientUser', 'filters'],
+    setup(){
+        return {prettyBytes}
+    },
     watch: {
         form: {
             deep: true,
@@ -118,7 +120,7 @@ export default defineComponent({
             //     return ['name', 'city', 'state', 'active', ''];
             // }
 
-            return [ 'filename', 'active', '']
+            return [ 'filename', 'created_at', 'size', '']
         }
     },
     methods: {

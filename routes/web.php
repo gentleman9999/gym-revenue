@@ -69,5 +69,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group( functio
     Route::get('/', \App\Http\Controllers\FilesController::class.'@index')->name('files');
     Route::get('/upload', \App\Http\Controllers\FilesController::class.'@upload')->name('files.upload');
     Route::post('/', \App\Http\Controllers\FilesController::class.'@store')->name('files.store');
+    Route::delete('/{id}', \App\Http\Controllers\FilesController::class.'@trash')->name('files.trash');
+    Route::delete('/{id}/force', \App\Http\Controllers\FilesController::class.'@delete')->name('files.delete');
+    Route::post('/{id}/restore', \App\Http\Controllers\FilesController::class.'@restore')->name('files.restore');
+
 
 });
