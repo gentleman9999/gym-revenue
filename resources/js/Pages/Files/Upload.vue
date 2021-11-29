@@ -8,7 +8,7 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-              <file-upload-form/>
+              <file-manager/>
             </div>
         </div>
     </app-layout>
@@ -22,12 +22,12 @@ import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 
 import LocationForm from '@/Pages/Locations/Partials/LocationForm.vue'
-import FileUploadForm from "./Partials/FileUploadForm";
+import FileManager from "./Partials/FileManager";
 
 
 export default defineComponent({
     components: {
-        FileUploadForm,
+        FileManager,
         AppLayout,
         JetFormSection,
         JetInputError,

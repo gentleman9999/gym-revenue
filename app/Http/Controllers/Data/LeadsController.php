@@ -54,6 +54,11 @@ class LeadsController extends Controller
 
     public function create()
     {
+        //@TODO: we may want to embed the currentClientId in the form as a field
+        //instead of getting the value here.  if you have multiple tabs open, and
+        // one has an outdated currentClient id, creating would have unintended ]
+        //consequences, potentially adding the lead to the wrong client, or
+        //just error out. also check for other areas in the app for similar behavior
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();

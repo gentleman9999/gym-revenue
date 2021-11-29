@@ -36,6 +36,18 @@ class FilesController extends Controller
 
     public function store(Request $request)
     {
+        $data = $request->validate([
+            '*.uuid' => 'required',
+            '*.url' => 'url|required',
+            '*.filename' => 'required',
+            '*.original_filename' => 'required',
+            '*.extension' => 'required|string|min:3|max:4',
+            '*.bucket' => 'required',
+            '*.key' => 'required',
+            '*.is_public' =>'boolean|required',
+            '*.size' => 'integer|min:1|required'//TODO: add max size
+        ]);
+        dd($data);
     }
 
     public function delete(Request $request)
