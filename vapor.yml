@@ -17,6 +17,7 @@ environments:
             - 'npm ci && npm run prod && rm -rf node_modules'
     staging:
         domain: grp-dev.capeandbay.com
+        storage:gymrevenue-dev
         memory: 1024
         cli-memory: 512
         database: mango
