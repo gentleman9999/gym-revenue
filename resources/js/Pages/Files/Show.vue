@@ -33,10 +33,7 @@
                     class="hover"
                     v-for="file in files?.data"
                     :key="file.id"
-                    @dblclick="
-                        !file?.deleted_at &&
-                            $inertia.visit(route('files.edit', file.id))
-                    "
+                    @dblclick="selectedFile = file.deletedAt ? null : file"
                 >
                     <!--                    <td v-if="!isClientUser">{{ file.client.name }}</td>-->
                     <td>
@@ -74,7 +71,9 @@
                     <td class="flex flex-row justify-center space-x-2">
                         <!--                        <inertia-link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
-                        <div class="flex flex-row nowrap justify-center items-center gap-4">
+                        <div
+                            class="flex flex-row nowrap justify-center items-center gap-4"
+                        >
                             <button
                                 @click="selectedFile = file"
                                 class="text-gray-400 hover:text-gray-300"
@@ -93,7 +92,6 @@
                                           )
                                 "
                                 class="text-gray-400 hover:text-gray-300"
-
                             >
                                 <jet-bar-icon
                                     :type="
@@ -123,9 +121,13 @@
             enable-mobile-fullscreen
             ref="modal"
         >
-            <file-form :file="selectedFile" v-if="selectedFile" @success="modal.close"/>
+            <file-form
+                :file="selectedFile"
+                v-if="selectedFile"
+                @success="modal.close"
+            />
         </sweet-modal>
-<!--        <rename-file-modal :file="selectedFile" v-if="selectedFile" ref="modal"/>-->
+        <!--        <rename-file-modal :file="selectedFile" v-if="selectedFile" ref="modal"/>-->
     </app-layout>
 </template>
 
@@ -169,19 +171,19 @@ export default defineComponent({
         SearchFilter,
         FileExtensionIcon,
         SweetModal,
-        FileForm
+        FileForm,
     },
     props: ["sessions", "files", "title", "isClientUser", "filters"],
     setup() {
         const form = ref({});
-        const selectedFile  = ref(null);
+        const selectedFile = ref(null);
         const modal = ref(null);
-        watchEffect(()=>{
-            if(selectedFile.value){
-                console.log({modal: modal.value});
+        watchEffect(() => {
+            if (selectedFile.value) {
+                console.log({ modal: modal.value });
                 modal.value.open();
             }
-        })
+        });
 
         const tableHeaders = ["filename", "created_at", "size", ""];
         return { prettyBytes, modal, selectedFile, tableHeaders };
@@ -195,7 +197,7 @@ export default defineComponent({
                     preserveScroll: true,
                 });
             }, 150),
-        }
+        },
     },
     data() {
         return {
