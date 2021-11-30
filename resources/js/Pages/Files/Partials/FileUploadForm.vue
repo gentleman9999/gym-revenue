@@ -17,19 +17,10 @@
                         <div
                             class="flex w-full items-center text-sm leading-5 font-medium text-secondary p-2 gap-4"
                         >
-                            <div class="relative">
-                                <font-awesome-icon icon="file" size="3x" />
-                                <div
-                                    class="absolute inset-0 text-base-content flex items-center justify-center text-xs font-bold uppercase"
-                                >
-                                    {{ file.type.split("/")[1] }}
-                                </div>
-                                <span
-                                    class="absolute bottom-0 inset-x-0 text-gray-400 text-2xs transform translate-y-full whitespace-nowrap flex justify-center"
-                                >
-                                    {{ prettyBytes(file.size) }}
-                                </span>
-                            </div>
+                            <file-extension-icon
+                                :extension="file.type.split('/')[1]"
+                                :size="file.size"
+                            />
 
                             <input
                                 type="text"
@@ -79,18 +70,18 @@ progress::-webkit-progress-value {
 import { ref, computed, onMounted, watchEffect } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 
-import AppLayout from "@/Layouts/AppLayout.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
-import JetInputError from "@/Jetstream/InputError.vue";
-import JetLabel from "@/Jetstream/Label.vue";
+import AppLayout from "@/Layouts/AppLayout";
+import JetFormSection from "@/Jetstream/FormSection";
+import JetInputError from "@/Jetstream/InputError";
+import FileExtensionIcon from "./FileExtensionIcon";
 import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";
-import prettyBytes from "pretty-bytes";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTimes, faFile } from "@fortawesome/pro-solid-svg-icons";
+import { faTimes } from "@fortawesome/pro-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-library.add(faTimes, faFile);
+
+library.add(faTimes);
 
 const props = defineProps({
     clientId: { type: String, required: true },
@@ -124,7 +115,7 @@ const removeFile = (file) => {
 const handleSubmit = async () => {
     let response = await Vapor.store(props.file, {
         // visibility: form.isPublic ? 'public-read' : null,
-        visibility: 'public-read',
+        visibility: "public-read",
         progress: (progress) => {
             uploadProgress.value = Math.round(progress * 100);
         },

@@ -4,7 +4,9 @@ namespace App\Aggregates\Clients;
 
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
+use App\StorableEvents\Clients\Files\FileRenamed;
 use App\StorableEvents\Clients\Files\FileRestored;
+use App\StorableEvents\Clients\Files\FileReplaced;
 use App\StorableEvents\Clients\Files\FileTrashed;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
@@ -33,9 +35,16 @@ class FileAggregate extends AggregateRoot
         $this->recordThat(new FileRestored($userId));
         return $this;
     }
+
     public function deleteFile(string $userId, $key)
     {
         $this->recordThat(new FileDeleted($userId, $key));
+        return $this;
+    }
+
+    public function renameFile(string $userId, $oldFilename, $newFilename)
+    {
+        $this->recordThat(new FileRenamed($userId, $oldFilename, $newFilename));
         return $this;
     }
 }

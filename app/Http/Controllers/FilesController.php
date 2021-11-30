@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\FileAggregate;
+use App\Models\Clients\Location;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -18,7 +19,7 @@ class FilesController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
-        $page_count = 5;
+        $page_count = 10;
 
         $files = File::with('client')
             ->whereClientId($client_id)
@@ -30,10 +31,49 @@ class FilesController extends Controller
         ]);
     }
 
+    public function edit($id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::route('files');
+        }
+
+        return Inertia::render('Files/Edit', [
+            'file' => File::find($id),
+        ]);
+    }
+
     public function upload(Request $request)
     {
         return Inertia::render('Files/Upload', [
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::route('files');
+        }
+        $data = $request->validate([
+            'filename' => 'max:255|required',
+            'file_uuid' => 'uuid'
+        ]);
+
+        $file = File::findOrFail($id);
+        $new_filename = $data['filename'];
+        $old_filename= $file->filename;
+        $data['extension'] = last(explode('.', $new_filename));
+
+        if($new_filename !== $old_filename){
+            $file->updateOrFail($data);
+
+            FileAggregate::retrieve($file->id)
+                ->renameFile($request->user()->id, $old_filename, $new_filename)
+                ->persist();
+        }
+
+        return Redirect::route('files');
     }
 
     public function store(Request $request)
@@ -92,7 +132,7 @@ class FilesController extends Controller
             return Redirect::back();
         }
 
-        $file = File::findOrFail($id);
+        $file = File::withTrashed()->findOrFail($id);
         $file->forceDelete();
 
         FileAggregate::retrieve($file->id)

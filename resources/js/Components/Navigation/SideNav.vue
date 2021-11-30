@@ -116,7 +116,9 @@
 
             <!-- File Manager -->
             <div :class="route().current('files') ? 'bg-primary' : 'bg-transparent'"
-                 class="nav-link-container">
+                 class="nav-link-container"
+                 v-if="$page.props.user.current_client_id !== null"
+            >
                 <jet-nav-link
                     class="jet-nav-link"
                     :href="route('files')">

@@ -180,13 +180,15 @@ const droppedFileValidator = (file) => {
     return false;
 };
 const removeFile = (file) => {
+    console.log('removeFile', file);
     form.files = form.files.filter((f, i) => {
-        const found = f !== file;
-        if (found) {
+        const shouldKeep = f !== file;
+        if (!shouldKeep) {
+            console.log('about to splice fileRefs', fileRefs.value, i);
             fileRefs.value.splice(i, 1);
             fileRefs.value = [...fileRefs.value];
         }
-        return found;
+        return shouldKeep;
     });
 };
 
@@ -206,10 +208,8 @@ const numUploadedFiles = computed(() => uploadedFiles.value.length);
 const numFiles = computed(() => fileRefs.value.length);
 const formInvalid = computed(() => {
     if (numUploadedFiles.value !== numFiles.value) {
-        console.error('length of numFiles and numUoloadedFiles different');
         return true;
     }
-    console.error('form.files.length', form.files.length);
     return form.files.length === 0;
 });
 

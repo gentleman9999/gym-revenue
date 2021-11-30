@@ -8,6 +8,7 @@ use App\Models\Endusers\Lead;
 use App\Models\File;
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
+use App\StorableEvents\Clients\Files\FileReplaced;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,5 +33,5 @@ class FileReactor extends Reactor implements ShouldQueue
     {
         Storage::disk('s3')->delete($event->key);
     }
-
+//@TODO: we should create thumbnails for image types somewhere
 }

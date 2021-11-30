@@ -31,7 +31,7 @@ class LocationsController extends Controller
         $is_client_user = request()->user()->isClientUser();
 
         // @todo - insert Bouncer-based ACL here.
-        $page_count = 5;
+        $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
