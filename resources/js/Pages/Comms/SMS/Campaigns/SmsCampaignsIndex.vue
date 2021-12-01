@@ -14,7 +14,7 @@
                     <inertia-link
                         class="btn justify-self-end"
                         :href="route('comms.dashboard')">
-                        <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="16"/> Back</span>
+                        <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="sm"/> Back</span>
                     </inertia-link>
                 </div>
             </div>

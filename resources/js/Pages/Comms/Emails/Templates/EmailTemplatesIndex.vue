@@ -14,7 +14,7 @@
                     <inertia-link
                         class="btn justify-self-end"
                         :href="route('comms.dashboard')">
-                        <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="16"/> Back</span>
+                        <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="sm"/> Back</span>
                     </inertia-link>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                     <div class="mt-2 ml-1 xl:mt-0">
                         <inertia-link
                             class="btn justify-self-end"
-                            href="#" @click="comingSoon()">
+                            :href="route('comms.email-templates.create')">
                             <span>+ New Template</span>
                         </inertia-link>
                     </div>
@@ -90,8 +90,8 @@
                                                     <br/>
                                                 </div>
                                                 <ul class="menu compact">
-                                                    <li v-for="(option, slug) in actionOptions" :key="slug">
-                                                        <inertia-link @click="option.click">
+                                                    <li v-for="(option, slug) in actionOptions(template)" :key="slug">
+                                                        <inertia-link @click="option.click" :href="option.url">
                                                             {{ option.label }}
                                                         </inertia-link>
                                                     </li>
@@ -168,12 +168,21 @@ export default defineComponent({
 
             return [];
         },
-        actionOptions() {
+    },
+    methods: {
+        comingSoon() {
+            new Noty({
+                type: 'warning',
+                theme: 'sunset',
+                text: 'Feature Coming Soon!',
+                timeout: 7500
+            }).show();
+        },
+        actionOptions(template) {
             return {
                 edit: {
-                    url: '#',
+                    url: route('comms.email-templates.edit', template.id),
                     label: 'Edit',
-                    click: () => this.comingSoon(),
                 },
                 selfSend: {
                     url: '#',
@@ -187,16 +196,6 @@ export default defineComponent({
                 },
 
             }
-        }
-    },
-    methods: {
-        comingSoon() {
-            new Noty({
-                type: 'warning',
-                theme: 'sunset',
-                text: 'Feature Coming Soon!',
-                timeout: 7500
-            }).show();
         },
         reset() {
             this.form = mapValues(this.form, () => null)
