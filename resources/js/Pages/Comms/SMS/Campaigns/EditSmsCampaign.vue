@@ -2,7 +2,7 @@
     <app-layout title="Edit SMS Template">
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">
-                Edit SMS Template
+                Configure & Modify SMS Campaign
             </h2>
         </template>
 
@@ -10,8 +10,9 @@
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <sms-template-form
                     :client-id="$page.props.user.current_client_id"
-                    :template="template"
+                    :campaign="campaign"
                     :can-activate="true"
+                    :templates="templates"
                 />
             </div>
         </div>
@@ -27,9 +28,10 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
-import SmsTemplateForm from "./Partials/SmsTemplateForm";
+import SmsTemplateForm from "./Partials/SmsCampaignForm";
 
-export default defineComponent({
+export default {
+    name: "EditSmsCampaign",
     components: {
         AppLayout,
         Button,
@@ -40,10 +42,19 @@ export default defineComponent({
         SmsTemplateForm,
     },
     props: {
-        template: {
+        campaign: {
             required: true,
             type: Object,
         },
+        templates: {
+            required: true,
+            type: Array,
+        },
+
     },
-});
+}
 </script>
+
+<style scoped>
+
+</style>

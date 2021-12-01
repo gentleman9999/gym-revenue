@@ -73,4 +73,9 @@ class EmailCampaigns extends Model
             }
         });
     }
+
+    public function creator()
+    {
+        return $this->hasOne(User::class, 'id', 'created_by_user_id');
+    }
 }

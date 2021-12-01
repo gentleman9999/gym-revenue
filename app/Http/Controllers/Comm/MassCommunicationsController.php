@@ -318,6 +318,7 @@ class MassCommunicationsController extends Controller
 
         if (!empty($campaigns_model)) {
             $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
+            ->with('creator')
             ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
         }
@@ -326,6 +327,31 @@ class MassCommunicationsController extends Controller
             'title' => 'Email Campaigns',
             'filters' => request()->all('search', 'trashed'),
             'campaigns' => $campaigns
+        ]);
+    }
+
+    public function ec_create()
+    {
+        return Inertia::render('Comms/Emails/Campaigns/CreateEmailCampaign', [
+        ]);
+    }
+
+    public function ec_edit($id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return redirect()->back();
+        }
+
+        $campaign = EmailCampaigns::find($id);
+        $templates = EmailTemplates::whereClientId($campaign->client_id)
+            ->whereActive('1')
+            ->get();
+        // @todo - need to build access validation here.
+
+        return Inertia::render('Comms/Emails/Campaigns/EditEmailCampaign', [
+            'campaign' => $campaign,
+            'templates' => $templates
         ]);
     }
 
@@ -446,6 +472,7 @@ class MassCommunicationsController extends Controller
 
         if (!empty($campaigns_model)) {
             $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
+            ->with('creator')
             ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
         }
@@ -455,5 +482,59 @@ class MassCommunicationsController extends Controller
             'filters' => request()->all('search', 'trashed'),
             'campaigns' => $campaigns
         ]);
+    }
+
+    public function sc_create()
+    {
+        return Inertia::render('Comms/SMS/Campaigns/CreateSmsCampaign', [
+        ]);
+    }
+
+    public function sc_edit($id)
+    {
+        if (!$id) {
+            //TODO:flash error
+            return redirect()->back();
+        }
+
+        $campaign = SmsCampaigns::find($id);
+        $templates = SmsTemplates::whereClientId($campaign->client_id)
+            ->whereActive('1')
+            ->get();
+        // @todo - need to build access validation here.
+
+        return Inertia::render('Comms/SMS/Campaigns/EditSmsCampaign', [
+            'campaign' => $campaign,
+            'templates' => $templates
+        ]);
+    }
+
+    public function sc_store()
+    {
+        $template = request()->validate([
+                'name' => 'required',
+            ]
+        );
+        $client_id = request()->user()->currentClientId();
+
+        try {
+            $template['active'] = '0';
+            $template['client_id'] = $client_id;
+            $template['created_by_user_id'] = request()->user()->id;
+            $new_campaign = SmsCampaigns::create($template);
+            Alert::info("New Campaigns {$template['name']} was created")->flash();
+        }
+        catch(\Exception $e)
+        {
+            Alert::error("New Template {$template['name']} could not be created")->flash();
+            return redirect()->back();
+        }
+
+        return Redirect::route('comms.sms-campaigns.edit', ['id' => $new_campaign->id]);
+    }
+
+    public function sc_update()
+    {
+
     }
 }

@@ -55,7 +55,7 @@ export default {
         SmsFormControl,
         JetInputError,
     },
-    props: ['clientId', 'template'],
+    props: ['clientId', 'template', 'canActivate'],
     setup(props, context) {
         let template = props.template;
         let operation = 'Update';

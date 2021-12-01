@@ -44,7 +44,7 @@
                     <div class="mt-2 ml-1 xl:mt-0">
                         <inertia-link
                             class="btn justify-self-end"
-                            href="#" @click="comingSoon()">
+                            :href="route('comms.sms-campaigns.create')">
                             <span>+ New Campaign</span>
                         </inertia-link>
                     </div>
@@ -70,16 +70,16 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        <tr class="hover" v-else v-for="(template, idx) in campaigns.data" :key="idx">
-                            <td>{{ template.name }}</td>
+                        <tr class="hover" v-else v-for="(campaign, idx) in campaigns.data" :key="idx">
+                            <td>{{ campaign.name }}</td>
                             <td>
-                                <div class="badge" :class="badgeClasses(template.active)">
-                                    {{ (template.active) ? 'Live' : 'Draft' }}
+                                <div class="badge" :class="badgeClasses(campaign.active)">
+                                    {{ (campaign.active) ? 'Live' : 'Draft' }}
                                 </div>
                             </td>
                             <td>Regular</td>
-                            <td>{{ template.updated_at }}</td>
-                            <td>{{ template.created_by_user_id }}</td>
+                            <td>{{ campaign.updated_at }}</td>
+                            <td>{{ campaign.creator !== null ? campaign.creator.name : 'Auto Generated' }}</td>
                             <td>
                                 <div class="ml-3 relative">
                                     <jet-dropdown align="end" width="40">
@@ -98,8 +98,8 @@
                                                     <br/>
                                                 </div>
                                                 <ul class="menu compact">
-                                                    <li v-for="(option, slug) in actionOptions" :key="slug">
-                                                        <inertia-link @click="option.click">
+                                                    <li v-for="(option, slug) in actionOptions(campaign)" :key="slug">
+                                                        <inertia-link @click.prevent="option.click" :href="option.url">
                                                             {{ option.label }}
                                                         </inertia-link>
                                                     </li>
@@ -150,15 +150,7 @@ export default defineComponent({
     setup(props) {
     },
     watch: {
-        form: {
-            deep: true,
-            handler: throttle(function () {
-                this.$inertia.get(this.route('comms.email-campaigns'), pickBy(this.form), {
-                    preserveState: true,
-                    preserveScroll: true
-                })
-            }, 150)
-        }
+
     },
     data() {
         return {
@@ -176,12 +168,21 @@ export default defineComponent({
 
             return [];
         },
-        actionOptions() {
-            return {
+    },
+    methods: {
+        comingSoon() {
+            new Noty({
+                type: 'warning',
+                theme: 'sunset',
+                text: 'Feature Coming Soon!',
+                timeout: 7500
+            }).show();
+        },
+        actionOptions(campaign) {
+            let res = {
                 edit: {
-                    url: '#',
+
                     label: 'Edit',
-                    click: () => this.comingSoon(),
                 },
                 selfSend: {
                     url: '#',
@@ -193,18 +194,10 @@ export default defineComponent({
                     label: 'Delete',
                     click: () => this.comingSoon(),
                 },
-
             }
-        }
-    },
-    methods: {
-        comingSoon() {
-            new Noty({
-                type: 'warning',
-                theme: 'sunset',
-                text: 'Feature Coming Soon!',
-                timeout: 7500
-            }).show();
+
+            console.log('Sup', res);
+            return res
         },
         reset() {
             this.form = mapValues(this.form, () => null)
