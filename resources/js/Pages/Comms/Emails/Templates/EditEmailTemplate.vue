@@ -11,6 +11,7 @@
                 <email-template-form
                     :client-id="$page.props.user.current_client_id"
                     :template="template"
+                    :can-activate="true"
                 />
             </div>
         </div>

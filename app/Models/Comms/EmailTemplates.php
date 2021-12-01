@@ -72,4 +72,9 @@ class EmailTemplates extends Model
             }
         });
     }
+
+    public function getMarkupAttribute($value)
+    {
+        return base64_decode($value);
+    }
 }

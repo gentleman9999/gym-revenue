@@ -225,7 +225,7 @@ class MassCommunicationsController extends Controller
 
     public function et_create()
     {
-        return Inertia::render('Comms/SMS/Templates/CreateEmailTemplate', [
+        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', [
         ]);
     }
 
@@ -236,8 +236,12 @@ class MassCommunicationsController extends Controller
             //TODO:flash error
             return Redirect::back();
         }
-        return Inertia::render('Comms/SMS/Templates/EditEmailTemplate', [
-            'template' => EmailTemplates::find($id)
+
+        $template = EmailTemplates::find($id);
+        // @todo - need to build access validation here.
+
+        return Inertia::render('Comms/Emails/Templates/EditEmailTemplate', [
+            'template' => $template
         ]);
     }
 

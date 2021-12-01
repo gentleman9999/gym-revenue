@@ -8,7 +8,10 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <email-template-form :client-id="$page.props.user.current_client_id" />
+                <email-template-form
+                    :client-id="$page.props.user.current_client_id"
+                    :can-activate="false"
+                />
             </div>
         </div>
     </app-layout>
