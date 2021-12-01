@@ -86,6 +86,9 @@ class LeadsController extends Controller
         }
 
         $lead = $lead_model->create($lead_data);
+
+        Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
+
         EndUserActivityAggregate::retrieve($lead->id)
             ->manualNewLead($lead->toArray(), $user_id)
             ->claimLead($user_id, $lead_data['client_id'])
@@ -143,8 +146,7 @@ class LeadsController extends Controller
     {
         // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
         if (!$lead_id) {
-            //TODO:flash error
-            \Alert::info("Access Denied or Lead does not exist")->flash();
+            Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
 
@@ -157,8 +159,7 @@ class LeadsController extends Controller
     {
         // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
         if (!$lead_id) {
-            //TODO:flash error
-            \Alert::info("Access Denied or Lead does not exist")->flash();
+            Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
 
@@ -178,6 +179,9 @@ class LeadsController extends Controller
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
             ->persist();
+
+        Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
+
 
         return Redirect::route('data.leads');
     }
@@ -298,26 +302,27 @@ class LeadsController extends Controller
                 {
                     case 'email':
                         $aggy->emailLead($data, auth()->user()->id)->persist();
+                        Alert::success("Email sent to lead")->flash();
                         break;
 
                     case 'phone':
                         $aggy->logPhoneCallWithLead($data, auth()->user()->id)->persist();
+                        Alert::success("Call Log Updated")->flash();
                         break;
 
                     case 'sms':
                         $aggy->textMessageLead($data, auth()->user()->id)->persist();
+                        Alert::success("SMS Sent")->flash();
                         break;
 
                     default:
-                        //TODO:flash error
-//                        $results['message'] = 'Invalid communication method. Select Another.';
+                        Alert::error("Invalid communication method. Select Another.")->flash();
                 }
             }
         }
         else
         {
-//            TODO: flash error
-//            $results['message'] = 'Could not find the lead requested.';
+            Alert::error("Could not find the lead requested.")->flash();
         }
 //        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
 //        return redirect()->back()->with('selectedLeadDetailIndex', '0');

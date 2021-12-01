@@ -1,6 +1,6 @@
 <template>
+    <Head :title="title"/>
     <div>
-        <Head :title="title"/>
         <jet-banner/>
         <div class="font-sans antialiased min-h-screen">
             <top-nav @toggle-side-nav="toggleSideNav" />
@@ -67,6 +67,7 @@ import TopNav from "@/Components/Navigation/TopNav";
 import SideNav from "@/Components/Navigation/SideNav";
 import {Head, Link} from '@inertiajs/inertia-vue3';
 import NotyBell from "@/Components/NotyBell";
+import {useAlertEmitter} from "@/utils";
 
 export default defineComponent({
     components: {
@@ -79,12 +80,14 @@ export default defineComponent({
         JetResponsiveNavLink,
         NotyBell,
         TopNav,
-        SideNav
+        SideNav,
     },
     props: {
         title: String,
     },
     setup() {
+        useAlertEmitter();
+
         const animate = ref(false);
         onMounted(()=>animate.value=true);
         const showingSidebar = ref(true);

@@ -39,9 +39,9 @@
                             <jet-bar-icon type="pencil" fill/>
 
                         </inertia-link>
-                        <!--                        <inertia-link :href="route('locations.delete', location.id)" class=" hover:">-->
+                        <!--                        <inertia-link :href="route('locations.trash', location.id)" class=" hover:">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
-                        <button @click=" location?.deleted_at ? $inertia.post(route('locations.restore', location.id)) : $inertia.delete(route('locations.delete', location.id))"
+                        <button @click=" location?.deleted_at ? $inertia.post(route('locations.restore', location.id)) : $inertia.delete(route('locations.trash', location.id))"
                                 class=" hover:">
                             <jet-bar-icon :type="location?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>

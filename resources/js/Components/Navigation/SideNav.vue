@@ -47,7 +47,7 @@
                     class="jet-nav-link"
                     href="#" @click="comingSoon()">
                     <p>
-                        <font-awesome-icon :icon="['fad', 'paste']" size="xl"/>
+                        <font-awesome-icon :icon="['fad', 'paste']" size="lg"/>
                         ToDo List
                     </p>
                 </jet-nav-link>

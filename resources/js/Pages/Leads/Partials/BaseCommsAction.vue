@@ -50,14 +50,6 @@ export default defineComponent({
             await props.form.post(route('data.leads.contact', props.leadId));
             props.form.reset();
             emit('done');
-            //TODO: we should have a NOTY provider or a way to set defaults instead of specifying theme everywhere
-            new Noty({
-                type: 'success',
-                theme: 'sunset',
-                text: 'Great Success!',
-                timeout: 7500
-            }).show();
-
         };
         return {submit}
     }

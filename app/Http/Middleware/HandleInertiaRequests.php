@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Prologue\Alerts\Facades\Alert;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -45,11 +46,12 @@ class HandleInertiaRequests extends Middleware
                 'user.current_client_id' => $request->user()->currentClientId(),
             ];
         }
-
+        $alerts = Alert::getMessages();
         return array_merge(parent::share($request), [
-            'flash' => function () use ($request) {
+            'flash' => function () use ($request, $alerts) {
                 return [
                     'selectedLeadDetailIndex' => $request->session()->get('selectedLeadDetailIndex'),
+                    'alerts' => $alerts
                 ];
             },
         ], $shared);

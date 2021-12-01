@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Prologue\Alerts\Facades\Alert;
 
 class FilesController extends Controller
 {
@@ -34,7 +35,7 @@ class FilesController extends Controller
     public function edit($id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No file ID provided")->flash();
             return Redirect::route('files');
         }
 
@@ -52,7 +53,7 @@ class FilesController extends Controller
     public function update(Request $request, $id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No file ID provided")->flash();
             return Redirect::route('files');
         }
         $data = $request->validate([
@@ -68,10 +69,12 @@ class FilesController extends Controller
         if($new_filename !== $old_filename){
             $file->updateOrFail($data);
 
+
             FileAggregate::retrieve($file->id)
                 ->renameFile($request->user()->id, $old_filename, $new_filename)
                 ->persist();
         }
+        Alert::success("File '{$file->filename}' updated")->flash();
 
         return Redirect::route('files');
     }
@@ -93,30 +96,31 @@ class FilesController extends Controller
 //
             $file = File::create($row);
             $file->url = Storage::disk('s3')->url($file->key);
-            $file->save();
+            $success = $file->save();
+            if($success){
+                Alert::success("File '{$file->filename}' created")->flash();
+            }else{
+                Alert::error("An error occurred while creating'{$file->filename}' ")->flash();
+            }
 
             FileAggregate::retrieve($file->id)
                 ->createFile($request->user()->id, $file->key, $file->client_id)
                 ->persist();
         }
-//        $success = File::insert($data);
-//        if($success !== true){
-//            TODO: flash error or something
-//        }
         return Redirect::route('files');
-
-//        dd($data);
     }
 
     public function trash(Request $request, $id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No file ID provided")->flash();
             return Redirect::back();
         }
 
         $file = File::findOrFail($id);
         $file->deleteOrFail();
+        Alert::success("File '{$file->filename}' trashed")->flash();
+
 
         FileAggregate::retrieve($file->id)
             ->trashFile($request->user()->id)
@@ -128,16 +132,19 @@ class FilesController extends Controller
     public function delete(Request $request, $id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No file ID provided")->flash();
             return Redirect::back();
         }
 
         $file = File::withTrashed()->findOrFail($id);
         $file->forceDelete();
 
+        Alert::success("File '{$file->filename}' permanently deleted")->flash();
+
         FileAggregate::retrieve($file->id)
             ->deleteFile($request->user()->id, $file->key)
             ->persist();
+
 
         return Redirect::route('files');
     }
@@ -145,11 +152,13 @@ class FilesController extends Controller
     public function restore(Request $request, $id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No file ID provided")->flash();
             return Redirect::route('files');
         }
         $file = File::withTrashed()->findOrFail($id);
         $file->restore();
+        Alert::success("File '{$file->filename}' restored")->flash();
+
         FileAggregate::retrieve($file->id)
             ->restoreFile($request->user()->id)
             ->persist();

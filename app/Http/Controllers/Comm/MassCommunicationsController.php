@@ -235,7 +235,7 @@ class MassCommunicationsController extends Controller
     {
 
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No Template ID provided")->flash();
             return Redirect::back();
         }
 
@@ -339,7 +339,7 @@ class MassCommunicationsController extends Controller
     public function ec_edit($id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No Campaign ID provided")->flash();
             return redirect()->back();
         }
 
@@ -391,7 +391,7 @@ class MassCommunicationsController extends Controller
     {
 
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No Template ID provided")->flash();
             return Redirect::back();
         }
 
@@ -493,7 +493,7 @@ class MassCommunicationsController extends Controller
     public function sc_edit($id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No Campaign ID provided")->flash();
             return redirect()->back();
         }
 

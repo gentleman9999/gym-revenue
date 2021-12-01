@@ -69,7 +69,7 @@
                     <td>{{ new Date(file.created_at).toLocaleString() }}</td>
                     <td>{{ prettyBytes(file.size) }}</td>
                     <td class="flex flex-row justify-center space-x-2">
-                        <!--                        <inertia-link :href="route('locations.delete', location.id)" class="text-gray-400 hover:text-gray-500">-->
+                        <!--                        <inertia-link :href="route('locations.trash', location.id)" class="text-gray-400 hover:text-gray-500">-->
                         <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
                         <div
                             class="flex flex-row nowrap justify-center items-center gap-4"

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Prologue\Alerts\Facades\Alert;
 
 class LocationsController extends Controller
 {
@@ -65,7 +66,7 @@ class LocationsController extends Controller
     public function edit($id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No Location ID provided")->flash();
             return Redirect::back();
         }
 
@@ -77,9 +78,10 @@ class LocationsController extends Controller
 
     public function store(Request $request)
     {
-        Location::create(
+        $location = Location::create(
             $request->validate($this->rules)
         );
+        Alert::success("Location '{$location->name}' was created")->flash();
 
         return Redirect::route('locations');
     }
@@ -87,25 +89,29 @@ class LocationsController extends Controller
     public function update(Request $request, $id)
     {
         if (!$id) {
-            //TODO:flash error
-            return Redirect::route('locations');
-        }
-        $location = $request->validate($this->rules);
-
-        Location::findOrFail($id)->updateOrFail($location);
-
-        return Redirect::route('locations');
-    }
-
-    public function delete(Request $request, $id)
-    {
-        if (!$id) {
-            //TODO:flash error
+            Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');
         }
 
         $location = Location::findOrFail($id);
-        $location->deleteOrFail();
+        $location->updateOrFail($request->validate($this->rules));
+        Alert::success("Location '{$location->name}' updated")->flash();
+
+        return Redirect::route('locations');
+    }
+
+    public function trash(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Location ID provided")->flash();
+            return Redirect::route('locations');
+        }
+
+        $location = Location::findOrFail($id);
+        Alert::success("Location '{$location->name}' trashed")->flash();
+
+        $success = $location->deleteOrFail();
+
         //we need to update current_location_id where applicable
         $client = $location->client()->first();
         $default_location = $client->locations()->first();
@@ -123,11 +129,13 @@ class LocationsController extends Controller
     public function restore(Request $request, $id)
     {
         if (!$id) {
-            //TODO:flash error
+            Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');
         }
         $location = Location::withTrashed()->findOrFail($id);
         $location->restore();
+
+        Alert::success("Location '{$location->name}' restored")->flash();
 
         return Redirect::back();
     }

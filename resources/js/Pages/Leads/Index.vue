@@ -60,7 +60,7 @@
                     <td>{{ getDate(lead.created_at) }}</td>
                     <td>{{ lead.first_name }}</td>
                     <td>{{ lead.last_name }}</td>
-                    <td>{{ lead.location.name }}</td>
+                    <td>{{ lead.location?.name }}</td>
                     <td>
                         <div class="badge" :class="badgeClasses(lead.lead_type)">{{ lead.lead_type }}</div>
                     </td>

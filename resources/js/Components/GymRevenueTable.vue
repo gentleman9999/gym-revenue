@@ -11,7 +11,7 @@
                                 <th v-for="(header, index) in headers" :key="index" scope="col">
                                     <p v-if="header !== ''"> {{ header }}</p>
                                     <p v-else class="text-white">
-                                        <font-awesome-icon :icon="['fas', 'align-left']" size="24"/>
+                                        <font-awesome-icon :icon="['fas', 'align-left']" size="lg"/>
                                     </p>
                                 </th>
                             </tr>
