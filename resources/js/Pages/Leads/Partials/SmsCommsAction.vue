@@ -6,12 +6,7 @@
                 enrollment URL.</i></p>
         </div>
         <div>
-            <label>Message</label>
-            <textarea class="form-control w-full" v-model="form.message" rows="4" cols="40"
-                      :maxlength="charLimit"></textarea>
-            <div class="col-md-12" style="text-align: right">
-                <small>Character Count - {{ charsUsed }}/{{ charLimit }}</small>
-            </div>
+            <sms-form-control name="message"  v-model="form.message"/>
         </div>
     </base-comms-action>
 </template>
@@ -20,11 +15,13 @@
 import {computed, defineComponent} from 'vue'
 import {useForm} from '@inertiajs/inertia-vue3'
 import BaseCommsAction from "./BaseCommsAction";
+import SmsFormControl from "@/Components/SmsFormControl"
 
 
 export default defineComponent({
     components: {
         BaseCommsAction,
+        SmsFormControl
     },
     props: {
         leadId: {

@@ -16,7 +16,7 @@
                         @click="showingSidebar = true"
                         class="pr-2"
                     >
-                        <font-awesome-icon :icon="['fas', 'bars']" size="16"/>
+                        <font-awesome-icon :icon="['fas', 'bars']" size="sm"/>
                     </button> -->
                     <!-- Logo -->
                     <!-- <div class="flex-shrink-0 flex items-center bg-primary">
@@ -97,33 +97,33 @@
 
                     <div class="ml-3 relative">
                         <button @click="comingSoon()">
-                            <font-awesome-icon :icon="['fas', 'search']" size="16"/>
+                            <font-awesome-icon :icon="['fas', 'search']" size="sm"/>
                         </button>
                     </div>
                     <div class="ml-3 relative">
                         <button @click="comingSoon()">
-                            <font-awesome-icon :icon="['fas', 'plus-circle']" size="16"/>
+                            <font-awesome-icon :icon="['fas', 'plus-circle']" size="sm"/>
                         </button>
                     </div>
                     <div class="ml-3 relative">
                         <button @click="comingSoon()">
-                            <font-awesome-icon :icon="['fas', 'question-circle']" size="16"/>
+                            <font-awesome-icon :icon="['fas', 'question-circle']" size="sm"/>
                         </button>
                     </div>
                     <div class="ml-3 relative">
                         <button @click="comingSoon()">
-                            <font-awesome-icon :icon="['fas', 'th']" size="16"/>
+                            <font-awesome-icon :icon="['fas', 'th']" size="sm"/>
                         </button>
                     </div>
                     <div class="ml-3 relative">
                         <button @click="comingSoon()">
-                            <font-awesome-icon :icon="['fas', 'user-circle']" size="16"/>
+                            <font-awesome-icon :icon="['fas', 'user-circle']" size="sm"/>
                         </button>
                     </div>
                     <noty-bell></noty-bell>
                     <div class="ml-3 relative">
                         <button @click="comingSoon()">
-                            <font-awesome-icon :icon="['far', 'file-medical']" size="16"/>
+                            <font-awesome-icon :icon="['far', 'file-medical']" size="sm"/>
                         </button>
                     </div>
                     <!-- Notifications -->

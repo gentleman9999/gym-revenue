@@ -10,8 +10,8 @@ use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class MassCommunicationsController extends Controller
@@ -41,17 +41,14 @@ class MassCommunicationsController extends Controller
             ]
         ];
 
-        if(!is_null($client_id))
-        {
+        if (!is_null($client_id)) {
             $results['total_audience'] = Lead::whereClientId($client_id)->count();
             $results['audience_breakdown'] = [
                 'all' => Lead::whereClientId($client_id)->count(),
                 'prospects' => Lead::whereClientId($client_id)->count(),
                 'conversions' => 0
             ];
-        }
-        else
-        {
+        } else {
             $results['total_audience'] = 25;
             $results['audience_breakdown'] = [
                 'all' => 25,
@@ -67,8 +64,7 @@ class MassCommunicationsController extends Controller
     {
         $results = [];
 
-        if((!is_null($client_id)))
-        {
+        if ((!is_null($client_id))) {
             // Get the current client or its cape and bay
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -86,8 +82,7 @@ class MassCommunicationsController extends Controller
              *
              */
             $results = $template_model;
-        }
-        else {
+        } else {
             if (!$is_client_user) {
                 $template_model = ($type == 'email') ? new EmailCampaigns() : new SmsCampaigns();
                 $template_model = $template_model->whereNull('client_id');
@@ -109,8 +104,7 @@ class MassCommunicationsController extends Controller
     {
         $results = [];
 
-        if((!is_null($client_id)))
-        {
+        if ((!is_null($client_id))) {
             // Get the current client or its cape and bay
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -128,11 +122,8 @@ class MassCommunicationsController extends Controller
              *
              */
             $results = $template_model;
-        }
-        else
-        {
-            if(!$is_client_user)
-            {
+        } else {
+            if (!$is_client_user) {
                 $template_model = ($type == 'email') ? new EmailTemplates() : new SmsTemplates();
                 $template_model = $template_model->whereNull('client_id');
                 /**
@@ -147,7 +138,6 @@ class MassCommunicationsController extends Controller
         }
 
 
-
         return $results;
     }
 
@@ -156,8 +146,7 @@ class MassCommunicationsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
-        if(!is_null($client_id))
-        {
+        if (!is_null($client_id)) {
             $aggy = ClientAggregate::retrieve($client_id);
             $history_log = $aggy->getCommunicationHistoryLog();
             $aud_options = [
@@ -168,9 +157,7 @@ class MassCommunicationsController extends Controller
 
             // @todo - make a function that crunches these datas
             $stats = $this->getStats($client_id);
-        }
-        else
-        {
+        } else {
             $history_log = [];
             $aud_options = [
                 'all' => 'All Audiences',
@@ -182,11 +169,9 @@ class MassCommunicationsController extends Controller
         }
 
         $active_audience = 'all';
-        if(request()->has('audience'))
-        {
+        if (request()->has('audience')) {
             $aud = (request()->get('audience'));
-            switch($aud)
-            {
+            switch ($aud) {
                 case 'all':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
@@ -197,7 +182,7 @@ class MassCommunicationsController extends Controller
                 case 'employees':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
-                break;
+                    break;
 
                 default:
                     // @todo - this will be a uuid to be looked up
@@ -225,10 +210,9 @@ class MassCommunicationsController extends Controller
 
         $templates_model = $this->setupTemplatesObject($is_client_user, 'email', $client_id);
 
-        if(!empty($templates_model))
-        {
+        if (!empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
-                ->filter(request()->only('search', 'trashed'))
+            ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
         }
 
@@ -237,6 +221,50 @@ class MassCommunicationsController extends Controller
             'filters' => request()->all('search', 'trashed'),
             'templates' => $templates,
         ]);
+    }
+
+    public function et_create()
+    {
+        return Inertia::render('Comms/SMS/Templates/CreateEmailTemplate', [
+        ]);
+    }
+
+    public function et_edit($id)
+    {
+
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::back();
+        }
+        return Inertia::render('Comms/SMS/Templates/EditEmailTemplate', [
+            'template' => EmailTemplates::find($id)
+        ]);
+    }
+
+    public function et_store(Request $request)
+    {
+        $template = $request->validate([
+                'name' => 'required',
+                'markup' => 'required'
+            ]
+        );
+        dd($template);
+//        $template['created_by_user_id'] = $request->user()->id;
+//        SmsTemplates::create($template);
+        return Redirect::route('comms.email-templates');
+    }
+
+    public function et_update(Request $request)
+    {
+        $template = $request->validate([
+                'name' => 'required',
+                'markup' => 'required'
+            ]
+        );
+        dd($template);
+//        $template['created_by_user_id'] = $request->user()->id;
+//        SmsTemplates::create($template);
+        return Redirect::route('comms.email-templates');
     }
 
     public function ec_index()
@@ -251,10 +279,9 @@ class MassCommunicationsController extends Controller
 
         $campaigns_model = $this->setupCampaignsObject($is_client_user, 'email', $client_id);
 
-        if(!empty($campaigns_model))
-        {
+        if (!empty($campaigns_model)) {
             $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
-                ->filter(request()->only('search', 'trashed'))
+            ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
         }
 
@@ -277,8 +304,7 @@ class MassCommunicationsController extends Controller
 
         $templates_model = $this->setupTemplatesObject($is_client_user, 'sms', $client_id);
 
-        if(!empty($templates_model))
-        {
+        if (!empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
             ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
@@ -289,6 +315,50 @@ class MassCommunicationsController extends Controller
             'filters' => request()->all('search', 'trashed'),
             'templates' => $templates,
         ]);
+    }
+
+    public function st_create()
+    {
+        return Inertia::render('Comms/SMS/Templates/CreateSmsTemplate', [
+        ]);
+    }
+
+    public function st_edit($id)
+    {
+
+        if (!$id) {
+            //TODO:flash error
+            return Redirect::back();
+        }
+        return Inertia::render('Comms/SMS/Templates/EditSmsTemplate', [
+            'template' => SmsTemplates::find($id)
+        ]);
+    }
+
+    public function st_store(Request $request)
+    {
+        $template = $request->validate([
+                'name' => 'required',
+                'markup' => 'required|max:130'
+            ]
+        );
+        dd($template);
+//        $template['created_by_user_id'] = $request->user()->id;
+//        SmsTemplates::create($template);
+        return Redirect::route('comms.sms-templates');
+    }
+
+    public function st_update(Request $request)
+    {
+        $template = $request->validate([
+                'name' => 'required',
+                'markup' => 'required|max:130'
+            ]
+        );
+        dd($template);
+//        $template['created_by_user_id'] = $request->user()->id;
+//        SmsTemplates::create($template);
+        return Redirect::route('comms.sms-templates');
     }
 
     public function sc_index()
@@ -303,8 +373,7 @@ class MassCommunicationsController extends Controller
 
         $campaigns_model = $this->setupCampaignsObject($is_client_user, 'sms', $client_id);
 
-        if(!empty($campaigns_model))
-        {
+        if (!empty($campaigns_model)) {
             $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
             ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);

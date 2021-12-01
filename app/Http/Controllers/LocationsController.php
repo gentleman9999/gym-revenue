@@ -66,7 +66,7 @@ class LocationsController extends Controller
     {
         if (!$id) {
             //TODO:flash error
-            return Redirect::route('locations');
+            return Redirect::back();
         }
 
         return Inertia::render('Locations/Edit', [
