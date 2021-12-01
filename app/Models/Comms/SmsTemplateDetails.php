@@ -19,7 +19,7 @@ class SmsTemplateDetails extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'client_id', 'email_template_id', 'detail', 'value', 'misc', 'active'
+        'client_id', 'sms_template_id', 'detail', 'value', 'misc', 'active'
     ];
 
     protected $casts = [

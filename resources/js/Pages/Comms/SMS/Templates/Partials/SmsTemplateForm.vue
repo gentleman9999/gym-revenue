@@ -13,10 +13,15 @@
                 <input type="text" v-model="form.name" autofocus  id="name"/>
                 <jet-input-error :message="form.errors.name" class="mt-2"/>
             </div>
-                <div class="col-span-6">
-                    <sms-form-control v-model="form.markup" id="markup" label="Template"/>
-                    <jet-input-error :message="form.errors.markup" class="mt-2"/>
-                </div>
+            <div class="col-span-6">
+                <sms-form-control v-model="form.markup" id="markup" label="Template"/>
+                <jet-input-error :message="form.errors.markup" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-6 flex flex-row" v-if="canActivate">
+                <input type="checkbox" v-model="form.active" autofocus id="active" class="mt-2" :value="true"/>
+                <label for="name" class="label ml-4">Activate (allows assigning to Campaigns)</label>
+                <jet-input-error :message="form.errors.active" class="mt-2" />
+            </div>
 <!--                <input id="client_id" type="hidden" v-model="form.client_id"/>-->
 <!--                <jet-input-error :message="form.errors.client_id" class="mt-2"/>-->
         </template>
@@ -58,6 +63,7 @@ export default {
             template = {
                 markup: null,
                 name: null,
+                active: false
                 // client_id: props.clientId
             }
             operation = 'Create';

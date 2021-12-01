@@ -7,12 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
+use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Prologue\Alerts\Facades\Alert;
 
 class MassCommunicationsController extends Controller
 {
@@ -212,8 +214,9 @@ class MassCommunicationsController extends Controller
 
         if (!empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
-            ->filter(request()->only('search', 'trashed'))
-                ->paginate($page_count);
+                    ->with('creator')
+                    ->filter(request()->only('search', 'trashed'))
+                    ->paginate($page_count);
         }
 
         return Inertia::render('Comms/Emails/Templates/EmailTemplatesIndex', [
@@ -225,8 +228,7 @@ class MassCommunicationsController extends Controller
 
     public function et_create()
     {
-        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', [
-        ]);
+        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', []);
     }
 
     public function et_edit($id)
@@ -252,20 +254,51 @@ class MassCommunicationsController extends Controller
                 'markup' => 'required'
             ]
         );
-        dd($template);
-//        $template['created_by_user_id'] = $request->user()->id;
-//        SmsTemplates::create($template);
+
+        $client_id = request()->user()->currentClientId();
+        // @todo - this could come in handy
+        //$is_client_user = request()->user()->isClientUser();
+        try {
+            $template['active'] = '0';
+            $template['client_id'] = $client_id;
+            $template['created_by_user_id'] = $request->user()->id;
+            EmailTemplates::create($template);
+            Alert::info("New Template {$template['name']} was created")->flash();
+        }
+        catch(\Exception $e)
+        {
+            Alert::error("New Template {$template['name']} could not be created")->flash();
+            return redirect()->back();
+        }
+
         return Redirect::route('comms.email-templates');
     }
 
     public function et_update(Request $request)
     {
-        $template = $request->validate([
+        $data = $request->validate([
+                'id' => 'required|exists:email_templates,id',
                 'name' => 'required',
-                'markup' => 'required'
+                'markup' => 'required',
+                'active' => 'sometimes',
+                'client_id' => 'required|exists:clients,id',
+                'created_by_user_id' => 'required',
             ]
         );
-        dd($template);
+
+        $template = EmailTemplates::find($data['id']);
+        $old_values = $template->toArray();
+        $template->name = ($template->name == $data['name']) ? $template->name : $data['name'];
+        $template->markup = ($template->markup == $data['markup']) ? $template->markup : $data['markup'];
+        $template->active = ($template->active == $data['active']) ? $template->active : $data['active'];
+        $template->save();
+
+        ClientAggregate::retrieve($data['client_id'])
+            ->updateEmailTemplate($template->id, request()->user()->id, $old_values, $template->toArray())
+            ->persist();
+        /*
+
+        */
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
         return Redirect::route('comms.email-templates');
@@ -310,6 +343,7 @@ class MassCommunicationsController extends Controller
 
         if (!empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
+            ->with('creator')
             ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
         }
@@ -334,8 +368,12 @@ class MassCommunicationsController extends Controller
             //TODO:flash error
             return Redirect::back();
         }
+
+        $template = SmsTemplates::find($id);
+        // @todo - need to build access validation here.
+
         return Inertia::render('Comms/SMS/Templates/EditSmsTemplate', [
-            'template' => SmsTemplates::find($id)
+            'template' => $template
         ]);
     }
 
@@ -346,7 +384,22 @@ class MassCommunicationsController extends Controller
                 'markup' => 'required|max:130'
             ]
         );
-        dd($template);
+        $client_id = request()->user()->currentClientId();
+        // @todo - this could come in handy
+        //$is_client_user = request()->user()->isClientUser();
+        try {
+            $template['active'] = '0';
+            $template['client_id'] = $client_id;
+            $template['created_by_user_id'] = $request->user()->id;
+            SmsTemplates::create($template);
+            Alert::info("New Template {$template['name']} was created")->flash();
+        }
+        catch(\Exception $e)
+        {
+            Alert::error("New Template {$template['name']} could not be created")->flash();
+            return redirect()->back();
+        }
+
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
         return Redirect::route('comms.sms-templates');
@@ -354,12 +407,26 @@ class MassCommunicationsController extends Controller
 
     public function st_update(Request $request)
     {
-        $template = $request->validate([
+        $data = $request->validate([
+                'id' => 'required|exists:sms_templates,id',
                 'name' => 'required',
-                'markup' => 'required|max:130'
+                'markup' => 'required|max:130',
+                'active' => 'sometimes',
+                'client_id' => 'required|exists:clients,id',
+                'created_by_user_id' => 'required',
             ]
         );
-        dd($template);
+
+        $template = SmsTemplates::find($data['id']);
+        $old_values = $template->toArray();
+        $template->name = ($template->name == $data['name']) ? $template->name : $data['name'];
+        $template->markup = ($template->markup == $data['markup']) ? $template->markup : $data['markup'];
+        $template->active = ($template->active == $data['active']) ? $template->active : $data['active'];
+        $template->save();
+
+        ClientAggregate::retrieve($data['client_id'])
+            ->updateSmsTemplate($template->id, request()->user()->id, $old_values, $template->toArray())
+            ->persist();
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
         return Redirect::route('comms.sms-templates');

@@ -71,7 +71,7 @@
                             </td>
                             <td>Regular</td>
                             <td>{{ template.updated_at }}</td>
-                            <td>{{ template.created_by_user_id }}</td>
+                            <td>{{ template.creator !== null ? template.creator.name : 'Auto Generated' }}</td>
                             <td>
                                 <div class="ml-3 relative">
                                     <jet-dropdown align="end" width="40">

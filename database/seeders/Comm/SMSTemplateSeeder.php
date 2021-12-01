@@ -41,7 +41,8 @@ class SMSTemplateSeeder extends Seeder
                 'created_by_user_id' => 'auto'
             ]);
             // Mark sure markup is stupid simple with %name% token and base64 encoded
-            $record->markup = base64_encode($default_markup);
+            //$record->markup = base64_encode($default_markup);
+            $record->markup = $default_markup;
             $record->save();
         }
     }

@@ -12,7 +12,9 @@ use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
+use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use App\StorableEvents\Clients\TeamCreated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -46,6 +48,12 @@ class ClientAggregate extends AggregateRoot
         return $this;
     }
 
+    public function updateEmailTemplate(string $template_id, string $updated_by, array $old_vals, array $new_vals)
+    {
+        $this->recordThat(new EmailTemplateUpdated($this->uuid(), $template_id, $updated_by, $old_vals, $new_vals));
+        return $this;
+    }
+
     public function createNewEmailCampaign(string $template_id, string $created_by = null)
     {
         $this->recordThat(new EmailCampaignCreated($this->uuid(), $template_id, $created_by));
@@ -61,6 +69,12 @@ class ClientAggregate extends AggregateRoot
     public function createNewSMSTemplate(string $template_id, string $created_by = null)
     {
         $this->recordThat(new SMSTemplateCreated($this->uuid(), $template_id, $created_by));
+        return $this;
+    }
+
+    public function updateSmsTemplate(string $template_id, string $updated_by, array $old_vals, array $new_vals)
+    {
+        $this->recordThat(new SmsTemplateUpdated($this->uuid(), $template_id, $updated_by, $old_vals, $new_vals));
         return $this;
     }
 

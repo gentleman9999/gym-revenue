@@ -22,7 +22,9 @@ use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
+use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -107,6 +109,22 @@ class ClientAccountProjector extends Projector
             'detail' => 'email_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
+        ]);
+    }
+
+    public function onEmailTemplateUpdated(EmailTemplateUpdated $event)
+    {
+        $user = User::find($event->updated);
+        EmailTemplateDetails::create([
+            'email_template_id' => $event->template,
+            'client_id' => $event->client,
+            'detail' => 'updated',
+            'value' => $event->updated,
+            'misc' => [
+                'old' => $event->old,
+                'new' => $event->new,
+                'msg' => 'Template was updated by '.$user->name.' on '.date('Y-m-d')
+            ]
         ]);
     }
 
@@ -198,6 +216,22 @@ class ClientAccountProjector extends Projector
             'detail' => 'sms_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']
+        ]);
+    }
+
+    public function onSmsTemplateUpdated(SmsTemplateUpdated $event)
+    {
+        $user = User::find($event->updated);
+        SmsTemplateDetails::create([
+            'sms_template_id' => $event->template,
+            'client_id' => $event->client,
+            'detail' => 'updated',
+            'value' => $event->updated,
+            'misc' => [
+                'old' => $event->old,
+                'new' => $event->new,
+                'msg' => 'Template was updated by '.$user->name.' on '.date('Y-m-d')
+            ]
         ]);
     }
 

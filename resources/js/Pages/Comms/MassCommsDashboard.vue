@@ -150,6 +150,7 @@
                             </tr>
                             <tr class="hover" v-else v-for="(log, idx) in historyFeed" :key="idx">
                                 <td>{{ log.type }}</td>
+                                <td>{{ log.recordName }}</td>
                                 <td>{{ log.date }}</td>
                                 <td>{{ log.by }}</td>
                             </tr>
@@ -187,7 +188,7 @@ export default defineComponent({
     computed: {
         tableHeaders() {
             if (this.historyFeed.length > 0) {
-                return ['action', 'date', 'by']
+                return ['action', 'template', 'date', 'by']
             }
 
             return [];

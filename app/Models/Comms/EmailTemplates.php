@@ -20,7 +20,7 @@ class EmailTemplates extends Model
 
     public $incrementing = false;
 
-    protected $fillable = [
+    protected $fillable = [ 'client_id',
         'name', 'markup', 'active', 'team_id', 'created_by_user_id'
     ];
 
@@ -76,5 +76,15 @@ class EmailTemplates extends Model
     public function getMarkupAttribute($value)
     {
         return base64_decode($value);
+    }
+
+    public function setMarkupAttribute($value)
+    {
+        $this->attributes['markup'] = base64_encode($value);
+    }
+
+    public function creator()
+    {
+        return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
 }
