@@ -7,7 +7,7 @@ environments:
         cli-memory: 512
         runtime: docker
         cache: gr-prototype
-        storage: gymrevenue
+        storage: gymrevenue-p
         database: gymrevenue
         queues:
             - grp-production-events
