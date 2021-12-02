@@ -100,7 +100,7 @@ class LocationsController extends Controller
         return Redirect::route('locations');
     }
 
-    public function trash(Request $request, $id)
+    public function trash($id)
     {
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
@@ -108,9 +108,10 @@ class LocationsController extends Controller
         }
 
         $location = Location::findOrFail($id);
-        Alert::success("Location '{$location->name}' trashed")->flash();
 
         $success = $location->deleteOrFail();
+
+        Alert::success("Location '{$location->name}' trashed")->flash();
 
         //we need to update current_location_id where applicable
         $client = $location->client()->first();

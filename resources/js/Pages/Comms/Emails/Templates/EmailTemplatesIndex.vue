@@ -44,16 +44,16 @@
             </div>
             <div class="inner-template-index-content mt-4 pb-10">
                 <div class="template-table border-2 border-base-300 rounded-t-md">
-                    <div class="flex flex-col bg-secondary rounded-t-md">
-                        <div class="border-b-2 border-gray-300 py-4">
-                            <h2 class="px-4">Templates</h2>
-                        </div>
-                    </div>
+<!--                    <div class="flex flex-col bg-secondary rounded-t-md">-->
+<!--                        <div class="border-b-2 border-gray-300 py-4">-->
+<!--                            <h2 class="px-4">Templates</h2>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <gym-revenue-table :headers="tableHeaders">
-                        <template #prethead>
-                            <div class="p-4 bg-base-100"></div>
-                            <div class="p-4 bg-base-100"></div>
-                        </template>
+<!--                        <template #prethead>-->
+<!--                            <div class="p-4 bg-base-100"></div>-->
+<!--                            <div class="p-4 bg-base-100"></div>-->
+<!--                        </template>-->
                         <tr v-if="templates.data.length === 0">
                             <td></td>
                             <td></td>
@@ -91,9 +91,9 @@
                                                 </div>
                                                 <ul class="menu compact">
                                                     <li v-for="(option, slug) in actionOptions(template)" :key="slug">
-                                                        <inertia-link @click="option.click" :href="option.url">
+                                                        <a @click.prevent.stop="option.click" :href="option.url">
                                                             {{ option.label }}
-                                                        </inertia-link>
+                                                        </a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -125,6 +125,7 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import mapValues from "lodash/mapValues";
 import throttle from "lodash/throttle";
 import pickBy from "lodash/pickBy";
+import {Inertia} from "@inertiajs/inertia";
 
 library.add(faChevronDoubleLeft, faEllipsisH)
 
@@ -140,6 +141,12 @@ export default defineComponent({
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {
+        const handleClickTrash = (id) => {
+            if(confirm("Are you sure you want to delete this template? It will be removed from any assigned campaigns.")){
+                Inertia.delete(route('comms.email-templates.trash', id));
+            }
+        }
+        return {handleClickTrash}
     },
     watch: {
         form: {
@@ -181,8 +188,9 @@ export default defineComponent({
         actionOptions(template) {
             return {
                 edit: {
-                    url: route('comms.email-templates.edit', template.id),
+                    url: '#',
                     label: 'Edit',
+                    click: ()=> Inertia.visit(route('comms.email-templates.edit', template.id))
                 },
                 selfSend: {
                     url: '#',
@@ -191,8 +199,8 @@ export default defineComponent({
                 },
                 delete: {
                     url: '#',
-                    label: 'Delete',
-                    click: () => this.comingSoon(),
+                    label: 'Trash',
+                    click: ()=>this.handleClickTrash(template.id)
                 },
 
             }

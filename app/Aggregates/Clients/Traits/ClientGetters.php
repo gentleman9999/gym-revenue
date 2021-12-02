@@ -25,7 +25,9 @@ trait ClientGetters
                 }
 
                 $model = $history['model']::find($history['template_id']);
-                $history['recordName'] = $model->name;
+                if(!empty($model)){
+                    $history['recordName'] = $model->name;
+                }
 
                 $results[] = $history;
             }

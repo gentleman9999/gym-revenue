@@ -91,9 +91,9 @@
                                                 </div>
                                                 <ul class="menu compact">
                                                     <li v-for="(option, slug) in actionOptions(template)" :key="slug">
-                                                        <inertia-link @click.prevent="option.click" :href="option.url">
+                                                        <a @click.prevent="option.click" :href="option.url">
                                                             {{ option.label }}
-                                                        </inertia-link>
+                                                        </a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -122,6 +122,7 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import mapValues from "lodash/mapValues";
+import {Inertia} from "@inertiajs/inertia";
 
 library.add(faChevronDoubleLeft, faEllipsisH)
 
@@ -137,6 +138,12 @@ export default defineComponent({
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {
+        const handleClickTrash = (id) => {
+            if(confirm("Are you sure you want to delete this template? It will be removed from any assigned campaigns.")){
+                Inertia.delete(route('comms.sms-templates.trash', id));
+            }
+        }
+        return {handleClickTrash}
     },
     watch: {},
     data() {
@@ -169,8 +176,9 @@ export default defineComponent({
         actionOptions(template) {
             return {
                 edit: {
-                    url: route('comms.sms-templates.edit', template.id),
+                    url: '#',
                     label: 'Edit',
+                    click: ()=>Inertia.visit(route('comms.sms-templates.edit', template.id))
                 },
                 selfSend: {
                     url: '#',
@@ -180,7 +188,7 @@ export default defineComponent({
                 del: {
                     url: '#',
                     label: 'Delete',
-                    click: () => this.comingSoon(),
+                    click: ()=> this.handleClickTrash(template.id)
                 },
 
             }

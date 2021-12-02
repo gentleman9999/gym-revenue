@@ -50,6 +50,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( functio
     Route::get('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_edit')->name('comms.email-templates.edit');
     Route::post('/email-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_store')->name('comms.email-templates.store');
     Route::put('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_update')->name('comms.email-templates.update');
+    Route::delete('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_trash')->name('comms.email-templates.trash');
 
     Route::get('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_index')->name('comms.email-campaigns');
     Route::get('/email-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_create')->name('comms.email-campaigns.create');
@@ -68,6 +69,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( functio
     Route::get('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@st_edit')->name('comms.sms-templates.edit');
     Route::post('/sms-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@st_store')->name('comms.sms-templates.store');
     Route::put('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@st_update')->name('comms.sms-templates.update');
+    Route::delete('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@st_trash')->name('comms.sms-templates.trash');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::prefix('leads')->group( function() {

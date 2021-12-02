@@ -304,6 +304,21 @@ class MassCommunicationsController extends Controller
         return Redirect::route('comms.email-templates');
     }
 
+    public function et_trash($id)
+    {
+        if (!$id) {
+            Alert::error("No Template ID provided")->flash();
+            return Redirect::back();
+        }
+
+        $template = EmailTemplates::findOrFail($id);
+        $success = $template->deleteOrFail();
+        Alert::success("Template '{$template->name}' trashed")->flash();
+
+
+        return Redirect::back();
+    }
+
     public function ec_index()
     {
         $client_id = request()->user()->currentClientId();
@@ -456,6 +471,21 @@ class MassCommunicationsController extends Controller
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
         return Redirect::route('comms.sms-templates');
+    }
+
+    public function st_trash($id)
+    {
+        if (!$id) {
+            Alert::error("No Template ID provided")->flash();
+            return Redirect::back();
+        }
+
+        $template = SmsTemplates::findOrFail($id);
+        $success = $template->deleteOrFail();
+        Alert::success("Template '{$template->name}' trashed")->flash();
+
+
+        return Redirect::back();
     }
 
     public function sc_index()
