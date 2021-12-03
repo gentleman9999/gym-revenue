@@ -107,16 +107,24 @@
                 </div>
             </div>
         </jet-bar-container>
+        <confirm
+            title="Really Trash?"
+            v-if="confirmTrash"
+            @confirm="handleConfirmTrash"
+        >
+            Are you sure you want to trash this template?  It will be removed from any assigned campaigns.
+        </confirm>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
 import AppLayout from '@/Layouts/AppLayout'
 import JetDropdown from '@/Components/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
 import GymRevenueTable from "@/Components/GymRevenueTable";
+import Confirm from "@/Components/Confirm";
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
@@ -135,15 +143,19 @@ export default defineComponent({
         FontAwesomeIcon,
         GymRevenueTable,
         JetBarContainer,
+        Confirm
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {
+        const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
-            if(confirm("Are you sure you want to delete this template? It will be removed from any assigned campaigns.")){
-                Inertia.delete(route('comms.sms-templates.trash', id));
-            }
-        }
-        return {handleClickTrash}
+            confirmTrash.value = id;
+        };
+        const handleConfirmTrash = () => {
+            Inertia.delete(route("comms.sms-templates.trash", confirmTrash.value));
+            confirmTrash.value = null;
+        };
+        return { handleClickTrash, confirmTrash, handleConfirmTrash };
     },
     watch: {},
     data() {
