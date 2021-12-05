@@ -40,7 +40,7 @@
                 -->
             </jet-bar-stats-container>
 
-            <gym-revenue-table :headers="['client', 'status', 'joined', '', '']" >
+            <gym-revenue-table :headers="['client', 'status', 'joined', '', '']" :resource="clients" >
                 <tr class="hover" v-for="client in clients" :key="client.id">
                     <td>{{ client.name }}</td>
                     <td>
@@ -70,7 +70,7 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
 import JetBarStatCard from "@/Components/JetBarStatCard";
-import GymRevenueTable from "@/Components/GymRevenueTable";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 
