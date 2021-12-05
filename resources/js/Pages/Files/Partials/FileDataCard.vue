@@ -1,7 +1,30 @@
 <template>
-    <auto-data-card :data="file" :fields="fields" :titleField="titleField" >
+    <auto-data-card :data="file" :fields="fields" :titleField="titleField" :actions="actions" model-name="file">
         <template #title>
-            <a class="link link-hover" :href="file.url" :download="filename">{{ file.filename }}</a>
+            <div class="flex flex-row nowrap items-center gap-4 truncate">
+                <file-extension-icon
+                    :extension="file.extension"
+                    v-if="
+                        !['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(
+                            file.extension
+                        )
+                    "
+                    class="h-16 w-16"
+                />
+                <img
+                    :src="file.url"
+                    class="h-16 w-16 object-cover rounded-sm"
+                    v-else
+                />
+                <a
+                    :href="file.url"
+                    :download="file.filename"
+                    class="link link-hover truncate"
+                    :title="file.filename"
+                >
+                    {{ file.filename }}
+                </a>
+            </div>
         </template>
     </auto-data-card>
 </template>
@@ -11,11 +34,13 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AutoDataCard from "@/Components/CRUD/AutoDataCard";
+import FileExtensionIcon from "./FileExtensionIcon";
 
 export default {
     components: {
         FontAwesomeIcon,
         AutoDataCard,
+        FileExtensionIcon,
     },
     props: {
         file: {
@@ -36,6 +61,10 @@ export default {
         titleField: {
             type: String,
         },
+        actions:{
+            type: Object,
+            default: {}
+        }
     },
 };
 </script>

@@ -9,7 +9,17 @@
                 >
                     <slot name="pre" />
                     <template v-if="cardComponent">
-                        <component :is="cardComponent" v-bind="{[modelName]: row}" :data="row" :fields="fields" :titleField="titleField" v-for="row in resource?.data || []"/>
+                        <component
+                            v-for="row in resource?.data || []"
+                            :is="cardComponent"
+                            v-bind="{ [modelName]: row }"
+                            :data="row"
+                            :fields="fields"
+                            :titleField="titleField"
+                            :actions="actions"
+                            :model-name="modelName"
+                            :model-name-plural="modelNamePlural"
+                        />
                     </template>
                     <template v-else>
                         <auto-data-card
@@ -17,12 +27,15 @@
                             :data="row"
                             :fields="fields"
                             :titleField="titleField"
+                            :actions="actions"
+                            :model-name="modelName"
+                            :model-name-plural="modelNamePlural"
                         />
 
                         <div v-if="!resource?.data?.length">
                             <div>
                                 No
-                                {{ modelNamePlural || `${modelName}s` }}
+                                {{ __modelNamePlural || 'Records' }}
                                 found.
                             </div>
                         </div>
@@ -62,23 +75,29 @@ export default {
         },
         modelName: {
             type: String,
-            default: "record",
+            required: true
         },
         modelNamePlural: {
             type: String,
         },
-        titleField:{
-            type: String
+        titleField: {
+            type: String,
         },
-        cardComponent:{
-            type: Object
-        }
+        cardComponent: {
+            type: Object,
+        },
+        actions: {
+            type: Object,
+            default: {},
+        },
     },
     setup(props) {
         const ___fields = props.fields.map((field) =>
             isObject(field) ? field.label : field
         );
-        return { ___fields };
+        let __modelNamePlural = props.modelNamePlural || props.modelName+ 's';
+
+        return { ___fields, __modelNamePlural };
     },
 };
 </script>

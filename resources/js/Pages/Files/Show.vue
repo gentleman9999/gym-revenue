@@ -28,88 +28,95 @@
                     <span>Upload</span>
                 </inertia-link>
             </div>
-            <gym-revenue-data-cards modelName="file" :fields="tableHeaders" :resource="files" titleField="filename" :card-component="FileDataCard"/>
-<!--            <gym-revenue-table :headers="tableHeaders" :resource="files">-->
-<!--                <tr-->
-<!--                    class="hover"-->
-<!--                    v-for="file in files?.data"-->
-<!--                    :key="file.id"-->
-<!--                    @dblclick="selectedFile = file.deletedAt ? null : file"-->
-<!--                >-->
-<!--                    &lt;!&ndash;                    <td v-if="!isClientUser">{{ file.client.name }}</td>&ndash;&gt;-->
-<!--                    <td>-->
-<!--                        <div-->
-<!--                            class="flex flex-row nowrap items-center gap-4 truncate"-->
-<!--                        >-->
-<!--                            <file-extension-icon-->
-<!--                                :extension="file.extension"-->
-<!--                                v-if="-->
-<!--                                    ![-->
-<!--                                        'jpg',-->
-<!--                                        'jpeg',-->
-<!--                                        'png',-->
-<!--                                        'svg',-->
-<!--                                        'webp',-->
-<!--                                    ].includes(file.extension)-->
-<!--                                "-->
-<!--                                class="h-16 w-16"-->
-<!--                            />-->
-<!--                            <img-->
-<!--                                :src="file.url"-->
-<!--                                class="h-16 w-16 object-cover rounded-sm"-->
-<!--                                v-else-->
-<!--                            />-->
-<!--                            <a-->
-<!--                                :href="file.url"-->
-<!--                                :download="file.filename"-->
-<!--                                class="link link-hover"-->
-<!--                                >{{ file.filename }}</a-->
-<!--                            >-->
-<!--                        </div>-->
-<!--                    </td>-->
-<!--                    <td>{{ new Date(file.created_at).toLocaleString() }}</td>-->
-<!--                    <td>{{ prettyBytes(file.size) }}</td>-->
-<!--                    <td class="flex flex-row justify-center space-x-2">-->
-<!--                        &lt;!&ndash;                        <inertia-link :href="route('locations.trash', location.id)" class="text-gray-400 hover:text-gray-500">&ndash;&gt;-->
-<!--                        &lt;!&ndash;@todo: We need to add a confirmation before deleting to avoid accidental deletes&ndash;&gt;-->
-<!--                        <div-->
-<!--                            class="flex flex-row nowrap justify-center items-center gap-4"-->
-<!--                        >-->
-<!--                            <button-->
-<!--                                @click="selectedFile = file"-->
-<!--                                class="text-gray-400 hover:text-gray-300"-->
-<!--                                v-if="!file?.deleted_at"-->
-<!--                            >-->
-<!--                                <jet-bar-icon type="pencil" fill />-->
-<!--                            </button>-->
-<!--                            <button-->
-<!--                                @click="-->
-<!--                                    file?.deleted_at-->
-<!--                                        ? $inertia.post(-->
-<!--                                              route('files.restore', file.id)-->
-<!--                                          )-->
-<!--                                        : $inertia.delete(-->
-<!--                                              route('files.trash', file.id)-->
-<!--                                          )-->
-<!--                                "-->
-<!--                                class="text-gray-400 hover:text-gray-300"-->
-<!--                            >-->
-<!--                                <jet-bar-icon-->
-<!--                                    :type="-->
-<!--                                        file?.deleted_at ? 'untrash' : 'trash'-->
-<!--                                    "-->
-<!--                                    fill-->
-<!--                                />-->
-<!--                            </button>-->
-<!--                        </div>-->
-<!--                        &lt;!&ndash;                        </inertia-link>&ndash;&gt;-->
-<!--                    </td>-->
-<!--                </tr>-->
+            <gym-revenue-data-cards
+                modelName="file"
+                :fields="tableHeaders"
+                :resource="files"
+                titleField="filename"
+                :card-component="FileDataCard"
+                :actions="{edit: {label: 'Rename'}}"
+            />
+            <!--            <gym-revenue-table :headers="tableHeaders" :resource="files">-->
+            <!--                <tr-->
+            <!--                    class="hover"-->
+            <!--                    v-for="file in files?.data"-->
+            <!--                    :key="file.id"-->
+            <!--                    @dblclick="selectedFile = file.deletedAt ? null : file"-->
+            <!--                >-->
+            <!--                    &lt;!&ndash;                    <td v-if="!isClientUser">{{ file.client.name }}</td>&ndash;&gt;-->
+            <!--                    <td>-->
+            <!--                        <div-->
+            <!--                            class="flex flex-row nowrap items-center gap-4 truncate"-->
+            <!--                        >-->
+            <!--                            <file-extension-icon-->
+            <!--                                :extension="file.extension"-->
+            <!--                                v-if="-->
+            <!--                                    ![-->
+            <!--                                        'jpg',-->
+            <!--                                        'jpeg',-->
+            <!--                                        'png',-->
+            <!--                                        'svg',-->
+            <!--                                        'webp',-->
+            <!--                                    ].includes(file.extension)-->
+            <!--                                "-->
+            <!--                                class="h-16 w-16"-->
+            <!--                            />-->
+            <!--                            <img-->
+            <!--                                :src="file.url"-->
+            <!--                                class="h-16 w-16 object-cover rounded-sm"-->
+            <!--                                v-else-->
+            <!--                            />-->
+            <!--                            <a-->
+            <!--                                :href="file.url"-->
+            <!--                                :download="file.filename"-->
+            <!--                                class="link link-hover"-->
+            <!--                                >{{ file.filename }}</a-->
+            <!--                            >-->
+            <!--                        </div>-->
+            <!--                    </td>-->
+            <!--                    <td>{{ new Date(file.created_at).toLocaleString() }}</td>-->
+            <!--                    <td>{{ prettyBytes(file.size) }}</td>-->
+            <!--                    <td class="flex flex-row justify-center space-x-2">-->
+            <!--                        &lt;!&ndash;                        <inertia-link :href="route('locations.trash', location.id)" class="text-gray-400 hover:text-gray-500">&ndash;&gt;-->
+            <!--                        &lt;!&ndash;@todo: We need to add a confirmation before deleting to avoid accidental deletes&ndash;&gt;-->
+            <!--                        <div-->
+            <!--                            class="flex flex-row nowrap justify-center items-center gap-4"-->
+            <!--                        >-->
+            <!--                            <button-->
+            <!--                                @click="selectedFile = file"-->
+            <!--                                class="text-gray-400 hover:text-gray-300"-->
+            <!--                                v-if="!file?.deleted_at"-->
+            <!--                            >-->
+            <!--                                <jet-bar-icon type="pencil" fill />-->
+            <!--                            </button>-->
+            <!--                            <button-->
+            <!--                                @click="-->
+            <!--                                    file?.deleted_at-->
+            <!--                                        ? $inertia.post(-->
+            <!--                                              route('files.restore', file.id)-->
+            <!--                                          )-->
+            <!--                                        : $inertia.delete(-->
+            <!--                                              route('files.trash', file.id)-->
+            <!--                                          )-->
+            <!--                                "-->
+            <!--                                class="text-gray-400 hover:text-gray-300"-->
+            <!--                            >-->
+            <!--                                <jet-bar-icon-->
+            <!--                                    :type="-->
+            <!--                                        file?.deleted_at ? 'untrash' : 'trash'-->
+            <!--                                    "-->
+            <!--                                    fill-->
+            <!--                                />-->
+            <!--                            </button>-->
+            <!--                        </div>-->
+            <!--                        &lt;!&ndash;                        </inertia-link>&ndash;&gt;-->
+            <!--                    </td>-->
+            <!--                </tr>-->
 
-<!--                <tr v-if="!files?.data?.length">-->
-<!--                    <td :colspan="tableHeaders.lenth">No Files found.</td>-->
-<!--                </tr>-->
-<!--            </gym-revenue-table>-->
+            <!--                <tr v-if="!files?.data?.length">-->
+            <!--                    <td :colspan="tableHeaders.lenth">No Files found.</td>-->
+            <!--                </tr>-->
+            <!--            </gym-revenue-table>-->
         </jet-bar-container>
         <sweet-modal
             title="Rename File"
@@ -171,7 +178,7 @@ export default defineComponent({
         FileExtensionIcon,
         SweetModal,
         FileForm,
-        FileDataCard
+        FileDataCard,
     },
     props: ["sessions", "files", "title", "isClientUser", "filters"],
     setup() {

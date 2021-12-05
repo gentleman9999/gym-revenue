@@ -1,9 +1,9 @@
 <template>
-    <app-layout title="Edit File">
+    <app-layout title="Rename File">
         <template #header>
             <jet-bar-icon type="g0back" fill/>
             <h2 class="font-semibold text-xl  leading-tight">
-                Edit File
+                Rename File
             </h2>
         </template>
 

@@ -1,10 +1,14 @@
 <template>
-    <div class="rounded-lg bg-base-100">
-        <div class="rounded-t-xl p-4 border-b border-gray-500 truncate">
-            <slot name="title"/>
+    <div class="rounded-lg bg-base-100 flex flex-col">
+        <div
+            class="flex flex-row nowrap rounded-t-xl p-4 border-b border-gray-500"
+        >
+            <slot name="title" />
+            <div class="flex-grow" />
+            <slot name="actions" />
         </div>
         <div class="grid grid-cols-3 lg:grid-cols-6 p-4">
-            <slot/>
+            <slot />
         </div>
     </div>
 </template>
@@ -28,7 +32,6 @@ export default {
         VueJsonPretty,
     },
     props: {
-
         modelName: {
             type: String,
             default: "record",
@@ -40,6 +43,5 @@ export default {
             type: String,
         },
     },
-
 };
 </script>
