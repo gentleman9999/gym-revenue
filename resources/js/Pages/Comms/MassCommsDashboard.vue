@@ -144,7 +144,7 @@
                         <div class="bg-primary border-b-2 border-gray-300 py-2">
                             <h1 class="ml-2 bg-primary">Your Feed</h1>
                         </div>
-                        <gym-revenue-table :headers="tableHeaders">
+                        <gym-revenue-table :headers="tableHeaders" :resource="historyFeed">
                             <tr v-if="historyFeed.length === 0">
                                 <td>No Data Available.</td>
                             </tr>
@@ -167,7 +167,7 @@ import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout'
 import JetDropdown from '@/Components/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
-import GymRevenueTable from "@/Components/GymRevenueTable";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 
 
 export default defineComponent({

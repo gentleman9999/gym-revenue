@@ -22,8 +22,8 @@
                     <span>Create Location</span>
                 </inertia-link>
             </div>
-            <gym-revenue-table :headers="tableHeaders">
-                <tr v-for="location in locations.data" :key="location.id" class="hover"
+            <gym-revenue-table :headers="tableHeaders" :resource="locations">
+                <tr  v-for="location in locations.data" :key="location.id" class="hover"
                     @dblclick="!location?.deleted_at && $inertia.visit(route('locations.edit', location.id))">
                     <td v-if="!isClientUser">{{ location.client.name }}</td>
                     <td>{{ location.name }}</td>
@@ -39,22 +39,16 @@
                             <jet-bar-icon type="pencil" fill/>
 
                         </inertia-link>
-                        <!--                        <inertia-link :href="route('locations.trash', location.id)" class=" hover:">-->
-                        <!--@todo: We need to add a confirmation before deleting to avoid accidental deletes-->
                         <button @click=" location?.deleted_at ? $inertia.post(route('locations.restore', location.id)) : $inertia.delete(route('locations.trash', location.id))"
                                 class=" hover:">
                             <jet-bar-icon :type="location?.deleted_at ? 'untrash' : 'trash'" fill/>
                         </button>
-                        <!--                        </inertia-link>-->
                     </td>
                 </tr>
 
                 <tr v-if="!locations?.data?.length">
-                    <td colspan="6">No Locations found.</td>
+                    <td :colspan="tableHeaders.length">No Locations found.</td>
                 </tr>
-                <template #pagination>
-                    <pagination  class="mt-6" :links="locations.links"/>
-                </template>
 
             </gym-revenue-table>
 
@@ -73,12 +67,11 @@ import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
 import JetBarStatCard from "@/Components/JetBarStatCard";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
-import Pagination from "@/Components/Pagination";
 import SearchFilter from "@/Components/SearchFilter";
 import pickBy from 'lodash/pickBy'
 import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
-import GymRevenueTable from "@/Components/GymRevenueTable";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 
 
 export default defineComponent({
@@ -92,7 +85,6 @@ export default defineComponent({
         JetBarStatCard,
         JetBarBadge,
         JetBarIcon,
-        Pagination,
         SearchFilter,
         GymRevenueTable
     },

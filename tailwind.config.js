@@ -83,7 +83,7 @@ module.exports = {
         plugin(({addUtilities}) => {
             const newUtilities = {
                 '.position-unset': {
-                    position: 'unset',
+                    position: 'unset !important',
                 },
             }
             addUtilities(newUtilities)

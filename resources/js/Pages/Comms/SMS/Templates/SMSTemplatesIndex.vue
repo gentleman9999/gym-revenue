@@ -49,7 +49,7 @@
                             <h2 class="px-4">Templates</h2>
                         </div>
                     </div>
-                    <gym-revenue-table :headers="tableHeaders">
+                    <gym-revenue-table :headers="tableHeaders" :resource="templates">
                         <template #prethead>
                             <div class="p-4 bg-base-100"></div>
                             <div class="p-4 bg-base-100"></div>
@@ -123,7 +123,7 @@ import AppLayout from '@/Layouts/AppLayout'
 import JetDropdown from '@/Components/Dropdown'
 import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
-import GymRevenueTable from "@/Components/GymRevenueTable";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import Confirm from "@/Components/Confirm";
 
 import {library} from '@fortawesome/fontawesome-svg-core';

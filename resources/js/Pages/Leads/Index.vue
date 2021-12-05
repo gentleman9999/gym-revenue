@@ -47,7 +47,7 @@
                     </inertia-link>
                 </div>
             </div>
-            <gym-revenue-table :headers="tableHeaders">
+            <gym-revenue-table :headers="tableHeaders" :resource="leads">
                 <tr v-if="leads.data.length === 0">
                     <td></td>
                     <td></td>
@@ -84,9 +84,6 @@
                         </inertia-link>
                     </td>
                 </tr>
-                <template #pagination>
-                    <pagination class="mt-6" :links="leads.links"/>
-                </template>
 
             </gym-revenue-table>
         </jet-bar-container>
@@ -102,10 +99,9 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
 import JetBarStatCard from "@/Components/JetBarStatCard";
-import GymRevenueTable from "@/Components/GymRevenueTable";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
-import Pagination from "@/Components/Pagination";
 import SearchFilter from "@/Components/SearchFilter";
 import pickBy from 'lodash/pickBy'
 import throttle from 'lodash/throttle'
@@ -123,7 +119,6 @@ export default defineComponent({
         JetBarStatCard,
         JetBarBadge,
         JetBarIcon,
-        Pagination,
         SearchFilter,
         LeadInteraction,
         GymRevenueTable

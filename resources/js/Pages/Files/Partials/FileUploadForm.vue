@@ -30,8 +30,15 @@
                             />
                         </div>
                         <div class="hidden md:flex items-center gap-2">
+                        <button
+                            v-if="uploadProgress === -1"
+                            class="badge badge-error"
+                            @click="handleClickFailed"
+                        >
+                            Failed
+                        </button>
                             <div
-                                v-if="uploadProgress"
+                                v-else
                                 class="badge"
                                 :class="{
                                     'badge-success': uploadProgress === 100,
@@ -39,10 +46,11 @@
                                 }"
                             >
                                 {{
-                                    uploadProgress < 100
+                                        uploadProgress < 100
                                         ? `${uploadProgress}%`
                                         : "Uploaded"
                                 }}
+
                             </div>
                             <button
                                 class="btn btn-ghost btn-error btn-circle"
@@ -113,22 +121,34 @@ const removeFile = (file) => {
 
 // const handleSubmit = () => form.post(`/files`);
 const handleSubmit = async () => {
-    let response = await Vapor.store(props.file, {
-        // visibility: form.isPublic ? 'public-read' : null,
-        visibility: "public-read",
-        progress: (progress) => {
-            uploadProgress.value = Math.round(progress * 100);
-        },
-    });
-    form.id = response.uuid;
-    form.key = response.key;
-    form.extension = response.extension;
-    form.bucket = response.bucket;
+    try {
+        uploadProgress.value=0;
+        let response = await Vapor.store(props.file, {
+            // visibility: form.isPublic ? 'public-read' : null,
+            visibility: "public-read",
+            progress: (progress) => {
+                uploadProgress.value = Math.round(progress * 100);
+            },
+        });
+        form.id = response.uuid;
+        form.key = response.key;
+        form.extension = response.extension;
+        form.bucket = response.bucket;
+    } catch (e) {
+        console.error(e);
+        uploadProgress.value = -1;
+    }
 };
 
 const isUploading = computed(() => {
     return uploadProgress.value !== null && uploadProgress.value < 100;
 });
+
+const handleClickFailed = () => {
+    if(uploadProgress.value===-1){
+        handleSubmit()
+    }
+}
 
 onMounted(handleSubmit);
 
