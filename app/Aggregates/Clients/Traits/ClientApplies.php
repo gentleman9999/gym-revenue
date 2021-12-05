@@ -38,7 +38,7 @@ trait ClientApplies
             'slug' => $event->slug,
             'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
         ];
-        $history['by'] = $event->user;
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
 
