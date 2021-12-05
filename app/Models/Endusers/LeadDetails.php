@@ -18,6 +18,8 @@ class LeadDetails extends Model
 
     public $incrementing = false;
 
+    public $fk = 'lead_id';
+
     protected $fillable = ['client_id','lead_id', 'field', 'value', 'misc', 'active'];
 //    protected $fillable = ['client_id','lead_id', 'field', 'value', 'misc', 'active', 'created_at'];//only needed for seeding data
 

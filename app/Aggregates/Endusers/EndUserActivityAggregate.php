@@ -8,6 +8,7 @@ use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
+use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -15,6 +16,7 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 class EndUserActivityAggregate extends AggregateRoot
 {
     protected array $lead = [];
+    protected array $audience_subscriptions = [];
 
     public function applyNewLeadMade(NewLeadMade $event)
     {
@@ -25,6 +27,14 @@ class EndUserActivityAggregate extends AggregateRoot
     {
         $this->recordThat(new NewLeadMade($this->uuid(), $lead));
 
+        return $this;
+    }
+
+    public function joinAudience(string $slug, string $client_id, $entity)
+    {
+        // @todo - add eval if user is already subscribed and throw an UserActivityException::userAlreadySubscribed Exception
+        // @todo - add eval if user belongs to client and throw an UserActivityException::unqualifiedClient Exception
+        $this->recordThat(new SubscribedToAudience($this->uuid(), $slug, $client_id, $entity));
         return $this;
     }
 

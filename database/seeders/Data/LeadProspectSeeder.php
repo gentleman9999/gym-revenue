@@ -54,6 +54,7 @@ class LeadProspectSeeder extends Seeder
                             // For each fake user, run them through the EnduserActivityAggregate
                             EndUserActivityAggregate::retrieve($prospect->id)
                                 ->createNewLead($prospect->toArray())
+                                ->joinAudience('leads', $client->id, Lead::class)
                                 ->persist();
                             if (env('SEED_LEAD_DETAILS', false)) {
                                 LeadDetails::factory()->count(random_int(0, 20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();

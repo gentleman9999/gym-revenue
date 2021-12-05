@@ -5,6 +5,8 @@ namespace App\Projectors\Clients;
 use App\Actions\Jetstream\AddTeamMember;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\ClientDetail;
+use App\Models\Clients\Features\AudienceDetails;
+use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaignDetails;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaignDetails;
@@ -21,6 +23,7 @@ use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCa
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
+use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
@@ -281,5 +284,22 @@ class ClientAccountProjector extends Projector
             $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $created_by_user_id];
         }
         $detail->save();
+    }
+
+    public function onAudienceCreated(AudienceCreated $event)
+    {
+        $audience = CommAudience::create([
+            'client_id' => $event->client,
+            'name' => $event->name,
+            'slug' => $event->slug,
+            'created_by_user_id' => $event->user
+        ]);
+
+        AudienceDetails::create([
+            'client_id' => $event->client,
+            'audience_id' => $audience->id,
+            'detail' => 'created',
+            'value' => $event->user
+        ]);
     }
 }
