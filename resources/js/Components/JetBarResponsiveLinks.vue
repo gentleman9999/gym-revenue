@@ -35,7 +35,7 @@
         </transition>
     </div>
 
-    <div v-show="showingSidebarManageAccountDropdown" @click="showingSidebarManageAccountDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
+<!--    <div v-show="showingSidebarManageAccountDropdown" @click="showingSidebarManageAccountDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 
     <div class="relative block lg:hidden" >
         <button @click="showingSidebarManageAccountDropdown = !showingSidebarManageAccountDropdown" class="flex flex-row items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent rounded-lg  dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:focus:bg-primary dark-mode:hover:bg-primary lg:block hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
@@ -57,7 +57,7 @@
         </transition>
     </div>
 
-    <div v-show="showingSidebarManageTeamsDropdown" @click="showingSidebarManageTeamsDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>
+<!--    <div v-show="showingSidebarManageTeamsDropdown" @click="showingSidebarManageTeamsDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 
 </template>
 

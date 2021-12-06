@@ -5,41 +5,27 @@
                 class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
             >
                 <div
-                    class="shadow border-b border-base-100 bg-base-300 grid grid-cols-1 lg:grid-cols-2 gap-4"
+                    class="shadow border-b border-base-100 bg-base-300 grid grid-cols-1 md:grid-cols-2 gap-4"
                 >
                     <slot name="pre" />
-                    <template v-if="cardComponent">
-                        <component
-                            v-for="row in resource?.data || []"
-                            :is="cardComponent"
-                            v-bind="{ [modelName]: row }"
-                            :data="row"
-                            :fields="fields"
-                            :titleField="titleField"
-                            :actions="actions"
-                            :model-name="modelName"
-                            :model-name-plural="modelNamePlural"
-                        />
-                    </template>
-                    <template v-else>
-                        <auto-data-card
-                            v-for="row in resource?.data || []"
-                            :data="row"
-                            :fields="fields"
-                            :titleField="titleField"
-                            :actions="actions"
-                            :model-name="modelName"
-                            :model-name-plural="modelNamePlural"
-                        />
-
-                        <div v-if="!resource?.data?.length">
-                            <div>
-                                No
-                                {{ __modelNamePlural || 'Records' }}
-                                found.
-                            </div>
+                    <component
+                        v-for="row in resource?.data || []"
+                        :is="cardComponent"
+                        v-bind="{ [modelName]: row }"
+                        :data="row"
+                        :fields="fields"
+                        :titleField="titleField"
+                        :actions="actions"
+                        :model-name="modelName"
+                        :model-name-plural="modelNamePlural"
+                    />
+                    <div v-if="!resource?.data?.length">
+                        <div>
+                            No
+                            {{ modelNamePlural || "Records" }}
+                            found.
                         </div>
-                    </template>
+                    </div>
 
                     <slot name="pagination">
                         <pagination class="mt-4" :links="resource.links" />
@@ -55,8 +41,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Pagination from "@/Components/Pagination";
-import { isObject } from "lodash";
-import AutoDataCard from "@/Components/CRUD/DataCard";
+import AutoDataCard from "@/Components/CRUD/AutoDataCard";
 
 library.add(faAlignLeft);
 
@@ -75,7 +60,7 @@ export default {
         },
         modelName: {
             type: String,
-            required: true
+            required: true,
         },
         modelNamePlural: {
             type: String,
@@ -85,6 +70,7 @@ export default {
         },
         cardComponent: {
             type: Object,
+            default: AutoDataCard,
         },
         actions: {
             type: Object,
@@ -92,12 +78,9 @@ export default {
         },
     },
     setup(props) {
-        const ___fields = props.fields.map((field) =>
-            isObject(field) ? field.label : field
-        );
-        let __modelNamePlural = props.modelNamePlural || props.modelName+ 's';
+        let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
 
-        return { ___fields, __modelNamePlural };
+        return { modelNamePlural: __modelNamePlural };
     },
 };
 </script>

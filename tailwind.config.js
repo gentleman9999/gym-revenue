@@ -72,6 +72,11 @@ module.exports = {
             },
             fontSize:{
                 '2xs': ['0.6rem', { lineHeight: '0.75rem' }],
+            },
+            screens:{
+                'lg':'1200px',
+                'xl': '1400px',
+                '2xl': '1920px'
             }
         },
     },

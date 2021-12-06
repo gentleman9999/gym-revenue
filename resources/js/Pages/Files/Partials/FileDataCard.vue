@@ -1,5 +1,5 @@
 <template>
-    <auto-data-card :data="file" :fields="fields" :titleField="titleField" :actions="actions" model-name="file">
+    <auto-data-card v-bind="$props">
         <template #title>
             <div class="flex flex-row nowrap items-center gap-4 truncate">
                 <file-extension-icon
@@ -30,15 +30,11 @@
 </template>
 
 <script>
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import AutoDataCard from "@/Components/CRUD/AutoDataCard";
 import FileExtensionIcon from "./FileExtensionIcon";
 
 export default {
     components: {
-        FontAwesomeIcon,
         AutoDataCard,
         FileExtensionIcon,
     },
@@ -49,7 +45,6 @@ export default {
         },
         fields: {
             type: Array,
-            required: true,
         },
         modelName: {
             type: String,

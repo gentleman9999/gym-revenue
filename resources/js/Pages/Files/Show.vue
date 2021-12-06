@@ -28,7 +28,7 @@
                     <span>Upload</span>
                 </inertia-link>
             </div>
-            <gym-revenue-data-cards
+            <gym-revenue-crud
                 modelName="file"
                 :fields="tableHeaders"
                 :resource="files"
@@ -143,7 +143,7 @@ td > div {
 </style>
 
 <script>
-import { defineComponent, watch, watchEffect, ref } from "vue";
+import { defineComponent, watchEffect, ref } from "vue";
 import prettyBytes from "pretty-bytes";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
@@ -151,7 +151,7 @@ import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
-import GymRevenueDataCards from "@/Components/CRUD/GymRevenueDataCards";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 import SearchFilter from "@/Components/SearchFilter";
@@ -162,6 +162,7 @@ import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import FileDataCard from "./Partials/FileDataCard";
+import FilenameTableColumn from "./Partials/FilenameTableColumn";
 
 export default defineComponent({
     components: {
@@ -171,7 +172,7 @@ export default defineComponent({
         JetBarContainer,
         JetBarAlert,
         GymRevenueTable,
-        GymRevenueDataCards,
+        GymRevenueCrud,
         JetBarBadge,
         JetBarIcon,
         SearchFilter,
@@ -179,6 +180,7 @@ export default defineComponent({
         SweetModal,
         FileForm,
         FileDataCard,
+        FileDataRow
     },
     props: ["sessions", "files", "title", "isClientUser", "filters"],
     setup() {
@@ -187,13 +189,12 @@ export default defineComponent({
         const modal = ref(null);
         watchEffect(() => {
             if (selectedFile.value) {
-                console.log({ modal: modal.value });
                 modal.value.open();
             }
         });
 
-        const tableHeaders = ["filename", "created_at", "size", ""];
-        return { prettyBytes, modal, selectedFile, tableHeaders, FileDataCard };
+        const tableHeaders = [{label: "filename", component: FilenameTableColumn}, "size", "created_at", "updated_at"];
+        return { prettyBytes, modal, selectedFile, tableHeaders, FileDataCard, FileDataRow };
     },
     watch: {
         form: {
