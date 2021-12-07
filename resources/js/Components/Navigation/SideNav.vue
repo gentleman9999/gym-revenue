@@ -244,9 +244,8 @@
 </style>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect, onMounted } from "vue";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks";
-// import JetBarSidebarSearch from "../JetBarSidebarSearch";
 import JetNavLink from "@/Jetstream/NavLink";
 import { useLockScroll } from "vue-composable";
 
@@ -291,6 +290,8 @@ export default defineComponent({
         const media = useBreakpointTailwindCSS();
         let expanded = ref(false);
         const { lock, unlock } = useLockScroll("body");
+
+        onMounted(unlock); //this shouldnt be necessary. y
 
         watchEffect(()=>{
             if(!media.lg.value){

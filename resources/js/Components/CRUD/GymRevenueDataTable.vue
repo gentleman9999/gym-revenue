@@ -1,70 +1,61 @@
 <template>
-    <div class="flex flex-col m">
-<!--        <div class="-my-2 sm:-mx-6 lg:-mx-8 max-w-screen overflow-x-auto overflow-y-visible">-->
-        <div class="-my-2 sm:-mx-6 lg:-mx-8 max-w-screen">
-            <div
-                class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
-            >
-                <div
-                    class="shadow border-b border-base-100 bg-base-300 "
-                >
-                    <slot name="pre" />
-                    <table
-                        class="table w-full"
-                        :class="{ 'table-zebra': zebra }"
-                    >
-                        <thead>
-                            <slot name="thead">
-                                <tr>
-                                    <th
-                                        v-for="(header, index) in fieldKeys"
-                                        :key="index"
-                                        scope="col"
-                                        :class="{
-                                            'position-unset':
-                                                index === 0 && !stickyFirstCol,
-                                        }"
-                                    >
-                                            {{ isObject(header) ? header.name : header }}
-                                    </th>
-                                    <th>
-                                        <font-awesome-icon
-                                            :icon="['fas', 'align-left']"
-                                            size="lg"
-                                        />
-                                    </th>
-                                </tr>
-                            </slot>
-                        </thead>
-                        <tbody>
-                            <component
-                                v-for="row in resource?.data || []"
-                                :is="rowComponent"
-                                v-bind="{ [modelName]: row }"
-                                :data="row"
-                                :fields="fields"
-                                :titleField="titleField"
-                                :actions="actions"
-                                :model-name="modelName"
-                                :model-name-plural="modelNamePlural"
+    <div class="wrapper">
+        <slot name="pre" />
+        <table class="table w-full" :class="{ 'table-zebra': zebra }">
+            <thead>
+                <slot name="thead">
+                    <tr>
+                        <th
+                            v-for="(header, index) in fieldKeys"
+                            :key="index"
+                            scope="col"
+                            :class="{
+                                'position-unset':
+                                    index === 0 && !stickyFirstCol,
+                            }"
+                        >
+                            {{ isObject(header) ? header.name : header }}
+                        </th>
+                        <th>
+                            <font-awesome-icon
+                                :icon="['fas', 'align-left']"
+                                size="lg"
                             />
+                        </th>
+                    </tr>
+                </slot>
+            </thead>
+            <tbody>
+                <component
+                    v-for="row in resource?.data || []"
+                    :is="rowComponent"
+                    v-bind="{ [modelName]: row }"
+                    :data="row"
+                    :fields="fields"
+                    :titleField="titleField"
+                    :actions="actions"
+                    :model-name="modelName"
+                    :model-name-plural="modelNamePlural"
+                />
 
-                            <tr v-if="!resource?.data?.length">
-                                <td colspan="">
-                                    No
-                                    {{ __modelNamePlural || "Records" }}
-                                    found.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+                <tr v-if="!resource?.data?.length">
+                    <td colspan="">
+                        No
+                        {{ __modelNamePlural || "Records" }}
+                        found.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <style scoped>
+.wrapper {
+    @apply py-2 align-middle shadow border-b border-base-100 bg-base-300;
+    @apply flex flex-col -my-2 sm:-mx-6 lg:-mx-8 sm:px-6 lg:px-8 min-w-full ;
+    max-width: 100vw;
+}
 th {
     @apply text-white;
 }
@@ -130,8 +121,8 @@ export default {
                 __fields = props.fields.map((header) =>
                     isObject(header) ? header.label : header
                 );
-            }else if(props.resource.data.length){
-                __fields = Object.keys(props.resource.data[0])
+            } else if (props.resource.data.length) {
+                __fields = Object.keys(props.resource.data[0]);
             }
 
             __fields = __fields.map((field) =>
