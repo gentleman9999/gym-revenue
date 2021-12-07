@@ -55,7 +55,6 @@ import { defineComponent, watchEffect, ref } from "vue";
 import prettyBytes from "pretty-bytes";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Button from "@/Components/Button.vue";
-import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SearchFilter from "@/Components/SearchFilter";
 import FileForm from "./Partials/FileForm";
@@ -72,7 +71,6 @@ export default defineComponent({
     components: {
         AppLayout,
         Button,
-        GymRevenueTable,
         GymRevenueCrud,
         SearchFilter,
         FileExtensionIcon,

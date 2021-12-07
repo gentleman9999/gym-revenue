@@ -11,7 +11,6 @@ export const defaults = {
         handler: ({ baseUrl, data }) =>
             Inertia.delete(route(`${baseUrl}.trash`, data.id)),
         shouldRender: ({ data }) => data.deleted_at === null,
-
     },
     restore: {
         label: "Restore",

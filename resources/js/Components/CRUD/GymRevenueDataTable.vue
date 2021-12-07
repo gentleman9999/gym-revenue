@@ -39,7 +39,7 @@
                 />
 
                 <tr v-if="!resource?.data?.length">
-                    <td colspan="">
+                    <td :colspan="fields.length + (Object.values(actions).length ? 1 : 0)">
                         No
                         {{ __modelNamePlural || "Records" }}
                         found.

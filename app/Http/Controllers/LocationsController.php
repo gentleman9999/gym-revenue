@@ -22,7 +22,7 @@ class LocationsController extends Controller
         'client_id' => ['required'],
         'address1' => 'required',
         'address2' => [],
-        'zip' => 'required'
+        'zip' => ['required', 'size:5']
     ];
 
     //
