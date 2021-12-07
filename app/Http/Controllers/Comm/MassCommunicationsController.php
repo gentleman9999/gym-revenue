@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Comm;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
+use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplateDetails;
@@ -359,14 +360,14 @@ class MassCommunicationsController extends Controller
         }
 
         $campaign = EmailCampaigns::find($id);
-        $templates = EmailTemplates::whereClientId($campaign->client_id)
-            ->whereActive('1')
-            ->get();
+        $templates = EmailTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
+        $audiences = CommAudience::whereClientId($campaign->client_id)->whereActive('1')->get();
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/Emails/Campaigns/EditEmailCampaign', [
             'campaign' => $campaign,
-            'templates' => $templates
+            'templates' => $templates,
+            'audiences' => $audiences
         ]);
     }
 
