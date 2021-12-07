@@ -3,22 +3,30 @@
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
         </template>
-            <gym-revenue-crud
-                modelName="file"
-                :fields="tableHeaders"
-                :resource="files"
-                titleField="filename"
-                :card-component="FileDataCard"
-                :actions="{ edit: { label: 'Rename' } }"
-                :top-actions="{
-                    create: {
-                        label: 'Upload',
-                        handler: () => {
-                            Inertia.visit(route('files.upload'));
-                        },
+        <gym-revenue-crud
+            modelName="file"
+            :fields="tableHeaders"
+            :resource="files"
+            titleField="filename"
+            :card-component="FileDataCard"
+            :actions="{
+                edit: false,
+                rename: {
+                    label: 'Rename',
+                    handler: ({ data }) => {
+                        selectedFile = data;
                     },
-                }"
-            />
+                },
+            }"
+            :top-actions="{
+                create: {
+                    label: 'Upload',
+                    handler: () => {
+                        Inertia.visit(route('files.upload'));
+                    },
+                },
+            }"
+        />
         <sweet-modal
             title="Rename File"
             width="85%"
@@ -33,7 +41,6 @@
                 @success="modal.close"
             />
         </sweet-modal>
-        <!--        <rename-file-modal :file="selectedFile" v-if="selectedFile" ref="modal"/>-->
     </app-layout>
 </template>
 
@@ -47,14 +54,9 @@ td > div {
 import { defineComponent, watchEffect, ref } from "vue";
 import prettyBytes from "pretty-bytes";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import Button from "@/Components/Button.vue";
-import JetBarContainer from "@/Components/JetBarContainer";
-import JetBarAlert from "@/Components/JetBarAlert";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import JetBarBadge from "@/Components/JetBarBadge";
-import JetBarIcon from "@/Components/JetBarIcon";
 import SearchFilter from "@/Components/SearchFilter";
 import FileForm from "./Partials/FileForm";
 import FileExtensionIcon from "./Partials/FileExtensionIcon";
@@ -69,14 +71,9 @@ import { Inertia } from "@inertiajs/inertia";
 export default defineComponent({
     components: {
         AppLayout,
-        JetSectionBorder,
         Button,
-        JetBarContainer,
-        JetBarAlert,
         GymRevenueTable,
         GymRevenueCrud,
-        JetBarBadge,
-        JetBarIcon,
         SearchFilter,
         FileExtensionIcon,
         SweetModal,
