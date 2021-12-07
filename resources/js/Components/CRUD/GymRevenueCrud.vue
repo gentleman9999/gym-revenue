@@ -112,7 +112,7 @@ export default defineComponent({
         watch([form], formHandler, { deep: true });
         const defaultTopActions = {
             create: {
-                label: "Create",
+                label: `Create ${props.modelName}`,
                 handler: () => Inertia.visit(route(`${__baseUrl}.create`)),
                 class: ["btn-primary"],
             },

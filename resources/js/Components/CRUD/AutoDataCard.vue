@@ -7,37 +7,29 @@
                 </div>
             </slot>
         </template>
-        <template #actions  v-if="Object.values(actions).length" >
+        <template #actions v-if="Object.values(actions).length === 0 || Object.values(actions).filter(action=>action).length" >
             <slot name="actions">
                 <crud-actions :actions="actions" :data="data" :base-url="baseUrl"/>
             </slot>
         </template>
-        <div v-for="(field, index) in fieldKeys" class="col-span-3 truncate">
+        <div v-for="(field, index) in fields" class="col-span-3 truncate">
             <div class="text-xs text-gray-500">
-                {{ isObject(field) ? field.name : field }}
+                {{ field.label }}
             </div>
-            <component v-if="fields?.find((_field)=>_field?.name===field || _field===field)?.component" :is="fields?.find((_field)=>_field?.name===field || _field===field)?.component" v-bind="{[modelName]: data, data }">
-                {{ data[field] }}
+            <component v-if="field.component" :is="field.component" v-bind="{[modelName]: data, data }">
+                {{ field.transform(data[field.label]) }}
             </component>
             <template v-else>
-
-
                 <vue-json-pretty
-                    v-if="isObject(data[field])"
-                    :data="data[field]"
+                    v-if="isObject(data[field.label]) && field.transformNoop"
+                    :data="data[field.label]"
                 />
                 <span
                     v-else
-                    :title="
-                        isObject(field)
-                            ? field.transform(data[field.name])
-                            : data[field]
-                    "
+                    :title="field.transform(data[field.label])"
                 >
                     {{
-                        isObject(field)
-                            ? field.transform(data[field.name])
-                            : data[field]
+                         field.transform(data[field.label])
                     }}
                 </span>
             </template>
@@ -51,11 +43,10 @@ import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DataCard from "./DataCard";
 import { isObject } from "lodash";
-import { defaults as defaultTransforms } from "./transforms";
 import CrudActions from "./CrudActions";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
-import {computed} from "vue";
+import {getFields} from "./getFields";
 
 library.add(faEllipsisH);
 
@@ -107,33 +98,7 @@ export default {
             __title = props.data.name || props.data.id;
         }
 
-
-        const fieldKeys = computed(()=> {
-            let __fields = [];
-            if (props.fields) {
-                __fields =  props.fields.map((field) =>
-                    isObject(field) ? field.label : field
-                )
-            }else{
-                __fields =  Object.keys(props.data);
-            }
-
-
-            if (__title && __fields.includes(titleKey)) {
-                //if we use a default title field, don't display it twice
-                console.log("here", __fields.indexOf(titleKey));
-                __fields.splice(__fields.indexOf(titleKey), 1);
-            }
-
-            __fields = __fields.map((field) =>
-                field in defaultTransforms
-                    ? { name: field, transform: defaultTransforms[field] }
-                    : field
-            );
-
-            return __fields;
-        });
-
+        const fields = getFields(props);
 
         let titleKey = props.titleField;
         if (!titleKey) {
@@ -142,7 +107,7 @@ export default {
 
         let __baseUrl = props.baseUrl || props.modelNamePlural || props.modelName+ 's';
 
-        return { fieldKeys, isObject, title: __title, baseUrl:__baseUrl };
+        return { fields, isObject, title: __title, baseUrl:__baseUrl };
     },
 };
 </script>

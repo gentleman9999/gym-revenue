@@ -15,7 +15,7 @@
                 :model-name="modelName"
                 :model-name-plural="modelNamePlural"
             />
-            <div v-if="!resource?.data?.length">
+            <div v-if="!resource?.data?.length" class="rounded-xl p-4 bg-base-100">
                 <div>
                     No
                     {{ modelNamePlural || "Records" }}
