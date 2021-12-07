@@ -7,7 +7,7 @@
             <div class="flex-grow" />
             <slot name="actions" />
         </div>
-        <div class="grid grid-cols-3 lg:grid-cols-6 p-4">
+        <div class="grid grid-cols-3 md:grid-cols-6 p-4">
             <slot />
         </div>
     </div>

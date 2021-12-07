@@ -5,6 +5,9 @@
 .sweet-modal-overlay{
     @apply mt-16;
 }
+.no-scroll{
+    overflow: hidden;
+}
 
 @layer base {
     body {

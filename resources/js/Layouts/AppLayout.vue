@@ -68,6 +68,11 @@ import SideNav from "@/Components/Navigation/SideNav";
 import {Head, Link} from '@inertiajs/inertia-vue3';
 import NotyBell from "@/Components/NotyBell";
 import {useAlertEmitter} from "@/utils";
+import tailwindConfig from '../../../tailwind.config.js'
+import {
+    setBreakpointTailwindCSS,
+    useBreakpointTailwindCSS
+} from "vue-composable";
 
 export default defineComponent({
     components: {
@@ -86,6 +91,7 @@ export default defineComponent({
         title: String,
     },
     setup() {
+        // setBreakpointTailwindCSS(tailwindConfig);
         useAlertEmitter();
 
         const animate = ref(false);

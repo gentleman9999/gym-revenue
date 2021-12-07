@@ -2,39 +2,25 @@
     <data-card>
         <template #title>
             <slot name="title">
-                <div :title="__title">
-                    {{ __title }}
+                <div :title="title">
+                    {{ title }}
                 </div>
             </slot>
         </template>
-        <template #actions>
+        <template #actions  v-if="Object.values(actions).length" >
             <slot name="actions">
-                <div class="dropdown dropdown-end">
-                    <button class="btn btn-ghost">
-                        <font-awesome-icon
-                            :icon="['fas', 'align-left']"
-                            size="lg"
-                        />
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="p-2 shadow menu dropdown-content bg-base-300 rounded-box w-52"
-                    >
-                        <li v-for="action in Object.values(__actions)">
-                            <a @click.prevent="action.handler" href="#">{{ action.label }}</a>
-                        </li>
-                    </ul>
-                </div>
+                <crud-actions :actions="actions" :data="data" :base-url="baseUrl"/>
             </slot>
         </template>
-        <div v-for="(field, index) in __fields" class="col-span-3 truncate">
-            <component v-if="fields?.component" :is="fields[index].component">
+        <div v-for="(field, index) in fieldKeys" class="col-span-3 truncate">
+            <div class="text-xs text-gray-500">
+                {{ isObject(field) ? field.name : field }}
+            </div>
+            <component v-if="fields?.find((_field)=>_field?.name===field || _field===field)?.component" :is="fields?.find((_field)=>_field?.name===field || _field===field)?.component" v-bind="{[modelName]: data, data }">
                 {{ data[field] }}
             </component>
             <template v-else>
-                <div class="text-xs text-gray-500">
-                    {{ isObject(field) ? field.name : field }}
-                </div>
+
 
                 <vue-json-pretty
                     v-if="isObject(data[field])"
@@ -61,22 +47,24 @@
 
 <script>
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
+import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DataCard from "./DataCard";
-import { isObject, merge } from "lodash";
-import { transforms, defaults as defaultTransforms } from "./transforms";
+import { isObject } from "lodash";
+import { defaults as defaultTransforms } from "./transforms";
+import CrudActions from "./CrudActions";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
-import {Inertia} from "@inertiajs/inertia";
+import {computed} from "vue";
 
-library.add(faAlignLeft);
+library.add(faEllipsisH);
 
 export default {
     components: {
         FontAwesomeIcon,
         VueJsonPretty,
         DataCard,
+        CrudActions
     },
     props: {
         data: {
@@ -85,7 +73,6 @@ export default {
         },
         fields: {
             type: Array,
-            required: true,
         },
         update: {
             type: Boolean,
@@ -113,7 +100,6 @@ export default {
         }
     },
     setup(props) {
-        let __fields;
         let __title;
         if (props.titleField) {
             __title = props.data[props.titleField];
@@ -121,40 +107,42 @@ export default {
             __title = props.data.name || props.data.id;
         }
 
-        if (props.fields) {
-            __fields = props.fields.map((header) =>
-                isObject(header) ? header.label : header
+
+        const fieldKeys = computed(()=> {
+            let __fields = [];
+            if (props.fields) {
+                __fields =  props.fields.map((field) =>
+                    isObject(field) ? field.label : field
+                )
+            }else{
+                __fields =  Object.keys(props.data);
+            }
+
+
+            if (__title && __fields.includes(titleKey)) {
+                //if we use a default title field, don't display it twice
+                console.log("here", __fields.indexOf(titleKey));
+                __fields.splice(__fields.indexOf(titleKey), 1);
+            }
+
+            __fields = __fields.map((field) =>
+                field in defaultTransforms
+                    ? { name: field, transform: defaultTransforms[field] }
+                    : field
             );
-        } else {
-            //they didn't profile a fields object, so pick smart defaults
-            __fields = Object.keys(props.data);
-        }
+
+            return __fields;
+        });
+
 
         let titleKey = props.titleField;
         if (!titleKey) {
             titleKey = props.data.name ? "name" : "id";
         }
 
-        if (__title && __fields.includes(titleKey)) {
-            //if we use a default title field, don't display it twice
-            console.log("here", __fields.indexOf(titleKey));
-            __fields.splice(__fields.indexOf(titleKey), 1);
-        }
-
-        __fields = __fields.map((field) =>
-            field in defaultTransforms
-                ? { name: field, transform: defaultTransforms[field] }
-                : field
-        );
-
         let __baseUrl = props.baseUrl || props.modelNamePlural || props.modelName+ 's';
-        let defaultActions = {
-            edit: { label: "Edit", handler: () => {Inertia.visit(route(`${__baseUrl}.edit`, props.data.id))} },
-            trash: { label: "Trash", handler: () => {Inertia.visit(route('files.trash', props.data.id))} },
-        };
-        let __actions = Object.values(merge(defaultActions, props.actions)).filter(action=>action);
 
-        return { __fields, isObject, __title, __actions, __baseUrl };
+        return { fieldKeys, isObject, title: __title, baseUrl:__baseUrl };
     },
 };
 </script>
