@@ -25,24 +25,9 @@
                 </span>
             </template>
         </td>
-        <td  v-if="actions.length">
+        <td v-if="Object.values(actions).length">
             <slot name="actions">
-                <div class="dropdown dropdown-end">
-                    <button class="btn btn-ghost">
-                        <font-awesome-icon
-                            icon="ellipsis-h"
-                            size="lg"
-                        />
-                    </button>
-                    <ul
-                        tabindex="0"
-                        class="p-2 shadow menu dropdown-content bg-base-300 rounded-box w-52"
-                    >
-                        <li v-for="action in Object.values(actions)">
-                            <a @click.prevent="action.handler" href="#">{{ action.label }}</a>
-                        </li>
-                    </ul>
-                </div>
+                <crud-actions :actions="actions" :data="data" :base-url="baseUrl"/>
             </slot>
         </td>
     </tr>
@@ -53,11 +38,11 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DataCard from "./DataCard";
-import { isObject, merge } from "lodash";
-import { transforms, defaults as defaultTransforms } from "./transforms";
+import { isObject } from "lodash";
+import { defaults as defaultTransforms } from "./transforms";
+import CrudActions from "./CrudActions";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
-import {Inertia} from "@inertiajs/inertia";
 import {computed} from "vue";
 
 library.add(faEllipsisH);
@@ -67,6 +52,7 @@ export default {
         FontAwesomeIcon,
         VueJsonPretty,
         DataCard,
+        CrudActions
     },
     props: {
         data: {
@@ -115,20 +101,12 @@ export default {
                 __fields =  Object.keys(props.data);
             }
 
-
-
             return __fields;
         });
 
-
         let __baseUrl = props.baseUrl || props.modelNamePlural || props.modelName+ 's';
-        let defaultActions = {
-            edit: { label: "Edit", handler: () => {Inertia.visit(route(`${__baseUrl}.edit`, props.data.id))} },
-            trash: { label: "Trash", handler: () => {Inertia.visit(route('files.trash', props.data.id))} },
-        };
-        let __actions = Object.values(merge(defaultActions, props.actions)).filter(action=>action);
 
-        return { fieldKeys, isObject, actions: __actions, baseUrl: __baseUrl };
+        return { fieldKeys, isObject, baseUrl: __baseUrl };
     },
 };
 </script>

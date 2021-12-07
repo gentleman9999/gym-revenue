@@ -180,7 +180,6 @@ export default defineComponent({
         SweetModal,
         FileForm,
         FileDataCard,
-        FileDataRow
     },
     props: ["sessions", "files", "title", "isClientUser", "filters"],
     setup() {
@@ -194,7 +193,7 @@ export default defineComponent({
         });
 
         const tableHeaders = [{label: "filename", component: FilenameTableColumn}, "size", "created_at", "updated_at"];
-        return { prettyBytes, modal, selectedFile, tableHeaders, FileDataCard, FileDataRow };
+        return { prettyBytes, modal, selectedFile, tableHeaders, FileDataCard };
     },
     watch: {
         form: {
