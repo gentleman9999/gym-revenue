@@ -71,7 +71,7 @@ import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject } from "lodash";
 import AutoDataRow from "@/Components/CRUD/AutoDataRow";
-import { defaults as defaultTransforms } from "./transforms";
+import { defaults as defaultTransforms } from "./helpers/transforms";
 
 library.add(faAlignLeft);
 

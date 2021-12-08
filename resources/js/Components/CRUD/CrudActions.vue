@@ -29,7 +29,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject, merge } from "lodash";
-import { defaults as defaultActions } from "./actions";
+import { defaults as defaultActions } from "./helpers/actions";
 library.add(faEllipsisH);
 
 export default defineComponent({

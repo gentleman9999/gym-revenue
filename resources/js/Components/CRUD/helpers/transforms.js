@@ -4,7 +4,8 @@ export const transforms = {
     noop: (val) => val,
     datetime: (val) => new Date(val).toLocaleString(),
     bytes: (val) => prettyBytes(val),
-    selectName: val=> val.name
+    selectName: val=> val.name,
+    boolean: (val) => Boolean(val),
 };
 
 export const defaults = {
@@ -12,4 +13,5 @@ export const defaults = {
     updated_at: transforms.datetime,
     deleted_at: transforms.datetime,
     size: transforms.bytes,
+    active: transforms.boolean,
 };

@@ -76,7 +76,7 @@ import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import { transforms } from "../../Components/CRUD/transforms";
+import { transforms } from "../../Components/CRUD/helpers/transforms";
 
 export default defineComponent({
     components: {
