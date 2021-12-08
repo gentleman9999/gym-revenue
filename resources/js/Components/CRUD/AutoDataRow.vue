@@ -1,51 +1,37 @@
 <template>
     <tr class="hover">
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
-            <component v-if="field.component" :is="field.component" v-bind="{[modelName]: data, data }">
-                {{ data[field.label] }}
-            </component>
-            <template v-else>
-                <vue-json-pretty
-                    v-if="isObject(data[field.label]) && field.transformNoop"
-                    :data="data[field.label]"
-                />
-                <span
-                    v-else
-                    :title="field.transform(data[field.label])"
-                >
-                    {{
-                        field.transform(data[field.label])
-                    }}
-                </span>
-            </template>
+            <render-field :field="field" :data="data" :model-name="modelName" />
         </td>
-        <td v-if="Object.values(actions).length === 0 || Object.values(actions).filter(action=>action).length">
+        <td
+            v-if="
+                Object.values(actions).length === 0 ||
+                Object.values(actions).filter((action) => action).length
+            "
+        >
             <slot name="actions">
-                <crud-actions :actions="actions" :data="data" :base-url="baseUrl"/>
+                <crud-actions
+                    :actions="actions"
+                    :data="data"
+                    :base-url="baseUrl"
+                />
             </slot>
         </td>
     </tr>
 </template>
 
 <script>
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { defineComponent } from "vue";
 import DataCard from "./DataCard";
-import { isObject } from "lodash";
 import CrudActions from "./CrudActions";
-import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
-import {getFields} from "./getFields";
+import { getFields } from "./helpers/getFields";
+import RenderField from "./RenderField";
 
-library.add(faEllipsisH);
-
-export default {
+export default defineComponent({
     components: {
-        FontAwesomeIcon,
-        VueJsonPretty,
         DataCard,
-        CrudActions
+        CrudActions,
+        RenderField,
     },
     props: {
         data: {
@@ -71,19 +57,20 @@ export default {
         },
         actions: {
             type: Object,
-            default: {}
+            default: {},
         },
-        baseUrl:{
+        baseUrl: {
             type: String,
-        }
+        },
     },
     setup(props) {
         const fields = getFields(props);
-        console.log({fields:fields.value})
+        console.log({ fields: fields.value });
 
-        let __baseUrl = props.baseUrl || props.modelNamePlural || props.modelName+ 's';
+        let __baseUrl =
+            props.baseUrl || props.modelNamePlural || props.modelName + "s";
 
-        return { fields, isObject, baseUrl: __baseUrl };
+        return { fields, baseUrl: __baseUrl };
     },
-};
+});
 </script>

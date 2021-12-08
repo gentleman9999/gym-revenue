@@ -19,7 +19,7 @@ import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Pagination from "@/Components/Pagination";
 import { isObject } from "lodash";
-import { transforms, defaults as defaultTransforms } from "./transforms";
+import { transforms, defaults as defaultTransforms } from "./helpers/transforms";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
