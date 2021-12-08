@@ -6,7 +6,7 @@
                     Email Template Management
                 </h2>
             </div>
-            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-start">
+            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start">
                 <inertia-link
                     class="btn justify-self-end"
                     :href="route('comms.dashboard')">
@@ -29,7 +29,7 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to trash this template? It will be removed
+            Are you sure you want to remove this template? It will be removed
             from any assigned campaigns.
         </confirm>
     </app-layout>

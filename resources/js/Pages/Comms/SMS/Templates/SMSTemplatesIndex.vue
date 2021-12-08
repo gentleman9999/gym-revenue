@@ -6,7 +6,7 @@
                     SMS Template Management
                 </h2>
             </div>
-            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-start">
+            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg-justify-start">
                 <inertia-link
                     class="btn justify-self-end"
                     :href="route('comms.dashboard')">
@@ -29,7 +29,7 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to trash this template?  It will be removed from any assigned campaigns.
+            Are you sure you want to remove this template?  It will be removed from any assigned campaigns.
         </confirm>
     </app-layout>
 </template>
@@ -39,7 +39,6 @@ import {computed, defineComponent, ref} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 
 import AppLayout from '@/Layouts/AppLayout'
-import SearchFilter from "@/Components/SearchFilter";
 import Confirm from "@/Components/Confirm";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 
@@ -53,7 +52,6 @@ export default defineComponent({
     name: "SMSTemplatesIndex",
     components: {
         AppLayout,
-        SearchFilter,
         FontAwesomeIcon,
         Confirm,
         GymRevenueCrud
@@ -97,7 +95,7 @@ export default defineComponent({
         const actions = computed(() => {
             return {
                 selfSend: {
-                    label: "Send You a Test Email",
+                    label: "Send You a Test Message",
                     handler: () => comingSoon(),
                 },
                 trash:{
