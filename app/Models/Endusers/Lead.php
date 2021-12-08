@@ -92,4 +92,9 @@ class Lead extends Model
             ]);
         });
     }
+
+    public static function getDetailsTable()
+    {
+        return LeadDetails::class;
+    }
 }

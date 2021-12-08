@@ -7,6 +7,7 @@ use App\Mail\EndUser\EmailFromRep;
 use App\Models\Endusers\Lead;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
+use App\StorableEvents\Endusers\SubscribedToAudience;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
@@ -30,5 +31,12 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         if(env('ENABLE_LEAD_REACTOR_SMS', true)){
             FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
         }
+    }
+
+    public function onSubscribedToAudience(SubscribedToAudience $event)
+    {
+        // @todo - check the Campaigns the audience is attached to
+        // @todo - if so, then trigger it here and its aggregate will deal
+        // @todo - with whatever is supposed to happen.
     }
 }

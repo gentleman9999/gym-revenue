@@ -3,6 +3,8 @@
 namespace App\Projectors\Endusers;
 
 use App\Models\Clients\Client;
+use App\Models\Clients\Features\CommAudience;
+use App\Models\Endusers\AudienceMember;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\User;
@@ -11,6 +13,7 @@ use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
+use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -126,5 +129,40 @@ class EndUserActivityProjector extends Projector
             'value' => $event->user,
             'misc' => $misc,
         ]);
+    }
+
+    public function onSubscribedToAudience(SubscribedToAudience $event)
+    {
+        $audience_record = CommAudience::whereClientId($event->client)
+            ->whereSlug($event->audience)->whereActive(1)->first();
+
+        if(!is_null($audience_record))
+        {
+            // add a new record to audience_members
+            $audience_member_record = AudienceMember::firstOrCreate([
+                'client_id' => $event->client,
+                'audience_id' => $audience_record->id,
+                'entity_id' => $event->user,
+                'entity_type' => $event->entity,
+                'subscribed' => true,
+                'dnc' => false
+            ]);
+
+            // add a new record to entity's details
+            $entity_model = new $event->entity;
+            $details_class = $entity_model::getDetailsTable();
+            $details_model = new $details_class();
+            $details_model->firstOrCreate([
+                'client_id' => $event->client,
+                $details_model->fk => $event->user,
+                'field' => 'audience_subscribed',
+                'value' => $audience_record->id,
+                'misc' => [
+                    'date' => date('Y-m-d'),
+                    'audience_member_record' => $audience_member_record->id
+                ],
+            ]);
+        }
+
     }
 }

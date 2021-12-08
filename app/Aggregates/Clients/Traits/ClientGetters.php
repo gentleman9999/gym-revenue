@@ -24,10 +24,18 @@ trait ClientGetters
                     $history['by'] = $user->name;
                 }
 
-                $model = $history['model']::find($history['template_id']);
-                if(!empty($model)){
-                    $history['recordName'] = $model->name;
+                if(!array_key_exists('model', $history))
+                {
+                    $history['recordName'] = $history['name'];
                 }
+                else
+                {
+                    $model = $history['model']::find($history['template_id']);
+                    if(!empty($model)){
+                        $history['recordName'] = $model->name;
+                    }
+                }
+
 
                 $results[] = $history;
             }

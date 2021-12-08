@@ -11,6 +11,7 @@ use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCa
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
+use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
@@ -39,6 +40,12 @@ class ClientAggregate extends AggregateRoot
             $this->recordThat(new DefaultClientTeamCreated($this->uuid(), $name));
         }
 
+        return $this;
+    }
+
+    public function createAudience(string $name, string $slug, /*string $default_email, string $from_name,*/ string $created_by_user_id)
+    {
+        $this->recordThat(new AudienceCreated($this->uuid(), $name, $slug, /*$default_email, $from_name,*/ $created_by_user_id));
         return $this;
     }
 

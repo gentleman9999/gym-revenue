@@ -10,6 +10,7 @@ use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
+use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
@@ -27,6 +28,18 @@ trait ClientApplies
     public function applyTeamCreated(TeamCreated $event)
     {
         $this->teams[$event->team] = $event->name;
+    }
+
+    public function applyAudienceCreated(AudienceCreated $event)
+    {
+        $history = [
+            'type' => 'Audience Created',
+            'name' => $event->name,
+            'slug' => $event->slug,
+            'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
+        ];
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
+        $this->comm_history[] = $history;
     }
 
     public function applyEmailTemplateCreated(EmailTemplateCreated $event)
