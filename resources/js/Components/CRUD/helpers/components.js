@@ -6,7 +6,6 @@ export const defaults = {
 
 export const props = {
     'active': {
-        truthy: 'Active',
-        falsy: 'Inactive',
+        getProps: ({data}) => !!data.active ? {text: 'Active', class: 'badge-success'} : {data: 'Draft', class: 'badge-warning'}
     }
 }

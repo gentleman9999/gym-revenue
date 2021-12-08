@@ -1,7 +1,7 @@
 <template>
     <tr class="hover">
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
-            <render-field :field="field" :data="data" :model-name="modelName" />
+            <render-field :field="field" :data="data" :base-route="modelName" v-bind="$props" />
         </td>
         <td
             v-if="
@@ -13,7 +13,7 @@
                 <crud-actions
                     :actions="actions"
                     :data="data"
-                    :base-url="baseUrl"
+                    :base-route="baseRoute"
                 />
             </slot>
         </td>
@@ -28,6 +28,7 @@ import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField";
 
 export default defineComponent({
+    inheritAttrs: false,
     components: {
         DataCard,
         CrudActions,
@@ -51,6 +52,7 @@ export default defineComponent({
         },
         modelName: {
             type: String,
+            default: 'Record'
         },
         modelNamePlural: {
             type: String,
@@ -59,18 +61,15 @@ export default defineComponent({
             type: Object,
             default: {},
         },
-        baseUrl: {
+        baseRoute: {
             type: String,
+            required: true
         },
     },
     setup(props) {
         const fields = getFields(props);
-        console.log({ fields: fields.value });
 
-        let __baseUrl =
-            props.baseUrl || props.modelNamePlural || props.modelName + "s";
-
-        return { fields, baseUrl: __baseUrl };
+        return { fields };
     },
 });
 </script>

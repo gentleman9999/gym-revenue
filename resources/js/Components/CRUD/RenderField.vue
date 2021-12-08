@@ -2,14 +2,14 @@
     <component
         v-if="field.component"
         :is="field.component"
-        v-bind="{ [modelName]: data, data, value , ...field.props }"
+        v-bind="{ ...field.props, [modelName]: data, data, value , field }"
     >
         {{ value }}
     </component>
     <template v-else>
         <vue-json-pretty
-            v-if="isObject(data[field.label]) && field.transformNoop"
-            :data="data[field.label]"
+            v-if="isObject(data[field.name]) && field.transformNoop"
+            :data="data[field.name]"
         />
         <span v-else :title="value">
             {{ value }}
@@ -29,20 +29,24 @@ export default defineComponent({
             type: Object,
             required: true,
         },
-        modelName: {
-            type: Object,
+        baseRoute: {
+            type: String,
             required: true,
         },
         data: {
             type: Object,
             required: true,
         },
+        modelName:{
+            type: String,
+            required: true
+        }
     },
     components: {
         VueJsonPretty,
     },
     setup(props) {
-        const value = props.field.transform(props.data[props.field.label]);
+        const value = props.field.transform(props.data[props.field.name]);
         return { isObject, value };
     },
 });

@@ -16,12 +16,20 @@ export const getFields = (props) => {
             let _field = field;
             //convert to object if just string provided
             if(!isObject(_field)){
-                _field =  {label: field}
+                _field =  {name: _field, label: _field}
+            }
+            if(!_field.name){
+                console.error("object field definitions require a name property", field);
+                throw "object field definitions require a name property";
+            }
+            //set label to name if not set
+            if(!_field.label){
+                _field.label = _field.name;
             }
             //add data type if missing
             if(!_field.type ){
-                if(_field.label in defaultTypes){
-                    _field.type = defaultTypes[_field.label];
+                if(_field.name in defaultTypes){
+                    _field.type = defaultTypes[_field.name];
                 }else{
                     _field.type = 'string';
                 }
@@ -32,17 +40,17 @@ export const getFields = (props) => {
                 _field.component = defaultComponents[_field.type];
 
                 //add in extra props
-                if(_field.label in includeProps){
-                    _field.props = includeProps[_field.label];
+                if( _field.name in includeProps){
+                    _field.props = {...includeProps[_field.name], ..._field.props};
                 }
             }
 
 
             if(!_field.transform){
                 // console.log('no transform set for', _field);
-                if(_field.label in defaultTransforms){
+                if(_field.name in defaultTransforms){
                     // console.log('found default transform for', _field);
-                    _field.transform = defaultTransforms[_field.label];
+                    _field.transform = defaultTransforms[_field.name];
                 }else{
                     // console.log('using noop for', _field);
                     _field.transform = transforms.noop

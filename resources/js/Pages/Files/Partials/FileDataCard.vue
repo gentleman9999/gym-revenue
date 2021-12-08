@@ -46,13 +46,6 @@ export default {
         fields: {
             type: Array,
         },
-        modelName: {
-            type: String,
-            default: "record",
-        },
-        modelNamePlural: {
-            type: String,
-        },
         titleField: {
             type: String,
         },

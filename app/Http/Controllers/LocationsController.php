@@ -131,7 +131,7 @@ class LocationsController extends Controller
     {
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
-            return Redirect::route('locations');
+            return Redirect::back();
         }
         $location = Location::withTrashed()->findOrFail($id);
         $location->restore();

@@ -13,7 +13,7 @@
             >
                 <li v-for="action in Object.values(actions)">
                     <a
-                        @click.prevent="() => action.handler({ data, baseUrl })"
+                        @click.prevent="() => action.handler({ data, baseRoute })"
                         href="#"
                         >{{ action.label }}</a
                     >
@@ -28,7 +28,7 @@ import { defineComponent } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { isObject, merge } from "lodash";
+import { isObject, merge, assign } from "lodash";
 import { defaults as defaultActions } from "./helpers/actions";
 library.add(faEllipsisH);
 
@@ -42,7 +42,7 @@ export default defineComponent({
             type: Object,
             required: true,
         },
-        baseUrl: {
+        baseRoute: {
             type: String,
             required: true,
         },

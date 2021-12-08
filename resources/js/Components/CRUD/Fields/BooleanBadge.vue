@@ -1,11 +1,12 @@
 <template>
-    <div class="badge" :class="{'badge-success': value, 'badge-error': !value}">
-        {{test() ? truthy :  falsy}}
+    <div class="badge" :class="class">
+        {{text}}
     </div>
 </template>
 <script>
 import {defineComponent} from 'vue';
 export default defineComponent({
+    inheritAttrs: false,
     props:{
         value:{
             type: Boolean,
@@ -21,14 +22,24 @@ export default defineComponent({
         },
         test:{
             type: Function,
-        }
+        },
+        getProps: {
+            type: Function
+        },
+        data:{
+            type: Object
+        },
     },
     setup(props){
-        const __test = () =>{
-            return !!props.value;
+        let renderProps = {}
+        let getProps = ({data, value})=>{
+            return !!value? {text: 'True', class: 'badge-success'} : {text: 'False', class: 'badge-warning'}
         }
-        const test = props.test || __test;
-        return {test};
+        if(props.getProps){
+            getProps = props.getProps
+        }
+            renderProps = getProps({data:props.data, value: props.value});
+        return { ... renderProps};
     }
 });
 </script>

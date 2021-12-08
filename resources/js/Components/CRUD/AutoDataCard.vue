@@ -18,7 +18,7 @@
                 <crud-actions
                     :actions="actions"
                     :data="data"
-                    :base-url="baseUrl"
+                    :base-route="baseRoute"
                 />
             </slot>
         </template>
@@ -26,7 +26,7 @@
             <div class="text-xs text-gray-500">
                 {{ field.label }}
             </div>
-            <render-field :field="field" :data="data" :model-name="modelName" />
+            <render-field :field="field" :data="data" :base-route="baseRoute" :model-name="modelName" />
         </div>
     </data-card>
 </template>
@@ -39,6 +39,7 @@ import RenderField from "./RenderField";
 import { getFields } from "./helpers/getFields";
 
 export default defineComponent({
+    inheritAttrs: false,
     components: {
         DataCard,
         CrudActions,
@@ -60,8 +61,13 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        baseRoute:{
+            type: String,
+            required: true,
+        },
         modelName: {
             type: String,
+            default: 'Record'
         },
         modelNamePlural: {
             type: String,
@@ -72,9 +78,6 @@ export default defineComponent({
         actions: {
             type: Object,
             default: {},
-        },
-        baseUrl: {
-            type: String,
         },
     },
     setup(props) {
@@ -92,10 +95,7 @@ export default defineComponent({
             titleKey = props.data.name ? "name" : "id";
         }
 
-        let __baseUrl =
-            props.baseUrl || props.modelNamePlural || props.modelName + "s";
-
-        return { fields, title: __title, baseUrl: __baseUrl };
+        return { fields, title: __title };
     },
 });
 </script>
