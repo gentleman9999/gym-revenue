@@ -5,11 +5,12 @@ import {defaults as defaultComponents, props as includeProps} from "./components
 import {computed} from "vue";
 
 export const getFields = (props) => {
+    console.log({props});
     return computed(()=>{
         let fields = props.fields;
         if(!fields){
             //no fields provided, use keys from data
-            fields = Object.keys(props.data);
+            fields = Object.keys(props.data || props.resource.data[0]);
         }
 
         fields = fields.map(field=>{

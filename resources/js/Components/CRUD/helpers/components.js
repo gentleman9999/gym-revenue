@@ -1,7 +1,7 @@
-import BooleanBadge from "@/Components/CRUD/Fields/BooleanBadge";
+import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
 
 export const defaults = {
-    boolean: BooleanBadge
+    boolean: CrudBadge
 }
 
 export const props = {

@@ -58,7 +58,7 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import FileForm from "./Partials/FileForm";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import FileDataCard from "./Partials/FileDataCard";
-import FilenameTableColumn from "./Partials/FilenameTableColumn";
+import FilenameField from "./Partials/FilenameField";
 import { Inertia } from "@inertiajs/inertia";
 
 export default defineComponent({
@@ -79,7 +79,7 @@ export default defineComponent({
         });
 
         const fields = [
-            { name: "filename", component: FilenameTableColumn },
+            { name: "filename", component: FilenameField },
             "size",
             "created_at",
             "updated_at",
