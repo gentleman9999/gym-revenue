@@ -5,112 +5,29 @@
                 <h2 class="font-semibold text-xl  leading-tight">
                     SMS Template Management
                 </h2>
-                <small></small>
+            </div>
+            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-start">
+                <inertia-link
+                    class="btn justify-self-end"
+                    :href="route('comms.dashboard')">
+                    <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="sm"/> Back</span>
+                </inertia-link>
             </div>
         </template>
-        <jet-bar-container>
-            <div class="flex flex-col pb-2">
-                <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-left">
-                    <inertia-link
-                        class="btn justify-self-end"
-                        :href="route('comms.dashboard')">
-                        <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="sm"/> Back</span>
-                    </inertia-link>
-                </div>
-            </div>
-            <div class="top-navigation flex flex-col xl:flex-row xl-justify-between">
-                <div class="flex flex-wrap xl:flex-row justify-center xl-justify-left">
-                    <div class="mr-1">
-                        <search-filter v-model:modelValue="form.search" class="w-full max-w-md mr-4" @reset="reset">
-                            <div class="block py-2 text-xs ">Trashed:</div>
-                            <select v-model="form.trashed" class="mt-1 w-full form-select">
-                                <option :value="null"/>
-                                <option value="with">With Trashed</option>
-                                <option value="only">Only Trashed</option>
-                            </select>
-                        </search-filter>
-                    </div>
-                </div>
 
-                <div class="flex flex-row justify-center xl-justify-right">
-                    <div class="mt-2 ml-1 xl:mt-0">
-                        <inertia-link
-                            class="btn justify-self-end"
-                            :href="route('comms.sms-templates.create')">
-                            <span>+ New Template</span>
-                        </inertia-link>
-                    </div>
-                </div>
-            </div>
-            <div class="inner-template-index-content mt-4">
-                <div class="template-table border-2 border-base-300 rounded-t-md">
-                    <div class="flex flex-col bg-secondary rounded-t-md">
-                        <div class="border-b-2 border-gray-300 py-4">
-                            <h2 class="px-4">Templates</h2>
-                        </div>
-                    </div>
-                    <gym-revenue-table :headers="tableHeaders" :resource="templates">
-                        <template #prethead>
-                            <div class="p-4 bg-base-100"></div>
-                            <div class="p-4 bg-base-100"></div>
-                        </template>
-                        <tr v-if="templates.data.length === 0">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>No Data Available.</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr class="hover" v-else v-for="(template, idx) in templates.data" :key="idx">
-                            <td>{{ template.name }}</td>
-                            <td>
-                                <div class="badge" :class="badgeClasses(template.active)">
-                                    {{ (template.active) ? 'Live' : 'Draft' }}
-                                </div>
-                            </td>
-                            <td>Regular</td>
-                            <td>{{ template.updated_at }}</td>
-                            <td>{{ template.creator !== null ? template.creator.name : 'Auto Generated' }}</td>
-                            <td>
-                                <div class="ml-3 relative">
-                                    <jet-dropdown align="end" width="40">
-                                        <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
-                                                <font-awesome-icon :icon="['far', 'ellipsis-h']" size="lg"/>
-                                            </button>
-                                        </span>
-                                        </template>
-                                        <template #content>
-                                            <div class="w-60">
-                                                <div class="block px-4 py-2 text-xs ">
-                                                    Available Actions
-                                                    <br/>
-                                                </div>
-                                                <ul class="menu compact">
-                                                    <li v-for="(option, slug) in actionOptions(template)" :key="slug">
-                                                        <a @click.prevent="option.click" :href="option.url">
-                                                            {{ option.label }}
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </template>
-                                    </jet-dropdown>
-                                </div>
-                            </td>
-
-                        </tr>
-                    </gym-revenue-table>
-                </div>
-            </div>
-        </jet-bar-container>
+        <gym-revenue-crud
+            base-route="comms.sms-templates"
+            model-name="SMS Template"
+            :fields="fields"
+            :resource="templates"
+            :actions="actions"
+            :top-actions="{ create: { label: 'New Template' } }"
+        />
         <confirm
             title="Really Trash?"
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
+            @cancel="confirmTrash = null"
         >
             Are you sure you want to trash this template?  It will be removed from any assigned campaigns.
         </confirm>
@@ -118,19 +35,17 @@
 </template>
 
 <script>
-import {defineComponent, ref} from "vue";
+import {computed, defineComponent, ref} from "vue";
+import {Inertia} from "@inertiajs/inertia";
+
 import AppLayout from '@/Layouts/AppLayout'
-import JetDropdown from '@/Components/Dropdown'
-import JetBarContainer from "@/Components/JetBarContainer";
 import SearchFilter from "@/Components/SearchFilter";
-import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import Confirm from "@/Components/Confirm";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import mapValues from "lodash/mapValues";
-import {Inertia} from "@inertiajs/inertia";
 
 library.add(faChevronDoubleLeft, faEllipsisH)
 
@@ -138,12 +53,10 @@ export default defineComponent({
     name: "SMSTemplatesIndex",
     components: {
         AppLayout,
-        JetDropdown,
         SearchFilter,
         FontAwesomeIcon,
-        GymRevenueTable,
-        JetBarContainer,
-        Confirm
+        Confirm,
+        GymRevenueCrud
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {
@@ -155,98 +68,54 @@ export default defineComponent({
             Inertia.delete(route("comms.sms-templates.trash", confirmTrash.value));
             confirmTrash.value = null;
         };
-        return { handleClickTrash, confirmTrash, handleConfirmTrash };
-    },
-    watch: {},
-    data() {
-        return {
-            form: {
-                search: this.filters.search,
-                trashed: this.filters.trashed,
-            },
-        };
-    },
-    computed: {
-        tableHeaders() {
-            if (this.templates.data.length > 0) {
-                return ['name', 'status', 'type', 'date updated', 'updated by', '']
-            }
 
-            return [];
-
-        },
-    },
-    methods: {
-        comingSoon() {
-            new Noty({
-                type: 'warning',
-                theme: 'sunset',
-                text: 'Feature Coming Soon!',
-                timeout: 7500
-            }).show();
-        },
-        actionOptions(template) {
-            return {
-                edit: {
-                    url: '#',
-                    label: 'Edit',
-                    click: ()=>Inertia.visit(route('comms.sms-templates.edit', template.id))
+        const fields = computed(() => {
+            return [
+                "name",
+                {
+                    name: "active",
+                    label: "status",
+                    props: {
+                        truthy: "Active",
+                        falsy: "Draft",
+                        getProps: ({ data }) =>
+                            !!data.active
+                                ? { text: "Active", class: "badge-success" }
+                                : { text: "Draft", class: "badge-warning" },
+                    },
                 },
+                { name: "type", transform: () => "Regular" },
+                { name: "updated_at", label: "date updated" },
+                {
+                    name: "creator.name",
+                    label: "updated by",
+                    transform: (creator) => creator || "Auto Generated",
+                },
+            ];
+        });
+
+        const actions = computed(() => {
+            return {
                 selfSend: {
-                    url: '#',
-                    label: 'Send You a Test Text',
-                    click: () => this.comingSoon(),
+                    label: "Send You a Test Email",
+                    handler: () => comingSoon(),
                 },
-                del: {
-                    url: '#',
-                    label: 'Delete',
-                    click: ()=> this.handleClickTrash(template.id)
-                },
+                trash:{
+                    handler: ({data}) => handleClickTrash(data.id)
+                }
+            };
+        });
 
-            }
-        },
-        reset() {
-            this.form = mapValues(this.form, () => null)
-        },
-        badgeClasses(status) {
-            return {
-                'badge-success': status,
-                'badge-warning': !status,
+        const comingSoon = () => {
+            new Noty({
+                type: "warning",
+                theme: "sunset",
+                text: "Feature Coming Soon!",
+                timeout: 7500,
+            }).show();
+        };
 
-            }
-        },
+        return { handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions };
     },
-    mounted() {
-    }
 });
 </script>
-
-<style scoped>
-@media (min-width: 1024px) {
-    .lg-w-full {
-        width: 100%;
-    }
-
-    .lg-w-30 {
-        width: 30%;
-    }
-
-    .lg-w-70 {
-        width: 70%;
-    }
-}
-
-@media (min-width: 1280px) {
-    .xl-justify-left {
-        justify-content: flex-start;
-    }
-
-    .xl-justify-right {
-        justify-content: flex-end;
-    }
-
-    .xl-justify-between {
-        justify-content: space-between;
-    }
-}
-</style>

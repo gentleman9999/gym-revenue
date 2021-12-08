@@ -5,7 +5,13 @@
                 <h2 class="font-semibold text-xl leading-tight">
                     Email Template Management
                 </h2>
-                <small></small>
+            </div>
+            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl-justify-start">
+                <inertia-link
+                    class="btn justify-self-end"
+                    :href="route('comms.dashboard')">
+                    <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="sm"/> Back</span>
+                </inertia-link>
             </div>
         </template>
         <gym-revenue-crud
@@ -21,6 +27,7 @@
             title="Really Trash?"
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
+            @cancel="confirmTrash = null"
         >
             Are you sure you want to trash this template? It will be removed
             from any assigned campaigns.
@@ -30,15 +37,22 @@
 
 <script>
 import { defineComponent, ref, computed } from "vue";
+import { Inertia } from "@inertiajs/inertia";
+
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 
-import { Inertia } from "@inertiajs/inertia";
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
+library.add(faChevronDoubleLeft, faEllipsisH)
 
 export default defineComponent({
     name: "EmailTemplatesIndex",
     components: {
+        FontAwesomeIcon,
         AppLayout,
         Confirm,
         GymRevenueCrud,
@@ -106,7 +120,6 @@ export default defineComponent({
             handleConfirmTrash,
             fields,
             actions,
-            comingSoon,
         };
     },
 });
