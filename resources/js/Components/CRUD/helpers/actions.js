@@ -1,6 +1,6 @@
 import { Inertia } from "@inertiajs/inertia";
 
-export const defaults = {
+export const defaults =Object.freeze( {
     edit: {
         label: "Edit",
         handler: ({ baseRoute, data }) =>
@@ -18,4 +18,4 @@ export const defaults = {
             Inertia.post(route(`${baseRoute}.restore`, data.id)),
         shouldRender: ({ data }) => data.deleted_at !== null,
     },
-};
+});
