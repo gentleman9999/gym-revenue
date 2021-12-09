@@ -13,6 +13,7 @@
                     :campaign="campaign"
                     :can-activate="true"
                     :templates="templates"
+                    :audiences="audiences"
                 />
             </div>
         </div>
@@ -47,6 +48,10 @@ export default {
             type: Object,
         },
         templates: {
+            required: true,
+            type: Array,
+        },
+        audiences: {
             required: true,
             type: Array,
         },

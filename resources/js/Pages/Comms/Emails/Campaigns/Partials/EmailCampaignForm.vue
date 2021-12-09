@@ -77,11 +77,26 @@
                 Cancel
             </Button>
             <div class="flex-grow" />
-            <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing">
+            <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing" type="button" @click="warnFirst()">
                 {{ buttonText }}
             </Button>
         </template>
     </jet-form-section>
+    <sweet-modal v-if="buttonText === 'Update'"
+                 :title="modalText"
+                 width="85%"
+                 overlayTheme="dark"
+                 modal-theme="dark"
+                 enable-mobile-fullscreen
+                 ref="modal"
+    >
+        <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing" type="button" @click="submitForm">
+            Yes
+        </Button>
+        <Button class="btn-warning" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing" type="button" @click="closeModal()">
+            Nope
+        </Button>
+    </sweet-modal>
 </template>
 
 <script>
@@ -91,6 +106,7 @@ import AppLayout from '@/Layouts/AppLayout'
 import Button from '@/Components/Button'
 import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
+import SweetModal from "@/Components/SweetModal3/SweetModal";
 
 export default {
     name: "EmailCampaignForm",
@@ -100,15 +116,20 @@ export default {
         JetFormSection,
         SmsFormControl,
         JetInputError,
+        SweetModal
     },
-    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates'],
+    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences'],
     setup(props, context) {
         let campaign = props.campaign;
         let operation = 'Update';
         if (!campaign) {
             campaign = {
                 name: null,
-                active: false
+                active: false,
+                'audience_id': '',
+                'email_template_id': '',
+                schedule: '',
+                'schedule_date': '',
                 // client_id: props.clientId
             }
             operation = 'Create';
@@ -123,19 +144,44 @@ export default {
         console.log('campaign Params', campaign);
         const form = useForm(campaign)
 
-        let handleSubmit = () => form.put(route('comms.email-campaigns.update', campaign.id));
+
+        let handleSubmit = () => {
+            alert('Coming Soon!');
+            //form.put(route('comms.email-campaigns.update', campaign.id))
+        };
         if (operation === 'Create') {
             handleSubmit = () => form.post(route('comms.email-campaigns.store'));
         }
-
-
+        
         return {form, buttonText: operation, handleSubmit}
     },
     data() {
         return {
-
+            modalText: '',
         }
-    }
+    },
+    methods: {
+        warnFirst() {
+            if(this.form.active) {
+                // @todo some validation on the form
+                this.modalText = 'Are you sure you are ready to launch this Campaign?'
+                this.$refs.modal.open();
+            }
+            else {
+                this.modalText = 'This will undo your launch if you set one and shut off your drip. Are you sure?'
+                this.$refs.modal.open();
+            }
+
+        },
+        submitForm() {
+            this.handleSubmit();
+            this.closeModal();
+        },
+        closeModal() {
+            this.$refs.modal.close();
+        }
+
+    },
 }
 </script>
 
