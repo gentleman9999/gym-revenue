@@ -24,7 +24,7 @@
                     v-for="action in Object.values(topActions)"
                     class="btn"
                     :class="action.class"
-                    @click.prevent="() => action.handler({ data, baseUrl })"
+                    @click.prevent="() => action.handler({ data, baseRoute })"
                 >
                     {{ action.label }}
                 </button>
@@ -54,6 +54,7 @@ import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
+import mapValues from "lodash/mapValues";
 
 export default defineComponent({
     components: {
@@ -70,9 +71,13 @@ export default defineComponent({
         resource: {
             type: Object,
         },
-        modelName: {
+        baseRoute:{
             type: String,
             required: true,
+        },
+        modelName: {
+            type: String,
+            default: 'record'
         },
         modelNamePlural: {
             type: String,
@@ -94,26 +99,27 @@ export default defineComponent({
             type: Object,
             default: {},
         },
-        baseUrl: {
-            type: String,
-        },
     },
     setup(props) {
         const form = ref({});
-        let __baseUrl =
-            props.baseUrl || props.modelNamePlural || props.modelName + "s";
 
         const formHandler = throttle(function () {
-            Inertia.get(route(__baseUrl), pickBy(form.value), {
+            Inertia.get(route(props.baseRoute), pickBy(form.value), {
                 preserveState: true,
                 preserveScroll: true,
             });
         }, 150);
+
         watch([form], formHandler, { deep: true });
+
+        const reset =() => {
+            form.value = mapValues(form.value, () => null);
+        };
+
         const defaultTopActions = {
             create: {
                 label: `Create ${props.modelName}`,
-                handler: () => Inertia.visit(route(`${__baseUrl}.create`)),
+                handler: () => Inertia.visit(route(`${props.baseRoute}.create`)),
                 class: ["btn-primary"],
             },
         };
@@ -124,7 +130,7 @@ export default defineComponent({
             .filter((action) =>
                 action?.shouldRender ? action.shouldRender(props) : true
             );
-        return { form, topActions: __topActions };
+        return { form, topActions: __topActions, reset };
     },
 });
 </script>

@@ -320,6 +320,20 @@ class MassCommunicationsController extends Controller
         return Redirect::back();
     }
 
+    public function et_restore(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Template ID provided")->flash();
+            return Redirect::back();
+        }
+        $template = EmailTemplates::withTrashed()->findOrFail($id);
+        $template->restore();
+
+        Alert::success("Template '{$template->name}' restored")->flash();
+
+        return Redirect::back();
+    }
+
     public function ec_index()
     {
         $client_id = request()->user()->currentClientId();
@@ -485,6 +499,20 @@ class MassCommunicationsController extends Controller
         $success = $template->deleteOrFail();
         Alert::success("Template '{$template->name}' trashed")->flash();
 
+
+        return Redirect::back();
+    }
+
+    public function st_restore(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Template ID provided")->flash();
+            return Redirect::back();
+        }
+        $template = SmsTemplates::withTrashed()->findOrFail($id);
+        $template->restore();
+
+        Alert::success("Template '{$template->name}' restored")->flash();
 
         return Redirect::back();
     }

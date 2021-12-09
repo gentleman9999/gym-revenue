@@ -73,7 +73,7 @@
 
         <template #actions>
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <Button type="button" @click="$inertia.visit(route('comms.email-templates'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
+            <Button type="button" @click="$inertia.visit(route('comms.email-campaigns'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
                 Cancel
             </Button>
             <div class="flex-grow" />

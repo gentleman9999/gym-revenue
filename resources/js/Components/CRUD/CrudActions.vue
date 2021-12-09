@@ -11,9 +11,9 @@
                 tabindex="0"
                 class="p-2 shadow menu dropdown-content bg-base-300 rounded-box w-52"
             >
-                <li v-for="action in Object.values(actions)">
+                <li v-for="([key, action]) in Object.entries(actions)" :key="key">
                     <a
-                        @click.prevent="() => action.handler({ data, baseUrl })"
+                        @click.prevent="() => action.handler({ data, baseRoute })"
                         href="#"
                         >{{ action.label }}</a
                     >
@@ -24,11 +24,11 @@
     </div>
 </template>
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { isObject, merge } from "lodash";
+import { isObject, merge, assign } from "lodash";
 import { defaults as defaultActions } from "./helpers/actions";
 library.add(faEllipsisH);
 
@@ -42,7 +42,7 @@ export default defineComponent({
             type: Object,
             required: true,
         },
-        baseUrl: {
+        baseRoute: {
             type: String,
             required: true,
         },
@@ -51,12 +51,15 @@ export default defineComponent({
         FontAwesomeIcon,
     },
     setup(props) {
-        let __actions = Object.values(merge(defaultActions, props.actions))
-            .filter((action) => action)
-            .filter((action) =>
-                action?.shouldRender ? action.shouldRender(props) : true
-            );
-        return { actions: __actions };
+        let actions = computed(()=>{
+            const finalActions =  Object.values(merge({...defaultActions}, {...props.actions}))
+                .filter((action) => action)
+                .filter((action) =>
+                    action?.shouldRender ? action.shouldRender(props) : true
+                );
+            return finalActions
+        })
+        return { actions };
     },
 });
 </script>

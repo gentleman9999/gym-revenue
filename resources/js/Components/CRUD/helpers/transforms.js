@@ -4,7 +4,6 @@ export const transforms = {
     noop: (val) => val,
     datetime: (val) => new Date(val).toLocaleString(),
     bytes: (val) => prettyBytes(val),
-    selectName: val=> val.name,
     boolean: (val) => Boolean(val),
 };
 

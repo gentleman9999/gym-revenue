@@ -4,8 +4,9 @@
             <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
         </template>
         <gym-revenue-crud
-            modelName="file"
-            :fields="tableHeaders"
+            base-route="files"
+            model-name="file"
+            :fields="fields"
             :resource="files"
             titleField="filename"
             :card-component="FileDataCard"
@@ -52,35 +53,23 @@ td > div {
 
 <script>
 import { defineComponent, watchEffect, ref } from "vue";
-import prettyBytes from "pretty-bytes";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Button from "@/Components/Button.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import SearchFilter from "@/Components/SearchFilter";
 import FileForm from "./Partials/FileForm";
-import FileExtensionIcon from "./Partials/FileExtensionIcon";
-import pickBy from "lodash/pickBy";
-import throttle from "lodash/throttle";
-import mapValues from "lodash/mapValues";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import FileDataCard from "./Partials/FileDataCard";
-import FilenameTableColumn from "./Partials/FilenameTableColumn";
+import FilenameField from "./Partials/FilenameField";
 import { Inertia } from "@inertiajs/inertia";
 
 export default defineComponent({
     components: {
         AppLayout,
-        Button,
         GymRevenueCrud,
-        SearchFilter,
-        FileExtensionIcon,
         SweetModal,
         FileForm,
-        FileDataCard,
     },
     props: ["sessions", "files", "title", "isClientUser", "filters"],
     setup() {
-        const form = ref({});
         const selectedFile = ref(null);
         const modal = ref(null);
         watchEffect(() => {
@@ -89,46 +78,19 @@ export default defineComponent({
             }
         });
 
-        const tableHeaders = [
-            { label: "filename", component: FilenameTableColumn },
+        const fields = [
+            { name: "filename", component: FilenameField },
             "size",
             "created_at",
             "updated_at",
         ];
         return {
-            prettyBytes,
             modal,
             selectedFile,
-            tableHeaders,
+            fields,
             FileDataCard,
             Inertia,
         };
     },
-    watch: {
-        form: {
-            deep: true,
-            handler: throttle(function () {
-                this.$inertia.get(this.route("files"), pickBy(this.form), {
-                    preserveState: true,
-                    preserveScroll: true,
-                });
-            }, 150),
-        },
-    },
-    data() {
-        return {
-            form: {
-                // search: this.filters.search,
-                // trashed: this.filters.trashed,
-            },
-        };
-    },
-
-    methods: {
-        reset() {
-            this.form = mapValues(this.form, () => null);
-        },
-    },
-    mounted() {},
 });
 </script>

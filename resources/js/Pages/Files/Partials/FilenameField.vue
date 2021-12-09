@@ -1,4 +1,4 @@
-<template>
+<template >
         <div class="flex flex-row nowrap items-center gap-4 truncate">
             <file-extension-icon
                 :extension="file.extension"

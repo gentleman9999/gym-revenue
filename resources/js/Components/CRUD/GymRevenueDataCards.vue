@@ -14,6 +14,7 @@
                 :actions="actions"
                 :model-name="modelName"
                 :model-name-plural="modelNamePlural"
+                :base-route="baseRoute"
             />
             <div v-if="!resource?.data?.length" class="rounded-xl p-4 bg-base-100">
                 <div>
@@ -58,9 +59,13 @@ export default {
         resource: {
             type: Object,
         },
-        modelName: {
+        baseRoute: {
             type: String,
             required: true,
+        },
+        modelName: {
+            type: String,
+            default: 'Record',
         },
         modelNamePlural: {
             type: String,

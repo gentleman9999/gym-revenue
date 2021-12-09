@@ -295,14 +295,14 @@ export default defineComponent({
 
         watchEffect(()=>{
             if(!media.lg.value){
-                console.log('not desktop!');
+                // console.log('not desktop!');
                 if(expanded.value){
                     lock();
                 }else{
                     unlock();
                 }
             }else{
-                console.log('desktop!');
+                // console.log('desktop!');
                 unlock();
             }
         });

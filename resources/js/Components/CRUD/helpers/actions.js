@@ -1,21 +1,21 @@
 import { Inertia } from "@inertiajs/inertia";
 
-export const defaults = {
+export const defaults =Object.freeze( {
     edit: {
         label: "Edit",
-        handler: ({ baseUrl, data }) =>
-            Inertia.visit(route(`${baseUrl}.edit`, data.id)),
+        handler: ({ baseRoute, data }) =>
+            Inertia.visit(route(`${baseRoute}.edit`, data.id)),
     },
     trash: {
         label: "Trash",
-        handler: ({ baseUrl, data }) =>
-            Inertia.delete(route(`${baseUrl}.trash`, data.id)),
+        handler: ({ baseRoute, data }) =>
+            Inertia.delete(route(`${baseRoute}.trash`, data.id)),
         shouldRender: ({ data }) => data.deleted_at === null,
     },
     restore: {
         label: "Restore",
-        handler: ({ baseUrl, data }) =>
-            Inertia.post(route(`${baseUrl}.restore`, data.id)),
+        handler: ({ baseRoute, data }) =>
+            Inertia.post(route(`${baseRoute}.restore`, data.id)),
         shouldRender: ({ data }) => data.deleted_at !== null,
     },
-};
+});

@@ -6,7 +6,7 @@
                 <slot name="thead">
                     <tr>
                         <th
-                            v-for="(header, index) in fieldKeys"
+                            v-for="(header, index) in fields"
                             :key="index"
                             scope="col"
                             :class="{
@@ -14,7 +14,7 @@
                                     index === 0 && !stickyFirstCol,
                             }"
                         >
-                            {{ isObject(header) ? header.name : header }}
+                            {{ header.label }}
                         </th>
                         <th>
                             <font-awesome-icon
@@ -27,7 +27,7 @@
             </thead>
             <tbody>
                 <component
-                    v-for="row in resource?.data || []"
+                    v-for="row in data"
                     :is="rowComponent"
                     v-bind="{ [modelName]: row }"
                     :data="row"
@@ -36,9 +36,10 @@
                     :actions="actions"
                     :model-name="modelName"
                     :model-name-plural="modelNamePlural"
+                    :base-route="baseRoute"
                 />
 
-                <tr v-if="!resource?.data?.length">
+                <tr v-if="!data?.length">
                     <td :colspan="fields.length + (Object.values(actions).length ? 1 : 0)">
                         No
                         {{ __modelNamePlural || "Records" }}
@@ -65,13 +66,13 @@ tr {
 </style>
 
 <script>
-import { computed } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject } from "lodash";
 import AutoDataRow from "@/Components/CRUD/AutoDataRow";
-import { defaults as defaultTransforms } from "./helpers/transforms";
+import {getFields} from "./helpers/getFields";
+import { getData} from "./helpers/getData";
 
 library.add(faAlignLeft);
 
@@ -87,9 +88,13 @@ export default {
         resource: {
             type: Object,
         },
-        modelName: {
+        baseRoute: {
             type: String,
             required: true,
+        },
+        modelName: {
+            type: String,
+            default: 'Record',
         },
         modelNamePlural: {
             type: String,
@@ -115,27 +120,12 @@ export default {
         },
     },
     setup(props) {
-        const fieldKeys = computed(() => {
-            let __fields = [];
-            if (props.fields) {
-                __fields = props.fields.map((header) =>
-                    isObject(header) ? header.label : header
-                );
-            } else if (props.resource.data.length) {
-                __fields = Object.keys(props.resource.data[0]);
-            }
+        const fields = getFields(props);
+        const data = getData(props);
 
-            __fields = __fields.map((field) =>
-                field in defaultTransforms
-                    ? { name: field, transform: defaultTransforms[field] }
-                    : field
-            );
-
-            return __fields;
-        });
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
 
-        return { modelNamePlural: __modelNamePlural, fieldKeys, isObject };
+        return { modelNamePlural: __modelNamePlural, fields, isObject, data };
     },
 };
 </script>
