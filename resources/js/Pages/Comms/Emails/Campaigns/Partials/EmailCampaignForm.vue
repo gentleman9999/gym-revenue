@@ -121,6 +121,7 @@ export default {
     props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences'],
     setup(props, context) {
         let campaign = props.campaign;
+        console.log('Campaign props', campaign);
         let operation = 'Update';
         if (!campaign) {
             campaign = {
@@ -144,7 +145,6 @@ export default {
         console.log('campaign Params', campaign);
         const form = useForm(campaign)
 
-
         let handleSubmit = () => {
             alert('Coming Soon!');
             //form.put(route('comms.email-campaigns.update', campaign.id))
@@ -152,7 +152,7 @@ export default {
         if (operation === 'Create') {
             handleSubmit = () => form.post(route('comms.email-campaigns.store'));
         }
-        
+
         return {form, buttonText: operation, handleSubmit}
     },
     data() {
@@ -163,8 +163,42 @@ export default {
     methods: {
         warnFirst() {
             if(this.form.active) {
-                // @todo some validation on the form
-                this.modalText = 'Are you sure you are ready to launch this Campaign?'
+                /*
+                    campaign['schedule_date'] = 'now';
+                    campaign['schedule'] = 'bulk';
+                    campaign['email_template_id'] = '';
+                    campaign['audience_id'] = '';
+                 */
+                // do some validation on the form
+                let ready = (this.form['audience_id'] !== '')
+                    && (this.form['schedule_date'] !== '')
+                    && (this.form['schedule'] !== '')
+                    && (this.form['email_template_id'] !== '');
+
+                if(ready) {
+                    if(this.form['schedule_date'] === 'now') {
+                        this.modalText = "Are you sure you are ready to launch this Campaign? You won't be able tp edit it afterwards.";
+                    }
+                    else{
+                        this.modalText = 'If you continue, you WILL be able to update or cancel this launch until the campaign time. Are you sure you want to do this?';
+                    }
+                }
+                else {
+                    if((this.form['audience_id'] === '') && (this.form['email_template_id'] === '')) {
+                        this.modalText = 'You did not set an audience or an email template. Was this intended? Your campaign will not be active if so.'
+                    }
+                    else if(this.form['audience_id'] === '') {
+                        this.modalText = 'You did not set an audience. Was this intended? Your campaign will not be active if so.'
+                    }
+                    else if(this.form['email_template_id'] === '') {
+                        this.modalText = 'You did not set an email template. Was this intended? Your campaign will not be active if so.'
+                    }
+                    else {
+                        this.modalText = 'This form is not complete. Your campaign will not be active if you update. Are you okay with this?'
+                    }
+                }
+
+
                 this.$refs.modal.open();
             }
             else {

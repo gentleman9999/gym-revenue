@@ -41,7 +41,7 @@
 
                                 <ul class="menu compact">
                                     <li v-for="(lbl, slug) in audiences" :key="slug">
-                                        <inertia-link href="#" @click="comingSoon">
+                                        <inertia-link href="#" @click="viewAudienceDashboard(slug)">
                                             <svg v-if="activeAudience === slug" class="mr-2 h-5 w-5 text-green-400"
                                                  fill="none" stroke-linecap="round" stroke-linejoin="round"
                                                  stroke-width="2" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,6 +204,9 @@ export default defineComponent({
                 timeout: 7500
             }).show();
         },
+        viewAudienceDashboard(slug) {
+            this.$inertia.visit(route('comms.dashboard')+"?audience="+slug)
+        }
     },
     mounted() {
 

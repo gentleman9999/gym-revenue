@@ -144,6 +144,24 @@ class MassCommunicationsController extends Controller
         return $results;
     }
 
+    private function filterHistoryLog(array $history_log, string $audience, string $client_id = null)
+    {
+        $results = [];
+//dd($audience, $history_log);
+        // look for logs about the audience
+        foreach ($history_log as $idx => $log)
+        {
+
+            if(array_key_exists('slug', $log) && ($log['slug'] == $audience))
+            {
+                $results[] = $log;
+            }
+        }
+        //dd($results);
+
+        return $results;
+    }
+
     public function index()
     {
         $client_id = request()->user()->currentClientId();
@@ -160,7 +178,8 @@ class MassCommunicationsController extends Controller
 
             // @todo - make a function that crunches these datas
             $stats = $this->getStats($client_id);
-        } else {
+        }
+        else {
             $history_log = [];
             $aud_options = [
                 'all' => 'All Audiences',
@@ -185,6 +204,7 @@ class MassCommunicationsController extends Controller
                 case 'employees':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
+                    $history_log = $this->filterHistoryLog($history_log, $aud, $client_id);
                     break;
 
                 default:
@@ -373,7 +393,8 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        $campaign = EmailCampaigns::find($id);
+        $campaign = EmailCampaigns::whereId($id)->first();
+        //dd($campaign->toArray());
         $templates = EmailTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
         $audiences = CommAudience::whereClientId($campaign->client_id)->whereActive('1')->get();
         // @todo - need to build access validation here.

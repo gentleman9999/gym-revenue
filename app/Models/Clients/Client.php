@@ -56,7 +56,7 @@ class Client extends Model
             $default_team_name = $client->name . ' Home Office';
             $aggy = ClientAggregate::retrieve($client->id)
                 ->createDefaultTeam($default_team_name)
-                ->createAudience("{$client->name} Leads", 'leads', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
+                ->createAudience("{$client->name} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
                 ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
                 ->persist();
         });
