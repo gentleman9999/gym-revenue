@@ -6,6 +6,10 @@ use App\Aggregates\Clients\Traits\ClientApplies;
 use App\Aggregates\Clients\Traits\ClientGetters;
 use App\Exceptions\Clients\ClientAccountException;
 use App\Models\UserDetails;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
@@ -50,6 +54,30 @@ class ClientAggregate extends AggregateRoot
     public function createAudience(string $name, string $slug, /*string $default_email, string $from_name,*/ string $created_by_user_id)
     {
         $this->recordThat(new AudienceCreated($this->uuid(), $name, $slug, /*$default_email, $from_name,*/ $created_by_user_id));
+        return $this;
+    }
+
+    public function assignAudienceToEmailCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    {
+        $this->recordThat(new AudienceAssignedToEmailCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
+        return $this;
+    }
+
+    public function assignAudienceToSMSCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    {
+        $this->recordThat(new AudienceAssignedToSmsCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
+        return $this;
+    }
+
+    public function unassignAudienceFromEmailCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    {
+        $this->recordThat(new AudienceUnAssignedFromEmailCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
+        return $this;
+    }
+
+    public function unassignAudienceFromSMSCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    {
+        $this->recordThat(new AudienceUnAssignedFromSmsCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
         return $this;
     }
 

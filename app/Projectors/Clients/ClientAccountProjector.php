@@ -18,6 +18,10 @@ use App\Models\Comms\SmsTemplates;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
@@ -230,7 +234,6 @@ class ClientAccountProjector extends Projector
         }
     }
 
-
     public function onSMSTemplateCreated(SMSTemplateCreated $event)
     {
         // Make Email Details Record
@@ -401,4 +404,81 @@ class ClientAccountProjector extends Projector
             'value' => $event->user
         ]);
     }
+
+    public function onAudienceAssignedToEmailCampaign(AudienceAssignedToEmailCampaign $event)
+    {
+        $detail = EmailCampaignDetails::create([
+            'email_campaign_id' => $event->campaign,
+            'detail' => 'audience_assigned',
+            'value' =>$event->audience,
+        ]);
+
+        if($event->user == 'auto')
+        {
+            $detail->misc = ['msg' => 'Audience was auto-assigned', 'user' => $event->user];
+        }
+        else
+        {
+            $user = User::find($event->user);
+            $detail->misc = ['msg' => 'Audience was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $event->user];
+        }
+        $detail->save();
+    }
+
+    public function onAudienceAssignedToSmsCampaign(AudienceAssignedToSmsCampaign $event)
+    {
+        $detail = SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->campaign,
+            'detail' => 'audience_assigned',
+            'value' =>$event->audience,
+        ]);
+
+        if($event->user == 'auto')
+        {
+            $detail->misc = ['msg' => 'Audience was auto-assigned', 'user' => $event->user];
+        }
+        else
+        {
+            $user = User::find($event->user);
+            $detail->misc = ['msg' => 'Audience was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $event->user];
+        }
+        $detail->save();
+    }
+
+    public function onAudienceUnAssignedFromEmailCampaign(AudienceUnAssignedFromEmailCampaign $event)
+    {
+        $detail = EmailCampaignDetails::create([
+            'email_campaign_id' => $event->campaign,
+            'detail' => 'audience_unassigned',
+            'value' =>$event->audience,
+            'misc' => ['by' => $event->user]
+        ]);
+
+        $campaign = EmailCampaigns::whereId($event->campaign)
+            ->with('unassigned_audience')->first();
+        if(!is_null($campaign->unassigned_audience ?? null))
+        {
+            $campaign->unassigned_audience->delete();
+        }
+    }
+
+    public function onAudienceUnAssignedFromSmsCampaign(AudienceUnAssignedFromSmsCampaign $event)
+    {
+        $detail = SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->campaign,
+            'detail' => 'audience_unassigned',
+            'value' =>$event->audience,
+            'misc' => ['by' => $event->user]
+        ]);
+
+        $campaign = SmsCampaigns::whereId($event->campaign)
+            ->with('unassigned_audience')->first();
+        if(!is_null($campaign->unassigned_audience ?? null))
+        {
+            $campaign->unassigned_audience->delete();
+        }
+    }
+
+
+
 }

@@ -18,8 +18,8 @@
                 <select v-if="audiences === undefined" v-model="form.audience_id" class="py-2">
                     <option value="">No Audiences Available</option>
                 </select>
-                <select v-else v-model="form.audience_id" class="py-2">
-                    <option value="">Avalaible Audiences</option>
+                <select v-else v-model="form['audience_id']" class="py-2">
+                    <option value="">Available Audiences</option>
                     <option v-for="(audience, idy) in audiences" :id="idy" :value="audience.id">
                         {{ audience.name }}
                     </option>
@@ -111,7 +111,7 @@ export default {
         JetInputError,
         SweetModal
     },
-    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences', 'assignedTemplate'],
+    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences', 'assignedTemplate', 'assignedAudience'],
     setup(props, context) {
         let campaign = props.campaign;
         console.log('Campaign props', campaign);
@@ -133,7 +133,7 @@ export default {
             campaign['schedule'] = 'bulk';
 
             campaign['email_template_id'] = props.assignedTemplate;
-            campaign['audience_id'] = '';
+            campaign['audience_id'] = props.assignedAudience;
         }
 
         console.log('campaign Params', campaign);

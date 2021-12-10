@@ -111,7 +111,7 @@ export default {
         JetInputError,
         SweetModal
     },
-    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences', 'assignedTemplate'],
+    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences', 'assignedTemplate', 'assignedAudience'],
     setup(props, context) {
         let campaign = props.campaign;
         console.log('Campaign props', campaign);
@@ -132,7 +132,7 @@ export default {
             campaign['schedule_date'] = 'now';
             campaign['schedule'] = 'bulk';
             campaign['sms_template_id'] = props.assignedTemplate;
-            campaign['audience_id'] = '';
+            campaign['audience_id'] = props.assignedAudience;
         }
 
         console.log('campaign Params', campaign);

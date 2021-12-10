@@ -2,10 +2,15 @@
 
 namespace App\Aggregates\Clients\Traits;
 
+use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
@@ -45,6 +50,64 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
+
+    public function applyAudienceAssignedToEmailCampaign(AudienceAssignedToEmailCampaign $event)
+    {
+        $history = [
+            'type' => 'Audience Assigned to a Campaign',
+            'template_id' => $event->audience,
+            'campaign_id' => $event->campaign,
+            'model' => CommAudience::class,
+            'assign_model' => EmailCampaigns::class,
+            'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
+        ];
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
+        $this->comm_history[] = $history;
+    }
+
+    public function applyAudienceAssignedToSmsCampaign(AudienceAssignedToSmsCampaign $event)
+    {
+        $history = [
+            'type' => 'Audience Assigned to a Campaign',
+            'template_id' => $event->audience,
+            'campaign_id' => $event->campaign,
+            'model' => CommAudience::class,
+            'assign_model' => SmsCampaigns::class,
+            'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
+        ];
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
+        $this->comm_history[] = $history;
+    }
+
+
+    public function applyAudienceUnAssignedFromEmailCampaign(AudienceUnAssignedFromEmailCampaign $event)
+    {
+        $history = [
+            'type' => 'Audience UnAssigned from a Campaign',
+            'template_id' => $event->audience,
+            'campaign_id' => $event->campaign,
+            'model' => CommAudience::class,
+            'assign_model' => EmailCampaigns::class,
+            'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
+        ];
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
+        $this->comm_history[] = $history;
+    }
+
+    public function applyAudienceUnAssignedFromSmsCampaign(AudienceUnAssignedFromSmsCampaign $event)
+    {
+        $history = [
+            'type' => 'Audience UnAssigned from a Campaign',
+            'template_id' => $event->audience,
+            'campaign_id' => $event->campaign,
+            'model' => CommAudience::class,
+            'assign_model' => SmsCampaigns::class,
+            'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
+        ];
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
+        $this->comm_history[] = $history;
+    }
+
 
     public function applyEmailTemplateCreated(EmailTemplateCreated $event)
     {
@@ -184,7 +247,7 @@ trait ClientApplies
             'assign_model' => SmsCampaigns::class,
             'date' => $event->metaData()['created-at'],
         ];
-        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->created;
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
     public function applySMSTemplateUnAssignedFromSMSCampaign(SMSTemplateUnAssignedFromSMSCampaign $event)

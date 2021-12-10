@@ -395,8 +395,10 @@ class MassCommunicationsController extends Controller
 
         $available_templates = [];
         $available_audiences = [];
-        $campaign = EmailCampaigns::whereId($id)->with('assigned_template')->first();
-        //dd($campaign->toArray());
+        $campaign = EmailCampaigns::whereId($id)
+            ->with('assigned_template')->with('assigned_audience')
+            ->first();
+
         $templates = EmailTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
         foreach ($templates as $template)
         {
@@ -413,7 +415,8 @@ class MassCommunicationsController extends Controller
             'campaign' => $campaign,
             'templates' => $available_templates,
             'audiences' => $available_audiences,
-            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : ''
+            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
+            'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
         ]);
     }
 
@@ -434,7 +437,9 @@ class MassCommunicationsController extends Controller
         );
 
         $client_aggy = ClientAggregate::retrieve($data['client_id']);
-        $campaign = EmailCampaigns::whereId($data['id'])->with('assigned_template')->first();
+        $campaign = EmailCampaigns::whereId($data['id'])
+            ->with('assigned_template')->with('assigned_audience')
+            ->first();
         $old_values = $campaign->toArray();
 
         if($data['active'])
@@ -444,7 +449,6 @@ class MassCommunicationsController extends Controller
         }
         else
         {
-
             // unset schedule and schedule_date if set and use aggy to update logs
             if(!is_null($campaign->schedule))
             {
@@ -473,9 +477,58 @@ class MassCommunicationsController extends Controller
             }
 
             // @todo - if audience_id is not null, set it in campaign_details and use aggy to update logs in Client and Audiences and User
-            if(array_key_exists('audience_id', $data) && (!is_null($data['audience_id'])))
+            if(array_key_exists('audience_id', $data))
             {
-                // @todo - check if an audience is already set, deactivate and softdelete if so and log
+                // check if an audience is already set, deactivate and softdelete if so and log
+                if((!is_null($data['audience_id'])))
+                {
+                    if($old_values['active'] == 1) {
+                        // this means its getting shut off so
+                        if(!is_null($campaign->assigned_audience))
+                        {
+                            $campaign->assigned_audience->active = 0;
+                            $campaign->assigned_audience->save();
+                            $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+                        }
+                    }
+                    else
+                    {
+                        // it was never active so it's okay to assign a template if it wasn't already
+                        if(!is_null($campaign->assigned_audience))
+                        {
+                            $campaign->assigned_audience->active = 0;
+                            $campaign->assigned_audience->save();
+
+                            if(($campaign->assigned_audience->value != $data['audience_id']))
+                            {
+                                $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+
+                                if(!is_null($data['audience_id']))
+                                {
+                                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                                }
+
+                            }
+                            else
+                            {
+                                $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+                            }
+                        }
+                        else
+                        {
+                            $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                        }
+                    }
+                }
+                else
+                {
+                    if(!is_null($campaign->assigned_audience))
+                    {
+                        $campaign->assigned_audience->active = 0;
+                        $campaign->assigned_audience->save();
+                        $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+                    }
+                }
 
             }
 
@@ -502,8 +555,13 @@ class MassCommunicationsController extends Controller
 
                             if(($campaign->assigned_template->value != $data['email_template_id']))
                             {
-                                $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
-                                    ->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
+                                $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+
+                                if(!is_null($data['email_template_id']))
+                                {
+                                    $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
+                                }
+
                             }
                             else
                             {
@@ -716,7 +774,9 @@ class MassCommunicationsController extends Controller
 
         $available_templates = [];
         $available_audiences = [];
-        $campaign = SmsCampaigns::whereId($id)->with('assigned_template')->first();
+        $campaign = SmsCampaigns::whereId($id)
+            ->with('assigned_template')->with('assigned_audience')
+            ->first();
         $templates = SmsTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
         foreach ($templates as $template)
         {
@@ -732,7 +792,8 @@ class MassCommunicationsController extends Controller
             'campaign' => $campaign,
             'templates' => $available_templates,
             'audiences' => $available_audiences,
-            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : ''
+            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
+            'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
         ]);
     }
 
@@ -776,7 +837,9 @@ class MassCommunicationsController extends Controller
         );
 
         $client_aggy = ClientAggregate::retrieve($data['client_id']);
-        $campaign = SmsCampaigns::whereId($data['id'])->with('assigned_template')->first();
+        $campaign = SmsCampaigns::whereId($data['id'])
+            ->with('assigned_template')->with('assigned_audience')
+            ->first();
         $old_values = $campaign->toArray();
 
         if($data['active'])
@@ -814,10 +877,57 @@ class MassCommunicationsController extends Controller
             }
 
             // @todo - if audience_id is not null, set it in campaign_details and use aggy to update logs in Client and Audiences and User
-            if(array_key_exists('audience_id', $data) && (!is_null($data['audience_id'])))
+            if(array_key_exists('audience_id', $data))
             {
-                // @todo - check if an audience is already set, deactivate and softdelete if so and log
+                if(!is_null($data['audience_id']))
+                {
+                    if($old_values['active'] == 1) {
+                        // this means its getting shut off so
+                        if(!is_null($campaign->assigned_audience))
+                        {
+                            $campaign->assigned_audience->active = 0;
+                            $campaign->assigned_audience->save();
+                            $client_aggy = $client_aggy->unassignAudienceFromSMSCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+                        }
+                    }
+                    else
+                    {
+                        // it was never active so it's okay to assign a template if it wasn't already
+                        if(!is_null($campaign->assigned_audience))
+                        {
+                            $campaign->assigned_audience->active = 0;
+                            $campaign->assigned_audience->save();
 
+                            if(($campaign->assigned_audience->value != $data['audience_id']))
+                            {
+                                $client_aggy = $client_aggy->unassignAudienceFromSMSCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+
+                                if(!is_null($data['audience_id']))
+                                {
+                                    $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                                }
+
+                            }
+                            else
+                            {
+                                $client_aggy = $client_aggy->unassignAudienceFromSMSCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+                            }
+                        }
+                        else
+                        {
+                            $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                        }
+                    }
+                }
+                else
+                {
+                    if(!is_null($campaign->assigned_audience))
+                    {
+                        $campaign->assigned_audience->active = 0;
+                        $campaign->assigned_audience->save();
+                        $client_aggy->unassignAudienceFromSMSCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id);
+                    }
+                }
             }
 
             // @todo - if sms_template_id is not null, set it in campaign_details and use aggy to update logs in Client and Templates and User
@@ -843,8 +953,12 @@ class MassCommunicationsController extends Controller
 
                             if(($campaign->assigned_template->value != $data['sms_template_id']))
                             {
-                                $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
-                                    ->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
+                                $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+
+                                if(!is_null($data['sms_template_id']))
+                                {
+                                    $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
+                                }
                             }
                             else
                             {
@@ -864,7 +978,7 @@ class MassCommunicationsController extends Controller
                     {
                         $campaign->assigned_template->active = 0;
                         $campaign->assigned_template->save();
-                        $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                        $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
                     }
                 }
             }

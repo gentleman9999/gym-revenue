@@ -44,6 +44,16 @@ class EmailCampaigns extends Model
         return $this->detail()->whereDetail('template_assigned')->whereActive(0);
     }
 
+    public function assigned_audience()
+    {
+        return $this->detail()->whereDetail('audience_assigned')->whereActive(1);
+    }
+
+    public function unassigned_audience()
+    {
+        return $this->detail()->whereDetail('audience_assigned')->whereActive(0);
+    }
+
     protected static function booted()
     {
         static::created(function($campaign) {

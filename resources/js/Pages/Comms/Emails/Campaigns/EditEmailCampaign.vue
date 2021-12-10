@@ -16,6 +16,7 @@
                     :templates="templates"
                     :audiences="audiences"
                     :assigned-template="assignedTemplate"
+                    :assigned-audience="assignedAudience"
                 />
             </div>
         </div>
@@ -58,8 +59,12 @@ export default {
             type: Array,
         },
         assignedTemplate: {
-            required: true,
-            type: Array
+            required: false,
+            type: String
+        },
+        assignedAudience: {
+            required: false,
+            type: String
         }
 
     },
