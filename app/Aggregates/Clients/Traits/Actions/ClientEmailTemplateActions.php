@@ -3,6 +3,7 @@
 namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 
