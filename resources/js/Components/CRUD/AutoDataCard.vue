@@ -10,8 +10,9 @@
         <template
             #actions
             v-if="
-                Object.values(actions).length === 0 ||
-                Object.values(actions).filter((action) => action).length
+                actions &&
+                (Object.values(actions).length === 0 ||
+                    Object.values(actions).filter((action) => action).length)
             "
         >
             <slot name="actions">
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
 import RenderField from "./RenderField";
@@ -63,7 +64,7 @@ export default defineComponent({
         },
         baseRoute:{
             type: String,
-            required: true,
+            // required: true,
         },
         modelName: {
             type: String,
@@ -76,7 +77,7 @@ export default defineComponent({
             type: String,
         },
         actions: {
-            type: Object,
+            type: [Object, Boolean],
             default: {},
         },
     },
@@ -95,7 +96,14 @@ export default defineComponent({
             titleKey = props.data.name ? "name" : "id";
         }
 
-        return { fields, title: __title };
+        const __fields = computed(()=>{
+            return fields.value.filter(({name})=>{
+                return name !== titleKey;
+            })
+        })
+
+
+        return { fields: __fields, title: __title };
     },
 });
 </script>

@@ -28,8 +28,7 @@ import { defineComponent, computed, ref } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { isObject, merge, assign } from "lodash";
-import { defaults as defaultActions } from "./helpers/actions";
+import { getActions} from "./helpers/actions";
 library.add(faEllipsisH);
 
 export default defineComponent({
@@ -51,14 +50,7 @@ export default defineComponent({
         FontAwesomeIcon,
     },
     setup(props) {
-        let actions = computed(()=>{
-            const finalActions =  Object.values(merge({...defaultActions}, {...props.actions}))
-                .filter((action) => action)
-                .filter((action) =>
-                    action?.shouldRender ? action.shouldRender(props) : true
-                );
-            return finalActions
-        })
+        const actions = getActions(props);
         return { actions };
     },
 });

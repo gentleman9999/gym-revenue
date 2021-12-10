@@ -2,214 +2,224 @@
     <app-layout :title="title">
         <template #header>
             <div class="text-center">
-                <h2 class="font-semibold text-xl  leading-tight">
+                <h2 class="font-semibold text-xl leading-tight">
                     Mass Communication Dashboard
                 </h2>
                 <small>Send SMS and Emails in Bulk here!</small>
             </div>
         </template>
 
-        <jet-bar-container>
-            <div class="flex flex-col pb-2">
-                <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 xl:justify-end">
-                    <jet-dropdown align="end" v-if="true">
-                        <template #trigger>
-                                <span class="inline-flex rounded-md">
-                                    <button type="button"
-                                            class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md  bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition">
-                                        {{
-                                            (activeAudience in audiences) ? 'Audience: ' + audiences[activeAudience] : 'Audiences'
-                                        }}
+        <jet-bar-container class="space-y-8">
+            <div class="shadow stats">
+<!--                <div class="stat">-->
+<!--                    <div class="stat-title">Audience</div>-->
+<!--                    <div class="stat-value">-->
+<!--                        {{ stats["total_audience"] }}-->
+<!--                    </div>-->
+<!--                    <div class="stat-desc">Total</div>-->
+<!--                </div>-->
+                <mass-comm-stat
+                    v-for="(lbl, slug) in audiences"
+                    :title="lbl"
+                    :value="stats['audience_breakdown'][slug]"
+                />
+            </div>
 
-                                        <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                             viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                  d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                                                  clip-rule="evenodd"/>
-                                        </svg>
-                                    </button>
-                                </span>
+            <div
+                class="grid grid-cols-2 lg:flex flex-wrap xl:flex-row justify-center xl:justify-start gap-2 lg:gap-1"
+            >
+                <mass-comm-data-button
+                    :href="route('comms.email-templates')"
+                    :active="stats['email_templates'].active"
+                    :total="stats['email_templates'].created"
+                >
+                    Email Templates
+                </mass-comm-data-button>
+                <mass-comm-data-button
+                    :href="route('comms.sms-templates')"
+                    :active="stats['sms_templates'].active"
+                    :total="stats['sms_templates'].created"
+                >
+                    SMS Templates
+                </mass-comm-data-button>
+                <mass-comm-data-button
+                    :href="route('comms.email-campaigns')"
+                    :active="stats['email_campaigns'].active"
+                    :total="stats['email_campaigns'].created"
+                >
+                    Email Campaigns
+                </mass-comm-data-button>
+                <mass-comm-data-button
+                    :href="route('comms.sms-campaigns')"
+                    :active="stats['sms_campaigns'].active"
+                    :total="stats['sms_campaigns'].created"
+                >
+                    SMS Campaigns
+                </mass-comm-data-button>
+            </div>
+
+            <!-- Page Content -->
+
+            <gym-revenue-crud
+                :resource="historyFeed"
+                :fields="fields"
+                :top-actions="topActions"
+                :actions="false"
+                :base-route="baseRoute"
+                title-field="type"
+            >
+                <template #filter>
+                    <search-filter
+                        v-model:modelValue="form.search"
+                        class="w-full max-w-md mr-4"
+                        @reset="reset"
+                    >
+                        <template #trigger>
+                            <span class="inline-flex rounded-md">
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
+                                >
+                                    {{
+                                        form.audience in audiences
+                                            ? "Audience: " +
+                                              audiences[form.audience]
+                                            : "Audiences"
+                                    }}
+
+                                    <svg
+                                        class="ml-2 -mr-0.5 h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </span>
                         </template>
 
                         <template #content>
                             <!-- Team Management -->
                             <template v-if="true">
                                 <!-- Location Switcher -->
-                                <div class="block px-4 py-2 text-xs ">
+                                <div class="block px-4 py-2 text-xs">
                                     Select an Audience(s)
                                 </div>
 
                                 <ul class="menu compact">
-                                    <li v-for="(lbl, slug) in audiences" :key="slug">
-                                        <inertia-link href="#" @click="viewAudienceDashboard(slug)">
-                                            <svg v-if="activeAudience === slug" class="mr-2 h-5 w-5 text-green-400"
-                                                 fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                                 stroke-width="2" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    <li
+                                        v-for="(lbl, slug) in audiences"
+                                        :key="slug"
+                                    >
+                                        <a
+                                            href="#"
+                                            @click.prevent="
+                                                form.audience = slug
+                                            "
+                                        >
+                                            <svg
+                                                v-if="form.audience === slug"
+                                                class="mr-2 h-5 w-5 text-green-400"
+                                                fill="none"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                ></path>
                                             </svg>
                                             {{ lbl }}
-                                        </inertia-link>
+                                        </a>
                                     </li>
                                 </ul>
                             </template>
                         </template>
-                    </jet-dropdown>
-
-                </div>
-                <div class="top-navigation flex flex-col xl:flex-row xl:justify-between">
-                    <div class="flex flex-wrap xl:flex-row justify-center xl:justify-start">
-                        <div class="mr-1">
-                            <inertia-link
-                                class="btn justify-self-end"
-                                :href="route('comms.email-templates')">
-                                <span>Email Templates <span class="bg-info p-1">{{
-                                        stats['email_templates'].created
-                                    }}</span> <span class=" p-1 bg-success">{{ stats['email_templates'].active }}</span></span>
-                            </inertia-link>
-                        </div>
-                        <div class="mr-1 ">
-                            <inertia-link
-                                class="btn justify-self-end"
-                                :href="route('comms.sms-templates')">
-                                <span>SMS Templates <span class="bg-info p-1">{{
-                                        stats['sms_templates'].created
-                                    }}</span> <span class=" p-1 bg-success">{{
-                                        stats['sms_templates'].active
-                                    }}</span></span>
-                            </inertia-link>
-                        </div>
-                        <div class="mr-1 mt-1 sm:mt-0">
-                            <inertia-link
-                                class="btn justify-self-end"
-                                :href="route('comms.email-campaigns')">
-                                <span>Email Campaigns <span class="bg-info p-1">{{
-                                        stats['email_campaigns'].created
-                                    }}</span> <span class=" p-1 bg-success">{{ stats['email_campaigns'].active }}</span></span>
-                            </inertia-link>
-                        </div>
-                        <div class="mt-1 md:mt-0">
-                            <inertia-link
-                                class="btn justify-self-end"
-                                :href="route('comms.sms-campaigns')">
-                                <span>SMS Campaigns <span class="bg-info p-1">{{
-                                        stats['sms_campaigns'].created
-                                    }}</span> <span class=" p-1 bg-success">{{
-                                        stats['sms_campaigns'].active
-                                    }}</span></span>
-                            </inertia-link>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-row justify-center xl:justify-end">
-                        <div class="mt-2 mr-1 xl:mt-0">
-                            <inertia-link
-                                class="btn justify-self-end"
-                                href="#" @click="comingSoon()">
-                                <span>+ New Email</span>
-                            </inertia-link>
-                        </div>
-                        <div class="mt-2 ml-1 xl:mt-0">
-                            <inertia-link
-                                class="btn justify-self-end"
-                                href="#" @click="comingSoon()">
-                                <span>+ New SMS</span>
-                            </inertia-link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="border-b-4 border-blue-300"></div>
-            <!-- Page Content -->
-            <div class="comms-content mt-4 flex flex-col lg:flex-row lg:w-full">
-                <div class="left-section flex flex-col xl:w-1/3 mb-3 lg:mb-0 lg:mr-3">
-                    <div class="total-audience-breakdown border-2 border-gray-300">
-                        <div class="flex flex-col">
-                            <div class="border-b-2 border-gray-300">
-                                <h2 class="px-2 bg-secondary"> Total Audience</h2>
-                                <div class="text-center bg-secondary">
-                                    <h1 class="text-2xl">{{ stats['total_audience'] }}</h1>
-                                </div>
-                            </div>
-
-                            <h2 class=" px-2"> Total Audience Breakdown</h2>
-                            <div v-for="(lbl, slug) in audiences">
-                                <p class="m-2"><b>{{ lbl }}</b> :{{ stats['audience_breakdown'][slug] }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="right-section flex flex-col xl:w-2/3 mt-3 lg:mt-0 lg:ml-3">
-                    <div class="current-feed border-2 border-gray-300">
-                        <div class="bg-primary border-b-2 border-gray-300 py-2">
-                            <h1 class="ml-2 bg-primary">Your Feed</h1>
-                        </div>
-                        <gym-revenue-table :headers="tableHeaders" :resource="historyFeed">
-                            <tr v-if="historyFeed.length === 0">
-                                <td>No Data Available.</td>
-                            </tr>
-                            <tr class="hover" v-else v-for="(log, idx) in historyFeed" :key="idx">
-                                <td>{{ log.type }}</td>
-                                <td>{{ log.recordName }}</td>
-                                <td>{{ log.date }}</td>
-                                <td>{{ log.by }}</td>
-                            </tr>
-                        </gym-revenue-table>
-                    </div>
-                </div>
-            </div>
+                    </search-filter>
+                </template>
+            </gym-revenue-crud>
         </jet-bar-container>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout'
-import JetDropdown from '@/Components/Dropdown'
+import { defineComponent } from "vue";
+import AppLayout from "@/Layouts/AppLayout";
+import JetDropdown from "@/Components/Dropdown";
 import JetBarContainer from "@/Components/JetBarContainer";
-import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
-
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import { Inertia } from "@inertiajs/inertia";
+import SearchFilter from "@/Components/CRUD/SearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import MassCommDataButton from "./Partials/MassCommDataButton";
+import MassCommStat from "./Partials/MassCommStat";
 
 export default defineComponent({
     name: "MassCommsDashboard",
     components: {
         AppLayout,
         JetDropdown,
-        GymRevenueTable,
-        JetBarContainer
+        GymRevenueCrud,
+        JetBarContainer,
+        SearchFilter,
+        MassCommDataButton,
+        MassCommStat,
     },
-    props: ['title', 'audiences', 'activeAudience', 'stats', 'historyFeed'],
+    props: ["title", "audiences", "activeAudience", "stats", "historyFeed"],
     setup(props) {
-    },
-    watch: {},
-    data() {
-        return {};
-    },
-    computed: {
-        tableHeaders() {
-            if (this.historyFeed.length > 0) {
-                return ['action', 'template', 'date', 'by']
-            }
+        const baseRoute = "comms.dashboard";
+        const { form, reset } = useSearchFilter(baseRoute, {
+            audience: props.activeAudience,
+        });
+        const fields = [
+            { name: "type", label: "action" },
+            { name: "recordName", label: "template" },
+            "date",
+            "by",
+        ];
 
-            return [];
-
-        },
-    },
-    methods: {
-        comingSoon() {
+        const comingSoon = () => {
             new Noty({
-                type: 'warning',
-                theme: 'sunset',
-                text: 'Feature Coming Soon!',
-                timeout: 7500
+                type: "warning",
+                theme: "sunset",
+                text: "Feature Coming Soon!",
+                timeout: 7500,
             }).show();
-        },
-        viewAudienceDashboard(slug) {
-            this.$inertia.visit(route('comms.dashboard')+"?audience="+slug)
-        }
-    },
-    mounted() {
+        };
 
-    }
+        const topActions = {
+            create: false,
+            email: {
+                label: "+ New Email",
+                handler: comingSoon,
+                class: 'btn-primary'
+            },
+            sms: {
+                label: "+ New Sms",
+                handler: comingSoon,
+                class: 'btn-primary'
+            },
+        };
+
+        const viewAudienceDashboard = (slug) => {
+            Inertia.visit(route("comms.dashboard") + "?audience=" + slug);
+        };
+        return {
+            fields,
+            comingSoon,
+            viewAudienceDashboard,
+            topActions,
+            baseRoute,
+            form,
+            reset,
+        };
+    },
 });
 </script>

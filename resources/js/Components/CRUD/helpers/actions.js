@@ -1,6 +1,8 @@
 import { Inertia } from "@inertiajs/inertia";
+import { computed } from "vue";
+import { merge } from "lodash";
 
-export const defaults =Object.freeze( {
+export const defaults = Object.freeze({
     edit: {
         label: "Edit",
         handler: ({ baseRoute, data }) =>
@@ -19,3 +21,16 @@ export const defaults =Object.freeze( {
         shouldRender: ({ data }) => data.deleted_at !== null,
     },
 });
+
+export const getActions = (props) => {
+    return computed(() => {
+        if (!props.actions) {
+            return [];
+        }
+        return Object.values(merge({ ...defaults }, { ...props.actions }))
+            .filter((action) => action)
+            .filter((action) =>
+                action?.shouldRender ? action.shouldRender(props) : true
+            );
+    });
+};

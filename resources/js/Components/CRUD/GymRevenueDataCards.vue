@@ -23,15 +23,11 @@
                     found.
                 </div>
             </div>
-
-            <slot name="pagination">
-                <pagination class="mt-4" :links="resource.links" />
-            </slot>
     </div>
 </template>
 <style scoped>
 .wrapper{
-    @apply shadow border-b border-base-100 bg-base-300  gap-4;
+    @apply shadow gap-4;
     @apply grid grid-cols-1 md:grid-cols-2 -my-2 py-2;
     @apply align-middle min-w-full sm:px-6 lg:px-8 sm:-mx-6 lg:-mx-8;
     max-width: 100vw;
@@ -41,7 +37,6 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import Pagination from "@/Components/Pagination";
 import AutoDataCard from "@/Components/CRUD/AutoDataCard";
 
 library.add(faAlignLeft);
@@ -49,7 +44,6 @@ library.add(faAlignLeft);
 export default {
     components: {
         FontAwesomeIcon,
-        Pagination,
         AutoDataCard,
     },
     props: {
@@ -61,7 +55,7 @@ export default {
         },
         baseRoute: {
             type: String,
-            required: true,
+            // required: true,
         },
         modelName: {
             type: String,
@@ -78,7 +72,7 @@ export default {
             default: AutoDataCard,
         },
         actions: {
-            type: Object,
+            type: [Object, Boolean],
             default: {},
         },
     },

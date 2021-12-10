@@ -16,7 +16,15 @@
                         >
                             {{ header.label }}
                         </th>
-                        <th>
+                        <th
+                            v-if="
+                                actions &&
+                                (Object.values(actions).length === 0 ||
+                                    Object.values(actions).filter(
+                                        (action) => action
+                                    ).length)
+                            "
+                        >
                             <font-awesome-icon
                                 :icon="['fas', 'align-left']"
                                 size="lg"
@@ -40,7 +48,12 @@
                 />
 
                 <tr v-if="!data?.length">
-                    <td :colspan="fields.length + (Object.values(actions).length ? 1 : 0)">
+                    <td
+                        :colspan="
+                            fields.length +
+                            (Object.values(actions).length ? 1 : 0)
+                        "
+                    >
                         No
                         {{ __modelNamePlural || "Records" }}
                         found.
@@ -53,16 +66,20 @@
 
 <style scoped>
 .wrapper {
-    @apply py-2 align-middle shadow border-b border-base-100 bg-base-300;
-    @apply flex flex-col -my-2 sm:-mx-6 lg:-mx-8 sm:px-6 lg:px-8 min-w-full ;
+    @apply py-2 align-middle;
+    @apply flex flex-col -my-2 sm:-mx-6 lg:-mx-8 sm:px-6 lg:px-8 min-w-full;
     max-width: 100vw;
 }
-th {
-    @apply text-white;
+table{
+    @apply shadow shadow-lg;
+    th {
+        @apply text-white bg-base-300;
+    }
+    tr {
+        @apply hover;
+    }
 }
-tr {
-    @apply hover;
-}
+
 </style>
 
 <script>
@@ -71,8 +88,8 @@ import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject } from "lodash";
 import AutoDataRow from "@/Components/CRUD/AutoDataRow";
-import {getFields} from "./helpers/getFields";
-import { getData} from "./helpers/getData";
+import { getFields } from "./helpers/getFields";
+import { getData } from "./helpers/getData";
 
 library.add(faAlignLeft);
 
@@ -90,11 +107,11 @@ export default {
         },
         baseRoute: {
             type: String,
-            required: true,
+            // required: true,
         },
         modelName: {
             type: String,
-            default: 'Record',
+            default: "Record",
         },
         modelNamePlural: {
             type: String,
@@ -107,7 +124,7 @@ export default {
             default: AutoDataRow,
         },
         actions: {
-            type: Object,
+            type: [Object, Boolean],
             default: {},
         },
         stickyFirstCol: {

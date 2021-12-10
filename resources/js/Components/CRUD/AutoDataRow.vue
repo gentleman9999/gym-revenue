@@ -1,12 +1,18 @@
 <template>
     <tr class="hover">
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
-            <render-field :field="field" :data="data" :base-route="modelName" v-bind="$props" />
+            <render-field
+                :field="field"
+                :data="data"
+                :base-route="modelName"
+                v-bind="$props"
+            />
         </td>
         <td
             v-if="
-                Object.values(actions).length === 0 ||
-                Object.values(actions).filter((action) => action).length
+                actions &&
+                (Object.values(actions).length === 0 ||
+                    Object.values(actions).filter((action) => action).length)
             "
         >
             <slot name="actions">
@@ -52,18 +58,18 @@ export default defineComponent({
         },
         modelName: {
             type: String,
-            default: 'Record'
+            default: "Record",
         },
         modelNamePlural: {
             type: String,
         },
         actions: {
-            type: Object,
+            type: [Object, Boolean],
             default: {},
         },
         baseRoute: {
             type: String,
-            required: true
+            // required: true,
         },
     },
     setup(props) {
