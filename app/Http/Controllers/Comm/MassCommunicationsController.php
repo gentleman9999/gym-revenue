@@ -13,6 +13,7 @@ use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -162,7 +163,7 @@ class MassCommunicationsController extends Controller
         return $results;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
@@ -171,7 +172,7 @@ class MassCommunicationsController extends Controller
             $aggy = ClientAggregate::retrieve($client_id);
             $history_log = $aggy->getCommunicationHistoryLog();
             $aud_options = [
-                'all' => 'All Audiences',
+                'all' => 'All',
                 'prospects' => 'Prospects',
                 'conversions' => 'Conversions',
             ];
@@ -182,7 +183,7 @@ class MassCommunicationsController extends Controller
         else {
             $history_log = [];
             $aud_options = [
-                'all' => 'All Audiences',
+                'all' => 'All',
                 'admins' => 'Cape & Bay Admins',
                 'employees' => 'Cape & Bay Non-Admins'
             ];
@@ -217,7 +218,8 @@ class MassCommunicationsController extends Controller
             'audiences' => $aud_options,
             'activeAudience' => $active_audience,
             'stats' => $stats,
-            'historyFeed' => $history_log
+            'historyFeed' => paginate_array($request, $history_log)
+//            'historyFeed' => $history_log
         ]);
     }
 
