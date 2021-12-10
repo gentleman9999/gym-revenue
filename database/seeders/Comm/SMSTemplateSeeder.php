@@ -22,7 +22,7 @@ class SMSTemplateSeeder extends Seeder
         VarDumper::dump('Default sms template for Cape & Bay');
         $cnb_record = SmsTemplates::firstOrCreate([
             'name' => "Baby's First SMS Template (;",
-            'active' => 0,
+            'active' => 1,
             'created_by_user_id' => 'auto'
         ]);
         $cnb_record->markup = base64_encode($default_markup);
@@ -37,7 +37,7 @@ class SMSTemplateSeeder extends Seeder
             $record = SmsTemplates::firstOrCreate([
                 'name' => $client->name."'s First SMS Template (;",
                 'client_id' => $client->id,
-                'active' => 0,
+                'active' => 1,
                 'created_by_user_id' => 'auto'
             ]);
             // Mark sure markup is stupid simple with %name% token and base64 encoded

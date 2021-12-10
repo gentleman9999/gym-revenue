@@ -1,12 +1,5 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
@@ -118,7 +111,7 @@ export default {
         JetInputError,
         SweetModal
     },
-    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences'],
+    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences', 'assignedTemplate'],
     setup(props, context) {
         let campaign = props.campaign;
         console.log('Campaign props', campaign);
@@ -138,7 +131,8 @@ export default {
         else {
             campaign['schedule_date'] = 'now';
             campaign['schedule'] = 'bulk';
-            campaign['email_template_id'] = '';
+
+            campaign['email_template_id'] = props.assignedTemplate;
             campaign['audience_id'] = '';
         }
 
@@ -146,8 +140,7 @@ export default {
         const form = useForm(campaign)
 
         let handleSubmit = () => {
-            alert('Coming Soon!');
-            //form.put(route('comms.email-campaigns.update', campaign.id))
+            form.put(route('comms.email-campaigns.update', campaign.id));
         };
         if (operation === 'Create') {
             handleSubmit = () => form.post(route('comms.email-campaigns.store'));
@@ -158,17 +151,12 @@ export default {
     data() {
         return {
             modalText: '',
+            activate: false
         }
     },
     methods: {
         warnFirst() {
             if(this.form.active) {
-                /*
-                    campaign['schedule_date'] = 'now';
-                    campaign['schedule'] = 'bulk';
-                    campaign['email_template_id'] = '';
-                    campaign['audience_id'] = '';
-                 */
                 // do some validation on the form
                 let ready = (this.form['audience_id'] !== '')
                     && (this.form['schedule_date'] !== '')
@@ -198,7 +186,7 @@ export default {
                     }
                 }
 
-
+                this.activate = ready;
                 this.$refs.modal.open();
             }
             else {
@@ -207,14 +195,14 @@ export default {
             }
 
         },
-        submitForm() {
+        submitForm(active) {
+            this.form.active = this.activate;
             this.handleSubmit();
             this.closeModal();
         },
         closeModal() {
             this.$refs.modal.close();
         }
-
     },
 }
 </script>

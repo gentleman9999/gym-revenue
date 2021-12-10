@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        VarDumper::dump('Setting the initial app state');
+        $this->call(AppStateSeeder::class);
 
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);

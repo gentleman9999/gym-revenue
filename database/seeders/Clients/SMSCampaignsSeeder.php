@@ -21,7 +21,7 @@ class SMSCampaignsSeeder extends Seeder
         VarDumper::dump('Default sms campaign for Cape & Bay');
         $cnb_record = SmsCampaigns::firstOrCreate([
             'name' => "Baby's First SMS Campaign (;",
-            'active' => 0,
+            'active' => 1,
             'created_by_user_id' => 'auto'
         ]);
         $cnb_template = SmsTemplates::whereNull('client_id')->first();
@@ -33,9 +33,9 @@ class SMSCampaignsSeeder extends Seeder
             VarDumper::dump('Default sms campaign for '.$client->name);
 
             $record = SmsCampaigns::firstOrCreate([
-                'name' => $client->name."'s First SMS Template D;",
+                'name' => $client->name."'s First SMS Campaign D;",
                 'client_id' => $client->id,
-                'active' => 0,
+                'active' => 1,
                 'created_by_user_id' => 'auto'
             ]);
             $template = SmsTemplates::whereClientId($client->id)->first();

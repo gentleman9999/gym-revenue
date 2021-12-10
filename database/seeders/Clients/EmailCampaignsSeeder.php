@@ -33,7 +33,7 @@ class EmailCampaignsSeeder extends Seeder
             VarDumper::dump('Default email campaign for '.$client->name);
 
             $record = EmailCampaigns::firstOrCreate([
-                'name' => $client->name."'s First Email Template D;",
+                'name' => $client->name."'s First Email Campaign D;",
                 'client_id' => $client->id,
                 'active' => 0,
                 'created_by_user_id' => 'auto'

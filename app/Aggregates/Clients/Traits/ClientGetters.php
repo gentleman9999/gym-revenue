@@ -30,12 +30,19 @@ trait ClientGetters
                 }
                 else
                 {
-                    $model = $history['model']::find($history['template_id']);
+                    if(array_key_exists('template_id', $history))
+                    {
+                        $model = $history['model']::find($history['template_id']);
+                    }
+                    elseif(array_key_exists('campaign_id', $history))
+                    {
+                        $model = $history['model']::find($history['campaign_id']);
+                    }
+
                     if(!empty($model)){
                         $history['recordName'] = $model->name;
                     }
                 }
-
 
                 $results[] = $history;
             }

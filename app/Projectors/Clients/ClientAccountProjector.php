@@ -19,9 +19,13 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
@@ -159,6 +163,36 @@ class ClientAccountProjector extends Projector
         ]);
     }
 
+    public function onEmailCampaignUpdated(EmailCampaignUpdated $event)
+    {
+        $template = EmailCampaigns::find($event->campaign);
+        $detail = EmailCampaignDetails::create([
+            'email_campaign_id' => $event->campaign,
+            'client_id' => $event->client,
+            'detail' => 'updated',
+            'value' => $event->new,
+            'misc' => [
+                'old' => $event->old
+            ]
+        ]);
+
+        $misc = $detail->misc;
+        if($event->updated == 'auto')
+        {
+            $misc['msg'] = 'Campaign was auto-updated';
+
+        }
+        else
+        {
+            $user = User::find($event->updated);
+            $misc['msg'] = 'Campaign was updated by '.$user->name.' on '.date('Y-m-d');
+        }
+        $misc['user'] = $event->updated;
+        $detail->misc = $misc;
+        $detail->save();
+
+    }
+
     public function onEmailTemplateAssignedToEmailCampaign(EmailTemplateAssignedToEmailCampaign $event)
     {
         $detail = EmailCampaignDetails::create([
@@ -174,10 +208,28 @@ class ClientAccountProjector extends Projector
         else
         {
             $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $created_by_user_id];
+            $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $event->user];
         }
         $detail->save();
     }
+
+    public function onEmailTemplateUnAssignedFromEmailCampaign(EmailTemplateUnAssignedFromEmailCampaign $event)
+    {
+        $detail = EmailCampaignDetails::create([
+            'email_campaign_id' => $event->campaign,
+            'detail' => 'template_unassigned',
+            'value' =>$event->template,
+            'misc' => ['by' => $event->user]
+        ]);
+
+        $campaign = EmailCampaigns::whereId($event->campaign)
+            ->with('unassigned_template')->first();
+        if(!is_null($campaign->unassigned_template ?? null))
+        {
+            $campaign->unassigned_template->delete();
+        }
+    }
+
 
     public function onSMSTemplateCreated(SMSTemplateCreated $event)
     {
@@ -266,6 +318,36 @@ class ClientAccountProjector extends Projector
         ]);
     }
 
+    public function onSmsCampaignUpdated(SmsCampaignUpdated $event)
+    {
+        $template = SmsCampaigns::find($event->campaign);
+        $detail = SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->campaign,
+            'client_id' => $event->client,
+            'detail' => 'updated',
+            'value' => $event->new,
+            'misc' => [
+                'old' => $event->old
+            ]
+        ]);
+
+        $misc = $detail->misc;
+        if($event->updated == 'auto')
+        {
+            $misc['msg'] = 'Campaign was auto-updated';
+
+        }
+        else
+        {
+            $user = User::find($event->updated);
+            $misc['msg'] = 'Campaign was updated by '.$user->name.' on '.date('Y-m-d');
+        }
+        $misc['user'] = $event->updated;
+        $detail->misc = $misc;
+        $detail->save();
+
+    }
+
     public function onSMSTemplateAssignedToSMSCampaign(SMSTemplateAssignedToSMSCampaign $event)
     {
         $detail = SmsCampaignDetails::create([
@@ -281,9 +363,26 @@ class ClientAccountProjector extends Projector
         else
         {
             $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $created_by_user_id];
+            $detail->misc = ['msg' => 'Template was assigned by '.$user->name.' on '.date('Y-m-d'), 'user' => $event->user];
         }
         $detail->save();
+    }
+
+    public function onSMSTemplateUnAssignedFromSMSCampaign(SMSTemplateUnAssignedFromSMSCampaign $event)
+    {
+        $detail = SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->campaign,
+            'detail' => 'template_unassigned',
+            'value' =>$event->template,
+            'misc' => ['by' => $event->user]
+        ]);
+
+        $campaign = SmsCampaigns::whereId($event->campaign)
+            ->with('unassigned_template')->first();
+        if(!is_null($campaign->unassigned_template))
+        {
+            $campaign->unassigned_template->delete();
+        }
     }
 
     public function onAudienceCreated(AudienceCreated $event)

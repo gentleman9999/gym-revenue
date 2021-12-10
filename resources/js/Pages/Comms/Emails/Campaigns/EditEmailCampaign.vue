@@ -1,9 +1,10 @@
 <template>
-    <app-layout title="Edit SMS Template">
+    <app-layout title="Edit Email Template">
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">
-                Configure & Modify SMS Campaign
+                Configure & Modify Email Campaign
             </h2>
+            <small>{{ campaign.name }}</small>
         </template>
 
         <div>
@@ -14,6 +15,7 @@
                     :can-activate="true"
                     :templates="templates"
                     :audiences="audiences"
+                    :assigned-template="assignedTemplate"
                 />
             </div>
         </div>
@@ -32,7 +34,7 @@ import JetLabel from "@/Jetstream/Label";
 import EmailTemplateForm from "./Partials/EmailCampaignForm";
 
 export default {
-    name: "EditSmsCampaign",
+    name: "EditEmailCampaign",
     components: {
         AppLayout,
         Button,
@@ -55,6 +57,10 @@ export default {
             required: true,
             type: Array,
         },
+        assignedTemplate: {
+            required: true,
+            type: Array
+        }
 
     },
 }

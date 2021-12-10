@@ -24,6 +24,26 @@ class EmailCampaigns extends Model
         'name', 'active', 'client_id', 'team_id', 'created_by_user_id'
     ];
 
+    public function details()
+    {
+        return $this->hasMany(EmailCampaignDetails::class, 'email_campaign_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(EmailCampaignDetails::class, 'email_campaign_id', 'id');
+    }
+
+    public function assigned_template()
+    {
+        return $this->detail()->whereDetail('template_assigned')->whereActive(1);
+    }
+
+    public function unassigned_template()
+    {
+        return $this->detail()->whereDetail('template_assigned')->whereActive(0);
+    }
+
     protected static function booted()
     {
         static::created(function($campaign) {

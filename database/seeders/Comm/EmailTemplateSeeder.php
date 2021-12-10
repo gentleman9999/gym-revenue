@@ -21,7 +21,7 @@ class EmailTemplateSeeder extends Seeder
         VarDumper::dump('Default email template for Cape & Bay');
         $cnb_record = EmailTemplates::firstOrCreate([
             'name' => "Baby's First Email Template (;",
-            'active' => 0,
+            'active' => 1,
             'created_by_user_id' => 'auto'
         ]);
         $cnb_record->markup = base64_encode($default_markup);
@@ -36,7 +36,7 @@ class EmailTemplateSeeder extends Seeder
             $record = EmailTemplates::firstOrCreate([
                 'name' => $client->name."'s First Email Template (;",
                 'client_id' => $client->id,
-                'active' => 0,
+                'active' => 1,
                 'created_by_user_id' => 'auto'
             ]);
             // Mark sure markup is stupid simple with %name% token and base64 encoded

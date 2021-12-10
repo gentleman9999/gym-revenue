@@ -4,6 +4,7 @@
             <h2 class="font-semibold text-xl leading-tight">
                 Configure & Modify SMS Campaign
             </h2>
+            <small>{{ campaign.name }}</small>
         </template>
 
         <div>
@@ -13,6 +14,8 @@
                     :campaign="campaign"
                     :can-activate="true"
                     :templates="templates"
+                    :audiences="audiences"
+                    :assigned-template="assignedTemplate"
                 />
             </div>
         </div>
@@ -50,6 +53,14 @@ export default {
             required: true,
             type: Array,
         },
+        audiences: {
+            required: true,
+            type: Array,
+        },
+        assignedTemplate: {
+            required: true,
+            type: Array
+        }
 
     },
 }

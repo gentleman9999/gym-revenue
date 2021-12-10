@@ -1,12 +1,5 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
@@ -77,11 +70,26 @@
                 Cancel
             </Button>
             <div class="flex-grow" />
-            <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing">
+            <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing" type="button" @click="warnFirst()">
                 {{ buttonText }}
             </Button>
         </template>
     </jet-form-section>
+    <sweet-modal v-if="buttonText === 'Update'"
+                 :title="modalText"
+                 width="85%"
+                 overlayTheme="dark"
+                 modal-theme="dark"
+                 enable-mobile-fullscreen
+                 ref="modal"
+    >
+        <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing" type="button" @click="submitForm">
+            Yes
+        </Button>
+        <Button class="btn-warning" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing" type="button" @click="closeModal()">
+            Nope
+        </Button>
+    </sweet-modal>
 </template>
 
 <script>
@@ -91,6 +99,7 @@ import AppLayout from '@/Layouts/AppLayout'
 import Button from '@/Components/Button'
 import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
+import SweetModal from "@/Components/SweetModal3/SweetModal";
 
 export default {
     name: "SmsCampaignForm",
@@ -100,15 +109,21 @@ export default {
         JetFormSection,
         SmsFormControl,
         JetInputError,
+        SweetModal
     },
-    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates'],
+    props: ['clientId', 'campaign', 'canActivate', 'audiences', 'templates', 'audiences', 'assignedTemplate'],
     setup(props, context) {
         let campaign = props.campaign;
+        console.log('Campaign props', campaign);
         let operation = 'Update';
         if (!campaign) {
             campaign = {
                 name: null,
-                active: false
+                active: false,
+                'audience_id': '',
+                'sms_template_id': '',
+                schedule: '',
+                'schedule_date': '',
                 // client_id: props.clientId
             }
             operation = 'Create';
@@ -116,7 +131,7 @@ export default {
         else {
             campaign['schedule_date'] = 'now';
             campaign['schedule'] = 'bulk';
-            campaign['sms_template_id'] = '';
+            campaign['sms_template_id'] = props.assignedTemplate;
             campaign['audience_id'] = '';
         }
 
@@ -133,9 +148,60 @@ export default {
     },
     data() {
         return {
-
+            modalText: '',
+            activate: false
         }
-    }
+    },
+    methods: {
+        warnFirst() {
+            if(this.form.active) {
+                // do some validation on the form
+                let ready = (this.form['audience_id'] !== '')
+                    && (this.form['schedule_date'] !== '')
+                    && (this.form['schedule'] !== '')
+                    && (this.form['sms_template_id'] !== '');
+
+                if(ready) {
+                    if(this.form['schedule_date'] === 'now') {
+                        this.modalText = "Are you sure you are ready to launch this Campaign? You won't be able tp edit it afterwards.";
+                    }
+                    else{
+                        this.modalText = 'If you continue, you WILL be able to update or cancel this launch until the campaign time. Are you sure you want to do this?';
+                    }
+                }
+                else {
+                    if((this.form['audience_id'] === '') && (this.form['sms_template_id'] === '')) {
+                        this.modalText = 'You did not set an audience or an SMS template. Was this intended? Your campaign will not be active if so.'
+                    }
+                    else if(this.form['audience_id'] === '') {
+                        this.modalText = 'You did not set an audience. Was this intended? Your campaign will not be active if so.'
+                    }
+                    else if(this.form['sms_template_id'] === '') {
+                        this.modalText = 'You did not set an SMS Template. Was this intended? Your campaign will not be active if so.'
+                    }
+                    else {
+                        this.modalText = 'This form is not complete. Your campaign will not be active if you update. Are you okay with this?'
+                    }
+                }
+
+                this.activate = ready;
+                this.$refs.modal.open();
+            }
+            else {
+                this.modalText = 'This will undo your launch if you set one and shut off your drip. Are you sure?'
+                this.$refs.modal.open();
+            }
+
+        },
+        submitForm(active) {
+            this.form.active = this.activate;
+            this.handleSubmit();
+            this.closeModal();
+        },
+        closeModal() {
+            this.$refs.modal.close();
+        }
+    },
 }
 </script>
 

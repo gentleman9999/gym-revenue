@@ -393,17 +393,154 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        $campaign = EmailCampaigns::whereId($id)->first();
+        $available_templates = [];
+        $available_audiences = [];
+        $campaign = EmailCampaigns::whereId($id)->with('assigned_template')->first();
         //dd($campaign->toArray());
         $templates = EmailTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
+        foreach ($templates as $template)
+        {
+            $available_templates[$template->id] = $template->toArray();
+        }
         $audiences = CommAudience::whereClientId($campaign->client_id)->whereActive('1')->get();
+        foreach ($audiences as $audience)
+        {
+            $available_audiences[$audience->id] = $audience->toArray();
+        }
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/Emails/Campaigns/EditEmailCampaign', [
             'campaign' => $campaign,
-            'templates' => $templates,
-            'audiences' => $audiences
+            'templates' => $available_templates,
+            'audiences' => $available_audiences,
+            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : ''
         ]);
+    }
+
+    public function ec_update($id)
+    {
+        //dd(request()->all());
+        $data = request()->validate([
+                'id' => 'required|exists:email_campaigns,id',
+                'name' => 'required',
+                'active' => 'sometimes|bool',
+                'schedule_date' => 'sometimes',
+                'schedule' => 'sometimes',
+                'email_template_id' => 'sometimes',
+                'audience_id' => 'sometimes',
+                'client_id' => 'required|exists:clients,id',
+                'created_by_user_id' => 'required',
+            ]
+        );
+
+        $client_aggy = ClientAggregate::retrieve($data['client_id']);
+        $campaign = EmailCampaigns::whereId($data['id'])->with('assigned_template')->first();
+        $old_values = $campaign->toArray();
+
+        if($data['active'])
+        {
+            // @todo - logic to activate the campaign, or update stuff if it is already so
+            return Redirect::route('comms.email-campaigns');
+        }
+        else
+        {
+
+            // unset schedule and schedule_date if set and use aggy to update logs
+            if(!is_null($campaign->schedule))
+            {
+                $campaign->schedule = null;
+                $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'schedule', $old_values['schedule'], $data['schedule']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // unset schedule_date if set and use aggy to update logs or skip
+            if(!is_null($campaign->schedule_date))
+            {
+                $campaign->schedule_date = null;
+                $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'schedule_date', $old_values['schedule_date'], $data['schedule_date']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // if name is different, change and use aggy to update logs
+            if($old_values['name'] != $data['name'])
+            {
+                $campaign->name = $data['name'];
+                $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'name', $old_values['name'], $data['name']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // @todo - if audience_id is not null, set it in campaign_details and use aggy to update logs in Client and Audiences and User
+            if(array_key_exists('audience_id', $data) && (!is_null($data['audience_id'])))
+            {
+                // @todo - check if an audience is already set, deactivate and softdelete if so and log
+
+            }
+
+            // @todo - if email_template_id is not null, set it in campaign_details and use aggy to update logs in Client and Templates and User
+            if(array_key_exists('email_template_id', $data))
+            {
+                if((!is_null($data['email_template_id'])))
+                {
+                    if($old_values['active'] == 1) {
+                        // this means its getting shut off so
+                        if(!is_null($campaign->assigned_template))
+                        {
+                            $campaign->assigned_template->active = 0;
+                            $campaign->assigned_template->save();
+                            $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                        }
+                    }
+                    else {
+                        // it was never active so it's okay to assign a template if it wasn't already
+                        if(!is_null($campaign->assigned_template))
+                        {
+                            $campaign->assigned_template->active = 0;
+                            $campaign->assigned_template->save();
+
+                            if(($campaign->assigned_template->value != $data['email_template_id']))
+                            {
+                                $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
+                                    ->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
+                            }
+                            else
+                            {
+                                $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                            }
+                        }
+                        else
+                        {
+                            $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
+                        }
+
+                    }
+                }
+                else
+                {
+                    if(!is_null($campaign->assigned_template))
+                    {
+                        $campaign->assigned_template->active = 0;
+                        $campaign->assigned_template->save();
+                        $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                    }
+                }
+            }
+
+            // @todo - if active == 1, set it to 0 and use aggy to update logs in Client and User
+            if($campaign->active == 1)
+            {
+
+            }
+
+            // @todo - make details relations
+            // @todo - if ttl, details record, active == 0 and softdelete and use aggy to update logs in Client and User
+            $client_aggy->persist();
+            Alert::success("Campaign {$campaign->name} has been updated")->flash();
+            Alert::warning("Campaign {$campaign->name} is not active.")->flash();
+            return Redirect::route('comms.email-campaigns.edit', $id);
+        }
     }
 
     public function st_index()
@@ -577,15 +714,25 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        $campaign = SmsCampaigns::find($id);
-        $templates = SmsTemplates::whereClientId($campaign->client_id)
-            ->whereActive('1')
-            ->get();
+        $available_templates = [];
+        $available_audiences = [];
+        $campaign = SmsCampaigns::whereId($id)->with('assigned_template')->first();
+        $templates = SmsTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
+        foreach ($templates as $template)
+        {
+            $available_templates[$template->id] = $template->toArray();
+        }
+        $audiences = CommAudience::whereClientId($campaign->client_id)->whereActive('1')->get();
+        foreach ($audiences as $audience)
+        {
+            $available_audiences[$audience->id] = $audience->toArray();
+        }
         // @todo - need to build access validation here.
-
         return Inertia::render('Comms/SMS/Campaigns/EditSmsCampaign', [
             'campaign' => $campaign,
-            'templates' => $templates
+            'templates' => $available_templates,
+            'audiences' => $available_audiences,
+            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : ''
         ]);
     }
 
@@ -613,8 +760,127 @@ class MassCommunicationsController extends Controller
         return Redirect::route('comms.sms-campaigns.edit', ['id' => $new_campaign->id]);
     }
 
-    public function sc_update()
+    public function sc_update($id)
     {
+        $data = request()->validate([
+                'id' => 'required|exists:sms_campaigns,id',
+                'name' => 'required',
+                'active' => 'sometimes|bool',
+                'schedule_date' => 'sometimes',
+                'schedule' => 'sometimes',
+                'sms_template_id' => 'sometimes',
+                'audience_id' => 'sometimes',
+                'client_id' => 'required|exists:clients,id',
+                'created_by_user_id' => 'required',
+            ]
+        );
 
+        $client_aggy = ClientAggregate::retrieve($data['client_id']);
+        $campaign = SmsCampaigns::whereId($data['id'])->with('assigned_template')->first();
+        $old_values = $campaign->toArray();
+
+        if($data['active'])
+        {
+            // @todo - logic to activate the campaign, or update stuff if it is already so
+            return Redirect::route('comms.sms-campaigns');
+        }
+        else
+        {
+            // unset schedule and schedule_date if set and use aggy to update logs
+            if(!is_null($campaign->schedule))
+            {
+                $campaign->schedule = null;
+                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule', $old_values['schedule'], $data['schedule']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // unset schedule_date if set and use aggy to update logs or skip
+            if(!is_null($campaign->schedule_date))
+            {
+                $campaign->schedule_date = null;
+                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule_date', $old_values['schedule_date'], $data['schedule_date']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // if name is different, change and use aggy to update logs
+            if($old_values['name'] != $data['name'])
+            {
+                $campaign->name = $data['name'];
+                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'name', $old_values['name'], $data['name']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // @todo - if audience_id is not null, set it in campaign_details and use aggy to update logs in Client and Audiences and User
+            if(array_key_exists('audience_id', $data) && (!is_null($data['audience_id'])))
+            {
+                // @todo - check if an audience is already set, deactivate and softdelete if so and log
+
+            }
+
+            // @todo - if sms_template_id is not null, set it in campaign_details and use aggy to update logs in Client and Templates and User
+            if(array_key_exists('sms_template_id', $data))
+            {
+                if((!is_null($data['sms_template_id'])))
+                {
+                    if($old_values['active'] == 1) {
+                        // this means its getting shut off so
+                        if(!is_null($campaign->assigned_template))
+                        {
+                            $campaign->assigned_template->active = 0;
+                            $campaign->assigned_template->save();
+                            $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                        }
+                    }
+                    else {
+                        // it was never active so it's okay to assign a template if it wasn't already
+                        if(!is_null($campaign->assigned_template))
+                        {
+                            $campaign->assigned_template->active = 0;
+                            $campaign->assigned_template->save();
+
+                            if(($campaign->assigned_template->value != $data['sms_template_id']))
+                            {
+                                $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
+                                    ->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
+                            }
+                            else
+                            {
+                                $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                            }
+                        }
+                        else
+                        {
+                            $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
+                        }
+
+                    }
+                }
+                else
+                {
+                    if(!is_null($campaign->assigned_template))
+                    {
+                        $campaign->assigned_template->active = 0;
+                        $campaign->assigned_template->save();
+                        $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id);
+                    }
+                }
+            }
+
+            // @todo - if active == 1, set it to 0 and use aggy to update logs in Client and User
+            if($campaign->active == 1)
+            {
+
+            }
+
+            // @todo - make details relations
+            // @todo - if ttl, details record, active == 0 and softdelete and use aggy to update logs in Client and User
+            $client_aggy->persist();
+            Alert::success("Campaign {$campaign->name} has been updated")->flash();
+            Alert::warning("Campaign {$campaign->name} is not active.")->flash();
+            return Redirect::route('comms.sms-campaigns.edit', $id);
+        }
     }
 }
