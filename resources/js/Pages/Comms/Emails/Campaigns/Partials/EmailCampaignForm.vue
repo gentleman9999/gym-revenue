@@ -54,7 +54,7 @@
                 <p>When should we trigger this email?</p>
                 <select v-model="form.schedule_date" class="py-2">
                     <option value="now">Now</option>
-                    <option value="1hr">1hr</option>
+                    <option value="1HOUR">1hr</option>
                 </select>
                 <jet-input-error :message="form.errors.schedule_date" class="mt-2" />
             </div>
@@ -165,7 +165,7 @@ export default {
 
                 if(ready) {
                     if(this.form['schedule_date'] === 'now') {
-                        this.modalText = "Are you sure you are ready to launch this Campaign? You won't be able tp edit it afterwards.";
+                        this.modalText = "Are you sure you are ready to launch this Campaign? You won't be able to edit it afterwards.";
                     }
                     else{
                         this.modalText = 'If you continue, you WILL be able to update or cancel this launch until the campaign time. Are you sure you want to do this?';

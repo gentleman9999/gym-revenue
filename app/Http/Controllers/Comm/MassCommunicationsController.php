@@ -842,9 +842,85 @@ class MassCommunicationsController extends Controller
             ->first();
         $old_values = $campaign->toArray();
 
+        // just to start if name is different, change and use aggy to update log
+        if($old_values['name'] != $data['name'])
+        {
+            $campaign->name = $data['name'];
+            $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'name', $old_values['name'], $data['name']);
+            // @todo - log this in user_details in projector
+            $campaign->save();
+        }
+
         if($data['active'])
         {
-            // @todo - logic to activate the campaign, or update stuff if it is already so
+            // logic to activate the campaign, or update stuff if it is already so
+            if($old_values['schedule'] != $data['schedule'])
+            {
+                $campaign->schedule = $data['schedule'];
+                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule', $old_values['schedule'], $data['schedule']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            // @todo - convert the value to a date so that this works
+            if($old_values['schedule_date'] != $data['schedule_date'])
+            {
+                $campaign->schedule = $data['schedule_date'];
+                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule_date', $old_values['schedule_date'], $data['schedule_date']);
+                // @todo - log this in user_details in projector
+                $campaign->save();
+            }
+
+            if(!is_null($campaign->assigned_audience))
+            {
+                if($campaign->assigned_audience->value != $data['audience_id'])
+                {
+                    $campaign->assigned_audience->active = 0;
+                    $campaign->assigned_audience->save();
+
+                    $client_aggy = $client_aggy->unassignAudienceFromSMSCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id)
+                        ->assignAudienceToSMSCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                }
+
+            }
+            else
+            {
+                $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['assigned_template'], $campaign->id, request()->user()->id);
+            }
+
+            if(!is_null($campaign->assigned_template))
+            {
+                if($campaign->assigned_template->value != $data['sms_template_id'])
+                {
+                    $campaign->assigned_template->active = 0;
+                    $campaign->assigned_template->save();
+
+                    $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
+                        ->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
+                }
+
+            }
+            else
+            {
+                $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['assigned_template'], $campaign->id, request()->user()->id);
+            }
+
+            if($data['schedule_date'] == 'now')
+            {
+                $fire_date = date('Y-m-d H:i:s');
+            }
+            else
+            {
+                $fire_date = date('Y-m-d H:i:s', strtotime('now +'.$data['schedule_date']));
+            }
+
+            // @todo - active = 1 save() with aggy launchCampaign event
+            // @todo - do the same for email campaign readies
+
+            $client_aggy->persist();
+            Alert::success("Campaign {$campaign->name} has been updated")->flash();
+            Alert::success("Campaign {$campaign->name} is now active!")->flash();
+
             return Redirect::route('comms.sms-campaigns');
         }
         else
@@ -863,15 +939,6 @@ class MassCommunicationsController extends Controller
             {
                 $campaign->schedule_date = null;
                 $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule_date', $old_values['schedule_date'], $data['schedule_date']);
-                // @todo - log this in user_details in projector
-                $campaign->save();
-            }
-
-            // if name is different, change and use aggy to update logs
-            if($old_values['name'] != $data['name'])
-            {
-                $campaign->name = $data['name'];
-                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'name', $old_values['name'], $data['name']);
                 // @todo - log this in user_details in projector
                 $campaign->save();
             }
