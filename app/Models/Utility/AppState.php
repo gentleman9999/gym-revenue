@@ -21,4 +21,18 @@ class AppState extends Model
     protected $fillable = [
         'name', 'slug', 'desc', 'value', 'misc'
     ];
+
+    public static function isSimuationMode()
+    {
+        $results = true;
+
+        $record = self::whereSlug('is-simulation-mode')->first();
+
+        if(!is_null($record))
+        {
+            $results = ($record->value == '1');
+        }
+
+        return $results;
+    }
 }

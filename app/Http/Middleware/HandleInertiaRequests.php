@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Prologue\Alerts\Facades\Alert;
@@ -44,6 +45,7 @@ class HandleInertiaRequests extends Middleware
                 'user.id' => $request->user()->id,
                 'user.all_locations' => $request->user()->allLocations(),
                 'user.current_client_id' => $request->user()->currentClientId(),
+                'app_state.is_simulation_mode' => AppState::isSimuationMode()
             ];
         }
         $alerts = Alert::getMessages();
