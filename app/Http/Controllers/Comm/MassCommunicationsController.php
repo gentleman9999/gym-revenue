@@ -862,11 +862,18 @@ class MassCommunicationsController extends Controller
                 $campaign->save();
             }
 
-            // @todo - convert the value to a date so that this works
+            if($data['schedule_date'] == 'now')
+            {
+                $fire_date = date('Y-m-d H:i:s');
+            }
+            else
+            {
+                $fire_date = date('Y-m-d H:i:s', strtotime('now +'.$data['schedule_date']));
+            }
             if($old_values['schedule_date'] != $data['schedule_date'])
             {
-                $campaign->schedule = $data['schedule_date'];
-                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule_date', $old_values['schedule_date'], $data['schedule_date']);
+                $campaign->schedule = $fire_date;
+                $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule_date', $old_values['schedule_date'], $fire_date);
                 // @todo - log this in user_details in projector
                 $campaign->save();
             }
@@ -905,21 +912,27 @@ class MassCommunicationsController extends Controller
                 $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['assigned_template'], $campaign->id, request()->user()->id);
             }
 
-            if($data['schedule_date'] == 'now')
-            {
-                $fire_date = date('Y-m-d H:i:s');
-            }
-            else
-            {
-                $fire_date = date('Y-m-d H:i:s', strtotime('now +'.$data['schedule_date']));
-            }
 
-            // @todo - active = 1 save() with aggy launchCampaign event
+
+            // active = 1 save() with aggy launchCampaign event
             // @todo - do the same for email campaign readies
+            $campaign->active = 1;
+            $campaign->save();
+            try {
+                $client_aggy = $client_aggy->launchSMSCampaign($campaign->id, $fire_date, request()->user());
+                $client_aggy->persist();
+                Alert::success("Campaign {$campaign->name} has been updated")->flash();
+                Alert::success("Campaign {$campaign->name} is now active!")->flash();
+            }
+            catch(\Exception $e)
+            {
+                // @todo - send an Alert flash indicting the fail.
+                // @todo - revert all the changes made
+                Alert::error("Campaign {$old_values['name']} encountered")->flash();
+                Alert::error("Campaign {$old_values['name']} was not updated")->flash();
+                Alert::warning("Campaign {$old_values['name']} data was reverted and not active.")->flash();
+            }
 
-            $client_aggy->persist();
-            Alert::success("Campaign {$campaign->name} has been updated")->flash();
-            Alert::success("Campaign {$campaign->name} is now active!")->flash();
 
             return Redirect::route('comms.sms-campaigns');
         }

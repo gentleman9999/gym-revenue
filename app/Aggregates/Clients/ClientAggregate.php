@@ -11,10 +11,12 @@ use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
@@ -105,6 +107,12 @@ class ClientAggregate extends AggregateRoot
         return $this;
     }
 
+    public function launchEmailCampaign(string $campaign_id, string $launch_date, string $launched_by_user)
+    {
+        $this->recordThat(new EmailCampaignLaunched($this->uuid(), $campaign_id, $launch_date, $launched_by_user));
+        return $this;
+    }
+
     public function assignEmailTemplateToCampaign($template_id, $campaign_id, $created_by_user_id)
     {
         $this->recordThat(new EmailTemplateAssignedToEmailCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
@@ -149,6 +157,12 @@ class ClientAggregate extends AggregateRoot
     public function unassignSmsTemplateFromCampaign($template_id, $campaign_id, $created_by_user_id)
     {
         $this->recordThat(new SMSTemplateUnAssignedFromSMSCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
+        return $this;
+    }
+
+    public function launchSMSCampaign(string $campaign_id, string $launch_date, string $launched_by_user)
+    {
+        $this->recordThat(new SmsCampaignLaunched($this->uuid(), $campaign_id, $launch_date, $launched_by_user));
         return $this;
     }
 

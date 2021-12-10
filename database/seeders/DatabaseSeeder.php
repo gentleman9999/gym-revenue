@@ -8,6 +8,9 @@ use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
+use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
+use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
+use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -29,6 +32,16 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         VarDumper::dump('Setting the initial app state');
         $this->call(AppStateSeeder::class);
+
+        // \App\Models\User::factory(10)->create();
+        VarDumper::dump('Creating Provider Types');
+        $this->call(ProviderTypeSeeder::class);
+
+        VarDumper::dump('Creating Gateways Providers');
+        $this->call(GatewayProviderSeeder::class);
+
+        VarDumper::dump('Adding Gateway Provider Details');
+        $this->call(GatewayProviderDetailsSeeder::class);
 
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
