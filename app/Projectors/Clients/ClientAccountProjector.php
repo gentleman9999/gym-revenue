@@ -115,12 +115,14 @@ class ClientAccountProjector extends Projector
             'value' => $template->id,
         ]);
 
+        /*
         ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'email_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
         ]);
+        */
     }
 
     public function onEmailTemplateUpdated(EmailTemplateUpdated $event)
@@ -268,13 +270,14 @@ class ClientAccountProjector extends Projector
             'detail' => 'sms_template',
             'value' => $template->id,
         ]);
-
+        /*
         ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'sms_gateway',
             'value' => 'default_cnb',
             'misc' => ['msg' => 'The SMS Provider was set to CnB Twilio and will be billed.']
         ]);
+        */
     }
 
     public function onSmsTemplateUpdated(SmsTemplateUpdated $event)

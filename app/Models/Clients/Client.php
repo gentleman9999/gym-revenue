@@ -58,6 +58,8 @@ class Client extends Model
                 ->createDefaultTeam($default_team_name)
                 ->createAudience("{$client->name} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
                 ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
+                ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
+                ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
                 ->persist();
         });
     }

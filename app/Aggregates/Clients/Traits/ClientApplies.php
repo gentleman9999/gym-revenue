@@ -19,6 +19,7 @@ use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
+use App\StorableEvents\Clients\Activity\GatewayProviders\GatewayIntegrationCreated;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
@@ -79,7 +80,6 @@ trait ClientApplies
         $this->comm_history[] = $history;
     }
 
-
     public function applyAudienceUnAssignedFromEmailCampaign(AudienceUnAssignedFromEmailCampaign $event)
     {
         $history = [
@@ -107,7 +107,6 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
-
 
     public function applyEmailTemplateCreated(EmailTemplateCreated $event)
     {
@@ -263,4 +262,17 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
+
+    public function applyGatewayIntegrationCreated(GatewayIntegrationCreated $event)
+    {
+        $history = [
+            'activity' => 'Gateway Integration Created',
+            'type' => $event->type,
+            'gateway_slug' => $event->slug,
+            'date' => date('Y-m-d', strtotime($event->metaData()['created-at'])),
+        ];
+        $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
+        $this->provider_history[] = $history;
+    }
+
 }

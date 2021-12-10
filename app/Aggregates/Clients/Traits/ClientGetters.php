@@ -2,13 +2,12 @@
 
 namespace App\Aggregates\Clients\Traits;
 
-use App\Models\Comms\EmailTemplates;
 use App\Models\User;
-use SebastianBergmann\Template\Template;
 
 trait ClientGetters
 {
     protected $comm_history = [];
+    protected $provider_history = [];
 
     public function getCommunicationHistoryLog() : array
     {
