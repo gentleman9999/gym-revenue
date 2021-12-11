@@ -56,11 +56,8 @@ import GymRevenueDataCards from "./GymRevenueDataCards";
 import GymRevenueDataTable from "./GymRevenueDataTable";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import JetBarContainer from "@/Components/JetBarContainer";
-import pickBy from "lodash/pickBy";
-import throttle from "lodash/throttle";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
-import mapValues from "lodash/mapValues";
 import {useSearchFilter} from "./helpers/useSearchFilter";
 
 export default defineComponent({
@@ -121,8 +118,12 @@ export default defineComponent({
         const defaultTopActions = {
             create: {
                 label: `Create ${props.modelName}`,
-                handler: () =>
-                    Inertia.visit(route(`${props.baseRoute}.create`)),
+                // handler: () =>
+                //     Inertia.visit(route(`${props.baseRoute}.create`)),
+                handler: () => {
+                    console.log('handler',`${props.baseRoute}.create`, route(`${props.baseRoute}.create`) )
+                    Inertia.visit(route(`${props.baseRoute}.create`));
+                },
                 class: ["btn-primary"],
             },
         };

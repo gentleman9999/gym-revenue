@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( functio
     Route::get('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_index')->name('comms.email-campaigns');
     Route::get('/email-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_create')->name('comms.email-campaigns.create');
     Route::get('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_edit')->name('comms.email-campaigns.edit');
-    Route::post('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_create')->name('comms.email-campaigns.create');
+    Route::post('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_create')->name('comms.email-campaigns.store');
     Route::put('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_update')->name('comms.email-campaigns.update');
     Route::delete('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_trash')->name('comms.email-campaigns.trash');
     Route::post('/email-campaigns/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_restore')->name('email.sms-campaigns.restore');
