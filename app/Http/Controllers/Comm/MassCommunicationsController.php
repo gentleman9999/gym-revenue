@@ -599,7 +599,7 @@ class MassCommunicationsController extends Controller
             $client_aggy->persist();
             Alert::success("Campaign {$campaign->name} has been updated")->flash();
             Alert::warning("Campaign {$campaign->name} is not active.")->flash();
-            return Redirect::route('comms.email-campaigns', $id);
+            return Redirect::route('comms.email-campaigns.edit', $id);
         }
     }
 
@@ -751,7 +751,7 @@ class MassCommunicationsController extends Controller
             $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
             ->with('creator')
             ->filter(request()->only('search', 'trashed'))
-                ->paginate($page_count);
+            ->paginate($page_count);
         }
 
         return Inertia::render('Comms/SMS/Campaigns/SmsCampaignsIndex', [
@@ -820,7 +820,7 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        return Redirect::route('comms.sms-campaigns', ['id' => $new_campaign->id]);
+        return Redirect::route('comms.sms-campaigns.edit', ['id' => $new_campaign->id]);
     }
 
     public function sc_update($id)
@@ -913,9 +913,7 @@ class MassCommunicationsController extends Controller
             {
                 $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['assigned_template'], $campaign->id, request()->user()->id);
             }
-
-
-
+            
             // active = 1 save() with aggy launchCampaign event
             // @todo - do the same for email campaign readies
             $campaign->active = 1;
@@ -1076,7 +1074,7 @@ class MassCommunicationsController extends Controller
             $client_aggy->persist();
             Alert::success("Campaign {$campaign->name} has been updated")->flash();
             Alert::warning("Campaign {$campaign->name} is not active.")->flash();
-            return Redirect::route('comms.sms-campaigns', $id);
+            return Redirect::route('comms.sms-campaigns.edit', $id);
         }
     }
 }
