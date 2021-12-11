@@ -599,7 +599,7 @@ class MassCommunicationsController extends Controller
             $client_aggy->persist();
             Alert::success("Campaign {$campaign->name} has been updated")->flash();
             Alert::warning("Campaign {$campaign->name} is not active.")->flash();
-            return Redirect::route('comms.email-campaigns.edit', $id);
+            return Redirect::route('comms.email-campaigns', $id);
         }
     }
 
@@ -820,7 +820,7 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        return Redirect::route('comms.sms-campaigns.edit', ['id' => $new_campaign->id]);
+        return Redirect::route('comms.sms-campaigns', ['id' => $new_campaign->id]);
     }
 
     public function sc_update($id)
@@ -1076,7 +1076,7 @@ class MassCommunicationsController extends Controller
             $client_aggy->persist();
             Alert::success("Campaign {$campaign->name} has been updated")->flash();
             Alert::warning("Campaign {$campaign->name} is not active.")->flash();
-            return Redirect::route('comms.sms-campaigns.edit', $id);
+            return Redirect::route('comms.sms-campaigns', $id);
         }
     }
 }

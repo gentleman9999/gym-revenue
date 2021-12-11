@@ -59,7 +59,6 @@
             </div>
 
             <!-- Page Content -->
-
             <gym-revenue-crud
                 :resource="historyFeed"
                 :fields="fields"

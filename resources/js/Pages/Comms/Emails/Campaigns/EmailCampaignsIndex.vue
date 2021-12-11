@@ -20,7 +20,7 @@
             :fields="fields"
             :resource="campaigns"
             :actions="actions"
-            :top-actions="{ create: { label: 'New Campaign' } }"
+            :top-actions="{ create: { label: 'New Campaign'} }"
         />
         <confirm
             title="Really Trash?"
