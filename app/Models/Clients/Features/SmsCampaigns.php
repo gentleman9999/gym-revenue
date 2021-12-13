@@ -39,6 +39,16 @@ class SmsCampaigns extends Model
         return $this->detail()->whereDetail('template_assigned')->whereActive(1);
     }
 
+    public function schedule()
+    {
+        return $this->detail()->whereDetail('schedule')->whereActive(1);
+    }
+
+    public function schedule_date()
+    {
+        return $this->detail()->whereDetail('schedule_date')->whereActive(1);
+    }
+
     public function unassigned_template()
     {
         return $this->detail()->whereDetail('template_assigned')->whereActive(0);

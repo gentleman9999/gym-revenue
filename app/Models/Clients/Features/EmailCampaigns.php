@@ -54,6 +54,16 @@ class EmailCampaigns extends Model
         return $this->detail()->whereDetail('audience_assigned')->whereActive(0);
     }
 
+    public function schedule()
+    {
+        return $this->detail()->whereDetail('schedule')->whereActive(1);
+    }
+
+    public function schedule_date()
+    {
+        return $this->detail()->whereDetail('schedule_date')->whereActive(1);
+    }
+
     protected static function booted()
     {
         static::created(function($campaign) {

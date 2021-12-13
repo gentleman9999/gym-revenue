@@ -917,6 +917,7 @@ class MassCommunicationsController extends Controller
         $client_aggy = ClientAggregate::retrieve($data['client_id']);
         $campaign = SmsCampaigns::whereId($data['id'])
             ->with('assigned_template')->with('assigned_audience')
+            ->with('schedule')->with('schedule_date')
             ->first();
         $old_values = $campaign->toArray();
 
@@ -933,13 +934,18 @@ class MassCommunicationsController extends Controller
         {
             // logic to activate the campaign, or update stuff if it is already so
             //TODO:This fails because old_values['schedule'] does not exist;
-            if($old_values['schedule'] != $data['schedule'])
+            if(is_null($old_values['schedule']) || ($old_values['schedule']['value'] != $data['schedule']))
             {
                 $campaign->schedule = $data['schedule'];
                 $client_aggy = $client_aggy->updateSmsCampaign($campaign->id, request()->user()->id,'schedule', $old_values['schedule'], $data['schedule']);
                 // @todo - log this in user_details in projector
                 $campaign->save();
             }
+            else
+            {
+
+            }
+
 
             if($data['schedule_date'] == 'now')
             {
