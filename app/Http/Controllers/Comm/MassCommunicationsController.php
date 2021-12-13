@@ -913,7 +913,7 @@ class MassCommunicationsController extends Controller
             {
                 $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['assigned_template'], $campaign->id, request()->user()->id);
             }
-            
+
             // active = 1 save() with aggy launchCampaign event
             // @todo - do the same for email campaign readies
             $campaign->active = 1;
