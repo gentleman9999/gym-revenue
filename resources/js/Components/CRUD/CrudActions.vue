@@ -1,9 +1,9 @@
 <template>
     <div class="dropdown dropdown-end">
         <slot name="trigger">
-            <button class="btn btn-ghost">
+            <div class="btn btn-ghost">
                 <font-awesome-icon icon="ellipsis-h" size="lg" />
-            </button>
+            </div>
         </slot>
         <slot name="before" />
         <slot>
