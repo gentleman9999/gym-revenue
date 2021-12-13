@@ -19,7 +19,7 @@
                     class="mt-2"
                     :value="true"
                 />
-                <label for="name" class="label ml-4"
+                <label for="active" class="label ml-4"
                     >Activate (allows assigning to Campaigns)</label
                 >
                 <jet-input-error :message="form.errors.active" class="mt-2" />
@@ -139,39 +139,15 @@
             </Button>
         </template>
     </jet-form-section>
-    <sweet-modal
-        v-if="buttonText === 'Update'"
-        :title="modalText"
-        width="85%"
-        overlayTheme="dark"
-        modal-theme="dark"
-        enable-mobile-fullscreen
-        ref="modal"
+
+    <confirm
+        v-if="buttonText === 'Update' && showConfirm"
+        title="Are you sure?"
+        @confirm="submitForm();showConfirm=false;"
+        @cancel="showConfirm=false;"
     >
-        <Button
-            class="btn-secondary"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
-            :loading="form.processing"
-            type="button"
-            @click="
-                submitForm();
-                closeModal();
-            "
-        >
-            Yes
-        </Button>
-        <Button
-            class="btn-warning"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
-            :loading="form.processing"
-            type="button"
-            @click="closeModal"
-        >
-            Nope
-        </Button>
-    </sweet-modal>
+        {{ modalText }}
+    </confirm>
 </template>
 
 <script>
@@ -182,7 +158,7 @@ import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import Confirm from "@/Components/Confirm";
 
 export default {
     name: "SmsCampaignForm",
@@ -192,7 +168,7 @@ export default {
         JetFormSection,
         SmsFormControl,
         JetInputError,
-        SweetModal,
+        Confirm,
     },
     props: [
         "clientId",
@@ -242,6 +218,7 @@ export default {
         return {
             modalText: "",
             activate: false,
+            showConfirm: false,
         };
     },
     methods: {
@@ -282,11 +259,11 @@ export default {
                 }
 
                 this.activate = ready;
-                this.$refs.modal.open();
+                this.showConfirm = true;
             } else {
                 this.modalText =
                     "This will undo your launch if you set one and shut off your drip. Are you sure?";
-                this.$refs.modal.open();
+                this.showConfirm = true;
             }
         },
         submitForm(active) {

@@ -19,7 +19,7 @@
             </div>
             <div class="form-control col-span-6 flex flex-row" v-if="canActivate">
                 <input type="checkbox" v-model="form.active" autofocus id="active" class="mt-2" :value="true"/>
-                <label for="name" class="label ml-4">Activate (allows assigning to Campaigns)</label>
+                <label for="active" class="label ml-4">Activate (allows assigning to Campaigns)</label>
                 <jet-input-error :message="form.errors.active" class="mt-2" />
             </div>
 <!--                <input id="client_id" type="hidden" v-model="form.client_id"/>-->

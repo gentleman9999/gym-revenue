@@ -6,6 +6,9 @@ if (!function_exists('paginate_array')) {
 
     function paginate_array($request, $array, $per_page = 5): LengthAwarePaginator
     {
+        if(!is_array($array)){
+            $array=$array->toArray();
+        }
         $total = count($array);
         $current_page = $request->input("page") ?? 1;
 

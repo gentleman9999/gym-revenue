@@ -6,7 +6,7 @@
                     SMS Template Management
                 </h2>
             </div>
-            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg-justify-start">
+            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start">
                 <inertia-link
                     class="btn justify-self-end"
                     :href="route('comms.dashboard')">

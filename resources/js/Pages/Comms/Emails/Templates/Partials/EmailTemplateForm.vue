@@ -45,7 +45,7 @@
                     class="mt-2"
                     :value="true"
                 />
-                <label for="name" class="label ml-4"
+                <label for="active" class="label ml-4"
                     >Activate (allows assigning to Campaigns)</label
                 >
                 <jet-input-error :message="form.errors.active" class="mt-2" />

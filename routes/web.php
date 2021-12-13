@@ -50,13 +50,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( functio
     Route::get('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_edit')->name('comms.email-templates.edit');
     Route::post('/email-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_store')->name('comms.email-templates.store');
     Route::put('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_update')->name('comms.email-templates.update');
-    Route::delete('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_trash')->name('comms.email-templates.trash');
-    Route::post('/email-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_restore')->name('comms.email-templates.restore');
+        Route::delete('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_trash')->name('comms.email-templates.trash');
+        Route::post('/email-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@et_restore')->name('comms.email-templates.restore');
 
     Route::get('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_index')->name('comms.email-campaigns');
     Route::get('/email-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_create')->name('comms.email-campaigns.create');
     Route::get('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_edit')->name('comms.email-campaigns.edit');
-    Route::post('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_create')->name('comms.email-campaigns.store');
+    Route::post('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_store')->name('comms.email-campaigns.store');
     Route::put('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_update')->name('comms.email-campaigns.update');
     Route::delete('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_trash')->name('comms.email-campaigns.trash');
     Route::post('/email-campaigns/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class.'@ec_restore')->name('email.sms-campaigns.restore');
