@@ -14,9 +14,11 @@ use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+use function Aws\filter;
 
 class MassCommunicationsController extends Controller
 {
@@ -213,6 +215,22 @@ class MassCommunicationsController extends Controller
             }
         }
 
+        //search filter
+        $search = $request->query('search');
+        $history_log = collect($history_log)->filter(function($value, $key) use($search){
+            if(str_contains(strtolower($value['type']), strtolower($search))){
+                return true;
+            }else if(str_contains(strtolower($value['recordName']), strtolower($search))){
+                return true;
+            }else if(str_contains(strtolower($value['date']), strtolower($search))){
+                return true;
+            }
+            else if(str_contains(strtolower($value['by']), strtolower($search))){
+                return true;
+            }
+            return false;
+        });
+
         return Inertia::render('Comms/MassCommsDashboard', [
             'title' => 'Mass Communications',
             'audiences' => $aud_options,
@@ -285,7 +303,7 @@ class MassCommunicationsController extends Controller
             $template['active'] = '0';
             $template['client_id'] = $client_id;
             $template['created_by_user_id'] = $request->user()->id;
-            EmailTemplates::create($template);
+            $new_template = EmailTemplates::create($template);
             Alert::info("New Template {$template['name']} was created")->flash();
         }
         catch(\Exception $e)
@@ -295,6 +313,8 @@ class MassCommunicationsController extends Controller
         }
 
         return Redirect::route('comms.email-templates');
+//        return Redirect::route('comms.email-templates.edit', ['id' => $new_template->id]);
+
     }
 
     public function et_update(Request $request)
@@ -422,6 +442,30 @@ class MassCommunicationsController extends Controller
         ]);
     }
 
+    public function ec_store()
+    {
+        $template = request()->validate([
+                'name' => 'required',
+            ]
+        );
+        $client_id = request()->user()->currentClientId();
+
+        try {
+            $template['active'] = '0';
+            $template['client_id'] = $client_id;
+            $template['created_by_user_id'] = request()->user()->id;
+            $new_campaign = EmailCampaigns::create($template);
+            Alert::info("New Campaigns {$template['name']} was created")->flash();
+        }
+        catch(\Exception $e)
+        {
+            Alert::error("New Template {$template['name']} could not be created")->flash();
+            return redirect()->back();
+        }
+
+        return Redirect::route('comms.email-campaigns.edit', ['id' => $new_campaign->id]);
+    }
+
     public function ec_update($id)
     {
         //dd(request()->all());
@@ -447,6 +491,7 @@ class MassCommunicationsController extends Controller
         if($data['active'])
         {
             // @todo - logic to activate the campaign, or update stuff if it is already so
+            Alert::warning("Campaign '{$campaign->name}' not activated.  We still need to code this!. ")->flash();
             return Redirect::route('comms.email-campaigns');
         }
         else
@@ -603,6 +648,35 @@ class MassCommunicationsController extends Controller
         }
     }
 
+    public function ec_trash($id)
+    {
+        if (!$id) {
+            Alert::error("No Campaign ID provided")->flash();
+            return Redirect::back();
+        }
+
+        $campaign = EmailCampaigns::findOrFail($id);
+        $success = $campaign->deleteOrFail();
+        Alert::success("Campaign '{$campaign->name}' trashed")->flash();
+
+
+        return Redirect::back();
+    }
+
+    public function ec_restore(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Campaign ID provided")->flash();
+            return Redirect::back();
+        }
+        $campaign = EmailCampaigns::withTrashed()->findOrFail($id);
+        $campaign->restore();
+
+        Alert::success("Campaign '{$campaign->name}' restored")->flash();
+
+        return Redirect::back();
+    }
+
     public function st_index()
     {
         $client_id = request()->user()->currentClientId();
@@ -665,7 +739,7 @@ class MassCommunicationsController extends Controller
             $template['active'] = '0';
             $template['client_id'] = $client_id;
             $template['created_by_user_id'] = $request->user()->id;
-            SmsTemplates::create($template);
+            $new_template = SmsTemplates::create($template);
             Alert::info("New Template {$template['name']} was created")->flash();
         }
         catch(\Exception $e)
@@ -677,6 +751,8 @@ class MassCommunicationsController extends Controller
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
         return Redirect::route('comms.sms-templates');
+//        return Redirect::route('comms.sms-templates.edit', ['id' => $new_template->id]);
+
     }
 
     public function st_update(Request $request)
@@ -856,6 +932,7 @@ class MassCommunicationsController extends Controller
         if($data['active'])
         {
             // logic to activate the campaign, or update stuff if it is already so
+            //TODO:This fails because old_values['schedule'] does not exist;
             if($old_values['schedule'] != $data['schedule'])
             {
                 $campaign->schedule = $data['schedule'];
@@ -1076,5 +1153,33 @@ class MassCommunicationsController extends Controller
             Alert::warning("Campaign {$campaign->name} is not active.")->flash();
             return Redirect::route('comms.sms-campaigns.edit', $id);
         }
+    }
+    public function sc_trash($id)
+    {
+        if (!$id) {
+            Alert::error("No Campaign ID provided")->flash();
+            return Redirect::back();
+        }
+
+        $campaign = SmsCampaigns::findOrFail($id);
+        $success = $campaign->deleteOrFail();
+        Alert::success("Campaign '{$campaign->name}' trashed")->flash();
+
+
+        return Redirect::back();
+    }
+
+    public function sc_restore(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Campaign ID provided")->flash();
+            return Redirect::back();
+        }
+        $campaign = SmsCampaigns::withTrashed()->findOrFail($id);
+        $campaign->restore();
+
+        Alert::success("Campaign '{$campaign->name}' restored")->flash();
+
+        return Redirect::back();
     }
 }

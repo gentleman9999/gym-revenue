@@ -9,14 +9,14 @@
     >
         <slot />
         <template #button >
-            <slot name="confirmButton">
-                <button @click="emit('confirm'); modal.close()" class="btn btn-success">
-                    Confirm
-                </button>
-            </slot>
             <slot name="cancelButton">
                 <button @click="emit('cancel'); modal.close()" class="btn btn-error">
                     Cancel
+                </button>
+            </slot>
+            <slot name="confirmButton">
+                <button @click="emit('confirm'); modal.close()" class="btn btn-success">
+                    Confirm
                 </button>
             </slot>
         </template>

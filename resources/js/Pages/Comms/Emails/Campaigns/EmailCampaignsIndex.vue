@@ -70,7 +70,7 @@ export default defineComponent({
             confirmTrash.value = id;
         };
         const handleConfirmTrash = () => {
-            Inertia.delete(route("comms.sms-templates.trash", confirmTrash.value));
+            Inertia.delete(route("comms.sms-campaigns.trash", confirmTrash.value));
             confirmTrash.value = null;
         };
 
