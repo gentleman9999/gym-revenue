@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Aggregates\Clients\FileAggregate;
-use App\Models\Clients\Location;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -68,11 +66,6 @@ class FilesController extends Controller
 
         if($new_filename !== $old_filename){
             $file->updateOrFail($data);
-
-
-            FileAggregate::retrieve($file->id)
-                ->renameFile($request->user()->id, $old_filename, $new_filename)
-                ->persist();
         }
         Alert::success("File '{$file->filename}' updated")->flash();
 
@@ -102,10 +95,6 @@ class FilesController extends Controller
             }else{
                 Alert::error("An error occurred while creating'{$file->filename}' ")->flash();
             }
-
-            FileAggregate::retrieve($file->id)
-                ->createFile($request->user()->id, $file->key, $file->client_id)
-                ->persist();
         }
         return Redirect::route('files');
     }
@@ -120,11 +109,6 @@ class FilesController extends Controller
         $file = File::findOrFail($id);
         $file->deleteOrFail();
         Alert::success("File '{$file->filename}' trashed")->flash();
-
-
-        FileAggregate::retrieve($file->id)
-            ->trashFile($request->user()->id)
-            ->persist();
 
         return Redirect::route('files');
     }
@@ -141,11 +125,6 @@ class FilesController extends Controller
 
         Alert::success("File '{$file->filename}' permanently deleted")->flash();
 
-        FileAggregate::retrieve($file->id)
-            ->deleteFile($request->user()->id, $file->key)
-            ->persist();
-
-
         return Redirect::route('files');
     }
 
@@ -158,10 +137,6 @@ class FilesController extends Controller
         $file = File::withTrashed()->findOrFail($id);
         $file->restore();
         Alert::success("File '{$file->filename}' restored")->flash();
-
-        FileAggregate::retrieve($file->id)
-            ->restoreFile($request->user()->id)
-            ->persist();
 
         return Redirect::back();
     }
