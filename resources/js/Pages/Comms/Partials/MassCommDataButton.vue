@@ -5,8 +5,8 @@
     >
         <slot />
         <div class="m-2 flex gap-1">
-            <span class="bg-info p-1" title="Total">{{ total }}</span>
-            <span class="p-1 bg-success" title="Active">{{ active }}</span>
+            <span class="bg-info p-1 tooltip" :data-tip="total  + ' Total'">{{ total }}</span>
+            <span class="p-1 bg-success tooltip" :data-tip="total  + ' Active'">{{ active }}</span>
         </div>
     </inertia-link>
 </template>

@@ -54,6 +54,22 @@ class MassCommunicationsController extends Controller
                 'prospects' => Lead::whereClientId($client_id)->count(),
                 'conversions' => 0
             ];
+            $results['sms_templates'] = [
+                'created' => SmsTemplates::whereClientId($client_id)->count(),
+                'active' => SmsTemplates::whereClientId($client_id)->whereActive(1)->count(),
+            ];
+            $results['sms_campaigns'] = [
+                'created' => SmsCampaigns::whereClientId($client_id)->count(),
+                'active' => SmsCampaigns::whereClientId($client_id)->whereActive(1)->count(),
+            ];
+            $results['email_templates'] = [
+                'created' => EmailTemplates::whereClientId($client_id)->count(),
+                'active' => EmailTemplates::whereClientId($client_id)->whereActive(1)->count(),
+            ];
+            $results['email_campaigns'] = [
+                'created' => EmailCampaigns::whereClientId($client_id)->count(),
+                'active' => EmailCampaigns::whereClientId($client_id)->whereActive(1)->count(),
+            ];
         } else {
             $results['total_audience'] = 25;
             $results['audience_breakdown'] = [
