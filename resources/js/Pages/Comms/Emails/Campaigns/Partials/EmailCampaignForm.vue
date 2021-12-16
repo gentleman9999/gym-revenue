@@ -87,6 +87,7 @@
             >
                 <p>Select a firing schedule</p>
                 <select v-model="form.schedule" class="py-2">
+                    <option value="">Available Schedules</option>
                     <option value="drip">As Users are Added (Drip)</option>
                     <option value="bulk">All Subscribed Users (Bulk)</option>
                 </select>
@@ -98,10 +99,12 @@
                 v-if="form.active && form.schedule === 'bulk'"
             >
                 <p>When should we trigger this email?</p>
-                <select v-model="form.schedule_date" class="py-2">
-                    <option value="now">Now</option>
-                    <option value="1HOUR">1hr</option>
-                </select>
+                <date-picker v-model="form.schedule_date" dark :min-date=" new Date((new Date()).valueOf() - 1000*60*60*24)"/>
+<!--                <select v-model="form.schedule_date" class="py-2">-->
+<!--                    <option value="">Available Triggers</option>-->
+<!--                    <option value="now">Now</option>-->
+<!--                    <option value="1HOUR">1hr</option>-->
+<!--                </select>-->
                 <jet-input-error
                     :message="form.errors.schedule_date"
                     class="mt-2"
@@ -159,7 +162,8 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import Confirm from "@/Components/Confirm";
-
+import DatePicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css'
 export default {
     name: "EmailCampaignForm",
     components: {
@@ -169,6 +173,7 @@ export default {
         SmsFormControl,
         JetInputError,
         Confirm,
+        DatePicker
     },
     props: [
         "clientId",
@@ -197,8 +202,8 @@ export default {
             };
             operation = "Create";
         } else {
-            campaign["schedule_date"] = "now";
-            campaign["schedule"] = "bulk";
+            campaign["schedule_date"] = campaign.schedule_date?.value || '';
+            campaign["schedule"] = campaign.schedule?.value || '';
 
             campaign["email_template_id"] = props.assignedTemplate;
             campaign["audience_id"] = props.assignedAudience;

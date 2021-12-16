@@ -3,6 +3,9 @@
 namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
