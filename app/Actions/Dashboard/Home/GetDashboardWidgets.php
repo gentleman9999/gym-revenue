@@ -120,7 +120,7 @@ class GetDashboardWidgets
                 ],
                 [
                     'title' => 'Total MCU Films',
-                    'value' => "26",
+                    'value' => "27",
                     'type' => 'danger',
                     'icon' => 'message'
                 ],
