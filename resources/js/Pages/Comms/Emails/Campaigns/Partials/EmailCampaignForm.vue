@@ -3,8 +3,8 @@
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
-                <input type="text" v-model="form.name" autofocus id="name" />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
+                <input type="text" v-model="form.name" autofocus id="name"/>
+                <jet-input-error :message="form.errors.name" class="mt-2"/>
             </div>
 
             <div
@@ -17,19 +17,18 @@
                     autofocus
                     id="active"
                     class="mt-2"
-                    :value="true"
                 />
                 <label for="active" class="label ml-4"
-                    >Activate (allows assigning to Campaigns)</label
+                >Activate (allows assigning to Campaigns)</label
                 >
-                <jet-input-error :message="form.errors.active" class="mt-2" />
+                <jet-input-error :message="form.errors.active" class="mt-2" v-model="form.active"/>
             </div>
 
             <div
                 class="form-control col-span-3 flex flex-col"
                 v-if="form.active"
             >
-                <p>Select an audience.</p>
+                <p>Select an audience</p>
                 <select
                     v-if="audiences === undefined"
                     v-model="form.audience_id"
@@ -37,7 +36,7 @@
                 >
                     <option value="">No Audiences Available</option>
                 </select>
-                <select v-else v-model="form['audience_id']" class="py-2">
+                <select v-else v-model="form['audience_id']" class="py-2"  :disabled="!canEditActiveInputs">
                     <option value="">Available Audiences</option>
                     <option
                         v-for="(audience, idy) in audiences"
@@ -65,7 +64,8 @@
                 >
                     <option value="">No Templates Available</option>
                 </select>
-                <select v-else v-model="form.email_template_id" class="py-2">
+                <select v-else v-model="form.email_template_id" class="py-2" :disabled="!canEditActiveInputs"
+                >
                     <option value="">Available Templates</option>
                     <option
                         v-for="(template, idx) in templates"
@@ -86,12 +86,12 @@
                 v-if="form.active"
             >
                 <p>Select a firing schedule</p>
-                <select v-model="form.schedule" class="py-2">
+                <select v-model="form.schedule" class="py-2"  :disabled="!canEditActiveInputs">
                     <option value="">Available Schedules</option>
                     <option value="drip">As Users are Added (Drip)</option>
                     <option value="bulk">All Subscribed Users (Bulk)</option>
                 </select>
-                <jet-input-error :message="form.errors.schedule" class="mt-2" />
+                <jet-input-error :message="form.errors.schedule" class="mt-2"/>
             </div>
 
             <div
@@ -99,12 +99,13 @@
                 v-if="form.active && form.schedule === 'bulk'"
             >
                 <p>When should we trigger this email?</p>
-                <date-picker v-model="form.schedule_date" dark :min-date=" new Date((new Date()).valueOf() - 1000*60*60*24)"/>
-<!--                <select v-model="form.schedule_date" class="py-2">-->
-<!--                    <option value="">Available Triggers</option>-->
-<!--                    <option value="now">Now</option>-->
-<!--                    <option value="1HOUR">1hr</option>-->
-<!--                </select>-->
+                <date-picker v-model="form.schedule_date" dark :disabled="!canEditActiveInputs"
+                             :min-date=" new Date((new Date()).valueOf() - 1000*60*60*24)"/>
+                <!--                <select v-model="form.schedule_date" class="py-2">-->
+                <!--                    <option value="">Available Triggers</option>-->
+                <!--                    <option value="now">Now</option>-->
+                <!--                    <option value="1HOUR">1hr</option>-->
+                <!--                </select>-->
                 <jet-input-error
                     :message="form.errors.schedule_date"
                     class="mt-2"
@@ -127,7 +128,7 @@
             >
                 Cancel
             </Button>
-            <div class="flex-grow" />
+            <div class="flex-grow"/>
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
@@ -154,8 +155,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import {computed, ref} from "vue";
+import {useForm} from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -164,6 +165,7 @@ import JetInputError from "@/Jetstream/InputError";
 import Confirm from "@/Components/Confirm";
 import DatePicker from 'vue3-date-time-picker';
 import 'vue3-date-time-picker/dist/main.css'
+
 export default {
     name: "EmailCampaignForm",
     components: {
@@ -217,15 +219,26 @@ export default {
         };
         if (operation === "Create") {
             handleSubmit = () =>
-                form.post(route("comms.email-campaigns.store"));
+                form.transform((data) => {
+                    const transformed = {...data};
+                    if(data?.schedule_date){
+                        transformed.schedule_date= data.schedule_date.toISOString();
+                    }
+                    return transformed;
+                }).post(route("comms.email-campaigns.store"));
         }
 
-        return { form, buttonText: operation, handleSubmit, modal };
+        // const canEditActiveInputs = !props.campaign?.schedule_date;
+        // console.log({canEditActiveInputs: canEditActiveInputs});
+        const canEditActiveInputs = computed(()=>!props.campaign?.schedule_date || new Date() < new Date(props.campaign.schedule_date)  );
+        console.log({canEditActiveInputs: canEditActiveInputs.value});
+
+
+        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs};
     },
     data() {
         return {
             modalText: "",
-            activate: false,
             showConfirm: false,
         };
     },
@@ -266,7 +279,6 @@ export default {
                     }
                 }
 
-                this.activate = ready;
                 this.showConfirm = true;
             } else {
                 this.modalText =
@@ -275,7 +287,6 @@ export default {
             }
         },
         submitForm(active) {
-            this.form.active = this.activate;
             this.handleSubmit();
         },
         closeModal() {

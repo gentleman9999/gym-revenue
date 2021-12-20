@@ -15,6 +15,7 @@ use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -497,7 +498,6 @@ class MassCommunicationsController extends Controller
                 'created_by_user_id' => 'required',
             ]
         );
-        dd($data);
 
         $client_aggy = ClientAggregate::retrieve($data['client_id']);
         $campaign = EmailCampaigns::whereId($data['id'])
@@ -515,7 +515,7 @@ class MassCommunicationsController extends Controller
             $campaign->save();
         }
 
-        if($data['active'])
+        if($data['active'] && ($old_values['schedule_date'] === null || strtotime($old_values['schedule_date']['value']) < strtotime('now')))
         {
             // logic to activate the campaign, or update stuff if it is already so
 //            collect($data)->each(function($item, $key) use($old_values, $data, $client_aggy, $campaign){
@@ -536,7 +536,7 @@ class MassCommunicationsController extends Controller
 //                }
 //            });
             $client_aggy->persist();
-            if(is_null($old_values['schedule']['value']) || ($old_values['schedule']['value'] != $data['schedule']))
+            if(is_null($old_values['schedule']) || ($old_values['schedule']['value'] != $data['schedule']))
             {
 //                $campaign->schedule = $data['schedule'];
                 $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'schedule',  $data['schedule'], $old_values['schedule']->value ?? '');
@@ -579,7 +579,7 @@ class MassCommunicationsController extends Controller
             }
             else
             {
-                $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
+                $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
             }
 
             if(!is_null($campaign->assigned_template))
@@ -596,6 +596,9 @@ class MassCommunicationsController extends Controller
             }
             else
             {
+                if($old_values['schedule_date'] !== null &&  strtotime($old_values['schedule_date']['value']) < strtotime('now')){
+                    Alert::error("Campaign {$old_values['name']} was not updated. Schedule Date is in the past")->flash();
+                }
                 $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
             }
 
@@ -625,19 +628,19 @@ class MassCommunicationsController extends Controller
             // unset schedule and schedule_date if set and use aggy to update logs
             if(!is_null($campaign->schedule))
             {
-                $campaign->schedule = null;
+//                $campaign->schedule = null;
                 $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'schedule', $data['schedule'], $old_values['schedule']['value'] ?? '');
                 // @todo - log this in user_details in projector
-                $campaign->save();
+//                $campaign->save();
             }
 
             // unset schedule_date if set and use aggy to update logs or skip
             if(!is_null($campaign->schedule_date))
             {
-                $campaign->schedule_date = null;
+//                $campaign->schedule_date = null;
                 $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'schedule_date',  $data['schedule_date'], $old_values['schedule_date']['value']  ?? '');
                 // @todo - log this in user_details in projector
-                $campaign->save();
+//                $campaign->save();
             }
 
             // @todo - if audience_id is not null, set it in campaign_details and use aggy to update logs in Client and Audiences and User
@@ -750,14 +753,18 @@ class MassCommunicationsController extends Controller
             // @todo - if active == 1, set it to 0 and use aggy to update logs in Client and User
             if($campaign->active == 1)
             {
-
+                $client_aggy = $client_aggy->updateEmailCampaign($campaign->id, request()->user()->id,'active',  false, true);
+                $campaign->active = 0;
+                $campaign->save();
             }
 
             // @todo - make details relations
             // @todo - if ttl, details record, active == 0 and softdelete and use aggy to update logs in Client and User
             $client_aggy->persist();
             Alert::success("Campaign {$campaign->name} has been updated")->flash();
-            Alert::warning("Campaign {$campaign->name} is not active.")->flash();
+            if(!$data['active']){
+                Alert::warning("Campaign {$campaign->name} is not active.")->flash();
+            }
             return Redirect::route('comms.email-campaigns.edit', $id);
         }
     }

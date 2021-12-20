@@ -68,3 +68,11 @@
 .input-ghost{
     @apply bg-transparent border-none;
 }
+
+.dp__input{
+    @apply input;
+}
+.dp__disabled{
+    @apply !bg-base-300;
+}
+
