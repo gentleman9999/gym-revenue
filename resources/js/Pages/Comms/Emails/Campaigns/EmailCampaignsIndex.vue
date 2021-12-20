@@ -28,7 +28,7 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to remove this campaign?  It will unassign all audiences and/or templates.
+            Are you sure you want to remove this campaign? It will unassign all audiences and/or templates.
         </confirm>
     </app-layout>
 </template>
@@ -81,14 +81,14 @@ export default defineComponent({
                     name: "active",
                     label: "status",
                     props: {
-                        getProps: ({ data }) =>
+                        getProps: ({data}) =>
                             !!data.active
-                                ? { text: "Active", class: "badge-success" }
-                                : { text: "Draft", class: "badge-warning" },
+                                ? {text: "Active", class: "badge-success"}
+                                : {text: "Draft", class: "badge-warning"},
                     },
                 },
-                { name: "type", transform: () => "Regular" },
-                { name: "updated_at", label: "date updated" },
+                {name: "type", transform: () => "Regular"},
+                {name: "updated_at", label: "date updated"},
                 {
                     name: "creator.name",
                     label: "updated by",
@@ -99,16 +99,36 @@ export default defineComponent({
 
         const actions = computed(() => {
             return {
+                edit: {
+                    shouldRender: ({data}) => {
+                        if (!data.active) {
+                            return true;
+                        }
+                        if (!data.schedule_date?.value) {
+                            return true;
+                        }
+                        if (!Date.parse(data.schedule_date.value)) {
+                            return true;
+                        }
+                        return new Date(`${data.schedule_date.value} UTC`) >= new Date();
+
+                    }
+                },
+                results: {
+                    label: "Results",
+                    shouldRender: ({data}) => data.active && new Date(`${data.schedule_date.value} UTC`) < new Date(),
+                    handler: () => comingSoon(),
+                },
                 quickSend: {
                     label: "Quick Send",
                     handler: () => comingSoon(),
                 },
-                trash:{
+                trash: {
                     handler: ({data}) => handleClickTrash(data.id)
                 }
             };
         });
-        return { handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions };
+        return {handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions};
     },
 });
 </script>

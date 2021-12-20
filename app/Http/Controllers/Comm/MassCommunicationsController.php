@@ -408,6 +408,7 @@ class MassCommunicationsController extends Controller
         if (!empty($campaigns_model)) {
             $campaigns = $campaigns_model//->with('location')->with('detailsDesc')
             ->with('creator')
+                ->with('schedule_date')
             ->filter(request()->only('search', 'trashed'))
                 ->paginate($page_count);
         }
@@ -548,14 +549,14 @@ class MassCommunicationsController extends Controller
 
             }
 
-
             if($data['schedule_date'] == 'now')
             {
                 $fire_date = date('Y-m-d H:i:s');
             }
             else
             {
-                $fire_date = date('Y-m-d H:i:s', strtotime('now +'.$data['schedule_date']));
+//                $fire_date = date('Y-m-d H:i:s', strtotime('now +'.$data['schedule_date']));
+                $fire_date = date('Y-m-d H:i:s', strtotime($data['schedule_date']));
             }
             if( (is_null($old_values['schedule_date']) ? '' :  $old_values['schedule_date']['value']) != $data['schedule_date'])
             {

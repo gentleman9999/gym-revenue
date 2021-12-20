@@ -36,7 +36,7 @@
                 >
                     <option value="">No Audiences Available</option>
                 </select>
-                <select v-else v-model="form['audience_id']" class="py-2"  :disabled="!canEditActiveInputs">
+                <select v-else v-model="form['audience_id']" class="py-2" :disabled="!canEditActiveInputs">
                     <option value="">Available Audiences</option>
                     <option
                         v-for="(audience, idy) in audiences"
@@ -86,7 +86,7 @@
                 v-if="form.active"
             >
                 <p>Select a firing schedule</p>
-                <select v-model="form.schedule" class="py-2"  :disabled="!canEditActiveInputs">
+                <select v-model="form.schedule" class="py-2" :disabled="!canEditActiveInputs">
                     <option value="">Available Schedules</option>
                     <option value="drip">As Users are Added (Drip)</option>
                     <option value="bulk">All Subscribed Users (Bulk)</option>
@@ -99,7 +99,16 @@
                 v-if="form.active && form.schedule === 'bulk'"
             >
                 <p>When should we trigger this email?</p>
-                <date-picker v-model="form.schedule_date" dark :disabled="!canEditActiveInputs"
+                <div class="flex flex-row gap-8 h-16"><label class="label">
+                    <span class="label-text mr-2">Now</span>
+                    <input type="radio" name="scheduleNow" checked="checked" class="radio" v-model="scheduleNow">
+                </label>
+                    <label class="label">
+                        <span class="label-text mr-2">Later</span>
+                        <input type="radio" name="scheduleNow" :value="false" class="radio" v-model="scheduleNow">
+                    </label>
+                </div>
+                <date-picker v-model="form.schedule_date" dark :disabled="!canEditActiveInputs" v-if="!scheduleNow"
                              :min-date=" new Date((new Date()).valueOf() - 1000*60*60*24)"/>
                 <!--                <select v-model="form.schedule_date" class="py-2">-->
                 <!--                    <option value="">Available Triggers</option>-->
@@ -189,8 +198,8 @@ export default {
     ],
     setup(props, context) {
         const modal = ref(null);
+        const scheduleNow = ref(isNaN(Date.parse(props.campaign?.schedule_date?.value)));
         let campaign = props.campaign;
-        console.log("Campaign props", campaign);
         let operation = "Update";
         if (!campaign) {
             campaign = {
@@ -215,26 +224,26 @@ export default {
         const form = useForm(campaign);
 
         let handleSubmit = () => {
-            form.put(route("comms.email-campaigns.update", campaign.id));
+            form.transform(data=> ({...data, schedule_date: scheduleNow.value ? 'now' : data.schedule_date})).put(route("comms.email-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
             handleSubmit = () =>
-                form.transform((data) => {
-                    const transformed = {...data};
-                    if(data?.schedule_date){
-                        transformed.schedule_date= data.schedule_date.toISOString();
-                    }
-                    return transformed;
-                }).post(route("comms.email-campaigns.store"));
+                form.post(route("comms.email-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;
         // console.log({canEditActiveInputs: canEditActiveInputs});
-        const canEditActiveInputs = computed(()=>!props.campaign?.schedule_date || new Date() < new Date(props.campaign.schedule_date)  );
+        // const canEditActiveInputs = computed(() => !props.campaign.active && (!props.campaign?.schedule_date || new Date() < new Date(props.campaign.schedule_date)));
+        const canEditActiveInputs = computed(() => {
+            if (!props.campaign?.active) {
+                return true;
+            }
+            return !props.campaign?.schedule_date || new Date() < new Date(`${props.campaign.schedule_date.value} UTC`);
+        });
         console.log({canEditActiveInputs: canEditActiveInputs.value});
 
 
-        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs};
+        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow};
     },
     data() {
         return {
@@ -253,7 +262,7 @@ export default {
                     this.form["email_template_id"] !== "";
 
                 if (ready) {
-                    if (this.form["schedule_date"] === "now") {
+                    if (this.scheduleNow) {
                         this.modalText =
                             "Are you sure you are ready to launch this Campaign? You won't be able to edit it afterwards.";
                     } else {
