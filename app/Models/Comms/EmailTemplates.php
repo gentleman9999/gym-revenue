@@ -87,4 +87,19 @@ class EmailTemplates extends Model
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
+
+    public function details()
+    {
+        return $this->hasMany(EmailTemplateDetails::class, 'email_template_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(EmailTemplateDetails::class, 'email_template_id', 'id');
+    }
+
+    public function gateway()
+    {
+        return $this->detail()->whereDetail('email_gateway')->whereActive(1);
+    }
 }

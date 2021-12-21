@@ -18,7 +18,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     {
         //Mail::to($addy)->send(new NewGrandOpeningLead($payload));
         $lead = Lead::find($event->lead);
-        if(env('ENABLE_LEAD_REACTOR_MAIl', true)){
+        if(env('ENABLE_MAIL', true)){
             Mail::to($lead->email)->send(new EmailFromRep($event->data, $event->lead, $event->user));
         }
     }
