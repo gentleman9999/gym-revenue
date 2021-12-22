@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
+use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        FireOffEmailCampaign::class
+        FireOffEmailCampaign::class,
+        FireOffSmsCampaign::class,
     ];
 
     /**

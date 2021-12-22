@@ -28,7 +28,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $lead = Lead::find($event->lead);
         $msg = $event->data['message'];
 
-        if(env('ENABLE_LEAD_REACTOR_SMS', true)){
+        if(env('ENABLE_SMS', true)){
             FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
         }
     }

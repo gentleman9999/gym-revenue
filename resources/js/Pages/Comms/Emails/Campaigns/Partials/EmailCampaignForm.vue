@@ -213,7 +213,7 @@ export default {
             };
             operation = "Create";
         } else {
-            campaign["schedule_date"] = campaign.schedule_date?.value || '';
+            campaign["schedule_date"] = campaign.schedule_date?.value || 'now';
             campaign["schedule"] = campaign.schedule?.value || '';
 
             campaign["email_template_id"] = props.assignedTemplate;
