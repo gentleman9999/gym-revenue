@@ -169,7 +169,7 @@ class ClientAccountProjector extends Projector
             'detail' => 'updated',
             'value' => $event->field,
             'misc' => [
-                'new' =>  $event->new,
+                'new' => $event->new,
                 'old' => $event->old
             ]
         ]);
@@ -188,14 +188,14 @@ class ClientAccountProjector extends Projector
         $detail->save();
 
 //        if (in_array($event->field, ['schedule', 'schedule_date'])) {
-            $detail = EmailCampaignDetails::firstOrCreate([
-                'email_campaign_id' => $event->campaign,
-                'client_id' => $event->client,
-                'detail' => $event->field,
-            ]);
+        $detail = EmailCampaignDetails::firstOrCreate([
+            'email_campaign_id' => $event->campaign,
+            'client_id' => $event->client,
+            'detail' => $event->field,
+        ]);
 
-            $detail->value = $event->new;
-            $detail->save();
+        $detail->value = $event->new;
+        $detail->save();
 //        }
 
     }
@@ -206,6 +206,7 @@ class ClientAccountProjector extends Projector
             'email_campaign_id' => $event->campaign,
             'detail' => 'template_assigned',
             'value' => $event->template,
+            'client_id' => $event->client
         ]);
 
         if ($event->user == 'auto') {
@@ -223,7 +224,8 @@ class ClientAccountProjector extends Projector
             'email_campaign_id' => $event->campaign,
             'detail' => 'template_unassigned',
             'value' => $event->template,
-            'misc' => ['by' => $event->user]
+            'misc' => ['by' => $event->user],
+            'client_id' => $event->client
         ]);
 
         $campaign = EmailCampaigns::whereId($event->campaign)
@@ -340,6 +342,16 @@ class ClientAccountProjector extends Projector
         $detail->misc = $misc;
         $detail->save();
 
+//        if (in_array($event->field, ['schedule', 'schedule_date'])) {
+        $detail = SmsCampaignDetails::firstOrCreate([
+            'sms_campaign_id' => $event->campaign,
+            'client_id' => $event->client,
+            'detail' => $event->field,
+        ]);
+
+        $detail->value = $event->new;
+        $detail->save();
+
     }
 
     public function onSMSTemplateAssignedToSMSCampaign(SMSTemplateAssignedToSMSCampaign $event)
@@ -348,6 +360,7 @@ class ClientAccountProjector extends Projector
             'sms_campaign_id' => $event->campaign,
             'detail' => 'template_assigned',
             'value' => $event->template,
+            'client_id' => $event->client
         ]);
 
         if ($event->user == 'auto') {
@@ -365,7 +378,8 @@ class ClientAccountProjector extends Projector
             'sms_campaign_id' => $event->campaign,
             'detail' => 'template_unassigned',
             'value' => $event->template,
-            'misc' => ['by' => $event->user]
+            'misc' => ['by' => $event->user],
+            'client_id' => $event->client
         ]);
 
         $campaign = SmsCampaigns::whereId($event->campaign)
@@ -398,6 +412,7 @@ class ClientAccountProjector extends Projector
             'email_campaign_id' => $event->campaign,
             'detail' => 'audience_assigned',
             'value' => $event->audience,
+            'client_id' => $event->client
         ]);
 
         if ($event->user == 'auto') {
@@ -415,6 +430,7 @@ class ClientAccountProjector extends Projector
             'sms_campaign_id' => $event->campaign,
             'detail' => 'audience_assigned',
             'value' => $event->audience,
+            'client_id' => $event->client
         ]);
 
         if ($event->user == 'auto') {
@@ -432,7 +448,8 @@ class ClientAccountProjector extends Projector
             'email_campaign_id' => $event->campaign,
             'detail' => 'audience_unassigned',
             'value' => $event->audience,
-            'misc' => ['by' => $event->user]
+            'misc' => ['by' => $event->user],
+            'client_id' => $event->client
         ]);
 
         $campaign = EmailCampaigns::whereId($event->campaign)
@@ -448,7 +465,8 @@ class ClientAccountProjector extends Projector
             'sms_campaign_id' => $event->campaign,
             'detail' => 'audience_unassigned',
             'value' => $event->audience,
-            'misc' => ['by' => $event->user]
+            'misc' => ['by' => $event->user],
+            'client_id' => $event->client
         ]);
 
         $campaign = SmsCampaigns::whereId($event->campaign)

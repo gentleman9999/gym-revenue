@@ -101,11 +101,11 @@
                 <p>When should we trigger this email?</p>
                 <div class="flex flex-row gap-8 h-16"><label class="label">
                     <span class="label-text mr-2">Now</span>
-                    <input type="radio" name="scheduleNow" checked="checked" class="radio" v-model="scheduleNow">
+                    <input type="radio" name="scheduleNow" checked="checked" class="radio" v-model="scheduleNow" :disabled="!canEditActiveInputs">
                 </label>
                     <label class="label">
                         <span class="label-text mr-2">Later</span>
-                        <input type="radio" name="scheduleNow" :value="false" class="radio" v-model="scheduleNow">
+                        <input type="radio" name="scheduleNow" :value="false" class="radio" v-model="scheduleNow" :disabled="!canEditActiveInputs">
                     </label>
                 </div>
                 <date-picker v-model="form.schedule_date" dark :disabled="!canEditActiveInputs" v-if="!scheduleNow"
@@ -238,7 +238,7 @@ export default {
             if (!props.campaign?.active) {
                 return true;
             }
-            return !props.campaign?.schedule_date || new Date() < new Date(`${props.campaign.schedule_date.value} UTC`);
+            return !props.campaign?.schedule_date || new Date() < new Date(`${props.campaign.schedule_date} UTC`);
         });
         console.log({canEditActiveInputs: canEditActiveInputs.value});
 

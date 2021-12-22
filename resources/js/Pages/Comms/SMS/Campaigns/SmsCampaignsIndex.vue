@@ -99,6 +99,26 @@ export default defineComponent({
 
         const actions = computed(() => {
             return {
+                edit: {
+                    shouldRender: ({data}) => {
+                        if (!data.active) {
+                            return true;
+                        }
+                        if (!data.schedule_date?.value) {
+                            return true;
+                        }
+                        if (!Date.parse(data.schedule_date.value)) {
+                            return true;
+                        }
+                        return new Date(`${data.schedule_date.value} UTC`) >= new Date();
+
+                    }
+                },
+                results: {
+                    label: "Results",
+                    shouldRender: ({data}) => data.active && data.schedule_date && new Date(`${data.schedule_date.value} UTC`) < new Date(),
+                    handler: () => comingSoon(),
+                },
                 quickSend: {
                     label: "Quick Send",
                     handler: () => comingSoon(),

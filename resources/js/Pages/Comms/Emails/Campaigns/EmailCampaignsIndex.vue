@@ -116,7 +116,7 @@ export default defineComponent({
                 },
                 results: {
                     label: "Results",
-                    shouldRender: ({data}) => data.active && new Date(`${data.schedule_date.value} UTC`) < new Date(),
+                    shouldRender: ({data}) => data.active && data.schedule_date && new Date(`${data.schedule_date.value} UTC`) < new Date(),
                     handler: () => comingSoon(),
                 },
                 quickSend: {

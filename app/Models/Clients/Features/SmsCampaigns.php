@@ -24,6 +24,8 @@ class SmsCampaigns extends Model
         'name', 'active', 'client_id', 'team_id', 'created_by_user_id'
     ];
 
+    protected $casts = ['active'=> 'boolean'];
+
     public function details()
     {
         return $this->hasMany(SmsCampaignDetails::class, 'sms_campaign_id', 'id');
