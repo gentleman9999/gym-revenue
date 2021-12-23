@@ -15,6 +15,7 @@ use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -439,6 +440,10 @@ class MassCommunicationsController extends Controller
             ->with('assigned_template')->with('assigned_audience')
             ->with('schedule')->with('schedule_date')
             ->first();
+        if( $campaign->schedule_date && strtotime($campaign->schedule_date->value) <= strtotime('now')){
+            Alert::error("{$campaign->name} cannot be edited since it has already launched.")->flash();
+            return Redirect::route('comms.email-campaigns');
+        }
 
         $templates = EmailTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
         foreach ($templates as $template)
@@ -619,6 +624,9 @@ class MassCommunicationsController extends Controller
                 Alert::error("Campaign {$old_values['name']} encountered")->flash();
                 Alert::error("Campaign {$old_values['name']} was not updated")->flash();
                 Alert::warning("Campaign {$old_values['name']} data was reverted and not active.")->flash();
+                if( App::environment(['local', 'dev'] )){
+                    dd($e);
+                }
             }
 
 
@@ -978,6 +986,11 @@ class MassCommunicationsController extends Controller
             ->with('assigned_template')->with('assigned_audience')
             ->with('schedule')->with('schedule_date')
             ->first();
+        if( $campaign->schedule_date && strtotime($campaign->schedule_date->value) <= strtotime('now')){
+            Alert::error("{$campaign->name} cannot be edited since it has already launched.")->flash();
+            return Redirect::route('comms.sms-campaigns');
+        }
+
         $templates = SmsTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
         foreach ($templates as $template)
         {
@@ -1155,6 +1168,9 @@ class MassCommunicationsController extends Controller
                 Alert::error("Campaign {$old_values['name']} encountered")->flash();
                 Alert::error("Campaign {$old_values['name']} was not updated")->flash();
                 Alert::warning("Campaign {$old_values['name']} data was reverted and not active.")->flash();
+                if( App::environment(['local', 'dev'] )){
+                    dd($e);
+                }
             }
 
 

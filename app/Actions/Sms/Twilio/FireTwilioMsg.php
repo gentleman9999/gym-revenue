@@ -2,7 +2,6 @@
 
 namespace App\Actions\Sms\Twilio;
 
-use App\Models\Endusers\Lead;
 use Lorisleiva\Actions\Action;
 use Twilio\Rest\Client as Twilio;
 

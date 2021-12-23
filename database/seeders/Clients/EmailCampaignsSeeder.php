@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
+use App\Actions\Clients\Activity\Comms\AssignEmailTemplateToCampaign;
 use App\Models\Clients\Client;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Comms\EmailTemplates;
@@ -25,7 +25,7 @@ class EmailCampaignsSeeder extends Seeder
             'created_by_user_id' => 'auto'
         ]);
         $cnb_template = EmailTemplates::whereNull('client_id')->first();
-        FireOffEmailCampaign::dispatch($cnb_template->id, $cnb_record->id, $cnb_record->created_by_user_id)->onQueue('grp-'.env('APP_ENV').'-jobs');
+        AssignEmailTemplateToCampaign::dispatch($cnb_template->id, $cnb_record->id, $cnb_record->created_by_user_id)->onQueue('grp-'.env('APP_ENV').'-jobs');
 
         $clients = Client::whereActive(1)->get();
         foreach ($clients as $client)
@@ -39,7 +39,7 @@ class EmailCampaignsSeeder extends Seeder
                 'created_by_user_id' => 'auto'
             ]);
             $template = EmailTemplates::whereClientId($client->id)->first();
-            FireOffEmailCampaign::dispatch($template->id, $record->id, $record->created_by_user_id, $client->id)->onQueue('grp-'.env('APP_ENV').'-jobs');
+            AssignEmailTemplateToCampaign::dispatch($template->id, $record->id, $record->created_by_user_id, $client->id)->onQueue('grp-'.env('APP_ENV').'-jobs');
         }
     }
 }

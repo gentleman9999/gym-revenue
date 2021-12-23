@@ -5,9 +5,11 @@ namespace App\Actions\Clients\Activity\Comms;
 use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\SmsCampaigns;
+use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplates;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -35,6 +37,12 @@ class FireOffSmsCampaign
                 $data = ['name' => $person['name']];
                 FireTwilioMsg::dispatch('7276883828', $this->transform($markup, $data));
             }
+        }
+
+        $queued_sms_campaign = QueuedSmsCampaign::whereSmsCampaignId($sms_campaign_id)->first();
+        if($queued_sms_campaign){
+            $queued_sms_campaign->completed_at = Carbon::now();
+            $queued_sms_campaign->save();
         }
     }
 

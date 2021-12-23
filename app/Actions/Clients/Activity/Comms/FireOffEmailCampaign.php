@@ -7,9 +7,11 @@ use App\Mail\EndUser\EmailFromRep;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Comms\EmailTemplates;
+use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -37,6 +39,11 @@ class FireOffEmailCampaign
                 $data = ['name' => $person['name']];
                 Mail::to('philip@capeandbay.com')->send(new EmailCampaignMail($subject, $markup, $data));
             }
+        }
+        $queued_email_campaign = QueuedEmailCampaign::whereEmailCampaignId($email_campaign_id)->first();
+        if($queued_email_campaign){
+            $queued_email_campaign->completed_at = Carbon::now();
+            $queued_email_campaign->save();
         }
     }
     //command for ez development testing
