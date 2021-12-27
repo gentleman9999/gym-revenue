@@ -7,8 +7,11 @@ use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplates;
+use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
+use App\Models\User;
+use App\Models\UserDetails;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -28,27 +31,45 @@ class FireOffSmsCampaign
         $template = SmsTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
         $markup = $template->markup;
         $audience = CommAudience::findOrFail($campaign->assigned_audience->value);
-//        $audience_members = AudienceMember::whereAudienceId($audience)->get();
+        $audience_members = AudienceMember::whereAudienceId($audience->id)->get();
         $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
-        $audience_members = [['name' => 'Philip Krogel', 'phone' => '7276883828']];
-        if (env('ENABLE_SMS', true)) {
-            foreach ($audience_members as $person) {
-                $data = ['name' => $person['name']];
-                FireTwilioMsg::dispatch('7276883828', $this->transform($markup, $data));
+        foreach ($audience_members as $audience_member) {
+            $member = null;
+            switch ($audience_member->entity_type) {
+                case 'user':
+                    $member = User::with('phone')->findOrFail($audience_member->entity_id);
+                    break;
+                case 'prospect':
+//                        $member = Prospects::findOrFail($audience_member->entity_id);
+                    break;
+                case 'conversion':
+//                        $member = Conversions::findOrFail($audience_member->entity_id);
+                    break;
+                default:
+                    //todo:report error - unknown entity_Type
+                    break;
+            }
+            if ($member) {
+                if (env('ENABLE_SMS', true)) {
+                    if($member->phone){
+                        FireTwilioMsg::dispatch($member->phone->value, $this->transform($markup, $member->toArray()));
+                    }
+                }
             }
         }
 
         $queued_sms_campaign = QueuedSmsCampaign::whereSmsCampaignId($sms_campaign_id)->first();
-        if($queued_sms_campaign){
+        if ($queued_sms_campaign) {
             $queued_sms_campaign->completed_at = Carbon::now();
             $queued_sms_campaign->save();
         }
     }
 
-    protected function transform($string, $data){
-        foreach($this->tokens as $token){
-            $string = str_replace("%{$token}%", $data[$token] ?? 'UNKNOWN_TOKEN' ,$string);
+    protected function transform($string, $data)
+    {
+        foreach ($this->tokens as $token) {
+            $string = str_replace("%{$token}%", $data[$token] ?? 'UNKNOWN_TOKEN', $string);
         }
         return $string;
     }
