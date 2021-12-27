@@ -38,7 +38,7 @@ class FireOffSmsCampaign
             $member = null;
             switch ($audience_member->entity_type) {
                 case 'user':
-                    $member = User::with('phone')->findOrFail($audience_member->entity_id);
+                    $member = User::with('phone')->find($audience_member->entity_id);
                     break;
                 case 'prospect':
 //                        $member = Prospects::findOrFail($audience_member->entity_id);

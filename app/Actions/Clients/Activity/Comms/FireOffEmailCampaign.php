@@ -37,7 +37,7 @@ class FireOffEmailCampaign
             $member = null;
             switch ($audience_member->entity_type) {
                 case 'user':
-                    $member = User::findOrFail($audience_member->entity_id);
+                    $member = User::find($audience_member->entity_id);
                     break;
                 case 'prospect':
 //                        $member = Prospects::findOrFail($audience_member->entity_id);
