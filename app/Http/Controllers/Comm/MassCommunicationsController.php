@@ -310,6 +310,7 @@ class MassCommunicationsController extends Controller
     {
         $template = $request->validate([
                 'name' => 'required',
+                'subject' => 'required',
                 'markup' => 'required'
             ]
         );
@@ -340,6 +341,7 @@ class MassCommunicationsController extends Controller
         $data = $request->validate([
                 'id' => 'required|exists:email_templates,id',
                 'name' => 'required',
+                'subject' => 'required',
                 'markup' => 'required',
                 'active' => 'sometimes',
                 'client_id' => 'required|exists:clients,id',
@@ -350,6 +352,7 @@ class MassCommunicationsController extends Controller
         $template = EmailTemplates::find($data['id']);
         $old_values = $template->toArray();
         $template->name = ($template->name == $data['name']) ? $template->name : $data['name'];
+        $template->subject = ($template->subject == $data['subject']) ? $template->subject : $data['subject'];
         $template->markup = ($template->markup == $data['markup']) ? $template->markup : $data['markup'];
         $template->active = ($template->active == $data['active']) ? $template->active : $data['active'];
         $template->save();
