@@ -1032,6 +1032,9 @@ class MassCommunicationsController extends Controller
         catch(\Exception $e)
         {
             Alert::error("New Template {$template['name']} could not be created")->flash();
+            if( App::environment(['local', 'dev'] )){
+                dd($e);
+            }
             return redirect()->back();
         }
 

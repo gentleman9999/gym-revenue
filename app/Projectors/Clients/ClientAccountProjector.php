@@ -12,6 +12,8 @@ use App\Models\Clients\Features\SmsCampaignDetails;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
+use App\Models\Comms\QueuedEmailCampaign;
+use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplateDetails;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Team;
@@ -20,10 +22,12 @@ use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaig
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCompleted;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateUnAssignedFromEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignCompleted;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
@@ -473,6 +477,24 @@ class ClientAccountProjector extends Projector
             ->with('unassigned_audience')->first();
         if (!is_null($campaign->unassigned_audience ?? null)) {
             $campaign->unassigned_audience->delete();
+        }
+    }
+
+    public function onSmsCampaignCompleted(SmsCampaignCompleted $event)
+    {
+        $queued_sms_campaign = QueuedSmsCampaign::whereSmsCampaignId($event->campaign)->first();
+        if ($queued_sms_campaign) {
+            $queued_sms_campaign->completed_at = $event->date;
+            $queued_sms_campaign->save();
+        }
+    }
+
+    public function onEmailCampaignCompleted(EmailCampaignCompleted $event)
+    {
+        $queued_email_campaign = QueuedEmailCampaign::whereEmailCampaignId($event->campaign)->first();
+        if ($queued_email_campaign) {
+            $queued_email_campaign->completed_at = $event->date;
+            $queued_email_campaign->save();
         }
     }
 

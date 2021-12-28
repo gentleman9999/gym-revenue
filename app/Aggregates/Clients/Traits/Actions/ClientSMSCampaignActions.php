@@ -4,11 +4,14 @@ namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignCompleted;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignLaunched;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
+use DateTime;
 
 trait ClientSMSCampaignActions
 {
@@ -27,6 +30,18 @@ trait ClientSMSCampaignActions
     public function launchSMSCampaign(string $campaign_id, string $launch_date, string $launched_by_user)
     {
         $this->recordThat(new SmsCampaignLaunched($this->uuid(), $campaign_id, $launch_date, $launched_by_user));
+        return $this;
+    }
+
+    public function logSmsSent(string $campaign_id, array $sent_to, DateTime $sent_at)
+    {
+        $this->recordThat(new SmsSent($this->uuid(), $campaign_id, $sent_to, $sent_at));
+        return $this;
+    }
+
+    public function completeSmsCampaign(string $campaign_id, DateTime $completed_date)
+    {
+        $this->recordThat(new SmsCampaignCompleted($this->uuid(), $campaign_id, $completed_date));
         return $this;
     }
 }

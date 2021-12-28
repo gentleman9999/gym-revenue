@@ -2,6 +2,7 @@
 
 namespace App\Actions\Clients\Activity\Comms;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Mail\EmailCampaignMail;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
@@ -34,7 +35,9 @@ class FireOffEmailCampaign
         $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         $subject = 'Email Campaign Test';
+        $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         foreach ($audience_members as $audience_member) {
+            $sent_to = [];
             $member = null;
             switch ($audience_member->entity_type) {
                 case 'user':
@@ -54,14 +57,11 @@ class FireOffEmailCampaign
                 if (!AppState::isSimuationMode()) {
                     Mail::to($member->email)->send(new EmailCampaignMail($subject, $markup, $member->toArray()));
                 }
+                $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'email' => $member->email];
             }
+            $client_aggy->logEmailsSent($email_campaign_id, $sent_to, Carbon::now())->persist();
         }
-
-        $queued_email_campaign = QueuedEmailCampaign::whereEmailCampaignId($email_campaign_id)->first();
-        if ($queued_email_campaign) {
-            $queued_email_campaign->completed_at = Carbon::now();
-            $queued_email_campaign->save();
-        }
+        $client_aggy->completeEmailCampaign($email_campaign_id, Carbon::now())->persist();
     }
 
     //command for ez development testing

@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Actions\Sms\Twilio\FireTwilioMsg;
+use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\QueuedSmsCampaign;
@@ -11,7 +12,6 @@ use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\User;
-use App\Models\UserDetails;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -35,7 +35,9 @@ class FireOffSmsCampaign
         $audience_members = AudienceMember::whereAudienceId($audience->id)->get();
         $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
+        $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         foreach ($audience_members as $audience_member) {
+            $sent_to = [];
             $member = null;
             switch ($audience_member->entity_type) {
                 case 'user':
@@ -52,19 +54,17 @@ class FireOffSmsCampaign
                     break;
             }
             if ($member) {
-                if (!AppState::isSimuationMode()) {
-                    if($member->phone){
+                if ($member->phone) {
+                    //TODO: we need to scrutinize phone format here
+                    if (!AppState::isSimuationMode()) {
                         FireTwilioMsg::dispatch($member->phone->value, $this->transform($markup, $member->toArray()));
                     }
                 }
+                $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'phone' => $member->phone->value];
             }
+            $client_aggy->logSmsSent($sms_campaign_id, $sent_to, Carbon::now())->persist();
         }
-
-        $queued_sms_campaign = QueuedSmsCampaign::whereSmsCampaignId($sms_campaign_id)->first();
-        if ($queued_sms_campaign) {
-            $queued_sms_campaign->completed_at = Carbon::now();
-            $queued_sms_campaign->save();
-        }
+        $client_aggy->completeSmsCampaign($sms_campaign_id, Carbon::now())->persist();
     }
 
     protected function transform($string, $data)
