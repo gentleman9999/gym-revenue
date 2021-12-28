@@ -3,6 +3,7 @@
 namespace App\Projectors\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\ClientBillableActivity;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\AudienceDetails;
 use App\Models\Clients\Features\CommAudience;
@@ -24,12 +25,16 @@ use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromEmailCam
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceUnAssignedFromSmsCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCompleted;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignUpdated;
+use App\StorableEvents\Clients\Activity\Campaigns\EmailSent;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignCompleted;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSCampaignCreated;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
+use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
@@ -204,6 +209,16 @@ class ClientAccountProjector extends Projector
 
     }
 
+    public function onEmailCampaignLaunched(EmailCampaignLaunched $event)
+    {
+        EmailCampaignDetails::create([
+            'email_campaign_id' => $event->campaign,
+            'client_id' => $event->client,
+            'detail' => 'launched',
+            'value' => $event->user,
+        ]);
+    }
+
     public function onEmailTemplateAssignedToEmailCampaign(EmailTemplateAssignedToEmailCampaign $event)
     {
         $detail = EmailCampaignDetails::create([
@@ -358,6 +373,16 @@ class ClientAccountProjector extends Projector
 
     }
 
+    public function onSmsCampaignLaunched(SmsCampaignLaunched $event)
+    {
+        SmsCampaignDetails::create([
+            'sms_campaign_id' => $event->campaign,
+            'client_id' => $event->client,
+            'detail' => 'launched',
+            'value' => $event->user,
+        ]);
+    }
+
     public function onSMSTemplateAssignedToSMSCampaign(SMSTemplateAssignedToSMSCampaign $event)
     {
         $detail = SmsCampaignDetails::create([
@@ -480,6 +505,22 @@ class ClientAccountProjector extends Projector
         }
     }
 
+    public function onSmsSent(SmsSent $event)
+    {
+        $launch = SmsCampaigns::with('launched')->find($event->campaign)->launched;
+        $launchedBy = json_decode($launch->value)->id;
+
+        ClientBillableActivity::create([
+            'client_id' => $event->client,
+            'desc' => 'SMS sent from SMS Campaign',
+            'entity_type' => 'SmsCampaign',
+            'entity_id' => $event->campaign,
+            'units' => count($event->sentTo),
+            'misc' => json_encode(['sent_to' => $event->sentTo]),
+            'triggered_by_user_id' => $launchedBy
+        ]);
+    }
+
     public function onSmsCampaignCompleted(SmsCampaignCompleted $event)
     {
         $queued_sms_campaign = QueuedSmsCampaign::whereSmsCampaignId($event->campaign)->first();
@@ -487,6 +528,22 @@ class ClientAccountProjector extends Projector
             $queued_sms_campaign->completed_at = $event->date;
             $queued_sms_campaign->save();
         }
+    }
+
+    public function onEmailSent(EmailSent $event)
+    {
+        $launch = EmailCampaigns::with('launched')->find($event->campaign)->launched;
+        $launchedBy = json_decode($launch->value)->id;
+
+        ClientBillableActivity::create([
+            'client_id' => $event->client,
+            'desc' => 'Email sent from Email Campaign',
+            'entity_type' => 'EmailCampaign',
+            'entity_id' => $event->campaign,
+            'units' => count($event->sentTo),
+            'misc' => json_encode(['sent_to' => $event->sentTo]),
+            'triggered_by_user_id' => $launchedBy
+        ]);
     }
 
     public function onEmailCampaignCompleted(EmailCampaignCompleted $event)
@@ -497,6 +554,4 @@ class ClientAccountProjector extends Projector
             $queued_email_campaign->save();
         }
     }
-
-
 }

@@ -119,4 +119,8 @@ class SmsCampaigns extends Model
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
+
+    public function launched(){
+        return $this->detail()->whereDetail('launched');
+    }
 }
