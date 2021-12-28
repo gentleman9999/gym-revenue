@@ -11,6 +11,7 @@ use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\User;
+use App\Models\Utility\AppState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -50,7 +51,7 @@ class FireOffEmailCampaign
                     break;
             }
             if ($member) {
-                if (env('ENABLE_MAIL', true)) {
+                if (!AppState::isSimuationMode()) {
                     Mail::to($member->email)->send(new EmailCampaignMail($subject, $markup, $member->toArray()));
                 }
             }
@@ -69,10 +70,10 @@ class FireOffEmailCampaign
         $this->handle(
             $command->argument('email_campaign_id')
         );
-        if (env('ENABLE_MAIL', true)) {
-            $command->info('Emails Sent!');
+        if (AppState::isSimuationMode()) {
+            $command->info('Email Campaign skipped sending email because app is in simulation mode');
         } else {
-            $command->info('Email Campaign skipped sending email because env.ENABLE_MAIL is set to false');
+            $command->info('Emails Sent!');
         }
     }
 }

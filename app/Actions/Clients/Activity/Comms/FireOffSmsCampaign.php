@@ -12,6 +12,7 @@ use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\User;
 use App\Models\UserDetails;
+use App\Models\Utility\AppState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -51,7 +52,7 @@ class FireOffSmsCampaign
                     break;
             }
             if ($member) {
-                if (env('ENABLE_SMS', true)) {
+                if (!AppState::isSimuationMode()) {
                     if($member->phone){
                         FireTwilioMsg::dispatch($member->phone->value, $this->transform($markup, $member->toArray()));
                     }
@@ -80,10 +81,10 @@ class FireOffSmsCampaign
         $this->handle(
             $command->argument('sms_campaign_id')
         );
-        if (env('ENABLE_SMS', true)) {
-            $command->info('SMS Sent!');
+        if (AppState::isSimuationMode()) {
+            $command->info('SMS Campaign SMS skipped because app is in simulation mode');
         } else {
-            $command->info('SMS Campaign SMS skipped because env.ENABLE_SMS is set to false');
+            $command->info('SMS Sent!');
         }
     }
 }
