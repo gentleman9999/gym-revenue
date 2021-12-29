@@ -86,4 +86,19 @@ class SmsTemplates extends Model
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
+
+    public function details()
+    {
+        return $this->hasMany(SmsTemplateDetails::class, 'sms_template_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(SmsTemplateDetails::class, 'sms_template_id', 'id');
+    }
+
+    public function gateway()
+    {
+        return $this->detail()->whereDetail('sms_gateway')->whereActive(1);
+    }
 }

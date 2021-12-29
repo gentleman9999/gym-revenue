@@ -120,4 +120,9 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'associated_client');
     }
 
+    public function phone()
+    {
+        return $this->detail()->where('name', '=', 'phone');
+    }
+
 }

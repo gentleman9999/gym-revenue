@@ -21,7 +21,7 @@ class EmailTemplates extends Model
     public $incrementing = false;
 
     protected $fillable = [ 'client_id',
-        'name', 'markup', 'active', 'team_id', 'created_by_user_id'
+        'name', 'markup', 'subject', 'active', 'team_id', 'created_by_user_id'
     ];
 
     // @todo - model boot created - aggy to set in client_details and email_template_details that it was auto generated ('auto' created_by_user_id)
@@ -86,5 +86,20 @@ class EmailTemplates extends Model
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(EmailTemplateDetails::class, 'email_template_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(EmailTemplateDetails::class, 'email_template_id', 'id');
+    }
+
+    public function gateway()
+    {
+        return $this->detail()->whereDetail('email_gateway')->whereActive(1);
     }
 }

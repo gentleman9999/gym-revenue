@@ -5,6 +5,7 @@ namespace App\Reactors\Endusers;
 use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Endusers\Lead;
+use App\Models\Utility\AppState;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\SubscribedToAudience;
@@ -18,7 +19,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     {
         //Mail::to($addy)->send(new NewGrandOpeningLead($payload));
         $lead = Lead::find($event->lead);
-        if(env('ENABLE_LEAD_REACTOR_MAIl', true)){
+        if(!AppState::isSimuationMode()){
             Mail::to($lead->email)->send(new EmailFromRep($event->data, $event->lead, $event->user));
         }
     }
@@ -28,7 +29,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $lead = Lead::find($event->lead);
         $msg = $event->data['message'];
 
-        if(env('ENABLE_LEAD_REACTOR_SMS', true)){
+        if(!AppState::isSimuationMode()){
             FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
         }
     }

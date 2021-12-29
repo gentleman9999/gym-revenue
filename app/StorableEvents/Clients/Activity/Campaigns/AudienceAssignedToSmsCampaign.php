@@ -6,5 +6,13 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class AudienceAssignedToSmsCampaign extends AudienceAssignedToEmailCampaign
 {
+    public $client, $audience, $campaign, $user;
 
+    public function __construct($client, $audience, $campaign, $user)
+    {
+        $this->client = $client;
+        $this->audience = $audience;
+        $this->campaign = $campaign;
+        $this->user = $user;
+    }
 }

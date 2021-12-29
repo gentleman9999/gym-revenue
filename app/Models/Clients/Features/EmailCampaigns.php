@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class EmailCampaigns extends Model
 {
@@ -23,6 +24,8 @@ class EmailCampaigns extends Model
     protected $fillable = [
         'name', 'active', 'client_id', 'team_id', 'created_by_user_id'
     ];
+
+    protected $casts = ['active'=> 'boolean'];
 
     public function details()
     {
@@ -117,5 +120,9 @@ class EmailCampaigns extends Model
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
+    }
+
+    public function launched(){
+        return $this->detail()->whereDetail('launched');
     }
 }

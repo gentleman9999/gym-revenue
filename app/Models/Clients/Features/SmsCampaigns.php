@@ -24,6 +24,8 @@ class SmsCampaigns extends Model
         'name', 'active', 'client_id', 'team_id', 'created_by_user_id'
     ];
 
+    protected $casts = ['active'=> 'boolean'];
+
     public function details()
     {
         return $this->hasMany(SmsCampaignDetails::class, 'sms_campaign_id', 'id');
@@ -116,5 +118,9 @@ class SmsCampaigns extends Model
     public function creator()
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
+    }
+
+    public function launched(){
+        return $this->detail()->whereDetail('launched');
     }
 }

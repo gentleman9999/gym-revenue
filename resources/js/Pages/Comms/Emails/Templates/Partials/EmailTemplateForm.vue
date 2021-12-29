@@ -19,6 +19,21 @@
             </div>
             <div class="col-span-6">
                 <div class="form-control">
+                    <label for="subject" class="label">Subject Line</label>
+                    <input
+                        type="text"
+                        v-model="form.subject"
+                        id="subject"
+                        class="form-control w-full"
+                    />
+                    <jet-input-error
+                        :message="form.errors.subject"
+                        class="mt-2"
+                    />
+                </div>
+            </div>
+            <div class="col-span-6">
+                <div class="form-control">
                     <label for="template" class="label">Template Markup</label>
                     <textarea
                         v-model="form.markup"
@@ -123,6 +138,7 @@ export default {
         let operation = "Update";
         if (!template) {
             template = {
+                subject: null,
                 markup: `<html lang="en">
      <body>
 
