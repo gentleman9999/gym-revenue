@@ -43,6 +43,7 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Inertia} from "@inertiajs/inertia";
+import {parseDate} from "@/utils";
 
 library.add(faChevronDoubleLeft, faEllipsisH)
 
@@ -107,7 +108,8 @@ export default defineComponent({
                         if (!data.schedule_date?.value) {
                             return true;
                         }
-                        if (!Date.parse(data.schedule_date.value)) {
+                        if (!parseDate(data.schedule_date.value)) {
+                            console.log({date:data.schedule_date.value });
                             return true;
                         }
                         return new Date(`${data.schedule_date.value} UTC`) >= new Date();
