@@ -535,7 +535,7 @@ class ClientAccountProjector extends Projector
         $launch = EmailCampaigns::with('launched')->find($event->campaign)->launched;
         $launchedBy = null;
         if($launch){
-            $launchedBy = json_decode($launch->value)->id;
+            $launchedBy = $launch->value;
         }
         ClientBillableActivity::create([
             'client_id' => $event->client,
