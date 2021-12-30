@@ -57,13 +57,15 @@ class FireOffEmailCampaign
                 $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
                 $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'email' => $member->email];
             }
-            $client_aggy->logEmailsSent($email_campaign_id, $sent_to, Carbon::now())->persist();
         }
+        $sent_to_chunks = array_chunk($sent_to, $this->batchSize);
+        $idx = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
-            //chunkj is not right shape
             if (!AppState::isSimuationMode()) {
                 MailgunBatchSend::dispatch($chunk, $template->subject, $template->markup);
             }
+            $client_aggy->logEmailsSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now())->persist();
+            $idx++;
         }
 
 
