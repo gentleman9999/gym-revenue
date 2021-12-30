@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Sms\Twilio;
+namespace App\Actions\Mail;
 
 use Lorisleiva\Actions\Action;
 use Mailgun\Mailgun;
