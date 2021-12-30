@@ -3,7 +3,7 @@
         <jet-application-mark />
     </inertia-link>
     <div class="subtitle">
-        <p><small>Conceptual Prototype</small></p>
+        <p><small>CRM - Conceptual Prototype</small></p>
     </div>
 </template>
 

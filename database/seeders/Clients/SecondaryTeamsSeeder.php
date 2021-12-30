@@ -54,81 +54,81 @@ class SecondaryTeamsSeeder extends Seeder
 
         $client_teams = [
             [
-                'user_id' => 9,
+                'user_id' => 11,
                 'name' => 'Zoo Sales Team',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 10,
+                'user_id' => 12,
                 'name' => 'Big Island Team',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 10,
+                'user_id' => 12,
                 'name' => 'Oahu Team',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 11,
+                'user_id' => 13,
                 'name' => 'FitnessTruth Texas South',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 11,
+                'user_id' => 13,
                 'name' => 'FitnessTruth Texas Houston',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 11,
+                'user_id' => 13,
                 'name' => 'FitnessTruth Texas West',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 11,
+                'user_id' => 13,
                 'name' => 'FitnessTruth Tennessee',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 12,
+                'user_id' => 14,
                 'name' => 'iFit Florida',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 12,
+                'user_id' => 14,
                 'name' => 'iFit Georgia',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 12,
+                'user_id' => 14,
                 'name' => 'iFit Virginia',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 12,
+                'user_id' => 14,
                 'name' => 'iFit Sales Team',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 13,
+                'user_id' => 15,
                 'name' => 'Sales Bodies',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 14,
+                'user_id' => 17,
                 'name' => 'Stencils Seattle',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 14,
+                'user_id' => 17,
                 'name' => 'Stencils San Andreas',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 14,
+                'user_id' => 17,
                 'name' => 'Stencils Portland',
                 'personal_team' => 0,
             ],
