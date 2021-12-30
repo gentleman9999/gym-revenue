@@ -533,8 +533,10 @@ class ClientAccountProjector extends Projector
     public function onEmailSent(EmailSent $event)
     {
         $launch = EmailCampaigns::with('launched')->find($event->campaign)->launched;
-        $launchedBy = json_decode($launch->value)->id;
-
+        $launchedBy = null;
+        if($launch){
+            $launchedBy = json_decode($launch->value)->id;
+        }
         ClientBillableActivity::create([
             'client_id' => $event->client,
             'desc' => 'Email sent from Email Campaign',
