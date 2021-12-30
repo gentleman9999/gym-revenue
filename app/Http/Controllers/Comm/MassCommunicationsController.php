@@ -615,7 +615,7 @@ class MassCommunicationsController extends Controller
             $campaign->active = 1;
             $campaign->save();
             try {
-                $client_aggy = $client_aggy->launchEmailCampaign($campaign->id, $fire_date, request()->user());
+                $client_aggy = $client_aggy->launchEmailCampaign($campaign->id, $fire_date, request()->user()->id);
                 $client_aggy->persist();
                 Alert::success("Campaign {$campaign->name} has been updated")->flash();
                 Alert::success("Campaign {$campaign->name} is now active!")->flash();
@@ -1162,7 +1162,7 @@ class MassCommunicationsController extends Controller
             $campaign->active = 1;
             $campaign->save();
             try {
-                $client_aggy = $client_aggy->launchSmsCampaign($campaign->id, $fire_date, request()->user());
+                $client_aggy = $client_aggy->launchSmsCampaign($campaign->id, $fire_date, request()->user()->id);
                 $client_aggy->persist();
                 Alert::success("Campaign {$campaign->name} has been updated")->flash();
                 Alert::success("Campaign {$campaign->name} is now active!")->flash();
