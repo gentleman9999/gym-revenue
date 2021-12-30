@@ -2,7 +2,7 @@
 
 namespace App\Actions\Clients\Activity\Comms;
 
-use App\Actions\Sms\Twilio\MailgunBatchSend;
+use App\Actions\Mail\MailgunBatchSend;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
