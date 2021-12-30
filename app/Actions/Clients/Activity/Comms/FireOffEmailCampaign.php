@@ -2,12 +2,11 @@
 
 namespace App\Actions\Clients\Activity\Comms;
 
+use App\Actions\Sms\Twilio\MailgunBatchSend;
 use App\Aggregates\Clients\ClientAggregate;
-use App\Mail\EmailCampaignMail;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
@@ -15,7 +14,6 @@ use App\Models\User;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class FireOffEmailCampaign
@@ -25,19 +23,20 @@ class FireOffEmailCampaign
     public string $commandSignature = 'email-campaigns:fire {email_campaign_id}';
     public string $commandDescription = 'Fires off the emails for a given email_campaign_id.';
 
+    private int $batchSize = 100;//MAX IS 1000
+
     public function handle(string $email_campaign_id)
     {
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($email_campaign_id);
         $template = EmailTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
-        $markup = $template->markup;
         $audience = CommAudience::findOrFail($campaign->assigned_audience->value);
         $audience_members = AudienceMember::whereAudienceId($audience->id)->get();
         $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
-        $subject = 'Email Campaign Test';
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
+        $recipients = [];
+        $sent_to = [];
         foreach ($audience_members as $audience_member) {
-            $sent_to = [];
             $member = null;
             switch ($audience_member->entity_type) {
                 case 'user':
@@ -54,13 +53,20 @@ class FireOffEmailCampaign
                     break;
             }
             if ($member) {
-                if (!AppState::isSimuationMode()) {
-                    Mail::to($member->email)->send(new EmailCampaignMail($subject, $markup, $member->toArray()));
-                }
+                //TODO: probably don't just serialize the $member object. we need to pluck what we want, and merge with other variables
+                $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
                 $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'email' => $member->email];
             }
             $client_aggy->logEmailsSent($email_campaign_id, $sent_to, Carbon::now())->persist();
         }
+        foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
+            //chunkj is not right shape
+            if (!AppState::isSimuationMode()) {
+                MailgunBatchSend::dispatch($chunk, $template->subject, $template->markup);
+            }
+        }
+
+
         $client_aggy->completeEmailCampaign($email_campaign_id, Carbon::now())->persist();
     }
 
