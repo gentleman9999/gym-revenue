@@ -22,7 +22,7 @@ class AddAudienceMember extends Command
      *
      * @var string
      */
-    protected $signature = 'audience:add {--E|email}';
+    protected $signature = 'audience:add {--email= : the email of the user}';
     /**
      * The console command description.
      *
@@ -66,12 +66,23 @@ class AddAudienceMember extends Command
     private function getUser()
     {
         $user = null;
+        $email = $this->option('email');
+
+        $ranOnce = false;
         while (!$user) {
-            $email = $this->ask('What is the email address of the user you want to use?');
+            if(!$email){
+                if($ranOnce){
+                    $email = $this->ask('Could not find a user with that email.  Try another?');
+                }else{
+                    $email = $this->ask('What is the email address of the user you want to use?');
+                }
+            }
             $user = User::whereEmail($email)->first();
             if (!$user) {
                 $this->error("No user found with email '$email'");
+                $email = null;
             }
+            $ranOnce = true;
         }
 
         return $user;
