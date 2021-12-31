@@ -48,6 +48,11 @@ class HandleInertiaRequests extends Middleware
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
             ];
         }
+        $previousUrl = url()->previous();
+
+        if(!empty($previousUrl) && $previousUrl !== route('login') && $previousUrl !== url()->current()){
+            $shared['previousUrl'] = $previousUrl;
+        }
         $alerts = Alert::getMessages();
         return array_merge(parent::share($request), [
             'flash' => function () use ($request, $alerts) {

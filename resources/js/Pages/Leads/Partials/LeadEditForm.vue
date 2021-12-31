@@ -25,7 +25,7 @@
 
         <template #actions>
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <Button type="button" @click="$inertia.visit(route('data.leads'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
+            <Button type="button" @click="goBack" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
                 Cancel
             </Button>
             <div class="flex-grow" />
@@ -37,15 +37,14 @@
 </template>
 
 <script>
-import {useForm} from '@inertiajs/inertia-vue3'
-
+import {useForm, usePage} from '@inertiajs/inertia-vue3'
 
 import AppLayout from '@/Layouts/AppLayout'
 import Button from '@/Components/Button'
 import JetFormSection from '@/Jetstream/FormSection'
-
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
+import {useGoBack} from '@/utils';
 
 export default {
     components: {
@@ -78,8 +77,8 @@ export default {
             handleSubmit = () => form.post('/data/leads');
         }
 
-
-        return {form, buttonText: operation, handleSubmit}
+        const goBack = useGoBack(route('data.leads'));
+        return {form, buttonText: operation, handleSubmit, goBack}
     },
 }
 </script>
