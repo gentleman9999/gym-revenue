@@ -41,6 +41,7 @@ class LeadsController extends Controller
         {
             $prospects = $prospects_model->with('location')->with('detailsDesc')
                 ->filter($request->only('search', 'trashed'))
+                ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
         }
 
