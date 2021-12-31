@@ -23,7 +23,7 @@ import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 
-import LeadForm from '@/Pages/Leads/Partials/LeadCreateForm'
+import LeadForm from '@/Pages/Leads/Partials/LeadForm'
 
 
 export default defineComponent({

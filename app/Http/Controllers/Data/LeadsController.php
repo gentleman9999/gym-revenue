@@ -150,9 +150,24 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+        //@TODO: we may want to embed the currentClientId in the form as a field
+        //instead of getting the value here.  if you have multiple tabs open, and
+        // one has an outdated currentClient id, creating would have unintended ]
+        //consequences, potentially adding the lead to the wrong client, or
+        //just error out. also check for other areas in the app for similar behavior
+        $client_id = request()->user()->currentClientId();
+        $is_client_user = request()->user()->isClientUser();
+        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+
+        $locations = [];
+        foreach ($locations_records as $location)
+        {
+            $locations[$location->gymrevenue_id] = $location->name;
+        }
 
         return Inertia::render('Leads/Edit', [
             'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
+            'locations' =>$locations
         ]);
     }
 
