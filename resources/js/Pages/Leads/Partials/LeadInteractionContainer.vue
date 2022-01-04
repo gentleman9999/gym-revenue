@@ -1,51 +1,51 @@
 <template>
-    <p class="text-center" v-if="loading"> Loading Details about {{ firstName }} {{ lastName }}...</p>
-    <div v-else>
-        <div class="flex flex-col items-center mb-4">
-            <div class="w-full mb-8 mt-4">
-                <div class="grid grid-cols-12 w-full gap-4">
-                    <div class="col-span-12 lg:col-span-4 flex-shrink-0 bg-base-300 rounded-lg flex flex-col p-4">
+    <div class="flex flex-col items-center mb-4">
+        <div class="w-full mb-8 mt-4">
+            <div class="grid grid-cols-12 w-full gap-4">
+                <div class="col-span-12 lg:col-span-4 flex-shrink-0 bg-base-300 rounded-lg flex flex-col p-4">
+                    <inertia-link :href="route('data.leads.edit', leadId)" class="flex flex-col items-center justify-center">
                         <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
-                        <h1 class="text-center text-2xl">{{ firstName }} {{ lastName }}</h1>
+                        <h1 class="text-center text-2xl">
+                            {{ firstName }} {{ lastName }}
+                        </h1>
+                    </inertia-link>
 
-                        <!--                        <ul class="w-full">-->
-                        <!--                            <li class="mb-4"><p><b>Email -</b> {{ email }}</p></li>-->
-                        <!--                            <li><p><b>Phone -</b> {{ phone }}</p></li>-->
-                        <!--                        </ul>-->
-                        <div class="flex flex-row mt-8 self-center" v-if="claimedByUser">
-                            <div class="mr-4">
-                                <Button type="button" success @click="activeContactMethod = 'email'">Email
-                                </Button>
-                            </div>
-                            <div class="mr-4">
-                                <Button type="button" error @click="activeContactMethod = 'phone'">Call</Button>
-                            </div>
-                            <div class="mr-4">
-                                <Button type="button" info @click="activeContactMethod = 'sms'">SMS</Button>
-                            </div>
+                    <!--                        <ul class="w-full">-->
+                    <!--                            <li class="mb-4"><p><b>Email -</b> {{ email }}</p></li>-->
+                    <!--                            <li><p><b>Phone -</b> {{ phone }}</p></li>-->
+                    <!--                        </ul>-->
+                    <div class="flex flex-row mt-8 self-center" v-if="claimedByUser">
+                        <div class="mr-4">
+                            <Button type="button" success @click="activeContactMethod = 'email'">Email
+                            </Button>
+                        </div>
+                        <div class="mr-4">
+                            <Button type="button" error @click="activeContactMethod = 'phone'">Call</Button>
+                        </div>
+                        <div class="mr-4">
+                            <Button type="button" info @click="activeContactMethod = 'sms'">SMS</Button>
                         </div>
                     </div>
-                    <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
-                        <CommsHistory :details="details" ref="commsHistoryRef"/>
-                    </div>
-                    <sweet-modal :title="modalTitle" width="85%" ref="showViewModal" overlayTheme="dark"
-                                 modal-theme="dark"
-                                 enable-mobile-fullscreen
-                                 @close="activeContactMethod = ''">
-                        <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
-                            <CommsActions :activeContactMethod="activeContactMethod" :phone="phone" :lead-id="leadId"
-                                          @done="$refs.showViewModal.close();"/>
-                        </div>
-                    </sweet-modal>
                 </div>
+                <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
+                    <CommsHistory :details="details" ref="commsHistoryRef"/>
+                </div>
+                <sweet-modal :title="modalTitle" width="85%" ref="showViewModal" overlayTheme="dark"
+                             modal-theme="dark"
+                             enable-mobile-fullscreen
+                             @close="activeContactMethod = ''">
+                    <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
+                        <CommsActions :activeContactMethod="activeContactMethod" :phone="phone" :lead-id="leadId"
+                                      @done="$refs.showViewModal.close();"/>
+                    </div>
+                </sweet-modal>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-;
+import {defineComponent} from 'vue';
 import Button from '@/Components/Button';
 import FormSection from '@/Jetstream/FormSection'
 import CommsHistory from "./CommsHistory";
@@ -71,7 +71,6 @@ export default defineComponent({
     props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details'],
     data() {
         return {
-            loading: false,
             activeContactMethod: '',
             dynamicDetails: '',
         }
@@ -101,8 +100,8 @@ export default defineComponent({
         }
     },
     methods: {
-        goToLeadDetailIndex(index){
-            console.log('goToLeadDetailIndex',index );
+        goToLeadDetailIndex(index) {
+            console.log('goToLeadDetailIndex', index);
             this.$refs.commsHistoryRef.goToLeadDetailIndex(index);
         },
         fetchLeadInfo() {
