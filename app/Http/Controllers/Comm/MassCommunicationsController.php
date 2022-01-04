@@ -331,8 +331,8 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        return Redirect::route('comms.email-templates');
-//        return Redirect::route('comms.email-templates.edit', ['id' => $new_template->id]);
+//        return Redirect::route('comms.email-templates');
+        return Redirect::route('comms.email-templates.edit', ['id' => $new_template->id]);
 
     }
 
@@ -366,6 +366,8 @@ class MassCommunicationsController extends Controller
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
         return Redirect::route('comms.email-templates');
+//        return Redirect::route('comms.email-templates.edit', $template->id);
+
     }
 
     public function et_trash($id)
@@ -883,8 +885,8 @@ class MassCommunicationsController extends Controller
 
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
-        return Redirect::route('comms.sms-templates');
-//        return Redirect::route('comms.sms-templates.edit', ['id' => $new_template->id]);
+//        return Redirect::route('comms.sms-templates');
+        return Redirect::route('comms.sms-templates.edit', ['id' => $new_template->id]);
 
     }
 
