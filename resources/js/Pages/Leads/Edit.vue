@@ -9,7 +9,7 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <lead-form :client-id="this.$page.props.user.current_client_id" :lead="lead"/>
+                <lead-form :client-id="this.$page.props.user.current_client_id" :lead="lead" :locations="locations"/>
             </div>
         </div>
     </app-layout>
@@ -24,7 +24,7 @@ import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import JetBarIcon from '@/Components/JetBarIcon'
 
-import LeadForm from '@/Pages/Leads/Partials/LeadEditForm'
+import LeadForm from '@/Pages/Leads/Partials/LeadForm'
 import {defineComponent} from 'vue'
 
 
@@ -39,6 +39,6 @@ export default defineComponent({
         JetBarIcon,
         LeadForm,
     },
-    props: ['lead']
+    props: ['lead', 'locations']
 })
 </script>

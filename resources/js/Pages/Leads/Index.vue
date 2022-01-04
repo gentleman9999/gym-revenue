@@ -117,12 +117,13 @@ export default defineComponent({
             };
         };
         const fields = [
-            { name: "created_at", label: "date" },
-            { name: "first_name", label: "last_name" },
-            { name: "location.name", label: "location" },
+            { name: "created_at", label: "Created" },
+            { name: "first_name", label: "First Name" },
+            { name: "last_name", label: "Last Name" },
+            { name: "location.name", label: "Location" },
             {
                 name: "lead_type",
-                label: "lead type",
+                label: "Type",
                 component: CrudBadge,
                 props: {
                     getProps: ({ data: { lead_type } }) => ({
