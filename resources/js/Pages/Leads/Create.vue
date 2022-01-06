@@ -8,7 +8,8 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <lead-form :client-id="$page.props.user.current_client_id" :locations="locations"/>
+                <lead-form :client-id="$page.props.user.current_client_id" :locations="locations"
+                           :lead_types="lead_types" :membership_types="membership_types" :lead_sources="lead_sources"/>
             </div>
         </div>
     </app-layout>
@@ -36,7 +37,7 @@ export default defineComponent({
         JetLabel,
         LeadForm
     },
-    props: ['locations'],
+    props: ['locations',  'lead_types', 'lead_sources', 'membership_types'],
     mounted() {
         console.log('Fuck ', this.$page.props.user.current_client_id)
     }

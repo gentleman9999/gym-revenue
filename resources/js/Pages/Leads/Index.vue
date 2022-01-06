@@ -103,18 +103,24 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         }
-        const badgeClasses = (lead_type) => {
-            return {
-                "badge-primary": lead_type === "facebook",
-                "badge-secondary": lead_type === "snapchat",
-                "badge-info": lead_type === "free_trial",
-                "badge-accent": lead_type === "instagram",
-                "badge-success": lead_type === "grand_opening",
-                "badge-outline": lead_type === "contact_us",
-                "badge-ghost": lead_type === "app_referral",
-                "badge-error": lead_type === "streaming_preview",
-                "badge-warning": lead_type === "personal_training",
-            };
+        const  badgeClasses = (lead_type_id) => {
+            if(!lead_type_id){
+                return '';
+            }
+
+            const badges =  [
+                "badge-primary",
+                "badge-secondary",
+                "badge-info",
+                "badge-accent",
+                "badge-success",
+                "badge-outline",
+                "badge-ghost",
+                "badge-error",
+                "badge-warning",
+            ];
+
+            return badges[ lead_type_id < badges.length ? lead_type_id : badges.length % lead_type_id]
         };
         const fields = [
             { name: "created_at", label: "Created" },
@@ -127,8 +133,8 @@ export default defineComponent({
                 component: CrudBadge,
                 props: {
                     getProps: ({ data: { lead_type } }) => ({
-                        class: badgeClasses(lead_type),
-                        text: lead_type,
+                        class: badgeClasses(lead_type?.id),
+                        text: lead_type?.name,
                     }),
                 },
             },

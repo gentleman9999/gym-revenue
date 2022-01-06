@@ -8,6 +8,10 @@ use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
+use Database\Seeders\Data\LeadSourceSeeder;
+use Database\Seeders\Data\LeadTypeSeeder;
+use Database\Seeders\Data\MembershipTypeSeeder;
+use Database\Seeders\Data\ServicesSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
@@ -54,6 +58,18 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
+
+        VarDumper::dump('Running Lead Type Seeder');
+        $this->call(LeadTypeSeeder::class);
+
+        VarDumper::dump('Running Membership Type Seeder');
+        $this->call(MembershipTypeSeeder::class);
+
+        VarDumper::dump('Running Lead Source Seeder');
+        $this->call(LeadSourceSeeder::class);
+
+        VarDumper::dump('Running Services Seeder');
+        $this->call(ServicesSeeder::class);
 
         VarDumper::dump('Running Client Secondary Teams Seeder');
         $this->call(SecondaryTeamsSeeder::class);

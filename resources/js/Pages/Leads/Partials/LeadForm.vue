@@ -4,41 +4,74 @@
             <div class="col-span-6">
                 <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="first_name" value="First Name"/>
-                <input id="" type="text" class="block w-full mt-1" v-model="form['first_name']" autofocus/>
+                <input id="" type="text"  v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="last_name" value="Last Name"/>
-                <input id="last_name" type="text" class="block w-full mt-1" v-model="form['last_name']" autofocus/>
+                <input id="last_name" type="text" v-model="form['last_name']" autofocus/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="email" value="Email"/>
-                <input id="email" type="text" class="block w-full mt-1" v-model="form.email" autofocus/>
+                <input id="email" type="email" v-model="form.email" autofocus/>
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="mobile_phone" value="Mobile Phone"/>
-                <input id="mobile_phone" type="text" class="block w-full mt-1" v-model="form['mobile_phone']"
+                <input id="mobile_phone" type="tel" v-model="form['mobile_phone']"
                        autofocus/>
                 <jet-input-error :message="form.errors.mobile_phone" class="mt-2"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="home_phone" value="Home Phone"/>
-                <input id="home_phone" type="text" class="block w-full mt-1" v-model="form['home_phone']"
+                <input id="home_phone" type="tel" v-model="form['home_phone']"
                        autofocus/>
                 <jet-input-error :message="form.errors.home_phone" class="mt-2"/>
             </div>
-            <div class="col-span-4">
+            <div class="form-divider"/>
+            <div class="form-control col-span-3">
                 <jet-label for="club_id" value="Club"/>
-                <select class="w-full border-base-100-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md shadow-sm" v-model="form['gr_location_id']" required>
+                <select class="" v-model="form['gr_location_id']" required id="club_id">
                     <option value="">Select a Club</option>
                     <option v-for="(name, clubId) in locations" :value="clubId">{{ name }}</option>
                 </select>
                 <jet-input-error :message="form.errors['gr_location_id']" class="mt-2"/>
             </div>
+            <div class="form-control col-span-3">
+                <jet-label for="lead_source_id" value="Source"/>
+                <select class="" v-model="form['lead_source_id']" required id="lead_source_id">
+                    <option value="">Select a Source</option>
+                    <option v-for="(source, i) in lead_sources" :value="source.id">{{ source.name }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_source_id']" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+                <jet-label for="lead_type_id" value="Lead Type"/>
+                <select class="" v-model="form['lead_type_id']" required id="lead_type_id">
+                    <option value="">Select a Lead Type</option>
+                    <option v-for="(lead, i) in lead_types" :value="lead.id">{{ lead.name }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_type_id']" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+                <jet-label for="membership_type_id" value="Membership Type"/>
+                <select class="" v-model="form['membership_type_id']" required id="membership_type_id">
+                    <option value="">Select a Membership Type</option>
+                    <option v-for="(membership_type, i) in membership_types" :value="membership_type.id">{{ membership_type.name }}</option>
+                </select>
+                <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
+            </div>
+            <div class="form-divider"><span>Services</span></div>
+            <div v-for="(name, clubId) in locations" :value="clubId" class="form-control col-span-3">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <input type="checkbox" />
+                    <span>{{ name }}</span>
+                </label>
+            </div>
+
         </template>
 
         <template #actions>
@@ -80,7 +113,7 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
@@ -92,7 +125,10 @@ export default {
                 mobile_phone: null,//TODO:change to primary/alternate
                 home_phone: null,
                 client_id: props.clientId,
-                gr_location_id: null
+                gr_location_id: null,
+                lead_type_id: null,
+                member_type_id: null,
+                lead_source_id: null
             }
             operation = 'Create';
         }
@@ -111,5 +147,17 @@ export default {
 </script>
 
 <style scoped>
+input[type=text], input[type=email], input[type=tel]{
+    @apply w-full mt-1;
+}
+select{
+    @apply w-full;
+}
+.form-divider{
+    @apply col-span-6 border-t-2 border-base-content border-opacity-10 relative;
+}
+.form-divider > span{
+    @apply  absolute inset-0  transform -translate-y-1/2 text-xs text-opacity-30 bg-base-300 block;
+}
 
 </style>

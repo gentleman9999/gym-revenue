@@ -8,6 +8,9 @@ use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
+use App\Models\Endusers\LeadSource;
+use App\Models\Endusers\LeadType;
+use App\Models\Endusers\MembershipType;
 use App\Models\TeamDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -39,7 +42,12 @@ class LeadsController extends Controller
 
         if(!empty($prospects_model))
         {
-            $prospects = $prospects_model->with('location')->with('detailsDesc')
+            $prospects = $prospects_model
+                ->with('location')
+                ->with('leadType')
+                ->with('membershipType')
+                ->with('leadSource')
+                ->with('detailsDesc')
                 ->filter($request->only('search', 'trashed'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
@@ -70,15 +78,22 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
+        $lead_types = LeadType::whereClientId($client_id)->get();
+        $membership_types = MembershipType::whereClientId($client_id)->get();
+        $lead_sources = LeadSource::whereClientId($client_id)->get();
+
         return Inertia::render('Leads/Create', [
-            'locations' => $locations
+            'locations' => $locations,
+            'lead_types' => $lead_types,
+            'membership_types' => $membership_types,
+            'lead_sources' => $lead_sources
         ]);
     }
 
     public function store(Lead $lead_model)
     {
         $lead_data = request()->validate($this->create_rules);
-        $lead_data['lead_type'] = 'manual_create';
+        $lead_data['lead_type_id'] = 1;//manual_create
         $user_id = auth()->user()->id;
         if(array_key_exists('user_id', $lead_data))
         {
@@ -165,9 +180,16 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
+        $lead_types = LeadType::whereClientId($client_id)->get();
+        $membership_types = MembershipType::whereClientId($client_id)->get();
+        $lead_sources = LeadSource::whereClientId($client_id)->get();
+
         return Inertia::render('Leads/Edit', [
             'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
-            'locations' =>$locations
+            'locations' =>$locations,
+            'lead_types' => $lead_types,
+            'membership_types' => $membership_types,
+            'lead_sources' => $lead_sources
         ]);
     }
 

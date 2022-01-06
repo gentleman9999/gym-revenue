@@ -22,7 +22,12 @@ class LeadProspectSeeder extends Seeder
         VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)
-            ->with('locations')->get();
+            ->with('locations')
+            ->with('lead_types')
+            ->with('lead_sources')
+            ->with('membership_types')
+            ->get();
+
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -35,18 +40,9 @@ class LeadProspectSeeder extends Seeder
                             // over ride the client id and gr id from the factory
                             ->client_id($client->id)
                             ->gr_location_id($location->gymrevenue_id ?? '')
-                            ->state(new Sequence(
-                            // alternate the lead types
-                                ['lead_type' => 'free_trial'],
-                                ['lead_type' => 'grand_opening'],
-                                ['lead_type' => 'streaming_preview'],
-                                ['lead_type' => 'personal_training'],
-                                ['lead_type' => 'app_referral'],
-                                ['lead_type' => 'facebook'],
-                                ['lead_type' => 'snapchat'],
-                                ['lead_type' => 'contact_us'],
-                                ['lead_type' => 'mailing_list'],
-                            ))
+                            ->lead_type_id($client->lead_types[random_int(1,count($client->lead_types)-1)]->id)
+                            ->membership_type_id($client->membership_types[random_int(1,count($client->membership_types)-1)]->id)
+                            ->lead_source_id($client->lead_sources[random_int(1,count($client->lead_sources)-1)]->id)
                             ->make();
 
                         VarDumper::dump('Generating Leads!');

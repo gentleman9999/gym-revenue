@@ -3,6 +3,9 @@
 namespace App\Models\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Endusers\LeadSource;
+use App\Models\Endusers\LeadType;
+use App\Models\Endusers\MembershipType;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,6 +35,21 @@ class Client extends Model
     public function details()
     {
         return $this->hasMany(ClientDetail::class);
+    }
+
+    public function lead_types()
+    {
+        return $this->hasMany(LeadType::class);
+    }
+
+    public function lead_sources()
+    {
+        return $this->hasMany(LeadSource::class);
+    }
+
+    public function membership_types()
+    {
+        return $this->hasMany(MembershipType::class);
     }
 
     public function detail()

@@ -42,6 +42,7 @@ class EndUserActivityProjector extends Projector
         $lead = Lead::findOrFail($event->id);
         $old_data = $lead->toArray();
         $user = User::find($event->user);
+//        dd($event->lead['membership_type_id']);
         $lead->updateOrFail($event->lead);
         LeadDetails::create([
             'lead_id' => $event->id,
