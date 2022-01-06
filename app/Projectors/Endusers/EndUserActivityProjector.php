@@ -2,12 +2,13 @@
 
 namespace App\Projectors\Endusers;
 
-use App\Models\Clients\Client;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Endusers\AudienceMember;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\User;
+use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
@@ -15,7 +16,6 @@ use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\UpdateLead;
-use App\StorableEvents\Endusers\LeadClaimedByRep;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EndUserActivityProjector extends Projector
@@ -23,6 +23,16 @@ class EndUserActivityProjector extends Projector
     public function onNewLeadMade(NewLeadMade $event)
     {
         $lead = Lead::create($event->lead);
+
+        foreach($event->lead['services'] ?? [] as $service_id){
+            LeadDetails::create([
+                    'lead_id' => $event->aggregateRootUuid(),
+                    'client_id' => $lead->client_id,
+                    'field' => 'service_id',
+                    'value' => $service_id
+                ]
+            );
+        }
 
     }
 
@@ -42,14 +52,24 @@ class EndUserActivityProjector extends Projector
         $lead = Lead::findOrFail($event->id);
         $old_data = $lead->toArray();
         $user = User::find($event->user);
-//        dd($event->lead['membership_type_id']);
         $lead->updateOrFail($event->lead);
+        LeadDetails::whereLeadId($event->id)->whereField('service_id')->delete();
+        foreach($event->lead['services'] ?? [] as $service_id){
+            LeadDetails::firstOrCreate([
+                    'lead_id' => $event->aggregateRootUuid(),
+                    'client_id' => $lead->client_id,
+                    'field' => 'service_id',
+                    'value' => $service_id
+                ]
+            );
+        }
+
         LeadDetails::create([
             'lead_id' => $event->id,
             'client_id' => $lead->client_id,
             'field' => 'updated',
             'value' => $user->email,
-            'misc'  => [
+            'misc' => [
                 'old_data' => $old_data,
                 'new_data' => $event->lead,
                 'user' => $event->user
@@ -67,13 +87,11 @@ class EndUserActivityProjector extends Projector
         ]);
 
         $misc = $lead->misc;
-        if(!is_array($misc))
-        {
+        if (!is_array($misc)) {
             $misc = [];
         }
 
-        if(!array_key_exists('claim_date', $misc))
-        {
+        if (!array_key_exists('claim_date', $misc)) {
             $misc['claim_date'] = date('Y-m-d');
         }
 
@@ -137,8 +155,7 @@ class EndUserActivityProjector extends Projector
         $audience_record = CommAudience::whereClientId($event->client)
             ->whereSlug($event->audience)->whereActive(1)->first();
 
-        if(!is_null($audience_record))
-        {
+        if (!is_null($audience_record)) {
             // add a new record to audience_members
             $audience_member_record = AudienceMember::firstOrCreate([
                 'client_id' => $event->client,
@@ -165,5 +182,26 @@ class EndUserActivityProjector extends Projector
             ]);
         }
 
+    }
+
+
+    //primarily just unseed for seeder. couldn't get to work otherwise.
+    public function onLeadServicesSet(LeadServicesSet $event)
+    {
+//        $LeadDetails::firstOrCreate();
+        $lead = Lead::find($event->aggregateRootUuid());
+
+        LeadDetails::whereLeadId($lead->id)->whereField('service_id')->delete();
+
+        foreach ($event->serviceIds ?? [] as $service_id) {
+            LeadDetails::firstOrCreate([
+                    'lead_id' => $event->aggregateRootUuid(),
+                    'client_id' => $lead->client_id,
+                    'field' => 'service_id',
+                    'value' => $service_id
+                ]
+            );
+
+        }
     }
 }

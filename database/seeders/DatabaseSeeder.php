@@ -50,6 +50,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
 
+        VarDumper::dump('Running Services Seeder');
+        $this->call(ServicesSeeder::class);
+
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
 
@@ -67,9 +70,6 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Lead Source Seeder');
         $this->call(LeadSourceSeeder::class);
-
-        VarDumper::dump('Running Services Seeder');
-        $this->call(ServicesSeeder::class);
 
         VarDumper::dump('Running Client Secondary Teams Seeder');
         $this->call(SecondaryTeamsSeeder::class);

@@ -93,8 +93,8 @@ export default defineComponent({
         JetBarContainer,
         LeadInteraction,
     },
-    props: ["leads", "title", "isClientUser", "filters"],
-    setup() {
+    props: ["leads", "title", "isClientUser", "filters", "lead_types"],
+    setup(props) {
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -105,6 +105,7 @@ export default defineComponent({
         }
         const  badgeClasses = (lead_type_id) => {
             if(!lead_type_id){
+                console.log('no lead type id!');
                 return '';
             }
 
@@ -120,7 +121,15 @@ export default defineComponent({
                 "badge-warning",
             ];
 
-            return badges[ lead_type_id < badges.length ? lead_type_id : badges.length % lead_type_id]
+            const lead_type_index = props.lead_types.findIndex(lead_type=>lead_type.id === lead_type_id);
+            if(props.lead_types.length <=badges.length ){
+                return  badges[lead_type_index];
+            }
+            return  badges[lead_type_index % badges.length];
+            // console.log({lead_type_index, })
+
+
+
         };
         const fields = [
             { name: "created_at", label: "Created" },

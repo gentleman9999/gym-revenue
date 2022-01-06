@@ -18,7 +18,7 @@ class Lead extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'mobile_phone', 'home_phone', 'gr_location_id', 'ip_address', 'lead_type_id'];
+    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'mobile_phone', 'home_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
 
     public function details()
     {
@@ -66,7 +66,7 @@ class Lead extends Model
 
     public function services()
     {
-        return $this->detail()->whereDetail('service')->whereActive(1);
+        return $this->details()->whereField('service_id')->whereActive(1);
     }
 
     public function scopeFilter($query, array $filters)

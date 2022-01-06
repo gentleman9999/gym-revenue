@@ -16,7 +16,6 @@ class LeadFactory extends Factory
     protected $model = Lead::class;
 
 
-
     /**
      * Define the model's default state.
      *
@@ -36,7 +35,7 @@ class LeadFactory extends Factory
             'first_name' => $first_name,
             'last_name' => $last_name,
             'email' => $email,
-            'mobile_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()) ,
+            'mobile_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()),
             'ip_address' => $this->faker->ipv4(),
         ];
     }

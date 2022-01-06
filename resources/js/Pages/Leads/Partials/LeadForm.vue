@@ -65,10 +65,10 @@
                 <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
             </div>
             <div class="form-divider"><span>Services</span></div>
-            <div v-for="(name, clubId) in locations" :value="clubId" class="form-control col-span-3">
+            <div v-for="(service, i) in available_services" class="form-control col-span-3">
                 <label class="label cursor-pointer justify-start gap-4">
-                    <input type="checkbox" />
-                    <span>{{ name }}</span>
+                    <input type="checkbox" :value="service.id"  v-model="form['services']" />
+                    <span>{{ service.name }}</span>
                 </label>
             </div>
 
@@ -113,24 +113,28 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
         if (!lead) {
             lead = {
-                'first_name': null,
-                'last_name': null,
+                first_name: null,
+                last_name: null,
                 email: null,
                 mobile_phone: null,//TODO:change to primary/alternate
                 home_phone: null,
+                club_id: null,
                 client_id: props.clientId,
                 gr_location_id: null,
                 lead_type_id: null,
-                member_type_id: null,
-                lead_source_id: null
+                membership_type_id: null,
+                lead_source_id: null,
+                services: []
             }
             operation = 'Create';
+        }else{
+            lead.services = lead.services.map(detail=>detail.value)
         }
 
         const form = useForm(lead)

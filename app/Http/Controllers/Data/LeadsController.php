@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Data;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
+use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
+use App\Models\Endusers\Service;
 use App\Models\TeamDetail;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -20,14 +21,20 @@ use Prologue\Alerts\Facades\Alert;
 
 class LeadsController extends Controller
 {
-    protected $create_rules = [
+    protected $rules = [
         'first_name' => ['required', 'max:50'],
         'last_name' => ['required', 'max:30'],
         'email' => ['required', 'email:rfc,dns'],
         'mobile_phone' => ['sometimes'],
-        'user_id' => ['sometimes', 'exists:user,id'],
+        'home_phone' => ['sometimes'],
         'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
-        'client_id' => 'required'
+        'lead_source_id' => ['required', 'exists:lead_sources,id'],
+        'lead_type_id' => ['required', 'exists:lead_types,id'],
+        'membership_type_id' => ['required', 'exists:membership_types,id'],
+        'services' => ['sometimes'],
+        'services.*' => ['required', 'exists:services,id'],
+//        'user_id' => ['sometimes', 'exists:user,id'],
+        'client_id' => 'required',
     ];
 
     public function index(Request $request)
@@ -40,8 +47,7 @@ class LeadsController extends Controller
 
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
 
-        if(!empty($prospects_model))
-        {
+        if (!empty($prospects_model)) {
             $prospects = $prospects_model
                 ->with('location')
                 ->with('leadType')
@@ -57,7 +63,8 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed')
+            'filters' => $request->all('search', 'trashed'),
+            'lead_types' => LeadType::whereClientId($client_id)->get()
         ]);
     }
 
@@ -73,35 +80,45 @@ class LeadsController extends Controller
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
         $locations = [];
-        foreach ($locations_records as $location)
-        {
+        foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
 
         return Inertia::render('Leads/Create', [
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
-            'lead_sources' => $lead_sources
+            'lead_sources' => $lead_sources,
+            'available_services' => $available_services
         ]);
     }
 
     public function store(Lead $lead_model)
     {
-        $lead_data = request()->validate($this->create_rules);
-        $lead_data['lead_type_id'] = 1;//manual_create
+        $lead_data = request()->validate($this->rules);
+//        $lead_data['lead_type_id'] = 1;//manual_create
         $user_id = auth()->user()->id;
-        if(array_key_exists('user_id', $lead_data))
-        {
-            $user_id = $lead_data['user_id'];
-            unset($lead_data['user_id']);
-        }
+//        if (array_key_exists('user_id', $lead_data)) {
+//            $user_id = $lead_data['user_id'];
+//            unset($lead_data['user_id']);
+//        }
 
         $lead = $lead_model->create($lead_data);
+
+        foreach($lead_data['services'] ?? [] as $service_id){
+            LeadDetails::create([
+                    'lead_id' => $lead->id,
+                    'client_id' => $lead->client_id,
+                    'field' => 'service_id',
+                    'value' => $service_id
+                ]
+            );
+        }
 
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 
@@ -117,8 +134,7 @@ class LeadsController extends Controller
     {
         $results = [];
 
-        if((!is_null($client_id)))
-        {
+        if ((!is_null($client_id))) {
             /**
              * BUSINESS RULES
              * 1. There must be an active client and an active team.
@@ -131,15 +147,12 @@ class LeadsController extends Controller
             $default_team_name = $client->default_team_name->value;
             $team_locations = [];
 
-            if($current_team->name != $default_team_name)
-            {
+            if ($current_team->name != $default_team_name) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
 
-                if(count($team_locations_records) > 0)
-                {
-                    foreach ($team_locations_records as $team_locations_record)
-                    {
+                if (count($team_locations_records) > 0) {
+                    foreach ($team_locations_records as $team_locations_record) {
                         // @todo - we will probably need to do some user-level scoping
                         // example - if there is scoping and this club is not there, don't include it
                         $team_locations[] = $team_locations_record->value;
@@ -148,9 +161,7 @@ class LeadsController extends Controller
                     $results = Lead::whereClientId($client_id)
                         ->whereIn('gr_location_id', $team_locations);
                 }
-            }
-            else
-            {
+            } else {
                 $results = Lead::whereClientId($client_id);
             }
         }
@@ -175,21 +186,22 @@ class LeadsController extends Controller
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
         $locations = [];
-        foreach ($locations_records as $location)
-        {
+        foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
 
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
-            'locations' =>$locations,
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->with('services')->first(),
+            'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
-            'lead_sources' => $lead_sources
+            'lead_sources' => $lead_sources,
+            'available_services' => $available_services,
         ]);
     }
 
@@ -212,7 +224,9 @@ class LeadsController extends Controller
             \Alert::info("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-        $data = request()->all();
+        $data = request()->validate($this->rules);
+
+//        $data = request()->all();
 
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
@@ -234,8 +248,7 @@ class LeadsController extends Controller
             ->whereActive(1)
             ->first();
 
-        if(is_null($claim_detail))
-        {
+        if (is_null($claim_detail)) {
             LeadDetails::create([
                 'client_id' => $data['client_id'],
                 'lead_id' => $data['lead_id'],
@@ -249,9 +262,7 @@ class LeadsController extends Controller
                 ->persist();
 
             \Alert::info('This lead has been claimed by you! You may now interact with it!')->flash();
-        }
-        else
-        {
+        } else {
             \Alert::error('This lead has been already been claimed.')->flash();
         }
 
@@ -282,30 +293,24 @@ class LeadsController extends Controller
             : new Location();
         */
 
-        if((!is_null($client_id)))
-        {
+        if ((!is_null($client_id))) {
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
             $default_team_name = $client->default_team_name->value;
 
             // The active_team is the current client's default_team (gets all the client's locations)
-            if($current_team->name == $default_team_name)
-            {
+            if ($current_team->name == $default_team_name) {
                 $results = Location::whereClientId($client_id);
-            }
-            else
-            {
+            } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->whereActive(1)
                     ->get();
 
-                if(count($team_locations) > 0)
-                {
+                if (count($team_locations) > 0) {
                     $in_query = [];
                     // so get the teams listed in team_details
-                    foreach($team_locations as $team_location)
-                    {
+                    foreach ($team_locations as $team_location) {
                         $in_query[] = $team_location->value;
                     }
 
@@ -313,12 +318,9 @@ class LeadsController extends Controller
                         ->whereIn('gymrevenue_id', $in_query);
                 }
             }
-        }
-        else
-        {
+        } else {
             // Cape & Bay user
-            if(!$is_client_user)
-            {
+            if (!$is_client_user) {
                 $results = new Location();
             }
         }
@@ -330,14 +332,11 @@ class LeadsController extends Controller
     {
         $lead = Lead::find($lead_id);
 
-        if($lead)
-        {
-            if(array_key_exists('method', request()->all()))
-            {
+        if ($lead) {
+            if (array_key_exists('method', request()->all())) {
                 $aggy = EndUserActivityAggregate::retrieve($lead_id);
                 $data = request()->all();
-                switch(request()->get('method'))
-                {
+                switch (request()->get('method')) {
                     case 'email':
                         $aggy->emailLead($data, auth()->user()->id)->persist();
                         Alert::success("Email sent to lead")->flash();
@@ -357,9 +356,7 @@ class LeadsController extends Controller
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
             }
-        }
-        else
-        {
+        } else {
             Alert::error("Could not find the lead requested.")->flash();
         }
 //        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);

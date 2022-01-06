@@ -62,6 +62,11 @@ class Client extends Model
         return $this->detail()->where('detail', '=', 'default-team');
     }
 
+    public function services()
+    {
+        return $this->details()->whereDetail('service_id')->whereActive(1);
+    }
+
     /**
      * The "booted" method of the model.
      *
