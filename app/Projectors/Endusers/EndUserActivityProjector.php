@@ -16,6 +16,7 @@ use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadWasDeleted;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EndUserActivityProjector extends Projector
@@ -167,9 +168,22 @@ class EndUserActivityProjector extends Projector
     }
 	
 	public function onLeadWasDeleted(LeadWasDeleted $event){
-		dd($event);
-		$model->delete();
-		
+		$lead = Lead::findOrFail($event->lead);
+		$client_id = $lead->client_id;
+	//dd($lead);	
+         $success = $lead->deleteOrFail();
+
+	$uare =	$event->user;
+	//dd($data, $uare);	
+
+	  LeadDetails::create([
+                'client_id' => $client_id,
+                'lead_id' => $event->lead,
+                'field' => 'softdelete',
+                'value' => $uare,
+                'misc' =>  ['userid'=> $uare]
+            ]);
+
 	}
 	
 	

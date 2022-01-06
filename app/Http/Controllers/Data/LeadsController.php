@@ -191,7 +191,8 @@ class LeadsController extends Controller
             return Redirect::route('data.leads');
         }
         $data = request()->all();
-
+		
+	//	dd($data);
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
             ->persist();
@@ -348,41 +349,30 @@ class LeadsController extends Controller
 
 	
 	
-	 public function lead_trash($id)
+	 public function lead_trash(Request $request,$lead_id)
     {
-        if (!$id) {
+        if (!$lead_id) {
             Alert::error("No Lead ID provided")->flash();
             return Redirect::back();
         }
-//dd($id);
-$data = Lead::whereId($id)->with('detailsDesc')->first();
-         $lead = Lead::findOrFail($id);
-         $success = $lead->deleteOrFail();
-
-	$uare =	auth()->user();
-	//dd($data, $uare);	
-
-	  LeadDetails::create([
-                'client_id' => $data->client_id,
-                'lead_id' => $data->id,
-                'field' => 'softdelete-Lead',
-                'value' => $uare->email,
-                'misc' =>  $uare
-            ]);
-
-$data = array(
-'id'=>$data->id,
-'client_id'=>$data->client_id
-);
-
-		 $rmlead = EndUserActivityAggregate::retrieve($id)
-            ->DeleteLead($data, auth()->user())
+         $request = Lead::whereId($lead_id)->with('detailsDesc')->first();
+//$data =request()->all();
+         $datan = array(json_decode($request));
+            foreach($datan as $data1){
+	           $data = array($data1);
+            }
+//dd($data);
+		 $rmlead = EndUserActivityAggregate::retrieve($lead_id)
+            ->DeleteLead($data , auth()->user()->id)
             ->persist();
-		
-        Alert::success("Lead '{$lead->email}' trashed")->flash();
+			// ->DeleteLead(request()->all(), auth()->user()->id)
 
-        return Redirect::back();
+        Alert::success("Lead  trashed!")->flash();
+      return Redirect::back();
+
     }
+
+
 
     public function lead_restore(Request $request, $id)
     {
@@ -392,8 +382,8 @@ $data = array(
         }
         $lead = Lead::withTrashed()->findOrFail($id);
         $lead->restore();
-
-        Alert::success("Lead '{$lead->name}' restored")->flash();
+//dd($lead);
+        Alert::success("Lead '{$lead->email}' restored")->flash();
 
         return Redirect::back();
     }

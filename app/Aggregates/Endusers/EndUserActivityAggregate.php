@@ -48,6 +48,7 @@ class EndUserActivityAggregate extends AggregateRoot
 
     public function updateLead(array $lead, User $updating_user)
     {
+	//	dd($this->uuid(), $lead, $updating_user);
         $this->recordThat(new UpdateLead($this->uuid(), $lead, $updating_user->id));
         return $this;
     }
@@ -76,14 +77,14 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
-    public function DeleteLead(array $data, User $updating_user){
-	//	dd( $data, $updating_user);
-		
-		$this->recordThat(new LeadWasDeleted($data, $updating_user->id));
+    public function DeleteLead(array $data, string $updating_user){
+             foreach($data as $data1){
+	              $data2 = array($data1);
+                }
+             $data =$data1;
+		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
         return $this;
-		
 	}
-
 
 
 }

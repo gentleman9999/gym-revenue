@@ -57,12 +57,16 @@
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
+			
             base-route="data.leads"
             :top-actions="{
                 create: { label: 'Add Lead' },
             }"
             :actions="{
-               
+               trash:{
+                    handler: ({data}) => handleClickTrash(data.id)
+                },
+            
                 contact: {
                     label: 'Contact Lead',
                     handler: ({ data }) => {
@@ -84,12 +88,12 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
 
-import {computed,  ref} from "vue";
+import {computed, defineComponent, ref} from "vue";
 
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
@@ -116,16 +120,9 @@ export default defineComponent({
 		
     },
     props: ["leads", "title", "isClientUser", "filters"],
-    setup() {
+    setup(props) {
 	
-		const actions = computed(() => {
-            return {
-                
-                trash:{
-                    handler: ({data}) => handleClickTrash(data.id)
-                }
-            };
-        });
+		
 		
         const comingSoon = () => {
             new Noty({
