@@ -165,4 +165,14 @@ class EndUserActivityProjector extends Projector
         }
 
     }
+	
+	public function onLeadWasDeleted(LeadWasDeleted $event){
+		dd($event);
+		$model->delete();
+		
+	}
+	
+	
+	
+	
 }

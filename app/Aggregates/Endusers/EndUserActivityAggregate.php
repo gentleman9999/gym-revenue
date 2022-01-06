@@ -11,6 +11,7 @@ use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadWasDeleted;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
@@ -74,4 +75,15 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->recordThat(new LeadWasTextMessagedByRep($this->uuid(), $data, $user));
         return $this;
     }
+
+    public function DeleteLead(array $data, User $updating_user){
+	//	dd( $data, $updating_user);
+		
+		$this->recordThat(new LeadWasDeleted($data, $updating_user->id));
+        return $this;
+		
+	}
+
+
+
 }

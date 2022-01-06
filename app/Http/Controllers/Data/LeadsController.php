@@ -344,4 +344,67 @@ class LeadsController extends Controller
 //        return redirect()->back()->with('selectedLeadDetailIndex', '0');
         return Redirect::back()->with('selectedLeadDetailIndex', 0);
     }
+	
+
+	
+	
+	 public function lead_trash($id)
+    {
+        if (!$id) {
+            Alert::error("No Lead ID provided")->flash();
+            return Redirect::back();
+        }
+//dd($id);
+$data = Lead::whereId($id)->with('detailsDesc')->first();
+         $lead = Lead::findOrFail($id);
+         $success = $lead->deleteOrFail();
+
+	$uare =	auth()->user();
+	//dd($data, $uare);	
+
+	  LeadDetails::create([
+                'client_id' => $data->client_id,
+                'lead_id' => $data->id,
+                'field' => 'softdelete-Lead',
+                'value' => $uare->email,
+                'misc' =>  $uare
+            ]);
+
+$data = array(
+'id'=>$data->id,
+'client_id'=>$data->client_id
+);
+
+		 $rmlead = EndUserActivityAggregate::retrieve($id)
+            ->DeleteLead($data, auth()->user())
+            ->persist();
+		
+        Alert::success("Lead '{$lead->email}' trashed")->flash();
+
+        return Redirect::back();
+    }
+
+    public function lead_restore(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Lead ID provided")->flash();
+            return Redirect::back();
+        }
+        $lead = Lead::withTrashed()->findOrFail($id);
+        $lead->restore();
+
+        Alert::success("Lead '{$lead->name}' restored")->flash();
+
+        return Redirect::back();
+    }
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
