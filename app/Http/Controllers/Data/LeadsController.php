@@ -191,7 +191,7 @@ class LeadsController extends Controller
             return Redirect::route('data.leads');
         }
         $data = request()->all();
-		
+
 	//	dd($data);
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
@@ -345,25 +345,19 @@ class LeadsController extends Controller
 //        return redirect()->back()->with('selectedLeadDetailIndex', '0');
         return Redirect::back()->with('selectedLeadDetailIndex', 0);
     }
-	
 
-	
-	
+
+
+
 	 public function lead_trash(Request $request,$lead_id)
     {
         if (!$lead_id) {
             Alert::error("No Lead ID provided")->flash();
             return Redirect::back();
         }
-         $request = Lead::whereId($lead_id)->with('detailsDesc')->first();
-//$data =request()->all();
-         $datan = array(json_decode($request));
-            foreach($datan as $data1){
-	           $data = array($data1);
-            }
-//dd($data);
-		 $rmlead = EndUserActivityAggregate::retrieve($lead_id)
-            ->DeleteLead($data , auth()->user()->id)
+         $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
+		 $rmlead = EndUserActivityAggregate::retrieve($lead_id);
+        $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)
             ->persist();
 			// ->DeleteLead(request()->all(), auth()->user()->id)
 
@@ -388,13 +382,13 @@ class LeadsController extends Controller
         return Redirect::back();
     }
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 }

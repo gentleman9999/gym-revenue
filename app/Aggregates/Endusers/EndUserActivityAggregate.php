@@ -78,10 +78,6 @@ class EndUserActivityAggregate extends AggregateRoot
     }
 
     public function DeleteLead(array $data, string $updating_user){
-             foreach($data as $data1){
-	              $data2 = array($data1);
-                }
-             $data =$data1;
 		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
         return $this;
 	}
