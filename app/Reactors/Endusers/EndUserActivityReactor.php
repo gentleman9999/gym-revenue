@@ -30,7 +30,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $msg = $event->data['message'];
 
         if(!AppState::isSimuationMode()){
-            FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
+            FireTwilioMsg::dispatch($lead->primary_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
         }
     }
 

@@ -18,7 +18,7 @@ class Lead extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'mobile_phone', 'home_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
+    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
 
     public function details()
     {
@@ -73,7 +73,7 @@ class Lead extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('mobile_phone', 'like', '%' . $search . '%')
+                $query->where('primary_phone', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('first_name', 'like', '%' . $search . '%')
                     ->orWhere('last_name', 'like', '%' . $search . '%')

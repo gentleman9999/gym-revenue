@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UploadLeadsColumns extends Migration
+class UpdateLeadsColumns extends Migration
 {
     /**
      * Run the migrations.
@@ -14,6 +14,8 @@ class UploadLeadsColumns extends Migration
     public function up()
     {
         Schema::table('leads', function (Blueprint $table) {
+            $table->renameColumn('mobile_phone', 'primary_phone');
+            $table->renameColumn('home_phone', 'alternate_phone');
             $table->dropColumn('lead_type');
             $table->integer('lead_type_id')->after('ip_address')->nullable();
             $table->integer('lead_source_id')->after('ip_address')->nullable();
@@ -33,6 +35,8 @@ class UploadLeadsColumns extends Migration
             $table->dropColumn('lead_type_id');
             $table->dropColumn('lead_source_id');
             $table->dropColumn('membership_type_id');
+            $table->renameColumn('primary_phone', 'mobile_phone');
+            $table->renameColumn( 'alternate_phone', 'home_phone');
         });
     }
 }

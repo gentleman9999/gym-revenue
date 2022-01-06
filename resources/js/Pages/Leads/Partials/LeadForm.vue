@@ -20,16 +20,16 @@
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="mobile_phone" value="Mobile Phone"/>
-                <input id="mobile_phone" type="tel" v-model="form['mobile_phone']"
+                <jet-label for="primary_phone" value="Primary Phone"/>
+                <input id="primary_phone" type="tel" v-model="form['primary_phone']"
                        autofocus/>
-                <jet-input-error :message="form.errors.mobile_phone" class="mt-2"/>
+                <jet-input-error :message="form.errors.primary_phone" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="home_phone" value="Home Phone"/>
-                <input id="home_phone" type="tel" v-model="form['home_phone']"
+                <jet-label for="alternate_phone" value="Alternate Phone"/>
+                <input id="alternate_phone" type="tel" v-model="form['alternate_phone']"
                        autofocus/>
-                <jet-input-error :message="form.errors.home_phone" class="mt-2"/>
+                <jet-input-error :message="form.errors.alternate_phone" class="mt-2"/>
             </div>
             <div class="form-divider"/>
             <div class="form-control col-span-3">
@@ -122,8 +122,8 @@ export default {
                 first_name: null,
                 last_name: null,
                 email: null,
-                mobile_phone: null,//TODO:change to primary/alternate
-                home_phone: null,
+                primary_phone: null,//TODO:change to primary/alternate
+                alternate_phone: null,
                 club_id: null,
                 client_id: props.clientId,
                 gr_location_id: null,
