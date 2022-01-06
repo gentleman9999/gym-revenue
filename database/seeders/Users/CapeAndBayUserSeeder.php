@@ -19,8 +19,8 @@ class CapeAndBayUserSeeder extends UserSeeder
 
         return [
             [
-                'name' => 'Steve Deemer',
-                'email' => 'steve@capeandbay.com',
+                'name' => 'Angel Gonzalez',
+                'email' => 'angel@capeandbay.com',
             ],
 			
             [
