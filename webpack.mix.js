@@ -13,12 +13,8 @@ const mix = require('laravel-mix');
 
 const postCssPlugins =[
     require('postcss-import'),
+    require('tailwindcss/nesting'),
     require('tailwindcss'),
-    require('postcss-nested')({
-        "bubble": [
-            "screen"
-        ]
-    }),
     require('autoprefixer'),
     //TODO: optimize via cssnano only on prod build
     // require('cssnano')({
