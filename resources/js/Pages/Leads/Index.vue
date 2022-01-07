@@ -57,12 +57,16 @@
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
+			
             base-route="data.leads"
             :top-actions="{
                 create: { label: 'Add Lead' },
             }"
             :actions="{
-                trash: false,
+               trash:{
+                    handler: ({data}) => handleClickTrash(data.id)
+                },
+            
                 contact: {
                     label: 'Contact Lead',
                     handler: ({ data }) => {
@@ -71,13 +75,26 @@
                 },
             }"
         />
+		 <confirm
+            title="Really Trash?"
+            v-if="confirmTrash"
+            @confirm="handleConfirmTrash"
+            @cancel="confirmTrash = null"
+        >
+            Are you sure you want to remove this lead?  
+        </confirm>
+		
     </app-layout>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
+import Confirm from "@/Components/Confirm";
+
+import {computed, defineComponent, ref} from "vue";
+
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
@@ -85,16 +102,28 @@ import LeadInteraction from "./Partials/LeadInteractionContainer";
 import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
 
+
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
+library.add(faChevronDoubleLeft, faEllipsisH)
+
 export default defineComponent({
     components: {
         GymRevenueCrud,
         AppLayout,
+		Confirm,
         Button,
         JetBarContainer,
         LeadInteraction,
+		
     },
     props: ["leads", "title", "isClientUser", "filters"],
-    setup() {
+    setup(props) {
+	
+		
+		
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -116,7 +145,7 @@ export default defineComponent({
                 "badge-warning": lead_type === "personal_training",
             };
         };
-        const fields = [
+        const fields =   [
             { name: "created_at", label: "Created" },
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
@@ -139,7 +168,15 @@ export default defineComponent({
             },
         ];
 
-        return { fields, Inertia, comingSoon };
+	    const confirmTrash = ref(null);
+        const handleClickTrash = (id) => {
+            confirmTrash.value = id;
+        };
+        const handleConfirmTrash = () => {
+            Inertia.delete(route("data.leads.trash", confirmTrash.value));
+            confirmTrash.value = null;
+        };
+        return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
     },
 });
 </script>

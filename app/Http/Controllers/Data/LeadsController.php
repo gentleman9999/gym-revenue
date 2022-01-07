@@ -192,6 +192,7 @@ class LeadsController extends Controller
         }
         $data = request()->all();
 
+	//	dd($data);
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
             ->persist();
@@ -344,4 +345,50 @@ class LeadsController extends Controller
 //        return redirect()->back()->with('selectedLeadDetailIndex', '0');
         return Redirect::back()->with('selectedLeadDetailIndex', 0);
     }
+
+
+
+
+	 public function lead_trash(Request $request,$lead_id)
+    {
+        if (!$lead_id) {
+            Alert::error("No Lead ID provided")->flash();
+            return Redirect::back();
+        }
+         $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
+		 $rmlead = EndUserActivityAggregate::retrieve($lead_id);
+        $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)
+            ->persist();
+			// ->DeleteLead(request()->all(), auth()->user()->id)
+
+        Alert::success("Lead  trashed!")->flash();
+      return Redirect::back();
+
+    }
+
+
+
+    public function lead_restore(Request $request, $id)
+    {
+        if (!$id) {
+            Alert::error("No Lead ID provided")->flash();
+            return Redirect::back();
+        }
+        $lead = Lead::withTrashed()->findOrFail($id);
+        $lead->restore();
+//dd($lead);
+        Alert::success("Lead '{$lead->email}' restored")->flash();
+
+        return Redirect::back();
+    }
+
+
+
+
+
+
+
+
+
+
 }
