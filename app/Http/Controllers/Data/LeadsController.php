@@ -127,9 +127,9 @@ class LeadsController extends Controller
             );
         }
 
-        if($lead_data['profile_picture']){
+        if(array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']){
             $file = $lead_data['profile_picture'];
-            $destKey = "{$lead->client_id}/{$file['uuid']}";
+            $destKey = "{$lead_data['client_id']}/{$file['uuid']}";
             Storage::disk('s3')->move($file['key'], $destKey);
             $file['key'] = $destKey;
             $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
