@@ -62,7 +62,10 @@
                 create: { label: 'Add Lead' },
             }"
             :actions="{
-                trash: false,
+               trash:{
+                    handler: ({data}) => handleClickTrash(data.id)
+                },
+
                 contact: {
                     label: 'Contact Lead',
                     handler: ({ data }) => {
@@ -71,13 +74,24 @@
                 },
             }"
         />
+		 <confirm
+            title="Really Trash?"
+            v-if="confirmTrash"
+            @confirm="handleConfirmTrash"
+            @cancel="confirmTrash = null"
+        >
+            Are you sure you want to remove this lead?
+        </confirm>
+
     </app-layout>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import {computed, defineComponent, ref} from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
+import Confirm from "@/Components/Confirm";
+
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
@@ -89,6 +103,7 @@ export default defineComponent({
     components: {
         GymRevenueCrud,
         AppLayout,
+		Confirm,
         Button,
         JetBarContainer,
         LeadInteraction,
@@ -154,7 +169,15 @@ export default defineComponent({
             },
         ];
 
-        return { fields, Inertia, comingSoon };
+	const confirmTrash = ref(null);
+        const handleClickTrash = (id) => {
+            confirmTrash.value = id;
+        };
+        const handleConfirmTrash = () => {
+            Inertia.delete(route("data.leads.trash", confirmTrash.value));
+            confirmTrash.value = null;
+        };
+        return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
     },
 });
 </script>

@@ -12,6 +12,7 @@ use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadWasDeleted;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
@@ -81,4 +82,8 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
+	public function deleteLead(array $data, string $updating_user){
+		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
+        return $this;
+	}
 }

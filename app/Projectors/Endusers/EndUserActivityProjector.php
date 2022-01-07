@@ -10,6 +10,7 @@ use App\Models\User;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
+use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
@@ -202,5 +203,24 @@ class EndUserActivityProjector extends Projector
             );
 
         }
+    }
+
+    public function onLeadWasDeleted(LeadWasDeleted $event){
+        $lead = Lead::findOrFail($event->lead);
+        $client_id = $lead->client_id;
+        //dd($lead);
+        $success = $lead->deleteOrFail();
+
+        $uare =	$event->user;
+        //dd($data, $uare);
+
+        LeadDetails::create([
+            'client_id' => $client_id,
+            'lead_id' => $event->lead,
+            'field' => 'softdelete',
+            'value' => $uare,
+            'misc' =>  ['userid'=> $uare]
+        ]);
+
     }
 }
