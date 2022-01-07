@@ -6,7 +6,7 @@ use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
-use Illuminate\Database\Eloquent\Factories\Sequence;
+use App\Models\Endusers\Service;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -22,7 +22,13 @@ class LeadProspectSeeder extends Seeder
         VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)
-            ->with('locations')->get();
+            ->with('locations')
+            ->with('lead_types')
+            ->with('lead_sources')
+            ->with('membership_types')
+            ->get();
+
+        $service_ids = Service::all()->pluck('id');
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -35,28 +41,33 @@ class LeadProspectSeeder extends Seeder
                             // over ride the client id and gr id from the factory
                             ->client_id($client->id)
                             ->gr_location_id($location->gymrevenue_id ?? '')
-                            ->state(new Sequence(
-                            // alternate the lead types
-                                ['lead_type' => 'free_trial'],
-                                ['lead_type' => 'grand_opening'],
-                                ['lead_type' => 'streaming_preview'],
-                                ['lead_type' => 'personal_training'],
-                                ['lead_type' => 'app_referral'],
-                                ['lead_type' => 'facebook'],
-                                ['lead_type' => 'snapchat'],
-                                ['lead_type' => 'contact_us'],
-                                ['lead_type' => 'mailing_list'],
-                            ))
                             ->make();
 
                         VarDumper::dump('Generating Leads!');
                         foreach ($prospects as $prospect) {
+                            $prospect->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
+                            $prospect->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
+                            $prospect->lead_source_id = $client->lead_sources[random_int(1, count($client->lead_sources) - 1)]->id;
+                            $numServices = random_int(0, 4);
+                            $services = [];
+                            $temp_service_ids = [...$service_ids];
+
+                            for ($x = 0; $x <= $numServices; $x++) {
+//                            var_dump($temp_service_ids);
+                                $service_index = random_int(0, count($temp_service_ids) - 1);
+                                $services[] = $temp_service_ids[$service_index];
+                                unset($temp_service_ids[$service_index]);
+                                $temp_service_ids = array_values($temp_service_ids);
+                            }
                             // For each fake user, run them through the EnduserActivityAggregate
                             EndUserActivityAggregate::retrieve($prospect->id)
                                 ->createNewLead($prospect->toArray())
                                 ->joinAudience('leads', $client->id, Lead::class)
+                                ->setServices($services, 'Auto Generated')
                                 ->persist();
+
                             if (env('SEED_LEAD_DETAILS', false)) {
+                                //only for seeding mass comm lead details for ui dev
                                 LeadDetails::factory()->count(random_int(0, 20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();
                             }
                         }

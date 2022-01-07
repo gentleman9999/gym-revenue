@@ -1,44 +1,93 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="col-span-6">
-                <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
+            <div class="col-span-6 flex flex-col items-start gap-8">
+                <div class="w-32 h-32 rounded-full overflow-hidden">
+                    <img v-if="fileForm.url" :src="fileForm.url" alt="lead profile picture" class="w-full h-full object-cover"/>
+                    <img v-else-if="form?.profile_picture?.misc?.url" :src="form.profile_picture.misc.url" alt="lead profile picture" class="w-full h-full object-cover"/>
+                    <font-awesome-icon v-else icon="user-circle" size="6x" class="opacity-10 !h-full !w-full"/>
+                </div>
+                <label class="btn btn-primary">
+                    <span>Upload Image</span>
+                    <input
+                        @input="fileForm.file =  $event.target.files[0]"
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        class="hidden"
+                    />
+                </label>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="first_name" value="First Name"/>
-                <input id="" type="text" class="block w-full mt-1" v-model="form['first_name']" autofocus/>
+                <input id="" type="text" v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="last_name" value="Last Name"/>
-                <input id="last_name" type="text" class="block w-full mt-1" v-model="form['last_name']" autofocus/>
+                <input id="last_name" type="text" v-model="form[    'last_name']" autofocus/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
-            <div class="col-span-3">
+            <div class="form-control col-span-3">
                 <jet-label for="email" value="Email"/>
-                <input id="email" type="text" class="block w-full mt-1" v-model="form.email" autofocus/>
+                <input id="email" type="email" v-model="form.email" autofocus/>
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
-            <div class="col-span-3">
-                <jet-label for="mobile_phone" value="Mobile Phone"/>
-                <input id="mobile_phone" type="text" class="block w-full mt-1" v-model="form['mobile_phone']"
+            <div class="form-control col-span-3">
+                <jet-label for="primary_phone" value="Primary Phone"/>
+                <input id="primary_phone" type="tel" v-model="form['primary_phone']"
                        autofocus/>
-                <jet-input-error :message="form.errors.mobile_phone" class="mt-2"/>
+                <jet-input-error :message="form.errors.primary_phone" class="mt-2"/>
             </div>
-            <div class="col-span-3">
-                <jet-label for="home_phone" value="Home Phone"/>
-                <input id="home_phone" type="text" class="block w-full mt-1" v-model="form['home_phone']"
+            <div class="form-control col-span-3">
+                <jet-label for="alternate_phone" value="Alternate Phone"/>
+                <input id="alternate_phone" type="tel" v-model="form['alternate_phone']"
                        autofocus/>
-                <jet-input-error :message="form.errors.home_phone" class="mt-2"/>
+                <jet-input-error :message="form.errors.alternate_phone" class="mt-2"/>
             </div>
-            <div class="col-span-4">
+            <div class="form-divider"/>
+            <div class="form-control col-span-3">
                 <jet-label for="club_id" value="Club"/>
-                <select class="w-full border-base-100-300 focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 rounded-md shadow-sm" v-model="form['gr_location_id']" required>
+                <select class="" v-model="form['gr_location_id']" required id="club_id">
                     <option value="">Select a Club</option>
                     <option v-for="(name, clubId) in locations" :value="clubId">{{ name }}</option>
                 </select>
                 <jet-input-error :message="form.errors['gr_location_id']" class="mt-2"/>
             </div>
+            <div class="form-control col-span-3">
+                <jet-label for="lead_source_id" value="Source"/>
+                <select class="" v-model="form['lead_source_id']" required id="lead_source_id">
+                    <option value="">Select a Source</option>
+                    <option v-for="(source, i) in lead_sources" :value="source.id">{{ source.name }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_source_id']" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+                <jet-label for="lead_type_id" value="Lead Type"/>
+                <select class="" v-model="form['lead_type_id']" required id="lead_type_id">
+                    <option value="">Select a Lead Type</option>
+                    <option v-for="(lead, i) in lead_types" :value="lead.id">{{ lead.name }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_type_id']" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+                <jet-label for="membership_type_id" value="Membership Type"/>
+                <select class="" v-model="form['membership_type_id']" required id="membership_type_id">
+                    <option value="">Select a Membership Type</option>
+                    <option v-for="(membership_type, i) in membership_types" :value="membership_type.id">
+                        {{ membership_type.name }}
+                    </option>
+                </select>
+                <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
+            </div>
+            <div class="form-divider"><span>Services</span></div>
+            <div v-for="(service, i) in available_services" class="form-control col-span-3">
+                <label class="label cursor-pointer justify-start gap-4">
+                    <input type="checkbox" :value="service.id" v-model="form['services']"/>
+                    <span>{{ service.name }}</span>
+                </label>
+            </div>
+
         </template>
 
         <template #actions>
@@ -57,10 +106,12 @@
 </template>
 
 <script>
+import {watchEffect} from "vue";
 import {useForm} from '@inertiajs/inertia-vue3'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faUserCircle} from "@fortawesome/pro-solid-svg-icons";
+import Vapor from "laravel-vapor";
 
 import AppLayout from '@/Layouts/AppLayout'
 import Button from '@/Components/Button'
@@ -80,24 +131,33 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
         if (!lead) {
             lead = {
-                'first_name': null,
-                'last_name': null,
+                first_name: null,
+                last_name: null,
                 email: null,
-                mobile_phone: null,//TODO:change to primary/alternate
-                home_phone: null,
+                primary_phone: null,//TODO:change to primary/alternate
+                alternate_phone: null,
+                club_id: null,
                 client_id: props.clientId,
-                gr_location_id: null
+                gr_location_id: null,
+                lead_type_id: null,
+                membership_type_id: null,
+                lead_source_id: null,
+                services: [],
+                profile_picture: null
             }
             operation = 'Create';
+        } else {
+            lead.services = lead.services.map(detail => detail.value)
         }
 
         const form = useForm(lead)
+        const fileForm = useForm({file:null});
 
         let handleSubmit = () => form.put(`/data/leads/${lead.id}`);
         if (operation === 'Create') {
@@ -105,11 +165,54 @@ export default {
         }
 
         const goBack = useGoBack(route('data.leads'));
-        return {form, buttonText: operation, handleSubmit, goBack}
+
+        watchEffect(async () => {
+            console.log('file Changed!', fileForm.file);
+            if(!fileForm.file){
+                return;
+            }
+            try {
+                // uploadProgress.value=0;
+                let response = await Vapor.store(fileForm.file, {
+                    // visibility: form.isPublic ? 'public-read' : null,
+                    visibility: "public-read",
+                    // progress: (progress) => {
+                    //     uploadProgress.value = Math.round(progress * 100);
+                    // },
+                });
+                fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
+
+                form.profile_picture = {
+                    uuid: response.uuid,
+                    key: response.key,
+                    extension: response.extension,
+                    bucket: response.bucket,
+                }
+            } catch (e) {
+                console.error(e);
+                // uploadProgress.value = -1;
+            }
+        })
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack}
     },
 }
 </script>
 
 <style scoped>
+input[type=text], input[type=email], input[type=tel] {
+    @apply w-full mt-1;
+}
+
+select {
+    @apply w-full;
+}
+
+.form-divider {
+    @apply col-span-6 border-t-2 border-base-content border-opacity-10 relative;
+}
+
+.form-divider > span {
+    @apply absolute inset-0  transform -translate-y-1/2 text-xs text-opacity-30 bg-base-300 block;
+}
 
 </style>

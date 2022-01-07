@@ -6,7 +6,7 @@
                               :first-name="lead.first_name"
                               :last-name="lead.last_name"
                               :email="lead.email"
-                              :phone="lead.mobile_phone"
+                              :phone="lead.primary_phone"
                               :details="lead['details_desc']"
                               ref="leadInteractionRef"
                               :selectedLeadDetailIndex="selectedLeadDetailIndex"
