@@ -57,7 +57,6 @@
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
-			
             base-route="data.leads"
             :top-actions="{
                 create: { label: 'Add Lead' },
@@ -66,7 +65,7 @@
                trash:{
                     handler: ({data}) => handleClickTrash(data.id)
                 },
-            
+
                 contact: {
                     label: 'Contact Lead',
                     handler: ({ data }) => {
@@ -81,19 +80,17 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to remove this lead?  
+            Are you sure you want to remove this lead?
         </confirm>
-		
+
     </app-layout>
 </template>
 
 <script>
-
+import {computed, defineComponent, ref} from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
-
-import {computed, defineComponent, ref} from "vue";
 
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
@@ -101,13 +98,6 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import LeadInteraction from "./Partials/LeadInteractionContainer";
 import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
-
-
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-
-library.add(faChevronDoubleLeft, faEllipsisH)
 
 export default defineComponent({
     components: {
@@ -117,13 +107,9 @@ export default defineComponent({
         Button,
         JetBarContainer,
         LeadInteraction,
-		
     },
-    props: ["leads", "title", "isClientUser", "filters"],
+    props: ["leads", "title", "isClientUser", "filters", "lead_types"],
     setup(props) {
-	
-		
-		
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -132,20 +118,35 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         }
-        const badgeClasses = (lead_type) => {
-            return {
-                "badge-primary": lead_type === "facebook",
-                "badge-secondary": lead_type === "snapchat",
-                "badge-info": lead_type === "free_trial",
-                "badge-accent": lead_type === "instagram",
-                "badge-success": lead_type === "grand_opening",
-                "badge-outline": lead_type === "contact_us",
-                "badge-ghost": lead_type === "app_referral",
-                "badge-error": lead_type === "streaming_preview",
-                "badge-warning": lead_type === "personal_training",
-            };
+        const  badgeClasses = (lead_type_id) => {
+            if(!lead_type_id){
+                console.log('no lead type id!');
+                return '';
+            }
+
+            const badges =  [
+                "badge-primary",
+                "badge-secondary",
+                "badge-info",
+                "badge-accent",
+                "badge-success",
+                "badge-outline",
+                "badge-ghost",
+                "badge-error",
+                "badge-warning",
+            ];
+
+            const lead_type_index = props.lead_types.findIndex(lead_type=>lead_type.id === lead_type_id);
+            if(props.lead_types.length <=badges.length ){
+                return  badges[lead_type_index];
+            }
+            return  badges[lead_type_index % badges.length];
+            // console.log({lead_type_index, })
+
+
+
         };
-        const fields =   [
+        const fields = [
             { name: "created_at", label: "Created" },
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
@@ -156,8 +157,8 @@ export default defineComponent({
                 component: CrudBadge,
                 props: {
                     getProps: ({ data: { lead_type } }) => ({
-                        class: badgeClasses(lead_type),
-                        text: lead_type,
+                        class: badgeClasses(lead_type?.id),
+                        text: lead_type?.name,
                     }),
                 },
             },
@@ -168,7 +169,7 @@ export default defineComponent({
             },
         ];
 
-	    const confirmTrash = ref(null);
+	const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
