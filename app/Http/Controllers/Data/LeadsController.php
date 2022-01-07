@@ -16,6 +16,7 @@ use App\Models\Endusers\Service;
 use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 
@@ -35,6 +36,11 @@ class LeadsController extends Controller
         'services.*' => ['required', 'exists:services,id'],
 //        'user_id' => ['sometimes', 'exists:user,id'],
         'client_id' => 'required',
+        'profile_picture' => 'sometimes',
+        'profile_picture.uuid' => 'sometimes|required',
+        'profile_picture.key' => 'sometimes|required',
+        'profile_picture.extension' => 'sometimes|required',
+        'profile_picture.bucket' => 'sometimes|required'
     ];
 
     public function index(Request $request)
@@ -108,6 +114,7 @@ class LeadsController extends Controller
 //            unset($lead_data['user_id']);
 //        }
 
+        //TODO:all this stuff should happen synchronously via aggregate
         $lead = $lead_model->create($lead_data);
 
         foreach($lead_data['services'] ?? [] as $service_id){
@@ -116,6 +123,22 @@ class LeadsController extends Controller
                     'client_id' => $lead->client_id,
                     'field' => 'service_id',
                     'value' => $service_id
+                ]
+            );
+        }
+
+        if($lead_data['profile_picture']){
+            $file = $lead_data['profile_picture'];
+            $destKey = "{$lead->client_id}/{$file['uuid']}";
+            Storage::disk('s3')->move($file['key'], $destKey);
+            $file['key'] = $destKey;
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+
+            LeadDetails::create([
+                    'lead_id' => $lead->id,
+                    'client_id' => $lead->client_id,
+                    'field' => 'profile_picture',
+                    'misc' => $file
                 ]
             );
         }
@@ -196,7 +219,7 @@ class LeadsController extends Controller
         $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
 
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->with('services')->first(),
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'services', 'profile_picture')->first(),
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,

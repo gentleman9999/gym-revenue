@@ -69,6 +69,11 @@ class Lead extends Model
         return $this->details()->whereField('service_id')->whereActive(1);
     }
 
+    public function profile_picture()
+    {
+        return $this->detail()->whereField('profile_picture')->whereActive(1);
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

@@ -1,17 +1,31 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="col-span-6">
-                <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
+            <div class="col-span-6 flex flex-col items-start gap-8">
+                <div class="w-32 h-32 rounded-full overflow-hidden">
+                    <img v-if="fileForm.url" :src="fileForm.url" alt="lead profile picture" class="w-full h-full object-cover"/>
+                    <img v-else-if="form?.profile_picture?.misc?.url" :src="form.profile_picture.misc.url" alt="lead profile picture" class="w-full h-full object-cover"/>
+                    <font-awesome-icon v-else icon="user-circle" size="6x" class="opacity-10 !h-full !w-full"/>
+                </div>
+                <label class="btn btn-primary">
+                    <span>Upload Image</span>
+                    <input
+                        @input="fileForm.file =  $event.target.files[0]"
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        class="hidden"
+                    />
+                </label>
             </div>
             <div class="form-control col-span-3">
                 <jet-label for="first_name" value="First Name"/>
-                <input id="" type="text"  v-model="form['first_name']" autofocus/>
+                <input id="" type="text" v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
                 <jet-label for="last_name" value="Last Name"/>
-                <input id="last_name" type="text" v-model="form['last_name']" autofocus/>
+                <input id="last_name" type="text" v-model="form[    'last_name']" autofocus/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
@@ -60,14 +74,16 @@
                 <jet-label for="membership_type_id" value="Membership Type"/>
                 <select class="" v-model="form['membership_type_id']" required id="membership_type_id">
                     <option value="">Select a Membership Type</option>
-                    <option v-for="(membership_type, i) in membership_types" :value="membership_type.id">{{ membership_type.name }}</option>
+                    <option v-for="(membership_type, i) in membership_types" :value="membership_type.id">
+                        {{ membership_type.name }}
+                    </option>
                 </select>
                 <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
             </div>
             <div class="form-divider"><span>Services</span></div>
             <div v-for="(service, i) in available_services" class="form-control col-span-3">
                 <label class="label cursor-pointer justify-start gap-4">
-                    <input type="checkbox" :value="service.id"  v-model="form['services']" />
+                    <input type="checkbox" :value="service.id" v-model="form['services']"/>
                     <span>{{ service.name }}</span>
                 </label>
             </div>
@@ -90,10 +106,12 @@
 </template>
 
 <script>
+import {watchEffect} from "vue";
 import {useForm} from '@inertiajs/inertia-vue3'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faUserCircle} from "@fortawesome/pro-solid-svg-icons";
+import Vapor from "laravel-vapor";
 
 import AppLayout from '@/Layouts/AppLayout'
 import Button from '@/Components/Button'
@@ -130,14 +148,16 @@ export default {
                 lead_type_id: null,
                 membership_type_id: null,
                 lead_source_id: null,
-                services: []
+                services: [],
+                profile_picture: null
             }
             operation = 'Create';
-        }else{
-            lead.services = lead.services.map(detail=>detail.value)
+        } else {
+            lead.services = lead.services.map(detail => detail.value)
         }
 
         const form = useForm(lead)
+        const fileForm = useForm({file:null});
 
         let handleSubmit = () => form.put(`/data/leads/${lead.id}`);
         if (operation === 'Create') {
@@ -145,23 +165,54 @@ export default {
         }
 
         const goBack = useGoBack(route('data.leads'));
-        return {form, buttonText: operation, handleSubmit, goBack}
+
+        watchEffect(async () => {
+            console.log('file Changed!', fileForm.file);
+            if(!fileForm.file){
+                return;
+            }
+            try {
+                // uploadProgress.value=0;
+                let response = await Vapor.store(fileForm.file, {
+                    // visibility: form.isPublic ? 'public-read' : null,
+                    visibility: "public-read",
+                    // progress: (progress) => {
+                    //     uploadProgress.value = Math.round(progress * 100);
+                    // },
+                });
+                fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
+
+                form.profile_picture = {
+                    uuid: response.uuid,
+                    key: response.key,
+                    extension: response.extension,
+                    bucket: response.bucket,
+                }
+            } catch (e) {
+                console.error(e);
+                // uploadProgress.value = -1;
+            }
+        })
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack}
     },
 }
 </script>
 
 <style scoped>
-input[type=text], input[type=email], input[type=tel]{
+input[type=text], input[type=email], input[type=tel] {
     @apply w-full mt-1;
 }
-select{
+
+select {
     @apply w-full;
 }
-.form-divider{
+
+.form-divider {
     @apply col-span-6 border-t-2 border-base-content border-opacity-10 relative;
 }
-.form-divider > span{
-    @apply  absolute inset-0  transform -translate-y-1/2 text-xs text-opacity-30 bg-base-300 block;
+
+.form-divider > span {
+    @apply absolute inset-0  transform -translate-y-1/2 text-xs text-opacity-30 bg-base-300 block;
 }
 
 </style>

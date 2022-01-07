@@ -33,7 +33,6 @@ class EndUserActivityProjector extends Projector
                 ]
             );
         }
-
     }
 
     public function onManualLeadMade(ManualLeadMade $event)
