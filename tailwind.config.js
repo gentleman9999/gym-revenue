@@ -49,12 +49,10 @@ const colors = {
 }
 
 module.exports = {
-    dark: false,
     experimental: {
         applyComplexClasses: true,
     },
-    mode: 'jit',
-    purge: [
+    content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
@@ -82,8 +80,6 @@ module.exports = {
     },
 
     plugins: [
-        // require('@tailwindcss/forms'),
-        // require('@tailwindcss/typography'),
         require('daisyui'),
         plugin(({addUtilities}) => {
             const newUtilities = {
