@@ -18,7 +18,7 @@ class Lead extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'mobile_phone', 'home_phone', 'gr_location_id', 'ip_address', 'lead_type'];
+    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
 
     public function details()
     {
@@ -49,15 +49,40 @@ class Lead extends Model
         return $this->hasOne('App\Models\Clients\Client', 'id', 'client_id');
     }
 
+    public function leadType()
+    {
+        return $this->hasOne(LeadType::class,  'id', 'lead_type_id');
+    }
+
+    public function leadSource()
+    {
+        return $this->hasOne(LeadSource::class, 'id', 'lead_source_id');
+    }
+
+    public function membershipType()
+    {
+        return $this->hasOne(MembershipType::class, 'id', 'membership_type_id');
+    }
+
+    public function services()
+    {
+        return $this->details()->whereField('service_id')->whereActive(1);
+    }
+
+    public function profile_picture()
+    {
+        return $this->detail()->whereField('profile_picture')->whereActive(1);
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('mobile_phone', 'like', '%' . $search . '%')
+                $query->where('primary_phone', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('first_name', 'like', '%' . $search . '%')
                     ->orWhere('last_name', 'like', '%' . $search . '%')
-                    ->orWhere('lead_type', 'like', '%' . $search . '%')
+//                    ->orWhere('lead_type', 'like', '%' . $search . '%')
                     ->orWhere('gr_location_id', 'like', '%' . $search . '%')
                     ->orWhere('ip_address', 'like', '%' . $search . '%')
                     ->orWhereHas('location', function ($query) use ($search) {

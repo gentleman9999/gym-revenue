@@ -5,12 +5,16 @@ namespace App\Reactors\Endusers;
 use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\LeadDetails;
 use App\Models\Utility\AppState;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
+use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
+use App\StorableEvents\Endusers\UpdateLead;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class EndUserActivityReactor extends Reactor implements ShouldQueue
@@ -30,7 +34,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $msg = $event->data['message'];
 
         if(!AppState::isSimuationMode()){
-            FireTwilioMsg::dispatch($lead->mobile_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
+            FireTwilioMsg::dispatch($lead->primary_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
         }
     }
 
@@ -39,5 +43,41 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         // @todo - check the Campaigns the audience is attached to
         // @todo - if so, then trigger it here and its aggregate will deal
         // @todo - with whatever is supposed to happen.
+    }
+    public function onNewLeadMade(NewLeadMade $event)
+    {
+        if(array_key_exists('profile_picture', $event->lead)){
+            $file = $event->lead['profile_picture'];
+            $destKey = "{$event->lead['client_id']}/{$file['uuid']}";
+            Storage::disk('s3')->move($file['key'], $destKey);
+            $file['key'] = $destKey;
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+
+            LeadDetails::create([
+                    'lead_id' => $event->lead['id'],
+                    'client_id' => $event->lead['client_id'],
+                    'field' => 'profile_picture',
+                    'misc' => $file
+                ]
+            );
+        }
+    }
+
+    public function onUpdateLead(UpdateLead $event)
+    {
+        if(array_key_exists('profile_picture', $event->lead)){
+            $file = $event->lead['profile_picture'];
+            $destKey = "{$event->lead['client_id']}/{$file['uuid']}";
+            Storage::disk('s3')->move($file['key'], $destKey);
+            $file['key'] = $destKey;
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+            $profile_picture = LeadDetails::firstOrCreate([
+                'lead_id' => $event->id,
+                'client_id' => $event->lead['client_id'],
+                'field' => 'profile_picture',
+            ]);
+            $profile_picture->misc =  $file;
+            $profile_picture->save();
+        }
     }
 }

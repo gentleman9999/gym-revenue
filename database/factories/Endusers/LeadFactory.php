@@ -16,7 +16,6 @@ class LeadFactory extends Factory
     protected $model = Lead::class;
 
 
-
     /**
      * Define the model's default state.
      *
@@ -36,9 +35,8 @@ class LeadFactory extends Factory
             'first_name' => $first_name,
             'last_name' => $last_name,
             'email' => $email,
-            'mobile_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()) ,
+            'primary_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()),
             'ip_address' => $this->faker->ipv4(),
-            'lead_type' => 'free_trial'
         ];
     }
 
@@ -47,6 +45,33 @@ class LeadFactory extends Factory
         return $this->state(function (array $attrs) use ($client_id) {
             return [
                 'client_id' => $client_id
+            ];
+        });
+    }
+
+    public function lead_type_id(string $lead_type_id)
+    {
+        return $this->state(function (array $attrs) use ($lead_type_id) {
+            return [
+                'lead_type_id' => $lead_type_id
+            ];
+        });
+    }
+
+    public function lead_source_id(string $lead_source_id)
+    {
+        return $this->state(function (array $attrs) use ($lead_source_id) {
+            return [
+                'lead_source_id' => $lead_source_id
+            ];
+        });
+    }
+
+    public function membership_type_id(string $membership_type_id)
+    {
+        return $this->state(function (array $attrs) use ($membership_type_id) {
+            return [
+                'membership_type_id' => $membership_type_id
             ];
         });
     }
