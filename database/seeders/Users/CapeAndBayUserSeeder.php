@@ -22,7 +22,6 @@ class CapeAndBayUserSeeder extends UserSeeder
                 'name' => 'Angel Gonzalez',
                 'email' => 'angel@capeandbay.com',
             ],
-			
             [
                 'name' => 'Tareq Othman',
                 'email' => 'tareq@capeandbay.com',
