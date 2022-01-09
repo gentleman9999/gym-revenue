@@ -29,6 +29,7 @@ class SecondaryTeamsSeeder extends Seeder
                     'shivam@capeandbay.com',
                     'philip@capeandbay.com',
                     'sterling@capeandbay.com',
+					 'steve@capeandbay.com',
                 ]
             ],
         ];
@@ -54,84 +55,85 @@ class SecondaryTeamsSeeder extends Seeder
 
         $client_teams = [
             [
-                'user_id' => 11,
+                'user_id' => 12,
                 'name' => 'Zoo Sales Team',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 12,
+                'user_id' => 13,
                 'name' => 'Big Island Team',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 12,
+                'user_id' => 13,
                 'name' => 'Oahu Team',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 13,
+                'user_id' => 14,
                 'name' => 'FitnessTruth Texas South',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 13,
+                'user_id' => 14,
                 'name' => 'FitnessTruth Texas Houston',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 13,
+                'user_id' => 14,
                 'name' => 'FitnessTruth Texas West',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 13,
+                'user_id' => 14,
                 'name' => 'FitnessTruth Tennessee',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 14,
+                'user_id' => 15,
                 'name' => 'iFit Florida',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 14,
+                'user_id' => 15,
                 'name' => 'iFit Georgia',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 14,
+                'user_id' => 15,
                 'name' => 'iFit Virginia',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 14,
+                'user_id' => 15,
                 'name' => 'iFit Sales Team',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 15,
+                'user_id' => 16,
                 'name' => 'Sales Bodies',
                 'personal_team' => 0,
             ],
 
             [
-                'user_id' => 17,
+                'user_id' => 18,
                 'name' => 'Stencils Seattle',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 17,
+                'user_id' => 18,
                 'name' => 'Stencils San Andreas',
                 'personal_team' => 0,
             ],
             [
-                'user_id' => 17,
+                'user_id' => 18,
                 'name' => 'Stencils Portland',
                 'personal_team' => 0,
             ],
+			 
         ];
 
         foreach ($client_teams as $team)
