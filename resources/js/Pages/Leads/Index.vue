@@ -172,20 +172,16 @@ export default defineComponent({
 	const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
-        };
+        }; handleClickTrash()
         const handleConfirmTrash = () => {
- 		axios.delete(route("data.leads.trash", confirmTrash.value)).then(response => {
+  			/* */
+            axios.delete(route("data.leads.trash", confirmTrash.value)).then(response => {
                         setTimeout(() => response($result, 200),10000)
 		                                      },
-		Inertia.reload()
+                Inertia.reload(),
+            location.reload(),
+            confirmTrash.value = null
 		);
-						
-
-
-/*
-            Inertia.delete(route("data.leads.trash", confirmTrash.value));
-            confirmTrash.value = null;
-*/
         };
         return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
     },

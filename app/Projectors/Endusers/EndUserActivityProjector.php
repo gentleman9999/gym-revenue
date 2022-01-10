@@ -208,11 +208,11 @@ class EndUserActivityProjector extends Projector
     public function onLeadWasDeleted(LeadWasDeleted $event){
         $lead = Lead::findOrFail($event->lead);
         $client_id = $lead->client_id;
-        //dd($lead);
+      //  dd($event->lead);
         $success = $lead->deleteOrFail();
 
         $uare =	$event->user;
-        //dd($data, $uare);
+      //  dd($data, $uare);
 
         LeadDetails::create([
             'client_id' => $client_id,

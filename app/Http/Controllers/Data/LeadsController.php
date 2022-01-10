@@ -397,13 +397,13 @@ class LeadsController extends Controller
             Alert::error("No Lead ID provided")->flash();
             return Redirect::back();
         }
-         $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
-		 $rmlead = EndUserActivityAggregate::retrieve($lead_id);
-        $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)
-            ->persist();
-			// ->DeleteLead(request()->all(), auth()->user()->id)
+          $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
+		  $rmlead = EndUserActivityAggregate::retrieve($lead_id);
+ //       print_r($lead);
 
-        Alert::success("Lead  trashed!")->flash();
+       //  $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)->persist();
+         $rmlead->DeleteLead(request()->all(), auth()->user()->id)->persist();
+        Alert::success("Lead $lead->email trashed!")->flash();
       return Redirect::back();
 
     }
