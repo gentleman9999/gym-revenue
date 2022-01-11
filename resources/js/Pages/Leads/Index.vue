@@ -107,6 +107,7 @@ export default defineComponent({
         Button,
         JetBarContainer,
         LeadInteraction,
+
     },
     props: ["leads", "title", "isClientUser", "filters", "lead_types"],
     setup(props) {
@@ -118,7 +119,12 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         }
-        const  badgeClasses = (lead_type_id) => {
+        const  badgeClasses = (lead_type_id) =>
+
+
+
+
+        {
             if(!lead_type_id){
                 console.log('no lead type id!');
                 return '';

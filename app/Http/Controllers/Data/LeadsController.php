@@ -60,7 +60,7 @@ class LeadsController extends Controller
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('detailsDesc')
-                ->filter($request->only('search', 'trashed'))
+                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
         }
@@ -69,7 +69,7 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed'),
+            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource'),
             'lead_types' => LeadType::whereClientId($client_id)->get()
         ]);
     }
@@ -401,8 +401,8 @@ class LeadsController extends Controller
 		  $rmlead = EndUserActivityAggregate::retrieve($lead_id);
  //       print_r($lead);
 
-       //  $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)->persist();
-         $rmlead->DeleteLead(request()->all(), auth()->user()->id)->persist();
+      $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)->persist();
+//    $rmlead->DeleteLead(request()->all(), auth()->user()->id)->persist();
         Alert::success("Lead $lead->email trashed!")->flash();
       return Redirect::back();
 

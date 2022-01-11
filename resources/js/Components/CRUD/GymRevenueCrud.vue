@@ -16,6 +16,95 @@
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
+<!--
+the date filter is hard coded with two dates and the leads in my local have been changed to have these two
+ We will need a calendar function to pick date to and from to replace this
+ -->
+                    <div class="block py-2 text-xs text-gray-400">Created:</div>
+                    <select
+                        v-model="form.createdat"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option value="2022-01-10">2022-01-10</option>
+                        <option value="2022-01-12">2022-01-12</option>
+                    </select>
+  <!--
+ Need to query database get the newest values of lead_types by client_id
+   -->
+                    <div class="block py-2 text-xs text-gray-400">Type:</div>
+                    <select
+                        v-model="form.typeoflead"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option value="52">Free Trial</option>
+                        <option value="53">grand_opening</option>
+                        <option value="54">streaming_preview</option>
+                        <option value="55">personal_training</option>
+                        <option value="56">app_referral</option>
+                        <option value="57">Facebook</option>
+                    </select>
+
+    <!--
+ Need to query database get the newest values of Location(s) by client_id
+    -->
+                    <div class="block py-2 text-xs text-gray-400">Location:</div>
+                    <select
+                        v-model="form.grlocation"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option value="TZ01">TZ01</option>
+                        <option value="TZ02">TZ02</option>
+                        <option value="TZ03">TZ03</option>
+                        <option value="TZ04">TZ04</option>
+                        <option value="TZ05">TZ05</option>
+                        <option value="TZ06">TZ06</option>
+                    </select>
+                    <!--
+                Source or Campaign
+                    -->
+                    <div class="block py-2 text-xs text-gray-400">Source:</div>
+                    <select
+                        v-model="form.leadsource"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option value="40">source-4</option>
+                        <option value="41">source-5</option>
+                        <option value="42">source-6</option>
+                    </select>
+                    <!--
+                Claimed or unclaimed
+
+  ----This is a section for teh claimed or unclaimed just not sure what that is yet -------
+                    <div class="block py-2 text-xs text-gray-400">Source:</div>
+                    <select
+                        v-model="form.leadsource"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option value="40">source-4</option>
+                        <option value="41">source-5</option>
+                        <option value="42">source-6</option>
+                    </select>
+ -->
+                    <!--
+
+By Claimed employee
+----This is a section for teh claimed by employee  just not sure what that is yet -------
+ <div class="block py-2 text-xs text-gray-400">Source:</div>
+ <select
+     v-model="form.leadsource"
+     class="mt-1 w-full form-select"
+ >
+     <option :value="null" />
+     <option value="40">source-4</option>
+     <option value="41">source-5</option>
+     <option value="42">source-6</option>
+ </select>
+-->
                 </search-filter>
             </slot>
             <div class="flex-grow" />
