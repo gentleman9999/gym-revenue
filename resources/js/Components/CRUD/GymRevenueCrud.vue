@@ -20,6 +20,8 @@
 the date filter is hard coded with two dates and the leads in my local have been changed to have these two
  We will need a calendar function to pick date to and from to replace this
  -->
+                    <!-- calendar is needed but more important the leads need to have set different created_at dates
+
                     <div class="block py-2 text-xs text-gray-400">Created:</div>
                     <select
                         v-model="form.createdat"
@@ -29,24 +31,23 @@ the date filter is hard coded with two dates and the leads in my local have been
                         <option value="2022-01-10">2022-01-10</option>
                         <option value="2022-01-12">2022-01-12</option>
                     </select>
+ -->
   <!--
  Need to query database get the newest values of lead_types by client_id
    -->
                     <div class="block py-2 text-xs text-gray-400">Type:</div>
-                    <select
+                      <select
                         v-model="form.typeoflead"
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option value="52">Free Trial</option>
-                        <option value="53">grand_opening</option>
-                        <option value="54">streaming_preview</option>
-                        <option value="55">personal_training</option>
-                        <option value="56">app_referral</option>
-                        <option value="57">Facebook</option>
+                        <option v-for="(lead_types, i) in this.$page.props.lead_types" :value="lead_types.id">{{lead_types.name }}
+                        </option>
                     </select>
 
-    <!--
+
+
+    <!--  {{this.$page.props.lead_types}}
  Need to query database get the newest values of Location(s) by client_id
     -->
                     <div class="block py-2 text-xs text-gray-400">Location:</div>
@@ -55,12 +56,8 @@ the date filter is hard coded with two dates and the leads in my local have been
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option value="TZ01">TZ01</option>
-                        <option value="TZ02">TZ02</option>
-                        <option value="TZ03">TZ03</option>
-                        <option value="TZ04">TZ04</option>
-                        <option value="TZ05">TZ05</option>
-                        <option value="TZ06">TZ06</option>
+                        <option v-for="(locations, i) in this.$page.props.locations" :value="locations.gymrevenue_id">{{locations.name }}
+                        </option>
                     </select>
                     <!--
                 Source or Campaign
@@ -71,14 +68,13 @@ the date filter is hard coded with two dates and the leads in my local have been
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option value="40">source-4</option>
-                        <option value="41">source-5</option>
-                        <option value="42">source-6</option>
+                        <option v-for="(leadsources, i) in this.$page.props.leadsources" :value="leadsources.id">{{leadsources.name }}
+                        </option>
                     </select>
                     <!--
                 Claimed or unclaimed
 
-  ----This is a section for teh claimed or unclaimed just not sure what that is yet -------
+  ----This is a section for the claimed or unclaimed just not sure what that is yet -------
                     <div class="block py-2 text-xs text-gray-400">Source:</div>
                     <select
                         v-model="form.leadsource"
@@ -136,6 +132,8 @@ By Claimed employee
             <pagination class="mt-4" :links="resource.links" />
         </slot>
     </jet-bar-container>
+
+
 </template>
 
 <script>
@@ -148,7 +146,9 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import {useSearchFilter} from "./helpers/useSearchFilter";
+//import AutoDataCard from "@/Components/CRUD/AutoDataCard";
 
+import LeadForm from '@/Pages/Leads/Partials/LeadForm'
 export default defineComponent({
     components: {
         GymRevenueDataCards,
@@ -156,6 +156,8 @@ export default defineComponent({
         Pagination,
         SearchFilter,
         JetBarContainer,
+//        AutoDataCard,
+        LeadForm,
     },
     props: {
         fields: {
@@ -201,6 +203,7 @@ export default defineComponent({
             default: GymRevenueDataCards,
         },
     },
+
     setup(props) {
         const {form, reset} = useSearchFilter(props.baseRoute);
 
@@ -226,8 +229,10 @@ export default defineComponent({
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-
         return { form, topActions, reset };
     },
-});
+},
+
+);
+
 </script>

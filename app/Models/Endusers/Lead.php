@@ -98,7 +98,7 @@ class Lead extends Model
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
-/* created date will need a calendar date picker and the query needs to be changed to > < from */
+/* created date will need a calendar date picker and the leads need different created_at dates */
         })->when($filters['createdat'] ?? null, function ($query, $createdat) {
             $query->where('created_at', 'like', $createdat.'%');
 /* filters for typeoflead the data schema changed so lets get back to this */

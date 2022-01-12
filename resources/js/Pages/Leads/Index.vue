@@ -4,12 +4,11 @@
             <div class="bg-base-200 w-full rounded-lg p-4">
                 <div class="flex flex-row items-center mb-4">
                     <h2 class="font-semibold text-xl leading-tight">Leads</h2>
-                    <div class="flex-grow" />
+                     <div class="flex-grow" />
                     <div
                         class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                     ></div>
                 </div>
-
                 <div class="flex flex-row items-center mb-4">
                     <div class="hidden space-x-8 sm:-my-px sm:flex pt-6">
                         <a
@@ -84,6 +83,7 @@
         </confirm>
 
     </app-layout>
+
 </template>
 
 <script>

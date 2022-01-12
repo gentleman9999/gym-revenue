@@ -52,6 +52,8 @@ class LeadsController extends Controller
         $prospects = [];
 
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
+        $locations =Location::whereClientId($client_id)->get();
+        $leadsource =LeadSource::whereClientId($client_id)->get();
 
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
@@ -70,7 +72,9 @@ class LeadsController extends Controller
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource'),
-            'lead_types' => LeadType::whereClientId($client_id)->get()
+            'lead_types' => LeadType::whereClientId($client_id)->get(),
+            'locations' => $locations,
+            'leadsources' => $leadsource
         ]);
     }
 
