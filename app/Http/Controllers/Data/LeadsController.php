@@ -73,7 +73,7 @@ class LeadsController extends Controller
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
-            'locations' => $locations,
+            'grlocations' => $locations,
             'leadsources' => $leadsource
         ]);
     }

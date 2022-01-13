@@ -56,7 +56,7 @@ the date filter is hard coded with two dates and the leads in my local have been
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option v-for="(locations, i) in this.$page.props.locations" :value="locations.gymrevenue_id">{{locations.name }}
+                        <option v-for="(grlocations, i) in this.$page.props.grlocations" :value="grlocations.gymrevenue_id">{{grlocations.name }}
                         </option>
                     </select>
                     <!--
