@@ -47,6 +47,7 @@
                             @click="comingSoon()"
                             >Consultants</a
                         >
+                       &nbsp; hello {{this.$page.component}}
                     </div>
 
                     <div class="flex-grow" />

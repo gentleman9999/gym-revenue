@@ -16,6 +16,9 @@
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
+
+                    <div v-if="this.$page.component ==='Leads/Index'">
+
 <!--
 the date filter is hard coded with two dates and the leads in my local have been changed to have these two
  We will need a calendar function to pick date to and from to replace this
@@ -37,7 +40,7 @@ the date filter is hard coded with two dates and the leads in my local have been
    -->
                     <div class="block py-2 text-xs text-gray-400">Type:</div>
                       <select
-                        v-model="form.typeoflead"
+                              v-model="form.typeoflead"
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
@@ -50,8 +53,9 @@ the date filter is hard coded with two dates and the leads in my local have been
     <!--  {{this.$page.props.lead_types}}
  Need to query database get the newest values of Location(s) by client_id
     -->
-                    <div class="block py-2 text-xs text-gray-400">Location:</div>
+                    <div  class="block py-2 text-xs text-gray-400">Location:</div>
                     <select
+
                         v-model="form.grlocation"
                         class="mt-1 w-full form-select"
                     >
@@ -64,6 +68,7 @@ the date filter is hard coded with two dates and the leads in my local have been
                     -->
                     <div class="block py-2 text-xs text-gray-400">Source:</div>
                     <select
+
                         v-model="form.leadsource"
                         class="mt-1 w-full form-select"
                     >
@@ -101,6 +106,7 @@ By Claimed employee
      <option value="42">source-6</option>
  </select>
 -->
+                    </div>
                 </search-filter>
             </slot>
             <div class="flex-grow" />
