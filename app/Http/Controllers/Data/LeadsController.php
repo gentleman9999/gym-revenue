@@ -52,11 +52,11 @@ class LeadsController extends Controller
         $prospects = [];
 
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
+
         $locations =Location::whereClientId($client_id)->get();
         $leadsource =LeadSource::whereClientId($client_id)->get();
 
         $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
-        $notclaimed =LeadDetails::whereClientId($client_id)->whereField('created')->get();
 
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
@@ -65,7 +65,8 @@ class LeadsController extends Controller
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('detailsDesc')
-                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadclaimed','notclaimed'))
+              //  ->with('leadsclaimed')
+                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadsclaimed'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
         }
@@ -74,12 +75,12 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadclaimed','notclaimed'),
+            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadsclaimed'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
             'grlocations' => $locations,
             'leadsources' => $leadsource,
-            'leadclaimed' => $claimed,
-            'notclaimed' => $notclaimed
+       //     'leadsclaimed' => $claimed
+
         ]);
     }
 
@@ -164,6 +165,7 @@ class LeadsController extends Controller
 
     private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
     {
+
         $results = [];
 
         if ((!is_null($client_id))) {
@@ -194,10 +196,9 @@ class LeadsController extends Controller
                         ->whereIn('gr_location_id', $team_locations);
                 }
             } else {
-                $results = Lead::whereClientId($client_id);
-            }
+                 $results = Lead::whereClientId($client_id);
+                   }
         }
-
         return $results;
     }
 

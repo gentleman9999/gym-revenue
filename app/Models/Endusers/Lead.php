@@ -74,6 +74,14 @@ class Lead extends Model
         return $this->detail()->whereField('profile_picture')->whereActive(1);
     }
 
+    public function leadsclaimed()
+    {
+//$claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        return $this->details()->whereField('claimed');
+    }
+
+
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
@@ -110,9 +118,18 @@ class Lead extends Model
 /* Filter for Lead Sources */
         })->when($filters['leadsource'] ?? null, function ($query, $leadsource) {
             $query->where('lead_source_id', 'like', $leadsource.'%');
+  //          dd($query,$leadsource);
+        })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed)
+        {
 
-        })
-        ;
+ $query->with('leadsclaimed');
+
+        });
+
+
+
+
+
 
     }
 

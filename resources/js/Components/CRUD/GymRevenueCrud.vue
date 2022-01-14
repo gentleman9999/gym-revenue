@@ -65,16 +65,12 @@ leadclaimed
   ----This is a section for the claimed or unclaimed just not sure what that is yet ------->
                     <div class="block py-2 text-xs text-gray-400">Claimed/Unclaimed:</div>
                     <select
-                        v-model="form.leadclaimed"
+                        v-model="form.leadsclaimed"
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-<!--
-                        <option v-for="(leadclaimed, i) in this.$page.props.leadclaimed" :value="claimed">Claimed
-                        </option>
--->
-                        <option value="claimed">Claimed</option>
-                        <option value=" ">UnClaimed</option>
+                        <option value="leadsclaimed">Claimed</option>
+                        <option value="unclaimed">UnClaimed</option>
 
                     </select>
 

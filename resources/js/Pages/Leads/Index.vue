@@ -52,19 +52,8 @@
                 </div>
             </div>
         </jet-bar-container>
-<!--
-        v-if="claimedByUser"
 
-<div v-if="this.$page.url  ==='/data/leads?leadclaimed=claimed*'">
-    {{this.$page.url}}   {{this.$page.props.leadclaimed}}
-
-
-</div>
-
-        -->
-
-
-        <gym-revenue-crud
+       <gym-revenue-crud
             :resource="leads"
             :fields="fields"
             base-route="data.leads"
@@ -90,11 +79,9 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-{{ confirmTrash }} <br/>
 
             Are you sure you want to remove this lead?
         </confirm>
-
     </app-layout>
 
 </template>
@@ -132,6 +119,8 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         }
+
+
         const  badgeClasses = (lead_type_id) =>
 
 
@@ -204,6 +193,8 @@ export default defineComponent({
         };
         return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
     },
+
+
 });
 </script>
 
