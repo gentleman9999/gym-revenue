@@ -16,15 +16,12 @@
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
-
+               <!-- filters if within Leads/Index -->
                     <div v-if="this.$page.component ==='Leads/Index'">
-
 <!--
-the date filter is hard coded with two dates and the leads in my local have been changed to have these two
  We will need a calendar function to pick date to and from to replace this
  -->
-                    <!-- calendar is needed but more important the leads need to have set different created_at dates
-
+          <!-- calendar is needed but more important the leads need to have set different created_at dates
                     <div class="block py-2 text-xs text-gray-400">Created:</div>
                     <select
                         v-model="form.createdat"
@@ -34,11 +31,8 @@ the date filter is hard coded with two dates and the leads in my local have been
                         <option value="2022-01-10">2022-01-10</option>
                         <option value="2022-01-12">2022-01-12</option>
                     </select>
- -->
-  <!--
- Need to query database get the newest values of lead_types by client_id
-   -->
-                    <div class="block py-2 text-xs text-gray-400">Type:</div>
+          -->
+                     <div class="block py-2 text-xs text-gray-400">Type:</div>
                       <select
                               v-model="form.typeoflead"
                         class="mt-1 w-full form-select"
@@ -47,15 +41,8 @@ the date filter is hard coded with two dates and the leads in my local have been
                         <option v-for="(lead_types, i) in this.$page.props.lead_types" :value="lead_types.id">{{lead_types.name }}
                         </option>
                     </select>
-
-
-
-    <!--  {{this.$page.props.lead_types}}
- Need to query database get the newest values of Location(s) by client_id
-    -->
                     <div  class="block py-2 text-xs text-gray-400">Location:</div>
                     <select
-
                         v-model="form.grlocation"
                         class="mt-1 w-full form-select"
                     >
@@ -63,12 +50,8 @@ the date filter is hard coded with two dates and the leads in my local have been
                         <option v-for="(grlocations, i) in this.$page.props.grlocations" :value="grlocations.gymrevenue_id">{{grlocations.name }}
                         </option>
                     </select>
-                    <!--
-                Source or Campaign
-                    -->
                     <div class="block py-2 text-xs text-gray-400">Source:</div>
                     <select
-
                         v-model="form.leadsource"
                         class="mt-1 w-full form-select"
                     >
@@ -78,23 +61,27 @@ the date filter is hard coded with two dates and the leads in my local have been
                     </select>
                     <!--
                 Claimed or unclaimed
-
-  ----This is a section for the claimed or unclaimed just not sure what that is yet -------
-                    <div class="block py-2 text-xs text-gray-400">Source:</div>
+leadclaimed
+  ----This is a section for the claimed or unclaimed just not sure what that is yet ------->
+                    <div class="block py-2 text-xs text-gray-400">Claimed/Unclaimed:</div>
                     <select
-                        v-model="form.leadsource"
+                        v-model="form.leadclaimed"
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option value="40">source-4</option>
-                        <option value="41">source-5</option>
-                        <option value="42">source-6</option>
+<!--
+                        <option v-for="(leadclaimed, i) in this.$page.props.leadclaimed" :value="claimed">Claimed
+                        </option>
+-->
+                        <option value="claimed">Claimed</option>
+                        <option value=" ">UnClaimed</option>
+
                     </select>
- -->
+
                     <!--
 
 By Claimed employee
-----This is a section for teh claimed by employee  just not sure what that is yet -------
+----This is a section for the claimed by employee  just not sure what that is yet -------
  <div class="block py-2 text-xs text-gray-400">Source:</div>
  <select
      v-model="form.leadsource"
@@ -107,6 +94,7 @@ By Claimed employee
  </select>
 -->
                     </div>
+                <!-- End filters if within Leads/Index -->
                 </search-filter>
             </slot>
             <div class="flex-grow" />
@@ -152,7 +140,6 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import {useSearchFilter} from "./helpers/useSearchFilter";
-//import AutoDataCard from "@/Components/CRUD/AutoDataCard";
 
 import LeadForm from '@/Pages/Leads/Partials/LeadForm'
 export default defineComponent({
@@ -162,7 +149,6 @@ export default defineComponent({
         Pagination,
         SearchFilter,
         JetBarContainer,
-//        AutoDataCard,
         LeadForm,
     },
     props: {

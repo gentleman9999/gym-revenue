@@ -55,6 +55,9 @@ class LeadsController extends Controller
         $locations =Location::whereClientId($client_id)->get();
         $leadsource =LeadSource::whereClientId($client_id)->get();
 
+        $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        $notclaimed =LeadDetails::whereClientId($client_id)->whereField('created')->get();
+
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
                 ->with('location')
@@ -62,7 +65,7 @@ class LeadsController extends Controller
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('detailsDesc')
-                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource'))
+                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadclaimed','notclaimed'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
         }
@@ -71,10 +74,12 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource'),
+            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadclaimed','notclaimed'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
             'grlocations' => $locations,
-            'leadsources' => $leadsource
+            'leadsources' => $leadsource,
+            'leadclaimed' => $claimed,
+            'notclaimed' => $notclaimed
         ]);
     }
 

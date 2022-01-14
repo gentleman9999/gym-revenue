@@ -47,13 +47,23 @@
                             @click="comingSoon()"
                             >Consultants</a
                         >
-                       &nbsp; hello {{this.$page.component}}
                     </div>
-
                     <div class="flex-grow" />
                 </div>
             </div>
         </jet-bar-container>
+<!--
+        v-if="claimedByUser"
+
+<div v-if="this.$page.url  ==='/data/leads?leadclaimed=claimed*'">
+    {{this.$page.url}}   {{this.$page.props.leadclaimed}}
+
+
+</div>
+
+        -->
+
+
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
