@@ -90,6 +90,8 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
+{{ confirmTrash }} <br/>
+
             Are you sure you want to remove this lead?
         </confirm>
 
