@@ -79,8 +79,17 @@
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
-        >
-            Are you sure you want to remove this lead?
+        > {{ firstName }} {{ lastName }}
+            Are you sure you want to remove this lead?<BR/>
+             Reason for Deleting:<br>
+<select name="reasonforremoving" >
+    <option value="duplicate" >Is a duplicate</option>
+    <option value="test-lead" >Is a test lead</option>
+    <option value="DNC" > Lead requested DNC and data removal</option>
+    <option value="person-non-existing" >This person does not exist</option>
+    <option value="mistake-creating" >I made a mistake creating this lead</option>
+    <option value="other" >Other</option>
+</select>
         </confirm>
 
     </app-layout>
