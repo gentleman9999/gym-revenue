@@ -47,6 +47,11 @@
                             @click="comingSoon()"
                             >Consultants</a
                         >
+                        <a
+                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                            href="/data/leads/claimed"
+                        >Claimed-Leads</a
+                        >
                     </div>
                     <div class="flex-grow" />
                 </div>
@@ -58,8 +63,10 @@
             :fields="fields"
             base-route="data.leads"
             :top-actions="{
+           //     claimed: { label: 'Claimed' },
                 create: { label: 'Add Lead' },
             }"
+
             :actions="{
                trash:{
                     handler: ({data}) => handleClickTrash(data.id)
@@ -119,13 +126,7 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         }
-
-
         const  badgeClasses = (lead_type_id) =>
-
-
-
-
         {
             if(!lead_type_id){
                 console.log('no lead type id!');
