@@ -59,10 +59,18 @@
                         <option v-for="(leadsources, i) in this.$page.props.leadsources" :value="leadsources.id">{{leadsources.name }}
                         </option>
                     </select>
+
+
                     <!--
                 Claimed or unclaimed
+
+
+                        <div class="block py-2 text-xs text-gray-400">Claimed</div>
+<button  href="route('data.leads.claimed')">Claimed</button>
+
+
 leadclaimed
-  ----This is a section for the claimed or unclaimed just not sure what that is yet ------->
+  ----This is a section for the claimed or unclaimed just not sure what that is yet -----
                     <div class="block py-2 text-xs text-gray-400">Claimed/Unclaimed:</div>
                     <select
                         v-model="form.leadsclaimed"
@@ -73,7 +81,7 @@ leadclaimed
                         <option value="unclaimed">UnClaimed</option>
 
                     </select>
-
+                        -->
                     <!--
 
 By Claimed employee
@@ -224,3 +232,4 @@ export default defineComponent({
 );
 
 </script>
+

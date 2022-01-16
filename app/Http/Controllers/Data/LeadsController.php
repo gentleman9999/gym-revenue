@@ -84,6 +84,47 @@ class LeadsController extends Controller
         ]);
     }
 
+    public function claimed(Request $request)
+    {
+        $client_id = request()->user()->currentClientId();
+        $is_client_user = request()->user()->isClientUser();
+
+        $page_count = 10;
+        $prospects = [];
+
+        $prospects_model = $this->setUpLeadsObjectclaimed($is_client_user, $client_id);
+
+        $locations =Location::whereClientId($client_id)->get();
+        $leadsource =LeadSource::whereClientId($client_id)->get();
+
+    //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+
+        if (!empty($prospects_model)) {
+            $prospects = $prospects_model
+                ->with('location')
+                ->with('leadType')
+                ->with('membershipType')
+                ->with('leadSource')
+                ->with('detailsDesc')
+                //  ->with('leadsclaimed')
+                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource'))
+                ->orderBy('created_at', 'desc')
+                ->paginate($page_count);
+        }
+
+        return Inertia::render('Leads/Index', [
+            'leads' => $prospects,
+            'title' => 'Leads',
+            //'isClientUser' => $is_client_user,
+            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource'),
+            'lead_types' => LeadType::whereClientId($client_id)->get(),
+            'grlocations' => $locations,
+            'leadsources' => $leadsource,
+
+        ]);
+    }
+
+
     public function create()
     {
         //@TODO: we may want to embed the currentClientId in the form as a field
@@ -201,6 +242,46 @@ class LeadsController extends Controller
         }
         return $results;
     }
+
+    private function setUpLeadsObjectclaimed(bool $is_client_user, string $client_id = null)
+    {
+
+        $results = [];
+
+        if ((!is_null($client_id))) {
+            /**
+             * BUSINESS RULES
+             * 1. There must be an active client and an active team.
+             * 2. Client Default Team, then all leads from the client
+             * 3. Else, get the team_locations for the active_team
+             * 4. Query for client id and locations in
+             */
+            $current_team = request()->user()->currentTeam()->first();
+            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $default_team_name = $client->default_team_name->value;
+            $team_locations = [];
+
+            if ($current_team->name != $default_team_name) {
+                $team_locations_records = TeamDetail::whereTeamId($current_team->id)
+                    ->where('name', '=', 'team-location')->get();
+
+                if (count($team_locations_records) > 0) {
+                    foreach ($team_locations_records as $team_locations_record) {
+                        // @todo - we will probably need to do some user-level scoping
+                        // example - if there is scoping and this club is not there, don't include it
+                        $team_locations[] = $team_locations_record->value;
+                    }
+                    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+                    $results = Lead::whereClientId($client_id)
+                        ->whereIn('gr_location_id', $team_locations)->whereHas('leadsclaimed');
+                }
+            } else {
+                $results = Lead::whereClientId($client_id)->whereHas('leadsclaimed');
+            }
+        }
+        return $results;
+    }
+
 
     public function edit($lead_id)
     {

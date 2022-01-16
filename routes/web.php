@@ -81,6 +81,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group( functio
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function() {
     Route::prefix('leads')->group( function() {
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class.'@index')->name('data.leads');
+        Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class.'@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class.'@create')->name('data.leads.create');
         Route::post('/create', \App\Http\Controllers\Data\LeadsController::class.'@store')->name('data.leads.store');
         Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class.'@show')->name('data.leads.show');
@@ -89,9 +90,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class.'@assign')->name('data.leads.assign');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class.'@contact')->name('data.leads.contact');
 
-   Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class.'@lead_trash')->name('data.leads.trash');		
+   Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class.'@lead_trash')->name('data.leads.trash');
    Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class.'@lead_restore')->name('data.leads.restore');
-   
+
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class.'@index')->name('data.conversions');
