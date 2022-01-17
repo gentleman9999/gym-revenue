@@ -130,8 +130,6 @@ By Claimed employee
             <pagination class="mt-4" :links="resource.links" />
         </slot>
     </jet-bar-container>
-
-
 </template>
 
 <script>
