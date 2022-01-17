@@ -79,8 +79,17 @@
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
-        >
-            Are you sure you want to remove this lead?
+        > {{ firstName }} {{ lastName }}
+            Are you sure you want to remove this lead?<BR/>
+             Reason for Deleting:<br>
+<select name="reasonforremoving" >
+    <option value="duplicate" >Is a duplicate</option>
+    <option value="test-lead" >Is a test lead</option>
+    <option value="DNC" > Lead requested DNC and data removal</option>
+    <option value="person-non-existing" >This person does not exist</option>
+    <option value="mistake-creating" >I made a mistake creating this lead</option>
+    <option value="other" >Other</option>
+</select>
         </confirm>
 
     </app-layout>
@@ -172,10 +181,16 @@ export default defineComponent({
 	const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
-        };
+        }; handleClickTrash()
         const handleConfirmTrash = () => {
-            Inertia.delete(route("data.leads.trash", confirmTrash.value));
-            confirmTrash.value = null;
+  			/* */
+            axios.delete(route("data.leads.trash", confirmTrash.value)).then(response => {
+                        setTimeout(() => response($result, 200),10000)
+		                                      },
+                Inertia.reload(),
+            location.reload(),
+            confirmTrash.value = null
+		);
         };
         return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
     },

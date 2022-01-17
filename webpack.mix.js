@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const {alias} = require("laravel-mix");
 
 /*
  |--------------------------------------------------------------------------
@@ -32,6 +33,8 @@ mix.js('resources/js/app.js', 'public/js').vue()
     .sass('resources/sass/app.scss', 'public/sass')
     .webpackConfig(require('./webpack.config'))
     .sourceMaps();
+
+
 
 //https://github.com/laravel-mix/laravel-mix/issues/2778
 mix.options({
