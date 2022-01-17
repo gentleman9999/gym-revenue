@@ -83,6 +83,7 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 	public function deleteLead(array $data, string $updating_user){
+      //  dd($data);
 		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
         return $this;
 	}

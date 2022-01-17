@@ -4,12 +4,11 @@
             <div class="bg-base-200 w-full rounded-lg p-4">
                 <div class="flex flex-row items-center mb-4">
                     <h2 class="font-semibold text-xl leading-tight">Leads</h2>
-                    <div class="flex-grow" />
+                     <div class="flex-grow" />
                     <div
                         class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                     ></div>
                 </div>
-
                 <div class="flex flex-row items-center mb-4">
                     <div class="hidden space-x-8 sm:-my-px sm:flex pt-6">
                         <a
@@ -48,19 +47,26 @@
                             @click="comingSoon()"
                             >Consultants</a
                         >
+                        <a
+                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                            href="/data/leads/claimed"
+                        >Claimed-Leads</a
+                        >
                     </div>
-
                     <div class="flex-grow" />
                 </div>
             </div>
         </jet-bar-container>
-        <gym-revenue-crud
+
+       <gym-revenue-crud
             :resource="leads"
             :fields="fields"
             base-route="data.leads"
             :top-actions="{
+           //     claimed: { label: 'Claimed' },
                 create: { label: 'Add Lead' },
             }"
+
             :actions="{
                trash:{
                     handler: ({data}) => handleClickTrash(data.id)
@@ -80,10 +86,11 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
+
             Are you sure you want to remove this lead?
         </confirm>
-
     </app-layout>
+
 </template>
 
 <script>
@@ -107,6 +114,7 @@ export default defineComponent({
         Button,
         JetBarContainer,
         LeadInteraction,
+
     },
     props: ["leads", "title", "isClientUser", "filters", "lead_types"],
     setup(props) {
@@ -118,7 +126,8 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         }
-        const  badgeClasses = (lead_type_id) => {
+        const  badgeClasses = (lead_type_id) =>
+        {
             if(!lead_type_id){
                 console.log('no lead type id!');
                 return '';
@@ -172,13 +181,21 @@ export default defineComponent({
 	const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
-        };
+        }; handleClickTrash()
         const handleConfirmTrash = () => {
-            Inertia.delete(route("data.leads.trash", confirmTrash.value));
-            confirmTrash.value = null;
+  			/* */
+            axios.delete(route("data.leads.trash", confirmTrash.value)).then(response => {
+                        setTimeout(() => response($result, 200),10000)
+		                                      },
+                Inertia.reload(),
+            location.reload(),
+            confirmTrash.value = null
+		);
         };
         return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
     },
+
+
 });
 </script>
 
