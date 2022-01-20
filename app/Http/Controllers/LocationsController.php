@@ -9,9 +9,11 @@ use App\Models\TeamDetail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+
 
 class LocationsController extends Controller
 {
@@ -30,8 +32,15 @@ class LocationsController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
+        $userid =request()->user()->id;
+        $teamid=request()->user()->current_team_id;
+        $myrole=DB::select('select role from team_user where user_id='.$userid.' and team_id='.$teamid.'');
+//$role= json_encode($myrole);
+//dd(request()->user()->current_team_id,$client_id,$myrole,$role);
 
         // @todo - insert Bouncer-based ACL here.
+
+
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
@@ -48,10 +57,12 @@ class LocationsController extends Controller
             $title = 'All Client Locations';
         }
 
+
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
+            'role' =>$myrole,
             'filters' => $request->all('search', 'trashed','state')
         ]);
     }
