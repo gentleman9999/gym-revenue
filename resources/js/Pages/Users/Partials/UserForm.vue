@@ -7,7 +7,7 @@
                     id="name"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="user.name"
+                    v-model="form.name"
                     autofocus
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
@@ -15,13 +15,11 @@
         </template>
 
         <template #actions>
+            <Button type="button" @click="$inertia.visit(route('users'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
+                Cancel
+            </Button>
             <div class="flex-grow" />
-            <Button
-                class="btn-secondary"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                :loading="form.processing"
-            >
+            <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing">
                 {{ buttonText }}
             </Button>
         </template>
@@ -49,17 +47,25 @@ export default {
     props: ["clientId", "user"],
     emits: ['success'],
     setup(props, {emit}) {
-        let urlPrev = usePage().props.value.urlPrev;
-        let file = props.file;
+        let user = props.user;
 
-        const form = useForm(file);
+        let operation = 'Update';
+        if (!user) {
+            user = {
+                name: null,
+                client_id: props.clientId
+            }
+            operation = 'Create';
+        }
 
-        let handleSubmit = async () => {
-            await form.put(route("files.update", file.id));
-            emit('success');
-        };
+        const form = useForm(user);
 
-        return { form, buttonText: "Update", handleSubmit, urlPrev };
+        let handleSubmit = () => form.put(route('users.update', user.id));
+        if (operation === 'Create') {
+            handleSubmit = () => form.post(route('users.store'));
+        }
+
+        return { form, buttonText: operation, handleSubmit };
     },
 };
 </script>

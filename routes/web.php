@@ -111,8 +111,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group( functio
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group( function() {
     Route::get('/', \App\Http\Controllers\UsersController::class.'@index')->name('users');
-//    Route::post('/', \App\Http\Controllers\UsersController::class.'@store')->name('users.store');
-//    Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class.'@edit')->name('users.edit');
-//    Route::put('/{id}', \App\Http\Controllers\UsersController::class.'@update')->name('users.update');
-//    Route::delete('/{id}', \App\Http\Controllers\UsersController::class.'@delete')->name('users.delete');
+    Route::get('/create', \App\Http\Controllers\UsersController::class.'@create')->name('users.create');
+    Route::post('/', \App\Http\Controllers\UsersController::class.'@store')->name('users.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class.'@edit')->name('users.edit');
+    Route::put('/{id}', \App\Http\Controllers\UsersController::class.'@update')->name('users.update');
+    Route::delete('/{id}', \App\Http\Controllers\UsersController::class.'@delete')->name('users.delete');
 });
