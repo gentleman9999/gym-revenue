@@ -105,6 +105,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\UserDetails', 'user_id', 'id');
     }
 
+    public function team()
+    {
+        return $this->hasMany('App\Models\Team', 'user_id', 'id');
+    }
+
     public function detail()
     {
         return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
@@ -133,5 +138,4 @@ class User extends Authenticatable
             });
         });
     }
-
 }

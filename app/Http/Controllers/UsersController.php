@@ -11,9 +11,12 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Users/Show', [
-            'users' => User::filter($request->only('search', 'trashed'))
+            'users' => User::whereHas('detail', function ($query) use ($request) {
+                return $query->whereName('associated_client')->whereValue($request->user()->currentClientId());
+            })
+                ->filter($request->only('search', 'club', 'team'))
                 ->paginate(10),
-            'filters' => $request->all('search', 'trashed')
+            'filters' => $request->all('search', 'club', 'team')
         ]);
     }
 }

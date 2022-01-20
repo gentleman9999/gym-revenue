@@ -114,6 +114,5 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group( functio
 //    Route::post('/', \App\Http\Controllers\UsersController::class.'@store')->name('users.store');
 //    Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class.'@edit')->name('users.edit');
 //    Route::put('/{id}', \App\Http\Controllers\UsersController::class.'@update')->name('users.update');
-//    Route::delete('/{id}', \App\Http\Controllers\UsersController::class.'@trash')->name('users.trash');
-//    Route::post('/{id}/restore', \App\Http\Controllers\UsersController::class.'@restore')->name('users.restore');
+//    Route::delete('/{id}', \App\Http\Controllers\UsersController::class.'@delete')->name('users.delete');
 });
