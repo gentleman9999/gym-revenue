@@ -35,11 +35,10 @@ class LocationsController extends Controller
         $userid =request()->user()->id;
         $teamid=request()->user()->current_team_id;
         $myrole=DB::select('select role from team_user where user_id='.$userid.' and team_id='.$teamid.'');
-//$role= json_encode($myrole);
-//dd(request()->user()->current_team_id,$client_id,$myrole,$role);
-
+        foreach($myrole as $role){
+        }
+//dd(request()->user()->current_team_id,$client_id,$role);
         // @todo - insert Bouncer-based ACL here.
-
 
         $page_count = 10;
 
@@ -62,7 +61,7 @@ class LocationsController extends Controller
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
-            'role' =>$myrole,
+            'role' =>$role,
             'filters' => $request->all('search', 'trashed','state')
         ]);
     }

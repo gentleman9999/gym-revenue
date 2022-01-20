@@ -1,13 +1,14 @@
 <template>
     <app-layout :title="title">
         <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Locations {{this.$page.props.role}}</h2>
-
+            <h2 class="font-semibold text-xl leading-tight">Locations </h2>
+           {{this.$page.props.role.role}}
         </template>
 
         <gym-revenue-crud
             base-route="locations"
             model-name="Location"
+            v-if="this.$page.props.role.role ==='Admin' || this.$page.props.role.role ==='Account Owner'"
             :fields="fields"
             :resource="locations"
             :actions="{
@@ -15,8 +16,6 @@
                    label: 'CLose Club',
                     handler: ({data}) => handleClickTrash(data.id)
                 },
-
-
             }"
         ><!--base-route="locations"-->
         <div class="block py-2 text-xs text-gray-400">Closed:</div>
@@ -41,7 +40,42 @@
             -->
 
         </gym-revenue-crud>
- <!--      {{this.$page.props}} -->
+
+        <gym-revenue-crud
+            base-route="locations"
+            model-name="Location"
+            v-else
+            :fields="fields"
+            :resource="locations"
+            :actions="{
+            trash: false,
+            }"
+        ><!--base-route="locations"-->
+            <div class="block py-2 text-xs text-gray-400">Closed:</div>
+            <select
+                v-model="form.trashed"
+                class="mt-1 w-full form-select"
+            >
+                <option :value="null" />
+                <option value="with">With Closed</option>
+                <option value="only">Only Closed</option>
+            </select>
+            <!--Filters to Add
+                    <div  class="block py-2 text-xs text-gray-400">State:</div>
+                    <select
+                        v-model="form.state"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option v-for="(state, i) in this.$page.props.locations" :value="grlocations.gymrevenue_id">{{grlocations.name }}
+                        </option>
+                    </select>
+                        -->
+
+        </gym-revenue-crud>
+
+
+
 
         <confirm
             title="Really Close This Club?"
