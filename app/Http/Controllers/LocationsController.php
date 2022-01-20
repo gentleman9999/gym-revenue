@@ -52,7 +52,7 @@ class LocationsController extends Controller
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed')
+            'filters' => $request->all('search', 'trashed','state')
         ]);
     }
 
