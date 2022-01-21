@@ -34,25 +34,35 @@
             <option value="with">With Closed</option>
             <option value="only">Only Closed</option>
         </select>
-<!--Filters to Add
-        <div  class="block py-2 text-xs text-gray-400">State:</div>
+        <div  class="block py-2 text-xs text-white">State:</div>
         <select
             v-model="form.state"
             class="mt-1 w-full form-select"
         >
             <option :value="null" />
-            <option v-for="(state, i) in this.$page.props.locations" :value="grlocations.gymrevenue_id">{{grlocations.name }}
-            </option>
+            <option v-for="(state, i) in this.$page.props.eachstate"  :value="state.state">
+                {{state.state}}            </option>
+
         </select>
-            -->
+
                         </div>
                     </template>
                 </search-filter>
                 </template>
         </gym-revenue-crud>
 
-
-
+ <!--
+        {{this.$page.props.eachstate}}
+        <div v-for="(state,i) in this.$page.props.locations.data">
+            {{i}} --    {{state.state}}
+        </div> <br/>
+        <div v-for="(state,i) in this.$page.props.eachstate">
+            {{i}} --    {{state.state}}
+        </div> <br/>
+                {{this.$props.locationsa}}
+{{this.$page.props.eachstate.state}}
+                {{this.$props.locations}}
+        -->
         <confirm
             title="Really Close This Club?"
             v-if="confirmTrash"

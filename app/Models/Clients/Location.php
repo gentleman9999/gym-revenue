@@ -51,7 +51,7 @@ class Location extends Model
                 $query->onlyTrashed();
             }
         })->when($filters['state'] ?? null, function($query, $state) {
-
+$query->where('state','like', '%'.$state.'%');
         });
     }
 }
