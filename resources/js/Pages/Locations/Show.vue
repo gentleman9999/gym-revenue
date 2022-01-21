@@ -2,8 +2,6 @@
     <app-layout :title="title">
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Locations </h2>
-<!--           {{this.$page.props}}-->
-
         </template>
         <gym-revenue-crud
             base-route="locations"
@@ -34,25 +32,11 @@
             <option value="with">With Closed</option>
             <option value="only">Only Closed</option>
         </select>
-<!--Filters to Add
-        <div  class="block py-2 text-xs text-gray-400">State:</div>
-        <select
-            v-model="form.state"
-            class="mt-1 w-full form-select"
-        >
-            <option :value="null" />
-            <option v-for="(state, i) in this.$page.props.locations" :value="grlocations.gymrevenue_id">{{grlocations.name }}
-            </option>
-        </select>
-            -->
                         </div>
                     </template>
                 </search-filter>
                 </template>
         </gym-revenue-crud>
-
-
-
         <confirm
             title="Really Close This Club?"
             v-if="confirmTrash"
@@ -60,12 +44,7 @@
             @cancel="confirmTrash = null"
         >
             Are you sure you want to Close this Club?<BR/>
-
         </confirm>
-
-
-
-
     </app-layout>
 </template>
 
@@ -73,15 +52,12 @@
 import { defineComponent,ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-//import {ref} from "vue/dist/vue";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
 import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
-
 export default defineComponent({
     components: {
         AppLayout,
@@ -98,13 +74,10 @@ export default defineComponent({
             confirmTrash.value = id;
         }; handleClickTrash()
         const handleConfirmTrash = () => {
-            /* */
-
-            axios.delete(route("locations.trash", confirmTrash.value)).then(response => {
+             axios.delete(route("locations.trash", confirmTrash.value)).then(response => {
                     setTimeout(() => response($result, 200),10000)
                 },
                 Inertia.reload(),
-     //           location.reload(),
                 confirmTrash.value = null
             );
         };
@@ -112,8 +85,6 @@ export default defineComponent({
         const { form, reset } = useSearchFilter(baseRoute, {
             audience: props.activeAudience,
         });
-
-
         return { handleClickTrash, confirmTrash, handleConfirmTrash, Inertia,form,reset }; //, fields
     },
     computed: {
@@ -130,6 +101,5 @@ export default defineComponent({
             ];
         },
     },
-
 });
 </script>
