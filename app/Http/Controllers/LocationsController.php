@@ -47,7 +47,7 @@ $user = request()->user();
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
             $locations = $locations->with('client')
-                ->filter($request->only('search', 'trashed'))
+                ->filter($request->only('search', 'trashed','state'))
                 ->paginate($page_count);
         }
 
