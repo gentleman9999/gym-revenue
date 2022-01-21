@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+use Silber\Bouncer\Bouncer;
 
 
 class LocationsController extends Controller
@@ -34,12 +35,13 @@ class LocationsController extends Controller
         $is_client_user = request()->user()->isClientUser();
         $userid =request()->user()->id;
         $teamid=request()->user()->current_team_id;
-        $myrole=DB::select('select role from team_user where user_id='.$userid.' and team_id='.$teamid.'');
-        foreach($myrole as $role){
-        }
-//dd(request()->user()->current_team_id,$client_id,$role);
+$user = request()->user();
         // @todo - insert Bouncer-based ACL here.
+ $user->can('can-delete-club');
 
+//        $users = User::whereIs('Account Owner')->get();
+//        $abilities = $user->getAbilities();
+//dd($user,$user->abilities,$users,$abilities);
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
@@ -61,7 +63,7 @@ class LocationsController extends Controller
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
-            'role' =>$role,
+        //    'user' => $user,
             'filters' => $request->all('search', 'trashed','state')
         ]);
     }
