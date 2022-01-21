@@ -3,7 +3,6 @@
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Locations </h2>
 <!--           {{this.$page.props}}-->
-
         </template>
         <gym-revenue-crud
             base-route="locations"
@@ -44,25 +43,11 @@
                 {{state.state}}            </option>
 
         </select>
-
                         </div>
                     </template>
                 </search-filter>
                 </template>
         </gym-revenue-crud>
-
- <!--
-        {{this.$page.props.eachstate}}
-        <div v-for="(state,i) in this.$page.props.locations.data">
-            {{i}} --    {{state.state}}
-        </div> <br/>
-        <div v-for="(state,i) in this.$page.props.eachstate">
-            {{i}} --    {{state.state}}
-        </div> <br/>
-                {{this.$props.locationsa}}
-{{this.$page.props.eachstate.state}}
-                {{this.$props.locations}}
-        -->
         <confirm
             title="Really Close This Club?"
             v-if="confirmTrash"
@@ -70,15 +55,9 @@
             @cancel="confirmTrash = null"
         >
             Are you sure you want to Close this Club?<BR/>
-
         </confirm>
-
-
-
-
     </app-layout>
 </template>
-
 <script>
 import { defineComponent,ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";

@@ -57,11 +57,8 @@ $user = request()->user();
         } else {
             $title = 'All Client Locations';
         }
-$eachstate = Location::select('state')->where('client_id', '=',  ''.$client_id.'')->groupBy('state')->get();
-
+     $eachstate = Location::select('state')->where('client_id', '=',  ''.$client_id.'')->groupBy('state')->get();
 //dd($eachstate);
-
-
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
