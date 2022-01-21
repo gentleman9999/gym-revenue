@@ -17,8 +17,9 @@
                 },
             }"
         ><!--base-route="locations"-->
-            <slot name="filter">
-        <div class="block py-2 text-xs text-gray-400">Closed Clubs:</div>
+            <template #filter>
+
+            <div class="block py-2 text-xs text-gray-400">Closed Clubs:</div>
         <select
             v-model="form.trashed"
             class="mt-1 w-full form-select"
@@ -38,7 +39,7 @@
             </option>
         </select>
             -->
-                </slot>
+                </template>
         </gym-revenue-crud>
 
 
