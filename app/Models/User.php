@@ -83,7 +83,8 @@ class User extends Authenticatable
         return Location::whereClientId($this->currentClientId())->get();
     }
 
-    public function switchLocation($location){
+    public function switchLocation($location)
+    {
         $this->current_location_id = $location->id;
         return $this->save();
     }
@@ -105,14 +106,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\UserDetails', 'user_id', 'id');
     }
 
-    public function team()
-    {
-        return $this->hasMany('App\Models\Team', 'user_id', 'id');
-    }
-
     public function detail()
     {
         return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
     }
 
     public function default_team()
@@ -135,6 +136,16 @@ class User extends Authenticatable
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
+            });
+        })->when($filters['club'] ?? null, function ($query, $club_id) {
+            $query->whereHas('teams', function ($query) use ($club_id) {
+                return $query->whereHas('detail', function ($query) use ($club_id) {
+                    return $query->whereName('team-location')->whereValue($club_id);
+                });
+            });
+        })->when($filters['team'] ?? null, function ($query, $team_id) {
+            $query->whereHas('teams', function ($query) use ($team_id) {
+                return $query->whereTeamId($team_id);
             });
         });
     }

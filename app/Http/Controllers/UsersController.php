@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clients\Client;
+use App\Models\Clients\Location;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -16,13 +19,16 @@ class UsersController extends Controller
 
     public function index(Request $request)
     {
+        $client_id = $request->user()->currentClientId();
         return Inertia::render('Users/Show', [
-            'users' => User::whereHas('detail', function ($query) use ($request) {
-                return $query->whereName('associated_client')->whereValue($request->user()->currentClientId());
+            'users' => User::whereHas('detail', function ($query) use ($client_id) {
+                return $query->whereName('associated_client')->whereValue($client_id);
             })
                 ->filter($request->only('search', 'club', 'team'))
                 ->paginate(10),
-            'filters' => $request->all('search', 'club', 'team')
+            'filters' => $request->all('search', 'club', 'team'),
+            'clubs' => Location::whereClientId($client_id)->get(),
+            'teams' => Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'))
         ]);
     }
 
