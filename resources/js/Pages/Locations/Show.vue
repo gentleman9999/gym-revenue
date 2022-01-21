@@ -18,8 +18,14 @@
             }"
         ><!--base-route="locations"-->
             <template #filter>
-
-            <div class="block py-2 text-xs text-gray-400">Closed Clubs:</div>
+                <search-filter
+                    v-model:modelValue="form.search"
+                    class="w-full max-w-md mr-4"
+                    @reset="reset"
+                >
+                    <template #content>
+                        <div class="block px-4 py-2 text-xs w-60">
+            <div class="block py-2 text-xs text-white">Closed Clubs:</div>
         <select
             v-model="form.trashed"
             class="mt-1 w-full form-select"
@@ -39,6 +45,9 @@
             </option>
         </select>
             -->
+                        </div>
+                    </template>
+                </search-filter>
                 </template>
         </gym-revenue-crud>
 
@@ -65,12 +74,14 @@ import { defineComponent,ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 //import {ref} from "vue/dist/vue";
-
+import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
+import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+
 export default defineComponent({
     components: {
         AppLayout,
@@ -78,6 +89,7 @@ export default defineComponent({
         Confirm,
         JetBarContainer,
         Button,
+        SearchFilter,
     },
     props: ["sessions", "locations", "title", "isClientUser", "filters"],
     setup(props) {
@@ -96,7 +108,13 @@ export default defineComponent({
                 confirmTrash.value = null
             );
         };
-        return { handleClickTrash, confirmTrash, handleConfirmTrash, Inertia }; //, fields
+        const baseRoute = "locations";
+        const { form, reset } = useSearchFilter(baseRoute, {
+            audience: props.activeAudience,
+        });
+
+
+        return { handleClickTrash, confirmTrash, handleConfirmTrash, Inertia,form,reset }; //, fields
     },
     computed: {
         fields() {
