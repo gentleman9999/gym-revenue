@@ -36,6 +36,7 @@
             <tbody>
                 <component
                     v-for="row in data"
+                    :key="row.id"
                     :is="rowComponent"
                     v-bind="{ [modelName]: row }"
                     :data="row"
