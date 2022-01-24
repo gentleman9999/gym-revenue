@@ -85,9 +85,8 @@ export default defineComponent({
     setup(props) {
 
         const baseRoute = "locations";
-        const initialState = { };
-        const { form, reset } = useSearchFilter(baseRoute, initialState,{
-                preserveState: false,
+        const { form, reset } = useSearchFilter(baseRoute, {
+              //  preserveState: false,
             },
         );
 

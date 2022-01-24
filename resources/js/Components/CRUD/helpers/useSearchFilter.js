@@ -30,7 +30,7 @@ export const useSearchFilter = (baseRoute, initialState = {}) => {
 */
 
 export const useSearchFilter = (baseRoute, initialState = {}, options = {
-    preserveState: true,
+    preserveState: false,
     preserveScroll: true
 }) => {
     if (!baseRoute) {
