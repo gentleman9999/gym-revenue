@@ -50,6 +50,8 @@ class Location extends Model
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
+        })->when($filters['state'] ?? null, function($query, $state) {
+
         });
     }
 }
