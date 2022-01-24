@@ -16,14 +16,14 @@
                     class="w-full max-w-md mr-4"
                     @reset="reset"
                 >
-                    <div class="form-control">
+                    <div class="form-control" v-if="clubs?.length">
                         <span class="label label-text">Club</span>
                         <select class="select" v-model="form.club">
                             <option></option>
                             <option v-for="club in clubs" :value="club.gymrevenue_id">{{club.name}}</option>
                         </select>
                     </div>
-                    <div class="form-control">
+                    <div class="form-control" v-if="teams?.length">
                         <span class="label label-text">Team</span>
                         <select class="select" v-model="form.team">
                             <option></option>
