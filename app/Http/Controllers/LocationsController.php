@@ -39,7 +39,7 @@ class LocationsController extends Controller
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
             $locations = $locations->with('client')
-                ->filter($request->only('search', 'trashed'))
+                ->filter($request->only('search', 'trashed','state'))
                 ->paginate($page_count);
         }
 
@@ -49,13 +49,14 @@ class LocationsController extends Controller
         } else {
             $title = 'All Client Locations';
         }
-
-
+     $eachstate = Location::select('state')->where('client_id', '=',  ''.$client_id.'')->groupBy('state')->get();
+//dd($eachstate);
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
         //    'user' => $user,
+            'eachstate' => $eachstate,
             'filters' => $request->all('search', 'trashed','state')
         ]);
     }
