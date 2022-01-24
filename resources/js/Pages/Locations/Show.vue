@@ -59,7 +59,7 @@
     </app-layout>
 </template>
 <script>
-import { defineComponent,ref } from "vue";
+import { defineComponent,ref  } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 //import {ref} from "vue/dist/vue";
@@ -79,9 +79,19 @@ export default defineComponent({
         JetBarContainer,
         Button,
         SearchFilter,
+
     },
-    props: ["sessions", "locations", "title", "isClientUser", "filters"],
+    props: ["sessions", "locations", "title", "isClientUser", "filters","useSearchFilter","SearchFilter"],
     setup(props) {
+
+        const baseRoute = "locations";
+        const initialState = { };
+        const { form, reset } = useSearchFilter(baseRoute, initialState,{
+                preserveState: false,
+            },
+        );
+
+
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
@@ -97,10 +107,7 @@ export default defineComponent({
                 confirmTrash.value = null
             );
         };
-        const baseRoute = "locations";
-        const { form, reset } = useSearchFilter(baseRoute, {
-            audience: props.activeAudience,
-        });
+
 
 
         return { handleClickTrash, confirmTrash, handleConfirmTrash, Inertia,form,reset }; //, fields

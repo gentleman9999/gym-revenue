@@ -4,6 +4,7 @@ import { Inertia } from "@inertiajs/inertia";
 import pickBy from "lodash/pickBy";
 import mapValues from "lodash/mapValues";
 
+/*
 export const useSearchFilter = (baseRoute, initialState = {}) => {
     if(!baseRoute){
         throw 'Missing baseRoute';
@@ -14,7 +15,7 @@ export const useSearchFilter = (baseRoute, initialState = {}) => {
     const formHandler = throttle(function () {
         Inertia.get(route(baseRoute), pickBy(form.value), {
             preserveState: true,
-            preserveScroll: true,
+            preserveScroll: true
         });
     }, 150);
 
@@ -26,3 +27,29 @@ export const useSearchFilter = (baseRoute, initialState = {}) => {
 
     return { form, reset };
 };
+*/
+
+export const useSearchFilter = (baseRoute, initialState = {}, options = {
+    preserveState: true,
+    preserveScroll: true
+}) => {
+    if (!baseRoute) {
+        throw 'Missing baseRoute';
+    }
+
+    const form = ref(initialState);
+
+    const formHandler = throttle(function () {
+        Inertia.get(route(baseRoute), pickBy(form.value), options);
+    }, 150);
+
+    watch([form], formHandler, {deep: true});
+
+    const reset = () => {
+        form.value = mapValues(form.value, () => null);
+    };
+
+    return {form, reset};
+};
+
+
