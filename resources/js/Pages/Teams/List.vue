@@ -42,7 +42,6 @@
 import {defineComponent, ref} from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import TeamForm from "./Partials/TeamForm";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
@@ -52,7 +51,6 @@ export default defineComponent({
     components: {
         AppLayout,
         GymRevenueCrud,
-        TeamForm,
         Confirm,
         SearchFilter
     },

@@ -15,6 +15,8 @@ class TeamsController extends Controller
 {
     protected $rules = [
         'name' => ['required', 'max:50'],
+        'user_id' => ['sometimes', 'exists:users,id'],
+        'personal_team' => ['sometimes', 'boolean']
     ];
 
     public function index(Request $request)
