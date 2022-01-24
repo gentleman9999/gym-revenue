@@ -9,7 +9,10 @@ export const useSearchFilter = (baseRoute, initialState = {}) => {
         throw 'Missing baseRoute';
     }
 
-    const form = ref(initialState);
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const search = paramsToObject(urlSearchParams);
+
+    const form = ref({...initialState, ...search});
 
     const formHandler = throttle(function () {
         Inertia.get(route(baseRoute), pickBy(form.value), {
@@ -26,3 +29,12 @@ export const useSearchFilter = (baseRoute, initialState = {}) => {
 
     return { form, reset };
 };
+
+
+const paramsToObject = (entries) =>{
+    const result = {}
+    for(const [key, value] of entries) { // each 'entry' is a [key, value] tupple
+        result[key] = value;
+    }
+    return result;
+}
