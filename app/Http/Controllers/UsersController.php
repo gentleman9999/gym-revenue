@@ -19,17 +19,31 @@ class UsersController extends Controller
 
     public function index(Request $request)
     {
-        $client_id = $request->user()->currentClientId();
-        return Inertia::render('Users/Show', [
-            'users' => User::whereHas('detail', function ($query) use ($client_id) {
-                return $query->whereName('associated_client')->whereValue($client_id);
-            })
-                ->filter($request->only('search', 'club', 'team'))
-                ->paginate(10),
-            'filters' => $request->all('search', 'club', 'team'),
-            'clubs' => Location::whereClientId($client_id)->get(),
-            'teams' => Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'))
-        ]);
+        $users = null;
+        if ($request->user()->isClientUser()) {
+            $client_id = $request->user()->currentClientId();
+
+            return Inertia::render('Users/Show', [
+                'users' =>  User::whereHas('detail', function ($query) use ($client_id) {
+                    return $query->whereName('associated_client')->whereValue($client_id);
+                })->filter($request->only('search', 'club', 'team'))
+                    ->paginate(10),
+                'filters' => $request->all('search', 'club', 'team'),
+                'clubs' => Location::whereClientId($client_id)->get(),
+                'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : []
+            ]);
+        } else {
+            //cb user
+            return Inertia::render('Users/Show', [
+                'users' =>  User::whereHas('teams', function ($query) use ($request) {
+                    return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
+                })->filter($request->only('search', 'club', 'team'))
+                    ->paginate(10),
+                'filters' => $request->all('search', 'club', 'team'),
+                'clubs' => [],
+                'teams' =>  []
+            ]);
+        }
     }
 
     public function create(Request $request)
