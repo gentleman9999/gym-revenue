@@ -65,7 +65,7 @@
                 </li>
                 <li>
                     <!-- @todo - make these dynamic, as some users wont have access -->
-                    <inertia-link :href="route('profile.show')">
+                    <inertia-link :href="route('users')">
                         User Management
                     </inertia-link>
                 </li>
