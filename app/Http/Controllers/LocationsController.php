@@ -9,9 +9,12 @@ use App\Models\TeamDetail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+use Silber\Bouncer\Bouncer;
+
 
 class LocationsController extends Controller
 {
@@ -30,8 +33,11 @@ class LocationsController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
-
+        $userid =request()->user()->id;
+        $teamid=request()->user()->current_team_id;
+    $user = request()->user();
         // @todo - insert Bouncer-based ACL here.
+    $user->can('can-delete-club');
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
@@ -48,11 +54,13 @@ class LocationsController extends Controller
             $title = 'All Client Locations';
         }
 
+
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed')
+        //    'user' => $user,
+            'filters' => $request->all('search', 'trashed','state')
         ]);
     }
 
