@@ -20,15 +20,12 @@ class TeamsController extends Controller
     public function index(Request $request)
     {
         $client_id = $request->user()->currentClientId();
-        return Inertia::render('Teams/Show', [
-            'users' => User::whereHas('detail', function ($query) use ($client_id) {
-                return $query->whereName('associated_client')->whereValue($client_id);
-            })
-                ->filter($request->only('search', 'club', 'team'))
+        return Inertia::render('Teams/List', [
+            'teams' => Team::filter($request->only('search', 'club', 'team'))
                 ->paginate(10),
             'filters' => $request->all('search', 'club', 'team'),
-            'clubs' => Location::whereClientId($client_id)->get(),
-            'teams' => Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'))
+            'clubs' => Location::whereClientId($client_id)->get()
+            //'teams' => Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'))
         ]);
     }
 
