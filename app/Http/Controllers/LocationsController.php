@@ -33,11 +33,7 @@ class LocationsController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
-        $userid =request()->user()->id;
-        $teamid=request()->user()->current_team_id;
-    $user = request()->user();
         // @todo - insert Bouncer-based ACL here.
-    $user->can('can-delete-club');
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))

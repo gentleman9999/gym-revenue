@@ -10,7 +10,7 @@
             :resource="locations"
             :actions="{
                trash:{
-                   label: 'CLose Club',
+                   label: 'Close Club',
                     handler: ({data}) => handleClickTrash(data.id)
                 },
             }"
