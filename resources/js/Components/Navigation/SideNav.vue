@@ -209,6 +209,27 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
+            >
+                <jet-nav-link
+                    class="jet-nav-link"
+                    :href="route('teams')"
+                >
+                    <p>
+                        <font-awesome-icon :icon="['fad', 'team']" size="lg" />
+                        <span>Team Management</span>
+                    </p>
+                </jet-nav-link>
+            </div>
+
+            <!-- -->
+
+            <div
+                :class="
+                    route().current('data.conversions')
+                        ? 'bg-primary'
+                        : 'bg-transparent'
+                "
+                class="nav-link-container"
                 v-if="$page.props.user.current_client_id !== null"
             >
                 <jet-nav-link
