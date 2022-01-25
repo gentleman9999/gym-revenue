@@ -209,6 +209,25 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
+            >
+                <jet-nav-link
+                    class="jet-nav-link"
+                    :href="route('users')"
+                >
+                    <p>
+                        <font-awesome-icon :icon="['fad', 'users']" size="lg" />
+                        <span>User Management</span>
+                    </p>
+                </jet-nav-link>
+            </div>
+
+            <div
+                :class="
+                    route().current('data.conversions')
+                        ? 'bg-primary'
+                        : 'bg-transparent'
+                "
+                class="nav-link-container"
                 v-if="$page.props.user.current_client_id !== null"
             >
                 <jet-nav-link
@@ -258,6 +277,7 @@ import {
     faDumbbell,
     faPaste,
     faSatelliteDish,
+    faUsers
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
@@ -273,7 +293,8 @@ library.add(
     faSatelliteDish,
     faCommentsAlt,
     faCog,
-    faFileUpload
+    faFileUpload,
+    faUsers
 );
 
 export default defineComponent({

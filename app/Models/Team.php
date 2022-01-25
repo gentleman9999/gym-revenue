@@ -44,6 +44,16 @@ class Team extends JetstreamTeam
         'deleted' => TeamDeleted::class,
     ];
 
+    public function details()
+    {
+        return $this->hasMany('App\Models\TeamDetail', 'team_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne('App\Models\TeamDetail', 'team_id', 'id');
+    }
+
     public function client_details()
     {
         return $this->hasMany(ClientDetail::class, 'value',  'id')
