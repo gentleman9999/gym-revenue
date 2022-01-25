@@ -322,7 +322,8 @@ class LeadsController extends Controller
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
         $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
-        $middle_name = LeadDetails::whereLeadId($lead_id)->where('field','middle_name')->get();
+
+        $middle_name = LeadDetails::whereLeadId($lead_id)->where('field','middle_name')->first();
 
         return Inertia::render('Leads/Edit', [
             'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'services', 'profile_picture')->first(),

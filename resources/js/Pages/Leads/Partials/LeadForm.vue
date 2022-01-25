@@ -24,12 +24,16 @@
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="middle_name" value="Middle Name"/>
-                <input id="" type="text" v-model="form['middle_name']" autofocus/>
-              {{this.$page.props.middle_name.value}}
-                {{this.$page.props.middle_name['value']}}
+                                <jet-label for="middle_name" value="Middle Name"/>
+                <div v-for="(middlename, i) in this.$page.props.middle_name" >
+               <!--     {{middlename.value}} -->
+                </div>
+                <input id="" type="text"
+                       v-model="form['middle_name']" autofocus/>
+
 
                 <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
+
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="last_name" value="Last Name"/>
