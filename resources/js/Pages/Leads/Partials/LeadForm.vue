@@ -26,6 +26,9 @@
             <div class="form-control col-span-2">
                 <jet-label for="middle_name" value="Middle Name"/>
                 <input id="" type="text" v-model="form['middle_name']" autofocus/>
+              {{this.$page.props.middle_name.value}}
+                {{this.$page.props.middle_name['value']}}
+
                 <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
             </div>
             <div class="form-control col-span-2">
