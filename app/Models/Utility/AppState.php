@@ -22,6 +22,10 @@ class AppState extends Model
         'name', 'slug', 'desc', 'value', 'misc'
     ];
 
+    protected $casts = [
+        'misc' => 'array'
+    ];
+
     public static function isSimuationMode()
     {
         $results = true;
