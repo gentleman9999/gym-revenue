@@ -1,7 +1,7 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="col-span-6">
+            <div class="form-control col-span-6">
                 <jet-label for="name" value="Name" />
                 <input
                     id="name"
@@ -11,6 +11,42 @@
                     autofocus
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
+            </div>
+            <div class="form-control col-span-6">
+                <jet-label for="email" value="Email" />
+                <input
+                    id="email"
+                    type="email"
+                    class="block w-full mt-1"
+                    v-model="form.email"
+                    autofocus
+                />
+                <jet-input-error :message="form.errors.email" class="mt-2" />
+            </div>
+            <div class="form-control col-span-6">
+                <jet-label for="password" value="Password" />
+                <input
+                    id="password"
+                    type="password"
+                    class="block w-full mt-1"
+                    v-model="form.password"
+                />
+                <jet-input-error :message="form.errors.password" class="mt-2" />
+            </div>
+            <div class="form-control col-span-6">
+                <jet-label for="role" value="Role" />
+                <select
+                    id="role"
+                    class="block w-full mt-1"
+                    v-model="form.role"
+                >
+                    <option>Admin</option>
+                    <option>Location Manager</option>
+                    <option>Regional Admin</option>
+                    <option>Sales Rep</option>
+                    <option>Member</option>
+                </select>
+                <jet-input-error :message="form.errors.password" class="mt-2" />
             </div>
         </template>
 
@@ -53,6 +89,9 @@ export default {
         if (!user) {
             user = {
                 name: null,
+                email: null,
+                password: null,
+                role: null,
                 client_id: props.clientId
             }
             operation = 'Create';

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Jetstream\AddTeamMember;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -15,6 +17,8 @@ class UsersController extends Controller
 {
     protected $rules = [
         'name' => ['required', 'max:50'],
+        'email' => ['required', 'email', 'unique:users,email'],
+        'role' => ['required']
     ];
 
     public function index(Request $request)
@@ -22,7 +26,7 @@ class UsersController extends Controller
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
             return Inertia::render('Users/Show', [
-                'users' =>  User::whereHas('detail', function ($query) use ($client_id) {
+                'users' => User::whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
@@ -33,13 +37,13 @@ class UsersController extends Controller
         } else {
             //cb team selected
             return Inertia::render('Users/Show', [
-                'users' =>  User::whereHas('teams', function ($query) use ($request) {
+                'users' => User::whereHas('teams', function ($query) use ($request) {
                     return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
-                'teams' =>  []
+                'teams' => []
             ]);
         }
     }
@@ -59,8 +63,18 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        $user = User::create(
-            $request->validate($this->rules)
+        $data = $request->validate(array_merge($this->rules, ['password' => 'required']));
+        $data['password'] = bcrypt($data['password']);
+        $user = User::create($data);
+
+        $client_id = $request->user()->currentClientId();
+        if($client_id){
+            UserDetails::create(['user_id' => $user->id, 'name'=> 'associated_client', 'value' => $client_id]);
+        }
+        $current_team = $request->user()->currentTeam()->first();
+        UserDetails::create(['user_id' => $user->id, 'name'=> 'default_team', 'value' => $current_team->id]);
+        $current_team->users()->attach(
+            $user, ['role' => $data['role']]
         );
         Alert::success("User '{$user->name}' was created")->flash();
 
