@@ -347,8 +347,14 @@ class LeadsController extends Controller
             return Redirect::route('data.leads');
         }
 
+        $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
+        foreach($middle_names as $middle_name){
+            //     dd($middle_name);
+        }
+
         return Inertia::render('Leads/Show', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first()
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
+            'middle_name' => $middle_name,
         ]);
     }
 
