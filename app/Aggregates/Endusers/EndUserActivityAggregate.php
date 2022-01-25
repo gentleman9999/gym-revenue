@@ -47,6 +47,8 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
+
+
     public function updateLead(array $lead, User $updating_user)
     {
         $this->recordThat(new UpdateLead($this->uuid(), $lead, $updating_user->id));
@@ -82,9 +84,12 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
+
 	public function deleteLead(array $data, string $updating_user){
       //  dd($data);
 		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
         return $this;
 	}
+
+
 }

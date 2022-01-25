@@ -24,6 +24,7 @@ class LeadsController extends Controller
 {
     protected $rules = [
         'first_name' => ['required', 'max:50'],
+        'middle_name' => [],
         'last_name' => ['required', 'max:30'],
         'email' => ['required', 'email:rfc,dns'],
         'primary_phone' => ['sometimes'],
@@ -193,6 +194,19 @@ class LeadsController extends Controller
                 ]
             );
         }
+
+        if(array_key_exists('middle_name',  $lead_data)){
+            $middle_name=  $lead_data['middle_name'];
+            LeadDetails::create([
+                    'lead_id' => $lead->id,
+                    'client_id' =>  $lead->client_id,
+                    'field' => 'middle_name',
+                    'value' => $middle_name,
+                    'misc' => ['user' => $user_id ]
+                ]
+            );
+        }
+
 
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 

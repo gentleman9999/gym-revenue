@@ -18,17 +18,22 @@
                     />
                 </label>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-2">
                 <jet-label for="first_name" value="First Name"/>
                 <input id="" type="text" v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-2">
+                <jet-label for="middle_name" value="Middle Name"/>
+                <input id="" type="text" v-model="form['middle_name']" autofocus/>
+                <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-2">
                 <jet-label for="last_name" value="Last Name"/>
                 <input id="last_name" type="text" v-model="form[    'last_name']" autofocus/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-6">
                 <jet-label for="email" value="Email"/>
                 <input id="email" type="email" v-model="form.email" autofocus/>
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
@@ -131,13 +136,14 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services','middle_name'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
         if (!lead) {
             lead = {
                 first_name: null,
+                middle_name: null,
                 last_name: null,
                 email: null,
                 primary_phone: null,//TODO:change to primary/alternate
