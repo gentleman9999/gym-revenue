@@ -5,7 +5,7 @@ import pickBy from "lodash/pickBy";
 import mapValues from "lodash/mapValues";
 
 export const useSearchFilter = (baseRoute, initialState = {}, options = {
-    preserveState: false,
+    preserveState: true,
     preserveScroll: true
 }) => {
     if (!baseRoute) {
