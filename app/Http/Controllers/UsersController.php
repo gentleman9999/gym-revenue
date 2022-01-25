@@ -19,10 +19,8 @@ class UsersController extends Controller
 
     public function index(Request $request)
     {
-        $users = null;
-        if ($request->user()->isClientUser()) {
-            $client_id = $request->user()->currentClientId();
-
+        $client_id = $request->user()->currentClientId();
+        if ($client_id) {
             return Inertia::render('Users/Show', [
                 'users' =>  User::whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
@@ -33,7 +31,7 @@ class UsersController extends Controller
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : []
             ]);
         } else {
-            //cb user
+            //cb team selected
             return Inertia::render('Users/Show', [
                 'users' =>  User::whereHas('teams', function ($query) use ($request) {
                     return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
