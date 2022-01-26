@@ -101,6 +101,21 @@ class User extends Authenticatable
         return !is_null($this->associated_client()->first());
     }
 
+    public function isCapeAndBayUser()
+    {
+        return $this->teams()->get()->contains('id', 1);//ID1 = CapeAndBayAdminTeam
+    }
+
+    /**
+     * If user is AccountOwner of the currentTeam
+     * @return bool
+     */
+    public function isAccountOwner()
+    {
+        $current_team_id = $this->currentTeam()->first()->id;
+        return $this->teams()->get()->keyBy('id')[$current_team_id]->pivot->role === 'Account Owner';
+    }
+
     public function details()
     {
         return $this->hasMany('App\Models\UserDetails', 'user_id', 'id');
@@ -113,7 +128,7 @@ class User extends Authenticatable
 
     public function teams()
     {
-        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
+        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
     }
 
     public function default_team()

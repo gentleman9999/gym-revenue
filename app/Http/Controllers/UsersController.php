@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Jetstream\AddTeamMember;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -17,7 +17,7 @@ class UsersController extends Controller
 {
     protected $rules = [
         'name' => ['required', 'max:50'],
-        'email' => ['required', 'email', 'unique:users,email'],
+        'email' => ['required', 'email'],
         'role' => ['required']
     ];
 
@@ -50,29 +50,37 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
+        if($request->user()->cannot('create', User::class)){
+            abort(403);
+        }
         return Inertia::render('Users/Create', [
         ]);
     }
 
     public function edit($id)
     {
+        if(request()->user()->cannot('update', User::class)){
+            abort(403);
+        }
+        $user = User::with('teams')->findOrFail($id);
         return Inertia::render('Users/Edit', [
-            'selectedUser' => User::find($id)
+            'selectedUser' => $user
         ]);
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate(array_merge($this->rules, ['password' => 'required']));
+        $create_rules = array_merge($this->rules, ['password' => 'required', 'email' => ['required', 'email', 'unique:users,email']]);
+        $data = $request->validate($create_rules);
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
 
         $client_id = $request->user()->currentClientId();
-        if($client_id){
-            UserDetails::create(['user_id' => $user->id, 'name'=> 'associated_client', 'value' => $client_id]);
+        if ($client_id) {
+            UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
         }
         $current_team = $request->user()->currentTeam()->first();
-        UserDetails::create(['user_id' => $user->id, 'name'=> 'default_team', 'value' => $current_team->id]);
+        UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
         $current_team->users()->attach(
             $user, ['role' => $data['role']]
         );
@@ -89,7 +97,10 @@ class UsersController extends Controller
         }
 
         $user = User::findOrFail($id);
-        $user->updateOrFail($request->validate($this->rules));
+        $data = $request->validate($this->rules);
+        $user->updateOrFail($data);
+        $current_team = $request->user()->currentTeam()->first();
+        $user->teams()->sync([$current_team->id => ['role' => $data['role']]]);
         Alert::success("User '{$user->name}' updated")->flash();
 
         return Redirect::route('users');
