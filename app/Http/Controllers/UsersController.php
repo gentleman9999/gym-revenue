@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
@@ -84,6 +85,11 @@ class UsersController extends Controller
         $current_team->users()->attach(
             $user, ['role' => $data['role']]
         );
+        if ($client_id) {
+            $aggy = ClientAggregate::retrieve($client_id);
+            $aggy->addUserToTeam($user->id, $current_team->id, $data['role']);
+            $aggy->persist();
+        }
         Alert::success("User '{$user->name}' was created")->flash();
 
         return Redirect::route('users');
@@ -96,11 +102,19 @@ class UsersController extends Controller
             return Redirect::route('users');
         }
 
-        $user = User::findOrFail($id);
         $data = $request->validate($this->rules);
+        $current_user = $request->user();
+        $user = User::findOrFail($id);
         $user->updateOrFail($data);
-        $current_team = $request->user()->currentTeam()->first();
+        $current_team = $current_user->currentTeam()->first();
+        $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;
         $user->teams()->sync([$current_team->id => ['role' => $data['role']]]);
+        $client_id = $current_user->currentClientId();
+        if ($client_id && $data['role'] !== $old_role) {
+            $aggy = ClientAggregate::retrieve($client_id);
+            $aggy->updateUserRoleOnTeam($user->id, $current_team->id, $old_role, $data['role']);
+            $aggy->persist();
+        }
         Alert::success("User '{$user->name}' updated")->flash();
 
         return Redirect::route('users');

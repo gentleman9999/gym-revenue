@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -60,6 +61,44 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $current_user = request()->user();
+            $client_id = $current_user->currentClientId();
+            if ($client_id) {
+                $aggy = ClientAggregate::retrieve($client_id);
+                $aggy->createUser($user->id, $user->toArray());
+                $aggy->persist();
+            }
+        });
+
+        static::updated(function ($user) {
+            $current_user = request()->user();
+            $client_id = $current_user->currentClientId();
+            if ($client_id) {
+                $aggy = ClientAggregate::retrieve($client_id);
+                $aggy->updateUser($user->id, ['old' => $user->getOriginal(), 'new' => $user->toArray()]);
+                $aggy->persist();
+            }
+        });
+
+        static::deleted(function ($user) {
+            $current_user = request()->user();
+            $client_id = $current_user->currentClientId();
+            if ($client_id) {
+                $aggy = ClientAggregate::retrieve($client_id);
+                $aggy->deleteUser($user->id, $user->toArray());
+                $aggy->persist();
+            }
+        });
+    }
 
     /**
      * Get the current team of the user's context.
