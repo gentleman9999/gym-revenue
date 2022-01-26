@@ -44,6 +44,16 @@ class Team extends JetstreamTeam
         'deleted' => TeamDeleted::class,
     ];
 
+    public function details()
+    {
+        return $this->hasMany('App\Models\TeamDetail', 'team_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasOne('App\Models\TeamDetail', 'team_id', 'id');
+    }
+
     public function client_details()
     {
         return $this->hasMany(ClientDetail::class, 'value',  'id')
@@ -87,4 +97,24 @@ class Team extends JetstreamTeam
 
         return (!is_null($proof));
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            });
+        })->when($filters['club'] ?? null, function ($query, $club_id) {
+            $query->whereHas('teams', function ($query) use ($club_id) {
+                return $query->whereHas('detail', function ($query) use ($club_id) {
+                    return $query->whereName('team-location')->whereValue($club_id);
+                });
+            });
+        })->when($filters['team'] ?? null, function ($query, $team_id) {
+            $query->whereHas('teams', function ($query) use ($team_id) {
+                return $query->whereTeamId($team_id);
+            });
+        });
+    }
+
 }

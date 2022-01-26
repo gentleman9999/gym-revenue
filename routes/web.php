@@ -107,6 +107,23 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group( functio
     Route::delete('/{id}', \App\Http\Controllers\FilesController::class.'@trash')->name('files.trash');
     Route::delete('/{id}/force', \App\Http\Controllers\FilesController::class.'@delete')->name('files.delete');
     Route::post('/{id}/restore', \App\Http\Controllers\FilesController::class.'@restore')->name('files.restore');
+});
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group( function() {
+    Route::get('/', \App\Http\Controllers\UsersController::class.'@index')->name('users');
+    Route::get('/create', \App\Http\Controllers\UsersController::class.'@create')->name('users.create');
+    Route::post('/', \App\Http\Controllers\UsersController::class.'@store')->name('users.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class.'@edit')->name('users.edit');
+    Route::put('/{id}', \App\Http\Controllers\UsersController::class.'@update')->name('users.update');
+    Route::delete('/{id}', \App\Http\Controllers\UsersController::class.'@delete')->name('users.delete');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group( function() {
+    Route::get('/', \App\Http\Controllers\TeamsController::class . '@index')->name('teams');
+    Route::get('/create', \App\Http\Controllers\TeamsController::class . '@create')->name('teams.create');
+    Route::post('/', \App\Http\Controllers\TeamsController::class . '@store')->name('teams.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\TeamsController::class . '@edit')->name('teams.edit');
+    Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('teams.update');
+    Route::delete('/{id}', \App\Http\Controllers\TeamsController::class . '@delete')->name('teams.delete');
 
 });

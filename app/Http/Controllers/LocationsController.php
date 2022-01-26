@@ -9,9 +9,12 @@ use App\Models\TeamDetail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+use Silber\Bouncer\Bouncer;
+
 
 class LocationsController extends Controller
 {
@@ -30,14 +33,13 @@ class LocationsController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
-
         // @todo - insert Bouncer-based ACL here.
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
             $locations = $locations->with('client')
-                ->filter($request->only('search', 'trashed'))
+                ->filter($request->only('search', 'trashed','state'))
                 ->paginate($page_count);
         }
 
@@ -47,12 +49,15 @@ class LocationsController extends Controller
         } else {
             $title = 'All Client Locations';
         }
-
+     $eachstate = Location::select('state')->where('client_id', '=',  ''.$client_id.'')->groupBy('state')->get();
+//dd($eachstate);
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed')
+        //    'user' => $user,
+            'eachstate' => $eachstate,
+            'filters' => $request->all('search', 'trashed','state')
         ]);
     }
 
