@@ -4,7 +4,7 @@ namespace App\StorableEvents\Endusers;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class TrialMembershipAdded extends ShouldBeStored
+class TrialMembershipUsed extends ShouldBeStored
 {
     public $client, $lead, $trial, $date;
 

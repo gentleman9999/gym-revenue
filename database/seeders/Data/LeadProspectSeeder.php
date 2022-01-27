@@ -7,6 +7,7 @@ use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\Service;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -54,7 +55,6 @@ class LeadProspectSeeder extends Seeder
                             $temp_service_ids = [...$service_ids];
 
                             for ($x = 0; $x <= $numServices; $x++) {
-//                            var_dump($temp_service_ids);
                                 $service_index = random_int(0, count($temp_service_ids) - 1);
                                 $services[] = $temp_service_ids[$service_index];
                                 unset($temp_service_ids[$service_index]);
@@ -67,10 +67,21 @@ class LeadProspectSeeder extends Seeder
                                 ->setServices($services, 'Auto Generated')
                                 ->persist();
 
-                            $free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
+                            $lead_type_free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
 
-                            if ($prospect->lead_type_id === $free_trial_id) {
-                                $aggy->addTrialMembership($client->trial_membership_types[random_int(0, count($client->trial_membership_types) - 1)]->id);
+                            if ($prospect->lead_type_id === $lead_type_free_trial_id) {
+                                $trial_id = $client->trial_membership_types[random_int(0, count($client->trial_membership_types) - 1)]->id;
+                                $num_days_ago_trial_started = random_int(-9, -5);
+                                $date_started = Carbon::now()->addDays($num_days_ago_trial_started);
+                                $aggy->addTrialMembership($client->id, $trial_id, $date_started);
+                                $num_times_trial_used = random_int(1, 3);
+                                $date_used = $date_started;
+                                for ($i = 1; $i <= $num_times_trial_used; $i++) {
+                                    $num_days = random_int(1, 3);
+                                    $num_hours = random_int(5, 14);
+                                    $date_used->addDays($num_days)->addHours($num_hours);
+                                    $aggy->useTrialMembership($client->id, $trial_id, $date_used);
+                                }
                                 $aggy->persist();
                             }
 

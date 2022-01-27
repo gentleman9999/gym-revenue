@@ -309,6 +309,8 @@ class LeadsController extends Controller
         $lead_sources = LeadSource::whereClientId($client_id)->get();
         $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
 
+        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
+
         return Inertia::render('Leads/Edit', [
             'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'services', 'profile_picture')->first(),
             'locations' => $locations,
@@ -316,6 +318,7 @@ class LeadsController extends Controller
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
             'available_services' => $available_services,
+            'trial_dates' =>$lead_aggy->trial_dates
         ]);
     }
 
@@ -326,9 +329,11 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
         return Inertia::render('Leads/Show', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first()
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
+            'trial_dates' =>$lead_aggy->trial_dates
         ]);
     }
 

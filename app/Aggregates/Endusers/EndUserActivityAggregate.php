@@ -4,6 +4,7 @@ namespace App\Aggregates\Endusers;
 
 use App\Models\User;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
+use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
@@ -20,10 +21,15 @@ class EndUserActivityAggregate extends AggregateRoot
 {
     protected array $lead = [];
     protected array $audience_subscriptions = [];
+    public array $trial_dates = [];
 
     public function applyNewLeadMade(NewLeadMade $event)
     {
         $this->lead = $event->lead;
+    }
+
+    public function applyTrialMembershipUsed(TrialMembershipUsed $event){
+        $this->trial_dates[] = $event->date;
     }
 
     public function createNewLead(array $lead)
@@ -83,13 +89,20 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
-	public function deleteLead(array $data, string $updating_user){
-      //  dd($data);
-		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
-        return $this;
-	}
 
-    public function addTrialMembership(string $free_trial_id){
-        $this->recordThat(new TrialMembershipAdded($this->uuid(), $free_trial_id));
+    public function deleteLead(array $data, string $updating_user)
+    {
+        $this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
+        return $this;
+    }
+
+    public function addTrialMembership(string $client_id, string $trial_id, $date_started)
+    {
+        $this->recordThat(new TrialMembershipAdded($this->uuid(), $client_id, $trial_id, $date_started));
+    }
+
+    public function useTrialMembership(string $client_id, string $trial_id, $date_used)
+    {
+        $this->recordThat(new TrialMembershipUsed($this->uuid(),$client_id, $trial_id, $date_used));
     }
 }

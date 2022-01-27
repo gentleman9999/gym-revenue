@@ -19,6 +19,7 @@ use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
+use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\UpdateLead;
 use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -236,10 +237,23 @@ class EndUserActivityProjector extends Projector
             'client_id' => $client_id,
             'type_id' => $event->trial,
             'lead_id' => $event->lead,
-            'start_date' => Carbon::now(),
-            'expiry_date' => Carbon::now()->addDays($trial->trial_length),
+            'start_date' => $event->date,
+            'expiry_date' => Carbon::instance(new \DateTime($event->date))->addDays($trial->trial_length),
             'club_id' => $lead->gr_location_id,
             'active' => 1
+        ]);
+    }
+
+    public function onTrialMembershipUsed(TrialMembershipUsed $event)
+    {
+        $lead = Lead::findOrFail($event->lead);
+
+        LeadDetails::create([
+            'client_id' => $event->client,
+            'lead_id' => $event->lead,
+            'field' => 'trial-used',
+            'value' => $event->trial,
+            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
         ]);
     }
 }

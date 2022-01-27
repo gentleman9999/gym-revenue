@@ -9,6 +9,7 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <div class="badge badge-info" v-if="trial_dates?.length">Trial Uses: {{trial_dates?.length || 0}}</div>
                 <lead-form :client-id="this.$page.props.user.current_client_id" :lead="lead" :locations="locations"
                            :lead_types="lead_types" :membership_types="membership_types"
                            :lead_sources="lead_sources" :available_services="available_services"/>
@@ -41,6 +42,6 @@ export default defineComponent({
         JetBarIcon,
         LeadForm,
     },
-    props: ['lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services']
+    props: ['lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services', 'trial_dates']
 })
 </script>

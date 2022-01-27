@@ -10,6 +10,7 @@
                               :details="lead['details_desc']"
                               ref="leadInteractionRef"
                               :selectedLeadDetailIndex="selectedLeadDetailIndex"
+                              :trial_dates="trial_dates"
             />
         </jet-bar-container>
     </app-layout>
@@ -36,6 +37,10 @@ export default defineComponent({
         flash:{
             type: Object
         },
+        trial_dates:{
+            type: Array,
+            default: []
+        }
     },
     setup(props){
         const leadInteractionRef = ref();
