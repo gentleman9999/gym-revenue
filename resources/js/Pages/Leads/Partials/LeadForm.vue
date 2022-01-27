@@ -25,7 +25,7 @@
             </div>
             <div class="form-control col-span-2">
                                 <jet-label for="middle_name" value="Middle Name"/>
-                                <input id="" type="text" :placeholder="this.$page.props.middle_name.value"
+                                <input id="" type="text"
                        v-model="form['middle_name']" autofocus/>
                 <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
 
@@ -138,7 +138,7 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services','middle_name'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
@@ -161,7 +161,8 @@ export default {
             }
             operation = 'Create';
         } else {
-            lead.services = lead.services.map(detail => detail.value)
+            lead.services = lead.services.map(detail => detail.value),
+                lead.middle_name = ''
         }
 
         const form = useForm(lead)
