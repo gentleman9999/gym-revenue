@@ -18,7 +18,8 @@ class TrialMembershipTypeSeeder extends Seeder
     public function run()
     {
         $trial_membership_types = [
-            ['type_name' => 'default_free_trial', 'slug' => 'default-free-trial', 'trial_length' => 14]
+            ['type_name' => 'default_free_trial', 'slug' => 'default-free-trial', 'trial_length' => 14],
+            ['type_name' => 'default_guest_pass', 'slug' => 'default-guest-pass', 'trial_length' => 1]
         ];
 
         $clients = Client::all();
