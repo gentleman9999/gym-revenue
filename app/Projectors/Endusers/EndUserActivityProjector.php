@@ -3,9 +3,11 @@
 namespace App\Projectors\Endusers;
 
 use App\Models\Clients\Features\CommAudience;
+use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\AudienceMember;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
+use App\Models\Endusers\TrialMembership;
 use App\Models\User;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadServicesSet;
@@ -16,7 +18,9 @@ use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
+use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\UpdateLead;
+use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EndUserActivityProjector extends Projector
@@ -25,7 +29,7 @@ class EndUserActivityProjector extends Projector
     {
         $lead = Lead::create($event->lead);
 
-        foreach($event->lead['services'] ?? [] as $service_id){
+        foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([
                     'lead_id' => $event->aggregateRootUuid(),
                     'client_id' => $lead->client_id,
@@ -54,7 +58,7 @@ class EndUserActivityProjector extends Projector
         $user = User::find($event->user);
         $lead->updateOrFail($event->lead);
         LeadDetails::whereLeadId($event->id)->whereField('service_id')->delete();
-        foreach($event->lead['services'] ?? [] as $service_id){
+        foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::firstOrCreate([
                     'lead_id' => $event->aggregateRootUuid(),
                     'client_id' => $lead->client_id,
@@ -205,22 +209,37 @@ class EndUserActivityProjector extends Projector
         }
     }
 
-    public function onLeadWasDeleted(LeadWasDeleted $event){
+    public function onLeadWasDeleted(LeadWasDeleted $event)
+    {
         $lead = Lead::findOrFail($event->lead);
         $client_id = $lead->client_id;
-      //  dd($event->lead);
         $success = $lead->deleteOrFail();
 
-        $uare =	$event->user;
-      //  dd($data, $uare);
+        $uare = $event->user;
 
         LeadDetails::create([
             'client_id' => $client_id,
             'lead_id' => $event->lead,
             'field' => 'softdelete',
             'value' => $uare,
-            'misc' =>  ['userid'=> $uare]
+            'misc' => ['userid' => $uare]
         ]);
 
+    }
+
+    public function onTrialMembershipAdded(TrialMembershipAdded $event)
+    {
+        $lead = Lead::findOrFail($event->lead);
+        $trial = TrialMembershipType::find($event->trial);
+        $client_id = $lead->client_id;
+        TrialMembership::create([
+            'client_id' => $client_id,
+            'type_id' => $event->trial,
+            'lead_id' => $event->lead,
+            'start_date' => Carbon::now(),
+            'expiry_date' => Carbon::now()->addDays($trial->trial_length),
+            'club_id' => $lead->gr_location_id,
+            'active' => 1
+        ]);
     }
 }

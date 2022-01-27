@@ -26,6 +26,7 @@ class LeadProspectSeeder extends Seeder
             ->with('lead_types')
             ->with('lead_sources')
             ->with('membership_types')
+            ->with('trial_membership_types')
             ->get();
 
         $service_ids = Service::all()->pluck('id');
@@ -60,11 +61,18 @@ class LeadProspectSeeder extends Seeder
                                 $temp_service_ids = array_values($temp_service_ids);
                             }
                             // For each fake user, run them through the EnduserActivityAggregate
-                            EndUserActivityAggregate::retrieve($prospect->id)
-                                ->createNewLead($prospect->toArray())
+                            $aggy = EndUserActivityAggregate::retrieve($prospect->id);
+                            $aggy->createNewLead($prospect->toArray())
                                 ->joinAudience('leads', $client->id, Lead::class)
                                 ->setServices($services, 'Auto Generated')
                                 ->persist();
+
+                            $free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
+
+                            if ($prospect->lead_type_id === $free_trial_id) {
+                                $aggy->addTrialMembership($client->trial_membership_types[random_int(0, count($client->trial_membership_types) - 1)]->id);
+                                $aggy->persist();
+                            }
 
                             if (env('SEED_LEAD_DETAILS', false)) {
                                 //only for seeding mass comm lead details for ui dev

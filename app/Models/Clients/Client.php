@@ -3,6 +3,7 @@
 namespace App\Models\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
@@ -50,6 +51,11 @@ class Client extends Model
     public function membership_types()
     {
         return $this->hasMany(MembershipType::class);
+    }
+
+    public function trial_membership_types()
+    {
+        return $this->hasMany(TrialMembershipType::class);
     }
 
     public function detail()

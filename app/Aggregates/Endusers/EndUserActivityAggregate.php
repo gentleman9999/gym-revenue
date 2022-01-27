@@ -3,6 +3,7 @@
 namespace App\Aggregates\Endusers;
 
 use App\Models\User;
+use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
@@ -87,4 +88,8 @@ class EndUserActivityAggregate extends AggregateRoot
 		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
         return $this;
 	}
+
+    public function addTrialMembership(string $free_trial_id){
+        $this->recordThat(new TrialMembershipAdded($this->uuid(), $free_trial_id));
+    }
 }

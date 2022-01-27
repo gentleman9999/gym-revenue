@@ -12,6 +12,7 @@ use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
 use Database\Seeders\Data\MembershipTypeSeeder;
 use Database\Seeders\Data\ServicesSeeder;
+use Database\Seeders\Data\TrialMembershipTypeSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
@@ -67,6 +68,9 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Membership Type Seeder');
         $this->call(MembershipTypeSeeder::class);
+
+        VarDumper::dump('Trial Membership Type Seeder');
+        $this->call(TrialMembershipTypeSeeder::class);
 
         VarDumper::dump('Running Lead Source Seeder');
         $this->call(LeadSourceSeeder::class);
