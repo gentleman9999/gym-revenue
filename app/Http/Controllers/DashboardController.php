@@ -22,6 +22,7 @@ class DashboardController extends Controller
     {
         $team = auth()->user()->currentTeam;
         $client_detail = $team->client_details()->first();
+        $announcements = [];
 
         if(!is_null($client_detail))
         {
@@ -33,6 +34,7 @@ class DashboardController extends Controller
             $account = 'Cape & Bay';
             $clients = $this->clients->all();
             $widgets = $this->service->getDashboardWidgets();
+            $announcements = $this->service->getAppStateAnnouncements();
         }
 
         if(count($clients) > 0)
@@ -48,7 +50,8 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'clients' => $clients,
             'accountName' => $account,
-            'widgets' => $widgets
+            'widgets' => $widgets,
+            'announcements'=> $announcements
         ]);
     }
 }
