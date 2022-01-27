@@ -95,6 +95,11 @@
                 </label>
             </div>
 
+            <div v-if="this.$page.props.middle_name" class="col-span-6" style="text-align: center">
+                Last Updated By {{this.$page.props.middle_name.value}}
+
+            </div>
+
         </template>
 
         <template #actions>
