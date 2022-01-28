@@ -18,6 +18,11 @@
                     />
                 </label>
             </div>
+            <div class="form-control col-span-3" v-if="form['agreement_number']">
+                <jet-label for="first_name" value="Agreement Number"/>
+                <input disabled type="text" v-model="form['agreement_number']" autofocus class="opacity-70"/>
+            </div>
+            <div class="form-divider"/>
             <div class="form-control col-span-3">
                 <jet-label for="first_name" value="First Name"/>
                 <input id="" type="text" v-model="form['first_name']" autofocus/>
@@ -153,7 +158,8 @@ export default {
             }
             operation = 'Create';
         } else {
-            lead.services = lead.services.map(detail => detail.value)
+            lead.services = lead.services.map(detail => detail.value);
+            lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
         }
 
         const form = useForm(lead)
