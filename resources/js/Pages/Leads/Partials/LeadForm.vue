@@ -95,10 +95,6 @@
                 </label>
             </div>
 
-            <div v-if="this.$page.props.middle_name" class="col-span-6" style="text-align: center">
-                Last Updated By {{this.$page.props.middle_name.value}}
-
-            </div>
 
         </template>
 
@@ -131,6 +127,7 @@ import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import {useGoBack} from '@/utils';
+import { usePage } from '@inertiajs/inertia-vue3';
 
 library.add(faUserCircle);
 
@@ -143,10 +140,11 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services','middle_name'],
     setup(props, context) {
+        let midname =  usePage().props.value.middle_name.value;
         let lead = props.lead;
-        let operation = 'Update';
+         let operation = 'Update';
         if (!lead) {
             lead = {
                 first_name: null,
@@ -167,9 +165,8 @@ export default {
             operation = 'Create';
         } else {
             lead.services = lead.services.map(detail => detail.value),
-                lead.middle_name = ''
+                lead.middle_name =  midname
         }
-
         const form = useForm(lead)
         const fileForm = useForm({file:null});
 
@@ -207,7 +204,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         })
-        return {form, fileForm, buttonText: operation, handleSubmit, goBack}
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack,midname }
     },
 }
 </script>
