@@ -10,7 +10,8 @@
                               :details="lead['details_desc']"
                               ref="leadInteractionRef"
                               :selectedLeadDetailIndex="selectedLeadDetailIndex"
-                              :trial_dates="trial_dates"
+                              :trial-dates="trialDates"
+                              :trial-memberships="lead.trial_memberships"
             />
         </jet-bar-container>
     </app-layout>
@@ -24,31 +25,31 @@ import LeadInteraction from "./Partials/LeadInteractionContainer";
 
 
 export default defineComponent({
-    components:{
+    components: {
         AppLayout,
         JetBarContainer,
         LeadInteraction,
     },
     props: {
-        lead:{
-            type:Object,
+        lead: {
+            type: Object,
             required: true
         },
-        flash:{
+        flash: {
             type: Object
         },
-        trial_dates:{
+        trialDates: {
             type: Array,
             default: []
         }
     },
-    setup(props){
+    setup(props) {
         const leadInteractionRef = ref();
         const selectedLeadDetailIndex = props.flash?.selectedLeadDetailIndex;
 
-        watchEffect(()=>{
+        watchEffect(() => {
             leadInteractionRef.value?.goToLeadDetailIndex(props.flash?.selectedLeadDetailIndex);
-        }, );
+        },);
 
 
         return {leadInteractionRef};

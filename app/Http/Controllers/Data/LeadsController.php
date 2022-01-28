@@ -312,13 +312,13 @@ class LeadsController extends Controller
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'services', 'profile_picture')->first(),
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'services', 'profile_picture', 'trialMemberships')->first(),
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
             'available_services' => $available_services,
-            'trial_dates' =>$lead_aggy->trial_dates
+            'trialDates' =>$lead_aggy->trial_dates
         ]);
     }
 
@@ -332,8 +332,8 @@ class LeadsController extends Controller
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
         return Inertia::render('Leads/Show', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
-            'trial_dates' =>$lead_aggy->trial_dates
+            'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
+            'trialDates' =>$lead_aggy->trial_dates
         ]);
     }
 

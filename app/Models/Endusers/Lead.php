@@ -48,6 +48,10 @@ class Lead extends Model
     {
         return $this->hasOne('App\Models\Clients\Client', 'id', 'client_id');
     }
+    public function trialMemberships()
+    {
+        return $this->hasMany(TrialMembership::class)->orderBy('start_date', 'DESC');;
+    }
 
     public function leadType()
     {

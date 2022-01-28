@@ -9,7 +9,8 @@
                         <h1 class="text-center text-2xl">
                             {{ firstName }} {{ lastName }}
                         </h1>
-                        <div class="badge badge-info mt-4" v-if="trial_dates?.length">Trial Uses: {{trial_dates?.length || 0}}</div>
+                        <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
+                        <div class="badge badge-error mt-4" v-if="trialMemberships?.length">Trial Expires: {{new Date(trialMemberships[0].expiry_date).toLocaleString()}}</div>
                     </inertia-link>
 
 
@@ -71,7 +72,7 @@ export default defineComponent({
         FontAwesomeIcon,
         SweetModal
     },
-    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trial_dates'],
+    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships'],
     data() {
         return {
             activeContactMethod: '',
