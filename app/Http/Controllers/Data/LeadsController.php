@@ -141,7 +141,7 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
-
+        $middle_name ='';
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
@@ -152,7 +152,8 @@ class LeadsController extends Controller
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'available_services' => $available_services
+            'available_services' => $available_services,
+            'middle_name' => $middle_name,
         ]);
     }
 
@@ -317,7 +318,7 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
-
+        $middle_names ='';
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
