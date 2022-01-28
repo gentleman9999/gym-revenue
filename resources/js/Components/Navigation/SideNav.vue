@@ -215,7 +215,7 @@
                     :href="route('users')"
                 >
                     <p>
-                        <font-awesome-icon :icon="['fad', 'users']" size="lg" />
+                        <font-awesome-icon :icon="['fad', 'user']" size="lg" />
                         <span>User Management</span>
                     </p>
                 </jet-nav-link>
@@ -296,7 +296,8 @@ import {
     faDumbbell,
     faPaste,
     faSatelliteDish,
-    faUsers
+    faUsers,
+    faUser
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
@@ -313,7 +314,8 @@ library.add(
     faCommentsAlt,
     faCog,
     faFileUpload,
-    faUsers
+    faUsers,
+    faUser
 );
 
 export default defineComponent({
