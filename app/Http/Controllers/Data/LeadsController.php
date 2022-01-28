@@ -141,7 +141,7 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
-
+        $middle_name='';
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
@@ -152,7 +152,8 @@ class LeadsController extends Controller
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'available_services' => $available_services
+            'available_services' => $available_services,
+            'middle_name' => $middle_name
         ]);
     }
 
@@ -349,12 +350,18 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-
+        $middle_name ='';
         $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
         foreach($middle_names as $middle_name){
             //     dd($middle_name);
         }
-
+        /*
+if(!$middle_name){
+    $middle_name ='';
+}else{
+    $middle_name = $middle_name;
+}
+*/
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with('detailsDesc')->first(),
             'middle_name' => $middle_name,
