@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
+use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -26,7 +27,8 @@ class TeamsController extends Controller
             'teams' => Team::filter($request->only('search', 'club', 'team'))
                 ->paginate(10),
             'filters' => $request->all('search', 'club', 'team'),
-            'clubs' => Location::whereClientId($client_id)->get()
+            'clubs' => Location::whereClientId($client_id)->get(),
+            'users' => User::whereClientId($client_id)
             //'teams' => Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'))
         ]);
     }

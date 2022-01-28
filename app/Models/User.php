@@ -116,6 +116,11 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
     }
 
+    public function team_user()
+    {
+        return $this->hasMany('App\Models\TeamUser', 'user_id', 'id');
+    }
+
     public function default_team()
     {
         return $this->detail()->where('name', '=', 'default_team');
