@@ -3,6 +3,7 @@
 namespace App\Aggregates\Endusers;
 
 use App\Models\User;
+use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
@@ -19,6 +20,7 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
 {
+    protected static bool $allowConcurrency = true;
     protected array $lead = [];
     protected array $audience_subscriptions = [];
     public array $trial_dates = [];
@@ -35,6 +37,13 @@ class EndUserActivityAggregate extends AggregateRoot
     public function createNewLead(array $lead)
     {
         $this->recordThat(new NewLeadMade($this->uuid(), $lead));
+
+        return $this;
+    }
+
+    public function createAgreementNumberForLead(string $client_id, string $agreement_number)
+    {
+        $this->recordThat(new AgreementNumberCreatedForLead($this->uuid(),$client_id, $agreement_number));
 
         return $this;
     }

@@ -9,6 +9,7 @@ use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\TrialMembership;
 use App\Models\User;
+use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
@@ -30,6 +31,20 @@ class EndUserActivityProjector extends Projector
     {
         $lead = Lead::create($event->lead);
 
+        LeadDetails::create([
+            'lead_id' => $lead->id,
+            'client_id' => $lead->client_id,
+            'field' => 'created',
+            'value' => $lead->created_at
+        ]);
+
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $lead->client_id,
+            'field' => 'agreement_number',
+            'value' => floor(time()-99999999),
+        ]);
+
         foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([
                     'lead_id' => $event->aggregateRootUuid(),
@@ -49,6 +64,27 @@ class EndUserActivityProjector extends Projector
             'client_id' => $event->lead['client_id'],
             'field' => 'manual_create',
             'value' => $user->email,
+        ]);
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $event->lead['client_id'],
+            'field' => 'created',
+            'value' => Carbon::now()
+        ]);
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $event->lead['client_id'],
+            'field' => 'agreement_number',
+            'value' => floor(time()-99999999),
+        ]);
+    }
+
+    public function onAgreementNumberCreatedForLead(AgreementNumberCreatedForLead $event){
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $event->client,
+            'field' => 'agreement_number',
+            'value' => $event->agreement,
         ]);
     }
 
