@@ -6,7 +6,7 @@
                     <inertia-link :href="route('data.leads.edit', leadId)" class="flex flex-col items-center justify-center">
 
                         <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
-                        <h1 class="text-center text-2xl"> 
+                        <h1 class="text-center text-2xl">
                             {{ firstName }} {{ this.$page.props.middle_name.value }} {{ lastName }}
                         </h1>
                     </inertia-link>
