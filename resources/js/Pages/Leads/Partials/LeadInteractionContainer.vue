@@ -9,6 +9,7 @@
                         <h1 class="text-center text-2xl">
                             {{ firstName }} {{ lastName }}
                         </h1>
+                        <div class="badge badge-success mt-4">Agreement #: {{agreementNum}}</div>
                         <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
                         <div class="badge badge-error mt-4" v-if="trialMemberships?.length">Trial Expires: {{new Date(trialMemberships[0].expiry_date).toLocaleString()}}</div>
                     </inertia-link>
@@ -101,6 +102,9 @@ export default defineComponent({
                 case "sms":
                     return "Text Lead";
             }
+        },
+        agreementNum(){
+            return this.details.find(detail => detail.field==='agreement_number').value;
         }
     },
     methods: {
