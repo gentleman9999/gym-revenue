@@ -89,6 +89,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group( function
         Route::put('/{id}', \App\Http\Controllers\Data\LeadsController::class.'@update')->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class.'@assign')->name('data.leads.assign');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class.'@contact')->name('data.leads.contact');
+        Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class.'@sources')->name('data.leads.sources');
+        Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class.'@updateSources')->name('data.leads.sources.update');
 
    Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class.'@lead_trash')->name('data.leads.trash');
    Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class.'@lead_restore')->name('data.leads.restore');

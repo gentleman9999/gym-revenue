@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
@@ -53,10 +54,10 @@ class LeadsController extends Controller
 
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
 
-        $locations =Location::whereClientId($client_id)->get();
-        $leadsource =LeadSource::whereClientId($client_id)->get();
+        $locations = Location::whereClientId($client_id)->get();
+        $leadsource = LeadSource::whereClientId($client_id)->get();
 
-        $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
 
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
@@ -65,8 +66,8 @@ class LeadsController extends Controller
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('detailsDesc')
-              //  ->with('leadsclaimed')
-                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadsclaimed'))
+                //  ->with('leadsclaimed')
+                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
         }
@@ -75,11 +76,11 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource','leadsclaimed'),
+            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
             'grlocations' => $locations,
             'leadsources' => $leadsource,
-       //     'leadsclaimed' => $claimed
+            //     'leadsclaimed' => $claimed
 
         ]);
     }
@@ -94,10 +95,10 @@ class LeadsController extends Controller
 
         $prospects_model = $this->setUpLeadsObjectclaimed($is_client_user, $client_id);
 
-        $locations =Location::whereClientId($client_id)->get();
-        $leadsource =LeadSource::whereClientId($client_id)->get();
+        $locations = Location::whereClientId($client_id)->get();
+        $leadsource = LeadSource::whereClientId($client_id)->get();
 
-    //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
 
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
@@ -107,7 +108,7 @@ class LeadsController extends Controller
                 ->with('leadSource')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
-                ->filter($request->only('search', 'trashed','typeoflead','createdat','grlocation','leadsource'))
+                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
         }
@@ -116,7 +117,7 @@ class LeadsController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed','typeoflead','createdat','grlocation','leadsource'),
+            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
             'grlocations' => $locations,
             'leadsources' => $leadsource,
@@ -168,7 +169,7 @@ class LeadsController extends Controller
         //TODO:all this stuff should happen synchronously via aggregate
         $lead = $lead_model->create($lead_data);
 
-        foreach($lead_data['services'] ?? [] as $service_id){
+        foreach ($lead_data['services'] ?? [] as $service_id) {
             LeadDetails::create([
                     'lead_id' => $lead->id,
                     'client_id' => $lead->client_id,
@@ -178,7 +179,7 @@ class LeadsController extends Controller
             );
         }
 
-        if(array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']){
+        if (array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']) {
             $file = $lead_data['profile_picture'];
             $destKey = "{$lead_data['client_id']}/{$file['uuid']}";
             Storage::disk('s3')->move($file['key'], $destKey);
@@ -237,8 +238,8 @@ class LeadsController extends Controller
                         ->whereIn('gr_location_id', $team_locations);
                 }
             } else {
-                 $results = Lead::whereClientId($client_id);
-                   }
+                $results = Lead::whereClientId($client_id);
+            }
         }
         return $results;
     }
@@ -271,7 +272,7 @@ class LeadsController extends Controller
                         // example - if there is scoping and this club is not there, don't include it
                         $team_locations[] = $team_locations_record->value;
                     }
-                    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+                    $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
                     $results = Lead::whereClientId($client_id)
                         ->whereIn('gr_location_id', $team_locations)->whereHas('leadsclaimed');
                 }
@@ -318,7 +319,7 @@ class LeadsController extends Controller
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
             'available_services' => $available_services,
-            'trialDates' =>$lead_aggy->trial_dates
+            'trialDates' => $lead_aggy->trial_dates
         ]);
     }
 
@@ -333,7 +334,7 @@ class LeadsController extends Controller
 
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
-            'trialDates' =>$lead_aggy->trial_dates
+            'trialDates' => $lead_aggy->trial_dates
         ]);
     }
 
@@ -347,7 +348,7 @@ class LeadsController extends Controller
 
 //        $data = request()->all();
 
-	//	dd($data);
+        //	dd($data);
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
             ->persist();
@@ -485,25 +486,22 @@ class LeadsController extends Controller
     }
 
 
-
-
-	 public function lead_trash(Request $request,$lead_id)
+    public function lead_trash(Request $request, $lead_id)
     {
         if (!$lead_id) {
             Alert::error("No Lead ID provided")->flash();
             return Redirect::back();
         }
-          $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
-		  $rmlead = EndUserActivityAggregate::retrieve($lead_id);
- //       print_r($lead);
+        $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
+        $rmlead = EndUserActivityAggregate::retrieve($lead_id);
+        //       print_r($lead);
 
-      $rmlead->DeleteLead($lead->toArray() , auth()->user()->id)->persist();
+        $rmlead->DeleteLead($lead->toArray(), auth()->user()->id)->persist();
 //    $rmlead->DeleteLead(request()->all(), auth()->user()->id)->persist();
         Alert::success("Lead $lead->email trashed!")->flash();
-      return Redirect::back();
+        return Redirect::back();
 
     }
-
 
 
     public function lead_restore(Request $request, $id)
@@ -520,13 +518,35 @@ class LeadsController extends Controller
         return Redirect::back();
     }
 
+    public function sources(Request $request)
+    {
+//        dd(LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']));
+        return Inertia::render('Leads/Sources', [
+            'sources' => LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name'])
+        ]);
+    }
 
-
-
-
-
-
-
-
-
+    public function updateSources(Request $request)
+    {
+        $data = request()->validate(['sources' => 'required']);
+        $sources = $data['sources'];
+        $client_id = $request->user()->currentClientId();
+        foreach ($sources as $source) {
+            if ($source['id'] && $source['name']) {
+                $existing_source = LeadSource::find($source['id']);
+                $existing_source->name = $source['name'];
+                $existing_source->save();
+            } elseif ($source['name']) {
+                $new_source = new LeadSource;
+                $new_source->name = $source['name'];
+                $new_source->client_id = $client_id;
+                $new_source->save();
+            }
+        }
+        $new_sources = LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']);
+        ClientAggregate::retrieve($client_id)->updateLeadSources($new_sources->toArray(), $request->user()->id)->persist();
+        Alert::success("Lead Sources updated")->flash();
+//        return Redirect::route('data.leads');
+        return Redirect::back();
+    }
 }
