@@ -6,14 +6,12 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
-use App\Models\Endusers\Service;
 use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -33,9 +31,6 @@ class LeadsController extends Controller
         'lead_source_id' => ['required', 'exists:lead_sources,id'],
         'lead_type_id' => ['required', 'exists:lead_types,id'],
         'membership_type_id' => ['required', 'exists:membership_types,id'],
-        'services' => ['sometimes'],
-        'services.*' => ['required', 'exists:services,id'],
-//        'user_id' => ['sometimes', 'exists:user,id'],
         'client_id' => 'required',
         'profile_picture' => 'sometimes',
         'profile_picture.uuid' => 'sometimes|required',
@@ -145,14 +140,12 @@ class LeadsController extends Controller
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
 
         return Inertia::render('Leads/Create', [
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'available_services' => $available_services
         ]);
     }
 
@@ -168,16 +161,6 @@ class LeadsController extends Controller
 
         //TODO:all this stuff should happen synchronously via aggregate
         $lead = $lead_model->create($lead_data);
-
-        foreach ($lead_data['services'] ?? [] as $service_id) {
-            LeadDetails::create([
-                    'lead_id' => $lead->id,
-                    'client_id' => $lead->client_id,
-                    'field' => 'service_id',
-                    'value' => $service_id
-                ]
-            );
-        }
 
         if (array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']) {
             $file = $lead_data['profile_picture'];
@@ -308,17 +291,15 @@ class LeadsController extends Controller
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $available_services = Service::findMany(ClientDetail::whereActive(1)->whereClientId($client_id)->whereDetail('service_id')->pluck('value'));
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'services', 'profile_picture', 'trialMemberships')->first(),
+            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'profile_picture', 'trialMemberships')->first(),
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'available_services' => $available_services,
             'trialDates' => $lead_aggy->trial_dates
         ]);
     }

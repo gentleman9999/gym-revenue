@@ -11,7 +11,6 @@ use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
 use Database\Seeders\Data\MembershipTypeSeeder;
-use Database\Seeders\Data\ServicesSeeder;
 use Database\Seeders\Data\TrialMembershipTypeSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
@@ -50,9 +49,6 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
-
-        VarDumper::dump('Running Services Seeder');
-        $this->call(ServicesSeeder::class);
 
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);

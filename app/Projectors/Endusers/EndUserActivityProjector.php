@@ -11,7 +11,6 @@ use App\Models\Endusers\TrialMembership;
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
-use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
@@ -223,27 +222,6 @@ class EndUserActivityProjector extends Projector
             ]);
         }
 
-    }
-
-
-    //primarily just unseed for seeder. couldn't get to work otherwise.
-    public function onLeadServicesSet(LeadServicesSet $event)
-    {
-//        $LeadDetails::firstOrCreate();
-        $lead = Lead::find($event->aggregateRootUuid());
-
-        LeadDetails::whereLeadId($lead->id)->whereField('service_id')->delete();
-
-        foreach ($event->serviceIds ?? [] as $service_id) {
-            LeadDetails::firstOrCreate([
-                    'lead_id' => $event->aggregateRootUuid(),
-                    'client_id' => $lead->client_id,
-                    'field' => 'service_id',
-                    'value' => $service_id
-                ]
-            );
-
-        }
     }
 
     public function onLeadWasDeleted(LeadWasDeleted $event)

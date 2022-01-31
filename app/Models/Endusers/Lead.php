@@ -71,11 +71,6 @@ class Lead extends Model
         return $this->hasOne(MembershipType::class, 'id', 'membership_type_id');
     }
 
-    public function services()
-    {
-        return $this->details()->whereField('service_id')->whereActive(1);
-    }
-
     public function profile_picture()
     {
         return $this->detail()->whereField('profile_picture')->whereActive(1);

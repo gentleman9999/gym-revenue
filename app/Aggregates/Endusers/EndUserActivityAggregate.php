@@ -12,7 +12,6 @@ use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
-use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
@@ -90,12 +89,6 @@ class EndUserActivityAggregate extends AggregateRoot
     public function textMessageLead(array $data, string $user)
     {
         $this->recordThat(new LeadWasTextMessagedByRep($this->uuid(), $data, $user));
-        return $this;
-    }
-
-    public function setServices(array $service_ids, string $user)
-    {
-        $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
 
