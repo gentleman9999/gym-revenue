@@ -64,7 +64,7 @@ pipelines:
             - docker
     develop:
       - step:
-          name: Deploy To Staging
+          name: Deploy To Develop
           caches:
             - cposer
             - node
@@ -77,7 +77,7 @@ pipelines:
             - npm install && npm run dev
             - php artisan config:clear
             - vendor/bin/vapor env:pull develop
-            - cp .env.staging .env.pipelines
+            - cp .env.develop .env.pipelines
             - php artisan event-sourcing:clear-event-handlers
             - vendor/bin/vapor deploy develop
           services:
