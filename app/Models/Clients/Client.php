@@ -68,14 +68,14 @@ class Client extends Model
         return $this->detail()->where('detail', '=', 'default-team');
     }
 
-    public function services()
-    {
-        return $this->details()->whereDetail('service_id')->whereActive(1);
-    }
-
     public function teams()
     {
         return $this->details()->whereDetail('team')->whereActive(1);
+    }
+
+    public function services()
+    {
+        return $this->details()->whereDetail('service_slug')->whereActive(1);
     }
 
     /**

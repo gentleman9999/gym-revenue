@@ -2,10 +2,12 @@
 
 namespace App\Projectors\Clients;
 
+use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\ClientService;
 use App\StorableEvents\Clients\Activity\Campaigns\ClientServiceEnabled;
 use App\StorableEvents\Clients\ClientServices\ClientServiceAdded;
 use App\StorableEvents\Clients\ClientServices\ClientServiceDisabled;
+use App\StorableEvents\Clients\ClientServices\ClientServicesSet;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientServicesProjector extends Projector
@@ -17,15 +19,20 @@ class ClientServicesProjector extends Projector
 
     public function onClientServiceEnabled(ClientServiceEnabled $event)
     {
-        $clientService = ClientService::whereClientId($event->client)->whereSlug($event->slug)->findOrFail();
-        $clientService->active = 1;
-        $clientService->save();
+        ClientDetail::firstOrCreate(['clientId' => $event->clientId, 'detail' => 'service_slug', 'value' => $event->slug]);
     }
 
     public function onClientServiceDisabled(ClientServiceDisabled $event)
     {
-        $clientService = ClientService::whereClientId($event->client)->whereSlug($event->slug)->findOrFail();
-        $clientService->active = 0;
-        $clientService->save();
+        ClientDetail::whereClientId($event->clientId)->whereDetail('service_slug')->whereValue($event->slug)->deleteOrFail();
+    }
+
+    public function onClientServicesSet(ClientServicesSet $event)
+    {
+        ClientDetail::whereClientId($event->client)->whereDetail('service_slug')->delete();
+//        dd($event->services);
+        foreach ($event->services as $service_slug) {
+            ClientDetail::create(['client_id' => $event->client, 'detail' => 'service_slug', 'value' => $service_slug]);
+        }
     }
 }

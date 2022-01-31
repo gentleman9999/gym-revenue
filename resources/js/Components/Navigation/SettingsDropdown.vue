@@ -64,6 +64,11 @@
                     </inertia-link>
                 </li>
                 <li>
+                    <inertia-link :href="route('settings')">
+                        Settings
+                    </inertia-link>
+                </li>
+                <li>
                     <!-- @todo - make these dynamic, as some users wont have access -->
                     <inertia-link :href="route('users')">
                         User Management
