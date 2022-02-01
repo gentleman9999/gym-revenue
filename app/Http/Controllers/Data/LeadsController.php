@@ -6,6 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
+use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
@@ -315,7 +316,8 @@ class LeadsController extends Controller
 
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
-            'trialDates' => $lead_aggy->trial_dates
+            'trialDates' => $lead_aggy->trial_dates,
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
         ]);
     }
 

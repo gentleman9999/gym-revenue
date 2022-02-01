@@ -256,6 +256,13 @@ class EndUserActivityProjector extends Projector
             'club_id' => $lead->gr_location_id,
             'active' => 1
         ]);
+        LeadDetails::create([
+            'client_id' => $event->client,
+            'lead_id' => $event->lead,
+            'field' => 'trial-started',
+            'value' => $event->date,
+            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
+        ]);
     }
 
     public function onTrialMembershipUsed(TrialMembershipUsed $event)

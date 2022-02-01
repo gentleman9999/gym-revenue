@@ -73,7 +73,7 @@ export default defineComponent({
         FontAwesomeIcon,
         SweetModal
     },
-    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships'],
+    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes'],
     data() {
         return {
             activeContactMethod: '',

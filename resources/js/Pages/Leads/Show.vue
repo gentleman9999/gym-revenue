@@ -41,7 +41,7 @@ export default defineComponent({
         trialDates: {
             type: Array,
             default: []
-        }
+        },
     },
     setup(props) {
         const leadInteractionRef = ref();
