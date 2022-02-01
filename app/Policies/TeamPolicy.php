@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Clients\Client;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -41,7 +42,8 @@ class TeamPolicy
      */
     public function create(User $user)
     {
-        return true;
+        $can_create_new_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_create_new_teams_for_current_client;
     }
 
     /**

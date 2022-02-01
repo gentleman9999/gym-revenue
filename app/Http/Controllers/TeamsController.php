@@ -51,6 +51,9 @@ class TeamsController extends Controller
         $team = Team::create(
             $request->validate($this->rules)
         );
+        $team->users()->attach(
+            $request->user(), ['role' => 'Admin']
+        );
         Alert::success("Team '{$team->name}' was created")->flash();
 
         return Redirect::route('teams');
