@@ -1,5 +1,5 @@
 <template>
-    <jet-form-section @submitted="handleSubmit">
+    <jet-form-section @submitted="handleSubmit" collapsable>
         <template #title>Services</template>
 
         <template #description> Enable to disable Client Services.</template>

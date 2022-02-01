@@ -29,7 +29,7 @@ class TrialMembershipTypeSeeder extends Seeder
                 TrialMembershipType::create(array_merge($trial_membership_type, [
                     'client_id' => $client->id,
                     'active' => 1,
-                    'locations' => json_encode($client_locations)
+                    'locations' => $client_locations
                 ]));
                 VarDumper::dump("Adding Trial Membership Type {$trial_membership_type['type_name']}");
             }

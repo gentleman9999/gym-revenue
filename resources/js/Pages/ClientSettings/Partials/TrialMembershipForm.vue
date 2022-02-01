@@ -1,5 +1,5 @@
 <template>
-    <jet-form-section @submitted="handleSubmit">
+    <jet-form-section @submitted="handleSubmit" collapsable>
         <template #title>Trial Memberships</template>
 
         <template #description> Configure Trial Memberships</template>
