@@ -509,7 +509,10 @@ class LeadsController extends Controller
 
     public function updateSources(Request $request)
     {
-        $data = request()->validate(['sources' => 'required']);
+        $data = request()->validate([
+            'sources' => 'required',
+            'sources.*.name' => 'required'
+        ]);
         $sources = $data['sources'];
         if (array_key_exists('sources', $data) && is_array($data['sources'])) {
             $sourcesToUpdate = collect($data['sources'])->filter(function ($s) {

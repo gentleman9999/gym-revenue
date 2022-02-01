@@ -6,7 +6,7 @@
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="max-w-md space-y-2">
-                <div v-for="(source, index) in sources">
+                <div v-for="(source, index) in form.sources">
                     <input
                         type="text"
                         v-model="form.sources[index].name"

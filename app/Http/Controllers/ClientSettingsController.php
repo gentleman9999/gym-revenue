@@ -44,7 +44,12 @@ class ClientSettingsController extends Controller
 
     public function updateTrialMembershipTypes()
     {
-        $data = request()->validate(['trialMembershipTypes' => ['sometimes', 'array']]);
+        $data = request()->validate([
+            'trialMembershipTypes' => ['sometimes', 'array'],
+            'trialMembershipTypes.*.type_name' => ['required'],
+            'trialMembershipTypes.*.slug' => ['required'],
+            'trialMembershipTypes.*.trial_length' => ['required'],
+        ]);
         $client_id = request()->user()->currentClientId();
         if (array_key_exists('trialMembershipTypes', $data) && is_array($data['trialMembershipTypes'])) {
             $trialMembershipTypesToUpdate = collect($data['trialMembershipTypes'])->filter(function ($t) {
