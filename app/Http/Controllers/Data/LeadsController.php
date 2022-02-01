@@ -511,21 +511,26 @@ class LeadsController extends Controller
     {
         $data = request()->validate(['sources' => 'required']);
         $sources = $data['sources'];
-        $client_id = $request->user()->currentClientId();
-        foreach ($sources as $source) {
-            if ($source['id'] && $source['name']) {
-                $existing_source = LeadSource::find($source['id']);
-                $existing_source->name = $source['name'];
-                $existing_source->save();
-            } elseif ($source['name']) {
-                $new_source = new LeadSource;
-                $new_source->name = $source['name'];
-                $new_source->client_id = $client_id;
-                $new_source->save();
+        if (array_key_exists('sources', $data) && is_array($data['sources'])) {
+            $sourcesToUpdate = collect($data['sources'])->filter(function ($s) {
+                return $s['id'] !== null && !empty($s['name']);
+            });
+            $sourcesToCreate = collect($data['sources'])->filter(function ($s) {
+                return $s['id'] === null && !empty($s['name']);
+            });
+            $client_id = $request->user()->currentClientId();
+
+            $client_aggy = ClientAggregate::retrieve($client_id);
+
+            foreach ($sourcesToUpdate as $sourceToUpdate) {
+                $client_aggy->updateLeadSource($sourceToUpdate, request()->user()->id);
             }
+            foreach ($sourcesToCreate as $sourceToCreate) {
+                $client_aggy->createLeadSource($sourceToCreate, request()->user()->id);
+            }
+            $client_aggy->persist();
+
         }
-        $new_sources = LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']);
-        ClientAggregate::retrieve($client_id)->updateLeadSources($new_sources->toArray(), $request->user()->id)->persist();
         Alert::success("Lead Sources updated")->flash();
 //        return Redirect::route('data.leads');
         return Redirect::back();
