@@ -42,10 +42,20 @@ class ClientSettingsController extends Controller
         $data = request()->validate(['trialMembershipTypes' => ['sometimes', 'array']]);
         $client_id = request()->user()->currentClientId();
         if (array_key_exists('trialMembershipTypes', $data) && is_array($data['trialMembershipTypes'])) {
+            $trialMembershipTypesToUpdate = collect($data['trialMembershipTypes'])->filter(function ($t) {
+                return $t['id'] !== null;
+            });
+            $trialMembershipTypesToCreate = collect($data['trialMembershipTypes'])->filter(function ($t) {
+                return $t['id'] === null;
+            });
+
             $client_aggy = ClientAggregate::retrieve($client_id);
 
-            foreach ($data['trialMembershipTypes'] as $trialMembershipTypeData) {
+            foreach ($trialMembershipTypesToUpdate as $trialMembershipTypeData) {
                 $client_aggy->updateTrialMembershipType($trialMembershipTypeData, request()->user()->id);
+            }
+            foreach ($trialMembershipTypesToCreate as $trialMembershipTypeData) {
+                $client_aggy->createTrialMembershipType($trialMembershipTypeData, request()->user()->id);
             }
             $client_aggy->persist();
         }

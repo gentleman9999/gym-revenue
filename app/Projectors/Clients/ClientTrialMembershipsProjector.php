@@ -9,6 +9,7 @@ use App\StorableEvents\Clients\Activity\Campaigns\ClientServiceEnabled;
 use App\StorableEvents\Clients\ClientServices\ClientServiceAdded;
 use App\StorableEvents\Clients\ClientServices\ClientServiceDisabled;
 use App\StorableEvents\Clients\ClientServices\ClientServicesSet;
+use App\StorableEvents\Clients\ClientServices\TrialMembershipTypeCreated;
 use App\StorableEvents\Clients\ClientServices\TrialMembershipTypeUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -22,5 +23,16 @@ class ClientTrialMembershipsProjector extends Projector
         $trialMembershipType->trial_length = $event->data['trial_length'];
         $trialMembershipType->locations = $event->data['locations'];
         $trialMembershipType->save();
+    }
+
+    public function onTrialMembershipTypeCreated(TrialMembershipTypeCreated $event)
+    {
+        TrialMembershipType::create([
+            'type_name' => $event->data['type_name'],
+            'slug' => $event->data['slug'],
+            'trial_length' => $event->data['trial_length'],
+            'locations' => $event->data['locations'],
+            'client_id' => $event->client,
+        ]);
     }
 }

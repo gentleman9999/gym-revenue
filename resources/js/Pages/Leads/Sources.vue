@@ -14,13 +14,14 @@
                         class="w-full"
                     />
                 </div>
-                <div class="flex flex-row justify-center py-2"><button type="button" @click="addNewSource">
-                    <font-awesome-icon
-                        icon="plus"
-                        size="2x"
-                        class="opacity-50 hover:opacity-100 transition-opacity"
-                    />
-                </button>
+                <div class="flex flex-row justify-center py-2">
+                    <button type="button" @click="addNewSource">
+                        <font-awesome-icon
+                            icon="plus"
+                            size="2x"
+                            class="opacity-50 hover:opacity-100 transition-opacity"
+                        />
+                    </button>
                 </div>
                 <jet-section-border />
                 <div class="flex flex-row">
@@ -93,9 +94,9 @@ export default defineComponent({
         };
 
         const submitForm = () => {
-            console.log('submitform', form.data());
-            form.post(route('data.leads.sources.update'))
-        }
+            console.log("submitform", form.data());
+            form.post(route("data.leads.sources.update"));
+        };
         return { form, addNewSource, inputs, setItemRef, submitForm };
     },
 });
