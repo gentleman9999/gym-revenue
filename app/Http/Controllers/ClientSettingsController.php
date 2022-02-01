@@ -17,11 +17,12 @@ class ClientSettingsController extends Controller
     public function index()
     {
         $user_id = request()->user()->currentClientId();
-        $client = Client::with(['details', 'trial_membership_types'])->find($user_id);
+        $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($user_id);
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => ClientService::whereClientId($user_id)->get(['feature_name', 'slug', 'id']),
             'services' => $client->services,
-            'trialMembershipTypes' => $client->trial_membership_types
+            'trialMembershipTypes' => $client->trial_membership_types,
+            'locations' => $client->locations
         ]);
     }
 

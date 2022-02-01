@@ -20,6 +20,7 @@
                     <trial-membership-form
                         :user="$page.props.user"
                         :trial-membership-types="trialMembershipTypes"
+                        :locations="locations"
                         v-if="
                             services.filter(
                                 (detail) => detail.value === 'free-trial'
@@ -58,6 +59,9 @@ export default defineComponent({
         trialMembershipTypes: {
             type: Array,
         },
+        locations: {
+            type: Array
+        }
     },
 });
 </script>

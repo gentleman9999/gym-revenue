@@ -20,4 +20,8 @@ class TrialMembershipType extends Model
     protected $fillable = [
        'id', 'client_id', 'type_name', 'slug', 'trial_length', 'locations', 'misc', 'active'
     ];
+
+    protected $casts = [
+        'locations' => 'array'
+    ];
 }
