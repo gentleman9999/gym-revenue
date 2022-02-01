@@ -7,15 +7,27 @@
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div>
-                    <client-services-form :user="$page.props.user" :services="services" :available-services="availableServices"/>
+                    <client-services-form
+                        :user="$page.props.user"
+                        :services="services"
+                        :available-services="availableServices"
+                    />
 
-                    <jet-section-border/>
+                    <jet-section-border />
                 </div>
 
                 <div>
-                    <trial-memberships-form :user="$page.props.user"/>
+                    <trial-membership-form
+                        :user="$page.props.user"
+                        :trial-membership-types="trialMembershipTypes"
+                        v-if="
+                            services.filter(
+                                (detail) => detail.value === 'free-trial'
+                            ).length
+                        "
+                    />
 
-                    <jet-section-border/>
+                    <jet-section-border />
                 </div>
             </div>
         </div>
@@ -23,7 +35,7 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import ClientServicesForm from "./Partials/ClientServicesForm";
@@ -38,11 +50,14 @@ export default defineComponent({
     },
     props: {
         services: {
-            type: Array
+            type: Array,
         },
         availableServices: {
-            type: Array
-        }
-    }
+            type: Array,
+        },
+        trialMembershipTypes: {
+            type: Array,
+        },
+    },
 });
 </script>

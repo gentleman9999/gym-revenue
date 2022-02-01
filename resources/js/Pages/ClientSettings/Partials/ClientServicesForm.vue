@@ -1,6 +1,6 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <template #title> Services</template>
+        <template #title>Services</template>
 
         <template #description> Enable to disable Client Services.</template>
 
@@ -66,7 +66,7 @@ export default defineComponent({
         const form = useForm({
             services: props.services.map(detail => detail.value),
         });
-        let handleSubmit = () => form.post(route('settings.update'));
+        let handleSubmit = () => form.post(route('settings.client-services.update'));
 
         return {form, handleSubmit};
     },

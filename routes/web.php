@@ -131,5 +131,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
-    Route::post('/', \App\Http\Controllers\ClientSettingsController::class . '@update')->name('settings.update');
+    Route::post('/client-services', \App\Http\Controllers\ClientSettingsController::class . '@updateClientServices')->name('settings.client-services.update');
+    Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });

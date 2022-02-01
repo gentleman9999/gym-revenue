@@ -27,7 +27,7 @@ class ClientSeeder extends Seeder
             'FitnessTruth' => 1,
         ];
 
-        $services = [['feature_name' => 'Free Trial/Guest Pass Memberships', 'slug' => 'free_trial']];
+        $services = [['feature_name' => 'Free Trial/Guest Pass Memberships', 'slug' => 'free-trial']];
 
 
         foreach ($clients as $name => $active) {

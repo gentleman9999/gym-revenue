@@ -11,6 +11,7 @@ use App\Aggregates\Clients\Traits\Actions\ClientServicesActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientTeamActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSTemplateActions;
+use App\Aggregates\Clients\Traits\Actions\ClientTrialMembershipActions;
 
 trait ClientActions
 {
@@ -23,4 +24,5 @@ trait ClientActions
     use ClientGatewayActions;
     use ClientLeadActions;
     use ClientServicesActions;
+    use ClientTrialMembershipActions;
 }
