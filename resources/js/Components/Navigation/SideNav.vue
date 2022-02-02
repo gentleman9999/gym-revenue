@@ -209,6 +209,7 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
+                v-if="$page.props.user.permissions['users.read']"
             >
                 <jet-nav-link
                     class="jet-nav-link"
