@@ -1,6 +1,6 @@
 <?php
 
-namespace App\StorableEvents\Clients\ClientServices;
+namespace App\StorableEvents\Clients\TrialMemberships;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
