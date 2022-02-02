@@ -17,7 +17,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->hasTeamPermission($user->currentTeam(), 'delete-users');
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('delete-users', $user->currentTeam()->first());
     }
 
     /**
@@ -44,7 +44,7 @@ class UserPolicy
 // is correct.
     public function create(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->hasTeamPermission($user->currentTeam(), 'create-new-users');
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('create-new-users', $user->currentTeam()->first());
     }
 
     /**
@@ -57,7 +57,7 @@ class UserPolicy
 //    public function update(User $user, User $model)
     public function update(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->hasTeamPermission($user->currentTeam(), 'update-users');
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('update-users', $user->currentTeam()->first());
     }
 
     /**
@@ -70,7 +70,7 @@ class UserPolicy
 //    public function delete(User $user, User $model)
     public function delete(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->hasTeamPermission($user->currentTeam(), 'delete-users');
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('delete-users', $user->currentTeam()->first());
     }
 
     /**
@@ -83,7 +83,7 @@ class UserPolicy
 //    public function restore(User $user, User $model)
     public function restore(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->hasTeamPermission($user->currentTeam(), 'delete-users');
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('delete-users', $user->currentTeam()->first());
     }
 
     /**
@@ -95,7 +95,7 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->hasTeamPermission($user->currentTeam(), 'delete-users');
+        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('delete-users', $user->currentTeam()->first());
     }
 
     /**

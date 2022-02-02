@@ -25,7 +25,7 @@ class AppStateSeeder extends Seeder
             'name' => 'Deployment Log Record',
             'slug' => 'deployment-log-record',
             'desc' => 'This is a record of code deployed on 01-26-2022',
-            'value' => '01-26-2022',
+            'value' => '2022-01-26',
             'misc' => [
                 'buildno' => '20220126',
                 'version' => '0.8.20',
