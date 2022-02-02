@@ -6,9 +6,12 @@ use App\Aggregates\Clients\Traits\Actions\ClientAudienceActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientGatewayActions;
+use App\Aggregates\Clients\Traits\Actions\ClientLeadActions;
+use App\Aggregates\Clients\Traits\Actions\ClientServicesActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientTeamActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSTemplateActions;
+use App\Aggregates\Clients\Traits\Actions\ClientTrialMembershipActions;
 use App\Aggregates\Clients\Traits\Actions\ClientUserActions;
 
 trait ClientActions
@@ -21,4 +24,7 @@ trait ClientActions
     use ClientEmailCampaignActions;
     use ClientAudienceActions;
     use ClientGatewayActions;
+    use ClientLeadActions;
+    use ClientServicesActions;
+    use ClientTrialMembershipActions;
 }
