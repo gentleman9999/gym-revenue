@@ -3,13 +3,15 @@
 namespace App\Aggregates\Endusers;
 
 use App\Models\User;
+use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
+use App\StorableEvents\Endusers\TrialMembershipAdded;
+use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
-use App\StorableEvents\Endusers\LeadServicesSet;
 use App\StorableEvents\Endusers\UpdateLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
@@ -17,17 +19,30 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
 {
+    protected static bool $allowConcurrency = true;
     protected array $lead = [];
     protected array $audience_subscriptions = [];
+    public array $trial_dates = [];
 
     public function applyNewLeadMade(NewLeadMade $event)
     {
         $this->lead = $event->lead;
     }
 
+    public function applyTrialMembershipUsed(TrialMembershipUsed $event){
+        $this->trial_dates[] = $event->date;
+    }
+
     public function createNewLead(array $lead)
     {
         $this->recordThat(new NewLeadMade($this->uuid(), $lead));
+
+        return $this;
+    }
+
+    public function createAgreementNumberForLead(string $client_id, string $agreement_number)
+    {
+        $this->recordThat(new AgreementNumberCreatedForLead($this->uuid(),$client_id, $agreement_number));
 
         return $this;
     }
@@ -77,14 +92,19 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
-    public function setServices(array $service_ids, string $user)
+    public function deleteLead(array $data, string $updating_user)
     {
-        $this->recordThat(new LeadServicesSet($service_ids, $user));
+        $this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
         return $this;
     }
-	public function deleteLead(array $data, string $updating_user){
-      //  dd($data);
-		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
-        return $this;
-	}
+
+    public function addTrialMembership(string $client_id, string $trial_id, $date_started)
+    {
+        $this->recordThat(new TrialMembershipAdded($this->uuid(), $client_id, $trial_id, $date_started));
+    }
+
+    public function useTrialMembership(string $client_id, string $trial_id, $date_used)
+    {
+        $this->recordThat(new TrialMembershipUsed($this->uuid(),$client_id, $trial_id, $date_used));
+    }
 }

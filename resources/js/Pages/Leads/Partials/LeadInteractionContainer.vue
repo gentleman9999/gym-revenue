@@ -4,13 +4,16 @@
             <div class="grid grid-cols-12 w-full gap-4">
                 <div class="col-span-12 lg:col-span-4 flex-shrink-0 bg-base-300 rounded-lg flex flex-col p-4">
                     <inertia-link :href="route('data.leads.edit', leadId)" class="flex flex-col items-center justify-center">
-					
+
                         <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
                         <h1 class="text-center text-2xl">
                             {{ firstName }} {{ lastName }}
                         </h1>
+                        <div class="badge badge-success mt-4">Agreement #: {{agreementNum}}</div>
+                        <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
+                        <div class="badge badge-error mt-4" v-if="trialMemberships?.length">Trial Expires: {{new Date(trialMemberships[0].expiry_date).toLocaleString()}}</div>
                     </inertia-link>
-					
+
 
                     <!--                        <ul class="w-full">-->
                     <!--                            <li class="mb-4"><p><b>Email -</b> {{ email }}</p></li>-->
@@ -70,7 +73,7 @@ export default defineComponent({
         FontAwesomeIcon,
         SweetModal
     },
-    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details'],
+    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes'],
     data() {
         return {
             activeContactMethod: '',
@@ -99,6 +102,9 @@ export default defineComponent({
                 case "sms":
                     return "Text Lead";
             }
+        },
+        agreementNum(){
+            return this.details.find(detail => detail.field==='agreement_number').value;
         }
     },
     methods: {

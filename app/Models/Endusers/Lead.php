@@ -2,6 +2,7 @@
 
 namespace App\Models\Endusers;
 
+use App\Aggregates\Endusers\EndUserActivityAggregate;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ class Lead extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id','client_id','first_name', 'last_name', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
+    protected $fillable = ['id', 'client_id', 'first_name', 'last_name', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
 
     public function details()
     {
@@ -29,6 +30,7 @@ class Lead extends Model
     {
         return $this->details()->orderBy('created_at', 'DESC');
     }
+
     public function detailsAsc()
     {
         return $this->details()->orderBy('created_at', 'ASC');
@@ -49,9 +51,14 @@ class Lead extends Model
         return $this->hasOne('App\Models\Clients\Client', 'id', 'client_id');
     }
 
+    public function trialMemberships()
+    {
+        return $this->hasMany(TrialMembership::class)->orderBy('start_date', 'DESC');;
+    }
+
     public function leadType()
     {
-        return $this->hasOne(LeadType::class,  'id', 'lead_type_id');
+        return $this->hasOne(LeadType::class, 'id', 'lead_type_id');
     }
 
     public function leadSource()
@@ -62,11 +69,6 @@ class Lead extends Model
     public function membershipType()
     {
         return $this->hasOne(MembershipType::class, 'id', 'membership_type_id');
-    }
-
-    public function services()
-    {
-        return $this->details()->whereField('service_id')->whereActive(1);
     }
 
     public function profile_picture()
@@ -81,7 +83,6 @@ class Lead extends Model
     }
 
 
-
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
@@ -94,10 +95,10 @@ class Lead extends Model
                     ->orWhere('gr_location_id', 'like', '%' . $search . '%')
                     ->orWhere('ip_address', 'like', '%' . $search . '%')
                     ->orWhereHas('location', function ($query) use ($search) {
-                        $query->where('name', 'like', '%'.$search.'%');
+                        $query->where('name', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('client', function ($query) use ($search) {
-                        $query->where('name', 'like', '%'.$search.'%');
+                        $query->where('name', 'like', '%' . $search . '%');
                     });
             });
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
@@ -106,31 +107,24 @@ class Lead extends Model
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
-/* created date will need a calendar date picker and the leads need different created_at dates */
+            /* created date will need a calendar date picker and the leads need different created_at dates */
         })->when($filters['createdat'] ?? null, function ($query, $createdat) {
-            $query->where('created_at', 'like', $createdat.'%');
-/* filters for typeoflead the data schema changed so lets get back to this */
+            $query->where('created_at', 'like', $createdat . '%');
+            /* filters for typeoflead the data schema changed so lets get back to this */
         })->when($filters['typeoflead'] ?? null, function ($query, $typeoflead) {
             $query->where('lead_type_id', 'like', $typeoflead);
-/* Filter for Location(s) */
+            /* Filter for Location(s) */
         })->when($filters['grlocation'] ?? null, function ($query, $grlocation) {
-            $query->where('gr_location_id', 'like', $grlocation.'%');
-/* Filter for Lead Sources */
+            $query->where('gr_location_id', 'like', $grlocation . '%');
+            /* Filter for Lead Sources */
         })->when($filters['leadsource'] ?? null, function ($query, $leadsource) {
-            $query->where('lead_source_id', 'like', $leadsource.'%');
-  //          dd($query,$leadsource);
-        })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed)
-        {
+            $query->where('lead_source_id', 'like', $leadsource . '%');
+            //          dd($query,$leadsource);
+        })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed) {
 
- $query->with('leadsclaimed');
+            $query->with('leadsclaimed');
 
         });
-
-
-
-
-
-
     }
 
     /**
@@ -141,12 +135,7 @@ class Lead extends Model
     protected static function booted()
     {
         static::created(function ($lead) {
-            LeadDetails::create([
-                'lead_id' => $lead->id,
-                'client_id' => $lead->client_id,
-                'field' => 'created',
-                'value' => $lead->created_at
-            ]);
+
         });
     }
 

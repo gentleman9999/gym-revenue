@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
-use App\Models\Endusers\Service;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -27,21 +27,17 @@ class ClientSeeder extends Seeder
             'FitnessTruth' => 1,
         ];
 
-        $services = Service::all();
+        $services = [['feature_name' => 'Free Trial/Guest Pass Memberships', 'slug' => 'free-trial']];
 
-        foreach ($clients as $name => $active)
-        {
+
+        foreach ($clients as $name => $active) {
             $client = Client::firstOrCreate([
                 'name' => $name,
                 'active' => $active
             ]);
 
-            foreach($services as $service){
-                ClientDetail::create([
-                    'client_id' => $client->id,
-                    'detail' => 'service_id',
-                    'value' => $service->id
-                ]);
+            foreach ($services as $service) {
+                ClientAggregate::retrieve($client->id)->addClientService($service['feature_name'], $service['slug'], true)->persist();
             }
 
         }

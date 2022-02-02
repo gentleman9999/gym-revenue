@@ -24,6 +24,10 @@ export default {
         details: {
             type: Array,
             required: true
+        },
+        trialMembershipTypes: {
+            type: Array,
+            default: []
         }
     },
     setup(props) {
