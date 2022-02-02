@@ -47,6 +47,7 @@
 
 <script>
 import {defineComponent, ref} from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import UserForm from "./Partials/UserForm";
@@ -65,6 +66,7 @@ export default defineComponent({
     },
     props: ["users", "filters", "clubs", "teams"],
     setup() {
+        const page = usePage();
         const {form, reset} = useSearchFilter('users', {
             team: null,
             club: null
@@ -89,7 +91,11 @@ export default defineComponent({
             restore: false,
             delete: {
                 label: 'Delete',
-                handler: ({data}) => handleClickDelete(data)
+                handler: ({data}) => handleClickDelete(data),
+                shouldRender: ({data}) => page.props.value.user.permissions['users.delete']
+            },
+            edit: {
+                shouldRender: ({data}) => page.props.value.user.permissions['users.update']
             }
         }
         return {
