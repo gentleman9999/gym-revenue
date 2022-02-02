@@ -108,15 +108,10 @@ class EndUserActivityAggregate extends AggregateRoot
     {
         $this->recordThat(new TrialMembershipUsed($this->uuid(),$client_id, $trial_id, $date_used));
     }
-    
+
     public function setServices(array $service_ids, string $user)
     {
         $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
-	public function deleteLead(array $data, string $updating_user){
-      //  dd($data);
-		$this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
-        return $this;
-	}
 }
