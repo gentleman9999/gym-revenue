@@ -91,7 +91,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
-
         Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class . '@lead_trash')->name('data.leads.trash');
         Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class . '@lead_restore')->name('data.leads.restore');
 
@@ -121,14 +120,15 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
-    Route::get('/', \App\Http\Controllers\TeamsController::class . '@index')->name('teams');
-    Route::get('/create', \App\Http\Controllers\TeamsController::class . '@create')->name('teams.create');
-    Route::post('/', \App\Http\Controllers\TeamsController::class . '@store')->name('teams.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\TeamsController::class . '@edit')->name('teams.edit');
-    Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
-    Route::delete('/{id}', \App\Http\Controllers\TeamsController::class . '@delete')->name('team.delete');
+    Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
+    Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
+    Route::post('/', \App\Http\Controllers\TeamController::class . '@store')->name('teams.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
+//    for some reason, the commented route below gets overridden by the default teams route
+//    Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('teams.update');
+    Route::put('/update/{id}', \App\Http\Controllers\TeamController::class . '@update')->name('teams.update');
+    Route::delete('/{id}', \App\Http\Controllers\TeamController::class . '@delete')->name('teams.delete');
 });
-
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
     Route::post('/client-services', \App\Http\Controllers\ClientSettingsController::class . '@updateClientServices')->name('settings.client-services.update');

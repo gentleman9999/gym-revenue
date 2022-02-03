@@ -8,7 +8,8 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <create-team-form />
+<!--                <create-team-form />-->
+                <team-form/>
             </div>
         </div>
     </app-layout>
@@ -18,11 +19,13 @@
     import { defineComponent } from 'vue'
     import AppLayout from '@/Layouts/AppLayout'
     import CreateTeamForm from '@/Pages/Teams/Partials/CreateTeamForm'
+    import TeamForm from '@/Pages/Teams/Partials/TeamForm'
 
     export default defineComponent({
         components: {
             AppLayout,
             CreateTeamForm,
+            TeamForm
         },
     })
 </script>

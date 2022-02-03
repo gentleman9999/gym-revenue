@@ -61,6 +61,11 @@ class Team extends JetstreamTeam
             ->with('client');
     }
 
+    public function locations()
+    {
+        return $this->details()->whereName('team-location');
+    }
+
     public function default_team_details()
     {
         return $this->hasOne(ClientDetail::class, 'value',  'name')

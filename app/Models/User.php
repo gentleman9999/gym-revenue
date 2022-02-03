@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class User extends Authenticatable
 {
@@ -21,6 +23,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use HasTeams;
     use Notifiable;
+    use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
 
     /**
@@ -70,27 +73,29 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            $current_user = request()->user() ?? $user;
-            $client_id = $current_user->currentClientId();
-            if ($client_id) {
-                $aggy = ClientAggregate::retrieve($client_id);
+            $client = $user->client();
+//            $current_user = request()->user();
+            if ( $client ) {
+//                $client_id = $current_user->currentClientId();
+
+                $aggy = ClientAggregate::retrieve($client->id);
                 $aggy->createUser($user->id, $user->toArray());
                 $aggy->persist();
             }
         });
 
         static::updated(function ($user) {
-            $current_user = request()->user() ?? $user;
+            $current_user = request()->user();
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
-                $aggy->updateUser($user->id, ['old' => $user->getOriginal(), 'new' => $user->toArray()]);
-                $aggy->persist();
+//                $aggy->updateUser($user->id, ['old' => $user->getOriginal(), 'new' => $user->toArray()]);
+//                $aggy->persist();
             }
         });
 
         static::deleted(function ($user) {
-            $current_user = request()->user() ?? $user;
+            $current_user = request()->user();
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
@@ -140,6 +145,12 @@ class User extends Authenticatable
         return !is_null($this->associated_client()->first());
     }
 
+    public function client()
+    {
+        $associated_client = $this->associated_client()->first();
+        return Client::find($associated_client);
+    }
+
     public function isCapeAndBayUser()
     {
         return $this->teams()->get()->contains('id', 1);//ID1 = CapeAndBayAdminTeam
@@ -152,7 +163,8 @@ class User extends Authenticatable
     public function isAccountOwner()
     {
         $current_team_id = $this->currentTeam()->first()->id;
-        return $this->teams()->get()->keyBy('id')[$current_team_id]->pivot->role === 'Account Owner';
+        $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
+        return $current_team ?  $current_team->pivot->role === 'Account Owner' : false;
     }
 
     public function details()
@@ -168,11 +180,6 @@ class User extends Authenticatable
     public function teams()
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
-    }
-
-    public function team_user()
-    {
-        return $this->hasMany('App\Models\TeamUser', 'user_id', 'id');
     }
 
     public function default_team()
