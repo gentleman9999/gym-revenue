@@ -17,7 +17,7 @@ environments:
             - 'php artisan event:cache'
             - 'npm ci && npm run prod && rm -rf node_modules'
     staging:
-        domain: grp-dev.capeandbay.com
+        domain: grp-stage.capeandbay.com
         memory: 1024
         cli-memory: 512
         database: mango
@@ -27,6 +27,21 @@ environments:
         queues:
             - grp-staging-events
             - grp-staging-jobs
+        build:
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
+            - 'php artisan event:cache'
+            - 'npm ci && npm run dev && rm -rf node_modules'
+    develop:
+        domain: grp-dev.capeandbay.com
+        memory: 1024
+        cli-memory: 512
+        database: mango
+        cache: gr-prototype
+        storage: gymrevenue-dev
+        runtime: docker
+        queues:
+            - grp-develop-events
+            - grp-develop-jobs
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'

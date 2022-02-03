@@ -4,9 +4,10 @@ namespace Database\Seeders\Data;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Clients\Client;
+use App\Models\Clients\Features\ClientService;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
-use App\Models\Endusers\Service;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -26,9 +27,8 @@ class LeadProspectSeeder extends Seeder
             ->with('lead_types')
             ->with('lead_sources')
             ->with('membership_types')
+            ->with('trial_membership_types')
             ->get();
-
-        $service_ids = Service::all()->pluck('id');
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -48,23 +48,30 @@ class LeadProspectSeeder extends Seeder
                             $prospect->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
                             $prospect->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
                             $prospect->lead_source_id = $client->lead_sources[random_int(1, count($client->lead_sources) - 1)]->id;
-                            $numServices = random_int(0, 4);
-                            $services = [];
-                            $temp_service_ids = [...$service_ids];
 
-                            for ($x = 0; $x <= $numServices; $x++) {
-//                            var_dump($temp_service_ids);
-                                $service_index = random_int(0, count($temp_service_ids) - 1);
-                                $services[] = $temp_service_ids[$service_index];
-                                unset($temp_service_ids[$service_index]);
-                                $temp_service_ids = array_values($temp_service_ids);
-                            }
                             // For each fake user, run them through the EnduserActivityAggregate
-                            EndUserActivityAggregate::retrieve($prospect->id)
-                                ->createNewLead($prospect->toArray())
+                            $aggy = EndUserActivityAggregate::retrieve($prospect->id);
+                            $aggy->createNewLead($prospect->toArray())
                                 ->joinAudience('leads', $client->id, Lead::class)
-                                ->setServices($services, 'Auto Generated')
                                 ->persist();
+
+                            $lead_type_free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
+
+                            if ($prospect->lead_type_id === $lead_type_free_trial_id) {
+                                $trial_id = $client->trial_membership_types[random_int(0, count($client->trial_membership_types) - 1)]->id;
+                                $num_days_ago_trial_started = random_int(-9, -5);
+                                $date_started = Carbon::now()->addDays($num_days_ago_trial_started);
+                                $aggy->addTrialMembership($client->id, $trial_id, $date_started);
+                                $num_times_trial_used = random_int(1, 3);
+                                $date_used = $date_started;
+                                for ($i = 1; $i <= $num_times_trial_used; $i++) {
+                                    $num_days = random_int(1, 3);
+                                    $num_hours = random_int(5, 14);
+                                    $date_used->addDays($num_days)->addHours($num_hours);
+                                    $aggy->useTrialMembership($client->id, $trial_id, $date_used);
+                                }
+                                $aggy->persist();
+                            }
 
                             if (env('SEED_LEAD_DETAILS', false)) {
                                 //only for seeding mass comm lead details for ui dev

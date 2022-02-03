@@ -26,10 +26,9 @@
         <footer class="bg-base-200 p-4 text-gray-400">
             <div class="text-muted ml-auto mr-auto text-center">
                 <div class="inner-footer">
-                    <b>
-                    <small><i class="fal fa-copyright"></i>2021. Cape & Bay. All Rights Reserved. </small></b>
+                    <small><b>CONCEPTUAL PROTOTYPE</b> | v.<b>{!! env('APP_VERSION') !!}</b> | Build <b>{!! env('APP_BUILD') !!}</b></small> | <b><small>© 2022 GymRevenue.</small></b>
                     <br />
-                    <small><b>CONCEPTUAL PROTOTYPE</b> | v.<b>{!! env('APP_VERSION') !!}</b>| Build <b>{!! env('APP_BUILD') !!}</b></small>
+                    <b><small>GymRevenue is a Registered Trademark of <a href="https://capeandbay.com" target="_blank">Cape & Bay, LLC</a>. All Rights Reserved. </small></b>
                 </div>
             </div>
         </footer>
