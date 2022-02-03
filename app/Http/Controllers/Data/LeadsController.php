@@ -18,6 +18,7 @@ use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 
@@ -441,6 +442,13 @@ class LeadsController extends Controller
             if (array_key_exists('method', request()->all())) {
                 $aggy = EndUserActivityAggregate::retrieve($lead_id);
                 $data = request()->all();
+
+                $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
+                foreach ($aggy->getAppliedEvents() as $value) {
+                    $contains = Str::contains(get_class($value), ['LeadWasCalled', 'LeadWasTextMessaged', 'LeadWasEmailed']);
+                    if($contains) $data['interaction_count']++;
+                }
+
                 switch (request()->get('method')) {
                     case 'email':
                         $aggy->emailLead($data, auth()->user()->id)->persist();
