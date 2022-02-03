@@ -64,6 +64,34 @@
             <h1 class="">Reply</h1>
             <sms-comms-action :lead-id="detail.lead_id" hide-help-text @done="$emit('done')"/>
         </div>
+        <div class="form-control" v-if="detail.field === 'trial-used'">
+            <label class="label">
+                <span class="label-text">Trial Membership</span>
+            </label>
+            <div type="text" readonly class="textarea textarea-ghost h-full" style="height:100%;">
+                {{ trialMembershipTypes.find(trial=>trial.id === detail.misc.trial_id).type_name }}
+            </div>
+            <label class="label">
+                <span class="label-text">Duration</span>
+            </label>
+            <div type="text" readonly class="textarea textarea-ghost h-full" style="height:100%;">
+                {{ trialMembershipTypes.find(trial=>trial.id === detail.misc.trial_id).trial_length }}
+            </div>
+        </div>
+        <div class="form-control" v-if="detail.field === 'trial-started'">
+            <label class="label">
+                <span class="label-text">Trial Membership</span>
+            </label>
+            <div type="text" readonly class="textarea textarea-ghost h-full" style="height:100%;">
+                {{ trialMembershipTypes.find(trial=>trial.id === detail.misc.trial_id).type_name }}
+            </div>
+            <label class="label">
+                <span class="label-text">Duration</span>
+            </label>
+            <div type="text" readonly class="textarea textarea-ghost h-full" style="height:100%;">
+                {{ trialMembershipTypes.find(trial=>trial.id === detail.misc.trial_id).trial_length }}
+            </div>
+        </div>
     </div>
 </template>
 <style scoped>
@@ -87,6 +115,7 @@
 </style>
 <script>
 import {computed} from 'vue';
+import {usePage} from "@inertiajs/inertia-vue3";
 import EmailCommsAction from "./EmailCommsAction";
 import PhoneCommsAction from "./PhoneCommsAction";
 import SmsCommsAction from "./SmsCommsAction";
@@ -101,6 +130,9 @@ export default {
     },
     emits: ['done'],
     setup(props) {
+        const page = usePage();
+        const trialMembershipTypes = page.props.value.trialMembershipTypes;
+
         const heading = computed(() => {
             switch (props.detail.field) {
                 case "called_by_rep":
@@ -117,6 +149,10 @@ export default {
                     return 'Lead Updated';
                 case "manual_create":
                     return "Lead Manually Created in Gym Revenue";
+                case "trial-started":
+                    return "Trial Started";
+                case 'trial-used':
+                    return "Trial Used";
                 default:
                     console.error('what is this field?!?!', props.detail.field);
                     break;
@@ -144,7 +180,7 @@ export default {
             return new Date(props.detail.created_at).toLocaleString();
         })
 
-        return {heading, date, outcome}
+        return {heading, date, outcome, trialMembershipTypes}
     }
 }
 </script>

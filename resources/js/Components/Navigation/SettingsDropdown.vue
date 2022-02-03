@@ -63,6 +63,11 @@
                         Profile
                     </inertia-link>
                 </li>
+                <li v-if="showClientSettings">
+                    <inertia-link :href="route('settings')">
+                        Settings
+                    </inertia-link>
+                </li>
                 <li>
                     <!-- @todo - make these dynamic, as some users wont have access -->
                     <inertia-link :href="route('users')">
@@ -105,7 +110,7 @@
             <div class="border-t border-base-100-100"></div>
             <ul class="menu compact">
                 <li>
-                        <inertia-link href="#" @click="logout"> Log Out</inertia-link>
+                    <inertia-link href="#" @click="logout"> Log Out</inertia-link>
                 </li>
             </ul>
         </template>
@@ -113,7 +118,8 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import {defineComponent, computed} from "vue";
+import {usePage} from "@inertiajs/inertia-vue3";
 import JetDropdown from "@/Components/Dropdown";
 
 export default defineComponent({
@@ -124,6 +130,11 @@ export default defineComponent({
         logout: {
             type: Function
         }
+    },
+    setup() {
+        const page = usePage();
+        const showClientSettings = computed(() => page.props.value.user.current_client_id);
+        return {showClientSettings};
     }
 });
 </script>
