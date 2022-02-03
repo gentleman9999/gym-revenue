@@ -18,6 +18,11 @@
                     />
                 </label>
             </div>
+            <div class="form-control col-span-3" v-if="form['agreement_number']">
+                <jet-label for="first_name" value="Agreement Number"/>
+                <input disabled type="text" v-model="form['agreement_number']" autofocus class="opacity-70"/>
+            </div>
+            <div class="form-divider"/>
             <div class="form-control col-span-3">
                 <jet-label for="first_name" value="First Name"/>
                 <input id="" type="text" v-model="form['first_name']" autofocus/>
@@ -80,13 +85,6 @@
                 </select>
                 <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
             </div>
-            <div class="form-divider"><span>Services</span></div>
-            <div v-for="(service, i) in available_services" class="form-control col-span-3">
-                <label class="label cursor-pointer justify-start gap-4">
-                    <input type="checkbox" :value="service.id" v-model="form['services']"/>
-                    <span>{{ service.name }}</span>
-                </label>
-            </div>
 
         </template>
 
@@ -131,7 +129,7 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
@@ -148,12 +146,11 @@ export default {
                 lead_type_id: null,
                 membership_type_id: null,
                 lead_source_id: null,
-                services: [],
                 profile_picture: null
             }
             operation = 'Create';
         } else {
-            lead.services = lead.services.map(detail => detail.value)
+            lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
         }
 
         const form = useForm(lead)

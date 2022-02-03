@@ -14,9 +14,12 @@ trait ClientTeamActions
 {
     public function createDefaultTeam(string $name)
     {
-        if (!empty($this->default_team)) {
+        if(!empty($this->default_team))
+        {
             throw ClientAccountException::defaultTeamAlreadyCreated($this->default_team);
-        } else {
+        }
+        else
+        {
             $this->recordThat(new DefaultClientTeamCreated($this->uuid(), $name));
         }
 
@@ -25,9 +28,11 @@ trait ClientTeamActions
 
     public function addTeam(string $team_id, string $team_name)
     {
-        if (array_key_exists($team_id, $this->teams)) {
+        if(array_key_exists($team_id, $this->teams))
+        {
             throw ClientAccountException::teamAlreadyAssigned($team_name);
-        } else {
+        }
+        else {
             // @todo - make sure the team is not assigned to another client
             $this->recordThat(new TeamCreated($this->uuid(), $team_id, $team_name));
         }
@@ -40,9 +45,11 @@ trait ClientTeamActions
             ->whereName('default_team')
             ->whereValue(1)->get();
 
-        if (count($users) > 0) {
+        if(count($users) > 0)
+        {
             $payload = [];
-            foreach ($users as $user) {
+            foreach($users as $user)
+            {
                 $payload[] = $user->user_id;
             }
 

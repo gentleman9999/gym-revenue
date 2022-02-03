@@ -45,5 +45,20 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 02-02-2022',
+            'value' => '2022-02-02',
+            'misc' => [
+                'buildno' => '20220202',
+                'version' => '0.9.22',
+                'notes' => [
+                    'Create Users and provide the basic info for their account in Account Management',
+                    'You can assign a role to the user you are creating.'
+                ]
+            ]
+        ]);
     }
 }
