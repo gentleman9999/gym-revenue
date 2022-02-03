@@ -61,6 +61,21 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
                 ]
             );
         }
+
+        if(array_key_exists('middle_name', $event->lead)){
+            $middle_name= $event->lead['middle_name'];
+            LeadDetails::create([
+                    'lead_id' => $event->lead['id'],
+                    'client_id' => $event->lead['client_id'],
+                    'field' => 'middle_name',
+                    'value' => $middle_name,
+                    'misc' => ['user' => $event->user ]
+                ]
+            );
+        }
+
+
+
     }
 
     public function onUpdateLead(UpdateLead $event)
@@ -79,5 +94,21 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
             $profile_picture->misc =  $file;
             $profile_picture->save();
         }
+
+
+
+        if(array_key_exists('middle_name', $event->lead)){
+            $middle_name= $event->lead['middle_name'];
+            LeadDetails::create([
+                    'lead_id' => $event->id,
+                    'client_id' => $event->lead['client_id'],
+                    'field' => 'middle_name',
+                    'value' => $middle_name,
+                    'misc' => ['user' => $event->user ]
+                ]
+            );
+        }
+
+
     }
 }
