@@ -124,6 +124,7 @@ import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import {useGoBack} from '@/utils';
+import { usePage } from '@inertiajs/inertia-vue3';
 
 library.add(faUserCircle);
 
