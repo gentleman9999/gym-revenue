@@ -23,7 +23,29 @@ class EndUserActivityAggregate extends AggregateRoot
     protected static bool $allowConcurrency = true;
     protected array $lead = [];
     protected array $audience_subscriptions = [];
+    protected int $interaction_count = 0;
+    protected int $interaction_called_count = 0;
+    protected int $interaction_emailed_count = 0;
+    protected int $interaction_text_messaged_count = 0;
     public array $trial_dates = [];
+
+    public function applyLeadWasCalledByRep(LeadWasCalledByRep $event)
+    {
+        $this->interaction_count += ($event->data['interaction_count'] ?? 1);
+        $this->interaction_called_count++;
+    }
+
+    public function applyLeadWasEmailedByRep(LeadWasEmailedByRep $event)
+    {
+        $this->interaction_count += ($event->data['interaction_count'] ?? 1);
+        $this->interaction_emailed_count++;
+    }
+
+    public function applyLeadWasTextMessagedByRep(LeadWasTextMessagedByRep $event)
+    {
+        $this->interaction_count += ($event->data['interaction_count'] ?? 1);
+        $this->interaction_text_messaged_count++;
+    }
 
     public function applyNewLeadMade(NewLeadMade $event)
     {
