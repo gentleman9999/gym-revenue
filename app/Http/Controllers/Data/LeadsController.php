@@ -26,6 +26,7 @@ class LeadsController extends Controller
 {
     protected $rules = [
         'first_name' => ['required', 'max:50'],
+        'middle_name' => [],
         'last_name' => ['required', 'max:30'],
         'email' => ['required', 'email:rfc,dns'],
         'primary_phone' => ['sometimes'],
@@ -139,7 +140,7 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
-
+        $middle_name='';
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
@@ -149,6 +150,7 @@ class LeadsController extends Controller
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
+            'middle_name' => $middle_name
         ]);
     }
 
@@ -180,6 +182,19 @@ class LeadsController extends Controller
                 ]
             );
         }
+
+        if(array_key_exists('middle_name',  $lead_data)){
+            $middle_name=  $lead_data['middle_name'];
+            LeadDetails::create([
+                    'lead_id' => $lead->id,
+                    'client_id' =>  $lead->client_id,
+                    'field' => 'middle_name',
+                    'value' => $middle_name,
+                    'misc' => ['user' => $user_id ]
+                ]
+            );
+        }
+
 
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 
@@ -294,6 +309,12 @@ class LeadsController extends Controller
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $middle_name = '';
+        $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
+//dd($middle_names);
+        foreach($middle_names as $middle_name){
+        //    dd($middle_name);
+    }
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
@@ -304,6 +325,7 @@ class LeadsController extends Controller
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
             'trialDates' => $lead_aggy->trial_dates
+            'middle_name' => $middle_name,
         ]);
     }
 
@@ -314,11 +336,21 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
-
+        $middle_name ='';
+        $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
+        foreach($middle_names as $middle_name){
+            //     dd($middle_name);
+        }
+        /*
+if(!$middle_name){
+    $middle_name ='';
+}else{
+    $middle_name = $middle_name;
+}
+*/
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
-            'trialDates' => $lead_aggy->trial_dates,
+            'middle_name' => $middle_name,
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
         ]);
     }
