@@ -56,7 +56,13 @@ class AppStateSeeder extends Seeder
                 'version' => '0.9.22',
                 'notes' => [
                     'Create Users and provide the basic info for their account in Account Management',
-                    'You can assign a role to the user you are creating.'
+                    'You can assign a role to the user you are creating.',
+                    'You can see how many times A Lead\'s free trial pass was used.',
+                    'You can see when a lead\'s free trial expires',
+                    'Agreement #s are generated everytime a lead is created',
+                    'Agreement #s can be viewed in the lead editor or Sales Rep view',
+                    'Lead Sources Management Page was created and is accessible in the Leads List View in the toolbar',
+                    'Free Trial management is available in the settings menu inside of any client.'
                 ]
             ]
         ]);
