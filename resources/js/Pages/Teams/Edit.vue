@@ -34,7 +34,6 @@
 <script>
 import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
-import DeleteTeamForm from "@/Pages/Teams/Partials/DeleteTeamForm";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import TeamMemberManager from "@/Pages/Teams/Partials/TeamMemberManager";
 import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm";
@@ -45,7 +44,6 @@ export default defineComponent({
 
     components: {
         AppLayout,
-        DeleteTeamForm,
         JetSectionBorder,
         TeamMemberManager,
         UpdateTeamNameForm,
