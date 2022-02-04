@@ -31,19 +31,11 @@ class LocationsController extends Controller
     //
     public function index(Request $request)
     {
-        //Setting bouncer permissions for leads
-        if(request()->user()->isAn('Admin', 'Location Manager')) {
-            request()->user()->allow('create', Location::class);
-            request()->user()->allow('view', Location::class);
-            request()->user()->allow('edit', Location::class);
-            request()->user()->allow('trash', Location::class);
-        } else {
-            request()->user()->allow('view', Location::class);
-            request()->user()->disallow('create', Location::class);
-            request()->user()->disallow('edit', Location::class);
-            request()->user()->disallow('trash', Location::class);
+        if(request()->user()->cannot('view', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
         }
-
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
@@ -75,6 +67,12 @@ class LocationsController extends Controller
 
     public function create()
     {
+        if(request()->user()->cannot('create', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         return Inertia::render('Locations/Create', [
 //            'locations' => Location::all(),
         ]);
@@ -82,6 +80,12 @@ class LocationsController extends Controller
 
     public function edit($id)
     {
+        if(request()->user()->cannot('edit', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
@@ -119,6 +123,12 @@ class LocationsController extends Controller
 
     public function trash($id)
     {
+        if(request()->user()->cannot('trash', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::route('locations');
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');

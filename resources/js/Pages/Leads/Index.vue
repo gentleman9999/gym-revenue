@@ -206,9 +206,12 @@ export default defineComponent({
                     } else {
                         return false;
                     }
-
                 },
-
+            },
+            edit: {
+                shouldRender: ({data}) => {
+                    return props.user.permissions['leads.edit']
+                },
             },
         };
 

@@ -44,6 +44,18 @@ class ClientUserSeeder extends UserSeeder
                 'client' => 'Bodies By Brett',
             ],
             [
+                'name' => 'Jane Milam',
+                'email' => 'jmilam@capeandbay.com',
+                'role' => 'Sales Rep',
+                'client' => 'Bodies By Brett',
+            ],
+            [
+                'name' => 'Bob Johnny',
+                'email' => 'bjohnny@capeandbay.com',
+                'role' => 'Employee',
+                'client' => 'Bodies By Brett',
+            ],
+            [
                 'name' => 'Arga Barkbark',
                 'email' => 'agabla@scifipurplegyms.com',
                 'role' => 'Account Owner',

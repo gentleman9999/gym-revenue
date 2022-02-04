@@ -44,11 +44,11 @@ class LeadsController extends Controller
 
     public function index(Request $request)
     {
-        //Setting bouncer permissions for leads
-        if(request()->user()->isAn('Sales Rep', 'Location Manager')) {
-            request()->user()->allow('contact', Lead::class);
+        if(request()->user()->cannot('view', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
         }
-
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
@@ -277,14 +277,13 @@ class LeadsController extends Controller
 
     public function edit($lead_id)
     {
-        // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
+        if(request()->user()->cannot('view', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         if (!$lead_id) {
             Alert::error("Access Denied or Lead does not exist")->flash();
-            return Redirect::route('data.leads');
-        }
-
-        if(request()->user()->isNotAn('Sales Rep', 'Location Manager')) {
-            Alert::error('Only Sales Reps and Location Managers can access leads.')->flash();
             return Redirect::route('data.leads');
         }
 

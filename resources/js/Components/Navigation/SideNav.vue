@@ -68,7 +68,7 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null"
+                v-if="$page.props.user.current_client_id !== null && $page.props.user.permissions['view.todo.list']"
             >
                 <jet-nav-link
                     class="jet-nav-link"
@@ -133,29 +133,6 @@
             </div>
             -->
 
-            <!-- Workout Generator Preview -->
-            <div
-                :class="
-                    route().current('workout-generator')
-                        ? 'bg-primary'
-                        : 'bg-transparent'
-                "
-                class="nav-link-container"
-            >
-                <jet-nav-link
-                    class="jet-nav-link"
-                    :href="route('workout-generator')"
-                >
-                    <p>
-                        <font-awesome-icon
-                            :icon="['fad', 'calendar-alt']"
-                            size="lg"
-                        />
-                        Workout Generator
-                    </p>
-                </jet-nav-link>
-            </div>
-
             <!-- Mass Communicator -->
             <div
                 :class="
@@ -185,7 +162,7 @@
                     route().current('files') ? 'bg-primary' : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null"
+                v-if="$page.props.user.current_client_id !== null && $page.props.user.permissions['view.file.manager']"
             >
                 <jet-nav-link class="jet-nav-link" :href="route('files')">
                     <p>
@@ -233,8 +210,7 @@
             >
                 <jet-nav-link
                     class="jet-nav-link"
-                    href="#"
-                    @click="comingSoon()"
+                    :href="route('settings')"
                 >
                     <p>
                         <font-awesome-icon :icon="['fas', 'cog']" size="lg" />
