@@ -4,6 +4,7 @@
             <lead-interaction :lead-id="lead.id"
                               :user-id="$page.props.user.id"
                               :first-name="lead.first_name"
+                              :middle-name="$page.props.middle_name.value"
                               :last-name="lead.last_name"
                               :email="lead.email"
                               :phone="lead.primary_phone"
