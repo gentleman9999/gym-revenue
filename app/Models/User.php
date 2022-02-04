@@ -74,10 +74,7 @@ class User extends Authenticatable
     {
         static::created(function ($user) {
             $client = $user->client();
-//            $current_user = request()->user();
             if ( $client ) {
-//                $client_id = $current_user->currentClientId();
-
                 $aggy = ClientAggregate::retrieve($client->id);
                 $aggy->createUser($user->id, $user->toArray());
                 $aggy->persist();
@@ -89,8 +86,8 @@ class User extends Authenticatable
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
-//                $aggy->updateUser($user->id, ['old' => $user->getOriginal(), 'new' => $user->toArray()]);
-//                $aggy->persist();
+                $aggy->updateUser($user->id, ['old' => $user->getOriginal(), 'new' => $user->toArray()]);
+                $aggy->persist();
             }
         });
 
@@ -137,7 +134,6 @@ class User extends Authenticatable
     {
         $detail = ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first();
         return is_null($detail) ? null : $detail->client_id;
-//        return $this->details()->whereName('associated_client')->first();
     }
 
     public function isClientUser()
