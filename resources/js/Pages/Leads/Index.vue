@@ -123,6 +123,7 @@ export default defineComponent({
     },
     props: ["leads", "title", "isClientUser", "filters", "lead_types", "user"],
     setup(props) {
+
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -200,8 +201,14 @@ export default defineComponent({
                         (detail) =>
                             parseInt(detail.value) === parseInt(props.user.id)
                     );
-                    return yours.length;
+                    if(props.user.permissions['leads.contact']) {
+                        return yours.length;
+                    } else {
+                        return false;
+                    }
+
                 },
+
             },
         };
 

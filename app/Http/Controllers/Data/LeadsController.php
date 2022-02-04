@@ -44,6 +44,11 @@ class LeadsController extends Controller
 
     public function index(Request $request)
     {
+        //Setting bouncer permissions for leads
+        if(request()->user()->isAn('Sales Rep', 'Location Manager')) {
+            request()->user()->allow('contact', Lead::class);
+        }
+
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
@@ -277,6 +282,12 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+
+        if(request()->user()->isNotAn('Sales Rep', 'Location Manager')) {
+            Alert::error('Only Sales Reps and Location Managers can access leads.')->flash();
+            return Redirect::route('data.leads');
+        }
+
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
@@ -347,6 +358,12 @@ class LeadsController extends Controller
     public function assign()
     {
         $data = request()->all();
+
+        if(request()->user()->isNotAn('Sales Rep', 'Location Manager')) {
+            \Alert::error('Only Sales Reps and Location Managers can claim leads.')->flash();
+            return redirect()->back();
+        }
+
         // @todo - change to laravel style Validation
 
         $claim_detail = LeadDetails::whereLeadId($data['lead_id'])
@@ -436,6 +453,13 @@ class LeadsController extends Controller
 
     public function contact($lead_id)
     {
+
+        if(request()->user()->cannot('contact', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back()->with('selectedLeadDetailIndex', 0);
+        }
+
         $lead = Lead::find($lead_id);
 
         if ($lead) {

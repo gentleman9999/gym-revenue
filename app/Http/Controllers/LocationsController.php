@@ -31,9 +31,21 @@ class LocationsController extends Controller
     //
     public function index(Request $request)
     {
+        //Setting bouncer permissions for leads
+        if(request()->user()->isAn('Admin', 'Location Manager')) {
+            request()->user()->allow('create', Location::class);
+            request()->user()->allow('view', Location::class);
+            request()->user()->allow('edit', Location::class);
+            request()->user()->allow('trash', Location::class);
+        } else {
+            request()->user()->allow('view', Location::class);
+            request()->user()->disallow('create', Location::class);
+            request()->user()->disallow('edit', Location::class);
+            request()->user()->disallow('trash', Location::class);
+        }
+
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
-        // @todo - insert Bouncer-based ACL here.
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))

@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Models\Clients\Location;
+use App\Models\Endusers\Lead;
 use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -52,7 +54,16 @@ class HandleInertiaRequests extends Middleware
                     'users.read'=>$user->can('viewAny', User::class),
                     'users.update' => $user->can('update', User::class),
                     'users.delete'=>$user->can('delete', User::class),
+                    //'leads.create' => $user->can('create', Lead::class),
+                    'leads.contact'=>$user->can('contact', Lead::class),
+                    'leads.edit' => $user->can('edit', Lead::class),
+                    //'leads.delete'=>$user->can('delete', Lead::class),
+                    'locations.create' => $user->can('create', Location::class),
+                    'locations.view'=>$user->can('view', Location::class),
+                    'locations.edit' => $user->can('edit', Location::class),
+                    'locations.delete'=>$user->can('trash', Location::class),
                 ],
+
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
             ];
         }
