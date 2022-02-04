@@ -160,7 +160,7 @@ export default {
             operation = 'Create';
         } else {
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
-            lead.middle_name =  ('middle_name' in lead) ? lead.middle_name.value : null;
+            lead.middle_name =  ('middle_name' in lead  && (lead.middle_name !== null)) ? lead.middle_name.value : null;
         }
 
         const form = useForm(lead)
