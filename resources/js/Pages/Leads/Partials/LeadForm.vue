@@ -139,7 +139,6 @@ export default {
     },
     props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types'],
     setup(props, context) {
-        let midname =  usePage().props.value.middle_name.value;
         let lead = props.lead;
         let operation = 'Update';
         if (!lead) {
@@ -161,6 +160,7 @@ export default {
             operation = 'Create';
         } else {
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
+            lead.middle_name =  ('middle_name' in lead) ? lead.middle_name.value : null;
         }
 
         const form = useForm(lead)
@@ -200,7 +200,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         })
-        return {form, fileForm, buttonText: operation, handleSubmit, goBack,midname }
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack }
     },
 }
 </script>

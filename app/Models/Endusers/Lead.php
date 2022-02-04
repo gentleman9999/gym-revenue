@@ -82,6 +82,11 @@ class Lead extends Model
         return $this->details()->whereField('claimed');
     }
 
+    public function middle_name()
+    {
+        return $this->detail()->whereField('middle_name')->whereActive(1);
+    }
+
 
     public function scopeFilter($query, array $filters)
     {

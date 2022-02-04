@@ -140,7 +140,7 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
-        $middle_name='';
+        $middle_name ='';
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
@@ -150,7 +150,7 @@ class LeadsController extends Controller
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'middle_name' => $middle_name
+            'middle_name' => $middle_name,
         ]);
     }
 
@@ -309,23 +309,21 @@ class LeadsController extends Controller
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $middle_name = '';
-        $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
-//dd($middle_names);
-        foreach($middle_names as $middle_name){
-        //    dd($middle_name);
-    }
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'profile_picture', 'trialMemberships')->first(),
+            'lead' => Lead::whereId($lead_id)->with(
+                'detailsDesc',
+                'profile_picture',
+                'trialMemberships',
+                'middle_name'
+            )->first(),
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
             'trialDates' => $lead_aggy->trial_dates,
-            'middle_name' => $middle_name,
         ]);
     }
 
@@ -363,15 +361,11 @@ if(!$middle_name){
         }
         $data = request()->validate($this->rules);
 
-//        $data = request()->all();
-
-        //	dd($data);
-        $aggy = EndUserActivityAggregate::retrieve($lead_id)
+        EndUserActivityAggregate::retrieve($lead_id)
             ->updateLead($data, auth()->user())
             ->persist();
 
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
-
 
         return Redirect::route('data.leads');
     }
