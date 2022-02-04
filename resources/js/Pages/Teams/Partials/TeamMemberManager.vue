@@ -5,7 +5,7 @@
 
             <!-- Add Team Member -->
             <jet-form-section @submitted="addTeamMember">
-                <template #title> Add Team Member </template>
+                <template #title> Add Team Member</template>
 
                 <template #description>
                     Add a new team member to your team, allowing them to
@@ -39,7 +39,6 @@
                             class="mt-2"
                         />
                     </div>
-
                 </template>
 
                 <template #actions>
@@ -70,7 +69,7 @@
 
             <!-- Team Member Invitations -->
             <jet-action-section class="mt-10 sm:mt-0">
-                <template #title> Pending Team Invitations </template>
+                <template #title> Pending Team Invitations</template>
 
                 <template #description>
                     These people have been invited to your team and have been
@@ -109,7 +108,7 @@
 
             <!-- Manage Team Members -->
             <jet-action-section class="mt-10 sm:mt-0">
-                <template #title> Team Members </template>
+                <template #title> Team Members</template>
 
                 <template #description>
                     All of the people that are part of this team.
@@ -120,7 +119,9 @@
                     <div class="space-y-6">
                         <div
                             class="flex items-center justify-between"
-                            v-for="user in team.users.filter(user=>user.id!==team.owner.id)"
+                            v-for="user in team.users.filter(
+                                (user) => user.id !== team.owner.id
+                            )"
                             :key="user.id"
                         >
                             <div class="flex items-center">
@@ -165,7 +166,9 @@
                                 <button
                                     class="cursor-pointer ml-6 text-sm text-red-500"
                                     @click="confirmTeamMemberRemoval(user)"
-                                    v-else-if="userPermissions.canRemoveTeamMembers"
+                                    v-else-if="
+                                        userPermissions.canRemoveTeamMembers
+                                    "
                                 >
                                     Remove
                                 </button>
@@ -181,7 +184,7 @@
             :show="currentlyManagingRole"
             @close="currentlyManagingRole = false"
         >
-            <template #title> Manage Role </template>
+            <template #title> Manage Role</template>
 
             <template #content>
                 <div v-if="managingRoleFor">
@@ -269,7 +272,7 @@
             :show="confirmingLeavingTeam"
             @close="confirmingLeavingTeam = false"
         >
-            <template #title> Leave Team </template>
+            <template #title> Leave Team</template>
 
             <template #content>
                 Are you sure you would like to leave this team?
@@ -296,7 +299,7 @@
             :show="teamMemberBeingRemoved"
             @close="teamMemberBeingRemoved = null"
         >
-            <template #title> Remove Team Member </template>
+            <template #title> Remove Team Member</template>
 
             <template #content>
                 Are you sure you would like to remove this person from the team?
@@ -359,7 +362,7 @@ export default defineComponent({
         "team",
         "availableRoles", //change the available roles here.
         "userPermissions",
-        "users"
+        "users",
     ],
 
     data() {
@@ -384,18 +387,27 @@ export default defineComponent({
     },
 
     methods: {
-        addTeamMember() {
-            this.addTeamMemberForm.post(
+        // addTeamMember() {
+        //     this.addTeamMemberForm.post(
+        //         route("team-members.store", this.team),
+        //         {
+        //             errorBag: "addTeamMember",
+        //             preserveScroll: true,
+        //             onSuccess: () => {
+        //                 this.addTeamMemberForm.reset();
+        //                 this.$inertia.reload();
+        //             },
+        //         }
+        //     );
+        // },
+        //the above inertia based code should work, but weird fatal. workaround by just posting with axios and reloading
+        async addTeamMember() {
+            const resp = await axios.post(
                 route("team-members.store", this.team),
-                {
-                    errorBag: "addTeamMember",
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        this.addTeamMemberForm.reset();
-                        this.$inertia.reload();
-                    },
-                }
+                this.addTeamMemberForm.data()
             );
+            this.addTeamMemberForm.reset();
+            this.$inertia.reload();
         },
 
         cancelTeamInvitation(invitation) {
@@ -471,21 +483,18 @@ export default defineComponent({
             return this.users?.map((user) => user.id) || [];
         },
         availableUsersToJoinTeam() {
-            //now remove users from availableusers;
-            const availableUsersToJoinTeam = this.availableUsers?.filter(
-                (user) =>
-                    !this.userIds.includes(user.id) &&
-                    user.id !== this.team.owner.id
-            ) || [];
-            console.log("availableUsers", this.availableUsers);
-            console.log("availableUsersToJoinTeam", availableUsersToJoinTeam);
-            console.log("users", this.users);
-            console.log("userIds", this.userIds);
+            //now remove team users and account owner from availableUsers;
+            const availableUsersToJoinTeam =
+                this.availableUsers?.filter(
+                    (user) =>
+                        !this.userIds.includes(user.id) &&
+                        user.id !== this.team.owner.id
+                ) || [];
             return availableUsersToJoinTeam || [];
         },
-        availableUsersToJoinTeamOptions(){
+        availableUsersToJoinTeamOptions() {
             let options = [];
-            if(this.availableUsersToJoinTeam?.map){
+            if (this.availableUsersToJoinTeam?.map) {
                 options = this.availableUsersToJoinTeam.map(
                     ({ email, name }) => ({
                         label: `${email} (${name})`,
@@ -493,9 +502,8 @@ export default defineComponent({
                     })
                 );
             }
-            console.log({options});
             return options;
-        }
+        },
     },
 });
 </script>
