@@ -115,6 +115,18 @@ class EndUserActivityProjector extends Projector
                 'user' => $event->user
             ]
         ]);
+
+        if(array_key_exists('middle_name', $event->lead)){
+            $middle_name = $event->lead['middle_name'];
+            LeadDetails::firstOrCreate([
+                    'lead_id' => $event->id,
+                    'client_id' => $event->lead['client_id'],
+                    'field' => 'middle_name',
+                    //'value' => $middle_name,
+                    //'misc' => ['user' => $event->user ]
+                ]
+            )->update(['value'=>$middle_name, 'misc' => ['user' => $event->user ]]);
+        }
     }
 
     public function onLeadClaimedByRep(LeadClaimedByRep $event)

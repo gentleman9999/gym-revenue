@@ -23,17 +23,24 @@
                 <input disabled type="text" v-model="form['agreement_number']" autofocus class="opacity-70"/>
             </div>
             <div class="form-divider"/>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-2">
                 <jet-label for="first_name" value="First Name"/>
                 <input id="" type="text" v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-2">
+                                <jet-label for="middle_name" value="Middle Name"/>
+                                <input id="" type="text"
+                       v-model="form['middle_name']" autofocus/>
+                <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
+
+            </div>
+            <div class="form-control col-span-2">
                 <jet-label for="last_name" value="Last Name"/>
                 <input id="last_name" type="text" v-model="form[    'last_name']" autofocus/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-6">
                 <jet-label for="email" value="Email"/>
                 <input id="email" type="email" v-model="form.email" autofocus/>
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
@@ -117,6 +124,7 @@ import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import {useGoBack} from '@/utils';
+import { usePage } from '@inertiajs/inertia-vue3';
 
 library.add(faUserCircle);
 
@@ -136,6 +144,7 @@ export default {
         if (!lead) {
             lead = {
                 first_name: null,
+                middle_name: null,
                 last_name: null,
                 email: null,
                 primary_phone: null,//TODO:change to primary/alternate
@@ -151,6 +160,7 @@ export default {
             operation = 'Create';
         } else {
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
+            lead.middle_name =  ('middle_name' in lead) ? lead.middle_name.value : null;
         }
 
         const form = useForm(lead)
@@ -190,7 +200,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         })
-        return {form, fileForm, buttonText: operation, handleSubmit, goBack}
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack }
     },
 }
 </script>
