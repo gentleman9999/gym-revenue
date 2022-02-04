@@ -9,6 +9,7 @@ use App\Models\TeamDetail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -25,7 +26,8 @@ class LocationsController extends Controller
         'client_id' => ['required'],
         'address1' => 'required',
         'address2' => [],
-        'zip' => ['required', 'size:5']
+        'zip' => ['required', 'size:5'],
+        'gymrevenue_id' => [],
     ];
 
     //
@@ -83,6 +85,16 @@ class LocationsController extends Controller
 
     public function store(Request $request)
     {
+        $client_id = $request->user()->currentClientId();
+        $prefix = ClientDetail::whereClientId($client_id)->whereDetail('prefix')->pluck('value');
+        $iterations = Location::whereClientId($client_id)->pluck('gymrevenue_id');
+
+        $value = 001;
+        if(Str::contains($iterations[count($iterations)-1], $prefix[0]))
+                $value = (int) str_replace($prefix[0], "", $iterations[count($iterations)-1]) + 1;
+
+        $request->merge(['gymrevenue_id' => $prefix[0].''.sprintf('%03d', $value)]);
+
         $location = Location::create(
             $request->validate($this->rules)
         );
