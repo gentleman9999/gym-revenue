@@ -324,7 +324,7 @@ class LeadsController extends Controller
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'trialDates' => $lead_aggy->trial_dates
+            'trialDates' => $lead_aggy->trial_dates,
             'middle_name' => $middle_name,
         ]);
     }
