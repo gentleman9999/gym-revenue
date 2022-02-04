@@ -1,8 +1,6 @@
 <template>
     <app-layout :title="title">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">User Management</h2>
-        </template>
+        <page-toolbar-nav title="Users" :links="navLinks" />
         <gym-revenue-crud
             base-route="users"
             model-name="user"
@@ -20,14 +18,21 @@
                         <span class="label label-text">Club</span>
                         <select class="select" v-model="form.club">
                             <option></option>
-                            <option v-for="club in clubs" :value="club.gymrevenue_id">{{club.name}}</option>
+                            <option
+                                v-for="club in clubs"
+                                :value="club.gymrevenue_id"
+                            >
+                                {{ club.name }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-control" v-if="teams?.length">
                         <span class="label label-text">Team</span>
                         <select class="select" v-model="form.team">
                             <option></option>
-                            <option v-for="team in teams" :value="team.id">{{team.name}}</option>
+                            <option v-for="team in teams" :value="team.id">
+                                {{ team.name }}
+                            </option>
                         </select>
                     </div>
                 </search-filter>
@@ -39,22 +44,23 @@
             @confirm="handleConfirmDelete"
             @cancel="confirmDelete = null"
         >
-            Are you sure you want to delete user '{{ confirmDelete.name }}'? This action is permanent, and cannot be
-            undone.
+            Are you sure you want to delete user '{{ confirmDelete.name }}'?
+            This action is permanent, and cannot be undone.
         </confirm>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent, ref} from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import UserForm from "./Partials/UserForm";
-import {Inertia} from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
-import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
@@ -62,14 +68,21 @@ export default defineComponent({
         GymRevenueCrud,
         UserForm,
         Confirm,
-        SearchFilter
+        SearchFilter,
+        PageToolbarNav,
     },
     props: ["users", "filters", "clubs", "teams"],
     setup() {
         const page = usePage();
-        const {form, reset} = useSearchFilter('users', {
+        const abilities = computed(() => page.props.value.user?.abilities);
+        console.log(
+            "page.props.value.user.abilties",
+            page.props.value.user.abilities
+        );
+
+        const { form, reset } = useSearchFilter("users", {
             team: null,
-            club: null
+            club: null,
         });
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
@@ -80,24 +93,27 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
-        const fields = [
-            "name",
-            "created_at",
-            "updated_at",
-        ];
+        const fields = ["name", "created_at", "updated_at"];
 
         const actions = {
             trash: false,
             restore: false,
             delete: {
-                label: 'Delete',
-                handler: ({data}) => handleClickDelete(data),
-                shouldRender: ({data}) => page.props.value.user.permissions['users.delete']
+                label: "Delete",
+                handler: ({ data }) => handleClickDelete(data),
+                shouldRender: abilities["users.delete"],
             },
             edit: {
-                shouldRender: ({data}) => page.props.value.user.permissions['users.update']
-            }
-        }
+                shouldRender: abilities["users.update"],
+            },
+        };
+        const navLinks = [
+            {
+                label: "Security Roles",
+                href: route("security-roles"),
+                onClick: null,
+            },
+        ];
         return {
             confirmDelete,
             fields,
@@ -105,7 +121,8 @@ export default defineComponent({
             Inertia,
             handleConfirmDelete,
             form,
-            reset
+            reset,
+            navLinks,
         };
     },
 });

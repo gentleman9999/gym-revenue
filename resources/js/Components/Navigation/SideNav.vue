@@ -204,12 +204,12 @@
 
             <div
                 :class="
-                    route().current('data.conversions')
+                    route().current('users')
                         ? 'bg-primary'
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.permissions['users.read']"
+                v-if="$page.props.user.abilities.includes('users.read')"
             >
                 <jet-nav-link
                     class="jet-nav-link"

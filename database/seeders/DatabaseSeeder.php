@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Clients\EmailCampaignsSeeder;
+use Database\Seeders\Clients\SecurityRolesSeeder;
 use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
@@ -56,6 +57,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client User Seeder');
         $this->call(ClientUserSeeder::class);
 
+        VarDumper::dump('Running Security Role Seeder');
+        $this->call(SecurityRolesSeeder::class);
+
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
 
@@ -79,6 +83,9 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Team/Location Assignments Seeder');
         $this->call(TeamLocationsSeeder::class);
+
+        VarDumper::dump('Adding Bouncer Abilities');
+        $this->call(BouncerAbilitiesSeeder::class);
 
         VarDumper::dump('Running Leads Dummy Data Seeder');
         $this->call(LeadProspectSeeder::class);
