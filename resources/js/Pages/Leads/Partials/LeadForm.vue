@@ -59,6 +59,33 @@
                        autofocus/>
                 <jet-input-error :message="form.errors.alternate_phone" class="mt-2"/>
             </div>
+            <div class="form-control col-span-3">
+                <jet-label for="opportunity" value="Select Opportunity"/>
+                <select class="" v-model="form['opportunity']" required id="opportunity">
+                    <option value="">Select Opportunity</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+                <jet-input-error :message="form.errors.opportunity" class="mt-2"/>
+            </div>
+
+            <div class="form-control col-span-3">
+                <jet-label for="gender" value="Gender"/>
+                <select class="" v-model="form['gender']" required id="gender">
+                    <option value="">Select a Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                                    </select>
+                <jet-input-error :message="form.errors.gender" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+            <jet-label for="dob" value="Date of Birth"/>
+                <DatePicker v-model="form['dob']"  dark />
+            <jet-input-error :message="form.errors.dob" class="mt-2"/>
+        </div>
+
+
             <div class="form-divider"/>
             <div class="form-control col-span-3">
                 <jet-label for="club_id" value="Club"/>
@@ -127,7 +154,8 @@ import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import {useGoBack} from '@/utils';
 import { usePage } from '@inertiajs/inertia-vue3';
-
+import DatePicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css';
 library.add(faUserCircle);
 
 export default {
@@ -138,6 +166,7 @@ export default {
         FontAwesomeIcon,
         JetInputError,
         JetLabel,
+        DatePicker
     },
     props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types'],
     setup(props, context) {
@@ -157,12 +186,18 @@ export default {
                 lead_type_id: null,
                 membership_type_id: null,
                 lead_source_id: null,
-                profile_picture: null
+                profile_picture: null,
+                gender: '',
+                dob: '',
+                opportunity:'',
             }
             operation = 'Create';
         } else {
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
             lead.middle_name =  ('middle_name' in lead  && (lead.middle_name !== null)) ? lead.middle_name.value : null;
+            lead.gender =  ('gender' in lead  && (lead.gender !== null)) ? lead.gender.value : null;
+            lead.dob =  ('dob' in lead  && (lead.dob !== null)) ? lead.dob.value : null;
+            lead.opportunity =  ('opportunity' in lead  && (lead.opportunity !== null)) ? lead.opportunity.value : null;
         }
 
         const form = useForm(lead)
