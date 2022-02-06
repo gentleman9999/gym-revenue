@@ -140,9 +140,9 @@ class EndUserActivityProjector extends Projector
             'client_id' => $event->client,
             'lead_id' => $event->lead,
             'field' => 'claimed',
-            'value' => $event->user
         ]);
 
+        $lead->value = $event->user;
         $misc = $lead->misc;
         if (!is_array($misc)) {
             $misc = [];
