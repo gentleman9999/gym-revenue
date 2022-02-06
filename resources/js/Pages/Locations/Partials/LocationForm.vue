@@ -9,11 +9,16 @@
         <!--        </template>-->
         <template #form>
 
-                <div class="col-span-6">
+                <div class="col-span-4">
                     <jet-label for="name" value="Name"/>
                     <input id="name" type="text" class="block w-full mt-1" v-model="form.name" autofocus/>
                     <jet-input-error :message="form.errors.name" class="mt-2"/>
                 </div>
+            <div class="col-span-2">
+                <jet-label for="location_no" value="Location Number/ID"/>
+                <input id="location_no" type="text" class="block w-full mt-1" v-model="form.location_no" autofocus/>
+                <jet-input-error :message="form.errors.location_no" class="mt-2"/>
+            </div>
                 <div class="col-span-4">
                     <jet-label for="city" value="City"/>
                     <input id="city" type="text" class="block w-full mt-1" v-model="form.city" autofocus/>
@@ -38,6 +43,41 @@
                     <jet-input-error :message="form.errors.address2" class="mt-2"/>
                 </div>
 
+            <div class="col-span-2 space-y-2">
+                <jet-label for="phone" value="Phone"/>
+                <input id="phone" type="text" class="block w-full mt-1" v-model="form.phone" autofocus/>
+                <jet-input-error :message="form.errors.phone" class="mt-2"/>
+            </div>
+
+            <div class="col-span-2 space-y-2">
+                <jet-label for="opendate" value="Open Date"/>
+                <DatePicker id="opendate" v-model="form.opendate"  dark />
+
+                <jet-input-error :message="form.errors.opendate" class="mt-2"/>
+            </div>
+            <div class="col-span-2 space-y-2">
+                <jet-label for="closedate" value="Close Date"/>
+                <DatePicker id="closedate" v-model="form.closedate"  dark />
+
+                <jet-input-error :message="form.errors.closedate" class="mt-2"/>
+            </div>
+
+            <div class="col-span-2 space-y-2">
+                <jet-label for="poc_first" value="POC First"/>
+                <input id="poc_first" type="text" class="block w-full mt-1" v-model="form.poc_first" autofocus/>
+                <jet-input-error :message="form.errors.poc_first" class="mt-2"/>
+            </div>
+            <div class="col-span-2 space-y-2">
+                <jet-label for="poc_last" value="POC Last"/>
+                <input id="poc_last" type="text" class="block w-full mt-1" v-model="form.poc_last" autofocus/>
+                <jet-input-error :message="form.errors.poc_last" class="mt-2"/>
+            </div>
+            <div class="col-span-2 space-y-2">
+                <jet-label for="poc_phone" value="POC Phone"/>
+                <input id="poc_phone" type="text" class="block w-full mt-1" v-model="form.poc_phone"  autofocus/>
+                <jet-input-error :message="form.errors.poc_phone" class="mt-2"/>
+            </div>
+
 
                 <input id="client_id" type="hidden" v-model="form.client_id"/>
                 <jet-input-error :message="form.errors.client_id" class="mt-2"/>
@@ -53,32 +93,54 @@
                 {{ buttonText }}
             </Button>
         </template>
+
     </jet-form-section>
+
+    <!--           {{this.$page.props.phone}} ------
+       {{this.$page.props.poc_first}}
+    {{this.$page.props.poc_last}}
+        {{this.$page.props.poc_phone}}
+         {{this.$page.props.opendate}}
+         {{this.$page.proosedate}}
+-->
+  <!--
+
+       {{this.$page.props.locationitems}}  -->
 </template>
 
 <script>
-import {useForm} from '@inertiajs/inertia-vue3'
+import {useForm, usePage} from '@inertiajs/inertia-vue3'
 
 
 import AppLayout from '@/Layouts/AppLayout'
 import Button from '@/Components/Button'
 import JetFormSection from '@/Jetstream/FormSection'
-
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
+import DatePicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css';
 
 export default {
     components: {
         AppLayout,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
+        DatePicker,
     },
-    props: ['clientId', 'location'],
+    props: ['clientId', 'location','phone','poc_first','poc_last','poc_phone','opendate','closedate','location_no','DatePicker'],
     setup(props, context) {
         let location = props.location;
+        let phone = usePage().props.value.phone;
+        let poc_first = usePage().props.value.poc_first;
+        let poc_last = usePage().props.value.poc_last;
+        let poc_phone = usePage().props.value.poc_phone;
+        let opendate = usePage().props.value.opendate;
+        let closedate = usePage().props.value.closedate;
+        let address1 = location.address1;
+        let address2 = location.address2;
+
         let operation = 'Update';
         if (!location) {
             location = {
@@ -88,14 +150,32 @@ export default {
                 address1: null,
                 address2: null,
                 zip: null,
+                phone: null,
+                poc_first:null,
+                poc_last:null,
+                poc_phone:null,
+                opendate:null,
+                closedate:null,
+                location_no:null,
                 client_id: props.clientId
             }
             operation = 'Create';
+        }else{
+                location.phone = phone,
+                location.poc_first = poc_first,
+                location.poc_last = poc_last,
+                location.poc_phone = poc_phone,
+                location.opendate = opendate,
+                location.closedate = closedate
+                location.address1 = address1
+                location.address2 = address2
         }
 
         const form = useForm(location)
-
+        //
+    //    form.put(`/locations/${location.id}`);
         let handleSubmit = () => form.put(route('locations.update', location.id));
+
         if (operation === 'Create') {
             handleSubmit = () => form.post(route('locations.store'));
         }
