@@ -111,16 +111,6 @@
                 </select>
                 <jet-input-error :message="form.errors['lead_type_id']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
-                <jet-label for="membership_type_id" value="Membership Type"/>
-                <select class="" v-model="form['membership_type_id']" required id="membership_type_id">
-                    <option value="">Select a Membership Type</option>
-                    <option v-for="(membership_type, i) in membership_types" :value="membership_type.id">
-                        {{ membership_type.name }}
-                    </option>
-                </select>
-                <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
-            </div>
 
             <div class="form-control col-span-3">
                 <jet-label for="lead_owner" value="Lead Owner"/>
@@ -184,8 +174,7 @@ export default {
     props: [
         'userId', 'clientId', 'lead',
         'locations', 'lead_types',
-        'lead_sources', 'membership_types',
-        'lead_owners'
+        'lead_sources', 'lead_owners'
     ],
     setup(props, context) {
         let lead = props.lead;
@@ -202,7 +191,6 @@ export default {
                 client_id: props.clientId,
                 gr_location_id: null,
                 lead_type_id: null,
-                membership_type_id: null,
                 lead_source_id: null,
                 profile_picture: null,
                 gender: '',
