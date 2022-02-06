@@ -66,5 +66,41 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 02-06-2022',
+            'value' => '2022-02-02',
+            'misc' => [
+                'buildno' => '20220206',
+                'version' => '0.10.23',
+                'notes' => [
+                    'Added Middle name columns to Create and Update',
+                    'The lead’s First, Middle & Last show up below the avatar in real time.',
+                    'Added Opportunity dropdowns to Leads Create and Update',
+                    'Added Gender dropdowns to Leads Create and Update',
+                    'Added Date of Birth DatePicker to Leads Create and Update',
+                    'Added Club/Location dropdowns to Leads Create and Update',
+                    'A note of the when a lead was last edited by & when at the bottom of the edit page.',
+                    'Added Lead Owner dropdowns to Create and Update. The selected owner, claims the lead.',
+                    'Removed Membership Type and Services from Leads Create & Update',
+                    'Updated the Lead Status dropdowns to Leads Create and Update',
+                    'Added Lead Status dropdowns to Lead Create and Update',
+                    'On Leads View, the toolbar link for it is highlighted',
+                    'Added Team Management to SideBar',
+                    'You can Create new Teams from the Management UI',
+                    'You can Add Users into those new teams',
+                    'You can add Locations to non-cape&bay teams',
+                    'You can edit team configurations of Teams and Users.',
+                    'The New team appears in your Switch Team Dropdown after creating a new team',
+                    'You can now Create new Locations',
+                    'You can Update Locations',
+                    'New Location fields in Create & Edit - Phone, Open Date, Closed Date, PoC First, Last  Phone, and an Arbitrary Location No',
+                    '',
+                    '', // don't use me! clone me
+                ]
+            ]
+        ]);
     }
 }
