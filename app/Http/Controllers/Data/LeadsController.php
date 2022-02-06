@@ -12,6 +12,7 @@ use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\LeadSource;
+use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
 use App\Models\TeamDetail;
@@ -34,7 +35,6 @@ class LeadsController extends Controller
         'gr_location_id'            => ['required', 'exists:locations,gymrevenue_id'],
         'lead_source_id'            => ['required', 'exists:lead_sources,id'],
         'lead_type_id'              => ['required', 'exists:lead_types,id'],
-        'membership_type_id'        => ['required', 'exists:membership_types,id'],
         'client_id'                 => 'required',
         'profile_picture'           => 'sometimes',
         'profile_picture.uuid'      => 'sometimes|required',
@@ -44,7 +44,8 @@ class LeadsController extends Controller
         'gender'                    => 'sometimes|required',
         'dob'                       => 'sometimes|required',
         'opportunity'               => 'sometimes|required',
-        'lead_owner'                => 'sometimes|required|exists:users,id'
+        'lead_owner'                => 'sometimes|required|exists:users,id',
+        'lead_status'                => 'sometimes|required|exists:lead_statuses,id'
     ];
 
     public function index(Request $request)
@@ -77,6 +78,7 @@ class LeadsController extends Controller
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
+            'routeName' => request()->route()->getName(),
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'),
@@ -147,8 +149,8 @@ class LeadsController extends Controller
         }
 
         $lead_types = LeadType::whereClientId($client_id)->get();
-        $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
@@ -168,8 +170,8 @@ class LeadsController extends Controller
             'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,
-            'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
+            'lead_statuses' => $lead_statuses,
             'lead_owners' => $available_lead_owners
         ]);
     }
@@ -209,12 +211,13 @@ class LeadsController extends Controller
 
         // This is where all the details go
         $detail_keys = [
-            'middle_name', 'dob', 'gender', 'opportunity'
+            'middle_name', 'dob', 'gender', 'opportunity',
+            'lead_status'
         ];
 
         foreach ($detail_keys as $detail_key)
         {
-            if(array_key_exists($detail_key, $lead_data))
+            if(array_key_exists($detail_key, $lead_data) && ($lead_data[$detail_key]))
             {
                 $aggy = $aggy->createOrUpdateDetail($detail_key, $lead_data[$detail_key], $user_id, $lead_data['client_id']);
             }
@@ -327,8 +330,8 @@ class LeadsController extends Controller
         }
 
         $lead_types = LeadType::whereClientId($client_id)->get();
-        $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
@@ -353,13 +356,14 @@ class LeadsController extends Controller
                 'middle_name', 'gender', 'dob',
                 'opportunity',
                 'lead_owner',
+                'lead_status',
                 'last_updated'
             )->first(),
             'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,
-            'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
+            'lead_statuses' => $lead_statuses,
             'trialDates' => $lead_aggy->trial_dates,
             'lead_owners' => $available_lead_owners
         ]);
@@ -407,12 +411,13 @@ if(!$middle_name){
 
         // This is where all the details go
         $detail_keys = [
-            'middle_name', 'dob', 'gender', 'opportunity'
+            'middle_name', 'dob', 'gender', 'opportunity',
+            'lead_status'
         ];
 
         foreach ($detail_keys as $detail_key)
         {
-            if(array_key_exists($detail_key, $data))
+            if(array_key_exists($detail_key, $data) && ($data[$detail_key]))
             {
                 $aggy = $aggy->createOrUpdateDetail($detail_key, $data[$detail_key], $user->id, $lead->client_id);
             }

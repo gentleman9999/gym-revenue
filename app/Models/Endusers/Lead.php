@@ -66,6 +66,11 @@ class Lead extends Model
         return $this->hasOne(LeadSource::class, 'id', 'lead_source_id');
     }
 
+    public function lead_status()
+    {
+        return $this->detail()->whereField('lead_status')->whereActive(1);
+    }
+
     public function membershipType()
     {
         return $this->hasOne(MembershipType::class, 'id', 'membership_type_id');

@@ -17,20 +17,25 @@ class LeadSourceSeeder extends Seeder
     public function run()
     {
         $lead_sources = [
-            'source-0',
-            'source-1',
-            'source-2',
-            'source-3',
-            'source-4',
-            'source-5',
-            'source-6',
+            'walk-in' => 'Walk In',
+            'buddy-referral' => 'Buddy Referral',
+            'member-guest' => 'Member Guest Pass',
+            'facebook' => 'Meta/Facebook/Instagram',
+            'guest-pass' => 'Guest Pass',
+            'custom' => 'Custom',
         ];
 
         $clients = Client::all();
         foreach ($clients as $client) {
-            foreach ($lead_sources as $lead_source) {
-                LeadSource::create(['client_id' => $client->id, 'name' => $lead_source]);
-                VarDumper::dump("Adding lead source {$lead_source}");
+            foreach ($lead_sources as $lead_source => $readable_source) {
+                LeadSource::create([
+                    'client_id' => $client->id,
+                    'name' => $readable_source,
+                    'source' => $lead_source,
+                    'ui' => 1
+                ]);
+
+                VarDumper::dump("Adding lead source {$readable_source}");
             }
         }
     }
