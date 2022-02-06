@@ -315,7 +315,8 @@ class LeadsController extends Controller
                 'profile_picture',
                 'trialMemberships',
                 'middle_name', 'gender', 'dob',
-                'opportunity'
+                'opportunity',
+                'last_updated'
             )->first(),
             'locations' => $locations,
             'lead_types' => $lead_types,
