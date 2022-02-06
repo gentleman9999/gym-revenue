@@ -17,6 +17,7 @@
                     :lead="lead" :locations="locations"
                     :lead_types="lead_types"
                     :lead_sources="lead_sources"
+                    :lead_statuses="lead_statuses"
                     :lead_owners="lead_owners"
                     :available_services="available_services"/>
             </div>
@@ -52,7 +53,8 @@ export default defineComponent({
         'user_id',
         'lead', 'locations', 'lead_types',
         'lead_sources', 'available_services',
-        'trialDates', 'lead_owners'
+        'trialDates', 'lead_owners',
+        'lead_statuses'
     ]
 })
 </script>

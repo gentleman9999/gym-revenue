@@ -82,7 +82,7 @@
             @cancel="confirmTrash = null"
         >
             {{ firstName }} {{ lastName }} Are you sure you want to remove this
-            lead?<BR /> Reason for Deleting:<br />
+            lead?<br /> Reason for Deleting:<br />
             <select name="reasonforremoving">
                 <option value="duplicate">Is a duplicate</option>
                 <option value="test-lead">Is a test lead</option>
@@ -121,7 +121,7 @@ export default defineComponent({
         JetBarContainer,
         LeadInteraction,
     },
-    props: ["leads", "title", "isClientUser", "filters", "lead_types", "user"],
+    props: ["leads", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user'],
     setup(props) {
         const comingSoon = () => {
             new Noty({

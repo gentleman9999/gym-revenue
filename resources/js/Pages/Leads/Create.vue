@@ -13,6 +13,7 @@
                     :client-id="$page.props.user.current_client_id"
                     :locations="locations"
                     :lead_types="lead_types"
+                    :lead_statuses="lead_statuses"
                     :lead_sources="lead_sources"
                     :lead_owners="lead_owners"
                     :available_services="available_services"/>
@@ -45,10 +46,11 @@ export default defineComponent({
     },
     props: ['user_id',
         'locations',  'lead_types', 'lead_sources',
-         'available_services', 'lead_owners'
+         'available_services', 'lead_owners',
+        'lead_statuses'
     ],
     mounted() {
-        console.log('Fuck ', this.$page.props.user.current_client_id)
+        console.log('lead_statuses ', this.$page.props.lead_statuses)
     }
 
 

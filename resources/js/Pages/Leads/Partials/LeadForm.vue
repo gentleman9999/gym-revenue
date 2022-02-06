@@ -121,6 +121,15 @@
                 <jet-input-error :message="form.errors['lead_owner']" class="mt-2"/>
             </div>
 
+            <div class="form-control col-span-3">
+                <jet-label for="lead_owner" value="Lead Status"/>
+                <select class="" v-model="form['lead_status']" required id="lead_status">
+                    <option value="">Select a Lead Status</option>
+                    <option v-for="(status, idx) in lead_statuses" :value="status.id">{{ status.status }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_statuses']" class="mt-2"/>
+            </div>
+
             <div class="form-divider"/>
             <div class="col-span-6">
                 <label v-if="'last_updated' in form">{{ form['last_updated'] }}</label>
@@ -174,7 +183,8 @@ export default {
     props: [
         'userId', 'clientId', 'lead',
         'locations', 'lead_types',
-        'lead_sources', 'lead_owners'
+        'lead_sources', 'lead_owners',
+        'lead_statuses'
     ],
     setup(props, context) {
         let lead = props.lead;
@@ -197,6 +207,7 @@ export default {
                 dob: '',
                 opportunity:'',
                 lead_owner: props.userId,
+                lead_status: ''
             }
             operation = 'Create';
         } else {
@@ -212,6 +223,7 @@ export default {
                 : 'This lead has never been updated';
 
             lead['lead_owner'] = ('lead_owner' in lead  && (lead.lead_owner !== null)) ? lead.lead_owner.value : '';
+            lead['lead_status'] = ('lead_status' in lead  && (lead.lead_status !== null)) ? lead.lead_status.value : '';
 
         }
 
