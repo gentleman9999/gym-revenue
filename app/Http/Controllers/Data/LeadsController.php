@@ -136,6 +136,7 @@ class LeadsController extends Controller
         // one has an outdated currentClient id, creating would have unintended ]
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
+        $user = auth()->user();
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
@@ -149,11 +150,27 @@ class LeadsController extends Controller
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
 
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+
+        /**
+         * STEPS for team users
+         * 1. No CnB Admins unless it is you
+         * 2. Unless Cnb Admin, no admin users
+         */
+        $available_lead_owners = [];
+        foreach($team_users as $team_user)
+        {
+            $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
+        }
+
         return Inertia::render('Leads/Create', [
+            'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
+            'lead_owners' => $available_lead_owners
         ]);
     }
 
@@ -183,8 +200,12 @@ class LeadsController extends Controller
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 
         $aggy = EndUserActivityAggregate::retrieve($lead->id)
-            ->manualNewLead($lead->toArray(), $user_id)
-            ->claimLead($user_id, $lead_data['client_id']);
+            ->manualNewLead($lead->toArray(), $user_id);
+
+        $owner = array_key_exists('lead_owner', $lead_data)
+            ? $lead_data['lead_owner'] : $user_id;
+
+        $aggy = $aggy->claimLead($owner, $lead_data['client_id']);
 
         // This is where all the details go
         $detail_keys = [
@@ -334,6 +355,7 @@ class LeadsController extends Controller
                 'lead_owner',
                 'last_updated'
             )->first(),
+            'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
