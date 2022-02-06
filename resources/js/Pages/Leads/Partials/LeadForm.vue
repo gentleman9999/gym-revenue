@@ -7,6 +7,8 @@
                     <img v-else-if="form?.profile_picture?.misc?.url" :src="form.profile_picture.misc.url" alt="lead profile picture" class="w-full h-full object-cover"/>
                     <font-awesome-icon v-else icon="user-circle" size="6x" class="opacity-10 !h-full !w-full"/>
                 </div>
+                <label><p class="text-white">{{ form['first_name'] }} {{ form['middle_name'] }} {{ form['last_name']}}</p></label>
+
                 <label class="btn btn-primary">
                     <span>Upload Image</span>
                     <input
