@@ -7,7 +7,7 @@
 
                         <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
                         <h1 class="text-center text-2xl">
-                            {{ firstName }} {{ lastName }}
+                            {{ firstName }} {{ this.$page.props.middle_name.value }} {{ lastName }}
                         </h1>
                         <div class="badge badge-success mt-4">Agreement #: {{agreementNum}}</div>
                         <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
