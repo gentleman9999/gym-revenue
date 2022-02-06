@@ -87,6 +87,21 @@ class Lead extends Model
         return $this->detail()->whereField('middle_name')->whereActive(1);
     }
 
+    public function dob()
+    {
+        return $this->detail()->whereField('dob')->whereActive(1);
+    }
+
+    public function gender()
+    {
+        return $this->detail()->whereField('gender')->whereActive(1);
+    }
+
+    public function opportunity()
+    {
+        return $this->detail()->whereField('opportunity')->whereActive(1);
+    }
+
 
     public function scopeFilter($query, array $filters)
     {
