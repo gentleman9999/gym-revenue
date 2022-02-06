@@ -26,7 +26,6 @@ class LeadProspectSeeder extends Seeder
             ->with('locations')
             ->with('lead_types')
             ->with('lead_sources')
-            ->with('membership_types')
             ->with('trial_membership_types')
             ->get();
 
