@@ -138,8 +138,6 @@ export default {
         let poc_phone = usePage().props.value.poc_phone;
         let opendate = usePage().props.value.opendate;
         let closedate = usePage().props.value.closedate;
-        let address1 = location.address1;
-        let address2 = location.address2;
 
         let operation = 'Update';
         if (!location) {
@@ -167,6 +165,9 @@ export default {
                 location.poc_phone = poc_phone,
                 location.opendate = opendate,
                 location.closedate = closedate
+
+                let address1 = location.address1;
+                let address2 = location.address2;
                 location.address1 = address1
                 location.address2 = address2
         }

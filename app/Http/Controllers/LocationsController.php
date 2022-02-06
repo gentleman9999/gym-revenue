@@ -8,6 +8,7 @@ use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
 use App\Models\TeamDetail;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
