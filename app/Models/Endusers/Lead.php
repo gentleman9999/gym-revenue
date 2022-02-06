@@ -102,6 +102,11 @@ class Lead extends Model
         return $this->detail()->whereField('opportunity')->whereActive(1);
     }
 
+    public function last_updated()
+    {
+        return $this->detail()->whereField('updated')->whereActive(1)
+            ->orderBy('created_at', 'DESC');
+    }
 
     public function scopeFilter($query, array $filters)
     {
