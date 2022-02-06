@@ -25,22 +25,25 @@ use Prologue\Alerts\Facades\Alert;
 class LeadsController extends Controller
 {
     protected $rules = [
-        'first_name' => ['required', 'max:50'],
-        'middle_name' => [],
-        'last_name' => ['required', 'max:30'],
-        'email' => ['required', 'email:rfc,dns'],
-        'primary_phone' => ['sometimes'],
-        'alternate_phone' => ['sometimes'],
-        'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
-        'lead_source_id' => ['required', 'exists:lead_sources,id'],
-        'lead_type_id' => ['required', 'exists:lead_types,id'],
-        'membership_type_id' => ['required', 'exists:membership_types,id'],
-        'client_id' => 'required',
-        'profile_picture' => 'sometimes',
-        'profile_picture.uuid' => 'sometimes|required',
-        'profile_picture.key' => 'sometimes|required',
+        'first_name'                => ['required', 'max:50'],
+        'middle_name'               => [],
+        'last_name'                 => ['required', 'max:30'],
+        'email'                     => ['required', 'email:rfc,dns'],
+        'primary_phone'             => ['sometimes'],
+        'alternate_phone'           => ['sometimes'],
+        'gr_location_id'            => ['required', 'exists:locations,gymrevenue_id'],
+        'lead_source_id'            => ['required', 'exists:lead_sources,id'],
+        'lead_type_id'              => ['required', 'exists:lead_types,id'],
+        'membership_type_id'        => ['required', 'exists:membership_types,id'],
+        'client_id'                 => 'required',
+        'profile_picture'           => 'sometimes',
+        'profile_picture.uuid'      => 'sometimes|required',
+        'profile_picture.key'       => 'sometimes|required',
         'profile_picture.extension' => 'sometimes|required',
-        'profile_picture.bucket' => 'sometimes|required'
+        'profile_picture.bucket'    => 'sometimes|required',
+        'gender'                    => 'sometimes|required',
+        'dob'                       => 'sometimes|required',
+        'opportunity'               => 'sometimes|required',
     ];
 
     public function index(Request $request)
@@ -140,7 +143,7 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
-        $middle_name ='';
+
         $lead_types = LeadType::whereClientId($client_id)->get();
         $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
@@ -150,21 +153,14 @@ class LeadsController extends Controller
             'lead_types' => $lead_types,
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'middle_name' => $middle_name,
         ]);
     }
 
     public function store(Lead $lead_model)
     {
         $lead_data = request()->validate($this->rules);
-//        $lead_data['lead_type_id'] = 1;//manual_create
         $user_id = auth()->user()->id;
-//        if (array_key_exists('user_id', $lead_data)) {
-//            $user_id = $lead_data['user_id'];
-//            unset($lead_data['user_id']);
-//        }
 
-        //TODO:all this stuff should happen synchronously via aggregate
         $lead = $lead_model->create($lead_data);
 
         if (array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']) {
@@ -183,25 +179,26 @@ class LeadsController extends Controller
             );
         }
 
-        if(array_key_exists('middle_name',  $lead_data)){
-            $middle_name=  $lead_data['middle_name'];
-            LeadDetails::create([
-                    'lead_id' => $lead->id,
-                    'client_id' =>  $lead->client_id,
-                    'field' => 'middle_name',
-                    'value' => $middle_name,
-                    'misc' => ['user' => $user_id ]
-                ]
-            );
-        }
-
-
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 
-        EndUserActivityAggregate::retrieve($lead->id)
+        $aggy = EndUserActivityAggregate::retrieve($lead->id)
             ->manualNewLead($lead->toArray(), $user_id)
-            ->claimLead($user_id, $lead_data['client_id'])
-            ->persist();
+            ->claimLead($user_id, $lead_data['client_id']);
+
+        // This is where all the details go
+        $detail_keys = [
+            'middle_name', 'dob', 'gender', 'opportunity'
+        ];
+
+        foreach ($detail_keys as $detail_key)
+        {
+            if(array_key_exists($detail_key, $lead_data))
+            {
+                $aggy = $aggy->createOrUpdateDetail($detail_key, $lead_data[$detail_key], $user_id, $lead_data['client_id']);
+            }
+        }
+
+        $aggy->persist();
 
         return Redirect::route('data.leads');
     }
@@ -287,11 +284,11 @@ class LeadsController extends Controller
 
     public function edit($lead_id)
     {
-        // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
         if (!$lead_id) {
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
@@ -317,7 +314,8 @@ class LeadsController extends Controller
                 'detailsDesc',
                 'profile_picture',
                 'trialMemberships',
-                'middle_name'
+                'middle_name', 'gender', 'dob',
+                'opportunity'
             )->first(),
             'locations' => $locations,
             'lead_types' => $lead_types,
@@ -361,9 +359,25 @@ if(!$middle_name){
         }
         $data = request()->validate($this->rules);
 
-        EndUserActivityAggregate::retrieve($lead_id)
-            ->updateLead($data, auth()->user())
-            ->persist();
+        $lead = Lead::find($lead_id);
+        $user = auth()->user();
+        $aggy = EndUserActivityAggregate::retrieve($lead_id)
+            ->updateLead($data, $user);
+
+        // This is where all the details go
+        $detail_keys = [
+            'middle_name', 'dob', 'gender', 'opportunity'
+        ];
+
+        foreach ($detail_keys as $detail_key)
+        {
+            if(array_key_exists($detail_key, $data))
+            {
+                $aggy = $aggy->createOrUpdateDetail($detail_key, $data[$detail_key], $user->id, $lead->client_id);
+            }
+        }
+
+        $aggy->persist();
 
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
 
