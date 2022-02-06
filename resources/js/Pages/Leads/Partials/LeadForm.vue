@@ -181,7 +181,12 @@ export default {
         JetLabel,
         DatePicker
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'lead_owners'],
+    props: [
+        'userId', 'clientId', 'lead',
+        'locations', 'lead_types',
+        'lead_sources', 'membership_types',
+        'lead_owners'
+    ],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
@@ -203,8 +208,7 @@ export default {
                 gender: '',
                 dob: '',
                 opportunity:'',
-                lead_owner: '',
-                lead_owners: props.lead_owners
+                lead_owner: props.userId,
             }
             operation = 'Create';
         } else {

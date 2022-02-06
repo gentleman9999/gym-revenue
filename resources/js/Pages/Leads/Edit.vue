@@ -11,13 +11,15 @@
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="badge badge-info" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
                 <div class="badge badge-error mt-4" v-if="lead.trial_memberships?.length">Trial Expires: {{new Date(lead.trial_memberships[0].expiry_date).toLocaleString()}}</div>
-                <lead-form :client-id="this.$page.props.user.current_client_id"
-                           :lead="lead" :locations="locations"
-                           :lead_types="lead_types"
-                           :membership_types="membership_types"
-                           :lead_sources="lead_sources"
-                           :lead_owners="lead_owners"
-                           :available_services="available_services"/>
+                <lead-form
+                    :user-id="user_id"
+                    :client-id="this.$page.props.user.current_client_id"
+                    :lead="lead" :locations="locations"
+                    :lead_types="lead_types"
+                    :membership_types="membership_types"
+                    :lead_sources="lead_sources"
+                    :lead_owners="lead_owners"
+                    :available_services="available_services"/>
             </div>
         </div>
     </app-layout>
@@ -48,6 +50,7 @@ export default defineComponent({
         LeadForm,
     },
     props: [
+        'user_id',
         'lead', 'locations', 'lead_types',
         'lead_sources', 'membership_types',
         'available_services', 'trialDates',
