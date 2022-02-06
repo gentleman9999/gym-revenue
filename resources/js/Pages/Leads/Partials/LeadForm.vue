@@ -122,6 +122,15 @@
                 <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
             </div>
 
+            <div class="form-control col-span-3">
+                <jet-label for="lead_owner" value="Lead Owner"/>
+                <select class="" v-model="form['lead_owner']" required id="lead_owner">
+                    <option value="">Select a Lead Owner</option>
+                    <option v-for="(oname, uid) in lead_owners" :value="uid">{{ oname }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_owner']" class="mt-2"/>
+            </div>
+
             <div class="form-divider"/>
             <div class="col-span-6">
                 <label v-if="'last_updated' in form">{{ form['last_updated'] }}</label>
@@ -172,7 +181,7 @@ export default {
         JetLabel,
         DatePicker
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types'],
+    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'lead_owners'],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
@@ -194,9 +203,13 @@ export default {
                 gender: '',
                 dob: '',
                 opportunity:'',
+                lead_owner: '',
+                lead_owners: props.lead_owners
             }
             operation = 'Create';
         } else {
+            console.log('Lead Owner',lead)
+
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
             lead.middle_name =  ('middle_name' in lead  && (lead.middle_name !== null)) ? lead.middle_name.value : null;
             lead.gender =  ('gender' in lead  && (lead.gender !== null)) ? lead.gender.value : null;
@@ -205,6 +218,9 @@ export default {
             lead['last_updated'] = ('last_updated' in lead  && (lead.last_updated !== null))
                 ? `Last Updated by ${lead.last_updated.value} at ${lead.last_updated.created_at}`
                 : 'This lead has never been updated';
+
+            lead['lead_owner'] = ('lead_owner' in lead  && (lead.lead_owner !== null)) ? lead.lead_owner.value : '';
+
         }
 
         const form = useForm(lead)

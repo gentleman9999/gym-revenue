@@ -78,8 +78,12 @@ class Lead extends Model
 
     public function leadsclaimed()
     {
-//$claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
         return $this->details()->whereField('claimed');
+    }
+
+    public function lead_owner()
+    {
+        return $this->detail()->whereField('claimed')->whereActive(1);
     }
 
     public function middle_name()
