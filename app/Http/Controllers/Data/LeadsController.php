@@ -44,6 +44,7 @@ class LeadsController extends Controller
         'gender'                    => 'sometimes|required',
         'dob'                       => 'sometimes|required',
         'opportunity'               => 'sometimes|required',
+        'lead_owner'                => 'sometimes|required|exists:users,id'
     ];
 
     public function index(Request $request)
@@ -294,8 +295,9 @@ class LeadsController extends Controller
         // one has an outdated currentClient id, creating would have unintended ]
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
-        $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
         $locations = [];
@@ -309,6 +311,19 @@ class LeadsController extends Controller
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+        /**
+         * STEPS for team users
+         * 1. No CnB Admins unless it is you
+         * 2. Unless Cnb Admin, no admin users
+         */
+        $available_lead_owners = [];
+        foreach($team_users as $team_user)
+        {
+            $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
+        }
+
         return Inertia::render('Leads/Edit', [
             'lead' => Lead::whereId($lead_id)->with(
                 'detailsDesc',
@@ -316,6 +331,7 @@ class LeadsController extends Controller
                 'trialMemberships',
                 'middle_name', 'gender', 'dob',
                 'opportunity',
+                'lead_owner',
                 'last_updated'
             )->first(),
             'locations' => $locations,
@@ -323,6 +339,7 @@ class LeadsController extends Controller
             'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
             'trialDates' => $lead_aggy->trial_dates,
+            'lead_owners' => $available_lead_owners
         ]);
     }
 
@@ -363,7 +380,8 @@ if(!$middle_name){
         $lead = Lead::find($lead_id);
         $user = auth()->user();
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
-            ->updateLead($data, $user);
+            ->updateLead($data, $user)
+            ->claimLead($data['lead_owner'], $lead->client_id);
 
         // This is where all the details go
         $detail_keys = [
