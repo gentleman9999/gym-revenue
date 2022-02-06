@@ -71,7 +71,7 @@ class AppStateSeeder extends Seeder
             'name' => 'Deployment Log Record',
             'slug' => 'deployment-log-record',
             'desc' => 'This is a record of code deployed on 02-06-2022',
-            'value' => '2022-02-02',
+            'value' => '2022-02-06',
             'misc' => [
                 'buildno' => '20220206',
                 'version' => '0.10.23',
@@ -97,8 +97,6 @@ class AppStateSeeder extends Seeder
                     'You can now Create new Locations',
                     'You can Update Locations',
                     'New Location fields in Create & Edit - Phone, Open Date, Closed Date, PoC First, Last  Phone, and an Arbitrary Location No',
-                    '',
-                    '', // don't use me! clone me
                 ]
             ]
         ]);
