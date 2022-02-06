@@ -47,6 +47,8 @@ class LeadProspectSeeder extends Seeder
                             $prospect->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
                             $prospect->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
                             $prospect->lead_source_id = $client->lead_sources[random_int(1, count($client->lead_sources) - 1)]->id;
+                            // @todo - if the lead_source_id is connected to custom, redo it.
+                            // @todo - no custom status in the seeder allowed...yet.
 
                             // For each fake user, run them through the EnduserActivityAggregate
                             $aggy = EndUserActivityAggregate::retrieve($prospect->id);
