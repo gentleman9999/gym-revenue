@@ -122,10 +122,14 @@
                 <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
             </div>
 
+            <div class="form-divider"/>
+            <div class="col-span-6">
+                <label v-if="'last_updated' in form">{{ form['last_updated'] }}</label>
+            </div>
+
         </template>
 
         <template #actions>
-            <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button type="button" @click="goBack" :class="{ 'opacity-25': form.processing }" error outline
                     :disabled="form.processing">
                 Cancel
@@ -198,6 +202,9 @@ export default {
             lead.gender =  ('gender' in lead  && (lead.gender !== null)) ? lead.gender.value : null;
             lead.dob =  ('dob' in lead  && (lead.dob !== null)) ? lead.dob.value : null;
             lead.opportunity =  ('opportunity' in lead  && (lead.opportunity !== null)) ? lead.opportunity.value : null;
+            lead['last_updated'] = ('last_updated' in lead  && (lead.last_updated !== null))
+                ? `Last Updated by ${lead.last_updated.value} at ${lead.last_updated.created_at}`
+                : 'This lead has never been updated';
         }
 
         const form = useForm(lead)
