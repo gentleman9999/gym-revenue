@@ -60,6 +60,14 @@
                         >
                             Lead Sources
                         </inertia-link>
+
+                        <inertia-link
+                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                            href="#"
+                            @click="comingSoon()"
+                        >
+                            Lead Statuses
+                        </inertia-link>
                     </div>
 
                     <div class="flex-grow" />
