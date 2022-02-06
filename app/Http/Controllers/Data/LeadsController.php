@@ -78,6 +78,7 @@ class LeadsController extends Controller
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
+            'routeName' => request()->route()->getName(),
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'),

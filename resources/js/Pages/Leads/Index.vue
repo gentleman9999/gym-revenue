@@ -26,13 +26,13 @@
                         >
                             Calendar
                         </a>
-                        <a
+                        <inertia-link
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
+                            :class="(routeName === 'data.leads') ? 'bg-white text-black px-2 rounded' : ''"
+                            :href="route('data.leads')"
                         >
                             Leads
-                        </a>
+                        </inertia-link>
                         <a
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
@@ -129,7 +129,7 @@ export default defineComponent({
         JetBarContainer,
         LeadInteraction,
     },
-    props: ["leads", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user'],
+    props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user'],
     setup(props) {
         const comingSoon = () => {
             new Noty({
@@ -229,6 +229,7 @@ export default defineComponent({
                 (confirmTrash.value = null)
             );
         };
+
         return {
             handleClickTrash,
             confirmTrash,
