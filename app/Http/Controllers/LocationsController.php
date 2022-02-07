@@ -34,7 +34,7 @@ class LocationsController extends Controller
         'poc_phone' => [],
         'opendate' => [],
         'closedate' => [],
-        'location_no' => ['required', 'max:50'],
+        //'location_no' => ['required', 'max:50'],
         'gymrevenue_id' => [],
     ];
 
