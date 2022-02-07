@@ -444,9 +444,10 @@ if(!$middle_name){
     {
         $data = request()->all();
 
-        if(request()->user()->isNotAn('Sales Rep', 'Location Manager')) {
-            \Alert::error('Only Sales Reps and Location Managers can claim leads.')->flash();
-            return redirect()->back();
+        if(request()->user()->cannot('contact', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
         }
 
         // @todo - change to laravel style Validation
