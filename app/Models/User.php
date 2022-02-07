@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Silber\Bouncer\Database\HasRolesAndAbilities;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
@@ -26,7 +25,6 @@ class User extends Authenticatable
     use Notifiable;
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
-    use HasRolesAndAbilities;
 
     /**
      * The attributes that are mass assignable.
