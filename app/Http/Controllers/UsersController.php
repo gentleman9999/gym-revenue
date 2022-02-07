@@ -21,7 +21,7 @@ class UsersController extends Controller
         'email' => ['required', 'email'],
         'role' => ['required'],
         'phone' => ['required', 'digits:10']
-       
+
     ];
 /*  */
     public function index(Request $request)
@@ -29,7 +29,6 @@ class UsersController extends Controller
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
        //     dd($request->user());
-           // $phone = UserDetails::where
             return Inertia::render('Users/Show', [
                 'users' => User::whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
@@ -50,7 +49,7 @@ class UsersController extends Controller
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
                 'teams' => [],
-             //   'phone' => '333',
+
             ]);
         }
     }
@@ -76,10 +75,6 @@ class UsersController extends Controller
             $phone = $phone->value;
         }
 
-
-
-
-     //       dd($id,$phone);
         if(request()->user()->cannot('update', User::class)){
             abort(403);
         }
@@ -108,7 +103,6 @@ class UsersController extends Controller
         );
      //   dd($request);
         $current_phone =$request->phone;
-       // dd($current_phone,$request,$request->user()->phone,$request->phone);
         UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
         if ($client_id) {
             $aggy = ClientAggregate::retrieve($client_id);
@@ -128,12 +122,10 @@ class UsersController extends Controller
         }
 
         $data = $request->validate($this->rules);
-//        dd($data);
         $current_user = $request->user();
         $user = User::findOrFail($id);
         $phone=$data['phone'];
 
-    //    dd($data,$user,$phone);
         UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $phone]);
         $user->updateOrFail($data);
         $current_team = $current_user->currentTeam()->first();
