@@ -14,7 +14,11 @@ use Bouncer;
 
 class SecurityRolesController extends Controller
 {
-    protected $rules = [];
+    protected $rules = [
+        'security_role' => ['string', 'required'],
+        'role' => ['string', 'required'],
+        'abilities' => ['array' ,'required'],
+    ];
 
     public function index(Request $request)
     {
@@ -52,6 +56,7 @@ class SecurityRolesController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->validate($this->rules));
         $securityRole = SecurityRole::create(
             $request->validate($this->rules)
         );

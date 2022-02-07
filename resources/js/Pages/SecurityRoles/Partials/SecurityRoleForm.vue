@@ -30,31 +30,45 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors.security_role"
+                    :message="form.errors.role"
                     class="mt-2"
                 />
             </div>
 
             <div
+                class="col-span-6 uppercase font-bold">
+                Abilities
+            </div>
+
+            <div
                 class="col-span-6"
-                v-for="([groupName, availableAbilities]) in Object.entries(
+                v-for="[groupName, availableAbilities] in Object.entries(
                     groupedAvailableAbilities
                 )"
             >
-                {{groupName}}
-                <template v-for="availableAbility in availableAbilities">
-                    <jet-label for="abilities" :value="availableAbility.name" />
-                    <input
-                        id="abilities"
-                        type="checkbox"
-                        class="block w-full mt-1"
-                        v-model="form.security_role"
-                        autofocus
-                /></template>
-                <jet-input-error
-                    :message="form.errors.security_role"
-                    class="mt-2"
-                />
+                <div class="grid grid-cols-6">
+                    <span class="font-bold col-span-6 uppercase opacity-50 text-sm pb-4">{{ groupName }}</span>
+                    <div
+                        class="flex flex-row items-center gap-4 col-span-6 xl:col-span-3 pb-4"
+                        v-for="availableAbility in availableAbilities"
+                    >
+                        <input
+                            :id="`abilities${availableAbility.title}`"
+                            type="checkbox"
+                            v-model="form.abilities"
+                            :value="availableAbility.name"
+                            autofocus
+                        />
+                        <jet-label
+                            :for="`abilities${availableAbility.title}`"
+                            :value="availableAbility.title"
+                        />
+                    </div>
+                    <jet-input-error
+                        :message="form.errors.abilities"
+                        class="mt-2"
+                    />
+                </div>
             </div>
             <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
@@ -126,7 +140,9 @@ export default {
         if (!securityRole) {
             securityRole = {
                 security_role: null,
+                role: null,
                 client_id: props.clientId,
+                abilities: []
             };
             operation = "Create";
         }
