@@ -44,7 +44,7 @@ class BouncerSeeder extends Seeder
         Bouncer::allow('Admin')->to('trash', Location::class);
 
         /* OTHER */
-        Bouncer::allow('Admin')->to('view-todo-list');
+        Bouncer::disallow('Admin')->to('view-todo-list');
         Bouncer::allow('Admin')->to('view-file-manager', File::class);
 
         /** Account Owner Roles */
