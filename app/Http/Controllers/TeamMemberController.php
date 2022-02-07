@@ -1,7 +1,8 @@
 <?php
 
-namespace Laravel\Jetstream\Http\Controllers\Inertia;
+namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Laravel\Jetstream\Actions\UpdateTeamMemberRole;
@@ -37,13 +38,17 @@ class TeamMemberController extends Controller
             }
         } else {
             foreach ($emails as $email) {
+                $email_user = User::whereEmail($email)->first();
 
-                app(AddsTeamMembers::class)->add(
-                    $request->user(),
-                    $team,
-                    $email ?: '',
-                    $request->role
-                );
+                if(!is_null($email_user)) {
+                    $role = $email_user->getRoles();
+                    app(AddsTeamMembers::class)->add(
+                        $request->user(),
+                        $team,
+                        $email ?: '',
+                        $role[0]
+                    );
+                }
             }
         }
 

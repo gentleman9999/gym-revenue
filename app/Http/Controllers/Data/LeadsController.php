@@ -12,6 +12,7 @@ use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\LeadSource;
+use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
 use App\Models\TeamDetail;
@@ -25,21 +26,26 @@ use Prologue\Alerts\Facades\Alert;
 class LeadsController extends Controller
 {
     protected $rules = [
-        'first_name' => ['required', 'max:50'],
-        'last_name' => ['required', 'max:30'],
-        'email' => ['required', 'email:rfc,dns'],
-        'primary_phone' => ['sometimes'],
-        'alternate_phone' => ['sometimes'],
-        'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
-        'lead_source_id' => ['required', 'exists:lead_sources,id'],
-        'lead_type_id' => ['required', 'exists:lead_types,id'],
-        'membership_type_id' => ['required', 'exists:membership_types,id'],
-        'client_id' => 'required',
-        'profile_picture' => 'sometimes',
-        'profile_picture.uuid' => 'sometimes|required',
-        'profile_picture.key' => 'sometimes|required',
+        'first_name'                => ['required', 'max:50'],
+        'middle_name'               => [],
+        'last_name'                 => ['required', 'max:30'],
+        'email'                     => ['required', 'email:rfc,dns'],
+        'primary_phone'             => ['sometimes'],
+        'alternate_phone'           => ['sometimes'],
+        'gr_location_id'            => ['required', 'exists:locations,gymrevenue_id'],
+        'lead_source_id'            => ['required', 'exists:lead_sources,id'],
+        'lead_type_id'              => ['required', 'exists:lead_types,id'],
+        'client_id'                 => 'required',
+        'profile_picture'           => 'sometimes',
+        'profile_picture.uuid'      => 'sometimes|required',
+        'profile_picture.key'       => 'sometimes|required',
         'profile_picture.extension' => 'sometimes|required',
-        'profile_picture.bucket' => 'sometimes|required'
+        'profile_picture.bucket'    => 'sometimes|required',
+        'gender'                    => 'sometimes|required',
+        'dob'                       => 'sometimes|required',
+        'opportunity'               => 'sometimes|required',
+        'lead_owner'                => 'sometimes|required|exists:users,id',
+        'lead_status'                => 'sometimes|required|exists:lead_statuses,id'
     ];
 
     public function index(Request $request)
@@ -72,6 +78,7 @@ class LeadsController extends Controller
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
+            'routeName' => request()->route()->getName(),
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'),
@@ -131,6 +138,7 @@ class LeadsController extends Controller
         // one has an outdated currentClient id, creating would have unintended ]
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
+        $user = auth()->user();
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
@@ -141,28 +149,38 @@ class LeadsController extends Controller
         }
 
         $lead_types = LeadType::whereClientId($client_id)->get();
-        $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
+
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+
+        /**
+         * STEPS for team users
+         * 1. No CnB Admins unless it is you
+         * 2. Unless Cnb Admin, no admin users
+         */
+        $available_lead_owners = [];
+        foreach($team_users as $team_user)
+        {
+            $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
+        }
 
         return Inertia::render('Leads/Create', [
+            'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,
-            'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
+            'lead_statuses' => $lead_statuses,
+            'lead_owners' => $available_lead_owners
         ]);
     }
 
     public function store(Lead $lead_model)
     {
         $lead_data = request()->validate($this->rules);
-//        $lead_data['lead_type_id'] = 1;//manual_create
         $user_id = auth()->user()->id;
-//        if (array_key_exists('user_id', $lead_data)) {
-//            $user_id = $lead_data['user_id'];
-//            unset($lead_data['user_id']);
-//        }
 
-        //TODO:all this stuff should happen synchronously via aggregate
         $lead = $lead_model->create($lead_data);
 
         if (array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']) {
@@ -183,10 +201,29 @@ class LeadsController extends Controller
 
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 
-        EndUserActivityAggregate::retrieve($lead->id)
-            ->manualNewLead($lead->toArray(), $user_id)
-            ->claimLead($user_id, $lead_data['client_id'])
-            ->persist();
+        $aggy = EndUserActivityAggregate::retrieve($lead->id)
+            ->manualNewLead($lead->toArray(), $user_id);
+
+        $owner = array_key_exists('lead_owner', $lead_data)
+            ? $lead_data['lead_owner'] : $user_id;
+
+        $aggy = $aggy->claimLead($owner, $lead_data['client_id']);
+
+        // This is where all the details go
+        $detail_keys = [
+            'middle_name', 'dob', 'gender', 'opportunity',
+            'lead_status'
+        ];
+
+        foreach ($detail_keys as $detail_key)
+        {
+            if(array_key_exists($detail_key, $lead_data) && ($lead_data[$detail_key]))
+            {
+                $aggy = $aggy->createOrUpdateDetail($detail_key, $lead_data[$detail_key], $user_id, $lead_data['client_id']);
+            }
+        }
+
+        $aggy->persist();
 
         return Redirect::route('data.leads');
     }
@@ -272,18 +309,19 @@ class LeadsController extends Controller
 
     public function edit($lead_id)
     {
-        // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
         if (!$lead_id) {
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
-        $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
         $locations = [];
@@ -292,18 +330,42 @@ class LeadsController extends Controller
         }
 
         $lead_types = LeadType::whereClientId($client_id)->get();
-        $membership_types = MembershipType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+        /**
+         * STEPS for team users
+         * 1. No CnB Admins unless it is you
+         * 2. Unless Cnb Admin, no admin users
+         */
+        $available_lead_owners = [];
+        foreach($team_users as $team_user)
+        {
+            $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
+        }
+
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with('detailsDesc', 'profile_picture', 'trialMemberships')->first(),
+            'lead' => Lead::whereId($lead_id)->with(
+                'detailsDesc',
+                'profile_picture',
+                'trialMemberships',
+                'middle_name', 'gender', 'dob',
+                'opportunity',
+                'lead_owner',
+                'lead_status',
+                'last_updated'
+            )->first(),
+            'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,
-            'membership_types' => $membership_types,
             'lead_sources' => $lead_sources,
-            'trialDates' => $lead_aggy->trial_dates
+            'lead_statuses' => $lead_statuses,
+            'trialDates' => $lead_aggy->trial_dates,
+            'lead_owners' => $available_lead_owners
         ]);
     }
 
@@ -314,11 +376,21 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
-
+        $middle_name ='';
+        $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
+        foreach($middle_names as $middle_name){
+            //     dd($middle_name);
+        }
+        /*
+if(!$middle_name){
+    $middle_name ='';
+}else{
+    $middle_name = $middle_name;
+}
+*/
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
-            'trialDates' => $lead_aggy->trial_dates,
+            'middle_name' => $middle_name,
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
         ]);
     }
@@ -331,15 +403,29 @@ class LeadsController extends Controller
         }
         $data = request()->validate($this->rules);
 
-//        $data = request()->all();
-
-        //	dd($data);
+        $lead = Lead::find($lead_id);
+        $user = auth()->user();
         $aggy = EndUserActivityAggregate::retrieve($lead_id)
-            ->updateLead($data, auth()->user())
-            ->persist();
+            ->updateLead($data, $user)
+            ->claimLead($data['lead_owner'], $lead->client_id);
+
+        // This is where all the details go
+        $detail_keys = [
+            'middle_name', 'dob', 'gender', 'opportunity',
+            'lead_status'
+        ];
+
+        foreach ($detail_keys as $detail_key)
+        {
+            if(array_key_exists($detail_key, $data) && ($data[$detail_key]))
+            {
+                $aggy = $aggy->createOrUpdateDetail($detail_key, $data[$detail_key], $user->id, $lead->client_id);
+            }
+        }
+
+        $aggy->persist();
 
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
-
 
         return Redirect::route('data.leads');
     }

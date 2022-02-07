@@ -94,6 +94,12 @@ class Team extends JetstreamTeam
         return $results;
     }
 
+    public function team_users()
+    {
+        return $this->hasMany(TeamUser::class, 'team_id', 'id')
+            ->with('user');
+    }
+
     public function isClientsDefaultTeam()
     {
         $proof = $this->default_team_details()->first();

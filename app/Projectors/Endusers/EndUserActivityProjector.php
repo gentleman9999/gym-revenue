@@ -11,6 +11,7 @@ use App\Models\Endusers\TrialMembership;
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\EndUsers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
@@ -78,6 +79,20 @@ class EndUserActivityProjector extends Projector
         ]);
     }
 
+    public function onLeadDetailUpdated(LeadDetailUpdated $event)
+    {
+        $detail = LeadDetails::firstOrCreate([
+            'lead_id' => $event->lead,
+            'client_id' =>  $event->client,
+            'field' => $event->key,
+        ]);
+
+        $detail->value = $event->value;
+        $misc = ['user' => $event->user];
+        $detail->misc = $misc;
+        $detail->save();
+    }
+
     public function onAgreementNumberCreatedForLead(AgreementNumberCreatedForLead $event){
         LeadDetails::create([
             'lead_id' => $event->id,
@@ -94,6 +109,7 @@ class EndUserActivityProjector extends Projector
         $user = User::find($event->user);
         $lead->updateOrFail($event->lead);
         LeadDetails::whereLeadId($event->id)->whereField('service_id')->delete();
+        /*
         foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::firstOrCreate([
                     'lead_id' => $event->aggregateRootUuid(),
@@ -103,6 +119,7 @@ class EndUserActivityProjector extends Projector
                 ]
             );
         }
+        */
 
         LeadDetails::create([
             'lead_id' => $event->id,
@@ -123,9 +140,9 @@ class EndUserActivityProjector extends Projector
             'client_id' => $event->client,
             'lead_id' => $event->lead,
             'field' => 'claimed',
-            'value' => $event->user
         ]);
 
+        $lead->value = $event->user;
         $misc = $lead->misc;
         if (!is_array($misc)) {
             $misc = [];
