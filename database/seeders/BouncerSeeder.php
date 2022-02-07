@@ -94,7 +94,7 @@ class BouncerSeeder extends Seeder
         Bouncer::disallow('Location Manager')->to('trash', Location::class);
 
         /* OTHER */
-        Bouncer::disallow('Location Manager')->to('view-todo-list');
+        Bouncer::allow('Location Manager')->to('view-todo-list');
         Bouncer::disallow('Location Manager')->to('view-file-manager', File::class);
 
         /** Sales Rep Roles */
@@ -119,33 +119,33 @@ class BouncerSeeder extends Seeder
         Bouncer::disallow('Sales Rep')->to('trash', Location::class);
 
         /* OTHER */
-        Bouncer::disallow('Sales Rep')->to('view-todo-list');
+        Bouncer::allow('Sales Rep')->to('view-todo-list');
         Bouncer::disallow('Sales Rep')->to('view-file-manager', File::class);
 
         /** Employee Roles (Read Only for now) */
 
         /* USER */
-        //Bouncer::disallow('Employee')->to('create', User::class);
-        //Bouncer::disallow('Employee')->to('view', User::class);
-        //Bouncer::disallow('Employee')->to('edit', User::class);
+        Bouncer::disallow('Employee')->to('create', User::class);
+        Bouncer::disallow('Employee')->to('view', User::class);
+        Bouncer::disallow('Employee')->to('edit', User::class);
         //Bouncer::disallow('Employee')->to('delete', User::class);
 
         /* LEADS */
-        //Bouncer::disallow('Employee')->to('create', Lead::class);
-        //Bouncer::allow('Employee')->to('view', Lead::class);
-        //Bouncer::disallow('Employee')->to('contact', Lead::class);
-        //Bouncer::disallow('Employee')->to('edit', Lead::class);
-        //Bouncer::disallow('Employee')->to('delete', Lead::class);
+        Bouncer::disallow('Employee')->to('create', Lead::class);
+        Bouncer::allow('Employee')->to('view', Lead::class);
+        Bouncer::disallow('Employee')->to('contact', Lead::class);
+        Bouncer::disallow('Employee')->to('edit', Lead::class);
+        Bouncer::disallow('Employee')->to('delete', Lead::class);
 
         /* LOCATIONS/Club Mgmt */
-        //Bouncer::disallow('Employee')->to('create', Location::class);
-        //Bouncer::allow('Employee')->to('view', Location::class);
-        //Bouncer::disallow('Employee')->to('edit', Location::class);
-        //Bouncer::disallow('Employee')->to('trash', Location::class);
+        Bouncer::disallow('Employee')->to('create', Location::class);
+        Bouncer::allow('Employee')->to('view', Location::class);
+        Bouncer::disallow('Employee')->to('edit', Location::class);
+        Bouncer::disallow('Employee')->to('trash', Location::class);
 
         /* OTHER */
-        //Bouncer::disallow('Employee')->to('view-todo-list');
-        //Bouncer::disallow('Employee')->to('view-file-manager', File::class);
+        Bouncer::allow('Employee')->to('view-todo-list');
+        Bouncer::disallow('Employee')->to('view-file-manager', File::class);
 
         /***************************
          * END BOUNCER PERMISSIONS
