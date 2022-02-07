@@ -3,12 +3,15 @@
 namespace App\Projectors\Endusers;
 
 use App\Models\Clients\Features\CommAudience;
+use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\AudienceMember;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
+use App\Models\Endusers\TrialMembership;
 use App\Models\User;
+use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
-use App\StorableEvents\Endusers\LeadServicesSet;
+use App\StorableEvents\EndUsers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
@@ -16,7 +19,10 @@ use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\ManualLeadMade;
 use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
+use App\StorableEvents\Endusers\TrialMembershipAdded;
+use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\UpdateLead;
+use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EndUserActivityProjector extends Projector
@@ -25,7 +31,21 @@ class EndUserActivityProjector extends Projector
     {
         $lead = Lead::create($event->lead);
 
-        foreach($event->lead['services'] ?? [] as $service_id){
+        LeadDetails::create([
+            'lead_id' => $lead->id,
+            'client_id' => $lead->client_id,
+            'field' => 'created',
+            'value' => $lead->created_at
+        ]);
+
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $lead->client_id,
+            'field' => 'agreement_number',
+            'value' => floor(time()-99999999),
+        ]);
+
+        foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([
                     'lead_id' => $event->aggregateRootUuid(),
                     'client_id' => $lead->client_id,
@@ -45,6 +65,41 @@ class EndUserActivityProjector extends Projector
             'field' => 'manual_create',
             'value' => $user->email,
         ]);
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $event->lead['client_id'],
+            'field' => 'created',
+            'value' => Carbon::now()
+        ]);
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $event->lead['client_id'],
+            'field' => 'agreement_number',
+            'value' => floor(time()-99999999),
+        ]);
+    }
+
+    public function onLeadDetailUpdated(LeadDetailUpdated $event)
+    {
+        $detail = LeadDetails::firstOrCreate([
+            'lead_id' => $event->lead,
+            'client_id' =>  $event->client,
+            'field' => $event->key,
+        ]);
+
+        $detail->value = $event->value;
+        $misc = ['user' => $event->user];
+        $detail->misc = $misc;
+        $detail->save();
+    }
+
+    public function onAgreementNumberCreatedForLead(AgreementNumberCreatedForLead $event){
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $event->client,
+            'field' => 'agreement_number',
+            'value' => $event->agreement,
+        ]);
     }
 
     public function onUpdateLead(UpdateLead $event)
@@ -54,7 +109,8 @@ class EndUserActivityProjector extends Projector
         $user = User::find($event->user);
         $lead->updateOrFail($event->lead);
         LeadDetails::whereLeadId($event->id)->whereField('service_id')->delete();
-        foreach($event->lead['services'] ?? [] as $service_id){
+        /*
+        foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::firstOrCreate([
                     'lead_id' => $event->aggregateRootUuid(),
                     'client_id' => $lead->client_id,
@@ -63,6 +119,7 @@ class EndUserActivityProjector extends Projector
                 ]
             );
         }
+        */
 
         LeadDetails::create([
             'lead_id' => $event->id,
@@ -83,9 +140,9 @@ class EndUserActivityProjector extends Projector
             'client_id' => $event->client,
             'lead_id' => $event->lead,
             'field' => 'claimed',
-            'value' => $event->user
         ]);
 
+        $lead->value = $event->user;
         $misc = $lead->misc;
         if (!is_array($misc)) {
             $misc = [];
@@ -184,43 +241,57 @@ class EndUserActivityProjector extends Projector
 
     }
 
-
-    //primarily just unseed for seeder. couldn't get to work otherwise.
-    public function onLeadServicesSet(LeadServicesSet $event)
+    public function onLeadWasDeleted(LeadWasDeleted $event)
     {
-//        $LeadDetails::firstOrCreate();
-        $lead = Lead::find($event->aggregateRootUuid());
-
-        LeadDetails::whereLeadId($lead->id)->whereField('service_id')->delete();
-
-        foreach ($event->serviceIds ?? [] as $service_id) {
-            LeadDetails::firstOrCreate([
-                    'lead_id' => $event->aggregateRootUuid(),
-                    'client_id' => $lead->client_id,
-                    'field' => 'service_id',
-                    'value' => $service_id
-                ]
-            );
-
-        }
-    }
-
-    public function onLeadWasDeleted(LeadWasDeleted $event){
         $lead = Lead::findOrFail($event->lead);
         $client_id = $lead->client_id;
-      //  dd($event->lead);
         $success = $lead->deleteOrFail();
 
-        $uare =	$event->user;
-      //  dd($data, $uare);
+        $uare = $event->user;
 
         LeadDetails::create([
             'client_id' => $client_id,
             'lead_id' => $event->lead,
             'field' => 'softdelete',
             'value' => $uare,
-            'misc' =>  ['userid'=> $uare]
+            'misc' => ['userid' => $uare]
         ]);
 
+    }
+
+    public function onTrialMembershipAdded(TrialMembershipAdded $event)
+    {
+        $lead = Lead::findOrFail($event->lead);
+        $trial = TrialMembershipType::find($event->trial);
+        $client_id = $lead->client_id;
+        TrialMembership::create([
+            'client_id' => $client_id,
+            'type_id' => $event->trial,
+            'lead_id' => $event->lead,
+            'start_date' => $event->date,
+            'expiry_date' => Carbon::instance(new \DateTime($event->date))->addDays($trial->trial_length),
+            'club_id' => $lead->gr_location_id,
+            'active' => 1
+        ]);
+        LeadDetails::create([
+            'client_id' => $event->client,
+            'lead_id' => $event->lead,
+            'field' => 'trial-started',
+            'value' => $event->date,
+            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
+        ]);
+    }
+
+    public function onTrialMembershipUsed(TrialMembershipUsed $event)
+    {
+        $lead = Lead::findOrFail($event->lead);
+
+        LeadDetails::create([
+            'client_id' => $event->client,
+            'lead_id' => $event->lead,
+            'field' => 'trial-used',
+            'value' => $event->trial,
+            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
+        ]);
     }
 }

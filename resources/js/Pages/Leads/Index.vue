@@ -16,38 +16,58 @@
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
                             @click="comingSoon()"
-                            >Dashboard</a
                         >
+                            Dashboard
+                        </a>
                         <a
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
                             @click="comingSoon()"
-                            >Calendar</a
                         >
+                            Calendar
+                        </a>
+                        <inertia-link
+                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                            :class="(routeName === 'data.leads') ? 'bg-white text-black px-2 rounded' : ''"
+                            :href="route('data.leads')"
+                        >
+                            Leads
+                        </inertia-link>
                         <a
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
                             @click="comingSoon()"
-                            >Leads</a
                         >
+                            Tasks
+                        </a>
                         <a
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
                             @click="comingSoon()"
-                            >Tasks</a
                         >
+                            Contacts
+                        </a>
                         <a
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
                             @click="comingSoon()"
-                            >Contacts</a
                         >
-                        <a
+                            Consultants
+                        </a>
+                        <inertia-link
+                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                            :href="route('data.leads.sources')"
+                        >
+                            Lead Sources
+                        </inertia-link>
+
+                        <inertia-link
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
                             @click="comingSoon()"
-                            >Consultants</a
                         >
+                            Lead Statuses
+                        </inertia-link>
                     </div>
 
                     <div class="flex-grow" />
@@ -61,42 +81,34 @@
             :top-actions="{
                 create: { label: 'Add Lead' },
             }"
-            :actions="{
-               trash:{
-                    handler: ({data}) => handleClickTrash(data.id)
-                },
-
-                contact: {
-                    label: 'Contact Lead',
-                    handler: ({ data }) => {
-                        Inertia.visit(route('data.leads.show', data.id));
-                    },
-                },
-            }"
+            :actions="actions"
         />
-		 <confirm
+        <confirm
             title="Really Trash?"
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
-        > {{ firstName }} {{ lastName }}
-            Are you sure you want to remove this lead?<BR/>
-             Reason for Deleting:<br>
-<select name="reasonforremoving" >
-    <option value="duplicate" >Is a duplicate</option>
-    <option value="test-lead" >Is a test lead</option>
-    <option value="DNC" > Lead requested DNC and data removal</option>
-    <option value="person-non-existing" >This person does not exist</option>
-    <option value="mistake-creating" >I made a mistake creating this lead</option>
-    <option value="other" >Other</option>
-</select>
+        >
+            {{ firstName }} {{ lastName }} Are you sure you want to remove this
+            lead?<br /> Reason for Deleting:<br />
+            <select name="reasonforremoving">
+                <option value="duplicate">Is a duplicate</option>
+                <option value="test-lead">Is a test lead</option>
+                <option value="DNC">Lead requested DNC and data removal</option>
+                <option value="person-non-existing">
+                    This person does not exist
+                </option>
+                <option value="mistake-creating">
+                    I made a mistake creating this lead
+                </option>
+                <option value="other">Other</option>
+            </select>
         </confirm>
-
     </app-layout>
 </template>
 
 <script>
-import {computed, defineComponent, ref} from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
@@ -112,12 +124,12 @@ export default defineComponent({
     components: {
         GymRevenueCrud,
         AppLayout,
-		Confirm,
+        Confirm,
         Button,
         JetBarContainer,
         LeadInteraction,
     },
-    props: ["leads", "title", "isClientUser", "filters", "lead_types"],
+    props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user'],
     setup(props) {
         const comingSoon = () => {
             new Noty({
@@ -126,14 +138,14 @@ export default defineComponent({
                 text: "Feature Coming Soon!",
                 timeout: 7500,
             }).show();
-        }
-        const  badgeClasses = (lead_type_id) => {
-            if(!lead_type_id){
-                console.log('no lead type id!');
-                return '';
+        };
+        const badgeClasses = (lead_type_id) => {
+            if (!lead_type_id) {
+                console.log("no lead type id!");
+                return "";
             }
 
-            const badges =  [
+            const badges = [
                 "badge-primary",
                 "badge-secondary",
                 "badge-info",
@@ -145,15 +157,14 @@ export default defineComponent({
                 "badge-warning",
             ];
 
-            const lead_type_index = props.lead_types.findIndex(lead_type=>lead_type.id === lead_type_id);
-            if(props.lead_types.length <=badges.length ){
-                return  badges[lead_type_index];
+            const lead_type_index = props.lead_types.findIndex(
+                (lead_type) => lead_type.id === lead_type_id
+            );
+            if (props.lead_types.length <= badges.length) {
+                return badges[lead_type_index];
             }
-            return  badges[lead_type_index % badges.length];
+            return badges[lead_type_index % badges.length];
             // console.log({lead_type_index, })
-
-
-
         };
         const fields = [
             { name: "created_at", label: "Created" },
@@ -178,21 +189,56 @@ export default defineComponent({
             },
         ];
 
-	const confirmTrash = ref(null);
+        const actions = {
+            trash: {
+                handler: ({ data }) => handleClickTrash(data.id),
+            },
+
+            contact: {
+                label: "Contact Lead",
+                handler: ({ data }) => {
+                    Inertia.visit(route("data.leads.show", data.id));
+                },
+                shouldRender: ({ data }) => {
+                    const claimed = data.details_desc.filter(
+                        (detail) => detail.field === "claimed"
+                    );
+                    console.log({ claimed, props });
+                    const yours = claimed.filter(
+                        (detail) =>
+                            parseInt(detail.value) === parseInt(props.user.id)
+                    );
+                    return yours.length;
+                },
+            },
+        };
+
+        const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
-        }; handleClickTrash()
-        const handleConfirmTrash = () => {
-  			/* */
-            axios.delete(route("data.leads.trash", confirmTrash.value)).then(response => {
-                        setTimeout(() => response($result, 200),10000)
-		                                      },
-                Inertia.reload(),
-            location.reload(),
-            confirmTrash.value = null
-		);
         };
-        return { handleClickTrash, confirmTrash, handleConfirmTrash,  fields, Inertia,  comingSoon };
+        handleClickTrash();
+        const handleConfirmTrash = () => {
+            /* */
+            axios.delete(route("data.leads.trash", confirmTrash.value)).then(
+                (response) => {
+                    setTimeout(() => response($result, 200), 10000);
+                },
+                Inertia.reload(),
+                location.reload(),
+                (confirmTrash.value = null)
+            );
+        };
+
+        return {
+            handleClickTrash,
+            confirmTrash,
+            handleConfirmTrash,
+            fields,
+            actions,
+            Inertia,
+            comingSoon,
+        };
     },
 });
 </script>

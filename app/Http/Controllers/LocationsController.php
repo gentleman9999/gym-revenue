@@ -20,13 +20,21 @@ use Silber\Bouncer\Bouncer;
 class LocationsController extends Controller
 {
     protected $rules = [
+
+        'poc_last' =>['sometimes'],
         'name' => ['required', 'max:50'],
         'city' => ['required', 'max:30'],
         'state' => ['required', 'size:2'],
         'client_id' => ['required'],
-        'address1' => 'required',
+        'address1' => ['required','max:200'],
         'address2' => [],
         'zip' => ['required', 'size:5'],
+        'phone' => [],
+        'poc_first' => [],
+        'poc_phone' => [],
+        'opendate' => [],
+        'closedate' => [],
+        'location_no' => ['required', 'max:50'],
         'gymrevenue_id' => [],
     ];
 
@@ -35,13 +43,14 @@ class LocationsController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
+
         // @todo - insert Bouncer-based ACL here.
         $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
             $locations = $locations->with('client')
-                ->filter($request->only('search', 'trashed','state'))
+                ->filter($request->only('search', 'trashed'))
                 ->paginate($page_count);
         }
 
@@ -51,21 +60,18 @@ class LocationsController extends Controller
         } else {
             $title = 'All Client Locations';
         }
-     $eachstate = Location::select('state')->where('client_id', '=',  ''.$client_id.'')->groupBy('state')->get();
-//dd($eachstate);
+
         return Inertia::render('Locations/Show', [
             'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
-        //    'user' => $user,
-            'eachstate' => $eachstate,
-            'filters' => $request->all('search', 'trashed','state')
+            'filters' => $request->all('search', 'trashed')
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Locations/Create', [
+         return   Inertia::render('Locations/Create', [
 //            'locations' => Location::all(),
         ]);
     }
@@ -76,9 +82,48 @@ class LocationsController extends Controller
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
         }
+        $locationdetails =[];
+        $locationdetails = LocationDetails::where('location_id',$id)->get();
+        $locationitems= [];
+        $phone ='';
+        $poc_first ='';
+        $poc_last ='';
+        $poc_phone ='';
+        $opendate ='';
+        $closedate ='';
+
+
+         foreach ($locationdetails as $locationitems){
+//dd($locationitems);
+             if($locationitems->field == 'phone') {
+                 $phone = $locationitems->value;
+             }
+             if($locationitems->field == 'poc_first') {
+                 $poc_first = $locationitems->value;
+             }
+             if($locationitems->field == 'poc_last') {
+                 $poc_last = $locationitems->value;
+             }
+             if($locationitems->field == 'poc_phone') {
+                 $poc_phone = $locationitems->value;
+             }
+             if($locationitems->field == 'open_date') {
+                 $opendate = $locationitems->value;
+             }
+             if($locationitems->field == 'close_date') {
+                 $closedate = $locationitems->value;
+             }
+
+}
 
         return Inertia::render('Locations/Edit', [
             'location' => Location::find($id),
+            'phone' => $phone,
+            'poc_first' => $poc_first,
+            'poc_last' => $poc_last,
+            'poc_phone' => $poc_phone,
+            'opendate' => $opendate,
+            'closedate' => $closedate,
         ]);
     }
 
@@ -98,6 +143,69 @@ class LocationsController extends Controller
         $location = Location::create(
             $request->validate($this->rules)
         );
+ //    dd($location->id,$request,$request->phone);
+        $client_id = request()->user()->currentClientId();
+
+if(!$location->id){
+    Alert::error("No Location ID provided")->flash();
+    return Redirect::route('locations');
+}
+        if($request->phone) {
+    LocationDetails::create(['location_id' => $location->id,
+            'client_id' => $client_id,
+            'field' => 'phone',
+            'value' => $request->phone,
+            'misc' =>  ['userid',request()->user()->id]
+        ]
+    );
+}
+        if($request->poc_first) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'poc_first',
+                    'value' => $request->poc_first,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->poc_last) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'poc_last',
+                    'value' => $request->poc_last,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->poc_phone) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'poc_phone',
+                    'value' => $request->poc_phone,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->opendate) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'open_date',
+                    'value' => $request->opendate,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->closedate) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'close_date',
+                    'value' => $request->closedate,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+
+
         Alert::success("Location '{$location->name}' was created")->flash();
 
         return Redirect::route('locations');
@@ -105,13 +213,82 @@ class LocationsController extends Controller
 
     public function update(Request $request, $id)
     {
+      //  dd($request->validate($this->rules));
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');
         }
-
+        $client_id = request()->user()->currentClientId();
         $location = Location::findOrFail($id);
         $location->updateOrFail($request->validate($this->rules));
+        //echo $this->validate(request()->all());
+
+
+        $data =  request()->all();
+     //   dd($data,$request,$request->phone,$client_id,$request->validate($this->rules));
+
+
+        if($request->phone) {
+            LocationDetails::create(['location_id' => $id,
+                    'client_id' => $client_id,
+                    'field' => 'phone',
+                    'value' => $request->phone,
+                    'misc' =>  ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->poc_first) {
+            LocationDetails::create(['location_id' => $id,
+                    'client_id' => $client_id,
+                    'field' => 'poc_first',
+                    'value' => $request->poc_first,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->poc_last) {
+            LocationDetails::create(['location_id' => $id,
+                    'client_id' => $client_id,
+                    'field' => 'poc_last',
+                    'value' => $request->poc_last,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->poc_phone) {
+            LocationDetails::create(['location_id' => $id,
+                    'client_id' => $client_id,
+                    'field' => 'poc_phone',
+                    'value' => $request->poc_phone,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->opendate) {
+            LocationDetails::create(['location_id' => $id,
+                    'client_id' => $client_id,
+                    'field' => 'open_date',
+                    'value' => $request->opendate,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+        if($request->closedate) {
+            LocationDetails::create(['location_id' => $id,
+                    'client_id' => $client_id,
+                    'field' => 'close_date',
+                    'value' => $request->closedate,
+                    'misc' => ['userid',request()->user()->id]
+                ]
+            );
+        }
+
+
+
+
+
+
         Alert::success("Location '{$location->name}' updated")->flash();
 
         return Redirect::route('locations');

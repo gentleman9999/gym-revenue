@@ -7,6 +7,8 @@ use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use App\StorableEvents\Clients\TeamCreated;
+use App\StorableEvents\Clients\UserRemovedFromTeam;
+use App\StorableEvents\Clients\UserRoleOnTeamUpdated;
 
 trait ClientTeamActions
 {
@@ -52,12 +54,28 @@ trait ClientTeamActions
             }
 
             $this->recordThat(new CapeAndBayUsersAssociatedWithClientsNewDefaultTeam($this->uuid(), $team_id, $payload));
-        }
-        else
-        {
+        } else {
             throw ClientAccountException::noCapeAndBayUsersAssigned();
         }
 
+        return $this;
+    }
+
+    public function addUserToTeam(int $user_id, string $team_id, $role)
+    {
+        $this->recordThat(new UserRoleOnTeamUpdated($this->uuid(), $user_id, $team_id, ['role' => $role]));
+        return $this;
+    }
+
+    public function removeUserFromTeam(int $user_id, string $team_id)
+    {
+        $this->recordThat(new UserRemovedFromTeam($this->uuid(), $user_id, $team_id, []));
+        return $this;
+    }
+
+    public function updateUserRoleOnTeam(int $user_id, string $team_id, $old_role, $role)
+    {
+        $this->recordThat(new UserRoleOnTeamUpdated($this->uuid(), $user_id, $team_id, ['role' => $role, 'old_role' => $old_role]));
         return $this;
     }
 }

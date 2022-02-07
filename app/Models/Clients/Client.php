@@ -3,6 +3,7 @@
 namespace App\Models\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
@@ -52,6 +53,11 @@ class Client extends Model
         return $this->hasMany(MembershipType::class);
     }
 
+    public function trial_membership_types()
+    {
+        return $this->hasMany(TrialMembershipType::class);
+    }
+
     public function detail()
     {
         return $this->hasOne(ClientDetail::class);
@@ -62,14 +68,14 @@ class Client extends Model
         return $this->detail()->where('detail', '=', 'default-team');
     }
 
-    public function services()
-    {
-        return $this->details()->whereDetail('service_id')->whereActive(1);
-    }
-
     public function teams()
     {
         return $this->details()->whereDetail('team')->whereActive(1);
+    }
+
+    public function services()
+    {
+        return $this->details()->whereDetail('service_slug')->whereActive(1);
     }
 
     /**

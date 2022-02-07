@@ -52,17 +52,39 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::defaultApiTokenPermissions(['read']);
 
         // @todo - utilize bouncer to get the roles (possibly using the session)
-        Jetstream::role('admin', 'Administrator', [
+        //TODO:pull from roles table
+        Jetstream::role('Admin', 'Administrator', [
             'create',
             'read',
             'update',
             'delete',
         ])->description('Administrator users can perform any action.');
 
-        Jetstream::role('editor', 'Editor', [
+        Jetstream::role('Account Owner', 'Account Owner', [
+            'create',
+            'read',
+            'update',
+            'delete',
+        ])->description('Account owners can perform any action.');
+
+        Jetstream::role('Regional Admin', 'Regional Admin', [
+            'create',
+            'read',
+            'update',
+            'delete',
+        ])->description('Regional Admins can perform any action for locations in their region.');
+
+        Jetstream::role('Location Manager', 'Location Manager', [
+            'create',
+            'read',
+            'update',
+            'delete',
+        ])->description('Location managers can perform any action for their location.');
+
+        Jetstream::role('Sales Rep', 'Sales Rep', [
             'read',
             'create',
             'update',
-        ])->description('Editor users have the ability to read, create, and update.');
+        ])->description('Sales Reps have the ability to read, create, and update.');
     }
 }

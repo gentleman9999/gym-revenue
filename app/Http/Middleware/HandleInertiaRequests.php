@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -40,17 +41,24 @@ class HandleInertiaRequests extends Middleware
     {
 
         $shared = [];
+        $user = $request->user();
         if ($request->user()) {
             $shared = [
-                'user.id' => $request->user()->id,
-                'user.all_locations' => $request->user()->allLocations(),
-                'user.current_client_id' => $request->user()->currentClientId(),
+                'user.id' => $user->id,
+                'user.all_locations' => $user->allLocations(),
+                'user.current_client_id' => $user->currentClientId(),
+                'user.permissions' => [
+                    'users.create' => $user->can('create', User::class),
+                    'users.read'=>$user->can('viewAny', User::class),
+                    'users.update' => $user->can('update', User::class),
+                    'users.delete'=>$user->can('delete', User::class),
+                ],
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
             ];
         }
         $previousUrl = url()->previous();
 
-        if(!empty($previousUrl) && $previousUrl !== route('login') && $previousUrl !== url()->current()){
+        if (!empty($previousUrl) && $previousUrl !== route('login') && $previousUrl !== url()->current()) {
             $shared['previousUrl'] = $previousUrl;
         }
         $alerts = Alert::getMessages();
@@ -62,8 +70,6 @@ class HandleInertiaRequests extends Middleware
                 ];
             },
         ], $shared);
-
-
 
 
 //        $shared['flash'] = [];

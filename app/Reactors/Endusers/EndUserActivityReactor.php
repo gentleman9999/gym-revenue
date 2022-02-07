@@ -61,11 +61,26 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
                 ]
             );
         }
+
+        if(array_key_exists('middle_name', $event->lead)){
+            $middle_name= $event->lead['middle_name'];
+            LeadDetails::create([
+                    'lead_id' => $event->lead['id'],
+                    'client_id' => $event->lead['client_id'],
+                    'field' => 'middle_name',
+                    'value' => $middle_name,
+                    'misc' => ['user' => $event->user ]
+                ]
+            );
+        }
+
+
+
     }
 
     public function onUpdateLead(UpdateLead $event)
     {
-        if(array_key_exists('profile_picture', $event->lead)){
+        if(array_key_exists('profile_picture', $event->lead) && $event->lead['profile_picture'] !== null){
             $file = $event->lead['profile_picture'];
             $destKey = "{$event->lead['client_id']}/{$file['uuid']}";
             Storage::disk('s3')->move($file['key'], $destKey);

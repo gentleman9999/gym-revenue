@@ -7,6 +7,8 @@
                     <img v-else-if="form?.profile_picture?.misc?.url" :src="form.profile_picture.misc.url" alt="lead profile picture" class="w-full h-full object-cover"/>
                     <font-awesome-icon v-else icon="user-circle" size="6x" class="opacity-10 !h-full !w-full"/>
                 </div>
+                <label><p class="text-white">{{ form['first_name'] }} {{ form['middle_name'] }} {{ form['last_name']}}</p></label>
+
                 <label class="btn btn-primary">
                     <span>Upload Image</span>
                     <input
@@ -18,17 +20,29 @@
                     />
                 </label>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-3" v-if="form['agreement_number']">
+                <jet-label for="first_name" value="Agreement Number"/>
+                <input disabled type="text" v-model="form['agreement_number']" autofocus class="opacity-70"/>
+            </div>
+            <div class="form-divider"/>
+            <div class="form-control col-span-2">
                 <jet-label for="first_name" value="First Name"/>
                 <input id="" type="text" v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-2">
+                                <jet-label for="middle_name" value="Middle Name"/>
+                                <input id="" type="text"
+                       v-model="form['middle_name']" autofocus/>
+                <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
+
+            </div>
+            <div class="form-control col-span-2">
                 <jet-label for="last_name" value="Last Name"/>
                 <input id="last_name" type="text" v-model="form[    'last_name']" autofocus/>
                 <jet-input-error :message="form.errors['last_name']" class="mt-2"/>
             </div>
-            <div class="form-control col-span-3">
+            <div class="form-control col-span-6">
                 <jet-label for="email" value="Email"/>
                 <input id="email" type="email" v-model="form.email" autofocus/>
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
@@ -45,6 +59,33 @@
                        autofocus/>
                 <jet-input-error :message="form.errors.alternate_phone" class="mt-2"/>
             </div>
+            <div class="form-control col-span-3">
+                <jet-label for="opportunity" value="Select Opportunity"/>
+                <select class="" v-model="form['opportunity']" required id="opportunity">
+                    <option value="">Select Opportunity</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+                <jet-input-error :message="form.errors.opportunity" class="mt-2"/>
+            </div>
+
+            <div class="form-control col-span-3">
+                <jet-label for="gender" value="Gender"/>
+                <select class="" v-model="form['gender']" required id="gender">
+                    <option value="">Select a Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                                    </select>
+                <jet-input-error :message="form.errors.gender" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+            <jet-label for="dob" value="Date of Birth"/>
+                <DatePicker v-model="form['dob']"  dark />
+            <jet-input-error :message="form.errors.dob" class="mt-2"/>
+        </div>
+
+
             <div class="form-divider"/>
             <div class="form-control col-span-3">
                 <jet-label for="club_id" value="Club"/>
@@ -70,28 +111,33 @@
                 </select>
                 <jet-input-error :message="form.errors['lead_type_id']" class="mt-2"/>
             </div>
+
             <div class="form-control col-span-3">
-                <jet-label for="membership_type_id" value="Membership Type"/>
-                <select class="" v-model="form['membership_type_id']" required id="membership_type_id">
-                    <option value="">Select a Membership Type</option>
-                    <option v-for="(membership_type, i) in membership_types" :value="membership_type.id">
-                        {{ membership_type.name }}
-                    </option>
+                <jet-label for="lead_owner" value="Lead Owner"/>
+                <select class="" v-model="form['lead_owner']" required id="lead_owner">
+                    <option value="">Select a Lead Owner</option>
+                    <option v-for="(oname, uid) in lead_owners" :value="uid">{{ oname }}</option>
                 </select>
-                <jet-input-error :message="form.errors['membership_type_id']" class="mt-2"/>
+                <jet-input-error :message="form.errors['lead_owner']" class="mt-2"/>
             </div>
-            <div class="form-divider"><span>Services</span></div>
-            <div v-for="(service, i) in available_services" class="form-control col-span-3">
-                <label class="label cursor-pointer justify-start gap-4">
-                    <input type="checkbox" :value="service.id" v-model="form['services']"/>
-                    <span>{{ service.name }}</span>
-                </label>
+
+            <div class="form-control col-span-3">
+                <jet-label for="lead_owner" value="Lead Status"/>
+                <select class="" v-model="form['lead_status']" required id="lead_status">
+                    <option value="">Select a Lead Status</option>
+                    <option v-for="(status, idx) in lead_statuses" :value="status.id">{{ status.status }}</option>
+                </select>
+                <jet-input-error :message="form.errors['lead_statuses']" class="mt-2"/>
+            </div>
+
+            <div class="form-divider"/>
+            <div class="col-span-6">
+                <label v-if="'last_updated' in form">{{ form['last_updated'] }}</label>
             </div>
 
         </template>
 
         <template #actions>
-            <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button type="button" @click="goBack" :class="{ 'opacity-25': form.processing }" error outline
                     :disabled="form.processing">
                 Cancel
@@ -119,7 +165,9 @@ import JetFormSection from '@/Jetstream/FormSection'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import {useGoBack} from '@/utils';
-
+import { usePage } from '@inertiajs/inertia-vue3';
+import DatePicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css';
 library.add(faUserCircle);
 
 export default {
@@ -130,14 +178,21 @@ export default {
         FontAwesomeIcon,
         JetInputError,
         JetLabel,
+        DatePicker
     },
-    props: ['clientId', 'lead', 'locations', 'lead_types', 'lead_sources', 'membership_types', 'available_services'],
+    props: [
+        'userId', 'clientId', 'lead',
+        'locations', 'lead_types',
+        'lead_sources', 'lead_owners',
+        'lead_statuses'
+    ],
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
         if (!lead) {
             lead = {
                 first_name: null,
+                middle_name: null,
                 last_name: null,
                 email: null,
                 primary_phone: null,//TODO:change to primary/alternate
@@ -146,14 +201,30 @@ export default {
                 client_id: props.clientId,
                 gr_location_id: null,
                 lead_type_id: null,
-                membership_type_id: null,
                 lead_source_id: null,
-                services: [],
-                profile_picture: null
+                profile_picture: null,
+                gender: '',
+                dob: '',
+                opportunity:'',
+                lead_owner: props.userId,
+                lead_status: ''
             }
             operation = 'Create';
         } else {
-            lead.services = lead.services.map(detail => detail.value)
+            console.log('Lead Owner',lead)
+
+            lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
+            lead.middle_name =  ('middle_name' in lead  && (lead.middle_name !== null)) ? lead.middle_name.value : null;
+            lead.gender =  ('gender' in lead  && (lead.gender !== null)) ? lead.gender.value : null;
+            lead.dob =  ('dob' in lead  && (lead.dob !== null)) ? lead.dob.value : null;
+            lead.opportunity =  ('opportunity' in lead  && (lead.opportunity !== null)) ? lead.opportunity.value : null;
+            lead['last_updated'] = ('last_updated' in lead  && (lead.last_updated !== null))
+                ? `Last Updated by ${lead.last_updated.value} at ${lead.last_updated.created_at}`
+                : 'This lead has never been updated';
+
+            lead['lead_owner'] = ('lead_owner' in lead  && (lead.lead_owner !== null)) ? lead.lead_owner.value : '';
+            lead['lead_status'] = ('lead_status' in lead  && (lead.lead_status !== null)) ? lead.lead_status.value : '';
+
         }
 
         const form = useForm(lead)
@@ -193,7 +264,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         })
-        return {form, fileForm, buttonText: operation, handleSubmit, goBack}
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack }
     },
 }
 </script>

@@ -14,7 +14,7 @@ class CreateLeadSourcesTable extends Migration
     public function up()
     {
         Schema::create('lead_sources', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->unique();
             $table->uuid('client_id')->nullable();
             $table->string('name');
             $table->timestamps();

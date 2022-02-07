@@ -41,11 +41,13 @@ import {
     faEnvelope,
     faPhoneAlt,
     faUserEdit,
-    faUserPlus
+    faUserPlus,
+    faDoorOpen,
+    faDollarSign
 } from '@fortawesome/pro-solid-svg-icons';
 import {library} from "@fortawesome/fontawesome-svg-core";
 
-library.add(faChevronDoubleDown, faUserPlus, faComment, faEnvelope, faUserEdit, faPhoneAlt);
+library.add(faChevronDoubleDown, faUserPlus, faComment, faEnvelope, faUserEdit, faPhoneAlt, faDoorOpen, faDollarSign);
 
 export default {
     components: {
@@ -78,6 +80,10 @@ export default {
                     return 'Updated';
                 case "manual_create":
                     return "Created";
+                case "trial-started":
+                    return "Trial Started";
+                case "trial-used":
+                    return "Trial Used";
             }
         })
         const icon = computed(() => {
@@ -95,6 +101,10 @@ export default {
                     return "user-plus";
                 case "updated":
                     return 'user-edit';
+                case "trial-started":
+                    return "dollar-sign";
+                case "trial-used":
+                    return "door-open";
             }
         })
 
