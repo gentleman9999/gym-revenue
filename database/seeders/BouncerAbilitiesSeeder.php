@@ -35,7 +35,6 @@ class BouncerAbilitiesSeeder extends Seeder
             });
         });
         $this->allowAllInGroup($crud_models, 'Admin');
-        $this->allowAllInGroup($crud_models, 'Account Owner');
         $this->allowAllInGroup($crud_models, 'Location Manager');
         $this->allowAllInGroup($crud_models->forget('lead'), 'Regional Admin');
         $this->allowAllInGroup('leads', 'Sales Rep');

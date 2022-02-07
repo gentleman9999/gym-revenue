@@ -5,7 +5,7 @@
         </template>
         <gym-revenue-crud
             base-route="security-roles"
-            model-name="SecurityRole"
+            model-name="Security Role"
             :fields="fields"
             :resource="securityRoles"
             :actions="{
@@ -52,22 +52,15 @@ export default defineComponent({
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
+
         const handleConfirmTrash = () => {
-            axios
-                .delete(route("security-roles.trash", confirmTrash.value))
-                .then(
-                    (response) => {
-                        setTimeout(() => response($result, 200), 10000);
-                    },
-                    Inertia.reload(),
-                    //           location.reload(),
-                    (confirmTrash.value = null)
-                );
+            Inertia.delete(route("security-roles.trash", confirmTrash.value));
+            confirmTrash.value = null;
         };
 
         const fields = ["security_role"];
 
-        return {fields, handleConfirmTrash, handleClickTrash, Inertia};
+        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia};
     },
 });
 </script>
