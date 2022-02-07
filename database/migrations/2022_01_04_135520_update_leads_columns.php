@@ -18,7 +18,7 @@ class UpdateLeadsColumns extends Migration
             $table->renameColumn('home_phone', 'alternate_phone');
             $table->dropColumn('lead_type');
             $table->integer('lead_type_id')->after('ip_address')->nullable();
-            $table->integer('lead_source_id')->after('ip_address')->nullable();
+            $table->uuid('lead_source_id')->after('ip_address')->nullable();
             $table->integer('membership_type_id')->after('ip_address')->nullable();
         });
     }

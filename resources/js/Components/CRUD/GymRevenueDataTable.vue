@@ -142,7 +142,6 @@ export default {
         const data = getData(props);
 
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
-
         return { modelNamePlural: __modelNamePlural, fields, isObject, data };
     },
 };

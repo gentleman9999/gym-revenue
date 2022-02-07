@@ -4,6 +4,7 @@ namespace App\Aggregates\Endusers;
 
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
+use App\StorableEvents\EndUsers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
@@ -88,6 +89,12 @@ class EndUserActivityAggregate extends AggregateRoot
     public function updateLead(array $lead, User $updating_user)
     {
         $this->recordThat(new UpdateLead($this->uuid(), $lead, $updating_user->id));
+        return $this;
+    }
+
+    public function createOrUpdateDetail(string $key, string $value, string $user_id, string $client_id)
+    {
+        $this->recordThat(new LeadDetailUpdated($this->uuid(), $key, $value, $user_id, $client_id));
         return $this;
     }
 

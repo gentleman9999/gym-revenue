@@ -193,8 +193,27 @@
                     :href="route('users')"
                 >
                     <p>
-                        <font-awesome-icon :icon="['fad', 'users']" size="lg" />
+                        <font-awesome-icon :icon="['fad', 'user']" size="lg" />
                         <span>User Management</span>
+                    </p>
+                </jet-nav-link>
+            </div>
+
+            <div
+                :class="
+                    route().current('data.conversions')
+                        ? 'bg-primary'
+                        : 'bg-transparent'
+                "
+                class="nav-link-container"
+            >
+                <jet-nav-link
+                    class="jet-nav-link"
+                    :href="route('teams')"
+                >
+                    <p>
+                        <font-awesome-icon :icon="['fad', 'users']" size="lg" />
+                        <span>Team Management</span>
                     </p>
                 </jet-nav-link>
             </div>
@@ -254,7 +273,8 @@ import {
     faDumbbell,
     faPaste,
     faSatelliteDish,
-    faUsers
+    faUsers,
+    faUser
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
@@ -271,7 +291,8 @@ library.add(
     faCommentsAlt,
     faCog,
     faFileUpload,
-    faUsers
+    faUsers,
+    faUser
 );
 
 export default defineComponent({
