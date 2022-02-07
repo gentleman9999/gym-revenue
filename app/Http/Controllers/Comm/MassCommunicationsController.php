@@ -466,6 +466,7 @@ class MassCommunicationsController extends Controller
             'campaign' => $campaign,
             'templates' => $available_templates,
             'audiences' => $available_audiences,
+            'availableAudiences' => CommAudience::whereClientId($campaign->client_id)->get(),
             'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
             'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
         ]);
