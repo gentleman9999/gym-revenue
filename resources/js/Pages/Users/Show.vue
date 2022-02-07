@@ -1,6 +1,11 @@
 <template>
     <app-layout :title="title">
-        <page-toolbar-nav title="Users" :links="navLinks" />
+        <!--        security roles not yet implemented - hide for now-->
+        <page-toolbar-nav
+            title="Users"
+            :links="navLinks"
+            v-if="$page.props.user.current_client_id"
+        />
         <gym-revenue-crud
             base-route="users"
             model-name="user"

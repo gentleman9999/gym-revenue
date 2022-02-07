@@ -46,6 +46,7 @@ export default defineComponent({
     },
     props: ["securityRoles", "filters"],
     setup(props) {
+        console.log({securityRoles: props.securityRoles})
 
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {

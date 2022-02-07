@@ -12,6 +12,10 @@ class SecurityRole extends Model
 {
     use HasFactory, SoftDeletes, Uuid;
 
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = ['client_id', 'role_id', 'security_role', 'ability_ids', 'active', 'misc'];
 
     protected $casts = [

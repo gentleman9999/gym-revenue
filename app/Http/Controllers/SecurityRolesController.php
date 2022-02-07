@@ -16,12 +16,18 @@ class SecurityRolesController extends Controller
 {
     protected $rules = [
         'security_role' => ['string', 'required'],
-        'role' => ['string', 'required'],
-        'abilities' => ['array' ,'required'],
+        'role_id' => ['integer', 'required'],
+        'ability_ids' => ['array' ,'sometimes'],
+        'ability_ids.*' => ['integer' ,'required'],
     ];
 
     public function index(Request $request)
     {
+        $client_id = $request->user()->currentClientId();
+        if(!$client_id){
+            //not implemented for CNB users yet
+            return Redirect::route('dashboard');
+        }
         $securityRoles = SecurityRole::filter($request->only('search', 'trashed'))
             ->paginate(10);
 
@@ -33,6 +39,11 @@ class SecurityRolesController extends Controller
 
     public function create()
     {
+        $client_id = request()->user()->currentClientId();
+        if(!$client_id){
+            //not implemented for CNB users yet
+            return Redirect::route('dashboard');
+        }
         return Inertia::render('SecurityRoles/Create', [
             'availableRoles'=> Bouncer::role()::all(['name', 'title', 'id']),
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id'])
@@ -41,6 +52,11 @@ class SecurityRolesController extends Controller
 
     public function edit($id)
     {
+        $client_id = request()->user()->currentClientId();
+        if(!$client_id){
+            //not implemented for CNB users yet
+            return Redirect::route('dashboard');
+        }
         if (!$id) {
             Alert::error("No Security Role ID provided")->flash();
             return Redirect::back();
@@ -49,16 +65,18 @@ class SecurityRolesController extends Controller
         return Inertia::render('SecurityRoles/Edit', [
             'availableRoles'=> Bouncer::role()::all(['name', 'title', 'id']),
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
-            'securityRole' => SecurityRole::find($id),
+            'securityRole' => SecurityRole::findOrFail($id),
         ]);
     }
 
 
     public function store(Request $request)
     {
-        dd($request->validate($this->rules));
+        $data = $request->validate($this->rules);
+        $data['client_id'] = $request->user()->currentClientId();
+//        dd($data);
         $securityRole = SecurityRole::create(
-            $request->validate($this->rules)
+            $data
         );
         Alert::success("Security Role '{$securityRole->security_role}' was created")->flash();
 
@@ -76,7 +94,8 @@ class SecurityRolesController extends Controller
         $securityRole->updateOrFail($request->validate($this->rules));
         Alert::success("Security Role '{$securityRole->security_role}' updated")->flash();
 
-        return Redirect::route('security-roles');
+//        return Redirect::route('security-roles');
+        return Redirect::back();
     }
 
     public function trash($id)

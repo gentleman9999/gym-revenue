@@ -11,6 +11,8 @@
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <security-role-form
                     :client-id="$page.props.user.current_client_id"
+                    :availableRoles="availableRoles"
+                    :availableAbilities="availableAbilities"
                     :security-role="$page.props.securityRole"
                 />
             </div>
@@ -39,6 +41,19 @@ export default defineComponent({
         JetLabel,
         JetBarIcon,
     },
-    props: ["securityRole"],
+    props: {
+        securityRole: {
+            type: Object,
+            required: true,
+        },
+        availableRoles: {
+            type: Array,
+            default: [],
+        },
+        availableAbilities: {
+            type: Array,
+            default: [],
+        },
+    },
 });
 </script>
