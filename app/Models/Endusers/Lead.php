@@ -66,6 +66,11 @@ class Lead extends Model
         return $this->hasOne(LeadSource::class, 'id', 'lead_source_id');
     }
 
+    public function lead_status()
+    {
+        return $this->detail()->whereField('lead_status')->whereActive(1);
+    }
+
     public function membershipType()
     {
         return $this->hasOne(MembershipType::class, 'id', 'membership_type_id');
@@ -78,10 +83,39 @@ class Lead extends Model
 
     public function leadsclaimed()
     {
-//$claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
         return $this->details()->whereField('claimed');
     }
 
+    public function lead_owner()
+    {
+        return $this->detail()->whereField('claimed')->whereActive(1);
+    }
+
+    public function middle_name()
+    {
+        return $this->detail()->whereField('middle_name')->whereActive(1);
+    }
+
+    public function dob()
+    {
+        return $this->detail()->whereField('dob')->whereActive(1);
+    }
+
+    public function gender()
+    {
+        return $this->detail()->whereField('gender')->whereActive(1);
+    }
+
+    public function opportunity()
+    {
+        return $this->detail()->whereField('opportunity')->whereActive(1);
+    }
+
+    public function last_updated()
+    {
+        return $this->detail()->whereField('updated')->whereActive(1)
+            ->orderBy('created_at', 'DESC');
+    }
 
     public function scopeFilter($query, array $filters)
     {

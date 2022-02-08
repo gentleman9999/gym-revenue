@@ -61,6 +61,11 @@ class Team extends JetstreamTeam
             ->with('client');
     }
 
+    public function locations()
+    {
+        return $this->details()->whereName('team-location');
+    }
+
     public function default_team_details()
     {
         return $this->hasOne(ClientDetail::class, 'value',  'name')
@@ -87,6 +92,12 @@ class Team extends JetstreamTeam
         }
 
         return $results;
+    }
+
+    public function team_users()
+    {
+        return $this->hasMany(TeamUser::class, 'team_id', 'id')
+            ->with('user');
     }
 
     public function isClientsDefaultTeam()

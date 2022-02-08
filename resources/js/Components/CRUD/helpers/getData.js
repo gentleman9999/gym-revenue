@@ -33,6 +33,6 @@ const flattenObj = (ob) => {
 export const getData = props => {
     return computed(()=>{
         const data = props.resource.data;
-        return merge(data, data.map(flattenObj))
+        return merge(data, data?.map(flattenObj))
     })
 }

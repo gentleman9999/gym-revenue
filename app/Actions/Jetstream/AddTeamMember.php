@@ -28,6 +28,9 @@ class AddTeamMember implements AddsTeamMembers
         $this->validate($team, $email, $role);
 
         $newTeamMember = Jetstream::findUserByEmailOrFail($email);
+        //ignore role from method param. cant remove bc contract
+        //instead, just use their user role
+        $role = $newTeamMember->roles[0]->name;
 
         AddingTeamMember::dispatch($team, $newTeamMember);
 
@@ -46,11 +49,10 @@ class AddTeamMember implements AddsTeamMembers
      * @param  string|null  $role
      * @return void
      */
-    protected function validate($team, string $email, ?string $role)
+    protected function validate($team, string $email)
     {
         Validator::make([
             'email' => $email,
-            'role' => $role,
         ], $this->rules(), [
             'email.exists' => __('We were unable to find a registered user with this email address.'),
         ])->after(
@@ -67,9 +69,6 @@ class AddTeamMember implements AddsTeamMembers
     {
         return array_filter([
             'email' => ['required', 'email', 'exists:users'],
-            'role' => Jetstream::hasRoles()
-                            ? ['required', 'string', new Role]
-                            : null,
         ]);
     }
 

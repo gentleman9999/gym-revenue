@@ -26,13 +26,13 @@
                         >
                             Calendar
                         </a>
-                        <a
+                        <inertia-link
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
+                            :class="(routeName === 'data.leads') ? 'bg-white text-black px-2 rounded' : ''"
+                            :href="route('data.leads')"
                         >
                             Leads
-                        </a>
+                        </inertia-link>
                         <a
                             class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
                             href="#"
@@ -60,6 +60,14 @@
                         >
                             Lead Sources
                         </inertia-link>
+
+                        <inertia-link
+                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                            href="#"
+                            @click="comingSoon()"
+                        >
+                            Lead Statuses
+                        </inertia-link>
                     </div>
 
                     <div class="flex-grow" />
@@ -82,7 +90,7 @@
             @cancel="confirmTrash = null"
         >
             {{ firstName }} {{ lastName }} Are you sure you want to remove this
-            lead?<BR /> Reason for Deleting:<br />
+            lead?<br /> Reason for Deleting:<br />
             <select name="reasonforremoving">
                 <option value="duplicate">Is a duplicate</option>
                 <option value="test-lead">Is a test lead</option>
@@ -121,8 +129,9 @@ export default defineComponent({
         JetBarContainer,
         LeadInteraction,
     },
-    props: ["leads", "title", "isClientUser", "filters", "lead_types", "user"],
+    props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user'],
     setup(props) {
+
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -200,7 +209,16 @@ export default defineComponent({
                         (detail) =>
                             parseInt(detail.value) === parseInt(props.user.id)
                     );
-                    return yours.length;
+                    if(props.user.permissions['leads.contact']) {
+                        return yours.length;
+                    } else {
+                        return false;
+                    }
+                },
+            },
+            edit: {
+                shouldRender: ({data}) => {
+                    return props.user.permissions['leads.edit']
                 },
             },
         };
@@ -221,6 +239,7 @@ export default defineComponent({
                 (confirmTrash.value = null)
             );
         };
+
         return {
             handleClickTrash,
             confirmTrash,

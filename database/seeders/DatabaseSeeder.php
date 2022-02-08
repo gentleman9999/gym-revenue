@@ -9,6 +9,7 @@ use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
+use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
 use Database\Seeders\Data\MembershipTypeSeeder;
 use Database\Seeders\Data\TrialMembershipTypeSeeder;
@@ -49,6 +50,7 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
+
 
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
@@ -94,6 +96,12 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running SMS Campaign  Seeder');
         $this->call(SMSCampaignsSeeder::class);
+
+        VarDumper::dump('Running Lead Status Seeder');
+        $this->call(LeadStatusSeeder::class);
+
+        VarDumper::dump('Seeding Bouncer Permissions');
+        $this->call(BouncerSeeder::class);
 
     }
 }
