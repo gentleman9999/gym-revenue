@@ -58,7 +58,7 @@ export default defineComponent({
             confirmTrash.value = null;
         };
 
-        const fields = ["security_role"];
+        const fields = ["security_role", "created_at", "updated_at"];
 
         return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia};
     },

@@ -27,7 +27,7 @@ class SecurityRolesController extends Controller
             //not implemented for CNB users yet
             return Redirect::route('dashboard');
         }
-        $securityRoles = SecurityRole::filter($request->only('search', 'trashed'))
+        $securityRoles = SecurityRole::whereClientId($client_id)->whereActive(1)->filter($request->only('search', 'trashed'))
             ->paginate(10);
 
         return Inertia::render('SecurityRoles/Show', [
@@ -44,7 +44,7 @@ class SecurityRolesController extends Controller
             return Redirect::route('dashboard');
         }
         return Inertia::render('SecurityRoles/Create', [
-            'availableRoles' => Bouncer::role()::where('name', '!=', 'Account Owner')->get(['name', 'title', 'id']),
+            'availableRoles' => Bouncer::role()::whereNotIn('name', ['Account Owner', 'Admin'])->get(['name', 'title', 'id']),
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id'])
         ]);
     }

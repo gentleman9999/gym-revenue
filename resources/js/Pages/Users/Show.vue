@@ -80,10 +80,10 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        console.log(
-            "page.props.value.user.abilties",
-            page.props.value.user.abilities
-        );
+        const teamId = computed(() => page.props.value.user?.current_team_id);
+        console.log("page.props.value.users", page.props.value.users);
+        console.log("teamId", teamId.value);
+        console.log("abilities", abilities.value);
 
         const { form, reset } = useSearchFilter("users", {
             team: null,
@@ -100,16 +100,29 @@ export default defineComponent({
 
         const fields = ["name", "created_at", "updated_at"];
 
+        // const shouldShowDelete = ({ data }) => {
+        //     console.log({ability: abilities.value.includes("users.delete")});
+        //     abilities.value["users.delete"]
+        // }
+
+        const shouldShowDelete = ({ data }) => abilities.value.includes("users.delete") &&
+            data.teams.find((team) => team.id === teamId.value)?.pivot.role !==
+            "Account Owner";
+
+        const shouldShowEdit = ({ data }) => abilities.value.includes("users.update") &&
+            data.teams.find((team) => team.id === teamId.value)?.pivot.role !==
+            "Account Owner";
+
         const actions = {
             trash: false,
             restore: false,
             delete: {
                 label: "Delete",
                 handler: ({ data }) => handleClickDelete(data),
-                shouldRender: abilities["users.delete"],
+                shouldRender: shouldShowDelete,
             },
             edit: {
-                shouldRender: abilities["users.update"],
+                shouldRender: shouldShowEdit,
             },
         };
         const navLinks = [

@@ -28,7 +28,7 @@ class UsersController extends Controller
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
             return Inertia::render('Users/Show', [
-                'users' => User::whereHas('detail', function ($query) use ($client_id) {
+                'users' => User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
@@ -55,8 +55,15 @@ class UsersController extends Controller
         if($request->user()->cannot('create', User::class)){
             abort(403);
         }
+
+        $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
+        if(!request()->user()->isAccountOwner()){
+            $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
+        }
+        $security_roles = $security_roles->get(['id', 'security_role']);
+
         return Inertia::render('Users/Create', [
-            'securityRoles' => SecurityRole::whereActive(1)->whereClientId($request->user()->currentClientId())->get(['id', 'security_role'])
+            'securityRoles' => $security_roles
         ]);
     }
 
@@ -66,9 +73,16 @@ class UsersController extends Controller
             abort(403);
         }
         $user = User::with('details')->findOrFail($id);
+
+        $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
+        if(!request()->user()->isAccountOwner()){
+            $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
+        }
+        $security_roles = $security_roles->get(['id', 'security_role']);
+
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
-            'securityRoles' => SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId())->get(['id', 'security_role'])
+            'securityRoles' => $security_roles
         ]);
     }
 

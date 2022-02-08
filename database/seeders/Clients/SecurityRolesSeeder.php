@@ -21,6 +21,10 @@ class SecurityRolesSeeder extends Seeder
         $clients = Client::all();
         $security_roles = [
             [
+                'security_role' => 'Account Owner',
+                'role_id' => 2,
+            ],
+            [
                 'security_role' => 'Location Manager - GM',
                 'role_id' => 3,
             ],
@@ -36,10 +40,9 @@ class SecurityRolesSeeder extends Seeder
         $clients->each(function ($client) use ($security_roles) {
             foreach ($security_roles as $security_role) {
                 VarDumper::dump("Creating Security Role '{$security_role['security_role']}' for {$client->name}");
+                //TODO: logic for setting default ability ids
                 SecurityRole::create(array_merge($security_role, ['client_id' => $client->id, 'ability_ids' => []]));
             }
         });
-
-
     }
 }
