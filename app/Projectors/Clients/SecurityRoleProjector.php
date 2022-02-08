@@ -16,40 +16,15 @@ class SecurityRoleProjector extends Projector
 {
     public function onSecurityRoleCreated(SecurityRoleCreated $event)
     {
-        $securityRole = SecurityRole::create(
+        SecurityRole::create(
             $event->payload
         );
-
-        $client = Client::with('teams')->findOrFail($event->client);
-        $clientTeamIds = $client->teams->pluck('value');
-        collect($securityRole->ability_ids)->each(function ($ability_id) use ($clientTeamIds, $securityRole) {
-            $clientTeamIds->each(function ($clientTeamId) use ($ability_id, $securityRole) {
-                $ability = Bouncer::ability()->find($ability_id);
-                $team = Team::find($clientTeamId);
-                if ($ability && $team) {
-                    Bouncer::allow($securityRole->security_role)->to($ability->name, $team);
-                }
-            });
-        });
     }
 
     public function onSecurityRoleUpdated(SecurityRoleUpdated $event)
     {
-        $securityRole = SecurityRole::findOrFail($event->payload['id']);
-        $securityRole->updateOrFail($event->payload);
-
-        $client = Client::with('teams')->findOrFail($event->client);
-        $clientTeamIds = $client->teams->pluck('value');
-        Bouncer::sync($securityRole->security_role)->abilities([]);
-        collect($securityRole->ability_ids)->each(function ($ability_id) use ($clientTeamIds, $securityRole) {
-            $clientTeamIds->each(function ($clientTeamId) use ($ability_id, $securityRole) {
-                $ability = Bouncer::ability()->find($ability_id);
-                $team = Team::find($clientTeamId);
-                if ($ability && $team) {
-                    Bouncer::allow($securityRole->security_role)->to($ability->name, $team);
-                }
-            });
-        });
+        $securityRole = SecurityRole::findOrFail($event->payload['id'])->updateOrFail($event->payload);
+//        $securityRole->updateOrFail($event->payload);
     }
 
     public function onSecurityRoleTrashed(SecurityRoleTrashed $event)
