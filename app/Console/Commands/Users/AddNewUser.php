@@ -145,6 +145,7 @@ class AddNewUser extends Command
                 $roles[] = 'Regional Admin';
                 $roles[] = 'Location Manager';
                 $roles[] = 'Sales Rep';
+                $roles[] = 'Employee';
             }
             else
             {

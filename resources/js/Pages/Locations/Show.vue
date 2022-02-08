@@ -1,7 +1,7 @@
 <template>
     <app-layout :title="title">
         <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Locations </h2>
+            <h2 class="font-semibold text-xl leading-tight">Locations</h2>
 <!--           {{this.$page.props}}-->
         </template>
         <gym-revenue-crud
@@ -12,7 +12,17 @@
             :actions="{
                trash:{
                    label: 'Close Club',
-                    handler: ({data}) => handleClickTrash(data.id)
+                    handler: ({data}) => {
+                       handleClickTrash(data.id)
+                    },
+                    shouldRender: ({ data }) => {
+                        return this.$page.props.user.permissions['locations.delete']
+                    },
+                },
+               edit: {
+                    shouldRender: ({data}) => {
+                        return this.$page.props.user.permissions['locations.edit']
+                    },
                 },
             }"
         ><!--base-route="locations"-->
@@ -81,7 +91,7 @@ export default defineComponent({
         SearchFilter,
 
     },
-    props: ["sessions", "locations", "title", "isClientUser", "filters","useSearchFilter","SearchFilter"],
+    props: ["sessions", "locations", "title", "isClientUser", "filters","useSearchFilter","SearchFilter", "user"],
     setup(props) {
 
         const baseRoute = "locations";

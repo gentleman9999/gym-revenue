@@ -131,6 +131,7 @@ export default defineComponent({
     },
     props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user'],
     setup(props) {
+
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -208,7 +209,16 @@ export default defineComponent({
                         (detail) =>
                             parseInt(detail.value) === parseInt(props.user.id)
                     );
-                    return yours.length;
+                    if(props.user.permissions['leads.contact']) {
+                        return yours.length;
+                    } else {
+                        return false;
+                    }
+                },
+            },
+            edit: {
+                shouldRender: ({data}) => {
+                    return props.user.permissions['leads.edit']
                 },
             },
         };
