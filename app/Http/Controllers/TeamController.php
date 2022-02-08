@@ -104,9 +104,6 @@ class TeamController extends Controller
 
         $availableUsers = [];
         $availableLocations = [];
-        $users = User::whereHas('teams', function ($query) use ($current_team) {
-            return $query->where('teams.id', '=', $current_team->id);
-        })->get();
         if ($client_id) {
             $availableUsers = User::whereHas('detail', function ($query) use ($client_id) {
                 return $query->whereName('associated_client')->whereValue($client_id);
@@ -123,7 +120,6 @@ class TeamController extends Controller
             $availableUsers = User::whereDoesntHave('details', function ($query) use ($current_user) {
                 return $query->where('name', '=', 'associated-client');
             })->where('email', 'like', '%@capeandbay.com')->get();
-
         }
 
         return Jetstream::inertia()->render($request, 'Teams/Edit', [
@@ -131,7 +127,6 @@ class TeamController extends Controller
             'availableRoles' => array_values(Jetstream::$roles),
             'availableLocations' => $availableLocations,
             'availableUsers' => $availableUsers,
-            'users' => $users,
             'availablePermissions' => Jetstream::$permissions,
             'defaultPermissions' => Jetstream::$defaultPermissions,
             'locations' => $team->locations()->get('value'),
