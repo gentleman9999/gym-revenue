@@ -80,7 +80,8 @@
                     </inertia-link>
                 </li>
                 <li>
-                    <inertia-link :href="route('admin.impersonation')"></inertia-link>
+                    <!--<inertia-link :href="route('admin.impersonation')">Impersonate</inertia-link>-->
+                    <a @click="openImpersonation">Impersonation</a>
                 </li>
                 <li>
                     <inertia-link
@@ -118,16 +119,22 @@
             </ul>
         </template>
     </jet-dropdown>
+<impersonation-modal
+    :ref="modal"
+>
+</impersonation-modal>
 </template>
 
 <script>
-import {defineComponent, computed} from "vue";
+import {defineComponent, computed, ref} from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
 import JetDropdown from "@/Components/Dropdown";
+import ImpersonationModal from "@/Components/ImpersonationModal";
 
 export default defineComponent({
     components: {
         JetDropdown,
+        ImpersonationModal
     },
     props: {
         logout: {
@@ -137,7 +144,13 @@ export default defineComponent({
     setup() {
         const page = usePage();
         const showClientSettings = computed(() => page.props.value.user.current_client_id);
-        return {showClientSettings};
+        const modal = ref('modal');
+        function openImpersonation(){
+            console.log(modal.value);
+            modal.value.open();
+        }
+
+        return {showClientSettings, openImpersonation, modal};
     }
 });
 </script>
