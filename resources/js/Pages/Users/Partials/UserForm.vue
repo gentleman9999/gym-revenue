@@ -34,19 +34,15 @@
                 <jet-input-error :message="form.errors.password" class="mt-2"/>
             </div>
             <div class="form-control col-span-6">
-                <jet-label for="role" value="Role"/>
+                <jet-label for="role" value="Security Role"/>
                 <select
                     id="role"
                     class="block w-full mt-1"
-                    v-model="form.role"
+                    v-model="form.security_role"
                 >
-                    <option>Admin</option>
-                    <option>Location Manager</option>
-                    <option>Regional Admin</option>
-                    <option>Sales Rep</option>
-                    <option>Member</option>
+                    <option v-for="{security_role, id} in securityRoles" :value="id">{{ security_role }}</option>
                 </select>
-                <jet-input-error :message="form.errors.role" class="mt-2"/>
+                <jet-input-error :message="form.errors.security_role" class="mt-2"/>
             </div>
         </template>
 
@@ -88,18 +84,18 @@ export default {
         const page = usePage();
 
         let user = props.user;
+        const securityRoles = page.props.value.securityRoles;
 
         let operation = 'Update';
         if (user) {
             const team_id = page.props.value.user.current_team_id;
-            const team_idx = user.teams.findIndex(team=>team.id === team_id);
-            user.role = user.teams[team_idx].pivot.role
+            user.security_role = user.details.filter(detail=>detail.name==='security_role').security_role
         } else {
             user = {
                 name: null,
                 email: null,
                 password: null,
-                role: null,
+                security_role: null,
                 client_id: props.clientId
             }
             operation = 'Create';
@@ -112,7 +108,7 @@ export default {
             handleSubmit = () => form.post(route('users.store'));
         }
 
-        return {form, buttonText: operation, operation, handleSubmit};
+        return {form, buttonText: operation, operation, handleSubmit, securityRoles};
     },
 };
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
+use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -55,6 +56,7 @@ class UsersController extends Controller
             abort(403);
         }
         return Inertia::render('Users/Create', [
+            'securityRoles' => SecurityRole::whereActive(1)->whereClientId($request->user()->currentClientId())->get(['id', 'security_role'])
         ]);
     }
 
@@ -63,9 +65,10 @@ class UsersController extends Controller
         if(request()->user()->cannot('update', User::class)){
             abort(403);
         }
-        $user = User::with('teams')->findOrFail($id);
+        $user = User::with('details')->findOrFail($id);
         return Inertia::render('Users/Edit', [
-            'selectedUser' => $user
+            'selectedUser' => $user,
+            'securityRoles' => SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId())->get(['id', 'security_role'])
         ]);
     }
 

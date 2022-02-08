@@ -195,6 +195,11 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'phone');
     }
 
+    public function security_role()
+    {
+        return $this->detail()->where('name', '=', 'security_role');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
