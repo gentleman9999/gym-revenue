@@ -3,6 +3,7 @@
 namespace Database\Seeders\Clients;
 
 use App\Models\Clients\Client;
+use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\TeamDetail;
 use Illuminate\Database\Seeder;
@@ -34,8 +35,8 @@ class SecurityRolesSeeder extends Seeder
         ];
         $clients->each(function ($client) use ($security_roles) {
             foreach ($security_roles as $security_role) {
-//                VarDumper::dump($security_role['name']);
-//                TeamDetail::firstOrCreate($security_role);
+                VarDumper::dump("Creating Security Role '{$security_role['security_role']}' for {$client->name}");
+                SecurityRole::create(array_merge($security_role, ['client_id' => $client->id, 'ability_ids' => []]));
             }
         });
 

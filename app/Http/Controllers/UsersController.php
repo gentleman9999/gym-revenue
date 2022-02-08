@@ -20,7 +20,7 @@ class UsersController extends Controller
     protected $rules = [
         'name' => ['required', 'max:50'],
         'email' => ['required', 'email'],
-        'role' => ['required']
+        'security_role' => ['required', 'exists:security_roles,id']
     ];
 
     public function index(Request $request)
@@ -78,6 +78,8 @@ class UsersController extends Controller
         $data = $request->validate($create_rules);
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
+        $security_role = SecurityRole::with('role')->find($data['security_role']);
+        UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
 
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
@@ -85,12 +87,13 @@ class UsersController extends Controller
         }
         $current_team = $request->user()->currentTeam()->first();
         UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
+        $role = $security_role->role->name;
         $current_team->users()->attach(
-            $user, ['role' => $data['role']]
+            $user, ['role' => $role]
         );
         if ($client_id) {
             $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->addUserToTeam($user->id, $current_team->id, $data['role']);
+            $aggy->addUserToTeam($user->id, $current_team->id, $role);
             $aggy->persist();
         }
         Alert::success("User '{$user->name}' was created")->flash();
@@ -111,11 +114,14 @@ class UsersController extends Controller
         $user->updateOrFail($data);
         $current_team = $current_user->currentTeam()->first();
         $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;
-        $user->teams()->sync([$current_team->id => ['role' => $data['role']]]);
+        $security_role = SecurityRole::with('role')->find($data['security_role']);
+        UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'security_role'])->updateOrFail(['value'=>$security_role->id]);
+        $role = $security_role->role->name;
+        $user->teams()->sync([$current_team->id => ['role' => $role]]);
         $client_id = $current_user->currentClientId();
-        if ($client_id && $data['role'] !== $old_role) {
+        if ($client_id && $role !== $old_role) {
             $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->updateUserRoleOnTeam($user->id, $current_team->id, $old_role, $data['role']);
+            $aggy->updateUserRoleOnTeam($user->id, $current_team->id, $old_role, $role);
             $aggy->persist();
         }
         Alert::success("User '{$user->name}' updated")->flash();

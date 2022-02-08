@@ -88,8 +88,8 @@ export default {
 
         let operation = 'Update';
         if (user) {
-            const team_id = page.props.value.user.current_team_id;
-            user.security_role = user.details.filter(detail=>detail.name==='security_role').security_role
+            user.security_role = user?.details?.find(detail=>detail.name==='security_role')?.value || null
+            console.log({user});
         } else {
             user = {
                 name: null,
