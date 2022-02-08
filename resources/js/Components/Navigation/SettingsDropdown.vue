@@ -80,6 +80,9 @@
                     </inertia-link>
                 </li>
                 <li>
+                    <inertia-link :href="route('admin.impersonation')"></inertia-link>
+                </li>
+                <li>
                     <inertia-link
                         :href="route('api-tokens.index')"
                         v-if="$page.props.jetstream.hasApiFeatures"
