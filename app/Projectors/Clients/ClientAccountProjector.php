@@ -388,7 +388,7 @@ class ClientAccountProjector extends Projector
         $detail = SmsCampaignDetails::create([
             'sms_campaign_id' => $event->campaign,
             'detail' => 'template_assigned',
-            'value' => $event->template,
+            'value' => collect($event->template)->implode(','),
             'client_id' => $event->client
         ]);
 
@@ -458,7 +458,7 @@ class ClientAccountProjector extends Projector
         $detail = SmsCampaignDetails::create([
             'sms_campaign_id' => $event->campaign,
             'detail' => 'audience_assigned',
-            'value' => $event->audience,
+            'value' => collect($event->audience)->implode(','),
             'client_id' => $event->client
         ]);
 

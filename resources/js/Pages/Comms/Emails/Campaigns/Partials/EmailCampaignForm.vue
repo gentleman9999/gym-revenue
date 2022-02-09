@@ -45,7 +45,6 @@
                     "
                     :classes="multiselectClasses"
                 />
-
                 <jet-input-error
                     :message="form.errors.audiences"
                     class="mt-2"

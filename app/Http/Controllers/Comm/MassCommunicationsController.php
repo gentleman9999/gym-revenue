@@ -1006,7 +1006,10 @@ class MassCommunicationsController extends Controller
         return Inertia::render('Comms/SMS/Campaigns/EditSmsCampaign', [
             'campaign' => $campaign,
             'templates' => $available_templates,
-            'audiences' => $available_audiences,
+            'audiences' => $audiences,
+            'smsTemplates' => $templates,
+            'availableAudiences' => CommAudience::whereClientId($campaign->client_id)->get(),
+            'availableSmsTemplates' => SmsTemplates::whereClientId($campaign->client_id)->get(),
             'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
             'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
         ]);
@@ -1047,8 +1050,8 @@ class MassCommunicationsController extends Controller
                 'active' => 'sometimes|bool',
                 'schedule_date' => 'sometimes',
                 'schedule' => 'sometimes',
-                'sms_template_id' => 'sometimes',
-                'audience_id' => 'sometimes',
+                'sms_templates' => ['sometimes', 'array'],
+                'audiences' => ['sometimes', 'array'],
                 'client_id' => 'required|exists:clients,id',
                 'created_by_user_id' => 'required',
             ]
@@ -1121,39 +1124,33 @@ class MassCommunicationsController extends Controller
 
             if(!is_null($campaign->assigned_audience))
             {
-                if($campaign->assigned_audience->value != $data['audience_id'])
-                {
-                    $campaign->assigned_audience->active = 0;
-                    $campaign->assigned_audience->save();
-
-                    $client_aggy = $client_aggy->unassignAudienceFromSmsCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id)
-                        ->assignAudienceToSmsCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                $campaign->assigned_audience->active = 0;
+                foreach ($campaign->assigned_audience as $aa) {
+                    $aa->save();
                 }
 
+                $client_aggy = $client_aggy->unassignAudienceFromSmsCampaign($campaign->assigned_audience, $campaign->id, request()->user()->id)
+                    ->assignAudienceToSmsCampaign($data['audiences'], $campaign->id, request()->user()->id);
             }
             else
             {
-                $client_aggy = $client_aggy->assignAudienceToSmsCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                $client_aggy = $client_aggy->assignAudienceToSmsCampaign($data['audiences'], $campaign->id, request()->user()->id);
             }
 
             if(!is_null($campaign->assigned_template))
             {
-                if($campaign->assigned_template->value != $data['sms_template_id'])
-                {
-                    $campaign->assigned_template->active = 0;
-                    $campaign->assigned_template->save();
+                $campaign->assigned_template->active = 0;
+                $campaign->assigned_template->save();
 
-                    $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
-                        ->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
-                }
-
+                $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template, $campaign->id, request()->user()->id)
+                    ->assignSmsTemplateToCampaign($data['sms_templates'], $campaign->id, request()->user()->id);
             }
             else
             {
                 if($old_values['schedule_date'] !== null &&  strtotime($old_values['schedule_date']['value']) < strtotime('now')){
                     Alert::error("Campaign {$old_values['name']} was not updated. Schedule Date is in the past")->flash();
                 }
-                $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['sms_template_id'], $campaign->id, request()->user()->id);
+                $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['sms_templates'], $campaign->id, request()->user()->id);
             }
 
             // active = 1 save() with aggy launchCampaign event
