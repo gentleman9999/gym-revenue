@@ -33,7 +33,7 @@
                 />
                 <jet-input-error :message="form.errors.password" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6">
+            <div class="form-control col-span-6" v-if="clientId">
                 <jet-label for="role" value="Security Role"/>
                 <select
                     id="role"
@@ -97,6 +97,9 @@ export default {
                 password: null,
                 security_role: null,
                 client_id: props.clientId
+            }
+            if(props.clientId){
+
             }
             operation = 'Create';
         }

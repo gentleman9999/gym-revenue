@@ -20,7 +20,9 @@ class UsersController extends Controller
     protected $rules = [
         'name' => ['required', 'max:50'],
         'email' => ['required', 'email'],
-        'security_role' => ['required', 'exists:security_roles,id']
+        'client_id' => ['sometimes', 'exists:clients,id'],
+        'security_role' => ['nullable', 'exists:security_roles,id']
+//        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
     ];
 
     public function index(Request $request)
@@ -128,10 +130,13 @@ class UsersController extends Controller
         $user->updateOrFail($data);
         $current_team = $current_user->currentTeam()->first();
         $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;
-        $security_role = SecurityRole::with('role')->find($data['security_role']);
-        UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'security_role'])->updateOrFail(['value'=>$security_role->id]);
-        $role = $security_role->role->name;
-        $user->teams()->sync([$current_team->id => ['role' => $role]]);
+        if($data['security_role']){
+            $security_role = SecurityRole::with('role')->find($data['security_role']);
+            UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'security_role'])->updateOrFail(['value'=>$security_role->id]);
+            $role = $security_role->role->name;
+            $user->teams()->sync([$current_team->id => ['role' => $role]]);
+        }
+
         $client_id = $current_user->currentClientId();
         if ($client_id && $role !== $old_role) {
             $aggy = ClientAggregate::retrieve($client_id);

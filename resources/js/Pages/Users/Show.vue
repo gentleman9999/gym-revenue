@@ -106,11 +106,11 @@ export default defineComponent({
         // }
 
         const shouldShowDelete = ({ data }) => abilities.value.includes("users.delete") &&
-            data.teams.find((team) => team.id === teamId.value)?.pivot.role !==
+            data.teams?.find((team) => team.id === teamId.value)?.pivot?.role !==
             "Account Owner";
 
         const shouldShowEdit = ({ data }) => abilities.value.includes("users.update") &&
-            data.teams.find((team) => team.id === teamId.value)?.pivot.role !==
+            data.teams?.find((team) => team.id === teamId.value)?.pivot?.role !==
             "Account Owner";
 
         const actions = {
