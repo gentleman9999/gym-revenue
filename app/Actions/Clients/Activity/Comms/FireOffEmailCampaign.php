@@ -29,33 +29,48 @@ class FireOffEmailCampaign
     {
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($email_campaign_id);
         $template = EmailTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
-        $audience = CommAudience::findOrFail($campaign->assigned_audience->value);
-        $audience_members = AudienceMember::whereAudienceId($audience->id)->get();
+
+        foreach ($campaign->assigned_audience as $assigned_audiences)
+        { //need to open this object to grab ->value.
+            $assigned_audiences = explode(',', $assigned_audiences->value); //we imploded these values so naturally.
+            foreach ($assigned_audiences as $assigned_audience)
+            {
+                $audiences[] = CommAudience::findOrFail($assigned_audience);
+            }
+        }
+        foreach ($audiences as $audience)
+        {
+            $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
+        }
         $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         $recipients = [];
         $sent_to = [];
-        foreach ($audience_members as $audience_member) {
-            $member = null;
-            switch ($audience_member->entity_type) {
-                case 'user':
-                    $member = User::find($audience_member->entity_id);
-                    break;
-                case 'prospect':
+        foreach ($audience_members as $audience_member_breakdown)
+        {
+            foreach ($audience_member_breakdown as $audience_member)
+            {
+                $member = null;
+                switch ($audience_member->entity_type) {
+                    case 'user':
+                        $member = User::find($audience_member->entity_id);
+                        break;
+                    case 'prospect':
 //                        $member = Prospects::findOrFail($audience_member->entity_id);
-                    break;
-                case 'conversion':
+                        break;
+                    case 'conversion':
 //                        $member = Conversions::findOrFail($audience_member->entity_id);
-                    break;
-                default:
-                    //todo:report error - unknown entity_Type
-                    break;
-            }
-            if ($member) {
-                //TODO: probably don't just serialize the $member object. we need to pluck what we want, and merge with other variables
-                $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
-                $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'email' => $member->email];
+                        break;
+                    default:
+                        //todo:report error - unknown entity_Type
+                        break;
+                }
+                if ($member) {
+                    //TODO: probably don't just serialize the $member object. we need to pluck what we want, and merge with other variables
+                    $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
+                    $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'email' => $member->email];
+                }
             }
         }
         $sent_to_chunks = array_chunk($sent_to, $this->batchSize);

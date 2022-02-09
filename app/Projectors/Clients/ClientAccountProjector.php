@@ -224,7 +224,7 @@ class ClientAccountProjector extends Projector
         $detail = EmailCampaignDetails::create([
             'email_campaign_id' => $event->campaign,
             'detail' => 'template_assigned',
-            'value' => $event->template,
+            'value' => collect($event->template)->implode(','),
             'client_id' => $event->client
         ]);
 
@@ -440,7 +440,7 @@ class ClientAccountProjector extends Projector
         $detail = EmailCampaignDetails::create([
             'email_campaign_id' => $event->campaign,
             'detail' => 'audience_assigned',
-            'value' => $event->audience,
+            'value' => collect($event->audience)->implode(','),
             'client_id' => $event->client
         ]);
 
@@ -484,7 +484,9 @@ class ClientAccountProjector extends Projector
         $campaign = EmailCampaigns::whereId($event->campaign)
             ->with('unassigned_audience')->first();
         if (!is_null($campaign->unassigned_audience ?? null)) {
-            $campaign->unassigned_audience->delete();
+            foreach ($campaign->unassigned_audience as $ua) {
+                $ua->delete();
+            }
         }
     }
 

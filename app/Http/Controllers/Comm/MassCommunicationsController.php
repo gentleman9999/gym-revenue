@@ -465,10 +465,12 @@ class MassCommunicationsController extends Controller
         return Inertia::render('Comms/Emails/Campaigns/EditEmailCampaign', [
             'campaign' => $campaign,
             'templates' => $available_templates,
-            'audiences' => $available_audiences,
+            'audiences' => $audiences,
+            'emailTemplates' => $templates,
             'availableAudiences' => CommAudience::whereClientId($campaign->client_id)->get(),
+            'availableEmailTemplates' => EmailTemplates::whereClientId($campaign->client_id)->get(),
             'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
-            'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
+            'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience : ''
         ]);
     }
 
@@ -504,8 +506,8 @@ class MassCommunicationsController extends Controller
                 'active' => 'sometimes|bool',
                 'schedule_date' => 'sometimes',
                 'schedule' => 'sometimes',
-                'email_template_id' => 'sometimes',
-                'audience_id' => 'sometimes',
+                'email_templates' => ['sometimes', 'array'],
+                'audiences' => ['sometimes', 'array'],
                 'client_id' => 'required|exists:clients,id',
                 'created_by_user_id' => 'required',
             ]
@@ -579,39 +581,32 @@ class MassCommunicationsController extends Controller
 
             if(!is_null($campaign->assigned_audience))
             {
-                if($campaign->assigned_audience->value != $data['audience_id'])
-                {
-                    $campaign->assigned_audience->active = 0;
-                    $campaign->assigned_audience->save();
-
-                    $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience->value, $campaign->id, request()->user()->id)
-                        ->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                $campaign->assigned_audience->active = 0;
+                foreach ($campaign->assigned_audience as $aa) {
+                    $aa->save();
                 }
-
+                $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience, $campaign->id, request()->user()->id)
+                    ->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
             }
             else
             {
-                $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
             }
 
             if(!is_null($campaign->assigned_template))
             {
-                if($campaign->assigned_template->value != $data['email_template_id'])
-                {
-                    $campaign->assigned_template->active = 0;
-                    $campaign->assigned_template->save();
+                $campaign->assigned_template->active = 0;
+                $campaign->assigned_template->save();
 
-                    $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template->value, $campaign->id, request()->user()->id)
-                        ->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
-                }
-
+                $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template, $campaign->id, request()->user()->id)
+                    ->assignEmailTemplateToCampaign($data['email_templates'], $campaign->id, request()->user()->id);
             }
             else
             {
                 if($old_values['schedule_date'] !== null &&  strtotime($old_values['schedule_date']['value']) < strtotime('now')){
                     Alert::error("Campaign {$old_values['name']} was not updated. Schedule Date is in the past")->flash();
                 }
-                $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_template_id'], $campaign->id, request()->user()->id);
+                $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_templates'], $campaign->id, request()->user()->id);
             }
 
             // active = 1 save() with aggy launchCampaign event
@@ -661,7 +656,7 @@ class MassCommunicationsController extends Controller
             // @todo - if audience_id is not null, set it in campaign_details and use aggy to update logs in Client and Audiences and User
             if(array_key_exists('audience_id', $data))
             {
-                if(!is_null($data['audience_id']))
+                if(!is_null($data['audiences']))
                 {
                     if($old_values['active'] == 1) {
                         // this means its getting shut off so
@@ -686,7 +681,7 @@ class MassCommunicationsController extends Controller
 
                                 if(!is_null($data['audience_id']))
                                 {
-                                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
                                 }
 
                             }
@@ -697,7 +692,7 @@ class MassCommunicationsController extends Controller
                         }
                         else
                         {
-                            $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audience_id'], $campaign->id, request()->user()->id);
+                            $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
                         }
                     }
                 }

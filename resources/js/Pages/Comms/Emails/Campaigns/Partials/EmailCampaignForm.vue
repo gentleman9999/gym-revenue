@@ -28,8 +28,7 @@
                 class="form-control col-span-3 flex flex-col"
                 v-if="form.active"
             >
-
-
+                <p>Select an audience</p>
                 <multiselect
                     v-model="form.audiences"
                     class="py-2"
@@ -48,7 +47,7 @@
                 />
 
                 <jet-input-error
-                    :message="form.errors.audience_id"
+                    :message="form.errors.audiences"
                     class="mt-2"
                 />
             </div>
@@ -58,26 +57,24 @@
                 v-if="form.active"
             >
                 <p>Select an Email Template</p>
-                <select
-                    v-if="templates === undefined"
-                    v-model="form.email_template_id"
+                <multiselect
+                    v-model="form.email_templates"
                     class="py-2"
-                >
-                    <option value="">No Templates Available</option>
-                </select>
-                <select v-else v-model="form.email_template_id" class="py-2" :disabled="!canEditActiveInputs"
-                >
-                    <option value="">Available Templates</option>
-                    <option
-                        v-for="(template, idx) in templates"
-                        :id="idx"
-                        :value="template.id"
-                    >
-                        {{ template.name }}
-                    </option>
-                </select>
+                    :disabled="!canEditActiveInputs"
+                    id="email_templates"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                         availableEmailTemplates.map((email_templates) => ({
+                            label: email_templates.name,
+                            value: email_templates.id,
+                        }))
+                    "
+                    :classes="multiselectClasses"
+                />
                 <jet-input-error
-                    :message="form.errors.email_template_id"
+                    :message="form.errors.email_templates"
                     class="mt-2"
                 />
             </div>
@@ -193,9 +190,7 @@ export default {
         "clientId",
         "campaign",
         "canActivate",
-        "audiences",
         "templates",
-        "audiences",
         "assignedTemplate",
         "assignedAudience",
     ],
@@ -209,8 +204,8 @@ export default {
             campaign = {
                 name: null,
                 active: false,
-                audience_id: "",
-                email_template_id: "",
+                audiences: [],
+                email_templates: [],
                 schedule: "",
                 schedule_date: "",
                 // client_id: props.clientId
@@ -220,8 +215,8 @@ export default {
             campaign["schedule_date"] = campaign.schedule_date?.value || 'now';
             campaign["schedule"] = campaign.schedule?.value || '';
 
-            campaign["email_template_id"] = props.assignedTemplate;
-            campaign["audience_id"] = props.assignedAudience;
+            campaign["email_templates"] = page.props.value.emailTemplates.map(template_id=>template_id.value);
+            campaign["audiences"] = page.props.value.audiences.map(audience_id=>audience_id.value);
         }
 
         console.log("campaign Params", campaign);
@@ -318,7 +313,7 @@ export default {
             spacer: "h-9 py-px box-content",
         };
 
-        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow, availableAudiences: page.props.value.availableAudiences, multiselectClasses};
+        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow, availableAudiences: page.props.value.availableAudiences, availableEmailTemplates: page.props.value.availableEmailTemplates ,multiselectClasses};
     },
     data() {
         return {
