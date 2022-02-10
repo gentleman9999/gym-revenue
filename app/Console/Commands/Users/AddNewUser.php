@@ -169,6 +169,13 @@ class AddNewUser extends Command
             'email' => $email,
             'password' => bcrypt('Hello123!')
         ]);
+
+        UserDetails::create([
+            'user_id' => $user->id,
+            'name' => 'phone',
+            'value' => '9015555555' //Need this for sms campaign testing
+        ]);
+
         if(is_null($client))
         {
             $this->createCapeAndBayUser($user, $role);

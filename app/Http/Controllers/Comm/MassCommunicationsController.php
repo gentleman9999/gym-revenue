@@ -579,17 +579,21 @@ class MassCommunicationsController extends Controller
 //                $campaign->save();
             }
 
-            if(!is_null($campaign->assigned_audience))
-            {
-                $campaign->assigned_audience->active = 0;
-                foreach ($campaign->assigned_audience as $aa) {
-                    $aa->save();
+            if (!is_null($campaign->assigned_audience)) {
+                if(collect($campaign->assigned_audience)->isEmpty()) {
+                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
+                } else {
+                    foreach ($campaign->assigned_audience as $assigned_audience)
+                    {
+                        if(!in_array($assigned_audience->value, $data['audiences'])) {
+                            $assigned_audience->active = 0;
+                            $assigned_audience->save();
+                            $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($assigned_audience->value, $campaign->id, request()->user()->id);
+                        }
+                    }
+                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
                 }
-                $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($campaign->assigned_audience, $campaign->id, request()->user()->id)
-                    ->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
-            }
-            else
-            {
+            } else {
                 $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
             }
 
@@ -1005,13 +1009,12 @@ class MassCommunicationsController extends Controller
         // @todo - need to build access validation here.
         return Inertia::render('Comms/SMS/Campaigns/EditSmsCampaign', [
             'campaign' => $campaign,
-            'templates' => $available_templates,
             'audiences' => $audiences,
             'smsTemplates' => $templates,
             'availableAudiences' => CommAudience::whereClientId($campaign->client_id)->get(),
-            'availableSmsTemplates' => SmsTemplates::whereClientId($campaign->client_id)->get(),
-            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
-            'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
+            'availableSmsTemplates' => SmsTemplates::whereClientId($campaign->client_id)->get()
+            //'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
+            //'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
         ]);
     }
 
@@ -1122,19 +1125,22 @@ class MassCommunicationsController extends Controller
 //                $campaign->save();
             }
 
-            if(!is_null($campaign->assigned_audience))
-            {
-                $campaign->assigned_audience->active = 0;
-                foreach ($campaign->assigned_audience as $aa) {
-                    $aa->save();
+            if (!is_null($campaign->assigned_audience)) {
+                if(collect($campaign->assigned_audience)->isEmpty()) {
+                    $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
+                } else {
+                    foreach ($campaign->assigned_audience as $assigned_audience)
+                    {
+                        if(!in_array($assigned_audience->value, $data['audiences'])) {
+                            $assigned_audience->active = 0;
+                            $assigned_audience->save();
+                            $client_aggy = $client_aggy->unassignAudienceFromSMSCampaign($assigned_audience->value, $campaign->id, request()->user()->id);
+                        }
+                    }
+                    $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
                 }
-
-                $client_aggy = $client_aggy->unassignAudienceFromSmsCampaign($campaign->assigned_audience, $campaign->id, request()->user()->id)
-                    ->assignAudienceToSmsCampaign($data['audiences'], $campaign->id, request()->user()->id);
-            }
-            else
-            {
-                $client_aggy = $client_aggy->assignAudienceToSmsCampaign($data['audiences'], $campaign->id, request()->user()->id);
+            } else {
+                $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
             }
 
             if(!is_null($campaign->assigned_template))

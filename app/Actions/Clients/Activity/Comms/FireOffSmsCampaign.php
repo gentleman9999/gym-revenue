@@ -30,20 +30,19 @@ class FireOffSmsCampaign
     {
         $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($sms_campaign_id);
         $template = SmsTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
+        $markup = $template->markup;
+        //$audience = CommAudience::findOrFail($campaign->assigned_audience->value);
+        //$audience_members = AudienceMember::whereAudienceId($audience->id)->get();
 
-        foreach ($campaign->assigned_audience as $assigned_audiences)
-        { //need to open this object to grab ->value.
-            $assigned_audiences = explode(',', $assigned_audiences->value); //we imploded these values so naturally.
-            foreach ($assigned_audiences as $assigned_audience)
-            {
-                $audiences[] = CommAudience::findOrFail($assigned_audience);
-            }
+        foreach ($campaign->assigned_audience as $assigned_audience)
+        {
+            $audiences[] = CommAudience::findOrFail($assigned_audience->value);
         }
         foreach ($audiences as $audience)
         {
             $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
         }
-        $markup = $template->markup;
+
         $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);

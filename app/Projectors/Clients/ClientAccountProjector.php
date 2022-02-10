@@ -437,38 +437,44 @@ class ClientAccountProjector extends Projector
 
     public function onAudienceAssignedToEmailCampaign(AudienceAssignedToEmailCampaign $event)
     {
-        $detail = EmailCampaignDetails::create([
-            'email_campaign_id' => $event->campaign,
-            'detail' => 'audience_assigned',
-            'value' => collect($event->audience)->implode(','),
-            'client_id' => $event->client
-        ]);
+        foreach ($event->audience as $audience)
+        {
+            $detail = EmailCampaignDetails::create([
+                'email_campaign_id' => $event->campaign,
+                'detail' => 'audience_assigned',
+                'value' => $audience,
+                'client_id' => $event->client
+            ]);
 
-        if ($event->user == 'auto') {
-            $detail->misc = ['msg' => 'Audience was auto-assigned', 'user' => $event->user];
-        } else {
-            $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Audience was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+            if ($event->user == 'auto') {
+                $detail->misc = ['msg' => 'Audience was auto-assigned', 'user' => $event->user];
+            } else {
+                $user = User::find($event->user);
+                $detail->misc = ['msg' => 'Audience was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+            }
+            $detail->save();
         }
-        $detail->save();
     }
 
     public function onAudienceAssignedToSmsCampaign(AudienceAssignedToSmsCampaign $event)
     {
-        $detail = SmsCampaignDetails::create([
-            'sms_campaign_id' => $event->campaign,
-            'detail' => 'audience_assigned',
-            'value' => collect($event->audience)->implode(','),
-            'client_id' => $event->client
-        ]);
+        foreach ($event->audience as $audience)
+        {
+            $detail = SmsCampaignDetails::create([
+                'sms_campaign_id' => $event->campaign,
+                'detail' => 'audience_assigned',
+                'value' => $audience,
+                'client_id' => $event->client
+            ]);
 
-        if ($event->user == 'auto') {
-            $detail->misc = ['msg' => 'Audience was auto-assigned', 'user' => $event->user];
-        } else {
-            $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Audience was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+            if ($event->user == 'auto') {
+                $detail->misc = ['msg' => 'Audience was auto-assigned', 'user' => $event->user];
+            } else {
+                $user = User::find($event->user);
+                $detail->misc = ['msg' => 'Audience was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+            }
+            $detail->save();
         }
-        $detail->save();
     }
 
     public function onAudienceUnAssignedFromEmailCampaign(AudienceUnAssignedFromEmailCampaign $event)
@@ -484,9 +490,7 @@ class ClientAccountProjector extends Projector
         $campaign = EmailCampaigns::whereId($event->campaign)
             ->with('unassigned_audience')->first();
         if (!is_null($campaign->unassigned_audience ?? null)) {
-            foreach ($campaign->unassigned_audience as $ua) {
-                $ua->delete();
-            }
+                $campaign->unassigned_audience->delete();
         }
     }
 
@@ -510,8 +514,10 @@ class ClientAccountProjector extends Projector
     public function onSmsSent(SmsSent $event)
     {
         $launch = SmsCampaigns::with('launched')->find($event->campaign)->launched;
-        $launchedBy = json_decode($launch->value)->id;
-
+        $launchedBy = null;
+        if($launch){
+            $launchedBy = $launch->value;
+        }
         ClientBillableActivity::create([
             'client_id' => $event->client,
             'desc' => 'SMS sent from SMS Campaign',

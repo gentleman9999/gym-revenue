@@ -30,13 +30,9 @@ class FireOffEmailCampaign
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($email_campaign_id);
         $template = EmailTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
 
-        foreach ($campaign->assigned_audience as $assigned_audiences)
-        { //need to open this object to grab ->value.
-            $assigned_audiences = explode(',', $assigned_audiences->value); //we imploded these values so naturally.
-            foreach ($assigned_audiences as $assigned_audience)
-            {
-                $audiences[] = CommAudience::findOrFail($assigned_audience);
-            }
+        foreach ($campaign->assigned_audience as $assigned_audience)
+        {
+            $audiences[] = CommAudience::findOrFail($assigned_audience->value);
         }
         foreach ($audiences as $audience)
         {

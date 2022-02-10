@@ -3,6 +3,7 @@
 namespace App\Aggregates\Clients\Traits;
 
 use App\Models\User;
+use mysql_xdevapi\Exception;
 
 trait ClientGetters
 {
@@ -31,7 +32,11 @@ trait ClientGetters
                 {
                     if(array_key_exists('template_id', $history))
                     {
-                        $model = $history['model']::find($history['template_id']);
+                        try {
+                            $model = $history['model']::find($history['template_id']);
+                        } catch (\Exception $e) {
+                            $model = $history['model']::find($history['template_id']['id']);
+                        }
                     }
                     elseif(array_key_exists('campaign_id', $history))
                     {
@@ -39,7 +44,7 @@ trait ClientGetters
                     }
 
                     if(!empty($model)){
-                        $history['recordName'] = $model->name;
+                        $history['recordName'] = $model->first()->name;
                     }
                 }
 

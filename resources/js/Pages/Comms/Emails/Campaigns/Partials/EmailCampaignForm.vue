@@ -222,7 +222,10 @@ export default {
         const form = useForm(campaign);
 
         let handleSubmit = () => {
-            form.transform(data=> ({...data, schedule_date: scheduleNow.value ? 'now' : data.schedule_date})).put(route("comms.email-campaigns.update", campaign.id));
+            form.transform(data=> ({
+                ...data,
+                schedule_date: scheduleNow.value ? 'now' : data.schedule_date
+            })).put(route("comms.email-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
             handleSubmit = () =>
@@ -312,7 +315,7 @@ export default {
             spacer: "h-9 py-px box-content",
         };
 
-        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow, availableAudiences: page.props.value.availableAudiences, availableEmailTemplates: page.props.value.availableEmailTemplates ,multiselectClasses};
+        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow, availableAudiences: page.props.value.availableAudiences, availableEmailTemplates: page.props.value.availableEmailTemplates, multiselectClasses};
     },
     data() {
         return {

@@ -56,7 +56,7 @@
                 class="form-control col-span-3 flex flex-col"
                 v-if="form.active"
             >
-                <p>Select an Email Template</p>
+                <p>Select an SMS Template</p>
                 <multiselect
                     v-model="form.sms_templates"
                     class="py-2"
@@ -315,7 +315,7 @@ export default {
             spacer: "h-9 py-px box-content",
         };
 
-        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow,availableAudiences: page.props.value.availableAudiences, availableSmsTemplates: page.props.value.availableSmsTemplates ,multiselectClasses};
+        return {form, buttonText: operation, handleSubmit, modal, canEditActiveInputs, scheduleNow,availableAudiences: page.props.value.availableAudiences, availableSmsTemplates: page.props.value.availableSmsTemplates, multiselectClasses};
     },
     data() {
         return {
