@@ -439,8 +439,6 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        $available_templates = [];
-        $available_audiences = [];
         $campaign = EmailCampaigns::whereId($id)
             ->with('assigned_template')->with('assigned_audience')
             ->with('schedule')->with('schedule_date')
@@ -451,26 +449,17 @@ class MassCommunicationsController extends Controller
         }
 
         $templates = EmailTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
-        foreach ($templates as $template)
-        {
-            $available_templates[$template->id] = $template->toArray();
-        }
         $audiences = CommAudience::whereClientId($campaign->client_id)->whereActive('1')->get();
-        foreach ($audiences as $audience)
-        {
-            $available_audiences[$audience->id] = $audience->toArray();
-        }
         // @todo - need to build access validation here.
 //        dd($campaign->schedule_date->toArray());
         return Inertia::render('Comms/Emails/Campaigns/EditEmailCampaign', [
             'campaign' => $campaign,
-            'templates' => $available_templates,
             'audiences' => $audiences,
             'emailTemplates' => $templates,
             'availableAudiences' => CommAudience::whereClientId($campaign->client_id)->get(),
             'availableEmailTemplates' => EmailTemplates::whereClientId($campaign->client_id)->get(),
-            'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
-            'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience : ''
+            //'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
+            //'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience : ''
         ]);
     }
 
@@ -985,8 +974,6 @@ class MassCommunicationsController extends Controller
             return redirect()->back();
         }
 
-        $available_templates = [];
-        $available_audiences = [];
         $campaign = SmsCampaigns::whereId($id)
             ->with('assigned_template')->with('assigned_audience')
             ->with('schedule')->with('schedule_date')
@@ -997,22 +984,14 @@ class MassCommunicationsController extends Controller
         }
 
         $templates = SmsTemplates::whereClientId($campaign->client_id)->whereActive('1')->get();
-        foreach ($templates as $template)
-        {
-            $available_templates[$template->id] = $template->toArray();
-        }
         $audiences = CommAudience::whereClientId($campaign->client_id)->whereActive('1')->get();
-        foreach ($audiences as $audience)
-        {
-            $available_audiences[$audience->id] = $audience->toArray();
-        }
         // @todo - need to build access validation here.
         return Inertia::render('Comms/SMS/Campaigns/EditSmsCampaign', [
             'campaign' => $campaign,
             'audiences' => $audiences,
             'smsTemplates' => $templates,
             'availableAudiences' => CommAudience::whereClientId($campaign->client_id)->get(),
-            'availableSmsTemplates' => SmsTemplates::whereClientId($campaign->client_id)->get()
+            'availableSmsTemplates' => SmsTemplates::whereClientId($campaign->client_id)->get(),
             //'assigned-template' => (!is_null($campaign->assigned_template)) ? $campaign->assigned_template->value : '',
             //'assigned-audience' => (!is_null($campaign->assigned_audience)) ? $campaign->assigned_audience->value : ''
         ]);
