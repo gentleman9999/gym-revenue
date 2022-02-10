@@ -42,16 +42,16 @@ class LocationsController extends Controller
     //
     public function index(Request $request)
     {
-        if(request()->user()->cannot('view', Location::class))
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
+        $page_count = 10;
+
+        if($user->cannot('locations.read', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
-        $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
-
-        // @todo - insert Bouncer-based ACL here.
-        $page_count = 10;
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
@@ -77,7 +77,8 @@ class LocationsController extends Controller
 
     public function create()
     {
-        if(request()->user()->cannot('create', Location::class))
+        $user = request()->user();
+        if($user->cannot('locations.create', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -90,7 +91,8 @@ class LocationsController extends Controller
 
     public function edit($id)
     {
-        if(request()->user()->cannot('edit', Location::class))
+        $user = request()->user();
+        if($user->cannot('locations.update', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -304,7 +306,8 @@ if(!$location->id){
 
     public function trash($id)
     {
-        if(request()->user()->cannot('trash', Location::class))
+        $user = request()->user();
+        if($user->cannot('locations.trash', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::route('locations');
