@@ -545,7 +545,14 @@ class ClientAccountProjector extends Projector
         $campaign = EmailCampaigns::whereId($event->campaign)
             ->with('unassigned_audience')->first();
         if (!is_null($campaign->unassigned_audience ?? null)) {
-                $campaign->unassigned_audience->delete();
+            if (!is_null($campaign->unassigned_audience)) {
+                if (collect($campaign->unassigned_audience)->isNotEmpty()) {
+                    foreach ($campaign->unassigned_audience as $unassigned_audience)
+                    {
+                        $unassigned_audience->delete();
+                    }
+                }
+            }
         }
     }
 
@@ -562,7 +569,14 @@ class ClientAccountProjector extends Projector
         $campaign = SmsCampaigns::whereId($event->campaign)
             ->with('unassigned_audience')->first();
         if (!is_null($campaign->unassigned_audience ?? null)) {
-            $campaign->unassigned_audience->delete();
+            if (!is_null($campaign->unassigned_audience)) {
+                if (collect($campaign->unassigned_audience)->isNotEmpty()) {
+                    foreach ($campaign->unassigned_audience as $unassigned_audience)
+                    {
+                        $unassigned_audience->delete();
+                    }
+                }
+            }
         }
     }
 
