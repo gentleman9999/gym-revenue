@@ -15,6 +15,7 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Lab404\Impersonate\Models\Impersonate;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,7 @@ class User extends Authenticatable
     use Notifiable;
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
+    use Impersonate;
 
     /**
      * The attributes that are mass assignable.

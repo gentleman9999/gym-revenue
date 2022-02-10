@@ -136,3 +136,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::post('/client-services', \App\Http\Controllers\ClientSettingsController::class . '@updateClientServices')->name('settings.client-services.update');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
+
+Route::get('/{user}/impersonate', \App\Http\Controllers\UsersController::class . '@impersonate')->name('users.impersonate');
+Route::get('/leave-impersonate', \App\Http\Controllers\UsersController::class . '@leaveImpersonate')->name('users.leave-impersonate');
