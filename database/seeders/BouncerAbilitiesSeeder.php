@@ -44,10 +44,10 @@ class BouncerAbilitiesSeeder extends Seeder
     {
         $groups = collect($group);
         $groups->each(function ($group) use ($role) {
+            VarDumper::dump("Allowing all on $group for $role");
             $this->teams->each(function ($team) use ($group, $role) {
                 $group_abilities = Bouncer::ability()->where('name', 'like', "$group.%");
                 $group_abilities->each(function ($ability) use ($role, $team) {
-                    VarDumper::dump("Allowing $role to $ability->name for $team->name");
                     Bouncer::allow($role)->to($ability->name, $team);
                 });
             });

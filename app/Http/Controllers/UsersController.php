@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Prologue\Alerts\Facades\Alert;
 
 class UsersController extends Controller
@@ -88,29 +89,35 @@ class UsersController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, CreatesNewUsers $creator)
     {
+        $creator->create($request->all());
         $create_rules = array_merge($this->rules, ['password' => 'required', 'email' => ['required', 'email', 'unique:users,email']]);
         $data = $request->validate($create_rules);
         $data['password'] = bcrypt($data['password']);
-        $user = User::create($data);
-        $security_role = SecurityRole::with('role')->find($data['security_role']);
-        UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
-
+        $data['team'] = $request->user()->current_team_id;
+//        dd($data);
+        ////////////////////
+//        $user = User::create($data);
+//        $security_role = SecurityRole::with('role')->find($data['security_role']);
+//        UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
+//
         $client_id = $request->user()->currentClientId();
+//        if ($client_id) {
+//            UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
+//        }
+//        $current_team = $request->user()->currentTeam()->first();
+//        UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
+//        $role = $security_role->role->name;
+//        $current_team->users()->attach(
+//            $user, ['role' => $role]
+//        );
+        ////////////////
+
         if ($client_id) {
-            UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
-        }
-        $current_team = $request->user()->currentTeam()->first();
-        UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
-        $role = $security_role->role->name;
-        $current_team->users()->attach(
-            $user, ['role' => $role]
-        );
-        if ($client_id) {
-            $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->addUserToTeam($user->id, $current_team->id, $role);
-            $aggy->persist();
+            $aggy = ClientAggregate::retrieve($client_id)->createUser($request->user()->id, $data)->persist();
+//            $aggy->addUserToTeam($user->id, $current_team->id, $role);
+//            $aggy->persist();
         }
         Alert::success("User '{$user->name}' was created")->flash();
 

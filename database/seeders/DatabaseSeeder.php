@@ -55,11 +55,14 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
 
-        VarDumper::dump('Running Client User Seeder');
-        $this->call(ClientUserSeeder::class);
+        VarDumper::dump('Adding Bouncer Roles');
+        $this->call(BouncerRolesSeeder::class);
 
         VarDumper::dump('Running Security Role Seeder');
         $this->call(SecurityRolesSeeder::class);
+
+        VarDumper::dump('Running Client User Seeder');
+        $this->call(ClientUserSeeder::class);
 
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);

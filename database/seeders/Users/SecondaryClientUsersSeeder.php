@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Users;
 
+use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
 use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
@@ -99,6 +100,19 @@ class SecondaryClientUsersSeeder extends UserSeeder
     {
         $client = Client::whereName($user['client'])->first();
 
+        $teams = Team::whereIn('name', $user['teams'])->get(['id'])->pluck('id');
+
+        CreateUser::run([
+            'client_id' => $client->id,
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'password' => 'Hello123!',
+            'teams' => $teams,
+            'role' => $user['role']
+        ]);
+        return;
+
+
         // Create User
         $new_user = User::create([
             'name' => $user['name'],
@@ -111,7 +125,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
             'user_id' => $new_user->id,
             'name' => 'associated_client',
             'value' => $client->id,
-            'active' => 1
+            'active' => 1,
         ]);
 
         //add security role

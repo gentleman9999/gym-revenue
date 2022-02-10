@@ -2,58 +2,69 @@
 
 namespace App\Actions\Jetstream;
 
-use Illuminate\Support\Facades\DB;
-use Laravel\Jetstream\Contracts\DeletesTeams;
+use App\Actions\Fortify\PasswordValidationRules;
+use App\Aggregates\Clients\ClientAggregate;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
+use Laravel\Jetstream\Jetstream;
+use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
+use function dd;
 
 class DeleteUser implements DeletesUsers
 {
-    /**
-     * The team deleter implementation.
-     *
-     * @var \Laravel\Jetstream\Contracts\DeletesTeams
-     */
-    protected $deletesTeams;
+    use PasswordValidationRules, AsAction;
 
     /**
-     * Create a new action instance.
+     * Get the validation rules that apply to the action.
      *
-     * @param  \Laravel\Jetstream\Contracts\DeletesTeams  $deletesTeams
-     * @return void
+     * @return array
      */
-    public function __construct(DeletesTeams $deletesTeams)
+    public function rules()
     {
-        $this->deletesTeams = $deletesTeams;
+        return [
+            //no rules since we only accept an id route param, which is validated in the route definition
+        ];
     }
+
+    public function handle($id, $current_user)
+    {
+        $client_id = $current_user->currentClientId();
+
+        if ($client_id) {
+            ClientAggregate::retrieve($client_id)->deleteUser($current_user->id || "Auto Generated", ['id' => $id])->persist();
+        } else {
+            //CapeAndBay User
+            dd('not yet implemented', $data);
+        };
+    }
+
+    public function asController(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->handle(
+            $id,
+            $request->user(),
+        );
+
+        Alert::success("User '{$user->name}' was deleted")->flash();
+
+//        return Redirect::route('users');
+        return Redirect::back();
+    }
+
 
     /**
      * Delete the given user.
      *
-     * @param  mixed  $user
+     * @param mixed $user
      * @return void
      */
     public function delete($user)
     {
-        DB::transaction(function () use ($user) {
-            $this->deleteTeams($user);
-            $user->deleteProfilePhoto();
-            $user->tokens->each->delete();
-            $user->delete();
-        });
-    }
-
-    /**
-     * Delete the teams and team associations attached to the user.
-     *
-     * @param  mixed  $user
-     * @return void
-     */
-    protected function deleteTeams($user)
-    {
-        $user->teams()->detach();
-
-        $user->ownedTeams->each(function ($team) {
-            $this->deletesTeams->delete($team);
-        });
+        $this->run($user->id);
     }
 }
