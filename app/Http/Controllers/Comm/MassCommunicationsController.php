@@ -569,38 +569,35 @@ class MassCommunicationsController extends Controller
             }
 
             if (!is_null($campaign->assigned_audience)) {
-                if(collect($campaign->assigned_audience)->isEmpty()) {
-                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
-                } else {
-                    foreach ($campaign->assigned_audience as $assigned_audience)
-                    {
-                        if(!in_array($assigned_audience->value, $data['audiences'])) {
+                if(collect($campaign->assigned_audience)->isNotEmpty()) {
+                    foreach ($campaign->assigned_audience as $assigned_audience) {
+                        if (!in_array($assigned_audience->value, $data['audiences'])) {
                             $assigned_audience->active = 0;
                             $assigned_audience->save();
                             $client_aggy = $client_aggy->unassignAudienceFromEmailCampaign($assigned_audience->value, $campaign->id, request()->user()->id);
                         }
                     }
-                    $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
+                }
+            }
+            $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
+
+            if (!is_null($campaign->assigned_template)) {
+                if(collect($campaign->assigned_template)->isNotEmpty()) {
+                    foreach ($campaign->assigned_template as $assigned_template) {
+                        if (!in_array($assigned_template->value, $data['audiences'])) {
+                            $assigned_template->active = 0;
+                            $assigned_template->save();
+                            $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($assigned_template->value, $campaign->id, request()->user()->id);
+                        }
+                    }
                 }
             } else {
-                $client_aggy = $client_aggy->assignAudienceToEmailCampaign($data['audiences'], $campaign->id, request()->user()->id);
-            }
-
-            if(!is_null($campaign->assigned_template))
-            {
-                $campaign->assigned_template->active = 0;
-                $campaign->assigned_template->save();
-
-                $client_aggy = $client_aggy->unassignEmailTemplateFromCampaign($campaign->assigned_template, $campaign->id, request()->user()->id)
-                    ->assignEmailTemplateToCampaign($data['email_templates'], $campaign->id, request()->user()->id);
-            }
-            else
-            {
                 if($old_values['schedule_date'] !== null &&  strtotime($old_values['schedule_date']['value']) < strtotime('now')){
                     Alert::error("Campaign {$old_values['name']} was not updated. Schedule Date is in the past")->flash();
                 }
-                $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_templates'], $campaign->id, request()->user()->id);
             }
+            $client_aggy = $client_aggy->assignEmailTemplateToCampaign($data['email_templates'], $campaign->id, request()->user()->id);
+
 
             // active = 1 save() with aggy launchCampaign event
             $campaign->active = 1;
@@ -1105,38 +1102,35 @@ class MassCommunicationsController extends Controller
             }
 
             if (!is_null($campaign->assigned_audience)) {
-                if(collect($campaign->assigned_audience)->isEmpty()) {
-                    $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
-                } else {
-                    foreach ($campaign->assigned_audience as $assigned_audience)
-                    {
-                        if(!in_array($assigned_audience->value, $data['audiences'])) {
+                if(!collect($campaign->assigned_audience)->isEmpty()) {
+                    foreach ($campaign->assigned_audience as $assigned_audience) {
+                        if (!in_array($assigned_audience->value, $data['audiences'])) {
                             $assigned_audience->active = 0;
                             $assigned_audience->save();
                             $client_aggy = $client_aggy->unassignAudienceFromSMSCampaign($assigned_audience->value, $campaign->id, request()->user()->id);
                         }
                     }
-                    $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
+                }
+            }
+            $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
+
+            if (!is_null($campaign->assigned_template)) {
+                if(!collect($campaign->assigned_template)->isEmpty()) {
+                    foreach ($campaign->assigned_template as $assigned_template) {
+                        if (!in_array($assigned_template->value, $data['sms_templates'])) {
+                            $assigned_template->active = 0;
+                            $assigned_template->save();
+                            $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($assigned_template->value, $campaign->id, request()->user()->id);
+                        }
+                    }
                 }
             } else {
-                $client_aggy = $client_aggy->assignAudienceToSMSCampaign($data['audiences'], $campaign->id, request()->user()->id);
-            }
-
-            if(!is_null($campaign->assigned_template))
-            {
-                $campaign->assigned_template->active = 0;
-                $campaign->assigned_template->save();
-
-                $client_aggy = $client_aggy->unassignSmsTemplateFromCampaign($campaign->assigned_template, $campaign->id, request()->user()->id)
-                    ->assignSmsTemplateToCampaign($data['sms_templates'], $campaign->id, request()->user()->id);
-            }
-            else
-            {
                 if($old_values['schedule_date'] !== null &&  strtotime($old_values['schedule_date']['value']) < strtotime('now')){
                     Alert::error("Campaign {$old_values['name']} was not updated. Schedule Date is in the past")->flash();
                 }
-                $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['sms_templates'], $campaign->id, request()->user()->id);
             }
+            $client_aggy = $client_aggy->assignSmsTemplateToCampaign($data['sms_templates'], $campaign->id, request()->user()->id);
+
 
             // active = 1 save() with aggy launchCampaign event
             $campaign->active = 1;

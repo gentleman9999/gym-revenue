@@ -28,7 +28,18 @@ class FireOffEmailCampaign
     public function handle(string $email_campaign_id)
     {
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($email_campaign_id);
-        $template = EmailTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
+        foreach ($campaign->assigned_template as $assigned_template)
+        {
+            $templates[] = EmailTemplates::with('gateway')->findOrFail($assigned_template->value);
+        }
+        foreach ($templates as $template)
+        {
+            $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
+        }
+        foreach ($gatewayIntegrations as $gatewayIntegration)
+        {
+            $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
+        }
 
         foreach ($campaign->assigned_audience as $assigned_audience)
         {
@@ -38,7 +49,8 @@ class FireOffEmailCampaign
         {
             $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
         }
-        $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
+
+
         $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         $recipients = [];

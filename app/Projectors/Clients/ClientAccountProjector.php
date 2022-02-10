@@ -221,20 +221,41 @@ class ClientAccountProjector extends Projector
 
     public function onEmailTemplateAssignedToEmailCampaign(EmailTemplateAssignedToEmailCampaign $event)
     {
-        $detail = EmailCampaignDetails::create([
-            'email_campaign_id' => $event->campaign,
-            'detail' => 'template_assigned',
-            'value' => collect($event->template)->implode(','),
-            'client_id' => $event->client
-        ]);
+        try {
+            foreach ($event->template as $template)
+            {
+                $detail = EmailCampaignDetails::create([
+                    'email_campaign_id' => $event->campaign,
+                    'detail' => 'template_assigned',
+                    'value' => $template,
+                    'client_id' => $event->client
+                ]);
 
-        if ($event->user == 'auto') {
-            $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
-        } else {
-            $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Template was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+                if ($event->user == 'auto') {
+                    $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
+                } else {
+                    $user = User::find($event->user);
+                    $detail->misc = ['msg' => 'Template was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+                }
+                $detail->save();
+            }
+        } catch (\Exception $e) {
+            $detail = EmailCampaignDetails::create([
+                'email_campaign_id' => $event->campaign,
+                'detail' => 'template_assigned',
+                'value' => $event->template,
+                'client_id' => $event->client
+            ]);
+
+            if ($event->user == 'auto') {
+                $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
+            } else {
+                $user = User::find($event->user);
+                $detail->misc = ['msg' => 'Template was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+            }
+            $detail->save();
         }
-        $detail->save();
+
     }
 
     public function onEmailTemplateUnAssignedFromEmailCampaign(EmailTemplateUnAssignedFromEmailCampaign $event)
@@ -250,7 +271,14 @@ class ClientAccountProjector extends Projector
         $campaign = EmailCampaigns::whereId($event->campaign)
             ->with('unassigned_template')->first();
         if (!is_null($campaign->unassigned_template ?? null)) {
-            $campaign->unassigned_template->delete();
+            if (!is_null($campaign->unassigned_template)) {
+                if (collect($campaign->unassigned_template)->isNotEmpty()) {
+                    foreach ($campaign->unassigned_template as $unassigned_template)
+                    {
+                        $unassigned_template->delete();
+                    }
+                }
+            }
         }
     }
 
@@ -385,20 +413,40 @@ class ClientAccountProjector extends Projector
 
     public function onSMSTemplateAssignedToSMSCampaign(SMSTemplateAssignedToSMSCampaign $event)
     {
-        $detail = SmsCampaignDetails::create([
-            'sms_campaign_id' => $event->campaign,
-            'detail' => 'template_assigned',
-            'value' => collect($event->template)->implode(','),
-            'client_id' => $event->client
-        ]);
+        try {
+            foreach ($event->template as $template)
+            {
+                $detail = SmsCampaignDetails::create([
+                    'sms_campaign_id' => $event->campaign,
+                    'detail' => 'template_assigned',
+                    'value' => $template,
+                    'client_id' => $event->client
+                ]);
 
-        if ($event->user == 'auto') {
-            $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
-        } else {
-            $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Template was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+                if ($event->user == 'auto') {
+                    $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
+                } else {
+                    $user = User::find($event->user);
+                    $detail->misc = ['msg' => 'Template was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+                }
+                $detail->save();
+            }
+        } catch (\Exception $e) {
+            $detail = SmsCampaignDetails::create([
+                'sms_campaign_id' => $event->campaign,
+                'detail' => 'template_assigned',
+                'value' => $event->template,
+                'client_id' => $event->client
+            ]);
+
+            if ($event->user == 'auto') {
+                $detail->misc = ['msg' => 'Template was auto-assigned', 'user' => $event->user];
+            } else {
+                $user = User::find($event->user);
+                $detail->misc = ['msg' => 'Template was assigned by ' . $user->name . ' on ' . date('Y-m-d'), 'user' => $event->user];
+            }
+            $detail->save();
         }
-        $detail->save();
     }
 
     public function onSMSTemplateUnAssignedFromSMSCampaign(SMSTemplateUnAssignedFromSMSCampaign $event)
@@ -413,8 +461,15 @@ class ClientAccountProjector extends Projector
 
         $campaign = SmsCampaigns::whereId($event->campaign)
             ->with('unassigned_template')->first();
-        if (!is_null($campaign->unassigned_template)) {
-            $campaign->unassigned_template->delete();
+        if (!is_null($campaign->unassigned_template ?? null)) {
+            if (!is_null($campaign->unassigned_template)) {
+                if (collect($campaign->unassigned_template)->isNotEmpty()) {
+                    foreach ($campaign->unassigned_template as $unassigned_template)
+                    {
+                        $unassigned_template->delete();
+                    }
+                }
+            }
         }
     }
 

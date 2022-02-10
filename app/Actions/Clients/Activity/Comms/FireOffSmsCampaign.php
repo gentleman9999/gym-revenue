@@ -29,10 +29,20 @@ class FireOffSmsCampaign
     public function handle(string $sms_campaign_id)
     {
         $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($sms_campaign_id);
-        $template = SmsTemplates::with('gateway')->findOrFail($campaign->assigned_template->value);
-        $markup = $template->markup;
-        //$audience = CommAudience::findOrFail($campaign->assigned_audience->value);
-        //$audience_members = AudienceMember::whereAudienceId($audience->id)->get();
+
+        foreach ($campaign->assigned_template as $assigned_template)
+        {
+            $templates[] = SmsTemplates::with('gateway')->findOrFail($assigned_template->value);
+        }
+        foreach ($templates as $template)
+        {
+            $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
+            $markups[] = $template->markup;
+        }
+        foreach ($gatewayIntegrations as $gatewayIntegration)
+        {
+            $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
+        }
 
         foreach ($campaign->assigned_audience as $assigned_audience)
         {
@@ -43,8 +53,6 @@ class FireOffSmsCampaign
             $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
         }
 
-        $gatewayIntegration = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
-        $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         foreach ($audience_members as $audience_member_breakdown)
         {
@@ -70,7 +78,10 @@ class FireOffSmsCampaign
                     if ($member->phone) {
                         //TODO: we need to scrutinize phone format here
                         if (!AppState::isSimuationMode()) {
-                            FireTwilioMsg::dispatch($member->phone->value, $this->transform($markup, $member->toArray()));
+                            foreach ($markups as $markup)
+                            {
+                                FireTwilioMsg::dispatch($member->phone->value, $this->transform($markup, $member->toArray()));
+                            }
                         }
                     }
                     $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'phone' => $member->phone->value];
