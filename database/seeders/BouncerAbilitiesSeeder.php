@@ -38,6 +38,20 @@ class BouncerAbilitiesSeeder extends Seeder
         $this->allowAllInGroup($crud_models, 'Location Manager');
         $this->allowAllInGroup($crud_models->forget('lead'), 'Regional Admin');
         $this->allowAllInGroup('leads', 'Sales Rep');
+        $this->allowAllInGroup('todo-list', 'Sales Rep');
+        $this->allowAllInGroup('todo-list', 'Location Manager');
+
+        //additional non CRUD ops
+        $more = [
+            'leads.contact' => ['Admin', 'Location Manager', 'Sales Rep'],
+        ];
+        $roles_allowed_to_contact_leads = ['Admin', 'Location Manager', 'Sales Rep'];
+        $this->teams->each(function ($team) use ($roles_allowed_to_contact_leads) {
+            foreach ($roles_allowed_to_contact_leads as $role) {
+                VarDumper::dump("Allowing $role to contact leads for $team->name");
+                Bouncer::allow($role)->to('leads.contact', $team);
+            }
+        });
     }
 
     protected function allowAllInGroup($group, $role)

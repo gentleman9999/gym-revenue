@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -42,7 +41,7 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $abilities = $request->user()->getAbilities()->filter(function($ability) use ($request){
+            $abilities = $request->user()->getAbilities()->filter(function ($ability) use ($request) {
                 return $ability->entity_id === $request->user()->current_team_id;
             })->pluck('name');
             $shared = [

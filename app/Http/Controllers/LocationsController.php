@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 use Illuminate\Foundation\Http\FormRequest;
+use Silber\Bouncer\Bouncer;
+
 
 class LocationsController extends Controller
 {
@@ -40,6 +42,11 @@ class LocationsController extends Controller
     //
     public function index(Request $request)
     {
+        if(request()->user()->cannot('view', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
@@ -70,13 +77,25 @@ class LocationsController extends Controller
 
     public function create()
     {
-         return   Inertia::render('Locations/Create', [
+        if(request()->user()->cannot('create', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        return Inertia::render('Locations/Create', [
 //            'locations' => Location::all(),
         ]);
     }
 
     public function edit($id)
     {
+        if(request()->user()->cannot('edit', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
@@ -285,6 +304,12 @@ if(!$location->id){
 
     public function trash($id)
     {
+        if(request()->user()->cannot('trash', Location::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::route('locations');
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');

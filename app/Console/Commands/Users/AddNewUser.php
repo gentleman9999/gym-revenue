@@ -132,6 +132,7 @@ class AddNewUser extends Command
         return $client;
     }
 
+    //TODO: we can pull from Roles table instead of hardcoding.
     private function getRole(string $user_name, string $client_choice = null)
     {
         $selected_role = $this->option('role');
@@ -145,6 +146,7 @@ class AddNewUser extends Command
                 $roles[] = 'Regional Admin';
                 $roles[] = 'Location Manager';
                 $roles[] = 'Sales Rep';
+                $roles[] = 'Employee';
             }
             else
             {

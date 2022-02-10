@@ -51,8 +51,6 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         Jetstream::defaultApiTokenPermissions(['read']);
 
-        // @todo - utilize bouncer to get the roles (possibly using the session)
-        //TODO:pull from roles table
         Jetstream::role('Admin', 'Administrator', [
             'create',
             'read',

@@ -50,6 +50,11 @@ class LeadsController extends Controller
 
     public function index(Request $request)
     {
+        if(request()->user()->cannot('view', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
@@ -309,11 +314,15 @@ class LeadsController extends Controller
 
     public function edit($lead_id)
     {
+        if(request()->user()->cannot('view', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         if (!$lead_id) {
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
@@ -427,12 +436,20 @@ if(!$middle_name){
 
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
 
+
         return Redirect::route('data.leads');
     }
 
     public function assign()
     {
         $data = request()->all();
+
+        if(request()->user()->cannot('contact', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         // @todo - change to laravel style Validation
 
         $claim_detail = LeadDetails::whereLeadId($data['lead_id'])
@@ -522,6 +539,13 @@ if(!$middle_name){
 
     public function contact($lead_id)
     {
+
+        if(request()->user()->cannot('contact', Lead::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back()->with('selectedLeadDetailIndex', 0);
+        }
+
         $lead = Lead::find($lead_id);
 
         if ($lead) {
