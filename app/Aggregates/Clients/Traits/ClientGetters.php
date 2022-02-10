@@ -32,11 +32,7 @@ trait ClientGetters
                 {
                     if(array_key_exists('template_id', $history))
                     {
-                        try {
-                            $model = $history['model']::find($history['template_id']);
-                        } catch (\Exception $e) {
-                            $model = $history['model']::find($history['template_id']['id']);
-                        }
+                        $model = $history['model']::find($history['template_id']);
                     }
                     elseif(array_key_exists('campaign_id', $history))
                     {
