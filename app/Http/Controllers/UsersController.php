@@ -54,8 +54,12 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
-        if($request->user()->cannot('create', User::class)){
-            abort(403);
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if($user->cannot('users.create', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
         }
 
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
@@ -71,9 +75,14 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-        if(request()->user()->cannot('update', User::class)){
-            abort(403);
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if($user->cannot('users.update', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
         }
+
         $user = User::with('details')->findOrFail($id);
 
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
