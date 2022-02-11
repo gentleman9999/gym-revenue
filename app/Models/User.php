@@ -25,7 +25,6 @@ class User extends Authenticatable
     use Notifiable;
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
-    use HasRolesAndAbilities;
 
     /**
      * The attributes that are mass assignable.
@@ -192,11 +191,6 @@ class User extends Authenticatable
     public function phone()
     {
         return $this->detail()->where('name', '=', 'phone');
-    }
-
-    public function security_role()
-    {
-        return $this->detail()->where('name', '=', 'security_role');
     }
 
     public function scopeFilter($query, array $filters)

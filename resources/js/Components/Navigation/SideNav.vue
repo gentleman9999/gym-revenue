@@ -68,7 +68,7 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null && $page.props.user.abilities.includes('todo-list.read')"
+                v-if="$page.props.user.current_client_id !== null"
             >
                 <jet-nav-link
                     class="jet-nav-link"
@@ -133,6 +133,29 @@
             </div>
             -->
 
+            <!-- Workout Generator Preview -->
+            <div
+                :class="
+                    route().current('workout-generator')
+                        ? 'bg-primary'
+                        : 'bg-transparent'
+                "
+                class="nav-link-container"
+            >
+                <jet-nav-link
+                    class="jet-nav-link"
+                    :href="route('workout-generator')"
+                >
+                    <p>
+                        <font-awesome-icon
+                            :icon="['fad', 'calendar-alt']"
+                            size="lg"
+                        />
+                        Workout Generator
+                    </p>
+                </jet-nav-link>
+            </div>
+
             <!-- Mass Communicator -->
             <div
                 :class="
@@ -162,7 +185,7 @@
                     route().current('files') ? 'bg-primary' : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null && $page.props.user.abilities.includes('files.read')"
+                v-if="$page.props.user.current_client_id !== null"
             >
                 <jet-nav-link class="jet-nav-link" :href="route('files')">
                     <p>
@@ -181,12 +204,12 @@
 
             <div
                 :class="
-                    route().current('users')
+                    route().current('data.conversions')
                         ? 'bg-primary'
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.abilities.includes('users.read')"
+                v-if="$page.props.user.permissions['users.read']"
             >
                 <jet-nav-link
                     class="jet-nav-link"
@@ -229,7 +252,8 @@
             >
                 <jet-nav-link
                     class="jet-nav-link"
-                    :href="route('settings')"
+                    href="#"
+                    @click="comingSoon()"
                 >
                     <p>
                         <font-awesome-icon :icon="['fas', 'cog']" size="lg" />

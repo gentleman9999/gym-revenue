@@ -9,13 +9,8 @@ use App\Actions\Jetstream\DeleteUser;
 use App\Actions\Jetstream\InviteTeamMember;
 use App\Actions\Jetstream\RemoveTeamMember;
 use App\Actions\Jetstream\UpdateTeamName;
-use App\Models\Clients\Location;
-use App\Models\Endusers\Lead;
-use App\Models\File;
-use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
@@ -56,6 +51,8 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         Jetstream::defaultApiTokenPermissions(['read']);
 
+        // @todo - utilize bouncer to get the roles (possibly using the session)
+        //TODO:pull from roles table
         Jetstream::role('Admin', 'Administrator', [
             'create',
             'read',

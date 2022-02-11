@@ -39,20 +39,8 @@ class ClientUserSeeder extends UserSeeder
             ],
             [
                 'name' => 'Brett Milam',
-                'email' => 'brett+bbb@notcnb.com',
+                'email' => 'brett+bbb@capeandbay.com',
                 'role' => 'Account Owner',
-                'client' => 'Bodies By Brett',
-            ],
-            [
-                'name' => 'Jane Milam',
-                'email' => 'jmilam@notcnb.com',
-                'role' => 'Sales Rep',
-                'client' => 'Bodies By Brett',
-            ],
-            [
-                'name' => 'Bob Johnny',
-                'email' => 'bjohnny@notcnb.com',
-                'role' => 'Employee',
                 'client' => 'Bodies By Brett',
             ],
             [

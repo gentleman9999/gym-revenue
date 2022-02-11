@@ -39,17 +39,20 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
+
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $abilities = $request->user()->getAbilities()->filter(function ($ability) use ($request) {
-                return $ability->entity_id === $request->user()->current_team_id;
-            })->pluck('name');
             $shared = [
                 'user.id' => $user->id,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
-                'user.abilities' => $abilities,
+                'user.permissions' => [
+                    'users.create' => $user->can('create', User::class),
+                    'users.read'=>$user->can('viewAny', User::class),
+                    'users.update' => $user->can('update', User::class),
+                    'users.delete'=>$user->can('delete', User::class),
+                ],
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
             ];
         }

@@ -51,10 +51,6 @@ class ClientAccountProjector extends Projector
     public function onDefaultClientTeamCreated(DefaultClientTeamCreated $event)
     {
         $default_team_name = $event->team;
-
-        preg_match_all('/(?<=\s|^)[a-z]/i', $default_team_name, $matches);
-        $prefix = strtoupper(implode('', $matches[0]));
-
         $team = Team::create([
             'user_id' => 1,
             'name' => $default_team_name,
@@ -69,11 +65,6 @@ class ClientAccountProjector extends Projector
             'client_id' => $event->client,
             'detail' => 'team',
             'value' => $team->id
-        ]);
-        ClientDetail::create([
-            'client_id' => $event->client,
-            'detail' => 'prefix',
-            'value' => (strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix
         ]);
 
         ClientAggregate::retrieve($event->client)

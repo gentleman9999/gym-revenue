@@ -13,7 +13,6 @@ use App\Aggregates\Clients\Traits\Actions\ClientTeamActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientTrialMembershipActions;
 use App\Aggregates\Clients\Traits\Actions\ClientUserActions;
-use App\Aggregates\Clients\Traits\Actions\ClientSecurityRoleActions;
 
 trait ClientActions
 {
@@ -28,5 +27,4 @@ trait ClientActions
     use ClientLeadActions;
     use ClientServicesActions;
     use ClientTrialMembershipActions;
-    use ClientSecurityRoleActions;
 }

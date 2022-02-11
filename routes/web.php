@@ -136,13 +136,3 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::post('/client-services', \App\Http\Controllers\ClientSettingsController::class . '@updateClientServices')->name('settings.client-services.update');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
-
-Route::middleware(['auth:sanctum', 'verified'])->prefix('security-roles')->group(function () {
-    Route::get('/', \App\Http\Controllers\SecurityRolesController::class . '@index')->name('security-roles');
-    Route::get('/create', \App\Http\Controllers\SecurityRolesController::class . '@create')->name('security-roles.create');
-    Route::post('/', \App\Http\Controllers\SecurityRolesController::class . '@store')->name('security-roles.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\SecurityRolesController::class . '@edit')->name('security-roles.edit');
-    Route::put('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@update')->name('security-roles.update');
-    Route::delete('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@trash')->name('security-roles.trash');
-    Route::delete('/{id}/force', \App\Http\Controllers\SecurityRolesController::class . '@delete')->name('security-roles.delete');
-    Route::post('/{id}/restore', \App\Http\Controllers\SecurityRolesController::class . '@restore')->name('security-roles.restore');});
