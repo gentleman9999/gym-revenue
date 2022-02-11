@@ -23,13 +23,6 @@
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
-
-            <div class="form-control col-span-6">
-                <jet-label for="phone" value="Phone"/>
-                <input id="phone" type="text"  class="block w-full mt-1"  v-model="form.phone"  autofocus/>
-                <jet-input-error :message="form.errors.phone" class="mt-2"/>
-            </div>
-
             <div class="form-control col-span-6" v-if="operation==='Create'">
                 <jet-label for="password" value="Password"/>
                 <input
@@ -89,11 +82,10 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ["clientId", "user","phone"],
+    props: ["clientId", "user"],
     emits: ['success'],
     setup(props, {emit}) {
         const page = usePage();
-        let phone =  usePage().props.value.phone;
 
         let user = props.user;
 
@@ -101,13 +93,11 @@ export default {
         if (user) {
             const team_id = page.props.value.user.current_team_id;
             const team_idx = user.teams.findIndex(team=>team.id === team_id);
-            user.phone = phone,
             user.role = user.teams[team_idx].pivot.role
         } else {
             user = {
                 name: null,
                 email: null,
-                phone:null,
                 password: null,
                 role: null,
                 client_id: props.clientId

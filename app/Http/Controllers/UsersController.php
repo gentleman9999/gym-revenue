@@ -19,23 +19,19 @@ class UsersController extends Controller
     protected $rules = [
         'name' => ['required', 'max:50'],
         'email' => ['required', 'email'],
-        'role' => ['required'],
-        'phone' => ['required', 'digits:10']
-
+        'role' => ['required']
     ];
-/*  */
+
     public function index(Request $request)
     {
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
-       //     dd($request->user());
             return Inertia::render('Users/Show', [
                 'users' => User::whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
-              //  'phone' =>'444',
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : []
             ]);
@@ -48,8 +44,7 @@ class UsersController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
-                'teams' => [],
-
+                'teams' => []
             ]);
         }
     }
@@ -65,23 +60,12 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-         $phones =  UserDetails::where('user_id',$id)->whereName('phone')->get();
-      //   dd($phones);
-        $phone = '';
-        if(count($phones) == 0) {
-            $phone = '';
-        }else {
-            foreach ($phones as $phone) {  }
-            $phone = $phone->value;
-        }
-
         if(request()->user()->cannot('update', User::class)){
             abort(403);
         }
         $user = User::with('teams')->findOrFail($id);
         return Inertia::render('Users/Edit', [
-            'selectedUser' => $user,
-            'phone' => $phone,
+            'selectedUser' => $user
         ]);
     }
 
@@ -101,9 +85,6 @@ class UsersController extends Controller
         $current_team->users()->attach(
             $user, ['role' => $data['role']]
         );
-     //   dd($request);
-        $current_phone =$request->phone;
-        UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
         if ($client_id) {
             $aggy = ClientAggregate::retrieve($client_id);
             $aggy->addUserToTeam($user->id, $current_team->id, $data['role']);
@@ -124,9 +105,6 @@ class UsersController extends Controller
         $data = $request->validate($this->rules);
         $current_user = $request->user();
         $user = User::findOrFail($id);
-        $phone=$data['phone'];
-
-        UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $phone]);
         $user->updateOrFail($data);
         $current_team = $current_user->currentTeam()->first();
         $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;

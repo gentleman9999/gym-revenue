@@ -73,17 +73,16 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            $current_user = request()->user() ?? $user;
-            $client_id = $current_user->currentClientId();
-            if ($client_id) {
-                $aggy = ClientAggregate::retrieve($client_id);
+            $client = $user->client();
+            if ( $client ) {
+                $aggy = ClientAggregate::retrieve($client->id);
                 $aggy->createUser($user->id, $user->toArray());
                 $aggy->persist();
             }
         });
 
         static::updated(function ($user) {
-            $current_user = request()->user() ?? $user;
+            $current_user = request()->user();
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
@@ -93,7 +92,7 @@ class User extends Authenticatable
         });
 
         static::deleted(function ($user) {
-            $current_user = request()->user() ?? $user;
+            $current_user = request()->user();
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
