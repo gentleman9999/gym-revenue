@@ -36,7 +36,8 @@ class LocationsController extends Controller
         'poc_phone' => [],
         'opendate' => [],
         'closedate' => [],
-        'location_no' => ['required', 'max:50'],
+        //'location_no' => ['required', 'max:50'],
+        'gymrevenue_id' => [],
     ];
 
     //
@@ -150,25 +151,36 @@ class LocationsController extends Controller
 
     public function store(Request $request)
     {
+        $client_id = $request->user()->currentClientId();
+        $prefix = ClientDetail::whereClientId($client_id)->whereDetail('prefix')->pluck('value');
+        $iterations = Location::whereClientId($client_id)->pluck('gymrevenue_id');
+        $value = 001;
+
+        if(Str::contains($iterations[count($iterations)-1], $prefix[0]))
+                $value = (int) str_replace($prefix[0], "", $iterations[count($iterations)-1]) + 1;
+
+        $request->merge(['gymrevenue_id' => $prefix[0].''.sprintf('%03d', $value)]);
+
         $location = Location::create(
             $request->validate($this->rules)
         );
- //    dd($location->id,$request,$request->phone);
-        $client_id = request()->user()->currentClientId();
 
-if(!$location->id){
-    Alert::error("No Location ID provided")->flash();
-    return Redirect::route('locations');
-}
-        if($request->phone) {
-    LocationDetails::create(['location_id' => $location->id,
-            'client_id' => $client_id,
-            'field' => 'phone',
-            'value' => $request->phone,
-            'misc' =>  ['userid',request()->user()->id]
-        ]
-    );
-}
+//      dd($location->id,$request,$request->phone);
+
+        if(!$location->id){
+            Alert::error("No Location ID provided")->flash();
+            return Redirect::route('locations');
+        }
+                if($request->phone) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'phone',
+                    'value' => $request->phone,
+                    'misc' =>  ['userid',request()->user()->id]
+                ]
+            );
+        }
+
         if($request->poc_first) {
             LocationDetails::create(['location_id' => $location->id,
                     'client_id' => $client_id,
