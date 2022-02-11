@@ -68,7 +68,7 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null && $page.props.user.permissions['view.todo.list']"
+                v-if="$page.props.user.current_client_id !== null && $page.props.user.abilities.includes('todo-list.read')"
             >
                 <jet-nav-link
                     class="jet-nav-link"
@@ -162,7 +162,7 @@
                     route().current('files') ? 'bg-primary' : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null && $page.props.user.permissions['view.file.manager']"
+                v-if="$page.props.user.current_client_id !== null && $page.props.user.abilities.includes('files.read')"
             >
                 <jet-nav-link class="jet-nav-link" :href="route('files')">
                     <p>
@@ -181,12 +181,12 @@
 
             <div
                 :class="
-                    route().current('data.conversions')
+                    route().current('users')
                         ? 'bg-primary'
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.permissions['users.read']"
+                v-if="$page.props.user.abilities.includes('users.read')"
             >
                 <jet-nav-link
                     class="jet-nav-link"

@@ -50,7 +50,8 @@ class LeadsController extends Controller
 
     public function index(Request $request)
     {
-        if(request()->user()->cannot('view', Lead::class))
+        $user = request()->user();
+        if($user->cannot('leads.read', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -147,6 +148,15 @@ class LeadsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+
+
+        if($user->cannot('leads.create', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
 
         $locations = [];
         foreach ($locations_records as $location) {
@@ -157,8 +167,6 @@ class LeadsController extends Controller
         $lead_sources = LeadSource::whereClientId($client_id)->get();
         $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
 
         /**
          * STEPS for team users
@@ -314,7 +322,8 @@ class LeadsController extends Controller
 
     public function edit($lead_id)
     {
-        if(request()->user()->cannot('view', Lead::class))
+        $user = request()->user();
+        if($user->cannot('leads.update', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -410,6 +419,8 @@ if(!$middle_name){
             \Alert::info("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+
+
         $data = request()->validate($this->rules);
 
         $lead = Lead::find($lead_id);
@@ -436,15 +447,14 @@ if(!$middle_name){
 
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
 
-
         return Redirect::route('data.leads');
     }
 
     public function assign()
     {
         $data = request()->all();
-
-        if(request()->user()->cannot('contact', Lead::class))
+        $user = request()->user();
+        if($user->cannot('leads.contact', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -539,8 +549,8 @@ if(!$middle_name){
 
     public function contact($lead_id)
     {
-
-        if(request()->user()->cannot('contact', Lead::class))
+        $user = request()->user();
+        if($user->cannot('leads.contact', $user->currentTeam()->first()))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back()->with('selectedLeadDetailIndex', 0);
@@ -590,6 +600,14 @@ if(!$middle_name){
 
     public function lead_trash(Request $request, $lead_id)
     {
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if($user->cannot('leads.trash', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         if (!$lead_id) {
             Alert::error("No Lead ID provided")->flash();
             return Redirect::back();

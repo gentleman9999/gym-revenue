@@ -2,10 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\File;
 use App\Models\User;
-use App\Models\Clients\Location;
-use App\Models\Endusers\Lead;
 use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -42,39 +39,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
+            $abilities = $request->user()->getAbilities()->filter(function ($ability) use ($request) {
+                return $ability->entity_id === $request->user()->current_team_id;
+            })->pluck('name');
             $shared = [
                 'user.id' => $user->id,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
-                'user.permissions' => [
-                    /** USERS CRUD */
-                    'users.create' => $user->can('create', User::class),
-                    'users.read'=>$user->can('viewAny', User::class),
-                    'users.update' => $user->can('update', User::class),
-                    'users.delete'=>$user->can('delete', User::class),
-
-                    /** LEADS CRUD */
-                    'leads.create' => $user->can('create', Lead::class),
-                    'leads.view' => $user->can('view', Lead::class),
-                    'leads.contact'=>$user->can('contact', Lead::class),
-                    'leads.edit' => $user->can('edit', Lead::class),
-                    'leads.delete'=>$user->can('delete', Lead::class),
-
-                    /** LOCATIONS CRUD */
-                    'locations.create' => $user->can('create', Location::class),
-                    'locations.view'=>$user->can('view', Location::class),
-                    'locations.edit' => $user->can('edit', Location::class),
-                    'locations.delete'=>$user->can('trash', Location::class),
-
-                    /** OTHER */
-                    'view.todo.list' => $user->can('view-todo-list'),
-                    'view.file.manager' => $user->can('view-file-manager', File::class),
-                ],
-
+                'user.abilities' => $abilities,
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
             ];
         }

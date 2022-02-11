@@ -1,7 +1,7 @@
 <template>
     <app-layout :title="title">
         <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Locations</h2>
+            <h2 class="font-semibold text-xl leading-tight">Locations </h2>
 <!--           {{this.$page.props}}-->
         </template>
         <gym-revenue-crud
@@ -16,12 +16,12 @@
                        handleClickTrash(data.id)
                     },
                     shouldRender: ({ data }) => {
-                        return this.$page.props.user.permissions['locations.delete']
+                        return this.$page.props.user.abilities.includes('locations.delete')
                     },
                 },
                edit: {
                     shouldRender: ({data}) => {
-                        return this.$page.props.user.permissions['locations.edit']
+                        return this.$page.props.user.abilities.includes('locations.update')
                     },
                 },
             }"

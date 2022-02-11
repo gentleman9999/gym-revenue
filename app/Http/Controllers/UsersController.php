@@ -20,22 +20,22 @@ class UsersController extends Controller
         'name' => ['required', 'max:50'],
         'email' => ['required', 'email'],
         'role' => ['required'],
-        'phone' => ['required', 'digits:10']
-
+        'phone' => ['required', 'digits:10'],
+        'client_id' => ['sometimes', 'exists:clients,id'],
+        'security_role' => ['nullable', 'exists:security_roles,id']
+//        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
     ];
-/*  */
+
     public function index(Request $request)
     {
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
-       //     dd($request->user());
             return Inertia::render('Users/Show', [
-                'users' => User::whereHas('detail', function ($query) use ($client_id) {
+                'users' => User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
-              //  'phone' =>'444',
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : []
             ]);
@@ -48,25 +48,52 @@ class UsersController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
-                'teams' => [],
-
+                'teams' => []
             ]);
         }
     }
 
     public function create(Request $request)
     {
-        if($request->user()->cannot('create', User::class)){
-            abort(403);
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if($user->cannot('users.create', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
         }
+
+        $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
+        if(!request()->user()->isAccountOwner()){
+            $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
+        }
+        $security_roles = $security_roles->get(['id', 'security_role']);
+
         return Inertia::render('Users/Create', [
+            'securityRoles' => $security_roles
         ]);
     }
 
     public function edit($id)
     {
-         $phones =  UserDetails::where('user_id',$id)->whereName('phone')->get();
-      //   dd($phones);
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if($user->cannot('users.update', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        $user = User::with('details')->findOrFail($id);
+
+        $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
+        if(!request()->user()->isAccountOwner()){
+            $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
+        }
+        $security_roles = $security_roles->get(['id', 'security_role']);
+
+        $phones =  UserDetails::where('user_id',$id)->whereName('phone')->get();
+        //   dd($phones);
         $phone = '';
         if(count($phones) == 0) {
             $phone = '';
@@ -74,13 +101,9 @@ class UsersController extends Controller
             foreach ($phones as $phone) {  }
             $phone = $phone->value;
         }
-
-        if(request()->user()->cannot('update', User::class)){
-            abort(403);
-        }
-        $user = User::with('teams')->findOrFail($id);
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
+            'securityRoles' => $security_roles,
             'phone' => $phone,
         ]);
     }
@@ -91,6 +114,8 @@ class UsersController extends Controller
         $data = $request->validate($create_rules);
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
+        $security_role = SecurityRole::with('role')->find($data['security_role']);
+        UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
 
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
@@ -98,15 +123,16 @@ class UsersController extends Controller
         }
         $current_team = $request->user()->currentTeam()->first();
         UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
+        $role = $security_role->role->name;
         $current_team->users()->attach(
-            $user, ['role' => $data['role']]
+            $user, ['role' => $role]
         );
      //   dd($request);
         $current_phone =$request->phone;
         UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
         if ($client_id) {
             $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->addUserToTeam($user->id, $current_team->id, $data['role']);
+            $aggy->addUserToTeam($user->id, $current_team->id, $role);
             $aggy->persist();
         }
         Alert::success("User '{$user->name}' was created")->flash();
@@ -130,11 +156,17 @@ class UsersController extends Controller
         $user->updateOrFail($data);
         $current_team = $current_user->currentTeam()->first();
         $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;
-        $user->teams()->sync([$current_team->id => ['role' => $data['role']]]);
+        if($data['security_role']){
+            $security_role = SecurityRole::with('role')->find($data['security_role']);
+            UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'security_role'])->updateOrFail(['value'=>$security_role->id]);
+            $role = $security_role->role->name;
+            $user->teams()->sync([$current_team->id => ['role' => $role]]);
+        }
+
         $client_id = $current_user->currentClientId();
-        if ($client_id && $data['role'] !== $old_role) {
+        if ($client_id && $role !== $old_role) {
             $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->updateUserRoleOnTeam($user->id, $current_team->id, $old_role, $data['role']);
+            $aggy->updateUserRoleOnTeam($user->id, $current_team->id, $old_role, $role);
             $aggy->persist();
         }
         Alert::success("User '{$user->name}' updated")->flash();
