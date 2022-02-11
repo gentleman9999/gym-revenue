@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 use Illuminate\Foundation\Http\FormRequest;
+use Silber\Bouncer\Bouncer;
+
 
 class LocationsController extends Controller
 {
@@ -34,17 +36,23 @@ class LocationsController extends Controller
         'poc_phone' => [],
         'opendate' => [],
         'closedate' => [],
-        'location_no' => ['required', 'max:50'],
+        //'location_no' => ['required', 'max:50'],
+        'gymrevenue_id' => [],
     ];
 
     //
     public function index(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
-
-        // @todo - insert Bouncer-based ACL here.
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
         $page_count = 10;
+
+        if($user->cannot('locations.read', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
@@ -70,13 +78,27 @@ class LocationsController extends Controller
 
     public function create()
     {
-         return   Inertia::render('Locations/Create', [
+        $user = request()->user();
+        if($user->cannot('locations.create', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        return Inertia::render('Locations/Create', [
 //            'locations' => Location::all(),
         ]);
     }
 
     public function edit($id)
     {
+        $user = request()->user();
+        if($user->cannot('locations.update', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
@@ -129,25 +151,36 @@ class LocationsController extends Controller
 
     public function store(Request $request)
     {
+        $client_id = $request->user()->currentClientId();
+        $prefix = ClientDetail::whereClientId($client_id)->whereDetail('prefix')->pluck('value');
+        $iterations = Location::whereClientId($client_id)->pluck('gymrevenue_id');
+        $value = 001;
+
+        if(Str::contains($iterations[count($iterations)-1], $prefix[0]))
+                $value = (int) str_replace($prefix[0], "", $iterations[count($iterations)-1]) + 1;
+
+        $request->merge(['gymrevenue_id' => $prefix[0].''.sprintf('%03d', $value)]);
+
         $location = Location::create(
             $request->validate($this->rules)
         );
- //    dd($location->id,$request,$request->phone);
-        $client_id = request()->user()->currentClientId();
 
-if(!$location->id){
-    Alert::error("No Location ID provided")->flash();
-    return Redirect::route('locations');
-}
-        if($request->phone) {
-    LocationDetails::create(['location_id' => $location->id,
-            'client_id' => $client_id,
-            'field' => 'phone',
-            'value' => $request->phone,
-            'misc' =>  ['userid',request()->user()->id]
-        ]
-    );
-}
+//      dd($location->id,$request,$request->phone);
+
+        if(!$location->id){
+            Alert::error("No Location ID provided")->flash();
+            return Redirect::route('locations');
+        }
+                if($request->phone) {
+            LocationDetails::create(['location_id' => $location->id,
+                    'client_id' => $client_id,
+                    'field' => 'phone',
+                    'value' => $request->phone,
+                    'misc' =>  ['userid',request()->user()->id]
+                ]
+            );
+        }
+
         if($request->poc_first) {
             LocationDetails::create(['location_id' => $location->id,
                     'client_id' => $client_id,
@@ -285,6 +318,13 @@ if(!$location->id){
 
     public function trash($id)
     {
+        $user = request()->user();
+        if($user->cannot('locations.trash', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::route('locations');
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');

@@ -12,7 +12,17 @@
             :actions="{
                trash:{
                    label: 'Close Club',
-                    handler: ({data}) => handleClickTrash(data.id)
+                    handler: ({data}) => {
+                       handleClickTrash(data.id)
+                    },
+                    shouldRender: ({ data }) => {
+                        return this.$page.props.user.abilities.includes('locations.delete')
+                    },
+                },
+               edit: {
+                    shouldRender: ({data}) => {
+                        return this.$page.props.user.abilities.includes('locations.update')
+                    },
                 },
             }"
         ><!--base-route="locations"-->
@@ -81,7 +91,7 @@ export default defineComponent({
         SearchFilter,
 
     },
-    props: ["sessions", "locations", "title", "isClientUser", "filters","useSearchFilter","SearchFilter"],
+    props: ["sessions", "locations", "title", "isClientUser", "filters","useSearchFilter","SearchFilter", "user"],
     setup(props) {
 
         const baseRoute = "locations";
