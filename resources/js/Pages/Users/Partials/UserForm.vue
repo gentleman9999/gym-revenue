@@ -85,12 +85,12 @@ export default {
 
         let user = props.user;
         const securityRoles = page.props.value.securityRoles;
-        const team = page.props.value.user.current_team_id;
+        const team_id = page.props.value.user.current_team_id;
 
         let operation = 'Update';
         if (user) {
             user.security_role = user?.details?.find(detail=>detail.name==='security_role')?.value || null;
-            user.team = team;
+            user.team_id = team_id;
             console.log({user});
         } else {
             user = {
@@ -99,7 +99,7 @@ export default {
                 password: null,
                 security_role: null,
                 client_id: props.clientId,
-                team
+                team_id
             }
             operation = 'Create';
         }

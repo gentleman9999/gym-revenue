@@ -40,7 +40,7 @@ class UpdateUser implements UpdatesUserProfileInformation
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.request()->id],
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
-            'team' => ['required','integer', 'exists:teams,id'],
+            'team_id' => ['required','integer', 'exists:teams,id'],
             'security_role' => ['nullable','string', 'max:255', 'exists:security_roles,id'],
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
 //            'password' => $this->passwordRules(),

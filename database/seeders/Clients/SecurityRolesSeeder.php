@@ -7,6 +7,7 @@ use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\TeamDetail;
 use Illuminate\Database\Seeder;
+use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
 
 class SecurityRolesSeeder extends Seeder
@@ -19,29 +20,35 @@ class SecurityRolesSeeder extends Seeder
     public function run()
     {
         $clients = Client::all();
+        $roles = Role::all()->keyBy('name');
         $security_roles = [
             [
                 'security_role' => 'Account Owner',
-                'role_id' => 2,
+                'role' => 'Account Owner',
             ],
             [
                 'security_role' => 'Location Manager - GM',
-                'role_id' => 3,
+                'role' => 'Location Manager',
             ],
             [
                 'security_role' => 'Region Admin - District Mgr',
-                'role_id' => 5,
+                'role' => 'Regional Admin',
             ],
             [
                 'security_role' => 'Sales Rep - InStore Sales',
-                'role_id' => 4,
+                'role' => 'Sales Rep',
             ],
         ];
-        $clients->each(function ($client) use ($security_roles) {
+        $clients->each(function ($client) use ($security_roles, $roles) {
             foreach ($security_roles as $security_role) {
                 VarDumper::dump("Creating Security Role '{$security_role['security_role']}' for {$client->name}");
                 //TODO: logic for setting default ability ids
-                SecurityRole::create(array_merge($security_role, ['client_id' => $client->id, 'ability_ids' => []]));
+                SecurityRole::create([
+                    'client_id' => $client->id,
+                    'role_id' => $roles[$security_role['role']]->id,
+                    'security_role' => $security_role['security_role'],
+                    'ability_ids' => []
+                ]);
             }
         });
     }
