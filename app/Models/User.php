@@ -25,6 +25,7 @@ class User extends Authenticatable
     use Notifiable;
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
+    use HasRolesAndAbilities;
 
     /**
      * The attributes that are mass assignable.
@@ -73,16 +74,17 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            $client = $user->client();
-            if ( $client ) {
-                $aggy = ClientAggregate::retrieve($client->id);
+            $current_user = request()->user() ?? $user;
+            $client_id = $current_user->currentClientId();
+            if ($client_id) {
+                $aggy = ClientAggregate::retrieve($client_id);
                 $aggy->createUser($user->id, $user->toArray());
                 $aggy->persist();
             }
         });
 
         static::updated(function ($user) {
-            $current_user = request()->user();
+            $current_user = request()->user() ?? $user;
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
@@ -92,7 +94,7 @@ class User extends Authenticatable
         });
 
         static::deleted(function ($user) {
-            $current_user = request()->user();
+            $current_user = request()->user() ?? $user;
             $client_id = $current_user->currentClientId();
             if ($client_id) {
                 $aggy = ClientAggregate::retrieve($client_id);
@@ -191,6 +193,11 @@ class User extends Authenticatable
     public function phone()
     {
         return $this->detail()->where('name', '=', 'phone');
+    }
+
+    public function security_role()
+    {
+        return $this->detail()->where('name', '=', 'security_role');
     }
 
     public function scopeFilter($query, array $filters)

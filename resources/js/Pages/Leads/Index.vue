@@ -1,79 +1,6 @@
 <template>
     <app-layout :title="title">
-        <jet-bar-container>
-            <div class="bg-base-200 w-full rounded-lg p-4">
-                <div class="flex flex-row items-center mb-4">
-                    <h2 class="font-semibold text-xl leading-tight">Leads</h2>
-                    <div class="flex-grow" />
-                    <div
-                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                    ></div>
-                </div>
-
-                <div class="flex flex-row items-center mb-4">
-                    <div class="hidden space-x-8 sm:-my-px sm:flex pt-6">
-                        <a
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
-                        >
-                            Dashboard
-                        </a>
-                        <a
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
-                        >
-                            Calendar
-                        </a>
-                        <inertia-link
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            :class="(routeName === 'data.leads') ? 'bg-white text-black px-2 rounded' : ''"
-                            :href="route('data.leads')"
-                        >
-                            Leads
-                        </inertia-link>
-                        <a
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
-                        >
-                            Tasks
-                        </a>
-                        <a
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
-                        >
-                            Contacts
-                        </a>
-                        <a
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
-                        >
-                            Consultants
-                        </a>
-                        <inertia-link
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            :href="route('data.leads.sources')"
-                        >
-                            Lead Sources
-                        </inertia-link>
-
-                        <inertia-link
-                            class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                            href="#"
-                            @click="comingSoon()"
-                        >
-                            Lead Statuses
-                        </inertia-link>
-                    </div>
-
-                    <div class="flex-grow" />
-                </div>
-            </div>
-        </jet-bar-container>
+        <page-toolbar-nav title="Leads" :links="navLinks"/>
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
@@ -108,8 +35,8 @@
 </template>
 
 <script>
-import { computed, defineComponent, ref } from "vue";
-import { Inertia } from "@inertiajs/inertia";
+import {computed, defineComponent, ref} from "vue";
+import {Inertia} from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
 
@@ -119,9 +46,11 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import LeadInteraction from "./Partials/LeadInteractionContainer";
 import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
+        PageToolbarNav,
         GymRevenueCrud,
         AppLayout,
         Confirm,
@@ -167,16 +96,16 @@ export default defineComponent({
             // console.log({lead_type_index, })
         };
         const fields = [
-            { name: "created_at", label: "Created" },
-            { name: "first_name", label: "First Name" },
-            { name: "last_name", label: "Last Name" },
-            { name: "location.name", label: "Location" },
+            {name: "created_at", label: "Created"},
+            {name: "first_name", label: "First Name"},
+            {name: "last_name", label: "Last Name"},
+            {name: "location.name", label: "Location"},
             {
                 name: "lead_type",
                 label: "Type",
                 component: CrudBadge,
                 props: {
-                    getProps: ({ data: { lead_type } }) => ({
+                    getProps: ({data: {lead_type}}) => ({
                         class: badgeClasses(lead_type?.id),
                         text: lead_type?.name,
                     }),
@@ -191,19 +120,19 @@ export default defineComponent({
 
         const actions = {
             trash: {
-                handler: ({ data }) => handleClickTrash(data.id),
+                handler: ({data}) => handleClickTrash(data.id),
             },
 
             contact: {
                 label: "Contact Lead",
-                handler: ({ data }) => {
+                handler: ({data}) => {
                     Inertia.visit(route("data.leads.show", data.id));
                 },
-                shouldRender: ({ data }) => {
+                shouldRender: ({data}) => {
                     const claimed = data.details_desc.filter(
                         (detail) => detail.field === "claimed"
                     );
-                    console.log({ claimed, props });
+                    console.log({claimed, props});
                     const yours = claimed.filter(
                         (detail) =>
                             parseInt(detail.value) === parseInt(props.user.id)
@@ -229,6 +158,43 @@ export default defineComponent({
                 (confirmTrash.value = null)
             );
         };
+        const navLinks = [
+            {
+                label: 'Dashboard',
+                href: '#',
+                onClick: comingSoon
+            },
+            {
+                label: 'Calendar',
+                href: '#',
+                onClick: comingSoon
+            },
+            {
+                label: 'Leads',
+                href: '#',
+                onClick: comingSoon
+            },
+            {
+                label: 'Tasks',
+                href: '#',
+                onClick: comingSoon
+            },
+            {
+                label: 'Contacts',
+                href: '#',
+                onClick: comingSoon
+            },
+            {
+                label: 'Consultants',
+                href: '#',
+                onClick: comingSoon
+            },
+            {
+                label: 'Lead Sources',
+                href: route('data.leads.sources'),
+                onClick: null
+            },
+        ];
 
         return {
             handleClickTrash,
@@ -238,6 +204,7 @@ export default defineComponent({
             actions,
             Inertia,
             comingSoon,
+            navLinks
         };
     },
 });
