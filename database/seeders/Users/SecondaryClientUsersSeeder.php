@@ -99,8 +99,13 @@ class SecondaryClientUsersSeeder extends UserSeeder
     {
         $client = Client::whereName($user['client'])->first();
 
+        $namesplosion = explode(' ', $user['name']);
+        $first_name = $namesplosion[0];
+        $last_name = $namesplosion[1];
         // Create User
         $new_user = User::create([
+            'first_name' => $first_name,
+            'last_name' => $last_name,
             'name' => $user['name'],
             'email' => $user['email'],
             'password' => bcrypt('Hello123!')
