@@ -2,7 +2,7 @@
     <app-layout title="Create Location">
         <template #header>
             <h2 class="font-semibold text-xl  leading-tight">
-                Create Location
+                Create a New Location
             </h2>
         </template>
 

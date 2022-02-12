@@ -153,7 +153,7 @@ class LocationsController extends Controller
     public function store(Request $request)
     {
         $client_id = $request->user()->currentClientId();
-        
+
         $request->merge(['gymrevenue_id' => GenerateGymRevenueId::run($client_id)]);
 
         $location = Location::create(
