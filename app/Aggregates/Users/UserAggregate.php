@@ -7,6 +7,7 @@ use App\StorableEvents\Users\PresetAssociatedClient;
 use App\StorableEvents\Users\SecurityRoleAssigned;
 use App\StorableEvents\Users\SecurityRolePreassigned;
 use App\StorableEvents\Users\SetAssociatedClient;
+use App\StorableEvents\Users\WelcomeEmailSent;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class UserAggregate extends AggregateRoot
@@ -69,6 +70,7 @@ class UserAggregate extends AggregateRoot
     public function sendWelcomeEmail()
     {
         // @todo - logic to throw an exception if the user is active
+        $this->recordThat(new ($this->uuid()));
         return $this;
     }
 }

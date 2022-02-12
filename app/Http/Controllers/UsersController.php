@@ -124,18 +124,18 @@ class UsersController extends Controller
         unset($data['lname']);
 
         $user = User::create($data);
-        $aggy = UserAggregate::retrieve($user->id)
+        $user_aggy = UserAggregate::retrieve($user->id)
             ->createNewUser(auth()->user()->id);
         // @todo - remove this if/when we set up Security Roles on CnB
         if(request()->has('client_id') && (!is_null(request()->get('client_id'))))
         {
             $security_role = SecurityRole::with('role')->find($data['security_role']);
-            $aggy = $aggy->imGonnaGoAheadAndAssignThisSecurityRole($security_role->id);
+            $user_aggy = $user_aggy->imGonnaGoAheadAndAssignThisSecurityRole($security_role->id);
             UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
 
             $client_id = $request->user()->currentClientId();
             if ($client_id) {
-                $aggy = $aggy->imGonnaGoAheadAndAssignThisClient($client_id);
+                $user_aggy = $user_aggy->imGonnaGoAheadAndAssignThisClient($client_id);
                 UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
             }
 
@@ -157,8 +157,8 @@ class UsersController extends Controller
         );
 
         // @todo - make a preset and an async set of methods in the aggregate for storing phone
-        // @todo - $aggy = $aggy->setPhoneNumber
-        // @todo - $aggy = $aggy->imJustGonnaGoAheadAndPresetThisPhoneNumber
+        // @todo - $user_aggy = $user_aggy->setPhoneNumber
+        // @todo - $user_aggy = $user_aggy->imJustGonnaGoAheadAndPresetThisPhoneNumber
         $current_phone = $request->phone;
         UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
 
@@ -182,7 +182,14 @@ class UsersController extends Controller
 
         }
 
-        $aggy->persist();
+        // @todo - make a check box on the form, pass it into this method and eval, if true then fire this email
+        if('mario' == 'luigi')
+        {
+            $user_aggy = $user_aggy->sendWelcomeEmail();
+        }
+
+        // Finally, persist all the new user events captured in this flow.
+        $user_aggy->persist();
         Alert::success("User '{$user->name}' was created")->flash();
 
         return Redirect::route('users');
@@ -195,6 +202,7 @@ class UsersController extends Controller
             return Redirect::route('users');
         }
 
+        // @todo - add event sourcing here.
         $data = $request->validate($this->rules);
         $current_user = $request->user();
         $user = User::findOrFail($id);
