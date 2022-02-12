@@ -62,10 +62,8 @@ class ClientUserProjector extends Projector
                 $role = $security_role->role;
             }
 
-            //let the bouncer know wassup
+            //let the bouncer know this $user is OG
             Bouncer::assign($role)->to($user);
-            //TODO:assign security role abilities
-
 
             //add user security role to details
             if ($security_role) {
@@ -86,9 +84,15 @@ class ClientUserProjector extends Projector
                     UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $team_id]);
                 }
 
-                Team::findOrFail($team_id)->users()->attach(
+                $team = Team::findOrFail($team_id);
+                $team->users()->attach(
                     $user, ['role' => $role->name]
                 );
+
+                //assign security role abilities
+                $security_role->abilities()->each(function($ability) use ($user, $team){
+                    Bouncer::allow($user)->to($ability->name, $team);
+                });
             }
         });
     }
@@ -114,11 +118,10 @@ class ClientUserProjector extends Projector
                 $role = $security_role->role->name;
 
                 //let bouncer know their role has been changed
-                Bouncer::retract($old_role)->from($user);
-                Bouncer::assign($role)->to($user);
-
-                //remove all old abilties that were assigned
-                //TODO:now add all new abilities
+                if($old_role !== $role){
+                    Bouncer::retract($old_role)->from($user);
+                    Bouncer::assign($role)->to($user);
+                }
 
                 //now update their team roles
                 $team_roles_to_sync = [];
@@ -131,6 +134,15 @@ class ClientUserProjector extends Projector
                     if ($team_client->id === $client_id) {
                         $team_roles_to_sync[$team->id] = ['role' => $role];
                     }
+
+                    //remove all old abilties that were assigned
+                    $old_security_role->abilities()->each(function($ability) use ($user, $team){
+                        Bouncer::disallow($user)->to($ability->name, $team);
+                    });
+                    //now add all new abilities
+                    $security_role->abilities()->each(function($ability) use ($user, $team){
+                        Bouncer::allow($user)->to($ability->name, $team);
+                    });
                 }
                 //syncWithoutDetaching so CB user team associations dont get removed
                 $user->teams()->syncWithoutDetaching($team_roles_to_sync);
