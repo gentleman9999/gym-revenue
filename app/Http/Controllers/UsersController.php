@@ -20,9 +20,10 @@ class UsersController extends Controller
     protected $rules = [
         'name' => ['required', 'max:50'],
         'email' => ['required', 'email'],
+        'phone' => ['required', 'digits:10'],
         'client_id' => ['sometimes', 'exists:clients,id'],
         'security_role' => ['nullable', 'exists:security_roles,id']
-//        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
+        // 'security_role' => ['required_with,client_id', 'exists:security_roles,id']
     ];
 
     public function index(Request $request)
@@ -56,6 +57,9 @@ class UsersController extends Controller
     {
         $user = request()->user();
         $current_team = $user->currentTeam()->first();
+        $client_detail = $current_team->client_details()->first();
+        $client = (!is_null($client_detail)) ? $client_detail->client()->first() : null;
+        $client_name = (!is_null($client_detail)) ? $client->name : 'Cape & Bay';
         if($user->cannot('users.create', $current_team))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -69,7 +73,8 @@ class UsersController extends Controller
         $security_roles = $security_roles->get(['id', 'security_role']);
 
         return Inertia::render('Users/Create', [
-            'securityRoles' => $security_roles
+            'securityRoles' => $security_roles,
+            'clientName' => $client_name
         ]);
     }
 
@@ -83,10 +88,10 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = User::with('details')->findOrFail($id);
+        $user = $user->with('details', 'phone_number')->findOrFail($id);
 
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
-        if(!request()->user()->isAccountOwner()){
+        if(!$user->isAccountOwner()) {
             $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
@@ -116,6 +121,10 @@ class UsersController extends Controller
         $current_team->users()->attach(
             $user, ['role' => $role]
         );
+
+        $current_phone = $request->phone;
+        UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
+
         if ($client_id) {
             $aggy = ClientAggregate::retrieve($client_id);
             $aggy->addUserToTeam($user->id, $current_team->id, $role);
@@ -136,6 +145,16 @@ class UsersController extends Controller
         $data = $request->validate($this->rules);
         $current_user = $request->user();
         $user = User::findOrFail($id);
+
+        $phone = $data['phone'];
+        $phone_detail = UserDetails::firstOrCreate([
+            'user_id' => $user->id,
+            'name' => 'phone',
+            //'value' => $phone
+        ]);
+        $phone_detail->value = $phone;
+        $phone_detail->save();
+
         $user->updateOrFail($data);
         $current_team = $current_user->currentTeam()->first();
         $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;

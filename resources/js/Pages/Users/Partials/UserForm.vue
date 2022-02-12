@@ -1,7 +1,7 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="form-control col-span-6">
+            <div class="form-control col-span-3">
                 <jet-label for="name" value="Name"/>
                 <input
                     id="name"
@@ -12,7 +12,7 @@
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6">
+            <div class="form-control col-span-3">
                 <jet-label for="email" value="Email"/>
                 <input
                     id="email"
@@ -23,7 +23,14 @@
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6" v-if="operation==='Create'">
+
+            <div class="form-control col-span-3">
+                <jet-label for="phone" value="Phone"/>
+                <input id="phone" type="tel" class="block w-full mt-1"  v-model="form.phone"  autofocus/>
+                <jet-input-error :message="form.errors.phone" class="mt-2"/>
+            </div>
+
+            <div class="form-control col-span-3" v-if="operation==='Create'">
                 <jet-label for="password" value="Password"/>
                 <input
                     id="password"
@@ -33,7 +40,7 @@
                 />
                 <jet-input-error :message="form.errors.password" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6" v-if="clientId">
+            <div class="form-control col-span-3" v-if="clientId">
                 <jet-label for="role" value="Security Role"/>
                 <select
                     id="role"
@@ -78,16 +85,19 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ["clientId", "user"],
+    props: ["clientId", "user", 'clientName'],
     emits: ['success'],
     setup(props, {emit}) {
         const page = usePage();
-
         let user = props.user;
+        console.log('User mother fuck', user);
         const securityRoles = page.props.value.securityRoles;
+        let phone = ((user !== undefined) && ('phone_number' in user)) ? user['phone_number'].value : null;
 
         let operation = 'Update';
         if (user) {
+
+            user.phone = phone;
             user.security_role = user?.details?.find(detail=>detail.name==='security_role')?.value || null
             console.log({user});
         } else {
@@ -96,10 +106,10 @@ export default {
                 email: null,
                 password: null,
                 security_role: null,
+                phone:null,
                 client_id: props.clientId
             }
             if(props.clientId){
-
             }
             operation = 'Create';
         }
