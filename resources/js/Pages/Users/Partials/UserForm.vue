@@ -2,15 +2,26 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="form-control col-span-3">
-                <jet-label for="name" value="Name"/>
+                <jet-label for="fname" value="First Name"/>
                 <input
-                    id="name"
+                    id="fname"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.name"
+                    v-model="form.fname"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.name" class="mt-2"/>
+                <jet-input-error :message="form.errors.fname" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
+                <jet-label for="name" value="Lastt Name"/>
+                <input
+                    id="lname"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.lname"
+                    autofocus
+                />
+                <jet-input-error :message="form.errors.lname" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
                 <jet-label for="email" value="Email"/>
@@ -28,17 +39,6 @@
                 <jet-label for="phone" value="Phone"/>
                 <input id="phone" type="tel" class="block w-full mt-1"  v-model="form.phone"  autofocus/>
                 <jet-input-error :message="form.errors.phone" class="mt-2"/>
-            </div>
-
-            <div class="form-control col-span-3" v-if="operation==='Create'">
-                <jet-label for="password" value="Password"/>
-                <input
-                    id="password"
-                    type="password"
-                    class="block w-full mt-1"
-                    v-model="form.password"
-                />
-                <jet-input-error :message="form.errors.password" class="mt-2"/>
             </div>
             <div class="form-control col-span-3" v-if="clientId">
                 <jet-label for="role" value="Security Role"/>
@@ -90,7 +90,6 @@ export default {
     setup(props, {emit}) {
         const page = usePage();
         let user = props.user;
-        console.log('User mother fuck', user);
         const securityRoles = page.props.value.securityRoles;
         let phone = ((user !== undefined)
             && ('phone_number' in user)
@@ -100,13 +99,15 @@ export default {
 
         let operation = 'Update';
         if (user) {
-
+            user.fname = user['first_name'];
+            user.lname = user['last_name'];
             user.phone = phone;
             user.security_role = user?.details?.find(detail=>detail.name==='security_role')?.value || null
             console.log({user});
         } else {
             user = {
-                name: null,
+                fname: '',
+                lname: '',
                 email: null,
                 password: null,
                 security_role: null,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Clients\Security\SecurityRole;
@@ -18,10 +19,11 @@ use Prologue\Alerts\Facades\Alert;
 class UsersController extends Controller
 {
     protected $rules = [
-        'name' => ['required', 'max:50'],
+        'fname' => ['required', 'max:50'],
+        'lname' => ['required', 'max:50'],
         'email' => ['required', 'email'],
         'phone' => ['required', 'digits:10'],
-        'client_id' => ['sometimes', 'exists:clients,id'],
+        //'client_id' => ['sometimes', 'exists:clients,id'],
         'security_role' => ['nullable', 'exists:security_roles,id']
         // 'security_role' => ['required_with,client_id', 'exists:security_roles,id']
     ];
@@ -111,32 +113,76 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        $create_rules = array_merge($this->rules, ['password' => 'required', 'email' => ['required', 'email', 'unique:users,email']]);
-        $data = $request->validate($create_rules);
-        $data['password'] = bcrypt($data['password']);
-        $user = User::create($data);
-        $security_role = SecurityRole::with('role')->find($data['security_role']);
-        UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
+        $create_rules = array_merge($this->rules, ['email' => ['required', 'email', 'unique:users,email']]);
 
-        $client_id = $request->user()->currentClientId();
-        if ($client_id) {
-            UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
+        $data = $request->validate($create_rules);
+        //$data['password'] = bcrypt($data['password']);
+        $data['name'] = "{$data['fname']} {$data['lname']}";
+        $data['first_name'] = $data['fname'];
+        $data['last_name'] = $data['lname'];
+        unset($data['fname']);
+        unset($data['lname']);
+
+        $user = User::create($data);
+        $aggy = UserAggregate::retrieve($user->id)
+            ->createNewUser(auth()->user()->id);
+        // @todo - remove this if/when we set up Security Roles on CnB
+        if(request()->has('client_id') && (!is_null(request()->get('client_id'))))
+        {
+            $security_role = SecurityRole::with('role')->find($data['security_role']);
+            $aggy = $aggy->imGonnaGoAheadAndAssignThisSecurityRole($security_role->id);
+            UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
+
+            $client_id = $request->user()->currentClientId();
+            if ($client_id) {
+                $aggy = $aggy->imGonnaGoAheadAndAssignThisClient($client_id);
+                UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
+            }
+
+            $role = $security_role->role->name;
         }
+        else
+        {
+            $role = 'Admin';
+            $client_id = null;
+        }
+
+        // @todo - move this to the aggregate since its not necessary to mae the user wait on this when the new user can't log in yet
         $current_team = $request->user()->currentTeam()->first();
         UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
-        $role = $security_role->role->name;
+
+        // @todo - move this to the aggregate since its not necessary to mae the user wait on this when the new user can't log in yet
         $current_team->users()->attach(
             $user, ['role' => $role]
         );
 
+        // @todo - make a preset and an async set of methods in the aggregate for storing phone
+        // @todo - $aggy = $aggy->setPhoneNumber
+        // @todo - $aggy = $aggy->imJustGonnaGoAheadAndPresetThisPhoneNumber
         $current_phone = $request->phone;
         UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
+
 
         if ($client_id) {
             $aggy = ClientAggregate::retrieve($client_id);
             $aggy->addUserToTeam($user->id, $current_team->id, $role);
             $aggy->persist();
         }
+        else
+        {
+            // Assign CnB user to Default CnB Admins team
+            $cnb_default_team = Team::find(1);
+            if($cnb_default_team->id != $current_team->id)
+            {
+                // Assign CnB user to currently active CnB team
+                $cnb_default_team->users()->attach(
+                    $user, ['role' => $role]
+                );
+            }
+
+        }
+
+        $aggy->persist();
         Alert::success("User '{$user->name}' was created")->flash();
 
         return Redirect::route('users');
@@ -152,6 +198,11 @@ class UsersController extends Controller
         $data = $request->validate($this->rules);
         $current_user = $request->user();
         $user = User::findOrFail($id);
+        $data['name'] = "{$data['fname']} {$data['lname']}";
+        $data['first_name'] = $data['fname'];
+        $data['last_name'] = $data['lname'];
+        unset($data['fname']);
+        unset($data['lname']);
 
         $phone = $data['phone'];
         $phone_detail = UserDetails::firstOrCreate([
