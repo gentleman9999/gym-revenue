@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
@@ -152,14 +153,8 @@ class LocationsController extends Controller
     public function store(Request $request)
     {
         $client_id = $request->user()->currentClientId();
-        $prefix = ClientDetail::whereClientId($client_id)->whereDetail('prefix')->pluck('value');
-        $iterations = Location::whereClientId($client_id)->pluck('gymrevenue_id');
-        $value = 001;
-
-        if(Str::contains($iterations[count($iterations)-1], $prefix[0]))
-                $value = (int) str_replace($prefix[0], "", $iterations[count($iterations)-1]) + 1;
-
-        $request->merge(['gymrevenue_id' => $prefix[0].''.sprintf('%03d', $value)]);
+        
+        $request->merge(['gymrevenue_id' => GenerateGymRevenueId::run($client_id)]);
 
         $location = Location::create(
             $request->validate($this->rules)
