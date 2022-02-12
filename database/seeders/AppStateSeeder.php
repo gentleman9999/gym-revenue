@@ -108,7 +108,7 @@ class AppStateSeeder extends Seeder
             'value' => '2022-02-11',
             'misc' => [
                 'buildno' => '20220211',
-                'version' => '0.10.24',
+                'version' => '0.10.25',
                 'notes' => [
                     'Backend - New Clubs have a GymRevenue ID auto generated',
                     'Phone # is now a field in Create and Edit Users',
@@ -130,6 +130,11 @@ class AppStateSeeder extends Seeder
                     '* - ToDo list Coming Soon link only appears for users with Sales Reps, Location Manager and Employee Security Roles',
                     '* - The settings Link on the sidebar works',
                     '* - Team Management only shows a Client’s teams instead of all teams within GR',
+                    'Label copy on Create and Update Users updated',
+                    'Label copy on Update Club/Locations to say Club’s name and GymRevenue ID',
+                    'Updated the Navigation on CRUD with a page Nav Tool Bar to highlight the active page.',
+                    'Lead Statuses UI is now available from the Leads Dashboard',
+                    'Individual First & Last Name in User Management Create and Update',
                 ]
             ]
         ]);
