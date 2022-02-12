@@ -641,7 +641,6 @@ if(!$middle_name){
 
     public function sources(Request $request)
     {
-//        dd(LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']));
         return Inertia::render('Leads/Sources', [
             'sources' => LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name'])
         ]);
@@ -675,6 +674,48 @@ if(!$middle_name){
 
         }
         Alert::success("Lead Sources updated")->flash();
+//        return Redirect::route('data.leads');
+        return Redirect::back();
+    }
+
+    public function statuses(Request $request)
+    {
+        return Inertia::render('Leads/Statuses', [
+            'statuses' => LeadStatuses::whereClientId($request->user()->currentClientId())->get(['id', 'status'])
+        ]);
+    }
+
+    public function updateStatuses(Request $request)
+    {
+        $data = request()->validate([
+            'statuses' => 'required',
+            'statuses.*.status' => 'required'
+        ]);
+
+        $statuses = $data['statuses'];
+
+        if (array_key_exists('statuses', $data) && is_array($data['statuses'])) {
+            $statusesToUpdate = collect($data['statuses'])->filter(function ($s) {
+                return $s['id'] !== null && !empty($s['status']);
+            });
+            $statusesToCreate = collect($data['statuses'])->filter(function ($s) {
+                return $s['id'] === null && !empty($s['status']);
+            });
+
+            $client_id = $request->user()->currentClientId();
+
+            $client_aggy = ClientAggregate::retrieve($client_id);
+
+            foreach ($statusesToUpdate as $statusToUpdate) {
+                $client_aggy->updateLeadStatus($statusToUpdate, request()->user()->id);
+            }
+            foreach ($statusesToCreate as $statusToCreate) {
+                $client_aggy->createLeadStatus($statusToCreate, request()->user()->id);
+            }
+            $client_aggy->persist();
+
+        }
+        Alert::success("Lead Statuses updated")->flash();
 //        return Redirect::route('data.leads');
         return Redirect::back();
     }

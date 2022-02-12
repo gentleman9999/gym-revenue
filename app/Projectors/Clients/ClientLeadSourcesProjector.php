@@ -10,14 +10,14 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientLeadSourcesProjector extends Projector
 {
-    public function onTrialMembershipTypeUpdated(LeadSourceUpdated $event)
+    public function onLeadSourceUpdated(LeadSourceUpdated $event)
     {
         $leadSource = LeadSource::findOrFail($event->data['id']);
         $leadSource->name = $event->data['name'];
         $leadSource->save();
     }
 
-    public function onTrialMembershipTypeCreated(LeadSourceCreated $event)
+    public function onLeadSourceCreated(LeadSourceCreated $event)
     {
         LeadSource::create([
             'name' => $event->data['name'],

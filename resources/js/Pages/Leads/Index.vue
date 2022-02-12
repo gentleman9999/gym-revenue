@@ -201,6 +201,12 @@ export default defineComponent({
                 onClick: null,
                 active: false
             },
+            {
+                label: 'Lead Statuses',
+                href: route('data.leads.statuses'),
+                onClick: null,
+                active: false
+            },
         ];
 
         return {
