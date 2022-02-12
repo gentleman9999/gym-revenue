@@ -92,7 +92,11 @@ export default {
         let user = props.user;
         console.log('User mother fuck', user);
         const securityRoles = page.props.value.securityRoles;
-        let phone = ((user !== undefined) && ('phone_number' in user)) ? user['phone_number'].value : null;
+        let phone = ((user !== undefined)
+            && ('phone_number' in user)
+            && (user['phone_number'])
+            && ('value' in user['phone_number'])
+        ) ? user['phone_number'].value : null;
 
         let operation = 'Update';
         if (user) {
