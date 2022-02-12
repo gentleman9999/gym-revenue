@@ -30,6 +30,11 @@ class UsersController extends Controller
     {
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
+            $current_team = $request->user()->currentTeam()->first();
+            $client_detail = $current_team->client_details()->first();
+            $client = (!is_null($client_detail)) ? $client_detail->client()->first() : null;
+            $client_name = $client->name;
+
             return Inertia::render('Users/Show', [
                 'users' => User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
@@ -37,7 +42,8 @@ class UsersController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => Location::whereClientId($client_id)->get(),
-                'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : []
+                'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : [],
+                'clientName' => $client_name
             ]);
         } else {
             //cb team selected
@@ -48,7 +54,8 @@ class UsersController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
-                'teams' => []
+                'teams' => [],
+                'clientName' => 'Cape & Bay/GymRevenue'
             ]);
         }
     }

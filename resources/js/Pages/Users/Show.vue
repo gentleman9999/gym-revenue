@@ -2,9 +2,8 @@
     <app-layout :title="title">
         <!--        security roles not yet implemented - hide for now-->
         <page-toolbar-nav
-            title="Users"
+            :title="clientName + ' Users'"
             :links="navLinks"
-            v-if="$page.props.user.current_client_id"
         />
         <gym-revenue-crud
             base-route="users"
@@ -76,7 +75,7 @@ export default defineComponent({
         SearchFilter,
         PageToolbarNav,
     },
-    props: ["users", "filters", "clubs", "teams"],
+    props: ["users", "filters", "clubs", "teams", 'clientName'],
     setup() {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
@@ -125,13 +124,25 @@ export default defineComponent({
                 shouldRender: shouldShowEdit,
             },
         };
-        const navLinks = [
+        console.log('Jesus H Christ', )
+
+        let navLinks = [
             {
+                label: "Users",
+                href: route("users"),
+                onClick: null,
+                active: true
+            },
+        ];
+        if(page.props.value.user.current_client_id) {
+            navLinks.push({
                 label: "Security Roles",
                 href: route("security-roles"),
                 onClick: null,
-            },
-        ];
+                active: false
+            });
+        }
+
         return {
             confirmDelete,
             fields,

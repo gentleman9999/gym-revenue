@@ -1,8 +1,14 @@
 <template>
     <app-layout :title="title">
+        <!--
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Security Roles</h2>
         </template>
+        -->
+        <page-toolbar-nav
+            title="Security Roles"
+            :links="navLinks"
+        />
         <gym-revenue-crud
             base-route="security-roles"
             model-name="Security Role"
@@ -35,6 +41,7 @@ import Confirm from "@/Components/Confirm";
 
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
@@ -43,6 +50,7 @@ export default defineComponent({
         Confirm,
         JetBarContainer,
         Button,
+        PageToolbarNav
     },
     props: ["securityRoles", "filters"],
     setup(props) {
@@ -60,7 +68,22 @@ export default defineComponent({
 
         const fields = ["security_role", "created_at", "updated_at"];
 
-        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia};
+        let navLinks = [
+            {
+                label: "Users",
+                href: route("users"),
+                onClick: null,
+                active: false
+            },
+            {
+                label: "Security Roles",
+                href: route("security-roles"),
+                onClick: null,
+                active: true
+            }
+        ];
+
+        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
     },
 });
 </script>

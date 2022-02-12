@@ -1,8 +1,11 @@
 <template>
     <app-layout title="Lead Sources">
+        <!--
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Lead Sources</h2>
         </template>
+        -->
+        <page-toolbar-nav title="Lead Sources" :links="navLinks"/>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="max-w-md space-y-2">
@@ -61,6 +64,7 @@ import Button from "@/Components/Button";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 library.add(faPlus);
 
 export default defineComponent({
@@ -71,8 +75,17 @@ export default defineComponent({
         JetSectionBorder,
         Button,
         FontAwesomeIcon,
+        PageToolbarNav
     },
     setup(props) {
+        const comingSoon = () => {
+            new Noty({
+                type: "warning",
+                theme: "sunset",
+                text: "Feature Coming Soon!",
+                timeout: 7500,
+            }).show();
+        };
         const inputs = ref([]);
         const setItemRef = (el) => {
             if (el) {
@@ -97,7 +110,53 @@ export default defineComponent({
             console.log("submitform", form.data());
             form.post(route("data.leads.sources.update"));
         };
-        return { form, addNewSource, inputs, setItemRef, submitForm };
+
+        const navLinks = [
+            {
+                label: 'Dashboard',
+                href: '#',
+                onClick: comingSoon,
+                active: false
+            },
+            {
+                label: 'Calendar',
+                href: '#',
+                onClick: comingSoon,
+                active: false
+            },
+            {
+                label: 'Leads',
+                href: '#',
+                onClick: comingSoon,
+                active: false
+            },
+            {
+                label: 'Tasks',
+                href: '#',
+                onClick: comingSoon,
+                active: false
+            },
+            {
+                label: 'Contacts',
+                href: '#',
+                onClick: comingSoon,
+                active: false
+            },
+            {
+                label: 'Consultants',
+                href: '#',
+                onClick: comingSoon,
+                active: false
+            },
+            {
+                label: 'Lead Sources',
+                href: route('data.leads.sources'),
+                onClick: null,
+                active: true
+            },
+        ];
+
+        return { form, addNewSource, inputs, setItemRef, submitForm, navLinks };
     },
 });
 </script>

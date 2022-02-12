@@ -162,37 +162,44 @@ export default defineComponent({
             {
                 label: 'Dashboard',
                 href: '#',
-                onClick: comingSoon
+                onClick: comingSoon,
+                active: false
             },
             {
                 label: 'Calendar',
                 href: '#',
-                onClick: comingSoon
+                onClick: comingSoon,
+                active: false
             },
             {
                 label: 'Leads',
                 href: '#',
-                onClick: comingSoon
+                onClick: comingSoon,
+                active: true
             },
             {
                 label: 'Tasks',
                 href: '#',
-                onClick: comingSoon
+                onClick: comingSoon,
+                active: false
             },
             {
                 label: 'Contacts',
                 href: '#',
-                onClick: comingSoon
+                onClick: comingSoon,
+                active: false
             },
             {
                 label: 'Consultants',
                 href: '#',
-                onClick: comingSoon
+                onClick: comingSoon,
+                active: false
             },
             {
                 label: 'Lead Sources',
                 href: route('data.leads.sources'),
-                onClick: null
+                onClick: null,
+                active: false
             },
         ];
 
