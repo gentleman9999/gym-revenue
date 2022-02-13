@@ -1,24 +1,19 @@
 <template>
-    <app-layout title="Lead Sources">
-        <!--
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Lead Sources</h2>
-        </template>
-        -->
-        <page-toolbar-nav title="Lead Sources" :links="navLinks"/>
+    <app-layout title="Lead Statuses">
+        <page-toolbar-nav title="Lead Statuses" :links="navLinks"/>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="max-w-md space-y-2">
-                <div v-for="(source, index) in form.sources">
+                <div v-for="(source, index) in form.statuses">
                     <input
                         type="text"
-                        v-model="form.sources[index].name"
+                        v-model="form.statuses[index].status"
                         :ref="setItemRef"
                         class="w-full"
                     />
                 </div>
                 <div class="flex flex-row justify-center py-2">
-                    <button type="button" @click="addNewSource">
+                    <button type="button" @click="addNewStatus">
                         <font-awesome-icon
                             icon="plus"
                             size="2x"
@@ -66,9 +61,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 library.add(faPlus);
-
 export default defineComponent({
-    props: ["sources"],
+    props: ["statuses"],
 
     components: {
         AppLayout,
@@ -92,13 +86,13 @@ export default defineComponent({
                 inputs.value.push(el);
             }
         };
-        const form = useForm({ sources: props.sources });
-        const addNewSource = () => {
-            if (form.sources[form.sources.length - 1].name === "") {
+        const form = useForm({ statuses: props.statuses });
+        const addNewStatus = () => {
+            if (form.statuses[form.statuses.length - 1].status === "") {
                 focusLastInput();
                 return;
             }
-            form.sources.push({ id: null, name: "" });
+            form.statuses.push({ id: null, status: "" });
             setTimeout(focusLastInput, 100);
         };
 
@@ -108,7 +102,7 @@ export default defineComponent({
 
         const submitForm = () => {
             console.log("submitform", form.data());
-            form.post(route("data.leads.sources.update"));
+            form.post(route("data.leads.statuses.update"));
         };
 
         const navLinks = [
@@ -152,17 +146,21 @@ export default defineComponent({
                 label: 'Lead Sources',
                 href: route('data.leads.sources'),
                 onClick: null,
-                active: true
+                active: false
             },
             {
                 label: 'Lead Statuses',
                 href: route('data.leads.statuses'),
                 onClick: null,
-                active: false
+                active: true
             },
         ];
 
-        return { form, addNewSource, inputs, setItemRef, submitForm, navLinks };
+        return { form, addNewStatus, inputs, setItemRef, submitForm, navLinks };
     },
 });
 </script>
+
+<style scoped>
+
+</style>

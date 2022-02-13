@@ -9,11 +9,12 @@
                 ></div>
             </div>
 
-            <div class="flex flex-row items-center mb-4">
+            <div class="flex flex-row items-center mb-4" v-if="links.length > 0">
                 <div class="hidden space-x-8 sm:-my-px sm:flex pt-6">
                     <a
-                        v-for="{ label, href, onClick } in links"
+                        v-for="{ label, href, onClick, active} in links"
                         class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
+                        :class="(active) ? ' outline rounded-full px-4': ''"
                         :href="href"
                         @click="onClick"
                     >

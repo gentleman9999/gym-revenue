@@ -19,51 +19,63 @@ class CapeAndBayUserSeeder extends UserSeeder
 
         return [
             [
-                'name' => 'Angel Gonzalez',
+                'first_name' => 'Angel',
+                'last_name' => 'Gonzalez',
                 'email' => 'angel@capeandbay.com',
             ],
             [
-                'name' => 'Tareq Othman',
+                'first_name' => 'Tareq',
+                'last_name' => 'Othman',
                 'email' => 'tareq@capeandbay.com',
             ],
             [
-                'name' => 'Zaid Dabus',
+                'first_name' => 'Zaid',
+                'last_name' => 'Dabus',
                 'email' => 'zaid@capeandbay.com',
             ],
             [
-                'name' => 'Brett Milam',
+                'first_name' => 'Brett',
+                'last_name' => 'Milam',
                 'email' => 'brett@capeandbay.com',
             ],
             [
-                'name' => 'Ammar Zalatino',
+                'first_name' => 'Ammar',
+                'last_name' => 'Zalatino',
                 'email' => 'ammar@capeandbay.com',
             ],
             [
-                'name' => 'Philip Krugel',
+                'first_name' => 'Philip',
+                'last_name' => 'Krogel',
                 'email' => 'philip@capeandbay.com',
             ],
             [
-                'name' => 'Sterling Webb',
+                'first_name' => 'Sterling',
+                'last_name' => 'Webb',
                 'email' => 'sterling@capeandbay.com',
             ],
             [
-                'name' => 'Shivam Shewa',
+                'first_name' => 'Shivam',
+                'last_name' => 'Shewa',
                 'email' => 'shivam@capeandbay.com',
             ],
             [
-                'name' => 'Alec Salzman',
+                'first_name' => 'Alec',
+                'last_name' => 'Salzman',
                 'email' => 'alec@gymrevenue.com',
             ],
             [
-                'name' => 'Sami ',
+                'first_name' => 'Sami',
+                'last_name' => 'S',
                 'email' => 'sami@gymrevenue.com',
             ],
 			[
-                'name' => 'Steve ',
+                'first_name' => 'Steve',
+                'last_name' => 'Deemer',
                 'email' => 'steve@capeandbay.com',
             ],
             [
-                'name' => 'Blair Patterson',
+                'first_name' => 'Blair',
+                'last_name' => 'Patterson',
                 'email' => 'blair@capeandbay.com',
             ],
         ];
@@ -71,6 +83,6 @@ class CapeAndBayUserSeeder extends UserSeeder
 
     protected function addUser(array $user)
     {
-        Artisan::call("user:create --name=\"{$user['name']}\" --email={$user['email']} --client=0 --role=Admin");
+        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['last_name']}\" --email={$user['email']} --client=0 --role=Admin");
     }
 }

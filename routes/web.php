@@ -90,6 +90,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
+        Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
+        Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
         Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class . '@lead_trash')->name('data.leads.trash');
         Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class . '@lead_restore')->name('data.leads.restore');
 
@@ -112,12 +114,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
-//    Route::post('/', \App\Http\Controllers\UsersController::class . '@store')->name('users.store');
     Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
-//    Route::put('/{id}', \App\Http\Controllers\UsersController::class . '@update')->name('users.update');
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update');
-//    Route::delete('/{id}', \App\Http\Controllers\UsersController::class . '@delete')->name('users.delete');
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
 
 });

@@ -50,6 +50,12 @@ class LeadsController extends Controller
 
     public function index(Request $request)
     {
+        $user = request()->user();
+        if($user->cannot('leads.read', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
@@ -142,6 +148,15 @@ class LeadsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+
+
+        if($user->cannot('leads.create', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
 
         $locations = [];
         foreach ($locations_records as $location) {
@@ -152,8 +167,6 @@ class LeadsController extends Controller
         $lead_sources = LeadSource::whereClientId($client_id)->get();
         $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
 
         /**
          * STEPS for team users
@@ -309,11 +322,16 @@ class LeadsController extends Controller
 
     public function edit($lead_id)
     {
+        $user = request()->user();
+        if($user->cannot('leads.update', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         if (!$lead_id) {
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
@@ -401,6 +419,8 @@ if(!$middle_name){
             \Alert::info("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
+
+
         $data = request()->validate($this->rules);
 
         $lead = Lead::find($lead_id);
@@ -427,12 +447,20 @@ if(!$middle_name){
 
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
 
+
         return Redirect::route('data.leads');
     }
 
     public function assign()
     {
         $data = request()->all();
+        $user = request()->user();
+        if($user->cannot('leads.contact', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         // @todo - change to laravel style Validation
 
         $claim_detail = LeadDetails::whereLeadId($data['lead_id'])
@@ -522,6 +550,13 @@ if(!$middle_name){
 
     public function contact($lead_id)
     {
+        $user = request()->user();
+        if($user->cannot('leads.contact', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back()->with('selectedLeadDetailIndex', 0);
+        }
+
         $lead = Lead::find($lead_id);
 
         if ($lead) {
@@ -566,6 +601,14 @@ if(!$middle_name){
 
     public function lead_trash(Request $request, $lead_id)
     {
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if($user->cannot('leads.trash', $current_team))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         if (!$lead_id) {
             Alert::error("No Lead ID provided")->flash();
             return Redirect::back();
@@ -598,7 +641,6 @@ if(!$middle_name){
 
     public function sources(Request $request)
     {
-//        dd(LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']));
         return Inertia::render('Leads/Sources', [
             'sources' => LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name'])
         ]);
@@ -632,6 +674,48 @@ if(!$middle_name){
 
         }
         Alert::success("Lead Sources updated")->flash();
+//        return Redirect::route('data.leads');
+        return Redirect::back();
+    }
+
+    public function statuses(Request $request)
+    {
+        return Inertia::render('Leads/Statuses', [
+            'statuses' => LeadStatuses::whereClientId($request->user()->currentClientId())->get(['id', 'status'])
+        ]);
+    }
+
+    public function updateStatuses(Request $request)
+    {
+        $data = request()->validate([
+            'statuses' => 'required',
+            'statuses.*.status' => 'required'
+        ]);
+
+        $statuses = $data['statuses'];
+
+        if (array_key_exists('statuses', $data) && is_array($data['statuses'])) {
+            $statusesToUpdate = collect($data['statuses'])->filter(function ($s) {
+                return $s['id'] !== null && !empty($s['status']);
+            });
+            $statusesToCreate = collect($data['statuses'])->filter(function ($s) {
+                return $s['id'] === null && !empty($s['status']);
+            });
+
+            $client_id = $request->user()->currentClientId();
+
+            $client_aggy = ClientAggregate::retrieve($client_id);
+
+            foreach ($statusesToUpdate as $statusToUpdate) {
+                $client_aggy->updateLeadStatus($statusToUpdate, request()->user()->id);
+            }
+            foreach ($statusesToCreate as $statusToCreate) {
+                $client_aggy->createLeadStatus($statusToCreate, request()->user()->id);
+            }
+            $client_aggy->persist();
+
+        }
+        Alert::success("Lead Statuses updated")->flash();
 //        return Redirect::route('data.leads');
         return Redirect::back();
     }

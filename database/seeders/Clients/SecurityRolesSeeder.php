@@ -38,6 +38,10 @@ class SecurityRolesSeeder extends Seeder
                 'security_role' => 'Sales Rep - InStore Sales',
                 'role' => 'Sales Rep',
             ],
+            [
+                'security_role' => 'Employee',
+                'role' => 'Employee',
+            ],
         ];
         $clients->each(function ($client) use ($security_roles, $roles) {
             foreach ($security_roles as $security_role) {

@@ -1,16 +1,27 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="form-control col-span-6">
-                <jet-label for="name" value="Name" />
+            <div class="form-control col-span-3">
+                <jet-label for="first_name" value="First Name" />
                 <input
-                    id="name"
+                    id="first_name"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.name"
+                    v-model="form.first_name"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
+                <jet-input-error :message="form.errors.first_name" class="mt-2" />
+            </div>
+            <div class="form-control col-span-3">
+                <jet-label for="first_name" value="Last Name" />
+                <input
+                    id="last_name"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.last_name"
+                    autofocus
+                />
+                <jet-input-error :message="form.errors.first_name" class="mt-2" />
             </div>
             <div class="form-control col-span-6">
                 <jet-label for="email" value="Email" />
@@ -23,17 +34,19 @@
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
-            <div class="form-control col-span-6" v-if="operation === 'Create'">
-                <jet-label for="password" value="Password" />
+
+            <div class="form-control col-span-3">
+                <jet-label for="phone" value="Phone" />
                 <input
-                    id="password"
-                    type="password"
+                    id="phone"
+                    type="tel"
                     class="block w-full mt-1"
-                    v-model="form.password"
+                    v-model="form.phone"
+                    autofocus
                 />
-                <jet-input-error :message="form.errors.password" class="mt-2" />
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
-            <div class="form-control col-span-6" v-if="clientId">
+            <div class="form-control col-span-3" v-if="clientId">
                 <jet-label for="role" value="Security Role" />
                 <select
                     id="role"
@@ -96,14 +109,19 @@ export default {
         JetInputError,
         JetLabel,
     },
+    props: ["clientId", "user", "clientName"],
     props: ["clientId", "user"],
     emits: ["success"],
     setup(props, { emit }) {
         const page = usePage();
-
         let user = props.user;
         const securityRoles = page.props.value.securityRoles;
         const team_id = page.props.value.user.current_team_id;
+        let phone = ((user !== undefined)
+            && ('phone_number' in user)
+            && (user['phone_number'])
+            && ('value' in user['phone_number'])
+        ) ? user['phone_number'].value : null;
 
         let operation = "Update";
         if (user) {
@@ -111,15 +129,24 @@ export default {
                 user?.details?.find((detail) => detail.name === "security_role")
                     ?.value || null;
             user.team_id = team_id;
+            user.first_name = user["first_name"];
+            user.last_name = user["last_name"];
+            user.phone = phone;
+            user.security_role =
+                user?.details?.find((detail) => detail.name === "security_role")
+                    ?.value || null;
             console.log({ user });
         } else {
             user = {
-                name: null,
+                first_name: "",
+                last_name: "",
                 email: null,
                 password: null,
                 security_role: null,
-                team_id,
+                phone: null,
+                team_id
             };
+            //only add clientId when applicable to make user validation rules work better
             if (props.clientId) {
                 user.client_id = props.clientId;
             }

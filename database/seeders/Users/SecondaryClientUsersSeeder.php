@@ -23,21 +23,24 @@ class SecondaryClientUsersSeeder extends UserSeeder
     {
         return [
             [
-                'name' => 'Mr Owl',
+                'first_name' => 'Mr',
+                'last_name' => 'Owl',
                 'email' => 'owl@kalamazoo.com',
                 'role' => 'Location Manager',
                 'client' => 'The Kalamazoo',
                 'team_ids' => ['The Kalamazoo Home Office', 'Zoo Sales Team'],
             ],
             [
-                'name' => 'Baloo Bear',
+                'first_name' => 'Baloo',
+                'last_name' => 'Bear',
                 'email' => 'baloo@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
                 'team_ids' => ['Zoo Sales Team'],
             ],
             [
-                'name' => 'Louie Orang',
+                'first_name' => 'Louie',
+                'last_name' => 'Orang',
                 'email' => 'louie@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
@@ -45,49 +48,56 @@ class SecondaryClientUsersSeeder extends UserSeeder
             ],
 
             [
-                'name' => 'Bob Kirk',
+                'first_name' => 'Bob',
+                'last_name' => 'Kirk',
                 'email' => 'bkirk@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
                 'team_ids' => ['iFit Home Office', 'iFit Virginia'],
             ],
             [
-                'name' => 'Kirk Roberts',
+                'first_name' => 'Kirk',
+                'last_name' => 'Roberts',
                 'email' => 'kroberts@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
                 'team_ids' => ['iFit Home Office', 'iFit Georgia', 'iFit Florida'],
             ],
             [
-                'name' => 'Stan Jacobs',
+                'first_name' => 'Stan',
+                'last_name' => 'Jacobs',
                 'email' => 'owl@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
                 'team_ids' => ['iFit Virginia', 'iFit Sales Team'],
             ],
             [
-                'name' => 'Abbi Abbington',
+                'first_name' => 'Abbi',
+                'last_name' => 'Abbington',
                 'email' => 'aabing@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
                 'team_ids' => ['iFit Florida', 'iFit Sales Team'],
             ],
             [
-                'name' => 'Mark Roughy',
+                'first_name' => 'Mark',
+                'last_name' => 'Roughy',
                 'email' => 'mroughy@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
                 'team_ids' => ['iFit Georgia','iFit Sales Team'],
             ],
             [
-                'name' => 'Jessica Hornsby',
+                'first_name' => 'Jessica',
+                'last_name' => 'Hornsby',
                 'email' => 'jhornsby@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
                 'team_ids' => ['iFit Sales Team'],
             ],
             [
-                'name' => 'Marco Lopez',
+                'first_name' => 'Marco',
+                'last_name' => 'Lopez',
                 'email' => 'mlopez@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
@@ -102,9 +112,11 @@ class SecondaryClientUsersSeeder extends UserSeeder
 
         $team_ids = Team::whereIn('name', $user['team_ids'])->get(['id'])->pluck('id');
 
+
         CreateUser::run([
             'client_id' => $client->id,
-            'name' => $user['name'],
+            'first_name' => $user['first_name'],
+            'last_name' => $user['first_name'],
             'email' => $user['email'],
             'password' => 'Hello123!',
             'team_ids' => $team_ids,

@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Clients\Client;
-use App\Models\Team;
-use App\Models\TeamDetail;
 use Illuminate\Database\Seeder;
 use Bouncer;
 use Laravel\Jetstream\Jetstream;
@@ -23,7 +20,11 @@ class BouncerRolesSeeder extends Seeder
     public function run()
     {
         collect(Jetstream::$roles)->each(function ($role) {
-            Role::firstOrCreate([
+//            dd(Bouncer::role()->keyIsUuid());
+//            Bouncer::role()::firstOrCreate([
+//                'name' => $role->key,
+//            ])->update(['title' => $role->name]);
+            Bouncer::role()::create([
                 'name' => $role->key,
             ])->update(['title' => $role->name]);
         });

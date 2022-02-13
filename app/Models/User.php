@@ -33,7 +33,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password'
+        'id', 'name', 'email', 'password', 'first_name', 'last_name'
     ];
 
     /**
@@ -137,6 +137,16 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
     }
 
+    public function phone()
+    {
+        return $this->detail()->where('name', '=', 'phone');
+    }
+
+    public function phone_number()
+    {
+        return $this->detail()->where('name', '=', 'phone');
+    }
+
     public function teams()
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
@@ -150,11 +160,6 @@ class User extends Authenticatable
     public function associated_client()
     {
         return $this->detail()->where('name', '=', 'associated_client');
-    }
-
-    public function phone()
-    {
-        return $this->detail()->where('name', '=', 'phone');
     }
 
     public function security_role()

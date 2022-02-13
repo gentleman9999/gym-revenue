@@ -46,6 +46,7 @@ class UpdateUser implements UpdatesUserProfileInformation
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
+            'phone' => ['sometimes', 'digits:10'] //should be required, but seeders don't have phones.
         ];
     }
 

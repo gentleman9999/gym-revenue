@@ -2,27 +2,15 @@
 
 namespace App\Actions\Fortify;
 
-use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
-use App\Aggregates\Clients\ClientAggregate;
-use App\Helpers\Uuid;
-use App\Models\Clients\Security\SecurityRole;
+use App\Aggregates\Users\UserAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Laravel\Jetstream\Events\TeamMemberAdded;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\BouncerFacade as Bouncer;
-use App\Actions\Jetstream\AddTeamMember;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\UserDetails;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
-use Silber\Bouncer\Database\Role;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Console\Command;
 
@@ -39,7 +27,8 @@ class CreateUser implements CreatesNewUsers
      * @var string
      */
     public string $commandSignature = 'user:create
-                            {--name= : the name of the user}
+                            {--firstname= : the first name of the user}
+                            {--lastname= : the last name of the user}
                             {--email= : the email of the user}
                             {--role= : the role of the user}
                             {--client= : the uuid of the client to assign }
@@ -60,7 +49,8 @@ class CreateUser implements CreatesNewUsers
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'client_id' => ['sometimes', 'string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
@@ -68,29 +58,36 @@ class CreateUser implements CreatesNewUsers
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
+            'phone' => ['sometimes', 'digits:10'] //should be required, but seeders don't have phones.
         ];
     }
 
     public function handle($data, $current_user = null)
     {
-        if ($current_user) {
-            $client_id = $current_user->currentClientId();
-        } else {
-            $client_id = $data['client_id'];
-        }
+//        if ($current_user) {
+//            $client_id = $current_user->currentClientId();
+//        } else {
+//            $client_id = $data['client_id'];
+//        }
 
         if (array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }
 
-        if ($client_id) {
-            ClientAggregate::retrieve($client_id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
-        } else {
-            //CapeAndBay User
-            CapeAndBayUserAggregate::retrieve($data['team_id'])->createUser($current_user->id ?? "Auto Generated", $data)->persist();
+//        $id = Uuid::new();//we should use uuid here, but then we'd have to change all the bouncer tables to use uuid instead of bigint;
+        $id = (User::max('id') ?? 0) + 1;
+        $data['id'] = $id;
+
+        UserAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
+        //we should use App/Helpers/Uuid to generate an id, but we can use email for now since its unique
+        $created_user = User::findOrFail($id);
+
+        $should_send_welcome_email = $data['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
+        if($should_send_welcome_email){
+            UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
-        //TODO:we should use App/Helpers/Uuid to generate an id, but we can use email for now since its unique
-        return User::whereEmail($data['email'])->firstOrFail();
+
+        return $created_user;
     }
 
     public function asController(Request $request)
@@ -108,10 +105,11 @@ class CreateUser implements CreatesNewUsers
     public function asCommand(Command $command): void
     {
         $this->command = $command;
-        $user_name = $this->getUsername();
-        $email = $this->getEmail($user_name);
-        $client = $this->getClient($user_name);
-        $role = $this->getRole($user_name, $client);
+        $first_name = $this->getFirstname();
+        $last_name = $this->getLastname();
+        $email = $this->getEmail($first_name);
+        $client = $this->getClient($first_name);
+        $role = $this->getRole($first_name, $client);
 
         $team_id = 1;//capeandbay team
         if($client){
@@ -122,24 +120,35 @@ class CreateUser implements CreatesNewUsers
             $team_id = Team::where('name', '=', $default_team_name)->first()->id;
         }
 
-        $this->command->warn("Creating new {$role} {$user_name} @{$email} for client_id {$client}");
+        $this->command->warn("Creating new {$role} {$first_name} @{$email} for client_id {$client}");
         $this->handle(
             [
                 'email' => $email,
                 'client_id' => $client,
                 'role' => $role,
-                'name' => $user_name,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
                 'password' => 'Hello123!',
                 'team_id' => $team_id
             ]
         );
     }
 
-    private function getUsername()
+    private function getFirstname()
     {
-        $name = $this->command->option('name');
+        $name = $this->command->option('firstname');
         if (is_null($name)) {
-            $name = $this->command->ask('Enter the user\'s Full Name');
+            $name = $this->command->ask('Enter the user\'s first name');
+        }
+
+        return $name;
+    }
+
+    private function getLastname()
+    {
+        $name = $this->command->option('lastname');
+        if (is_null($name)) {
+            $name = $this->command->ask('Enter the user\'s last name');
         }
 
         return $name;

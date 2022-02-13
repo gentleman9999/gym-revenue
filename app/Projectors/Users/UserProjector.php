@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Projectors\Shared;
+namespace App\Projectors\Users;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\StorableEvents\Shared\UserCreated;
-use App\StorableEvents\Shared\UserDeleted;
-use App\StorableEvents\Shared\UserUpdated;
+use App\StorableEvents\Users\UserCreated;
+use App\StorableEvents\Users\UserDeleted;
+use App\StorableEvents\Users\UserUpdated;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\Role;
@@ -27,8 +27,16 @@ class UserProjector extends Projector
                 return in_array($key, (new User)->getFillable());
             }, ARRAY_FILTER_USE_KEY);
 
+            $user_table_data['name'] = "{$user_table_data['first_name']} {$user_table_data['last_name']}";
+
             //create the entry in users table
             $user = User::create($user_table_data);
+
+            $phone = $data['phone'] ?? null;
+            if($phone){
+                UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $phone]);
+            }
+
             $client_id = $data['client_id'] ?? null;
 
             if ($client_id) {
@@ -110,6 +118,12 @@ class UserProjector extends Projector
         DB::transaction(function () use ($data) {
             $user = User::with(['teams', 'associated_client', 'security_role'])->findOrFail($data['id']);
             $user->updateOrFail($data);
+
+            $phone = $data['phone'] ?? null;
+            if($phone){
+                UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'phone'])->updateOrFail(['value' => $phone]);
+            }
+
             $client_id = $user->associated_client ? $user->associated_client->value : null;
 
             //if we were provided a security_role, update the users security_role
