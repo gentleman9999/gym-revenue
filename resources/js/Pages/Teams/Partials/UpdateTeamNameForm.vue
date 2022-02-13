@@ -31,13 +31,13 @@
                             type="text"
                             class="mt-1 block w-full"
                             v-model="form.name"
-                            :disabled="! permissions.canUpdateTeam" />
+                            :disabled="! abilities.canUpdateTeam" />
 
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
         </template>
 
-        <template #actions v-if="permissions.canUpdateTeam">
+        <template #actions v-if="abilities.canUpdateTeam">
             <jet-action-message :on="form.recentlySuccessful" class="mr-3">
                 Saved.
             </jet-action-message>
@@ -66,7 +66,7 @@
             JetLabel,
         },
 
-        props: ['team', 'permissions'],
+        props: ['team', 'abilities'],
 
         data() {
             return {

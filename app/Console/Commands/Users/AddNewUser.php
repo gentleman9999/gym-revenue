@@ -48,12 +48,15 @@ class AddNewUser extends Command
     public function handle()
     {
         $user_name = $this->getUsername();
+        $namesplosion = explode(' ', $user_name);
+        $first_name = $namesplosion[0];
+        $last_name = $namesplosion[1];
         $email = $this->getEmail($user_name);
         $client = $this->getClient($user_name);
         $role = $this->getRole($user_name, $client);
 
         $this->warn("Creating new {$role} {$user_name} @{$email} for client_id {$client}");
-        $this->createUser($user_name, $email, $role, $client);
+        $this->createUser($user_name, $email, $role, $client, $first_name, $last_name);
     }
 
     private function getUsername()
@@ -162,9 +165,11 @@ class AddNewUser extends Command
         return $selected_role;
     }
 
-    private function createUser(string $user_name, string $email, string $role, string $client = null)
+    private function createUser(string $user_name, string $email, string $role, string $client = null, string $fname, string $lname)
     {
         $user = User::create([
+            'first_name' => $fname,
+            'last_name' => $lname,
             'name' => $user_name,
             'email' => $email,
             'password' => bcrypt('Hello123!')

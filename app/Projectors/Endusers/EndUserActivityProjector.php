@@ -11,7 +11,7 @@ use App\Models\Endusers\TrialMembership;
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
-use App\StorableEvents\EndUsers\LeadDetailUpdated;
+use App\StorableEvents\Endusers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;

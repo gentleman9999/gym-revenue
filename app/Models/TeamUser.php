@@ -19,22 +19,15 @@ class TeamUser extends Model
      *
      * @var array
      */
-    /*
     protected $dispatchesEvents = [
         'created' => TeamUserCreated::class,
         'updated' => TeamUserUpdated::class,
         'deleted' => TeamUserDeleted::class,
     ];
-    */
 
     public function teams()
     {
         return $this->hasMany('App\Models\Team', 'team_id', 'id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
 }
