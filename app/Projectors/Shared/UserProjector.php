@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Projectors\Clients;
+namespace App\Projectors\Shared;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\StorableEvents\Clients\UserCreated;
-use App\StorableEvents\Clients\UserDeleted;
-use App\StorableEvents\Clients\UserUpdated;
+use App\StorableEvents\Shared\UserCreated;
+use App\StorableEvents\Shared\UserDeleted;
+use App\StorableEvents\Shared\UserUpdated;
+use Bouncer;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
-use Bouncer;
 
-class ClientUserProjector extends Projector
+class UserProjector extends Projector
 {
     public function onUserCreated(UserCreated $event)
     {
@@ -29,7 +29,7 @@ class ClientUserProjector extends Projector
 
             //create the entry in users table
             $user = User::create($user_table_data);
-            $client_id = $data['client_id'];
+            $client_id = $data['client_id'] ?? null;
 
             if ($client_id) {
                 //setup their client association
@@ -57,9 +57,12 @@ class ClientUserProjector extends Projector
                 if ($client_id) {
                     $security_role = SecurityRole::whereClientId($client_id)->whereRoleId($role->id)->first();//get default security role for role if exists
                 }
-            } else if (array_key_exists('security_role', $data)) {
+            } else if (array_key_exists('security_role', $data) && $data['security_role']) {
                 $security_role = SecurityRole::with('role')->findOrFail($data['security_role']);
                 $role = $security_role->role;
+            }else if($data['team_id'] === 1 || $data['team_id'] === 10) {
+                //set role to admin for capeandbay
+                $role = Role::whereName('Admin')->firstOrFail();
             }
 
             //let the bouncer know this $user is OG
@@ -89,10 +92,12 @@ class ClientUserProjector extends Projector
                     $user, ['role' => $role->name]
                 );
 
-                //assign security role abilities
-                $security_role->abilities()->each(function($ability) use ($user, $team){
-                    Bouncer::allow($user)->to($ability->name, $team);
-                });
+                if($client_id){
+                    //assign security role abilities for client uers only (cnb security roles not yet implemented)
+                    $security_role->abilities()->each(function($ability) use ($user, $team){
+                        Bouncer::allow($user)->to($ability->name, $team);
+                    });
+                }
             }
         });
     }

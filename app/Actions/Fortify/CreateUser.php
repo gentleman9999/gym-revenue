@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Helpers\Uuid;
 use App\Models\Clients\Security\SecurityRole;
@@ -86,7 +87,7 @@ class CreateUser implements CreatesNewUsers
             ClientAggregate::retrieve($client_id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
         } else {
             //CapeAndBay User
-            dd('not yet implemented', $data);
+            CapeAndBayUserAggregate::retrieve($data['team_id'])->createUser($current_user->id ?? "Auto Generated", $data)->persist();
         }
         //TODO:we should use App/Helpers/Uuid to generate an id, but we can use email for now since its unique
         return User::whereEmail($data['email'])->firstOrFail();

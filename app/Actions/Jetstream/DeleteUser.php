@@ -3,6 +3,7 @@
 namespace App\Actions\Jetstream;
 
 use App\Actions\Fortify\PasswordValidationRules;
+use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,24 +30,26 @@ class DeleteUser implements DeletesUsers
         ];
     }
 
-    public function handle($id, $current_user)
+    public function handle($data, $current_user)
     {
         $client_id = $current_user->currentClientId();
 
         if ($client_id) {
-            ClientAggregate::retrieve($client_id)->deleteUser($current_user->id || "Auto Generated", ['id' => $id])->persist();
+            ClientAggregate::retrieve($client_id)->deleteUser($current_user->id || "Auto Generated", $data)->persist();
         } else {
             //CapeAndBay User
-            dd('not yet implemented', $data);
+            CapeAndBayUserAggregate::retrieve($data['team_id'])->deleteUser($current_user->id ?? "Auto Generated", $data)->persist();
         };
     }
 
     public function asController(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        $userData = $user->toArray();
+        $userData['team_id'] = $request->user()->current_team_id;
 
         $this->handle(
-            $id,
+            $userData,
             $request->user(),
         );
 

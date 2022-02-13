@@ -71,6 +71,6 @@ class CapeAndBayUserSeeder extends UserSeeder
 
     protected function addUser(array $user)
     {
-        Artisan::call("user:new --name=\"{$user['name']}\" --email={$user['email']} --client=0 --role=Admin");
+        Artisan::call("user:create --name=\"{$user['name']}\" --email={$user['email']} --client=0 --role=Admin");
     }
 }

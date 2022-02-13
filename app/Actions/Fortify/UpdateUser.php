@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Helpers\Uuid;
 use App\Models\Clients\Security\SecurityRole;
@@ -60,7 +61,7 @@ class UpdateUser implements UpdatesUserProfileInformation
             ClientAggregate::retrieve($client_id)->updateUser($current_user->id || "Auto Generated", $data)->persist();
         } else {
             //CapeAndBay User
-            dd('not yet implemented', $data);
+            CapeAndBayUserAggregate::retrieve($data['team_id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         }
         return User::find($data['id']);
     }

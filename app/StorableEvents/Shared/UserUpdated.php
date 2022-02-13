@@ -1,10 +1,11 @@
 <?php
 
-namespace App\StorableEvents\Clients;
+namespace App\StorableEvents\Shared;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class UserCreated extends ShouldBeStored
+//entityId = ClientId for ClientUsers, TeamId for CB Users
+class UserUpdated extends ShouldBeStored
 {
     public $client, $user, $payload;
 

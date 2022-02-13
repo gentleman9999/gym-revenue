@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Aggregates\Clients\Traits\Actions;
+namespace App\Aggregates\CapeAndBay;
 
 use App\StorableEvents\Shared\UserCreated;
 use App\StorableEvents\Shared\UserDeleted;
 use App\StorableEvents\Shared\UserUpdated;
+use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
-trait ClientUserActions
+class CapeAndBayUserAggregate extends AggregateRoot
 {
 
     public function createUser(string $created_by_user_id, array $payload)

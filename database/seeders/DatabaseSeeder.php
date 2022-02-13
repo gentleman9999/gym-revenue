@@ -49,14 +49,14 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Gateway Provider Details');
         $this->call(GatewayProviderDetailsSeeder::class);
 
+        VarDumper::dump('Adding Bouncer Roles');
+        $this->call(BouncerRolesSeeder::class);
+
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
 
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
-
-        VarDumper::dump('Adding Bouncer Roles');
-        $this->call(BouncerRolesSeeder::class);
 
         VarDumper::dump('Running Security Role Seeder');
         $this->call(SecurityRolesSeeder::class);
