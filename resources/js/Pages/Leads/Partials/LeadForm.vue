@@ -27,12 +27,12 @@
             <div class="form-divider"/>
             <div class="form-control col-span-2">
                 <jet-label for="first_name" value="First Name"/>
-                <input id="" type="text" v-model="form['first_name']" autofocus/>
+                <input id="first_name" type="text" v-model="form['first_name']" autofocus/>
                 <jet-input-error :message="form.errors['first_name']" class="mt-2"/>
             </div>
             <div class="form-control col-span-2">
                                 <jet-label for="middle_name" value="Middle Name"/>
-                                <input id="" type="text"
+                                <input id="middle_name" type="text"
                        v-model="form['middle_name']" autofocus/>
                 <jet-input-error :message="form.errors['middle_name']" class="mt-2"/>
 
