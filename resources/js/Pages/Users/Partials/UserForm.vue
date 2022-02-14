@@ -1,18 +1,29 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="form-control col-span-6">
-                <jet-label for="name" value="Name"/>
+            <div class="form-control col-span-3">
+                <jet-label for="fname" value="First Name"/>
                 <input
-                    id="name"
+                    id="fname"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.name"
+                    v-model="form.fname"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.name" class="mt-2"/>
+                <jet-input-error :message="form.errors.fname" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6">
+            <div class="form-control col-span-3">
+                <jet-label for="name" value="Lastt Name"/>
+                <input
+                    id="lname"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.lname"
+                    autofocus
+                />
+                <jet-input-error :message="form.errors.lname" class="mt-2"/>
+            </div>
+            <div class="form-control col-span-3">
                 <jet-label for="email" value="Email"/>
                 <input
                     id="email"
@@ -23,30 +34,22 @@
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6" v-if="operation==='Create'">
-                <jet-label for="password" value="Password"/>
-                <input
-                    id="password"
-                    type="password"
-                    class="block w-full mt-1"
-                    v-model="form.password"
-                />
-                <jet-input-error :message="form.errors.password" class="mt-2"/>
+
+            <div class="form-control col-span-3">
+                <jet-label for="phone" value="Phone"/>
+                <input id="phone" type="tel" class="block w-full mt-1"  v-model="form.phone"  autofocus/>
+                <jet-input-error :message="form.errors.phone" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6">
-                <jet-label for="role" value="Role"/>
+            <div class="form-control col-span-3" v-if="clientId">
+                <jet-label for="role" value="Security Role"/>
                 <select
                     id="role"
                     class="block w-full mt-1"
-                    v-model="form.role"
+                    v-model="form.security_role"
                 >
-                    <option>Admin</option>
-                    <option>Location Manager</option>
-                    <option>Regional Admin</option>
-                    <option>Sales Rep</option>
-                    <option>Member</option>
+                    <option v-for="{security_role, id} in securityRoles" :value="id">{{ security_role }}</option>
                 </select>
-                <jet-input-error :message="form.errors.role" class="mt-2"/>
+                <jet-input-error :message="form.errors.security_role" class="mt-2"/>
             </div>
         </template>
 
@@ -82,25 +85,36 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ["clientId", "user"],
+    props: ["clientId", "user", 'clientName'],
     emits: ['success'],
     setup(props, {emit}) {
         const page = usePage();
-
         let user = props.user;
+        const securityRoles = page.props.value.securityRoles;
+        let phone = ((user !== undefined)
+            && ('phone_number' in user)
+            && (user['phone_number'])
+            && ('value' in user['phone_number'])
+        ) ? user['phone_number'].value : null;
 
         let operation = 'Update';
         if (user) {
-            const team_id = page.props.value.user.current_team_id;
-            const team_idx = user.teams.findIndex(team=>team.id === team_id);
-            user.role = user.teams[team_idx].pivot.role
+            user.fname = user['first_name'];
+            user.lname = user['last_name'];
+            user.phone = phone;
+            user.security_role = user?.details?.find(detail=>detail.name==='security_role')?.value || null
+            console.log({user});
         } else {
             user = {
-                name: null,
+                fname: '',
+                lname: '',
                 email: null,
                 password: null,
-                role: null,
+                security_role: null,
+                phone:null,
                 client_id: props.clientId
+            }
+            if(props.clientId){
             }
             operation = 'Create';
         }
@@ -112,7 +126,7 @@ export default {
             handleSubmit = () => form.post(route('users.store'));
         }
 
-        return {form, buttonText: operation, operation, handleSubmit};
+        return {form, buttonText: operation, operation, handleSubmit, securityRoles};
     },
 };
 </script>

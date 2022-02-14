@@ -92,6 +92,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
+        Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
+        Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
         Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class . '@lead_trash')->name('data.leads.trash');
         Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class . '@lead_restore')->name('data.leads.restore');
 
@@ -136,3 +138,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::post('/client-services', \App\Http\Controllers\ClientSettingsController::class . '@updateClientServices')->name('settings.client-services.update');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('security-roles')->group(function () {
+    Route::get('/', \App\Http\Controllers\SecurityRolesController::class . '@index')->name('security-roles');
+    Route::get('/create', \App\Http\Controllers\SecurityRolesController::class . '@create')->name('security-roles.create');
+    Route::post('/', \App\Http\Controllers\SecurityRolesController::class . '@store')->name('security-roles.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\SecurityRolesController::class . '@edit')->name('security-roles.edit');
+    Route::put('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@update')->name('security-roles.update');
+    Route::delete('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@trash')->name('security-roles.trash');
+    Route::delete('/{id}/force', \App\Http\Controllers\SecurityRolesController::class . '@delete')->name('security-roles.delete');
+    Route::post('/{id}/restore', \App\Http\Controllers\SecurityRolesController::class . '@restore')->name('security-roles.restore');});

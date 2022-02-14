@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 use Illuminate\Foundation\Http\FormRequest;
+use Silber\Bouncer\Bouncer;
+
 
 class LocationsController extends Controller
 {
@@ -35,16 +38,22 @@ class LocationsController extends Controller
         'opendate' => [],
         'closedate' => [],
         'location_no' => ['required', 'max:50'],
+        'gymrevenue_id' => [],
     ];
 
     //
     public function index(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
-
-        // @todo - insert Bouncer-based ACL here.
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
         $page_count = 10;
+
+        if($user->cannot('locations.read', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
 
         if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
         {
@@ -70,13 +79,27 @@ class LocationsController extends Controller
 
     public function create()
     {
-         return   Inertia::render('Locations/Create', [
+        $user = request()->user();
+        if($user->cannot('locations.create', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        return Inertia::render('Locations/Create', [
 //            'locations' => Location::all(),
         ]);
     }
 
     public function edit($id)
     {
+        $user = request()->user();
+        if($user->cannot('locations.update', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
@@ -129,6 +152,10 @@ class LocationsController extends Controller
 
     public function store(Request $request)
     {
+        $client_id = $request->user()->currentClientId();
+
+        $request->merge(['gymrevenue_id' => GenerateGymRevenueId::run($client_id)]);
+
         $location = Location::create(
             $request->validate($this->rules)
         );
@@ -285,6 +312,13 @@ if(!$location->id){
 
     public function trash($id)
     {
+        $user = request()->user();
+        if($user->cannot('locations.trash', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::route('locations');
+        }
+
         if (!$id) {
             Alert::error("No Location ID provided")->flash();
             return Redirect::route('locations');

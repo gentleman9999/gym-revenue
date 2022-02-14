@@ -3,12 +3,15 @@
 namespace Database\Seeders\Users;
 
 use App\Models\Clients\Client;
+use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use Database\Seeders\Users\UserSeeder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Silber\Bouncer\BouncerFacade as Bouncer;
+use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
 
 class SecondaryClientUsersSeeder extends UserSeeder
@@ -96,8 +99,13 @@ class SecondaryClientUsersSeeder extends UserSeeder
     {
         $client = Client::whereName($user['client'])->first();
 
+        $namesplosion = explode(' ', $user['name']);
+        $first_name = $namesplosion[0];
+        $last_name = $namesplosion[1];
         // Create User
         $new_user = User::create([
+            'first_name' => $first_name,
+            'last_name' => $last_name,
             'name' => $user['name'],
             'email' => $user['email'],
             'password' => bcrypt('Hello123!')
@@ -110,6 +118,19 @@ class SecondaryClientUsersSeeder extends UserSeeder
             'value' => $client->id,
             'active' => 1
         ]);
+
+        //add security role
+        $role = Role::whereName($user['role'])->first();
+        if ($role) {
+            $security_role = SecurityRole::whereClientId($client->id)->whereRoleId($role->id)->first();//get default security role for role if exists
+            if ($security_role) {
+                UserDetails::create([
+                    'user_id' => $new_user->id,
+                    'name' => 'security_role',
+                    'value' => $security_role->id
+                ]);
+            }
+        }
 
         foreach($user['teams'] as $idx => $team_name)
         {

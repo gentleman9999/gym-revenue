@@ -94,7 +94,9 @@ class Client extends Model
                 ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
                 ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
                 ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
-                ->persist();
+                    // @todo - add more onboarding shit here.
+                ;
+                $aggy->persist();
         });
     }
 

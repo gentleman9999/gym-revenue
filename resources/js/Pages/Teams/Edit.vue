@@ -15,6 +15,7 @@
                     :team="team"
                     :available-roles="availableRoles"
                     :user-permissions="permissions"
+                    :users="users"
                     :availableUsers="availableUsers"
                 />
 
@@ -39,7 +40,7 @@ import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm";
 import TeamForm from "./Partials/TeamForm";
 
 export default defineComponent({
-    props: ["team", "availableRoles", "permissions", "availableUsers"],
+    props: ["team", "availableRoles", "permissions", "users", "availableUsers"],
 
     components: {
         AppLayout,

@@ -4,7 +4,7 @@ namespace App\Aggregates\Endusers;
 
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
-use App\StorableEvents\EndUsers\LeadDetailUpdated;
+use App\StorableEvents\Endusers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;

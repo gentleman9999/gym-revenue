@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v>
+        <div v-if="userPermissions.canAddTeamMembers">
             <jet-section-border />
 
             <!-- Add Team Member -->
@@ -362,6 +362,7 @@ export default defineComponent({
         "team",
         "availableRoles", //change the available roles here.
         "userPermissions",
+        "users",
     ],
 
     data() {
@@ -479,7 +480,7 @@ export default defineComponent({
             return this.$inertia.page.props?.availableUsers || [];
         },
         userIds() {
-            return this.team.users?.map((user) => user.id) || [];
+            return this.users?.map((user) => user.id) || [];
         },
         availableUsersToJoinTeam() {
             //now remove team users and account owner from availableUsers;
@@ -489,17 +490,18 @@ export default defineComponent({
                         !this.userIds.includes(user.id) &&
                         user.id !== this.team.owner.id
                 ) || [];
-            return availableUsersToJoinTeam;
+            return availableUsersToJoinTeam || [];
         },
         availableUsersToJoinTeamOptions() {
-            console.log({availableUsers: this.availableUsers, users: this.users,userIDs: this.userIds, availableUsersToJoinTeam: this.availableUsersToJoinTeam});
             let options = [];
-                options = this.availableUsersToJoinTeam?.map(
+            if (this.availableUsersToJoinTeam?.map) {
+                options = this.availableUsersToJoinTeam.map(
                     ({ email, name }) => ({
                         label: `${email} (${name})`,
                         value: email,
                     })
-                ) || [];
+                );
+            }
             return options;
         },
     },

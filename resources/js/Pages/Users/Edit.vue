@@ -2,13 +2,13 @@
     <app-layout title="Edit User">
         <template #header>
             <h2 class="font-semibold text-xl  leading-tight">
-                Edit User
+                Edit User {{ $page.props.user.name }}
             </h2>
         </template>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <user-form :client-id="$page.props.user.current_client_id" :user="selectedUser" />
+                <user-form :client-id="$page.props.user['current_client_id']" :user="selectedUser" />
             </div>
         </div>
     </app-layout>
