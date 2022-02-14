@@ -30,6 +30,11 @@ class EndUserActivityAggregate extends AggregateRoot
     protected int $interaction_text_messaged_count = 0;
     public array $trial_dates = [];
 
+    public function getInteractionCount(): int
+    {
+        return $this->interaction_count;
+    }
+
     public function applyLeadWasCalledByRep(LeadWasCalledByRep $event)
     {
         $this->interaction_count += ($event->data['interaction_count'] ?? 1);

@@ -9,6 +9,8 @@
                         <h1 class="text-center text-2xl">
                             {{ firstName }} {{ this.$page.props.middle_name.value }} {{ lastName }}
                         </h1>
+                        <div class="badge badge-info mt-4"> Interaction Count: {{interactionCount}}</div>
+
                         <div class="badge badge-success mt-4">Agreement #: {{agreementNum}}</div>
                         <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
                         <div class="badge badge-error mt-4" v-if="trialMemberships?.length">Trial Expires: {{new Date(trialMemberships[0].expiry_date).toLocaleString()}}</div>
@@ -73,7 +75,7 @@ export default defineComponent({
         FontAwesomeIcon,
         SweetModal
     },
-    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes'],
+    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes', 'interactionCount'],
     data() {
         return {
             activeContactMethod: '',
