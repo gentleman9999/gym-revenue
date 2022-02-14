@@ -13,7 +13,7 @@
                 <jet-input-error :message="form.errors.fname" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="name" value="Lastt Name"/>
+                <jet-label for="name" value="Last Name"/>
                 <input
                     id="lname"
                     type="text"
