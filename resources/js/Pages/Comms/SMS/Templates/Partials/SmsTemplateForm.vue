@@ -17,13 +17,16 @@
                 <sms-form-control v-model="form.markup" id="markup" label="Template"/>
                 <jet-input-error :message="form.errors.markup" class="mt-2"/>
             </div>
-            <div class="form-control col-span-6 flex flex-row" v-if="canActivate">
+            <div class="form-control col-span-4 flex flex-row" v-if="canActivate">
                 <input type="checkbox" v-model="form.active" autofocus id="active" class="mt-2" :value="true"/>
                 <label for="active" class="label ml-4">Activate (allows assigning to Campaigns)</label>
                 <jet-input-error :message="form.errors.active" class="mt-2" />
             </div>
 <!--                <input id="client_id" type="hidden" v-model="form.client_id"/>-->
 <!--                <jet-input-error :message="form.errors.client_id" class="mt-2"/>-->
+            <div class="form-control col-span-2 flex flex-row">
+                <Button type="button" @click="route('sendSMS')"> send test to Self  </Button>
+            </div>
         </template>
 
         <template #actions>
@@ -31,6 +34,7 @@
             <Button type="button" @click="$inertia.visit(route('comms.sms-templates'))" :class="{ 'opacity-25': form.processing }" error outline :disabled="form.processing">
                 Cancel
             </Button>
+
             <div class="flex-grow" />
             <Button class="btn-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"  :loading="form.processing">
                 {{ buttonText }}
