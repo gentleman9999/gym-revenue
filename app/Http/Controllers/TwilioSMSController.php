@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Comm\MassCommunicationsController;
+use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
@@ -51,4 +52,20 @@ class TwilioSMSController extends Controller
               dd("Error: ". $e->getMessage());
               }
             }
+
+
+    public function SendEmail(Request $request)
+    {
+        $email_id =$request->data['id'];
+        $template =EmailTemplates::find($email_id);
+
+
+
+dd($email_id,$template,$request);
+
+        Alert::success('Your Email was sent to your Email on file')->flash();
+    }
+
+
+
           }

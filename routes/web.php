@@ -61,6 +61,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
     Route::delete('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_trash')->name('comms.email-campaigns.trash');
     Route::post('/email-campaigns/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_restore')->name('email.sms-campaigns.restore');
 
+    Route::get('sendEMAIL', [\App\Http\Controllers\TwilioSMSController::class, 'SendEmail'])->name('comms.sendEMAIL');
+
+
     Route::get('/sms-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_index')->name('comms.sms-campaigns');
     Route::get('/sms-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_create')->name('comms.sms-campaigns.create');
     Route::get('/sms-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_edit')->name('comms.sms-campaigns.edit');
