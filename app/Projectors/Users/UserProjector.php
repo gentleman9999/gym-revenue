@@ -33,7 +33,7 @@ class UserProjector extends Projector
             $user = User::create($user_table_data);
 
             $phone = $data['phone'] ?? null;
-            if($phone){
+            if ($phone) {
                 UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $phone]);
             }
 
@@ -68,7 +68,7 @@ class UserProjector extends Projector
             } else if (array_key_exists('security_role', $data) && $data['security_role']) {
                 $security_role = SecurityRole::with('role')->findOrFail($data['security_role']);
                 $role = $security_role->role;
-            }else if($data['team_id'] === 1 || $data['team_id'] === 10) {
+            } else if ($data['team_id'] === 1 || $data['team_id'] === 10) {
                 //set role to admin for capeandbay
                 $role = Role::whereName('Admin')->firstOrFail();
             }
@@ -100,9 +100,9 @@ class UserProjector extends Projector
                     $user, ['role' => $role->name]
                 );
 
-                if($client_id){
+                if ($client_id) {
                     //assign security role abilities for client uers only (cnb security roles not yet implemented)
-                    $security_role->abilities()->each(function($ability) use ($user, $team){
+                    $security_role->abilities()->each(function ($ability) use ($user, $team) {
                         Bouncer::allow($user)->to($ability->name, $team);
                     });
                 }
@@ -117,10 +117,12 @@ class UserProjector extends Projector
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data) {
             $user = User::with(['teams', 'associated_client', 'security_role'])->findOrFail($data['id']);
+            $data['name'] = "{$data['first_name']} {$data['last_name']}";
+
             $user->updateOrFail($data);
 
             $phone = $data['phone'] ?? null;
-            if($phone){
+            if ($phone) {
                 UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'phone'])->updateOrFail(['value' => $phone]);
             }
 
@@ -137,7 +139,7 @@ class UserProjector extends Projector
                 $role = $security_role->role->name;
 
                 //let bouncer know their role has been changed
-                if($old_role !== $role){
+                if ($old_role !== $role) {
                     Bouncer::retract($old_role)->from($user);
                     Bouncer::assign($role)->to($user);
                 }
@@ -155,11 +157,11 @@ class UserProjector extends Projector
                     }
 
                     //remove all old abilties that were assigned
-                    $old_security_role->abilities()->each(function($ability) use ($user, $team){
+                    $old_security_role->abilities()->each(function ($ability) use ($user, $team) {
                         Bouncer::disallow($user)->to($ability->name, $team);
                     });
                     //now add all new abilities
-                    $security_role->abilities()->each(function($ability) use ($user, $team){
+                    $security_role->abilities()->each(function ($ability) use ($user, $team) {
                         Bouncer::allow($user)->to($ability->name, $team);
                     });
                 }
