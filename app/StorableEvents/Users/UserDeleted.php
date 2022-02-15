@@ -4,7 +4,6 @@ namespace App\StorableEvents\Users;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-//entityId = ClientId for ClientUsers, TeamId for CB Users
 class UserDeleted extends ShouldBeStored
 {
     public $id, $user, $payload;

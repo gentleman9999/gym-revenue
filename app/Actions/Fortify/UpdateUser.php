@@ -2,28 +2,15 @@
 
 namespace App\Actions\Fortify;
 
-use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
-use App\Helpers\Uuid;
-use App\Models\Clients\Security\SecurityRole;
+use App\Aggregates\Users\UserAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
-use Laravel\Jetstream\Events\TeamMemberAdded;
+use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\BouncerFacade as Bouncer;
-use App\Actions\Jetstream\AddTeamMember;
-use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
-use App\Models\Team;
 use App\Models\User;
-use App\Models\UserDetails;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
-use Silber\Bouncer\Database\Role;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateUser implements UpdatesUserProfileInformation
@@ -38,7 +25,9 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'id' => ['required', 'integer', 'exists:users,id'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.request()->id],
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required','integer', 'exists:teams,id'],
@@ -58,19 +47,23 @@ class UpdateUser implements UpdatesUserProfileInformation
             $data['password'] = bcrypt($data['password']);
         }
 
+        UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         if ($client_id) {
-            ClientAggregate::retrieve($client_id)->updateUser($current_user->id || "Auto Generated", $data)->persist();
-        } else {
-            //CapeAndBay User
-            CapeAndBayUserAggregate::retrieve($data['team_id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
+            ClientAggregate::retrieve($client_id)->updateUser($current_user->id, $data)->persist();
         }
         return User::find($data['id']);
     }
 
-    public function asController(Request $request)
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+        return $current_user->can('users.update', $current_user->currentTeam()->first());
+    }
+
+    public function asController(ActionRequest $request)
     {
         $user = $this->handle(
-            $request->all(),
+            $request->validated(),
             $request->user(),
         );
 

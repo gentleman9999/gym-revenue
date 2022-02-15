@@ -6,7 +6,6 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserCreated extends ShouldBeStored
 {
-    //entityId = ClientId for ClientUsers, TeamId for CB Users
     public $id, $user, $payload;
 
     public function __construct(string $id, string $user, array $payload)

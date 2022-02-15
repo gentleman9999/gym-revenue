@@ -2,9 +2,11 @@
 
 namespace App\Actions\Fortify;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 use App\Models\Clients\Client;
 use App\Models\Team;
@@ -64,11 +66,11 @@ class CreateUser implements CreatesNewUsers
 
     public function handle($data, $current_user = null)
     {
-//        if ($current_user) {
-//            $client_id = $current_user->currentClientId();
-//        } else {
-//            $client_id = $data['client_id'];
-//        }
+        if ($current_user) {
+            $client_id = $current_user->currentClientId();
+        } else {
+            $client_id = $data['client_id'];
+        }
 
         if (array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
@@ -79,21 +81,30 @@ class CreateUser implements CreatesNewUsers
         $data['id'] = $id;
 
         UserAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
+        if ($client_id) {
+            ClientAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
+        }
         //we should use App/Helpers/Uuid to generate an id, but we can use email for now since its unique
         $created_user = User::findOrFail($id);
 
         $should_send_welcome_email = $data['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
-        if($should_send_welcome_email){
+        if ($should_send_welcome_email) {
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
 
         return $created_user;
     }
 
-    public function asController(Request $request)
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+        return $current_user->can('users.create', $current_user->currentTeam()->first());
+    }
+
+    public function asController(ActionRequest $request)
     {
         $user = $this->handle(
-            $request->all(),
+            $request->validated(),
             $request->user(),
         );
 
@@ -112,7 +123,7 @@ class CreateUser implements CreatesNewUsers
         $role = $this->getRole($first_name, $client);
 
         $team_id = 1;//capeandbay team
-        if($client){
+        if ($client) {
             // Get the client's default-team name in client_details
             $client_model = Client::whereId($client)->with('default_team_name')->first();
             $default_team_name = $client_model->default_team_name->value;
