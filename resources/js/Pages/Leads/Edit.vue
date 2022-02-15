@@ -19,7 +19,8 @@
                     :lead_sources="lead_sources"
                     :lead_statuses="lead_statuses"
                     :lead_owners="lead_owners"
-                    :available_services="available_services"/>
+                    :available_services="available_services"
+                    :interaction-count="interactionCount"/>
             </div>
         </div>
     </app-layout>
@@ -54,7 +55,7 @@ export default defineComponent({
         'lead', 'locations', 'lead_types',
         'lead_sources', 'available_services',
         'trialDates', 'lead_owners',
-        'lead_statuses'
+        'lead_statuses', 'interactionCount',
     ]
 })
 </script>

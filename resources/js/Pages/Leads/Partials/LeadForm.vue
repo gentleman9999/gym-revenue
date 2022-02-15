@@ -131,6 +131,17 @@
             </div>
 
             <div class="form-divider"/>
+            <div class="col-span-3">
+                Times Emailed: <span class="badge bg-success">{{interactionCount.emailedCount}}</span>
+            </div>
+            <div class="col-span-3">
+                Times Called: <span class="badge bg-error">{{interactionCount.calledCount}}</span>
+            </div>
+            <div class="col-span-3">
+                Times Text Messaged: <span class="badge bg-info">{{interactionCount.smsCount}}</span>
+            </div>
+
+            <div class="form-divider"/>
             <div class="col-span-6">
                 <label v-if="'last_updated' in form">{{ form['last_updated'] }}</label>
             </div>
@@ -184,7 +195,7 @@ export default {
         'userId', 'clientId', 'lead',
         'locations', 'lead_types',
         'lead_sources', 'lead_owners',
-        'lead_statuses'
+        'lead_statuses', 'interactionCount',
     ],
     setup(props, context) {
         let lead = props.lead;
@@ -207,7 +218,7 @@ export default {
                 dob: '',
                 opportunity:'',
                 lead_owner: props.userId,
-                lead_status: ''
+                lead_status: '',
             }
             operation = 'Create';
         } else {

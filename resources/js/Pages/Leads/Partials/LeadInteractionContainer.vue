@@ -9,8 +9,6 @@
                         <h1 class="text-center text-2xl">
                             {{ firstName }} {{ this.$page.props.middle_name.value }} {{ lastName }}
                         </h1>
-                        <div class="badge badge-info mt-4"> Interaction Count: {{interactionCount}}</div>
-
                         <div class="badge badge-success mt-4">Agreement #: {{agreementNum}}</div>
                         <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
                         <div class="badge badge-error mt-4" v-if="trialMemberships?.length">Trial Expires: {{new Date(trialMemberships[0].expiry_date).toLocaleString()}}</div>
@@ -24,13 +22,24 @@
                     <div class="flex flex-row mt-8 self-center" v-if="claimedByUser">
                         <div class="mr-4">
                             <Button type="button" success @click="activeContactMethod = 'email'">Email
+                                <span class="bg-black p-1 rounded text-green-600 text-xs ml-2">
+                                    {{interactionCount.emailedCount}}
+                                </span>
                             </Button>
                         </div>
                         <div class="mr-4">
-                            <Button type="button" error @click="activeContactMethod = 'phone'">Call</Button>
+                            <Button type="button" error @click="activeContactMethod = 'phone'">Call
+                                <span class="bg-black p-1 rounded text-red-600 text-xs ml-2">
+                                    {{interactionCount.calledCount}}
+                                </span>
+                            </Button>
                         </div>
                         <div class="mr-4">
-                            <Button type="button" info @click="activeContactMethod = 'sms'">SMS</Button>
+                            <Button type="button" info @click="activeContactMethod = 'sms'">SMS
+                                <span class="bg-black p-1 rounded text-blue-600 text-xs ml-2">
+                                    {{interactionCount.smsCount}}
+                                </span>
+                            </Button>
                         </div>
                     </div>
                 </div>

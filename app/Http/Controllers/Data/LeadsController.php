@@ -383,6 +383,7 @@ class LeadsController extends Controller
             'lead_sources' => $lead_sources,
             'lead_statuses' => $lead_statuses,
             'trialDates' => $lead_aggy->trial_dates,
+            'interactionCount' => $lead_aggy->getInteractionCount(),
             'lead_owners' => $available_lead_owners
         ]);
     }
@@ -400,7 +401,6 @@ class LeadsController extends Controller
         foreach($middle_names as $middle_name){
             //     dd($middle_name);
         }
-
 
         /*
 if(!$middle_name){
