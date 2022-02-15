@@ -116,7 +116,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
         CreateUser::run([
             'client_id' => $client->id,
             'first_name' => $user['first_name'],
-            'last_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
             'email' => $user['email'],
             'password' => 'Hello123!',
             'team_ids' => $team_ids,
