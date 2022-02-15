@@ -130,6 +130,17 @@
                 <jet-input-error :message="form.errors['lead_statuses']" class="mt-2"/>
             </div>
 
+            <div v-if="typeof interactionCount !== 'undefined'" class="form-divider"/>
+            <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
+                Times Emailed: <span class="badge badge-success badge-outline">{{interactionCount.emailedCount}}</span>
+            </div>
+            <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
+                Times Called: <span class="badge badge-error badge-outline">{{interactionCount.calledCount}}</span>
+            </div>
+            <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
+                Times Text Messaged: <span class="badge badge-info badge-outline">{{interactionCount.smsCount}}</span>
+            </div>
+
             <div class="form-divider"/>
             <div class="col-span-6">
                 <label v-if="'last_updated' in form">{{ form['last_updated'] }}</label>
@@ -184,7 +195,7 @@ export default {
         'userId', 'clientId', 'lead',
         'locations', 'lead_types',
         'lead_sources', 'lead_owners',
-        'lead_statuses'
+        'lead_statuses', 'interactionCount',
     ],
     setup(props, context) {
         let lead = props.lead;
@@ -207,7 +218,7 @@ export default {
                 dob: '',
                 opportunity:'',
                 lead_owner: props.userId,
-                lead_status: ''
+                lead_status: '',
             }
             operation = 'Create';
         } else {
@@ -224,7 +235,6 @@ export default {
 
             lead['lead_owner'] = ('lead_owner' in lead  && (lead.lead_owner !== null)) ? lead.lead_owner.value : '';
             lead['lead_status'] = ('lead_status' in lead  && (lead.lead_status !== null)) ? lead.lead_status.value : '';
-
         }
 
         const form = useForm(lead)
