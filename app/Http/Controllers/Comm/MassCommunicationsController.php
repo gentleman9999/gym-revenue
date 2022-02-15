@@ -840,13 +840,14 @@ class MassCommunicationsController extends Controller
     }
 
 
-    public function st_create()
+    public function st_create( Request $request)
     {
         return Inertia::render('Comms/SMS/Templates/CreateSmsTemplate', [
+            'phone' => $request->user()->phone->value,
         ]);
     }
 
-    public function st_edit($id)
+    public function st_edit($id, Request $request)
     {
 
         if (!$id) {
@@ -858,7 +859,10 @@ class MassCommunicationsController extends Controller
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/SMS/Templates/EditSmsTemplate', [
-            'template' => $template
+            'template' => $template,
+            'phone' => $request->user()->phone->value,
+          //  'formis' =>$form.markup,
+
         ]);
     }
 

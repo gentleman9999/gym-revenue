@@ -1,51 +1,54 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Comm\MassCommunicationsController;
+use App\Models\Comms\SmsTemplates;
+use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Exception;
+use Prologue\Alerts\Facades\Alert;
 use Twilio\Rest\Client;
-
+use App\Models\User;
 
 class TwilioSMSController extends Controller
 {
 
-      public function index()
+      public function index(Request $request)
       {
-           $receiverNumber = "9543910398";
-          //shivam
-          // $receiverNumber = "7275049781";
-          //blair
-        //  $receiverNumber = "4239942372";
 
-$message = "This is testing from localhost";
+//        dd($request,$request->data['id']);
+          $txt_id =$request->data['id'];
+          $template = SmsTemplates::find($txt_id);
+          $template_message =$template->markup;
+//        dd($template,$template_message);
+          if (isset($request->user()->phone->value)) {
+              $receiverNumber = $request->user()->phone->value;
+             }else{
+              Alert::error('your phone is not on file')->flash();
+              return redirect()->back();
+                   }
+          $message = $template_message;
+//$message = "This is testing from localhost";
+          try {
+             $account_sid = "AC6bad234db52cb4f7a8c466c92a8e8a50";
+             $auth_token = "1531e87775390625d404a50bc0c15052";
+             $twilio_number = "+19562753856";
 
-try {
+         //  $account_sid = getenv("TWILIO_SID");
+         //  $auth_token = getenv("TWILIO_TOKEN");
+        //  $twilio_number = getenv("TWILIO_NO");
 
-$account_sid = "AC6bad234db52cb4f7a8c466c92a8e8a50";
-$auth_token = "1531e87775390625d404a50bc0c15052";
-$twilio_number = "+19562753856";
+        $client = new Client($account_sid, $auth_token);
+        $client->messages->create($receiverNumber, [
+       'from' => $twilio_number,
+       'body' => $message]);
 
-//dd(\);
+        // dd($twilio_number,$message,$receiverNumber);
 
-
-  //  $account_sid = getenv("TWILIO_SID");
-  //  $auth_token = getenv("TWILIO_TOKEN");
-  //  $twilio_number = getenv("TWILIO_NO");
-
-
-
-$client = new Client($account_sid, $auth_token);
-$client->messages->create($receiverNumber, [
-'from' => $twilio_number,
-'body' => $message]);
-
-
-
-dd('SMS Sent Successfully.');
-
-} catch (Exception $e) {
-dd("Error: ". $e->getMessage());
-}
-}
-
-}
+    Alert::success('Your Text was sent to your phone on file')->flash();
+    return redirect()->back();
+    } catch (Exception $e) {
+              dd("Error: ". $e->getMessage());
+              }
+            }
+          }

@@ -24,9 +24,13 @@
             </div>
 <!--                <input id="client_id" type="hidden" v-model="form.client_id"/>-->
 <!--                <jet-input-error :message="form.errors.client_id" class="mt-2"/>-->
+  <!--
             <div class="form-control col-span-2 flex flex-row">
-                <Button type="button" @click="route('sendSMS')"> send test to Self  </Button>
+                <Button type="button" @click="$inertia.visit(route('comms.sendSMS'))"> send test to Self @{{$page.props.phone}} </Button>
+
+
             </div>
+      -->
         </template>
 
         <template #actions>
@@ -67,7 +71,8 @@ export default {
             template = {
                 markup: null,
                 name: null,
-                active: false
+                active: false,
+                smstext:null,
                 // client_id: props.clientId
             }
             operation = 'Create';
@@ -80,8 +85,9 @@ export default {
             handleSubmit = () => form.post(route('comms.sms-templates.store'));
         }
 
+let sendtexttest = () => form.put(route('comms.sendSMS', template));
 
-        return {form, buttonText: operation, handleSubmit}
+        return {form, buttonText: operation, handleSubmit,sendtexttest}
     },
 }
 </script>

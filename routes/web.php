@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-//use App\Http\Controllers\TwilioSMSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,12 +77,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
     Route::delete('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_trash')->name('comms.sms-templates.trash');
     Route::post('/sms-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_restore')->name('comms.sms-templates.restore');
 
-    Route::get('/sendSMS', \App\Http\Controllers\TwilioSMSController::class, 'index')->name('sendSMS');
+    Route::get('sendSMS', [\App\Http\Controllers\TwilioSMSController::class, 'index'])->name('comms.sendSMS');
 
 });
-
-
-
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function () {
     Route::prefix('leads')->group(function () {
