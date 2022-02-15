@@ -130,15 +130,15 @@
                 <jet-input-error :message="form.errors['lead_statuses']" class="mt-2"/>
             </div>
 
-            <div class="form-divider"/>
-            <div class="col-span-3">
-                Times Emailed: <span class="badge bg-success">{{interactionCount.emailedCount}}</span>
+            <div v-if="typeof interactionCount !== 'undefined'" class="form-divider"/>
+            <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
+                Times Emailed: <span class="badge badge-success badge-outline">{{interactionCount.emailedCount}}</span>
             </div>
-            <div class="col-span-3">
-                Times Called: <span class="badge bg-error">{{interactionCount.calledCount}}</span>
+            <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
+                Times Called: <span class="badge badge-error badge-outline">{{interactionCount.calledCount}}</span>
             </div>
-            <div class="col-span-3">
-                Times Text Messaged: <span class="badge bg-info">{{interactionCount.smsCount}}</span>
+            <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
+                Times Text Messaged: <span class="badge badge-info badge-outline">{{interactionCount.smsCount}}</span>
             </div>
 
             <div class="form-divider"/>
@@ -235,7 +235,6 @@ export default {
 
             lead['lead_owner'] = ('lead_owner' in lead  && (lead.lead_owner !== null)) ? lead.lead_owner.value : '';
             lead['lead_status'] = ('lead_status' in lead  && (lead.lead_status !== null)) ? lead.lead_status.value : '';
-
         }
 
         const form = useForm(lead)

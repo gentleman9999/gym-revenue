@@ -383,8 +383,8 @@ class LeadsController extends Controller
             'lead_sources' => $lead_sources,
             'lead_statuses' => $lead_statuses,
             'trialDates' => $lead_aggy->trial_dates,
-            'interactionCount' => $lead_aggy->getInteractionCount(),
-            'lead_owners' => $available_lead_owners
+            'lead_owners' => $available_lead_owners,
+            'interactionCount' => $lead_aggy->getInteractionCount()
         ]);
     }
 
