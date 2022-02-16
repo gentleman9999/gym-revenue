@@ -83,26 +83,12 @@ export default defineComponent({
                 },
             ];
         });
-        const sentemail = ref(null);
-        const sendemailtest = (id) => {
-            sentemail.value = id;
-            Inertia.visit(route('comms.sendEMAIL',
-                {
-                    data: {
-                        id: id
-                    },
-                }
-            ));
-        };
-
-
 
         const actions = computed(() => {
             return {
                 selfSend: {
                     label: "Send You a Test Email",
-                    handler: ({data}) =>  sendemailtest(data.id),
-                        //comingSoon(),
+                    handler: () => comingSoon(),
                 },
                 trash:{
                     handler: ({data}) => handleClickTrash(data.id)
@@ -134,7 +120,6 @@ export default defineComponent({
             handleConfirmTrash,
             fields,
             actions,
-            sendemailtest,
         };
     },
 });

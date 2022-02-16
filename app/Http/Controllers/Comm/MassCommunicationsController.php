@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 use function Aws\filter;
-//use Twilio\Rest\Client;
 
 class MassCommunicationsController extends Controller
 {
@@ -825,15 +824,13 @@ class MassCommunicationsController extends Controller
         ]);
     }
 
-
-    public function st_create( Request $request)
+    public function st_create()
     {
         return Inertia::render('Comms/SMS/Templates/CreateSmsTemplate', [
-            'phone' => $request->user()->phone->value,
         ]);
     }
 
-    public function st_edit($id, Request $request)
+    public function st_edit($id)
     {
 
         if (!$id) {
@@ -845,10 +842,7 @@ class MassCommunicationsController extends Controller
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/SMS/Templates/EditSmsTemplate', [
-            'template' => $template,
-            'phone' => $request->user()->phone->value,
-          //  'formis' =>$form.markup,
-
+            'template' => $template
         ]);
     }
 
