@@ -7,9 +7,11 @@ use App\Models\Comms\SmsTemplates;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 use Prologue\Alerts\Facades\Alert;
 use Twilio\Rest\Client;
 use App\Models\User;
+//use App\Mail\Email;
 
 class TwilioSMSController extends Controller
 {
@@ -52,20 +54,5 @@ class TwilioSMSController extends Controller
               dd("Error: ". $e->getMessage());
               }
             }
-
-
-    public function SendEmail(Request $request)
-    {
-        $email_id =$request->data['id'];
-        $template =EmailTemplates::find($email_id);
-
-
-
-dd($email_id,$template,$request);
-
-        Alert::success('Your Email was sent to your Email on file')->flash();
-    }
-
-
 
           }
