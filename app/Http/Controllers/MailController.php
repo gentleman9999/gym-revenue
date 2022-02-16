@@ -14,15 +14,6 @@ class MailController extends Controller {
 
     use  SerializesModels;
 
-    protected $template, $user, $message;
-    public function __construct(Request $request)
-    {
- //       $getuser=User::find($request->user()->id);
- //       $sendto = $getuser->email;
- //       $this->user.email;
-
-    }
-
     public function html_email(Request $request) {
 
         $email_id =$request->data['id'];
