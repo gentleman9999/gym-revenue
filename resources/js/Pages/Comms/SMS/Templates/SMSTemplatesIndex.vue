@@ -66,7 +66,19 @@ export default defineComponent({
             Inertia.delete(route("comms.sms-templates.trash", confirmTrash.value));
             confirmTrash.value = null;
         };
+        const senttext = ref(null);
+        const sendtexttest = (id) => {
+            senttext.value = id;
+            Inertia.visit(route('comms.sendSMS',
+                {
+                    data: {
+                        id: id
+                    },
 
+                }
+            ));
+
+        };
         const fields = computed(() => {
             return [
                 "name",
@@ -96,7 +108,9 @@ export default defineComponent({
             return {
                 selfSend: {
                     label: "Send You a Test Message",
-                    handler: () => comingSoon(),
+                    handler: ({data}) => sendtexttest(data.id)
+
+                        //comingSoon(),
                 },
                 trash:{
                     handler: ({data}) => handleClickTrash(data.id)
@@ -113,7 +127,8 @@ export default defineComponent({
             }).show();
         };
 
-        return { handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions };
+
+        return { handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions, sendtexttest };
     },
 });
 </script>
