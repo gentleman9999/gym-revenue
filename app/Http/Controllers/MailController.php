@@ -7,29 +7,23 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-//use App\Http\Controllers\Controller;
-//use App\Mail\Email;
-//use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Prologue\Alerts\Facades\Alert;
 
 class MailController extends Controller {
 
     use  SerializesModels;
 
     protected $template, $user, $message;
-    public function __construct()
+    public function __construct(Request $request)
     {
-
+ //       $getuser=User::find($request->user()->id);
+ //       $sendto = $getuser->email;
+ //       $this->user.email;
 
     }
 
-
-
     public function html_email(Request $request) {
-
-
-        $getuser=User::find($request->user()->id);
-        $sendto = $getuser->email;
 
         $email_id =$request->data['id'];
         $template =EmailTemplates::find($email_id);
@@ -37,39 +31,17 @@ class MailController extends Controller {
         $sendtestto =$request->user()->email;
         $html = $template->markup;
         $subject =$template->subject;
-        $sendername=$request->user()->name;
-  //      dd($sendto,$email_id,$html,$subject,$sendtestto,$sendername,$request->user());
 
-
- //       return $this->from($this->user->email)
- //           ->subject($this->data['subject'])
- //           ->markdown('emails.endusers.email-from-rep', ['data' => $this->data, 'user'=> $this->user->toArray()]);
-
-
-
-        Mail::html($html,  function ($message) {
+        Mail::html($html,  function ($message) use ($subject, $sendtestto) {
            $message
-        //  ->cc('shivam@capeandbay.com')
-               ->to('steve@capeandbay.com')
-        //         ->subject('close .. dam it ');
-          ->subject('close .. dam it ');
+          //->cc('shivam@capeandbay.com')
+          //->to('steve@capeandbay.com')
+            ->to($sendtestto)
+            ->subject($subject);
                 });
-  /*
-        Mail::send([
-            'html' => $html,
-            'text' => 'Plain text here',
-            'raw'  => 'raw text'
-        ], [
-            'user' => ''
-        ], function ($message) {
-            $message
-            ->to('steve@capeandbay.com') //sendto')
-            ->subject('{{$subject}}');
-        });
 
-*/
-
-        echo "HTML Email Sent. Check your inbox.";
+        Alert::success('This Email was sent to you')->flash();
+        return redirect()->back();
     }
 
 
