@@ -11,19 +11,16 @@ use Illuminate\Support\Facades\Mail;
 use Prologue\Alerts\Facades\Alert;
 use Twilio\Rest\Client;
 use App\Models\User;
-//use App\Mail\Email;
+
 
 class TwilioSMSController extends Controller
 {
 
       public function index(Request $request)
       {
-
-//        dd($request,$request->data['id']);
           $txt_id =$request->data['id'];
           $template = SmsTemplates::find($txt_id);
           $template_message =$template->markup;
-//        dd($template,$template_message);
           if (isset($request->user()->phone->value)) {
               $receiverNumber = $request->user()->phone->value;
              }else{
@@ -39,20 +36,16 @@ class TwilioSMSController extends Controller
 
          //  $account_sid = getenv("TWILIO_SID");
          //  $auth_token = getenv("TWILIO_TOKEN");
-        //  $twilio_number = getenv("TWILIO_NO");
+         //  $twilio_number = getenv("TWILIO_NO");
 
         $client = new Client($account_sid, $auth_token);
         $client->messages->create($receiverNumber, [
        'from' => $twilio_number,
        'body' => $message]);
-
-        // dd($twilio_number,$message,$receiverNumber);
-
     Alert::success('Your Text was sent to your phone on file')->flash();
     return redirect()->back();
     } catch (Exception $e) {
               dd("Error: ". $e->getMessage());
               }
             }
-
           }
