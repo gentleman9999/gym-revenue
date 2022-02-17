@@ -357,14 +357,23 @@ export default defineComponent({
         JetSectionBorder,
         Multiselect,
     },
-
-    props: [
-        "team",
-        "availableRoles", //change the available roles here.
-        "userPermissions",
-        "users",
-    ],
-
+    props:{
+        team:{
+            type: Object
+        },
+        availableRoles: {
+            type: Array,
+            default: []
+        },
+        userPermissions: {
+            type: Array,
+            default: []
+        },
+        users:{
+            type: Array,
+            default: []
+        }
+    },
     data() {
         return {
             addTeamMemberForm: this.$inertia.form({
@@ -472,7 +481,7 @@ export default defineComponent({
         },
 
         displayableRole(role) {
-            return this.availableRoles.find((r) => r.key === role).name;
+            return this.availableRoles.find((r) => r.key === role)?.name;
         },
     },
     computed: {
