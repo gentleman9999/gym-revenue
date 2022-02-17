@@ -75,12 +75,19 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-        $user = request()->user();
-        $current_team = $user->currentTeam()->first();
-        if($user->cannot('users.update', $current_team))
+        $me = request()->user();
+        $current_team = $me->currentTeam()->first();
+        if($me->cannot('users.update', $current_team))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
+        }
+
+        $user = $me->with('details', 'phone_number')->findOrFail($id);
+        if($me->id == $user->id)
+        {
+            Alert::info("Oops! You can't edit yourself from user management.")->flash();
+            return Redirect::route('profile.show');
         }
 
         $user = $user->with('details', 'phone_number')->findOrFail($id);
