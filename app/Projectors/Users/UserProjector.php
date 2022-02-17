@@ -37,6 +37,23 @@ class UserProjector extends Projector
                 UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $phone]);
             }
 
+            $details = [
+                'altEmail' => $data['altEmail'] ?? null,
+                'address1' => $data['address1'] ?? null,
+                'address2' => $data['address2'] ?? null,
+                'city' => $data['city'] ?? null,
+                'state' => $data['state'] ?? null,
+                'zip' => $data['zip'] ?? null,
+                'jobTitle' => $data['jobTitle'] ?? null,
+            ];
+
+            // Go through the details and create them in the user_details via the
+            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
+            foreach($details as $detail => $value)
+            {
+                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
+            }
+
             $client_id = $data['client_id'] ?? null;
 
             if ($client_id) {
@@ -124,6 +141,23 @@ class UserProjector extends Projector
             $phone = $data['phone'] ?? null;
             if ($phone) {
                 UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'phone'])->updateOrFail(['value' => $phone]);
+            }
+
+            $details = [
+                'altEmail' => $data['altEmail'] ?? null,
+                'address1' => $data['address1'] ?? null,
+                'address2' => $data['address2'] ?? null,
+                'city' => $data['city'] ?? null,
+                'state' => $data['state'] ?? null,
+                'zip' => $data['zip'] ?? null,
+                'jobTitle' => $data['jobTitle'] ?? null,
+            ];
+
+            // Go through the details and create them in the user_details via the
+            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
+            foreach($details as $detail => $value)
+            {
+                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
             }
 
             $client_id = $user->associated_client ? $user->associated_client->value : null;

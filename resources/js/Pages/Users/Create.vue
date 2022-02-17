@@ -1,9 +1,16 @@
 <template>
     <app-layout title="Create User">
         <template #header>
-            <h2 class="font-semibold text-xl  leading-tight">
-                Create A New {{ $page.props.clientName }} User
-            </h2>
+            <div class="flex flex-row ml-4">
+                <Button type="button" @click="$inertia.visit(route('users'))"  info outline>
+                     Back
+                </Button>
+
+                <h2 class="font-semibold text-xl  leading-tight ml-4">
+                    Create A New {{ $page.props.clientName }} User
+                </h2>
+            </div>
+
         </template>
 
         <div>

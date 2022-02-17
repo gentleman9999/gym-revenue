@@ -50,23 +50,32 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
+        // Get the logged-in user making the request
         $user = request()->user();
+        // Get the user's currently accessed team for scoping
         $current_team = $user->currentTeam()->first();
+        // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         $client_detail = $current_team->client_details()->first();
+        // CnB Client-based data is not present in the DB and thus the details could be empty.
         $client = (!is_null($client_detail)) ? $client_detail->client()->first() : null;
+        // IF we got details, we got the client name, otherwise its Cape & Bay
         $client_name = (!is_null($client_detail)) ? $client->name : 'Cape & Bay';
+
+        // The logged in user needs the ability to create users scoped to the current team to continue
         if($user->cannot('users.create', $current_team))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
 
+        // Query for the security roles as that's part of the form
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
         if(!request()->user()->isAccountOwner()){
             $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
 
+        // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
             'securityRoles' => $security_roles,
             'clientName' => $client_name
@@ -83,7 +92,11 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = $user->with('details', 'phone_number')->findOrFail($id);
+        $user = $user->with([
+            'details', 'phone_number', 'altEmail', 'address1', 'address2',
+            'city', 'state', 'zip', 'jobTitle'
+        ])->findOrFail($id);
+
 
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
         if(!$user->isAccountOwner()) {

@@ -54,7 +54,14 @@ class CreateUser implements CreatesNewUsers
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'client_id' => ['sometimes', 'string', 'max:255', 'exists:clients,id'],
+            'altEmail' => ['sometimes','required', 'email'],
+            'address1' => ['required'],
+            'address2' => ['sometimes', 'nullable'],
+            'city' => ['required'],
+            'state' => ['required'],
+            'zip' => ['required'],
+            'jobTitle' => ['required'],
+            'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
             'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
@@ -103,6 +110,7 @@ class CreateUser implements CreatesNewUsers
 
     public function asController(ActionRequest $request)
     {
+
         $user = $this->handle(
             $request->validated(),
             $request->user(),

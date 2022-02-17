@@ -27,4 +27,15 @@ class UserDetails extends Model
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 
+    public static function createOrUpdateRecord($user_id, $detail, $value)
+    {
+        $model = self::firstOrCreate([
+            'user_id' => $user_id,
+            'name' => $detail
+        ]);
+
+        $model->value = $value;
+        $model->save();
+    }
+
 }
