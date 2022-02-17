@@ -22,13 +22,24 @@
                     <div class="flex flex-row mt-8 self-center" v-if="claimedByUser">
                         <div class="mr-4">
                             <Button type="button" success @click="activeContactMethod = 'email'">Email
+                                <span class="bg-base-300 p-1 rounded text-success text-xs ml-2">
+                                    {{interactionCount.emailedCount}}
+                                </span>
                             </Button>
                         </div>
                         <div class="mr-4">
-                            <Button type="button" error @click="activeContactMethod = 'phone'">Call</Button>
+                            <Button type="button" error @click="activeContactMethod = 'phone'">Call
+                                <span class="bg-base-300 p-1 rounded text-error text-xs ml-2">
+                                    {{interactionCount.calledCount}}
+                                </span>
+                            </Button>
                         </div>
                         <div class="mr-4">
-                            <Button type="button" info @click="activeContactMethod = 'sms'">SMS</Button>
+                            <Button type="button" info @click="activeContactMethod = 'sms'">SMS
+                                <span class="bg-base-300 p-1 rounded text-info text-xs ml-2">
+                                    {{interactionCount.smsCount}}
+                                </span>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -73,7 +84,7 @@ export default defineComponent({
         FontAwesomeIcon,
         SweetModal
     },
-    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes'],
+    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes', 'interactionCount'],
     data() {
         return {
             activeContactMethod: '',

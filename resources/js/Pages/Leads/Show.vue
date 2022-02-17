@@ -13,6 +13,7 @@
                               :selectedLeadDetailIndex="selectedLeadDetailIndex"
                               :trial-dates="trialDates"
                               :trial-memberships="lead.trial_memberships"
+                              :interaction-count="interactionCount"
             />
         </jet-bar-container>
     </app-layout>
@@ -43,6 +44,10 @@ export default defineComponent({
             type: Array,
             default: []
         },
+        interactionCount: {
+            type: Number,
+            default: 0
+        }
     },
     setup(props) {
         const leadInteractionRef = ref();
