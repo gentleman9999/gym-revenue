@@ -39,13 +39,14 @@
 </template>
 
 <script>
-import {defineComponent, ref} from "vue";
+import {defineComponent, ref, computed} from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import {usePage} from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
@@ -56,6 +57,8 @@ export default defineComponent({
     },
     props: ["filters", "clubs", "teams"],
     setup() {
+        const page = usePage();
+        const abilities = computed(() => page.props.value.user?.abilities);
         const {form, reset} = useSearchFilter('teams', {
             club: null
         });
