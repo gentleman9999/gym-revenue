@@ -15,6 +15,7 @@
                 :model-name="modelName"
                 :model-name-plural="modelNamePlural"
                 :base-route="baseRoute"
+                :has-preview-component="!!previewComponent"
             />
             <div v-if="!resource?.data?.length" class="rounded-xl p-4 bg-base-100">
                 <div>
@@ -75,6 +76,9 @@ export default {
             type: [Object, Boolean],
             default: {},
         },
+        previewComponent: {
+            type: Object
+        }
     },
     setup(props) {
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";

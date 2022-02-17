@@ -257,4 +257,23 @@ class UsersController extends Controller
 
         return Redirect::back();
     }
+
+    public function view($id)
+    {
+        $user = request()->user();
+        $current_team = $user->currentTeam()->first();
+        if ($user->cannot('users.read', $current_team)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        $user = $user->with('details', 'phone_number')->findOrFail($id);
+
+        $security_role = SecurityRole::find($user->security_role->value);
+
+        $data = $user->toArray();
+        $data['security_role'] = $security_role->toArray();
+
+        return $data;
+    }
 }

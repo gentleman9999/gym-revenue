@@ -118,6 +118,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Http\Controllers\UsersController::class . '@store')->name('users.store');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
+    Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');
     Route::put('/{id}', \App\Http\Controllers\UsersController::class . '@update')->name('users.update');
     Route::delete('/{id}', \App\Http\Controllers\UsersController::class . '@delete')->name('users.delete');
 });

@@ -11,6 +11,7 @@
             :fields="fields"
             :resource="users"
             :actions="actions"
+            :preview-component="UserPreview"
         >
             <template #filter>
                 <search-filter
@@ -65,6 +66,8 @@ import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
+import UserPreview from "@/Pages/Users/Partials/UserPreview";
+
 
 export default defineComponent({
     components: {
@@ -74,6 +77,7 @@ export default defineComponent({
         Confirm,
         SearchFilter,
         PageToolbarNav,
+        UserPreview
     },
     props: ["users", "filters", "clubs", "teams", 'clientName'],
     setup() {
@@ -152,6 +156,7 @@ export default defineComponent({
             form,
             reset,
             navLinks,
+            UserPreview
         };
     },
 });

@@ -20,6 +20,8 @@
                     :actions="actions"
                     :data="data"
                     :base-route="baseRoute"
+                    :has-preview-component="hasPreviewComponent"
+                    :model-name="modelName"
                 />
             </slot>
         </td>
@@ -71,6 +73,9 @@ export default defineComponent({
             type: String,
             // required: true,
         },
+        hasPreviewComponent: {
+            type: Boolean
+        }
     },
     setup(props) {
         const fields = getFields(props);

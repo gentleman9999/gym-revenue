@@ -46,6 +46,7 @@
                     :model-name="modelName"
                     :model-name-plural="modelNamePlural"
                     :base-route="baseRoute"
+                    :has-preview-component="!!previewComponent"
                 />
 
                 <tr v-if="!data?.length">
@@ -136,6 +137,9 @@ export default {
             type: Boolean,
             default: true,
         },
+        previewComponent: {
+            type: Object
+        }
     },
     setup(props) {
         const fields = getFields(props);
