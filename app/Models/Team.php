@@ -20,6 +20,7 @@ class Team extends JetstreamTeam
      */
     protected $casts = [
         'personal_team' => 'boolean',
+        'default_team' => 'boolean',
     ];
 
     /**
@@ -31,6 +32,7 @@ class Team extends JetstreamTeam
         'user_id',
         'name',
         'personal_team',
+        'default_team',
     ];
 
     /**

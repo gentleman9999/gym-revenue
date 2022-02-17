@@ -68,6 +68,8 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
+        const shouldShowDelete = ({ data }) => abilities.value.includes("locations.delete") && !data.default_team;
+
         const fields = [
             "name",
             "created_at",
@@ -79,7 +81,8 @@ export default defineComponent({
             restore: false,
             delete: {
                 label: 'Delete',
-                handler: ({data}) => handleClickDelete(data)
+                handler: ({data}) => handleClickDelete(data),
+                shouldRender: shouldShowDelete,
             }
         }
         return {

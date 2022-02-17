@@ -14,7 +14,8 @@ class CapeAndBayUserSeeder extends UserSeeder
         Team::firstOrCreate([
             'user_id' => 1,
             'name' => 'Cape & Bay Admin Team',
-            'personal_team' => 0
+            'personal_team' => 0,
+            'default_team' => 0
         ]);
 
         return [

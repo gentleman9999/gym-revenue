@@ -25,6 +25,7 @@ class TeamController extends Controller
         'name' => ['required', 'max:50'],
         'user_id' => ['sometimes', 'exists:users,id'],
         'personal_team' => ['sometimes', 'boolean'],
+        'default_team' => ['sometimes', 'boolean'],
         'locations' => ['sometimes', 'array'],
     ];
 
@@ -58,8 +59,8 @@ class TeamController extends Controller
         }
 
 
-        $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team'))
-            ->paginate(10);
+        //$teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team'))
+        //    ->paginate(10);
 
         return Inertia::render('Teams/List', [
 //            'teams' => Team::filter($request->only('search', 'club', 'team'))
