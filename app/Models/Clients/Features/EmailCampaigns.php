@@ -39,22 +39,22 @@ class EmailCampaigns extends Model
 
     public function assigned_template()
     {
-        return $this->detail()->whereDetail('template_assigned')->whereActive(1);
+        return $this->details()->whereDetail('template_assigned')->whereActive(1);
     }
 
     public function unassigned_template()
     {
-        return $this->detail()->whereDetail('template_assigned')->whereActive(0);
+        return $this->details()->whereDetail('template_assigned')->whereActive(0);
     }
 
     public function assigned_audience()
     {
-        return $this->detail()->whereDetail('audience_assigned')->whereActive(1);
+        return $this->details()->whereDetail('audience_assigned')->whereActive(1);
     }
 
     public function unassigned_audience()
     {
-        return $this->detail()->whereDetail('audience_assigned')->whereActive(0);
+        return $this->details()->whereDetail('audience_assigned')->whereActive(0);
     }
 
     public function schedule()

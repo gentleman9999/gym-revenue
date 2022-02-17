@@ -3,6 +3,7 @@
 namespace App\Aggregates\Clients\Traits;
 
 use App\Models\User;
+use mysql_xdevapi\Exception;
 
 trait ClientGetters
 {
@@ -39,7 +40,7 @@ trait ClientGetters
                     }
 
                     if(!empty($model)){
-                        $history['recordName'] = $model->name;
+                        $history['recordName'] = $model->first()->name;
                     }
                 }
 

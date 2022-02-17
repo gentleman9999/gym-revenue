@@ -383,7 +383,8 @@ class LeadsController extends Controller
             'lead_sources' => $lead_sources,
             'lead_statuses' => $lead_statuses,
             'trialDates' => $lead_aggy->trial_dates,
-            'lead_owners' => $available_lead_owners
+            'lead_owners' => $available_lead_owners,
+            'interactionCount' => $lead_aggy->getInteractionCount()
         ]);
     }
 
@@ -394,11 +395,13 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-        $middle_name ='';
+        $aggy = EndUserActivityAggregate::retrieve($lead_id);
+        $middle_name ='test';
         $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
         foreach($middle_names as $middle_name){
             //     dd($middle_name);
         }
+
         /*
 if(!$middle_name){
     $middle_name ='';
@@ -409,6 +412,7 @@ if(!$middle_name){
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
             'middle_name' => $middle_name,
+            'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
         ]);
     }
