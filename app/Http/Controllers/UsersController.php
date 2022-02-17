@@ -90,8 +90,6 @@ class UsersController extends Controller
             return Redirect::route('profile.show');
         }
 
-        $user = $user->with('details', 'phone_number')->findOrFail($id);
-
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
         if(!$user->isAccountOwner()) {
             $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
