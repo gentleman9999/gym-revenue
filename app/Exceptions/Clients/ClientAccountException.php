@@ -11,6 +11,11 @@ class ClientAccountException extends Exception
         return new self("This account already has a default team - '{$default_team}' set");
     }
 
+    public static function prefixAlreadyCreated(string $prefix, string $default_team)
+    {
+        return new self("This account already has a prefix ('{$prefix}') set for '{$default_team}'");
+    }
+
     public static function teamAlreadyAssigned(string $team_name)
     {
         return new self("This team - '{$team_name}' has already been added");
