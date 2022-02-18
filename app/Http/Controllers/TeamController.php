@@ -206,7 +206,6 @@ class TeamController extends Controller
 
     public function view($teamId)
     {
-
         $current_team = Team::find($teamId);
         $team_users = $current_team->team_users()->get();
 
