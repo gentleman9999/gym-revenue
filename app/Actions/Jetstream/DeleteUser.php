@@ -53,11 +53,13 @@ class DeleteUser implements DeletesUsers
         $current_team = $user->currentTeam()->first();
         $team_users = collect($current_team->team_users()->get());
         $acc_owners = [];
+        $non_admins = [];
 
         foreach ($team_users as $team_user) {
             if($team_user->role === 'Account Owner') $acc_owners[] = $team_user->id;
+            if($team_user->role !== 'Admin') $non_admins[] = $team_user->id;
         }
-        if(count($team_users) < 1 ) {
+        if(count($non_admins) < 1 ) {
             Alert::error("User '{$user->name}' cannot be deleted. Too few users found.")->flash();
             return Redirect::back();
         }

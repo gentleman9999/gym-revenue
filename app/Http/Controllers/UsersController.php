@@ -86,7 +86,6 @@ class UsersController extends Controller
         $user = $me->with('details', 'phone_number')->findOrFail($id);
         if($me->id == $user->id)
         {
-            Alert::info("Oops! You can't edit yourself from user management.")->flash();
             return Redirect::route('profile.show');
         }
 
