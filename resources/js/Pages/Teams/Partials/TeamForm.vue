@@ -102,6 +102,7 @@ import JetActionMessage from "@/Jetstream/ActionMessage";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 
 export default defineComponent({
     components: {
@@ -219,7 +220,7 @@ export default defineComponent({
             handleSubmit,
             page,
             availableLocations: page.props.value.availableLocations,
-            multiselectClasses,
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 });

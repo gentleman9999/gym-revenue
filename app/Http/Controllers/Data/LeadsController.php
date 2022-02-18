@@ -51,7 +51,7 @@ class LeadsController extends Controller
     public function index(Request $request)
     {
         $user = request()->user();
-        if($user->cannot('leads.read', $user->currentTeam()->first()))
+        if($user->cannot('leads.read', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -80,6 +80,7 @@ class LeadsController extends Controller
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
+
         }
 
         return Inertia::render('Leads/Index', [
@@ -257,9 +258,10 @@ class LeadsController extends Controller
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
             $default_team_name = $client->default_team_name->value;
+            
             $team_locations = [];
 
-            if ($current_team->name != $default_team_name) {
+            if ($current_team->id != $default_team_name) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
 

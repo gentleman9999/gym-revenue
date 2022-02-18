@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Users;
 
+use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
 use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
@@ -21,76 +22,121 @@ class SecondaryClientUsersSeeder extends UserSeeder
     protected function getUsersToAdd() : array
     {
         return [
+            // The Kalamazoo
             [
-                'name' => 'Mr Owl',
+                'first_name' => 'Mr',
+                'last_name' => 'Owl',
                 'email' => 'owl@kalamazoo.com',
                 'role' => 'Location Manager',
                 'client' => 'The Kalamazoo',
-                'teams' => ['The Kalamazoo Home Office', 'Zoo Sales Team'],
+                'team_ids' => ['The Kalamazoo Home Office', 'Zoo Sales Team', 'The Kalamazoo Gym #1'],
             ],
             [
-                'name' => 'Baloo Bear',
+                'first_name' => 'SK',
+                'last_name' => 'Tiger',
+                'email' => 'kahn@kalamazoo.com',
+                'role' => 'Regional Admin',
+                'client' => 'The Kalamazoo',
+                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
+            ],
+            [
+                'first_name' => 'Baloo',
+                'last_name' => 'Bear',
                 'email' => 'baloo@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
-                'teams' => ['Zoo Sales Team'],
+                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
             ],
             [
-                'name' => 'Louie Orang',
+                'first_name' => 'Louie',
+                'last_name' => 'Orang',
                 'email' => 'louie@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
-                'teams' => ['Zoo Sales Team'],
+                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
+            ],
+            [
+                'first_name' => 'Mow',
+                'last_name' => 'Gli',
+                'email' => 'boy@kalamazoo.com',
+                'role' => 'Employee',
+                'client' => 'The Kalamazoo',
+                'team_ids' => ['Zoo Sales Team', 'The Kalamazoo Gym #1'],
             ],
 
+            // Bodies By Brett
+            // FitnessTruth
+            // The Z
+            // TruFit Athletic Clubs
+            //Stencils
+            //SciFi Purple Gyms
+
+            // iFit
             [
-                'name' => 'Bob Kirk',
+                'first_name' => 'Bob',
+                'last_name' => 'Kirk',
                 'email' => 'bkirk@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
-                'teams' => ['iFit Home Office', 'iFit Virginia'],
+                'team_ids' => [
+                    'iFit Home Office', 'iFit Virginia',
+                    'VA - Va Beach 1', 'VA - Va Beach 2'
+                ],
             ],
             [
-                'name' => 'Kirk Roberts',
+                'first_name' => 'Kirk',
+                'last_name' => 'Roberts',
                 'email' => 'kroberts@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
-                'teams' => ['iFit Home Office', 'iFit Georgia', 'iFit Florida'],
+                'team_ids' => [
+                    'iFit Home Office', 'iFit Georgia',
+                    'iFit Florida', 'FL - Tampa 1',
+                    'FL - Lake City', 'FL - Hilliard',
+                    'FL - Orange Park', 'FL - Tampa 2',
+                    'GA - Atlanta 1', 'GA - Atlanta 2',
+                    'GA - Atlanta 16'
+                ],
             ],
             [
-                'name' => 'Stan Jacobs',
+                'first_name' => 'Stan',
+                'last_name' => 'Jacobs',
                 'email' => 'owl@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'teams' => ['iFit Virginia', 'iFit Sales Team'],
+                'team_ids' => ['iFit Virginia', 'iFit Sales Team', 'VA - Va Beach 1', 'VA - Va Beach 2'],
             ],
             [
-                'name' => 'Abbi Abbington',
+                'first_name' => 'Abbi',
+                'last_name' => 'Abbington',
                 'email' => 'aabing@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'teams' => ['iFit Florida', 'iFit Sales Team'],
+                'team_ids' => ['iFit Florida', 'iFit Sales Team','FL - Tampa 2', 'iFit Sales Team Florida'],
             ],
             [
-                'name' => 'Mark Roughy',
+                'first_name' => 'Mark',
+                'last_name' => 'Roughy',
                 'email' => 'mroughy@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'teams' => ['iFit Georgia','iFit Sales Team'],
+                'team_ids' => ['iFit Georgia','iFit Sales Team','GA - Atlanta 1','iFit Sales Team Georgia/VA'],
             ],
             [
-                'name' => 'Jessica Hornsby',
+                'first_name' => 'Jessica',
+                'last_name' => 'Hornsby',
                 'email' => 'jhornsby@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
-                'teams' => ['iFit Sales Team'],
+                'team_ids' => ['iFit Sales Team', 'GA - Atlanta 16','iFit Sales Team Georgia/VA'],
             ],
             [
-                'name' => 'Marco Lopez',
+                'first_name' => 'Marco',
+                'last_name' => 'Lopez',
                 'email' => 'mlopez@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
-                'teams' => ['iFit Sales Team'],
+                'team_ids' => ['iFit Sales Team', 'FL - Tampa 2','iFit Sales Team Florida'],
             ],
         ];
     }
@@ -99,64 +145,17 @@ class SecondaryClientUsersSeeder extends UserSeeder
     {
         $client = Client::whereName($user['client'])->first();
 
-        $namesplosion = explode(' ', $user['name']);
-        $first_name = $namesplosion[0];
-        $last_name = $namesplosion[1];
-        // Create User
-        $new_user = User::create([
-            'first_name' => $first_name,
-            'last_name' => $last_name,
-            'name' => $user['name'],
+        $team_ids = Team::whereIn('name', $user['team_ids'])->get(['id'])->pluck('id');
+
+
+        CreateUser::run([
+            'client_id' => $client->id,
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
             'email' => $user['email'],
-            'password' => bcrypt('Hello123!')
+            'password' => 'Hello123!',
+            'team_ids' => $team_ids,
+            'role' => $user['role']
         ]);
-
-        // Associate with the Client
-        UserDetails::create([
-            'user_id' => $new_user->id,
-            'name' => 'associated_client',
-            'value' => $client->id,
-            'active' => 1
-        ]);
-
-        //add security role
-        $role = Role::whereName($user['role'])->first();
-        if ($role) {
-            $security_role = SecurityRole::whereClientId($client->id)->whereRoleId($role->id)->first();//get default security role for role if exists
-            if ($security_role) {
-                UserDetails::create([
-                    'user_id' => $new_user->id,
-                    'name' => 'security_role',
-                    'value' => $security_role->id
-                ]);
-            }
-        }
-
-        foreach($user['teams'] as $idx => $team_name)
-        {
-            $team_model = Team::whereName($team_name)->first();
-
-            if($idx == 0)
-            {
-                // Set default team for User with 1st record
-                UserDetails::create([
-                    'user_id' => $new_user->id,
-                    'name' => 'default_team',
-                    'value' => $team_model->id,
-                    'active' => 1
-                ]);
-            }
-
-            // set team_user record to $client's default-team's team_id (or use an action if possible)
-            $team_model->users()->attach(
-                $new_user, ['role' => $user['role']]
-            );
-
-        }
-
-        // Use Bouncer to assign the Admin Role
-        Bouncer::assign($user['role'])->to($new_user);
-
-        VarDumper::dump('Created! Checking out...');
     }
 }

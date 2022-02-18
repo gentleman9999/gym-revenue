@@ -223,9 +223,9 @@ class AddNewUser extends Command
 
         // Get the client's default-team name in client_details
         $client_model = Client::whereId($client)->with('default_team_name')->first();
-        $default_team_name = $client_model->default_team_name->value;
+        $default_team_id = $client_model->default_team_name->value;
         // Use that to find the team record in teams to get its ID
-        $team = Team::where('name', '=', $default_team_name)->first();
+        $team = Team::where('id', '=', $default_team_id)->first();
 
         // Set default_team to $client's default-team's team_id in user_details
         UserDetails::create([

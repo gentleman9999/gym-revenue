@@ -70,7 +70,7 @@ class Team extends JetstreamTeam
 
     public function default_team_details()
     {
-        return $this->hasOne(ClientDetail::class, 'value',  'name')
+        return $this->hasOne(ClientDetail::class, 'value',  'id')
             ->where('detail','=', 'default-team')
             ->with('client');
     }

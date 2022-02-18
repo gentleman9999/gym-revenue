@@ -30,6 +30,7 @@ use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
+use App\StorableEvents\Clients\PrefixCreated;
 use App\StorableEvents\Clients\TeamCreated;
 
 trait ClientApplies
@@ -39,6 +40,11 @@ trait ClientApplies
     public function applyDefaultClientTeamCreated(DefaultClientTeamCreated $event)
     {
         $this->default_team = $event->team;
+    }
+
+    public function applyPrefixCreated(PrefixCreated $event)
+    {
+        $this->team_prefix = $event->prefix;
     }
 
     public function applyTeamCreated(TeamCreated $event)

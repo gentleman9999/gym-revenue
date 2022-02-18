@@ -14,7 +14,7 @@
                     <a
                         v-for="{ label, href, onClick, active} in links"
                         class="inline-flex items-center border-b-2 border-transparent text-sm font-medium leading-5 hover:border-base-100-300 focus:outline-none focus:border-base-100-300 transition"
-                        :class="(active) ? 'bg-white text-black px-4 rounded': ''"
+                        :class="(active) ? ' outline rounded-full px-4': ''"
                         :href="href"
                         @click="onClick"
                     >

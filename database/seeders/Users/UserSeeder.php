@@ -22,7 +22,7 @@ abstract class UserSeeder extends Seeder
             $user_record = User::whereEmail($user['email'])->first();
             if(is_null($user_record))
             {
-                VarDumper::dump("Adding {$user['name']}");
+                VarDumper::dump("Adding {$user['first_name']} {$user['last_name']}");
                 $this->addUser($user);
             }
             else

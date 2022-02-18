@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 
+//TODO: this needs to be either deleted in favor of using UpdateUser, or modified to use event sourcing like UpdateUser
 class UpdateUserPassword implements UpdatesUserPasswords
 {
     use PasswordValidationRules;
