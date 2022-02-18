@@ -239,6 +239,17 @@ class UserProjector extends Projector
 
     public function onUserDeleted(UserDeleted $event)
     {
-        User::findOrFail($event->payload['id'])->forceDelete();
+        // Get the uer we're gonna delete
+        $bad_user = User::findOrFail($event->payload['id']);
+        // @todo - add offboading logic here
+
+        // starting with unassigning users from teams.
+        $teams = $bad_user->teams()->get();
+        foreach($teams as $team)
+        {
+            $team->removeUser($bad_user);
+        }
+
+        $bad_user->forceDelete();
     }
 }
