@@ -207,21 +207,30 @@ class TeamController extends Controller
     public function view($teamId)
     {
         $current_team = Team::find($teamId);
+        $data['team'] = $current_team;
+
         $team_users = $current_team->team_users()->get();
+        $non_admin_users = [];
+
+
+
+        foreach ($team_users as $team_user)
+        {
+            if($team_user->role !== 'Admin') $non_admin_users[] = $team_user;
+        }
+
+        if(count($non_admin_users) > 0) {
+            $first_user = User::find($non_admin_users[0]->user_id);
+            $data['clubs'] = Location::whereClientId($first_user->client()[0]->id)->get(); //$first_user->allLocations();
+            $data['client'] = Client::find($first_user->client()[0]->id);
+        }
 
         if (request()->user()->isCapeAndBayUser()) {
             $data['users'] = $team_users;
         } else {
-            $temp_users = [];
-            foreach ($team_users as $team_user)
-            {
-                if($team_user->role !== 'Admin') $temp_users[] = $team_user;
-            }
-            $data['users'] = $temp_users;
+            $data['users'] = $non_admin_users;
         }
 
-        $data['team'] = $current_team;
-        $data['clubs'] = Location::whereClientId(request()->user()->currentClientId())->get();
         return $data;
     }
 }

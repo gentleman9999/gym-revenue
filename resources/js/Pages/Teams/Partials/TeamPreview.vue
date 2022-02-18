@@ -1,6 +1,7 @@
 <template>
     <div className="grid grid-cols-6 gap-6">
         <div className="form-control col-span-3 lg:col-span-3">
+            <h1>Team Name</h1>
             <jet-label htmlFor="name" value="Team Name"/>
             <input
                 id="name"
@@ -11,12 +12,26 @@
             />
         </div>
 
+        <div className="form-control col-span-3 lg:col-span-3">
+            <h1>Account</h1>
+            <jet-label htmlFor="client_name" value="Client Name"/>
+            <input
+                v-if="team.client"
+                id="client_name"
+                type="text"
+                className="block w-full mt-1"
+                :value="team.client.name"
+                disabled
+            />
+        </div>
+
         <div className="form-control col-span-6 lg:col-span-6">
+            <h1>Users</h1>
             <table class="table table-compact w-full">
                 <!-- head -->
                 <thead>
                 <tr>
-                    <th>Id</th>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
@@ -25,7 +40,7 @@
                 <tbody>
                 <!-- row 1 -->
                 <tr v-for='user in team.users'>
-                    <th></th>
+                    <th>{{ user.user.id }}</th>
                     <td>{{ user.user.name }}</td>
                     <td>{{ user.user.email }}</td>
                     <td> <div v-if='user.role == "Admin"' class="badge badge-outline">{{ user.role }}</div>
@@ -38,14 +53,15 @@
         </div>
 
         <div className="form-control col-span-6 lg:col-span-6">
+            <h1>Locations</h1>
             <table class="table table-compact w-full">
                 <!-- head -->
                 <thead>
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>gr_id</th>
-                    <th>City/State/Zip</th>
+                    <th>City/State</th>
+                    <th>Zip</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,8 +69,8 @@
                 <tr v-for='club in team.clubs'>
                     <th>{{ club.location_no }}</th>
                     <td>{{ club.name }}</td>
-                    <td>{{ club.gymrevenue_id }}</td>
-                    <td>{{ club.city }} / {{ club.state }} / {{ club.zip }}</td>
+                    <td>{{ club.city }} / {{ club.state }}</td>
+                    <td>{{ club.zip }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -86,7 +102,7 @@ export default defineComponent({
         UpdateTeamNameForm,
         TeamForm
     },
-    props: ["team", "users", "clubs"],
+    props: ["team", "users", "clubs", "client"],
     setup(props, {emit}) {
         const page = usePage();
         let users = props.users;
