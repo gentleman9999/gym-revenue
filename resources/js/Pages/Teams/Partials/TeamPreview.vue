@@ -25,13 +25,12 @@
             />
         </div>
 
-        <div className="form-control col-span-6 lg:col-span-6">
+        <div className="form-control col-span-3 lg:col-span-3">
             <h1>Users</h1>
             <table class="table table-compact w-full">
                 <!-- head -->
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
@@ -40,7 +39,6 @@
                 <tbody>
                 <!-- row 1 -->
                 <tr v-for='user in team.users'>
-                    <th>{{ user.user.id }}</th>
                     <td>{{ user.user.name }}</td>
                     <td>{{ user.user.email }}</td>
                     <td> <div v-if='user.role == "Admin"' class="badge badge-outline">{{ user.role }}</div>
@@ -52,7 +50,7 @@
             </table>
         </div>
 
-        <div className="form-control col-span-6 lg:col-span-6">
+        <div className="form-control col-span-3 lg:col-span-3">
             <h1>Locations</h1>
             <table class="table table-compact w-full">
                 <!-- head -->
@@ -60,8 +58,6 @@
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>City/State</th>
-                    <th>Zip</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -69,8 +65,6 @@
                 <tr v-for='club in team.clubs'>
                     <th>{{ club.location_no }}</th>
                     <td>{{ club.name }}</td>
-                    <td>{{ club.city }} / {{ club.state }}</td>
-                    <td>{{ club.zip }}</td>
                 </tr>
                 </tbody>
             </table>
