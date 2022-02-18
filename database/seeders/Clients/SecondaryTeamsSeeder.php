@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Team;
 use App\Models\User;
