@@ -53,28 +53,16 @@ class DeleteUser implements DeletesUsers
 
         $current_team = $me->currentTeam()->first();
         $team_users = collect($current_team->team_users()->with('user')->get());
-        $acc_owners = [];
         $non_admins = [];
 
-        
-        foreach ($team_users as $team_user) {
-
-            if(Bouncer::is($team_user->user)->an('Account Owner'))
-            {
-                $acc_owners[] = $team_user->id;
-            }
-            else if(!Bouncer::is($team_user->user)->an('Admin')) {$non_admins[] = $team_user->id;}
-            //if($team_user->role === 'Account Owner') $acc_owners[] = $team_user->id;
-            //if($team_user->role !== 'Admin')
+        foreach ($team_users as $team_user)
+        {
+            if(!Bouncer::is($team_user->user)->an('Admin'))
+                $non_admins[] = $team_user->id;
         }
 
         if(count($non_admins) < 1 ) {
             Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
-            return Redirect::back();
-        }
-
-        if(count($acc_owners) < 1 ) {
-            Alert::error("User '{$user->name}' is a member of a team with one or less Account Owners assigned. Have an account owner join the team and you can delete them.")->flash();
             return Redirect::back();
         }
 
