@@ -166,7 +166,9 @@
 			document.addEventListener('keyup', this._onDocumentKeyup)
 		},
 
-		beforeDestroy() {
+
+		beforeUnmount() {
+            this._unlockBody();
 			document.removeEventListener('keyup', this._onDocumentKeyup)
 		},
 

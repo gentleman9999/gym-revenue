@@ -42,7 +42,8 @@ class TeamController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => Location::whereClientId($client_id)->get(),
-                'teams' => $teams
+                'teams' => $teams,
+                'preview' => $request->preview ?? null
             ]);
         } else if ($current_user->isCapeAndBayUser()) {
             $current_team = $current_user->currentTeam()->first();
@@ -53,7 +54,8 @@ class TeamController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
-                'teams' => $teams
+                'teams' => $teams,
+                'preview' => $request->preview ?? null
             ]);
         }
 

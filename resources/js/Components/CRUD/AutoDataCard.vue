@@ -22,6 +22,7 @@
                     :base-route="baseRoute"
                     :has-preview-component="hasPreviewComponent"
                     :model-name="modelName"
+                    :model-key="modelKey"
                 />
             </slot>
         </template>
@@ -29,7 +30,7 @@
             <div class="text-xs text-gray-500">
                 {{ field.label }}
             </div>
-            <render-field :field="field" :data="data" :base-route="baseRoute" :model-name="modelName"/>
+            <render-field :field="field" :data="data" :base-route="baseRoute" :model-name="modelName" :model-key="modelKey"/>
         </div>
     </data-card>
 </template>
@@ -71,6 +72,10 @@ export default defineComponent({
         modelName: {
             type: String,
             default: 'Record'
+        },
+        modelKey: {
+            type: String,
+            required: true
         },
         modelNamePlural: {
             type: String,

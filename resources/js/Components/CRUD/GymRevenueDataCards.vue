@@ -7,12 +7,13 @@
             <component
                 v-for="row in resource?.data || []"
                 :is="cardComponent"
-                v-bind="{ [modelName]: row }"
+                v-bind="{ [modelKey]: row }"
                 :data="row"
                 :fields="fields"
                 :titleField="titleField"
                 :actions="actions"
                 :model-name="modelName"
+                :model-key="modelKey"
                 :model-name-plural="modelNamePlural"
                 :base-route="baseRoute"
                 :has-preview-component="!!previewComponent"
@@ -61,6 +62,10 @@ export default {
         modelName: {
             type: String,
             default: 'Record',
+        },
+        modelKey:{
+            type:String,
+            required: true,
         },
         modelNamePlural: {
             type: String,

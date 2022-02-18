@@ -7,7 +7,8 @@
         />
         <gym-revenue-crud
             base-route="users"
-            model-name="user"
+            model-name="User"
+            model-key="user"
             :fields="fields"
             :resource="users"
             :actions="actions"

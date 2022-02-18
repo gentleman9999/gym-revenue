@@ -1,7 +1,7 @@
 import {Inertia} from "@inertiajs/inertia";
 import {computed} from "vue";
 import {merge} from "lodash";
-import {setPreviewData} from "@/Components/CRUD/helpers/previewData";
+import {preview} from "@/Components/CRUD/helpers/previewData";
 
 export const defaults = Object.freeze({
     edit: {
@@ -31,12 +31,12 @@ export const getDefaults = ({hasPreviewComponent}) => {
         preview: {
             label: "Preview",
             handler: async ({baseRoute, data}) => {
-                const routeName = `${baseRoute}.view`;
-                const resp = await axios.get(
-                    route(routeName, data.id),
-                );
-                setPreviewData(resp.data);
-                console.log({routeName, resp});
+                // const routeName = `${baseRoute}.view`;
+                // const resp = await axios.get(
+                //     route(routeName, data.id),
+                // );
+                // setPreviewData(resp.data);
+                preview(baseRoute, data['id'])
             },
         }
     }, defaults);

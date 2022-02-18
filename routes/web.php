@@ -35,13 +35,16 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\H
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
 //@todo: need to add in ACL/middleware for CnB users
-Route::middleware(['auth:sanctum', 'verified'])->get('/locations', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
-Route::middleware(['auth:sanctum', 'verified'])->get('/locations/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
-Route::middleware(['auth:sanctum', 'verified'])->get('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
-Route::middleware(['auth:sanctum', 'verified'])->post('/locations', \App\Http\Controllers\LocationsController::class . '@store')->name('locations.store');
-Route::middleware(['auth:sanctum', 'verified'])->put('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@update')->name('locations.update');
-Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@trash')->name('locations.trash');
-Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore', \App\Http\Controllers\LocationsController::class . '@restore')->name('locations.restore');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
+    Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
+    Route::get('/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
+    Route::get('/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
+    Route::get('/view/{id}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
+    Route::post('/', \App\Http\Controllers\LocationsController::class . '@store')->name('locations.store');
+    Route::put('/{id}', \App\Http\Controllers\LocationsController::class . '@update')->name('locations.update');
+    Route::delete('/{id}', \App\Http\Controllers\LocationsController::class . '@trash')->name('locations.trash');
+    Route::post('/{id}/restore', \App\Http\Controllers\LocationsController::class . '@restore')->name('locations.restore');
+});
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');

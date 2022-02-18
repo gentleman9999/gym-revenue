@@ -130,7 +130,7 @@ By Claimed employee
             <pagination class="mt-4" :links="resource.links" />
         </slot>
     </jet-bar-container>
-    <preview-modal v-if="previewComponent" :preview-component="previewComponent" :model-name="modelName"/>
+    <preview-modal v-if="previewComponent" :preview-component="previewComponent" :model-name="modelName" :model-key="modelKey"/>
 </template>
 
 <script>
@@ -170,6 +170,10 @@ export default defineComponent({
         modelName: {
             type: String,
             default: "record",
+        },
+        modelKey:{
+            type:String,
+            required: true
         },
         modelNamePlural: {
             type: String,

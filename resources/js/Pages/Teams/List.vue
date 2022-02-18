@@ -4,8 +4,9 @@
             <h2 class="font-semibold text-xl leading-tight">Team Management</h2>
         </template>
         <gym-revenue-crud
-            base-route="teams"
-            model-name="team"
+            base-route="baseRoute"
+            model-name="Team"
+            model-key="team"
             :fields="fields"
             :resource="teams"
             :actions="actions"
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import {defineComponent, ref} from "vue";
+import {defineComponent, ref, onMounted} from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {Inertia} from "@inertiajs/inertia";
@@ -48,6 +49,7 @@ import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
 import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
+import {preview} from "@/Components/CRUD/helpers/previewData";
 
 export default defineComponent({
     components: {
@@ -57,8 +59,9 @@ export default defineComponent({
         SearchFilter,
         TeamPreview
     },
-    props: ["filters", "clubs", "teams"],
-    setup() {
+    props: ["filters", "clubs", "teams", "preview"],
+    setup(props) {
+        const baseRoute = "teams";
         const {form, reset} = useSearchFilter('teams', {
             club: null
         });
@@ -85,6 +88,13 @@ export default defineComponent({
                 handler: ({data}) => handleClickDelete(data)
             }
         }
+
+        onMounted(() => {
+            if (props.preview) {
+              preview(baseRoute, props.preview);
+            }
+        })
+
         return {
             confirmDelete,
             fields,
@@ -94,6 +104,7 @@ export default defineComponent({
             form,
             reset,
             TeamPreview,
+            baseRoute
         };
     },
 });

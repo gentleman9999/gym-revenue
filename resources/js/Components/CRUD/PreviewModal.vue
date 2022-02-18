@@ -11,7 +11,7 @@
         <component
             v-if="previewData"
             :is="previewComponent"
-            v-bind="{ [modelName]: previewData }"
+            v-bind="{ [modelKey]: previewData }"
             :data="previewData"
         />
     </sweet-modal>
@@ -19,7 +19,7 @@
 
 <script>
 import SweetModal from "@/Components/SweetModal3/SweetModal";
-import {ref, watchEffect} from "vue";
+import {ref, watchEffect, onUnmounted} from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
 import {clearPreviewData, previewData} from "@/Components/CRUD/helpers/previewData";
 
@@ -30,6 +30,10 @@ export default {
             required: true,
         },
         modelName: {
+            type: String,
+            required: true,
+        },
+        modelKey: {
             type: String,
             required: true,
         },
@@ -53,6 +57,9 @@ export default {
             // else{
             //     close();
             // }
+        });
+        onUnmounted(() => {
+            clearPreviewData();
         });
         return {close, modal, previewData};
     },

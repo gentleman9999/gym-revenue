@@ -22,6 +22,7 @@
                     :base-route="baseRoute"
                     :has-preview-component="hasPreviewComponent"
                     :model-name="modelName"
+                    :model-key="modelKey"
                 />
             </slot>
         </td>

@@ -48,13 +48,15 @@
     </div>
     <div class="grid grid-cols-6 mt-8 gap-2 w-full" v-if="user.teams?.length">
         <jet-label for="role" value="Teams" class="col-span-6"/>
-        <div
+        <a
             v-for="team in user.teams"
-            class="col-span-6 xl:col-span-3 bg-primary bg-opacity-25 py-2 px-4 rounded-lg"
-            disabled
+            class="col-span-6 xl:col-span-3 bg-primary bg-opacity-25 py-2 px-4 rounded-lg flex flex-row"
+            :href="route('teams', {preview: team.id})"
         >
             {{ team.name }}
-        </div>
+            <div class="flex-grow"></div>
+            >
+        </a>
     </div>
 </template>
 
