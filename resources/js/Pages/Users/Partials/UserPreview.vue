@@ -33,7 +33,7 @@
 
         <div class="form-control col-span-6 lg:col-span-3">
             <jet-label for="phone" value="Phone"/>
-            <input id="phone" type="tel" class="block w-full mt-1" :value="user.phone" disabled />
+            <input id="phone" type="tel" class="block w-full mt-1" :value="user.phone" disabled/>
         </div>
         <div class="form-control col-span-6 lg:col-span-3" v-if="user.security_role">
             <jet-label for="role" value="Security Role"/>
@@ -44,6 +44,16 @@
                 :value="user.security_role.security_role"
                 disabled
             />
+        </div>
+    </div>
+    <div class="grid grid-cols-6 mt-8 gap-2 w-full" v-if="user.teams?.length">
+        <jet-label for="role" value="Teams" class="col-span-6"/>
+        <div
+            v-for="team in user.teams"
+            class="col-span-6 xl:col-span-3 bg-primary bg-opacity-25 py-2 px-4 rounded-lg"
+            disabled
+        >
+            {{ team.name }}
         </div>
     </div>
 </template>

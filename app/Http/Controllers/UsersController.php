@@ -38,7 +38,7 @@ class UsersController extends Controller
             $client_name = $client->name;
 
             return Inertia::render('Users/Show', [
-                'users' => User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
+                'users' => User::with('teams')->where('id', '!=', $request->user()->id)->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
@@ -50,7 +50,7 @@ class UsersController extends Controller
         } else {
             //cb team selected
             return Inertia::render('Users/Show', [
-                'users' => User::whereHas('teams', function ($query) use ($request) {
+                'users' => User::where('id', '!=', $request->user()->id)->whereHas('teams', function ($query) use ($request) {
                     return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10),
@@ -260,19 +260,29 @@ class UsersController extends Controller
 
     public function view($id)
     {
-        $user = request()->user();
-        $current_team = $user->currentTeam()->first();
-        if ($user->cannot('users.read', $current_team)) {
+        $requesting_user = request()->user();
+        $current_team = $requesting_user->currentTeam()->first();
+        if ($requesting_user->cannot('users.read', $current_team)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
+        $requesting_user_teams = $requesting_user->teams ?? [];
 
-        $user = $user->with('details', 'phone_number')->findOrFail($id);
-
-        $security_role = SecurityRole::find($user->security_role->value);
+        $user = User::with('details', 'teams', 'phone_number')->findOrFail($id);
+        $user_teams = $user->teams ?? [];
 
         $data = $user->toArray();
-        $data['security_role'] = $security_role->toArray();
+        if ($user->security_role) {
+            $security_role = SecurityRole::find($user->security_role->value);
+            $data['security_role'] = $security_role->toArray();
+        }
+
+        $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
+            //only return teams that the current user also has access to
+            return $requesting_user_teams->contains(function ($requesting_user_team) use($user_team) {
+                return $requesting_user_team->id === $user_team->id;
+            });
+        });
 
         return $data;
     }
