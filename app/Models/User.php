@@ -33,7 +33,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password', 'first_name', 'last_name'
+        'id', 'name', 'email', 'password', 'first_name', 'last_name'
     ];
 
     /**
@@ -65,44 +65,6 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
-
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        static::created(function ($user) {
-            $current_user = request()->user() ?? $user;
-            $client_id = $current_user->currentClientId();
-            if ($client_id) {
-                $aggy = ClientAggregate::retrieve($client_id);
-                $aggy->createUser($user->id, $user->toArray());
-                $aggy->persist();
-            }
-        });
-
-        static::updated(function ($user) {
-            $current_user = request()->user() ?? $user;
-            $client_id = $current_user->currentClientId();
-            if ($client_id) {
-                $aggy = ClientAggregate::retrieve($client_id);
-                $aggy->updateUser($user->id, ['old' => $user->getOriginal(), 'new' => $user->toArray()]);
-                $aggy->persist();
-            }
-        });
-
-        static::deleted(function ($user) {
-            $current_user = request()->user() ?? $user;
-            $client_id = $current_user->currentClientId();
-            if ($client_id) {
-                $aggy = ClientAggregate::retrieve($client_id);
-                $aggy->deleteUser($user->id, $user->toArray());
-                $aggy->persist();
-            }
-        });
-    }
 
     /**
      * Get the current team of the user's context.
@@ -183,6 +145,40 @@ class User extends Authenticatable
     public function phone_number()
     {
         return $this->detail()->where('name', '=', 'phone');
+    }
+
+    public function altEmail()
+    {
+        return $this->detail()->where('name', '=', 'altEmail');
+    }
+
+    public function address1()
+    {
+        return $this->detail()->where('name', '=', 'address1');
+    }
+
+    public function address2()
+    {
+        return $this->detail()->where('name', '=', 'address2');
+    }
+
+    public function city()
+    {
+        return $this->detail()->where('name', '=', 'city');
+    }
+    public function state()
+    {
+        return $this->detail()->where('name', '=', 'state');
+    }
+
+    public function zip()
+    {
+        return $this->detail()->where('name', '=', 'zip');
+    }
+
+    public function jobTitle()
+    {
+        return $this->detail()->where('name', '=', 'jobTitle');
     }
 
     public function teams()

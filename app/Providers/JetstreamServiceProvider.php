@@ -86,5 +86,9 @@ class JetstreamServiceProvider extends ServiceProvider
             'create',
             'update',
         ])->description('Sales Reps have the ability to read, create, and update.');
+
+        Jetstream::role('Employee', 'Employee', [
+            'read',
+        ])->description('Employees have the ability to read.');
     }
 }

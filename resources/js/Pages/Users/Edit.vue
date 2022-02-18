@@ -2,7 +2,7 @@
     <app-layout title="Edit User">
         <template #header>
             <h2 class="font-semibold text-xl  leading-tight">
-                Edit User {{ $page.props.user.name }}
+                Edit User {{ $page.props.selectedUser.name }}
             </h2>
         </template>
 

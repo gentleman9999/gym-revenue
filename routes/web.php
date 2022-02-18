@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,10 +114,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
-    Route::post('/', \App\Http\Controllers\UsersController::class . '@store')->name('users.store');
+    Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
-    Route::put('/{id}', \App\Http\Controllers\UsersController::class . '@update')->name('users.update');
-    Route::delete('/{id}', \App\Http\Controllers\UsersController::class . '@delete')->name('users.delete');
+    Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update');
+    Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
+
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {

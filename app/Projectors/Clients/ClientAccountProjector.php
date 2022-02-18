@@ -61,7 +61,7 @@ class ClientAccountProjector extends Projector
         ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'default-team',
-            'value' => $default_team_name
+            'value' => $team->id
         ]);
         ClientDetail::create([
             'client_id' => $event->client,
