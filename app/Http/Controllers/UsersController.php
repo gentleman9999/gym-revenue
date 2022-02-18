@@ -6,6 +6,7 @@ use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
+use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -16,17 +17,37 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
+        // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
-            $client_detail = $current_team->client_details()->first();
-            $client = (!is_null($client_detail)) ? $client_detail->client()->first() : null;
-            $client_name = $client->name;
+            $client = Client::whereId($client_id)->with('default_team_name')->first();
 
-            $users = User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
-                return $query->whereName('associated_client')->whereValue($client_id);
-            })->filter($request->only('search', 'club', 'team'))
-                ->paginate(10);
+            $is_default_team = $client->default_team_name->value == $current_team->id;
+
+            // If the active team is a client's-default team get all members
+            if($is_default_team)
+            {
+                $users = User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
+                    return $query->whereName('associated_client')->whereValue($client_id);
+                })->filter($request->only('search', 'club', 'team'))
+                    ->paginate(10);
+            }
+            else
+            {
+                // else - get the members of that team
+                $team_users = TeamUser::whereTeamId($current_team->id)->get();
+                $user_ids = [];
+                foreach($team_users as $team_user)
+                {
+                    $user_ids[] = $team_user->user_id;
+                }
+                $users = User::whereIn('id', $user_ids)
+                    ->with('teams')
+                    ->filter($request->only('search', 'club', 'team'))
+                    ->paginate(10);
+            }
+
 
             foreach($users as $idx => $user)
             {
@@ -42,7 +63,7 @@ class UsersController extends Controller
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : [],
-                'clientName' => $client_name
+                'clientName' => $client->name
             ]);
         } else {
             //cb team selected

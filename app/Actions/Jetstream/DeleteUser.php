@@ -2,6 +2,7 @@
 
 namespace App\Actions\Jetstream;
 
+use Bouncer;
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
@@ -13,7 +14,6 @@ use Laravel\Jetstream\Contracts\DeletesUsers;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use function dd;
 
 class DeleteUser implements DeletesUsers
 {
@@ -46,19 +46,28 @@ class DeleteUser implements DeletesUsers
 
     public function asController(Request $request, $id)
     {
+        $me = request()->user();
         $user = User::findOrFail($id);
         $userData = $user->toArray();
         $userData['team_id'] = $request->user()->current_team_id;
 
-        $current_team = $user->currentTeam()->first();
-        $team_users = collect($current_team->team_users()->get());
+        $current_team = $me->currentTeam()->first();
+        $team_users = collect($current_team->team_users()->with('user')->get());
         $acc_owners = [];
         $non_admins = [];
 
+        
         foreach ($team_users as $team_user) {
-            if($team_user->role === 'Account Owner') $acc_owners[] = $team_user->id;
-            if($team_user->role !== 'Admin') $non_admins[] = $team_user->id;
+
+            if(Bouncer::is($team_user->user)->an('Account Owner'))
+            {
+                $acc_owners[] = $team_user->id;
+            }
+            else if(!Bouncer::is($team_user->user)->an('Admin')) {$non_admins[] = $team_user->id;}
+            //if($team_user->role === 'Account Owner') $acc_owners[] = $team_user->id;
+            //if($team_user->role !== 'Admin')
         }
+
         if(count($non_admins) < 1 ) {
             Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
             return Redirect::back();
