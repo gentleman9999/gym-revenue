@@ -11,7 +11,7 @@
             />
         </div>
 
-        <div className="form-control col-span-3 lg:col-span-3">
+        <div className="form-control col-span-6 lg:col-span-6">
             <table class="table table-compact w-full">
                 <!-- head -->
                 <thead>
@@ -37,7 +37,36 @@
             </table>
         </div>
 
+        <div className="form-control col-span-6 lg:col-span-6">
+            <table class="table table-compact w-full">
+                <!-- head -->
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>gr_id</th>
+                    <th>City/State/Zip</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- row 1 -->
+                <tr v-for='club in team.clubs'>
+                    <th>{{ club.location_no }}</th>
+                    <td>{{ club.name }}</td>
+                    <td>{{ club.gymrevenue_id }}</td>
+                    <td>{{ club.city }} / {{ club.state }} / {{ club.zip }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div className="form-control col-span-3 lg:col-span-3">
+
+        </div>
     </div>
+
+
+    <br><br>
 </template>
 
 <script>
@@ -57,7 +86,7 @@ export default defineComponent({
         UpdateTeamNameForm,
         TeamForm
     },
-    props: ["team", "users"],
+    props: ["team", "users", "clubs"],
     setup(props, {emit}) {
         const page = usePage();
         let users = props.users;
