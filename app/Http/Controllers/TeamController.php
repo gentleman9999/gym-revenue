@@ -206,14 +206,16 @@ class TeamController extends Controller
 
     public function view($teamId)
     {
+        if (request()->user()->cannot('teams.read', request()->user()->currentTeam()->first())) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         $current_team = Team::find($teamId);
         $data['team'] = $current_team;
 
         $team_users = $current_team->team_users()->get();
         $non_admin_users = [];
-
-
-
         foreach ($team_users as $team_user)
         {
             if($team_user->role !== 'Admin') $non_admin_users[] = $team_user;
@@ -221,15 +223,14 @@ class TeamController extends Controller
 
         if(count($non_admin_users) > 0) {
             $first_user = User::find($non_admin_users[0]->user_id);
-            $data['clubs'] = Location::whereClientId($first_user->client()[0]->id)->get(); //$first_user->allLocations();
+            $data['clubs'] = Location::whereClientId($first_user->client()[0]->id)->get();
             $data['client'] = Client::find($first_user->client()[0]->id);
         }
 
-        if (request()->user()->isCapeAndBayUser()) {
+        if (request()->user()->isCapeAndBayUser())
             $data['users'] = $team_users;
-        } else {
+        else
             $data['users'] = $non_admin_users;
-        }
 
         return $data;
     }
