@@ -54,7 +54,14 @@ class CreateUser implements CreatesNewUsers
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'client_id' => ['sometimes', 'string', 'max:255', 'exists:clients,id'],
+            'altEmail' => ['sometimes','required', 'email'],
+            'address1' => ['required'],
+            'address2' => ['sometimes', 'nullable'],
+            'city' => ['required'],
+            'state' => ['required'],
+            'zip' => ['required'],
+            'jobTitle' => ['required'],
+            'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
             'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
@@ -103,6 +110,7 @@ class CreateUser implements CreatesNewUsers
 
     public function asController(ActionRequest $request)
     {
+
         $user = $this->handle(
             $request->validated(),
             $request->user(),
@@ -128,7 +136,8 @@ class CreateUser implements CreatesNewUsers
             $client_model = Client::whereId($client)->with('default_team_name')->first();
             $default_team_name = $client_model->default_team_name->value;
             // Use that to find the team record in teams to get its ID
-            $team_id = Team::where('name', '=', $default_team_name)->first()->id;
+            $team_id = Team::find($default_team_name)->id;
+            //$team_id = Team::where('name', '=', $default_team_name)->first()->id;
         }
 
         $this->command->warn("Creating new {$role} {$first_name} @{$email} for client_id {$client}");

@@ -133,29 +133,6 @@
             </div>
             -->
 
-            <!-- Workout Generator Preview -->
-            <div
-                :class="
-                    route().current('workout-generator')
-                        ? 'bg-primary'
-                        : 'bg-transparent'
-                "
-                class="nav-link-container"
-            >
-                <jet-nav-link
-                    class="jet-nav-link"
-                    :href="route('workout-generator')"
-                >
-                    <p>
-                        <font-awesome-icon
-                            :icon="['fad', 'calendar-alt']"
-                            size="lg"
-                        />
-                        Workout Generator
-                    </p>
-                </jet-nav-link>
-            </div>
-
             <!-- Mass Communicator -->
             <div
                 :class="
@@ -179,24 +156,6 @@
                 </jet-nav-link>
             </div>
 
-            <!-- File Manager -->
-            <div
-                :class="
-                    route().current('files') ? 'bg-primary' : 'bg-transparent'
-                "
-                class="nav-link-container"
-                v-if="$page.props.user.current_client_id !== null"
-            >
-                <jet-nav-link class="jet-nav-link" :href="route('files')">
-                    <p>
-                        <font-awesome-icon
-                            :icon="['fas', 'file-upload']"
-                            size="lg"
-                        />
-                        File Manager
-                    </p>
-                </jet-nav-link>
-            </div>
 
             <!-- <div :class="route().current('sales-slideshow') ? 'bg-primary' : 'bg-transparent'" class="nav-link-container">
                  <jet-nav-link class="jet-nav-link" :href="route('sales-slideshow')">Sales Slideshow</jet-nav-link>
@@ -209,7 +168,7 @@
                         : 'bg-transparent'
                 "
                 class="nav-link-container"
-                v-if="$page.props.user.abilities.includes('users.read')"
+                v-if="$page.props.user.abilities.includes('users.read') || $page.props.user.abilities.includes('*')"
             >
                 <jet-nav-link
                     class="jet-nav-link"

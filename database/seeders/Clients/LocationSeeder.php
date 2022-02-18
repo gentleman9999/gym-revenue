@@ -18,104 +18,45 @@ class LocationSeeder extends Seeder
     public function run()
     {
         $locations = [
-            [
-                'client_id' => 'The Z',
-                'state' => 'HI',
-                'city' => 'Honolulu',
-                'zip' => '96795',
-                'location_no' => 'TZ01',
-                //'gymrevenue_id' => 'TZ01'
-            ],
-            [
-                'client_id' => 'The Z',
-                'state' => 'HI',
-                'city' => 'Honolulu',
-                'zip' => '96795',
-                'location_no' => 'TZ02',
-                //'gymrevenue_id' => 'TZ02'
-            ],
-            [
-                'client_id' => 'The Z',
-                'state' => 'HI',
-                'city' => 'Honolulu',
-                'zip' => '96796',
-                'location_no' => 'TZ03',
-                //'gymrevenue_id' => 'TZ03'
-            ],
-            [
-                'client_id' => 'The Z',
-                'state' => 'HI',
-                'city' => 'Honolulu',
-                'zip' => '96797',
-                'location_no' => 'TZ04',
-               // 'gymrevenue_id' => 'TZ04'
-            ],
-            [
-                'client_id' => 'The Z',
-                'state' => 'HI',
-                'city' => 'Honolulu',
-                'zip' => '96798',
-                'location_no' => 'TZ05',
-                //'gymrevenue_id' => 'TZ05'
-            ],
-            [
-                'client_id' => 'The Z',
-                'state' => 'HI',
-                'city' => 'Waimanalo',
-                'zip' => '96795',
-                'location_no' => 'TZ06',
-                //'gymrevenue_id' => 'TZ06'
-            ],
-
-            [
-                'client_id' => 'Stencils',
-                'state' => 'CA',
-                'city' => 'Los Angeles',
-                'zip' => '90001',
-                'location_no' => 'ST01',
-                //'gymrevenue_id' => 'ST07'
-            ],
-            [
-                'client_id' => 'Stencils',
-                'state' => 'CA',
-                'city' => 'San Diego',
-                'zip' => '22400',
-                'location_no' => 'ST02',
-                //'gymrevenue_id' => 'ST08'
-            ],
-            [
-                'client_id' => 'Stencils',
-                'state' => 'CA',
-                'city' => 'San Jose',
-                'zip' => '94088',
-                'location_no' => 'ST03',
-                //'gymrevenue_id' => 'ST09'
-            ],
-            [
-                'client_id' => 'Stencils',
-                'state' => 'OR',
-                'city' => 'Portland',
-                'zip' => '97035',
-                'location_no' => 'ST05',
-                //'gymrevenue_id' => 'ST10'
-            ],
-            [
-                'client_id' => 'Stencils',
-                'state' => 'OR',
-                'city' => 'Portland',
-                'zip' => '97035',
-                'location_no' => 'ST05',
-                //'gymrevenue_id' => 'ST11'
-            ],
-
+            // The Kalamazoo
             [
                 'client_id' => 'The Kalamazoo',
+                'name' => 'The Kalamazoo 1',
                 'state' => 'LA',
                 'city' => 'Shreveport',
                 'zip' => '71101',
                 'location_no' => '001',
                 //'gymrevenue_id' => 'TK12'
             ],
+            // Bodies By Brett
+            [
+                'client_id' => 'Bodies By Brett',
+                'name' => 'Tampa 1',
+                'state' => 'FL',
+                'city' => 'Tampa',
+                'zip' => '33607',
+                'location_no' => '001',
+                //'gymrevenue_id' => 'BB23'
+            ],
+            [
+                'client_id' => 'Bodies By Brett',
+                'name' => 'Tampa 2',
+                'state' => 'FL',
+                'city' => 'Tampa',
+                'zip' => '33607',
+                'location_no' => '002',
+                //'gymrevenue_id' => 'BB24'
+            ],
+            [
+                'client_id' => 'Bodies By Brett',
+                'name' => 'Tampa 3',
+                'state' => 'FL',
+                'city' => 'Tampa',
+                'zip' => '33607',
+                'location_no' => '003',
+                //'gymrevenue_id' => 'BB25'
+            ],
+            // FitnessTruth
             [
                 'client_id' => 'FitnessTruth',
                 'state' => 'TX',
@@ -196,32 +137,124 @@ class LocationSeeder extends Seeder
                 'location_no' => 'TR70',
                 //'gymrevenue_id' => 'FT22'
             ],
+            // The Z
+            [
+                'client_id' => 'The Z',
+                'state' => 'HI',
+                'city' => 'Honolulu',
+                'zip' => '96795',
+                'location_no' => 'TZ01',
+                //'gymrevenue_id' => 'TZ01'
+            ],
+            [
+                'client_id' => 'The Z',
+                'state' => 'HI',
+                'city' => 'Honolulu',
+                'zip' => '96795',
+                'location_no' => 'TZ02',
+                //'gymrevenue_id' => 'TZ02'
+            ],
+            [
+                'client_id' => 'The Z',
+                'state' => 'HI',
+                'city' => 'Honolulu',
+                'zip' => '96796',
+                'location_no' => 'TZ03',
+                //'gymrevenue_id' => 'TZ03'
+            ],
+            [
+                'client_id' => 'The Z',
+                'state' => 'HI',
+                'city' => 'Honolulu',
+                'zip' => '96797',
+                'location_no' => 'TZ04',
+               // 'gymrevenue_id' => 'TZ04'
+            ],
+            [
+                'client_id' => 'The Z',
+                'state' => 'HI',
+                'city' => 'Honolulu',
+                'zip' => '96798',
+                'location_no' => 'TZ05',
+                //'gymrevenue_id' => 'TZ05'
+            ],
+            [
+                'client_id' => 'The Z',
+                'state' => 'HI',
+                'city' => 'Waimanalo',
+                'zip' => '96795',
+                'location_no' => 'TZ06',
+                //'gymrevenue_id' => 'TZ06'
+            ],
+            // TruFit Athletic Clubs
+            [
+                'client_id' => 'TruFit Athletic Clubs',
+                'state' => 'TX',
+                'city' => 'Amarillo',
+                'zip' => '79106',
+                'location_no' => 'TR66',
+                //'gymrevenue_id' => 'ST07'
+            ],
+            [
+                'client_id' => 'TruFit Athletic Clubs',
+                'state' => 'TN',
+                'city' => 'Antioch',
+                'zip' => '37013',
+                'location_no' => 'TR77',
+                //'gymrevenue_id' => 'ST07'
+            ],
 
+            // Stencils
             [
-                'client_id' => 'Bodies By Brett',
-                'state' => 'FL',
-                'city' => 'Tampa',
-                'zip' => '33607',
-                'location_no' => '001',
-                //'gymrevenue_id' => 'BB23'
+                'client_id' => 'Stencils',
+                'state' => 'CA',
+                'city' => 'Los Angeles',
+                'zip' => '90001',
+                'location_no' => 'ST01',
+                //'gymrevenue_id' => 'ST07'
             ],
             [
-                'client_id' => 'Bodies By Brett',
-                'state' => 'FL',
-                'city' => 'Tampa',
-                'zip' => '33607',
-                'location_no' => '002',
-                //'gymrevenue_id' => 'BB24'
+                'client_id' => 'Stencils',
+                'state' => 'CA',
+                'city' => 'San Diego',
+                'zip' => '22400',
+                'location_no' => 'ST02',
+                //'gymrevenue_id' => 'ST08'
             ],
             [
-                'client_id' => 'Bodies By Brett',
-                'state' => 'FL',
-                'city' => 'Tampa',
-                'zip' => '33607',
-                'location_no' => '003',
-                //'gymrevenue_id' => 'BB25'
+                'client_id' => 'Stencils',
+                'state' => 'CA',
+                'city' => 'San Jose',
+                'zip' => '94088',
+                'location_no' => 'ST03',
+                //'gymrevenue_id' => 'ST09'
             ],
-
+            [
+                'client_id' => 'Stencils',
+                'state' => 'OR',
+                'city' => 'Portland',
+                'zip' => '97035',
+                'location_no' => 'ST05',
+                //'gymrevenue_id' => 'ST10'
+            ],
+            [
+                'client_id' => 'Stencils',
+                'name' => 'Stencils @ Microsoft',
+                'state' => 'Wa',
+                'city' => 'Redmond',
+                'zip' => '98052',
+                'location_no' => 'STMS',
+                //'gymrevenue_id' => 'ST11'
+            ],
+            [
+                'client_id' => 'Stencils',
+                'state' => 'OR',
+                'city' => 'Portland',
+                'zip' => '97035',
+                'location_no' => 'ST05',
+                //'gymrevenue_id' => 'ST11'
+            ],
+            // SciFi Purple Gyms
             [
                 'client_id' => 'Sci-Fi Purple Gyms',
                 'state' => 'NC',
@@ -254,7 +287,7 @@ class LocationSeeder extends Seeder
                 'location_no' => 'PF04',
                 //'gymrevenue_id' => 'PF29'
             ],
-
+            // iFit
             [
                 'client_id' => 'iFit',
                 'state' => 'FL',
@@ -340,7 +373,7 @@ class LocationSeeder extends Seeder
         foreach($locations as $idx => $location)
         {
             $client = Client::whereName($location['client_id'])->first();
-            $location['name'] = $location['client_id']." ".($idx + 1);
+            $location['name'] = $location['name'] ?? $location['client_id']." ".($idx + 1);
             $location['client_id'] = $client->id;
             $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
             $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();

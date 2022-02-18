@@ -31,7 +31,8 @@ class SecurityRole extends Model
 
     public function abilities()
     {
-        return Ability::findMany($this->ability_ids);
+        return collect($this->ability_ids);
+        //return Ability::findMany($this->ability_ids);
     }
 
     public function scopeFilter($query, array $filters)
