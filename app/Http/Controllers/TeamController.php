@@ -203,4 +203,20 @@ class TeamController extends Controller
 
         return Redirect::back();
     }
+
+    public function view(Request $request, $teamId)
+    {
+        $team = Jetstream::newTeamModel()->with('details')->findOrFail($teamId);
+
+        $current_user = $request->user();
+        $current_team = $current_user->currentTeam()->first();
+
+        $users = User::whereHas('teams', function ($query) use ($current_team) {
+            return $query->where('teams.id', '=', $current_team->id);
+        })->get();
+
+        $data['team'] = $team;
+        $data['users'] = $users;
+        return $data;
+    }
 }

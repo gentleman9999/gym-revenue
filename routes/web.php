@@ -128,6 +128,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
     Route::post('/', \App\Http\Controllers\TeamController::class . '@store')->name('teams.store');
     Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
+    Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
     //Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');

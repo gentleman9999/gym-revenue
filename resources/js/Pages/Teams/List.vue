@@ -9,6 +9,7 @@
             :fields="fields"
             :resource="teams"
             :actions="actions"
+            :preview-component="TeamPreview"
         >
             <template #filter>
                 <search-filter
@@ -46,13 +47,15 @@ import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
 
 export default defineComponent({
     components: {
         AppLayout,
         GymRevenueCrud,
         Confirm,
-        SearchFilter
+        SearchFilter,
+        TeamPreview
     },
     props: ["filters", "clubs", "teams"],
     setup() {
@@ -89,7 +92,8 @@ export default defineComponent({
             Inertia,
             handleConfirmDelete,
             form,
-            reset
+            reset,
+            TeamPreview,
         };
     },
 });
