@@ -93,6 +93,11 @@ class TeamController extends Controller
      */
     public function edit(Request $request, $teamId)
     {
+        if (request()->user()->cannot('teams.update', request()->user()->currentTeam()->first())) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         $team = Jetstream::newTeamModel()->with('details')->findOrFail($teamId);
 //        Gate::authorize('view', $team);
 
