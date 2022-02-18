@@ -63,7 +63,8 @@ class UserProjector extends Projector
                 $client_model = Client::whereId($client_id)->with('default_team_name')->first();
                 $default_team_name = $client_model->default_team_name->value;
                 // Use that to find the team record in teams to get its ID
-                $team = Team::where('name', '=', $default_team_name)->first();
+                $team = Team::find($default_team_name);
+                //$team = Team::where('name', '=', $default_team_name)->first();
 
                 // Set default_team to $client's default-team's team_id in user_details
                 UserDetails::create([
@@ -82,16 +83,28 @@ class UserProjector extends Projector
                 if ($client_id) {
                     $security_role = SecurityRole::whereClientId($client_id)->whereRoleId($role->id)->first();//get default security role for role if exists
                 }
-            } else if (array_key_exists('security_role', $data) && $data['security_role']) {
+            }
+            else if (array_key_exists('security_role', $data) && $data['security_role']) {
                 $security_role = SecurityRole::with('role')->findOrFail($data['security_role']);
                 $role = $security_role->role;
-            } else if ($data['team_id'] === 1 || $data['team_id'] === 10) {
+            }
+            else if ($data['team_id'] === 1 || $data['team_id'] === 10) {
                 //set role to admin for capeandbay
                 $role = Role::whereName('Admin')->firstOrFail();
             }
 
             //let the bouncer know this $user is OG
             Bouncer::assign($role)->to($user);
+            // If the user is not an admin, disallow the full ability,
+            // further down we will add the scoped abilities;
+            if(!Bouncer::is($user)->an('Admin'))
+            {
+                $role_full_abilities = $role->abilities()->get();
+                foreach($role_full_abilities as $full_ability)
+                {
+                    Bouncer::disallow($user)->to($full_ability);
+                }
+            }
 
             //add user security role to details
             if ($security_role) {
@@ -118,9 +131,18 @@ class UserProjector extends Projector
                 );
 
                 if ($client_id) {
-                    //assign security role abilities for client uers only (cnb security roles not yet implemented)
-                    $security_role->abilities()->each(function ($ability) use ($user, $team) {
-                        Bouncer::allow($user)->to($ability->name, $team);
+                    //assign security role abilities for client users only (cnb security roles not yet implemented)
+                    $security_role->abilities()->each(function ($ability) use ($user) {
+
+                        if(is_null($ability['entity_id']))
+                        {
+                            Bouncer::allow($user)->to($ability['ability'], $ability['entity']);
+                        }
+                        else
+                        {
+                            $entity = $ability['entity']::find($ability['entity_id']);
+                            Bouncer::allow($user)->to($ability['ability'], $entity);
+                        }
                     });
                 }
             }

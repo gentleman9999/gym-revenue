@@ -136,7 +136,8 @@ class CreateUser implements CreatesNewUsers
             $client_model = Client::whereId($client)->with('default_team_name')->first();
             $default_team_name = $client_model->default_team_name->value;
             // Use that to find the team record in teams to get its ID
-            $team_id = Team::where('name', '=', $default_team_name)->first()->id;
+            $team_id = Team::find($default_team_name)->id;
+            //$team_id = Team::where('name', '=', $default_team_name)->first()->id;
         }
 
         $this->command->warn("Creating new {$role} {$first_name} @{$email} for client_id {$client}");

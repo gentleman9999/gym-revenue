@@ -97,18 +97,20 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
-        const fields = ["name", "created_at", "updated_at"];
+        const fields = ["name", "email", /*"home-club",*/"role",/*"is-manager",*/ 'home_team'];
 
         // const shouldShowDelete = ({ data }) => {
         //     console.log({ability: abilities.value.includes("users.delete")});
         //     abilities.value["users.delete"]
         // }
 
-        const shouldShowDelete = ({ data }) => abilities.value.includes("users.delete") &&
+        const shouldShowDelete = ({ data }) =>
+            (abilities.value.includes("users.delete") || abilities.value.includes("*"))&&
             data.teams?.find((team) => team.id === teamId.value)?.pivot?.role !==
             "Account Owner";
 
-        const shouldShowEdit = ({ data }) => abilities.value.includes("users.update") &&
+        const shouldShowEdit = ({ data }) =>
+            (abilities.value.includes("users.update") || abilities.value.includes("*")) &&
             data.teams?.find((team) => team.id === teamId.value)?.pivot?.role !==
             "Account Owner";
 
@@ -134,6 +136,7 @@ export default defineComponent({
                 active: true
             },
         ];
+
         if(page.props.value.user.current_client_id) {
             navLinks.push({
                 label: "Security Roles",

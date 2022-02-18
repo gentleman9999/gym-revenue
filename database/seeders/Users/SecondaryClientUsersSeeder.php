@@ -22,13 +22,22 @@ class SecondaryClientUsersSeeder extends UserSeeder
     protected function getUsersToAdd() : array
     {
         return [
+            // The Kalamazoo
             [
                 'first_name' => 'Mr',
                 'last_name' => 'Owl',
                 'email' => 'owl@kalamazoo.com',
                 'role' => 'Location Manager',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['The Kalamazoo Home Office', 'Zoo Sales Team'],
+                'team_ids' => ['The Kalamazoo Home Office', 'Zoo Sales Team', 'The Kalamazoo Gym #1'],
+            ],
+            [
+                'first_name' => 'SK',
+                'last_name' => 'Tiger',
+                'email' => 'kahn@kalamazoo.com',
+                'role' => 'Regional Admin',
+                'client' => 'The Kalamazoo',
+                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
             ],
             [
                 'first_name' => 'Baloo',
@@ -36,7 +45,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'baloo@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['Zoo Sales Team'],
+                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
             ],
             [
                 'first_name' => 'Louie',
@@ -44,16 +53,35 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'louie@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['Zoo Sales Team'],
+                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
+            ],
+            [
+                'first_name' => 'Mow',
+                'last_name' => 'Gli',
+                'email' => 'boy@kalamazoo.com',
+                'role' => 'Employee',
+                'client' => 'The Kalamazoo',
+                'team_ids' => ['Zoo Sales Team', 'The Kalamazoo Gym #1'],
             ],
 
+            // Bodies By Brett
+            // FitnessTruth
+            // The Z
+            // TruFit Athletic Clubs
+            //Stencils
+            //SciFi Purple Gyms
+
+            // iFit
             [
                 'first_name' => 'Bob',
                 'last_name' => 'Kirk',
                 'email' => 'bkirk@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Home Office', 'iFit Virginia'],
+                'team_ids' => [
+                    'iFit Home Office', 'iFit Virginia',
+                    'VA - Va Beach 1', 'VA - Va Beach 2'
+                ],
             ],
             [
                 'first_name' => 'Kirk',
@@ -61,7 +89,14 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'kroberts@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Home Office', 'iFit Georgia', 'iFit Florida'],
+                'team_ids' => [
+                    'iFit Home Office', 'iFit Georgia',
+                    'iFit Florida', 'FL - Tampa 1',
+                    'FL - Lake City', 'FL - Hilliard',
+                    'FL - Orange Park', 'FL - Tampa 2',
+                    'GA - Atlanta 1', 'GA - Atlanta 2',
+                    'GA - Atlanta 16'
+                ],
             ],
             [
                 'first_name' => 'Stan',
@@ -69,7 +104,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'owl@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Virginia', 'iFit Sales Team'],
+                'team_ids' => ['iFit Virginia', 'iFit Sales Team', 'VA - Va Beach 1', 'VA - Va Beach 2'],
             ],
             [
                 'first_name' => 'Abbi',
@@ -77,7 +112,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'aabing@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Florida', 'iFit Sales Team'],
+                'team_ids' => ['iFit Florida', 'iFit Sales Team','FL - Tampa 2', 'iFit Sales Team Florida'],
             ],
             [
                 'first_name' => 'Mark',
@@ -85,7 +120,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'mroughy@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Georgia','iFit Sales Team'],
+                'team_ids' => ['iFit Georgia','iFit Sales Team','GA - Atlanta 1','iFit Sales Team Georgia/VA'],
             ],
             [
                 'first_name' => 'Jessica',
@@ -93,7 +128,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'jhornsby@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Sales Team'],
+                'team_ids' => ['iFit Sales Team', 'GA - Atlanta 16','iFit Sales Team Georgia/VA'],
             ],
             [
                 'first_name' => 'Marco',
@@ -101,7 +136,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'mlopez@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Sales Team'],
+                'team_ids' => ['iFit Sales Team', 'FL - Tampa 2','iFit Sales Team Florida'],
             ],
         ];
     }

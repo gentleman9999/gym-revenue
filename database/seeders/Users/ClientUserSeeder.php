@@ -68,6 +68,6 @@ class ClientUserSeeder extends UserSeeder
     protected function addUser(array $user)
     {
         $client = Client::whereName($user['client'])->first();
-        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['first_name']}\" --email={$user['email']} --client={$client->id} --role=\"{$user['role']}\"");
+        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['last_name']}\" --email={$user['email']} --client={$client->id} --role=\"{$user['role']}\"");
     }
 }
