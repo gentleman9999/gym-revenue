@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl leading-tight">Team Management</h2>
         </template>
         <gym-revenue-crud
-            base-route="baseRoute"
+            base-route="teams"
             model-name="Team"
             model-key="team"
             :fields="fields"
