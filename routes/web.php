@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,13 +35,16 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\H
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
 //@todo: need to add in ACL/middleware for CnB users
-Route::middleware(['auth:sanctum', 'verified'])->get('/locations', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
-Route::middleware(['auth:sanctum', 'verified'])->get('/locations/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
-Route::middleware(['auth:sanctum', 'verified'])->get('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
-Route::middleware(['auth:sanctum', 'verified'])->post('/locations', \App\Http\Controllers\LocationsController::class . '@store')->name('locations.store');
-Route::middleware(['auth:sanctum', 'verified'])->put('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@update')->name('locations.update');
-Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@trash')->name('locations.trash');
-Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore', \App\Http\Controllers\LocationsController::class . '@restore')->name('locations.restore');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
+    Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
+    Route::get('/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
+    Route::get('/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
+    Route::get('/view/{id}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
+    Route::post('/', \App\Http\Controllers\LocationsController::class . '@store')->name('locations.store');
+    Route::put('/{id}', \App\Http\Controllers\LocationsController::class . '@update')->name('locations.update');
+    Route::delete('/{id}', \App\Http\Controllers\LocationsController::class . '@trash')->name('locations.trash');
+    Route::post('/{id}/restore', \App\Http\Controllers\LocationsController::class . '@restore')->name('locations.restore');
+});
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
@@ -116,9 +121,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
+    Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update');
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
-
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
@@ -126,6 +131,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
     Route::post('/', \App\Http\Controllers\TeamController::class . '@store')->name('teams.store');
     Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
+    Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
     //Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');

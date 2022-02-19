@@ -404,7 +404,7 @@ if(!$location->id){
             $default_team_name = $client->default_team_name->value;
 
             // The active_team is the current client's default_team (gets all the client's locations)
-            if($current_team->name == $default_team_name)
+            if($current_team->id == $default_team_name)
             {
                 $results = Location::whereClientId($client_id);
             }

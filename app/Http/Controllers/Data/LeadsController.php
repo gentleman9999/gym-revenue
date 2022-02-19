@@ -258,7 +258,7 @@ class LeadsController extends Controller
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
             $default_team_name = $client->default_team_name->value;
-            
+
             $team_locations = [];
 
             if ($current_team->id != $default_team_name) {
@@ -342,7 +342,7 @@ class LeadsController extends Controller
         $user = request()->user();
         $client_id = $user->currentClientId();
         $is_client_user = $user->isClientUser();
-        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id);//->get();
 
         $locations = [];
         foreach ($locations_records as $location) {
@@ -525,7 +525,7 @@ if(!$middle_name){
             $default_team_name = $client->default_team_name->value;
 
             // The active_team is the current client's default_team (gets all the client's locations)
-            if ($current_team->name == $default_team_name) {
+            if($current_team->id == $default_team_name) {
                 $results = Location::whereClientId($client_id);
             } else {
                 // The active_team is not the current client's default_team

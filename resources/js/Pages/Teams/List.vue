@@ -5,10 +5,12 @@
         </template>
         <gym-revenue-crud
             base-route="teams"
-            model-name="team"
+            model-name="Team"
+            model-key="team"
             :fields="fields"
             :resource="teams"
             :actions="actions"
+            :preview-component="TeamPreview"
         >
             <template #filter>
                 <search-filter
@@ -39,13 +41,15 @@
 </template>
 
 <script>
-import {defineComponent, ref, computed} from "vue";
+import {defineComponent, ref, onMounted, computed} from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
+import {preview} from "@/Components/CRUD/helpers/previewData";
 import {usePage} from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
@@ -53,11 +57,13 @@ export default defineComponent({
         AppLayout,
         GymRevenueCrud,
         Confirm,
-        SearchFilter
+        SearchFilter,
+        TeamPreview
     },
-    props: ["filters", "clubs", "teams"],
-    setup() {
-        const page = usePage();
+    props: ["filters", "clubs", "teams", "preview"],
+    setup(props) {
+        const baseRoute = "teams";
+	const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const {form, reset} = useSearchFilter('teams', {
             club: null
@@ -88,6 +94,13 @@ export default defineComponent({
                 shouldRender: shouldShowDelete,
             }
         }
+
+        onMounted(() => {
+            if (props.preview) {
+              preview(baseRoute, props.preview);
+            }
+        })
+
         return {
             confirmDelete,
             fields,
@@ -95,7 +108,9 @@ export default defineComponent({
             Inertia,
             handleConfirmDelete,
             form,
-            reset
+            reset,
+            TeamPreview,
+            baseRoute
         };
     },
 });
