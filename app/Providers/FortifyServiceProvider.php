@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Actions\Auth\RenderRegisterPage;
-use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\CreateUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Actions\Fortify\UpdateUser;
 use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -36,8 +36,8 @@ class FortifyServiceProvider extends ServiceProvider
             return RenderRegisterPage::run();
         });
 
-        Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
+        Fortify::createUsersUsing(CreateUser::class);
+        Fortify::updateUserProfileInformationUsing(UpdateUser::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 

@@ -23,8 +23,7 @@ class SecurityRoleProjector extends Projector
 
     public function onSecurityRoleUpdated(SecurityRoleUpdated $event)
     {
-        $securityRole = SecurityRole::findOrFail($event->payload['id'])->updateOrFail($event->payload);
-//        $securityRole->updateOrFail($event->payload);
+        SecurityRole::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }
 
     public function onSecurityRoleTrashed(SecurityRoleTrashed $event)

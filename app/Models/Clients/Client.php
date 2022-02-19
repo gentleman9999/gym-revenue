@@ -88,8 +88,11 @@ class Client extends Model
         static::created(function ($client) {
             // @todo - make all this code be triggered by Projectors
             $default_team_name = $client->name . ' Home Office';
+            preg_match_all('/(?<=\s|^)[a-z]/i', $default_team_name, $matches);
+            $prefix = strtoupper(implode('', $matches[0]));
             $aggy = ClientAggregate::retrieve($client->id)
                 ->createDefaultTeam($default_team_name)
+                ->createTeamPrefix((strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix)
                 ->createAudience("{$client->name} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
                 ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
                 ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')

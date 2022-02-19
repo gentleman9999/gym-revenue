@@ -5,12 +5,10 @@
         </template>
         <gym-revenue-crud
             base-route="teams"
-            model-name="Team"
-            model-key="team"
+            model-name="team"
             :fields="fields"
             :resource="teams"
             :actions="actions"
-            :preview-component="TeamPreview"
         >
             <template #filter>
                 <search-filter
@@ -41,27 +39,26 @@
 </template>
 
 <script>
-import {defineComponent, ref, onMounted} from "vue";
+import {defineComponent, ref, computed} from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
-import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
-import {preview} from "@/Components/CRUD/helpers/previewData";
+import {usePage} from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
         AppLayout,
         GymRevenueCrud,
         Confirm,
-        SearchFilter,
-        TeamPreview
+        SearchFilter
     },
-    props: ["filters", "clubs", "teams", "preview"],
-    setup(props) {
-        const baseRoute = "teams";
+    props: ["filters", "clubs", "teams"],
+    setup() {
+        const page = usePage();
+        const abilities = computed(() => page.props.value.user?.abilities);
         const {form, reset} = useSearchFilter('teams', {
             club: null
         });
@@ -74,6 +71,8 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
+        const shouldShowDelete = ({ data }) => (abilities.value.includes("locations.delete") || abilities.value.includes("*")) && !data.default_team;
+
         const fields = [
             "name",
             "created_at",
@@ -85,16 +84,10 @@ export default defineComponent({
             restore: false,
             delete: {
                 label: 'Delete',
-                handler: ({data}) => handleClickDelete(data)
+                handler: ({data}) => handleClickDelete(data),
+                shouldRender: shouldShowDelete,
             }
         }
-
-        onMounted(() => {
-            if (props.preview) {
-              preview(baseRoute, props.preview);
-            }
-        })
-
         return {
             confirmDelete,
             fields,
@@ -102,9 +95,7 @@ export default defineComponent({
             Inertia,
             handleConfirmDelete,
             form,
-            reset,
-            TeamPreview,
-            baseRoute
+            reset
         };
     },
 });

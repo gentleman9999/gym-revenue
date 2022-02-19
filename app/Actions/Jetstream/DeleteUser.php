@@ -2,58 +2,90 @@
 
 namespace App\Actions\Jetstream;
 
-use Illuminate\Support\Facades\DB;
-use Laravel\Jetstream\Contracts\DeletesTeams;
+use Bouncer;
+use App\Actions\Fortify\PasswordValidationRules;
+use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
+use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
+use Laravel\Jetstream\Jetstream;
+use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class DeleteUser implements DeletesUsers
 {
-    /**
-     * The team deleter implementation.
-     *
-     * @var \Laravel\Jetstream\Contracts\DeletesTeams
-     */
-    protected $deletesTeams;
+    use PasswordValidationRules, AsAction;
 
     /**
-     * Create a new action instance.
+     * Get the validation rules that apply to the action.
      *
-     * @param  \Laravel\Jetstream\Contracts\DeletesTeams  $deletesTeams
-     * @return void
+     * @return array
      */
-    public function __construct(DeletesTeams $deletesTeams)
+    public function rules()
     {
-        $this->deletesTeams = $deletesTeams;
+        return [
+            //no rules since we only accept an id route param, which is validated in the route definition
+        ];
     }
+
+    public function handle($data, $current_user)
+    {
+        $client_id = $current_user->currentClientId();
+
+        UserAggregate::retrieve($data['id'])->deleteUser($current_user->id ?? "Auto Generated", $data)->persist();
+        if ($client_id) {
+            ClientAggregate::retrieve($client_id)->deleteUser($current_user->id || "Auto Generated", $data)->persist();
+        } else {
+            //CapeAndBay User
+            CapeAndBayUserAggregate::retrieve($data['team_id'])->deleteUser($current_user->id ?? "Auto Generated", $data)->persist();
+        };
+    }
+
+    public function asController(Request $request, $id)
+    {
+        $me = request()->user();
+        $user = User::findOrFail($id);
+        $userData = $user->toArray();
+        $userData['team_id'] = $request->user()->current_team_id;
+
+        $current_team = $me->currentTeam()->first();
+        $team_users = collect($current_team->team_users()->with('user')->get());
+        $non_admins = [];
+
+        foreach ($team_users as $team_user)
+        {
+            if(!Bouncer::is($team_user->user)->an('Admin'))
+                $non_admins[] = $team_user->id;
+        }
+
+        if(count($non_admins) < 1 ) {
+            Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
+            return Redirect::back();
+        }
+
+        $this->handle(
+            $userData,
+            $request->user(),
+        );
+
+        Alert::success("User '{$user->name}' was deleted")->flash();
+
+//        return Redirect::route('users');
+        return Redirect::back();
+    }
+
 
     /**
      * Delete the given user.
      *
-     * @param  mixed  $user
+     * @param mixed $user
      * @return void
      */
     public function delete($user)
     {
-        DB::transaction(function () use ($user) {
-            $this->deleteTeams($user);
-            $user->deleteProfilePhoto();
-            $user->tokens->each->delete();
-            $user->delete();
-        });
-    }
-
-    /**
-     * Delete the teams and team associations attached to the user.
-     *
-     * @param  mixed  $user
-     * @return void
-     */
-    protected function deleteTeams($user)
-    {
-        $user->teams()->detach();
-
-        $user->ownedTeams->each(function ($team) {
-            $this->deletesTeams->delete($team);
-        });
+        $this->run($user->id);
     }
 }

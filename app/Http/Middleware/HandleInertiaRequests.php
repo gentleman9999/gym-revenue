@@ -43,7 +43,13 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         if ($request->user()) {
             $abilities = $request->user()->getAbilities()->filter(function($ability) use ($request){
-                return $ability->entity_id === $request->user()->current_team_id;
+                $r = $ability->entity_id === $request->user()->current_team_id;
+
+                if($ability->title == 'All abilities')
+                {
+                    $r = true;
+                }
+                return $r;
             })->pluck('name');
             $shared = [
                 'user.id' => $user->id,

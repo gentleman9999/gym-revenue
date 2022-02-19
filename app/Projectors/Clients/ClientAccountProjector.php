@@ -44,6 +44,7 @@ use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
+use App\StorableEvents\Clients\PrefixCreated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientAccountProjector extends Projector
@@ -52,34 +53,36 @@ class ClientAccountProjector extends Projector
     {
         $default_team_name = $event->team;
 
-        preg_match_all('/(?<=\s|^)[a-z]/i', $default_team_name, $matches);
-        $prefix = strtoupper(implode('', $matches[0]));
-
         $team = Team::create([
             'user_id' => 1,
             'name' => $default_team_name,
-            'personal_team' => 0
+            'personal_team' => 0,
+            'default_team' => 1
         ]);
         ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'default-team',
-            'value' => $default_team_name
+            'value' => $team->id
         ]);
         ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'team',
             'value' => $team->id
         ]);
-        ClientDetail::create([
-            'client_id' => $event->client,
-            'detail' => 'prefix',
-            'value' => (strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix
-        ]);
 
         ClientAggregate::retrieve($event->client)
             ->addTeam($team->id, $default_team_name)
             ->addCapeAndBayAdminsToTeam($team->id)
             ->persist();
+    }
+
+    public function onPrefixCreated(PrefixCreated $event)
+    {
+        ClientDetail::create([
+            'client_id' => $event->client,
+            'detail' => 'prefix',
+            'value' => $event->prefix,
+        ]);
     }
 
     public function onCapeAndBayUsersAssociatedWithClientsNewDefaultTeam(CapeAndBayUsersAssociatedWithClientsNewDefaultTeam $event)

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;
 
+//TODO: this needs to be either deleted in favor of using UpdateUser, or modified to use event sourcing like UpdateUser
 class ResetUserPassword implements ResetsUserPasswords
 {
     use PasswordValidationRules;

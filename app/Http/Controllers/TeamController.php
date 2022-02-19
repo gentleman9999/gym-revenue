@@ -25,6 +25,7 @@ class TeamController extends Controller
         'name' => ['required', 'max:50'],
         'user_id' => ['sometimes', 'exists:users,id'],
         'personal_team' => ['sometimes', 'boolean'],
+        'default_team' => ['sometimes', 'boolean'],
         'locations' => ['sometimes', 'array'],
     ];
 
@@ -60,8 +61,8 @@ class TeamController extends Controller
         }
 
 
-        $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team'))
-            ->paginate(10);
+        //$teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team'))
+        //    ->paginate(10);
 
         return Inertia::render('Teams/List', [
 //            'teams' => Team::filter($request->only('search', 'club', 'team'))
@@ -114,6 +115,7 @@ class TeamController extends Controller
         $users = User::whereHas('teams', function ($query) use ($current_team) {
             return $query->where('teams.id', '=', $current_team->id);
         })->get();
+
         if ($client_id) {
             $availableUsers = User::whereHas('detail', function ($query) use ($client_id) {
                 return $query->whereName('associated_client')->whereValue($client_id);
@@ -124,7 +126,7 @@ class TeamController extends Controller
                     return $query->where('name', '=', 'associated-client');
                 })->where('email', 'like', '%@capeandbay.com')->get());
             }
-            $availableLocations = Location::whereClientId($client_id)->get();
+            $availableLocations = $team->isClientsDefaultTeam() ? [] : Location::whereClientId($client_id)->get();
         } else if ($current_user->isCapeAndBayUser()) {
             //look for users that aren't client users
             $availableUsers = User::whereDoesntHave('details', function ($query) use ($current_user) {

@@ -6,6 +6,7 @@ use App\Exceptions\Clients\ClientAccountException;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
+use App\StorableEvents\Clients\PrefixCreated;
 use App\StorableEvents\Clients\TeamCreated;
 use App\StorableEvents\Clients\UserRemovedFromTeam;
 use App\StorableEvents\Clients\UserRoleOnTeamUpdated;
@@ -23,6 +24,19 @@ trait ClientTeamActions
             $this->recordThat(new DefaultClientTeamCreated($this->uuid(), $name));
         }
 
+        return $this;
+    }
+
+    public function createTeamPrefix(string $prefix)
+    {
+        if(!empty($this->team_prefix))
+        {
+            throw ClientAccountException::prefixAlreadyCreated($this->team_prefix, $this->default_team);
+        }
+        else {
+            $this->recordThat(new PrefixCreated($this->uuid(), $prefix));
+
+        }
         return $this;
     }
 

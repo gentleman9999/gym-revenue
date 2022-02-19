@@ -6,6 +6,7 @@ use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Database\Role;
 
 class SecurityRole extends Model
@@ -30,7 +31,8 @@ class SecurityRole extends Model
 
     public function abilities()
     {
-        return Role::findMany($this->ability_ids);
+        return collect($this->ability_ids);
+        //return Ability::findMany($this->ability_ids);
     }
 
     public function scopeFilter($query, array $filters)

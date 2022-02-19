@@ -2,58 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
+use App\Models\TeamUser;
 use App\Models\User;
-use App\Models\UserDetails;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 
 class UsersController extends Controller
 {
-    protected $rules = [
-        'fname' => ['required', 'max:50'],
-        'lname' => ['required', 'max:50'],
-        'email' => ['required', 'email'],
-        'phone' => ['required', 'digits:10'],
-        //'client_id' => ['sometimes', 'exists:clients,id'],
-        'security_role' => ['nullable', 'exists:security_roles,id']
-        // 'security_role' => ['required_with,client_id', 'exists:security_roles,id']
-    ];
-
     public function index(Request $request)
     {
+        // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->currentClientId();
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
-            $client_detail = $current_team->client_details()->first();
-            $client = (!is_null($client_detail)) ? $client_detail->client()->first() : null;
-            $client_name = $client->name;
+            $client = Client::whereId($client_id)->with('default_team_name')->first();
 
-            return Inertia::render('Users/Show', [
-                'users' => User::with('teams')->where('id', '!=', $request->user()->id)->whereHas('detail', function ($query) use ($client_id) {
+            $is_default_team = $client->default_team_name->value == $current_team->id;
+
+            // If the active team is a client's-default team get all members
+            if($is_default_team)
+            {
+                $users = User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
-                    ->paginate(10),
+                    ->paginate(10);
+            }
+            else
+            {
+                // else - get the members of that team
+                $team_users = TeamUser::whereTeamId($current_team->id)->get();
+                $user_ids = [];
+                foreach($team_users as $team_user)
+                {
+                    $user_ids[] = $team_user->user_id;
+                }
+                $users = User::whereIn('id', $user_ids)
+                    ->with('teams')
+                    ->filter($request->only('search', 'club', 'team'))
+                    ->paginate(10);
+            }
+
+
+            foreach($users as $idx => $user)
+            {
+                $role = $user->roles()->first();
+                $users[$idx]->role = $role->name;
+                $default_team_detail = $user->default_team()->first();
+                $default_team = Team::find($default_team_detail->value);
+                $users[$idx]->home_team = $default_team->name;
+            }
+
+            return Inertia::render('Users/Show', [
+                'users' => $users,
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : [],
-                'clientName' => $client_name
+                'clientName' => $client->name
             ]);
         } else {
             //cb team selected
+            $users = User::whereHas('teams', function ($query) use ($request) {
+                return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
+            })->filter($request->only('search', 'club', 'team'))
+                ->paginate(10);
+
+            foreach($users as $idx => $user)
+            {
+                $role = $user->roles()->first();
+                $users[$idx]->role = $role->name;
+                $default_team_detail = $user->default_team()->first();
+                $default_team = Team::find($default_team_detail->value);
+                $users[$idx]->home_team = $default_team->name;
+            }
+
             return Inertia::render('Users/Show', [
-                'users' => User::where('id', '!=', $request->user()->id)->whereHas('teams', function ($query) use ($request) {
-                    return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
-                })->filter($request->only('search', 'club', 'team'))
-                    ->paginate(10),
+                'users' => $users,
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
                 'teams' => [],
@@ -64,23 +93,32 @@ class UsersController extends Controller
 
     public function create(Request $request)
     {
+        // Get the logged-in user making the request
         $user = request()->user();
+        // Get the user's currently accessed team for scoping
         $current_team = $user->currentTeam()->first();
+        // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         $client_detail = $current_team->client_details()->first();
+        // CnB Client-based data is not present in the DB and thus the details could be empty.
         $client = (!is_null($client_detail)) ? $client_detail->client()->first() : null;
+        // IF we got details, we got the client name, otherwise its Cape & Bay
         $client_name = (!is_null($client_detail)) ? $client->name : 'Cape & Bay';
+
+        // The logged in user needs the ability to create users scoped to the current team to continue
         if($user->cannot('users.create', $current_team))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
 
+        // Query for the security roles as that's part of the form
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
         if(!request()->user()->isAccountOwner()){
             $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
 
+        // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
             'securityRoles' => $security_roles,
             'clientName' => $client_name
@@ -89,15 +127,23 @@ class UsersController extends Controller
 
     public function edit($id)
     {
-        $user = request()->user();
-        $current_team = $user->currentTeam()->first();
-        if($user->cannot('users.update', $current_team))
+        $me = request()->user();
+        $current_team = $me->currentTeam()->first();
+        if($me->cannot('users.update', $current_team))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
 
-        $user = $user->with('details', 'phone_number')->findOrFail($id);
+        $user = $me->with([
+                'details', 'phone_number', 'altEmail', 'address1', 'address2',
+                'city', 'state', 'zip', 'jobTitle'
+            ])->findOrFail($id);
+
+        if($me->id == $user->id)
+        {
+            return Redirect::route('profile.show');
+        }
 
         $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
         if(!$user->isAccountOwner()) {
@@ -109,181 +155,5 @@ class UsersController extends Controller
             'selectedUser' => $user,
             'securityRoles' => $security_roles
         ]);
-    }
-
-    public function store(Request $request)
-    {
-        $create_rules = array_merge($this->rules, ['email' => ['required', 'email', 'unique:users,email']]);
-
-        $data = $request->validate($create_rules);
-        //$data['password'] = bcrypt($data['password']);
-        $data['name'] = "{$data['fname']} {$data['lname']}";
-        $data['first_name'] = $data['fname'];
-        $data['last_name'] = $data['lname'];
-        unset($data['fname']);
-        unset($data['lname']);
-
-        $user = User::create($data);
-        $user_aggy = UserAggregate::retrieve($user->id)
-            ->createNewUser(auth()->user()->id);
-        // @todo - remove this if/when we set up Security Roles on CnB
-        if(request()->has('client_id') && (!is_null(request()->get('client_id'))))
-        {
-            $security_role = SecurityRole::with('role')->find($data['security_role']);
-            $user_aggy = $user_aggy->imGonnaGoAheadAndAssignThisSecurityRole($security_role->id);
-            UserDetails::create(['user_id' => $user->id, 'name' => 'security_role', 'value'=>$security_role->id]);
-
-            $client_id = $request->user()->currentClientId();
-            if ($client_id) {
-                $user_aggy = $user_aggy->imGonnaGoAheadAndAssignThisClient($client_id);
-                UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
-            }
-
-            $role = $security_role->role->name;
-        }
-        else
-        {
-            $role = 'Admin';
-            $client_id = null;
-        }
-
-        // @todo - move this to the aggregate since its not necessary to mae the user wait on this when the new user can't log in yet
-        $current_team = $request->user()->currentTeam()->first();
-        UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $current_team->id]);
-
-        // @todo - move this to the aggregate since its not necessary to mae the user wait on this when the new user can't log in yet
-        $current_team->users()->attach(
-            $user, ['role' => $role]
-        );
-
-        // @todo - make a preset and an async set of methods in the aggregate for storing phone
-        // @todo - $user_aggy = $user_aggy->setPhoneNumber
-        // @todo - $user_aggy = $user_aggy->imJustGonnaGoAheadAndPresetThisPhoneNumber
-        $current_phone = $request->phone;
-        UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $current_phone]);
-
-
-        if ($client_id) {
-            $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->addUserToTeam($user->id, $current_team->id, $role);
-            $aggy->persist();
-        }
-        else
-        {
-            // Assign CnB user to Default CnB Admins team
-            $cnb_default_team = Team::find(1);
-            if($cnb_default_team->id != $current_team->id)
-            {
-                // Assign CnB user to currently active CnB team
-                $cnb_default_team->users()->attach(
-                    $user, ['role' => $role]
-                );
-            }
-
-        }
-
-        // @todo - make a check box on the form, pass it into this method and eval, if true then fire this email
-        if('mario' == 'luigi')
-        {
-            $user_aggy = $user_aggy->sendWelcomeEmail();
-        }
-
-        // Finally, persist all the new user events captured in this flow.
-        $user_aggy->persist();
-        Alert::success("User '{$user->name}' was created")->flash();
-
-        return Redirect::route('users');
-    }
-
-    public function update(Request $request, $id)
-    {
-        if (!$id) {
-            Alert::error("No User ID provided")->flash();
-            return Redirect::route('users');
-        }
-
-        // @todo - add event sourcing here.
-        $data = $request->validate($this->rules);
-        $current_user = $request->user();
-        $user = User::findOrFail($id);
-        $data['name'] = "{$data['fname']} {$data['lname']}";
-        $data['first_name'] = $data['fname'];
-        $data['last_name'] = $data['lname'];
-        unset($data['fname']);
-        unset($data['lname']);
-
-        $phone = $data['phone'];
-        $phone_detail = UserDetails::firstOrCreate([
-            'user_id' => $user->id,
-            'name' => 'phone',
-            //'value' => $phone
-        ]);
-        $phone_detail->value = $phone;
-        $phone_detail->save();
-
-        $user->updateOrFail($data);
-        $current_team = $current_user->currentTeam()->first();
-        $old_role = $current_user->teams()->get()->keyBy('id')[$current_team->id]->pivot->role;
-        if($data['security_role']){
-            $security_role = SecurityRole::with('role')->find($data['security_role']);
-            UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'security_role'])->updateOrFail(['value'=>$security_role->id]);
-            $role = $security_role->role->name;
-            $user->teams()->sync([$current_team->id => ['role' => $role]]);
-        }
-
-        $client_id = $current_user->currentClientId();
-        if ($client_id && $role !== $old_role) {
-            $aggy = ClientAggregate::retrieve($client_id);
-            $aggy->updateUserRoleOnTeam($user->id, $current_team->id, $old_role, $role);
-            $aggy->persist();
-        }
-        Alert::success("User '{$user->name}' updated")->flash();
-
-        return Redirect::route('users');
-    }
-
-    public function delete($id)
-    {
-        if (!$id) {
-            Alert::error("No User ID provided")->flash();
-            return Redirect::route('users');
-        }
-
-        $user = User::findOrFail($id);
-
-        $success = $user->deleteOrFail();
-
-        Alert::success("User '{$user->name}' deleted")->flash();
-
-        return Redirect::back();
-    }
-
-    public function view($id)
-    {
-        $requesting_user = request()->user();
-        $current_team = $requesting_user->currentTeam()->first();
-        if ($requesting_user->cannot('users.read', $current_team)) {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-            return Redirect::back();
-        }
-        $requesting_user_teams = $requesting_user->teams ?? [];
-
-        $user = User::with('details', 'teams', 'phone_number')->findOrFail($id);
-        $user_teams = $user->teams ?? [];
-
-        $data = $user->toArray();
-        if ($user->security_role) {
-            $security_role = SecurityRole::find($user->security_role->value);
-            $data['security_role'] = $security_role->toArray();
-        }
-
-        $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
-            //only return teams that the current user also has access to
-            return $requesting_user_teams->contains(function ($requesting_user_team) use($user_team) {
-                return $requesting_user_team->id === $user_team->id;
-            });
-        });
-
-        return $data;
     }
 }
