@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar sticky top-0 z-20 lg:flex p-0 bg-secondary">
+    <nav class="navbar sticky top-0 z-20 lg:flex p-0" :class="(('is_being_impersonated' in $page.props.user)) ? 'bg-error': 'bg-secondary'">
         <!-- Logo -->
         <div
             class="flex-shrink-0 flex items-center bg-primary self-stretch w-72 justify-center"
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
-                    <div class="ml-3 relative">
+                    <div class="ml-3 relative" v-if="(!('is_being_impersonated' in $page.props.user))">
                         <teams-dropdown
                             v-if="$page.props.jetstream.hasTeamFeatures"
                         />

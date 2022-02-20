@@ -24,6 +24,8 @@ use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
 use App\StorableEvents\Clients\Activity\GatewayProviders\GatewayIntegrationCreated;
+use App\StorableEvents\Clients\Activity\Users\ClientUserStoppedBeingImpersonated;
+use App\StorableEvents\Clients\Activity\Users\ClientUserWasImpersonated;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
@@ -326,6 +328,26 @@ trait ClientApplies
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->provider_history[] = $history;
+    }
+
+    public function applyClientUserWasImpersonated(ClientUserWasImpersonated $event)
+    {
+        $this->employee_activity[] = [
+            'event' => 'user-was-impersonated',
+            'employee' => $event->employee,
+            'date' => $event->date,
+            'impersonator' => $event->invader
+        ];
+    }
+
+    public function applyClientUserStoppedBeingImpersonated(ClientUserStoppedBeingImpersonated $event)
+    {
+        $this->employee_activity[] = [
+            'event' => 'user-stopped-being-impersonated',
+            'employee' => $event->employee,
+            'date' => $event->date,
+            'impersonator' => $event->invader
+        ];
     }
 
 }

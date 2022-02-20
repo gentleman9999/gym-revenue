@@ -75,9 +75,10 @@
                         <div class="card-body">
                             <h2 class="card-title">Available Teams</h2>
                             <div class="divider mt-0"></div>
-                            <p class="text-center">Select a Team that you'd like to Access or use the Switch Team toggle at the top.</p>
+                            <p class="text-center" v-if="(!('is_being_impersonated' in $page.props.user))">Select a Team that you'd like to Access or use the Switch Team toggle at the top.</p>
+                            <p class="text-center" v-else>Team Switching is not available in impersonation mode.</p>
                             <div id="teamSelectTable" class="h-80 overflow-auto mt-6">
-                                <table class="table-compact">
+                                <table class="table-compact" v-if="(!('is_being_impersonated' in $page.props.user))">
                                     <tbody>
                                     <tr v-for="(team, id) in teams" class="hover">
                                         <td class="">{{ team['team_name'] }}</td>

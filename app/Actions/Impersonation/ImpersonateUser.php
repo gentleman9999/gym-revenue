@@ -2,6 +2,8 @@
 
 namespace App\Actions\Impersonation;
 
+use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use Bouncer;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -34,13 +36,26 @@ class ImpersonateUser
 
         if($invader->can('users.impersonate', User::class))
         {
+            $victim->current_team_id = $invader->current_team_id;
+            $invader->current_team_id = $victim->current_team_id;
+            $victim->save();
+            $invader->save();
             auth()->user()->impersonate($victim);
             $results = true;
         }
 
-        // @todo - tattle on this user being sneaky in its own aggy
-        // @todo - tattle on this user hopefully running support in the "victim's" aggy
-        // @todo - rat on this user to the paying customer - the client (aggy)
+        // tattle on this user being sneaky in its own aggy
+        UserAggregate::retrieve($invader->id)->activateUserImpersonationMode($victim->id)->persist();
+        // tattle on this user hopefully running support in the "victim's" aggy
+        UserAggregate::retrieve($victim->id)->activatePossessionMode($invader->id)->persist();
+
+        // rat on this user to the paying customer - the client (aggy)
+        $associated_client = $victim->associated_client()->first();
+        if(!is_null($associated_client))
+        {
+            ClientAggregate::retrieve($associated_client->value)
+                ->logImpersonationModeActivity($victim->id, $invader->id)->persist();
+        }
 
         return $results;
     }

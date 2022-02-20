@@ -2,6 +2,9 @@
 
 namespace App\Actions\Impersonation;
 
+use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
+use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StopImpersonatingUser
@@ -21,12 +24,29 @@ class StopImpersonatingUser
 
         if(session()->has(config('laravel-impersonate.session_key')))
         {
+            $coward = User::find(session()->get(config('laravel-impersonate.session_key')));
+            $coward_id = $coward->id;
+            $liberated = auth()->user();
+
+            $coward->current_team_id = $liberated->current_team_id;
+            $liberated->current_team_id = $coward->current_team_id;
+            $coward->save();
+            $liberated->save();
             auth()->user()->leaveImpersonation();
             $results = true;
 
-            // @todo - tattle on this user being sneaky in its own aggy
-            // @todo - tattle on this user hopefully running support in the "victim's" aggy
-            // @todo - rat on this user to the paying customer - the client (aggy)
+            // tattle on this user being sneaky in its own aggy
+            UserAggregate::retrieve($coward_id)->deactivateUserImpersonationMode($liberated->id)->persist();
+            // tattle on this user hopefully running support in the "victim's" aggy
+            UserAggregate::retrieve($liberated->id)->deactivatePossessionMode($coward_id)->persist();
+
+            // rat on this user to the paying customer - the client (aggy)
+            $associated_client = $liberated->associated_client()->first();
+            if(!is_null($associated_client))
+            {
+                ClientAggregate::retrieve($associated_client->value)
+                    ->logImpersonationModeDeactivation($liberated->id, $coward_id)->persist();
+            }
         }
 
         return $results;

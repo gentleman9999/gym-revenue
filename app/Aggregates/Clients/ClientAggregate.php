@@ -14,6 +14,7 @@ class ClientAggregate extends AggregateRoot
     protected string $default_team = '';
     protected string $team_prefix = '';
     protected array $teams = [];
+    protected array $employee_activity = [];
 
     protected static bool $allowConcurrency = true;
 
