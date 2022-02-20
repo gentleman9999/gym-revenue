@@ -118,7 +118,7 @@ export default defineComponent({
             },
         ];
 
-        const actions = {
+        const  actions = {
             trash: {
                 handler: ({data}) => handleClickTrash(data.id),
             },

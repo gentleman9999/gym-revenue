@@ -3,6 +3,7 @@
 namespace App\Projectors\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\ClientBillableActivity;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\AudienceDetails;
@@ -94,6 +95,15 @@ class ClientAccountProjector extends Projector
             $team->users()->attach(
                 $newTeamMember, ['role' => 'Admin']
             );
+            $team_client = Team::getClientFromTeamId($team->id);
+            $team_client_id = ($team_client) ? $team_client->id : null;
+
+            // Since the user needs to have their team added in a single transaction in createUser
+            // A projector won't get executed (for now) but an apply function will run on the next retrieval
+            UserAggregate::retrieve($newTeamMember->id)
+                ->addUserToTeam($team->id, $team->name, $team_client_id)
+                ->persist();
+
         }
     }
 

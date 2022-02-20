@@ -106,8 +106,6 @@ class Team extends JetstreamTeam
     {
         $proof = $this->default_team_details()->first();
 
-        //dd('Bitch', $proof);
-
         return (!is_null($proof));
     }
 
@@ -128,6 +126,36 @@ class Team extends JetstreamTeam
                 return $query->whereTeamId($team_id);
             });
         });
+    }
+
+    public static function getTeamName($team_id)
+    {
+        $results = 'No Name';
+
+        $model = self::select('name')->whereId($team_id)->first();
+
+        if(!is_null($model))
+        {
+            $results = $model->name;
+        }
+
+        return $results;
+    }
+
+    public static function getClientFromTeamId($team_id)
+    {
+        $results = null;
+
+        $model = ClientDetail::whereDetail('team')
+            ->whereValue($team_id)->with('client')
+            ->first();
+
+        if(!is_null($model))
+        {
+            $results = $model->client;
+        }
+
+        return $results;
     }
 
 }

@@ -322,6 +322,7 @@ export default defineComponent({
             console.log({ expanded: expanded.value });
             emit("toggle");
         };
+
         return { comingSoon, toggle, expanded, media };
     },
 });

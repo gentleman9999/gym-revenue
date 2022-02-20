@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Bouncer;
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
 use App\Services\Dashboard\HomeDashboardService;
 use Illuminate\Http\Request;
@@ -20,38 +22,68 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $team = auth()->user()->currentTeam;
+        $user = auth()->user();
+        $team = $user->currentTeam;
         $client_detail = $team->client_details()->first();
         $announcements = [];
+        $team_name = $team->name;
+        $vue = 'Dashboard';
 
         if(!is_null($client_detail))
         {
             $clients = collect([$client_detail->client->toArray()]);
             $account = $client_detail->client->name;
             $widgets = $this->service->getDashboardWidgets();
+            if(Bouncer::is($user)->an('Admin', 'Account Owner', 'Regional Admin'))
+            {
+                $vue = 'Dashboards/AccountAdminDashboard';
+            }
+            else if(Bouncer::is($user)->a('Location Manager'))
+            {
+                $vue = 'Dashboards/LocationManagerDashboard';
+            }
+            else
+            {
+                $vue = 'Dashboards/SalesRepDashboard';
+            }
+
+            return Inertia::render($vue, [
+                'teamName' => $team_name,
+                'clients' => $clients,
+                'accountName' => $account,
+                'widgets' => $widgets,
+                'announcements'=> $announcements
+            ]);
         }
         else {
-            $account = 'Cape & Bay';
+            $account = 'GynRevenue';
             $clients = $this->clients->all();
             $widgets = $this->service->getDashboardWidgets();
             $announcements = $this->service->getAppStateAnnouncements();
-        }
 
-        if(count($clients) > 0)
-        {
-            $clients = $clients->toArray();
-            foreach($clients as $idx => $client)
+            // Check if this is the CnB Default team.
+            // If so the vue will be AdminDashboard. else DeveloperDashboard
+            $vue = ($team->default_team) ? 'Dashboards/AdminDashboard' : 'Dashboards/DeveloperDashboard';
+            $aggy = UserAggregate::retrieve($user->id);
+            $teams = $aggy->getTeams();
+
+            if(count($clients) > 0)
             {
-                $clients[$idx]['created_at'] = date('M d, Y', strtotime($client['created_at']));
-                $clients[$idx]['updated_at'] = date('M d, Y', strtotime($client['updated_at']));
+                $clients = $clients->toArray();
+                foreach($clients as $idx => $client)
+                {
+                    $clients[$idx]['created_at'] = date('M d, Y', strtotime($client['created_at']));
+                    $clients[$idx]['updated_at'] = date('M d, Y', strtotime($client['updated_at']));
+                }
             }
+            return Inertia::render($vue, [
+                'teamName' => $team_name,
+                'teams' => $teams,
+                'clients' => $clients,
+                'accountName' => $account,
+                'widgets' => $widgets,
+                'announcements'=> $announcements
+            ]);
         }
-
-        return Inertia::render('Dashboard', [
-            'clients' => $clients,
-            'accountName' => $account,
-            'widgets' => $widgets,
-            'announcements'=> $announcements
-        ]);
     }
 }

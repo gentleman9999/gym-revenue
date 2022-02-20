@@ -15,7 +15,7 @@ class CapeAndBayUserSeeder extends UserSeeder
             'user_id' => 1,
             'name' => 'Cape & Bay Admin Team',
             'personal_team' => 0,
-            'default_team' => 0
+            'default_team' => 1
         ]);
 
         return [

@@ -87,7 +87,21 @@ class CreateUser implements CreatesNewUsers
         $id = (User::max('id') ?? 0) + 1;
         $data['id'] = $id;
 
-        UserAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
+        $user_aggy = UserAggregate::retrieve($id)
+            ->createUser($current_user->id ?? "Auto Generated", $data);
+
+        $user_teams = $data['team_ids'] ?? [$data['team_id']] ?? [];
+        foreach ($user_teams as $i => $team_id)
+        {
+            // Since the user needs to have their team added in a single transaction in createUser
+            // A projector won't get executed (for now) but an apply function will run on the next retrieval
+            $team_name = Team::getTeamName($team_id);
+            $team_client = Team::getClientFromTeamId($team_id);
+            $team_client_id = ($team_client) ? $team_client->id : null;
+            $user_aggy = $user_aggy->addUserToTeam($team_id, $team_name, $team_client_id);
+        }
+
+        $user_aggy->persist();
         if ($client_id) {
             ClientAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
         }

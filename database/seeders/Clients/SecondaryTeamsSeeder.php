@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Team;
@@ -52,6 +53,9 @@ class SecondaryTeamsSeeder extends Seeder
                     $new_team->users()->attach(
                         $user, ['role' => ($idx == 0) ? 'Admin' : 'Member']
                     );
+                    UserAggregate::retrieve($user->id)
+                        ->addUserToTeam($new_team->id, $new_team->name, null)
+                        ->persist();
                 }
             }
         }
@@ -516,6 +520,10 @@ class SecondaryTeamsSeeder extends Seeder
                 'value' => $new_team->id,
                 'active' => 1
             ]);
+
+            UserAggregate::retrieve($team['user_id'])
+                ->addUserToTeam($new_team->id, $new_team->name, null)
+                ->persist();
         }
     }
 }

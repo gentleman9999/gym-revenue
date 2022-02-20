@@ -51,7 +51,7 @@
             </div>
             </div>
             <div class="flex flex-row justify-between" >
-                <div><p>Dashboard</p></div>
+                <div><p>Dashboard - {{ teamName }}</p></div>
                 <div><p>{{ accountName }}</p></div>
             </div>
 
@@ -137,6 +137,7 @@ export default {
         AnnounceModal
     },
     props: [
+        'teamName',
         'clients',
         'accountName',
         'widgets',
