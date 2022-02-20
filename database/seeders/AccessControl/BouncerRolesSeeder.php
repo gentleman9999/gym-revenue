@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\AccessControl;
 
 use Illuminate\Database\Seeder;
 use Bouncer;

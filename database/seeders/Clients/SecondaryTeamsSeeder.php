@@ -522,7 +522,7 @@ class SecondaryTeamsSeeder extends Seeder
             ]);
 
             UserAggregate::retrieve($team['user_id'])
-                ->addUserToTeam($new_team->id, $new_team->name, null)
+                ->addUserToTeam($new_team->id, $new_team->name, $associated_client)
                 ->persist();
         }
     }

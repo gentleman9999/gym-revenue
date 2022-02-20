@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\AccessControl;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
@@ -39,22 +39,31 @@ class BouncerAbilitiesSeeder extends Seeder
             });
         });
 
+        // Create user impersonation ability. It only applies to users.
+        Bouncer::ability()->firstOrCreate([
+            'name' => "users.impersonate",
+            'title' => 'Impersonate Users',
+        ]);
+
         /** Admin */
         Bouncer::allow('Admin')->everything(); // I mean....right?
         //$this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams'], 'Admin');
         //$this->allowEditInGroup(['users', 'locations', 'files', 'teams'], 'Admin');
 
         /** Account Owner */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams'], 'Account Owner');
-        $this->allowEditInGroup(['users', 'locations', 'teams'], 'Account Owner');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams'], 'Account Owner');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams'], 'Account Owner');
+        $this->allowImpersonationInGroup(['users'], 'Account Owner');
+
+        /** Regional Admin */
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams'], 'Regional Admin');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams'], 'Regional Admin');
+        $this->allowImpersonationInGroup(['users'], 'Regional Admin');
 
         /** Location Manager */
         $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list'], 'Location Manager');
         $this->allowEditInGroup(['users', 'leads', 'teams', 'todo-list'], 'Location Manager');
-
-        /** Regional Admin */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams'], 'Regional Admin');
-        //$this->allowEditInGroup(, 'Regional Admin');
+        $this->allowImpersonationInGroup(['users'], 'Location Manager');
 
         /** Sales Rep */
         $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list'], 'Sales Rep');
@@ -62,9 +71,10 @@ class BouncerAbilitiesSeeder extends Seeder
 
         /** Employee */
         $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list'], 'Employee');
+        $this->allowEditInGroup(['leads', 'todo-list'], 'Employee');
 
 
-        $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep'];
+        $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];
         foreach ($roles_allowed_to_contact_leads as $role) {
             VarDumper::dump("Allowing $role to contact leads for teams");
             Bouncer::allow($role)->to('leads.contact', Team::class);
@@ -131,6 +141,8 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'teams':
                     $entity = Team::class;
                     break;
+
+                case 'files':
                 case 'todo-list':
                     $entity = null;
                     break;
@@ -181,6 +193,8 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'teams':
                     $entity = Team::class;
                     break;
+
+                case 'files':
                 case 'todo-list':
                     $entity = null;
                     break;
@@ -243,6 +257,26 @@ class BouncerAbilitiesSeeder extends Seeder
             });
             */
         });
+    }
+
+    protected function allowImpersonationInGroup($group, $role)
+    {
+        $groups = collect($group);
+        $groups->each(function ($group) use ($role) {
+            switch ($group) {
+                case 'users':
+                    default:
+                    $entity = User::class;
+                    break;
+            }
+            // Allow the role to inherit the not Ability in full, but scoped to the team
+            if ($entity) {
+                VarDumper::dump("Allowing $role to $group.impersonate");
+                Bouncer::allow($role)->to("$group.impersonate", $entity);
+            }
+
+        });
+
     }
 
 }

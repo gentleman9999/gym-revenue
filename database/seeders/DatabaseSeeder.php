@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
+use Database\Seeders\AccessControl\BouncerRolesSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\SecurityRolesSeeder;
 use Database\Seeders\Clients\SMSCampaignsSeeder;
