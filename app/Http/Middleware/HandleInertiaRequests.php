@@ -55,7 +55,7 @@ class HandleInertiaRequests extends Middleware
                 {
                     $r = true;
                 }
-                
+
                 return $r;
             })->pluck('name');
             $shared = [

@@ -29,7 +29,7 @@ class HomeDashboardService
 
         // Calculates the difference between DateTime objects
         $interval = date_diff($datetime1, $datetime2);
-        if(intVal($interval->format('%R%a')) <= 5) {
+        if(intVal($interval->format('%R%a')) <= 25) {
             $misc = $log->misc;
             $misc['type'] = 'deployment-announcement';
             $results = [$misc];
