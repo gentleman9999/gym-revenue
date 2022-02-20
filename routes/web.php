@@ -146,4 +146,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('security-roles')->group
     Route::put('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@update')->name('security-roles.update');
     Route::delete('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@trash')->name('security-roles.trash');
     Route::delete('/{id}/force', \App\Http\Controllers\SecurityRolesController::class . '@delete')->name('security-roles.delete');
-    Route::post('/{id}/restore', \App\Http\Controllers\SecurityRolesController::class . '@restore')->name('security-roles.restore');});
+    Route::post('/{id}/restore', \App\Http\Controllers\SecurityRolesController::class . '@restore')->name('security-roles.restore');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
+    Route::post('/users', \App\Actions\Impersonation\GetUsers::class)->name('impersonation.users');
+
+});

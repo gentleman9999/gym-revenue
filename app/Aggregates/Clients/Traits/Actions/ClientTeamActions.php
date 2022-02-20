@@ -2,7 +2,9 @@
 
 namespace App\Aggregates\Clients\Traits\Actions;
 
+use App\Aggregates\Users\UserAggregate;
 use App\Exceptions\Clients\ClientAccountException;
+use App\Models\Team;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\DefaultClientTeamCreated;
@@ -55,6 +57,8 @@ trait ClientTeamActions
 
     public function addCapeAndBayAdminsToTeam(string $team_id)
     {
+        $team = Team::find($team_id);
+        $client = Team::getClientFromTeamId($team_id);
         $users = UserDetails::select('user_id')
             ->whereName('default_team')
             ->whereValue(1)->get();
@@ -65,6 +69,9 @@ trait ClientTeamActions
             foreach($users as $user)
             {
                 $payload[] = $user->user_id;
+                UserAggregate::retrieve($user->user_id)
+                    ->addUserToTeam($team_id, $team->name, $client->id)
+                    ->persist();
             }
 
             $this->recordThat(new CapeAndBayUsersAssociatedWithClientsNewDefaultTeam($this->uuid(), $team_id, $payload));

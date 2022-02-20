@@ -147,7 +147,6 @@ class SecondaryClientUsersSeeder extends UserSeeder
 
         $team_ids = Team::whereIn('name', $user['team_ids'])->get(['id'])->pluck('id');
 
-
         CreateUser::run([
             'client_id' => $client->id,
             'first_name' => $user['first_name'],

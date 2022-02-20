@@ -74,14 +74,14 @@
                         User Management
                     </inertia-link>
                 </li>
-                <li>
+                <li >
                     <inertia-link :href="route('profile.show')">
                         Invoices
                     </inertia-link>
                 </li>
-                <li>
-                    <!--<inertia-link :href="route('admin.impersonation')">Impersonate</inertia-link>-->
-                    <a @click="openImpersonation">Impersonation</a>
+
+                <li v-if="$page.props.user.abilities.includes('users.impersonate') || $page.props.user.abilities.includes('*')">
+                    <a @click.prevent="openImpersonation($page.props.user.abilities)">Impersonation</a>
                 </li>
                 <li>
                     <inertia-link
@@ -119,22 +119,30 @@
             </ul>
         </template>
     </jet-dropdown>
-<impersonation-modal
-    :ref="modal"
->
-</impersonation-modal>
+    <impersonation-modal
+        title="Impersonation Mode"
+        width="45%"
+        overlayTheme="dark"
+        modal-theme="dark"
+        ref="impModal"
+        @close="impVars.showModal = false"
+    >
+        <list-of-users-to-impersonate v-if="impVars.showModal"></list-of-users-to-impersonate>
+    </impersonation-modal>
 </template>
 
 <script>
-import {defineComponent, computed, ref} from "vue";
+import {defineComponent, computed, ref } from "vue";
 import {usePage} from "@inertiajs/inertia-vue3";
 import JetDropdown from "@/Components/Dropdown";
-import ImpersonationModal from "@/Components/ImpersonationModal";
+import ImpersonationModal from "@/Components/SweetModal3/SweetModal";
+import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
 
 export default defineComponent({
     components: {
         JetDropdown,
-        ImpersonationModal
+        ImpersonationModal,
+        ListOfUsersToImpersonate
     },
     props: {
         logout: {
@@ -143,14 +151,26 @@ export default defineComponent({
     },
     setup() {
         const page = usePage();
-        const showClientSettings = computed(() => page.props.value.user.current_client_id);
-        const modal = ref('modal');
-        function openImpersonation(){
-            console.log(modal.value);
-            modal.value.open();
+        let impVars = {
+            showModal: false,
+        };
+        const impModal = ref(null);
+        const openImpersonation = (abilities) => {
+            if (abilities.includes('users.impersonate') || abilities.includes('*')) {
+                impVars.showModal = true;
+                impModal.value.open();
+            }
+            else {
+                new Noty({
+                    type: "warning",
+                    theme: "sunset",
+                    text: "You Cant Do That!",
+                    timeout: 7500,
+                }).show();
+            }
         }
-
-        return {showClientSettings, openImpersonation, modal};
+        const showClientSettings = computed(() => page.props.value.user.current_client_id);
+        return {showClientSettings, openImpersonation, impModal, impVars};
     }
 });
 </script>

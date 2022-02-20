@@ -156,18 +156,4 @@ class UsersController extends Controller
             'securityRoles' => $security_roles
         ]);
     }
-
-    public function impersonate(User $user)
-    {
-        auth()->user()->impersonate($user);
-        
-        return Redirect::route('dashboard');
-    }
-
-    public function leaveImpersonate()
-    {
-        auth()->user()->leaveImpersonation();
-
-        return Redirect::route('dashboard');
-    }
 }

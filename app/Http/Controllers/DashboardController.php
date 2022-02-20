@@ -56,7 +56,7 @@ class DashboardController extends Controller
             ]);
         }
         else {
-            $account = 'GynRevenue';
+            $account = 'GymRevenue';
             $clients = $this->clients->all();
             $widgets = $this->service->getDashboardWidgets();
             $announcements = $this->service->getAppStateAnnouncements();

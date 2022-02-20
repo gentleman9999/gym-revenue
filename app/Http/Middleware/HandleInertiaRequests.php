@@ -7,7 +7,6 @@ use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Prologue\Alerts\Facades\Alert;
-use function Doctrine\Common\Cache\Psr6\get;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -42,7 +41,6 @@ class HandleInertiaRequests extends Middleware
     {
         $shared = [];
         $user = $request->user();
-        $impersonateableUsers = User::with('default_team')->get();
         if ($request->user()) {
             $abilities = $request->user()->getAbilities()->filter(function($ability) use ($request){
                 if(!is_null($ability->entity_id))
@@ -61,7 +59,6 @@ class HandleInertiaRequests extends Middleware
                 return $r;
             })->pluck('name');
             $shared = [
-                'impersonateableUsers' => $impersonateableUsers,
                 'user.id' => $user->id,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
