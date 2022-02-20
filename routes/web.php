@@ -151,5 +151,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('security-roles')->group
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
     Route::post('/users', \App\Actions\Impersonation\GetUsers::class)->name('impersonation.users');
-
 });
+Route::prefix('impersonation')->group(function () {
+    Route::post('/on', \App\Actions\Impersonation\ImpersonateUser::class)->name('impersonation.start');
+    Route::post('/off', \App\Actions\Impersonation\StopImpersonatingUser::class)->name('impersonation.stop');
+});
+

@@ -9,6 +9,7 @@ use App\Models\Clients\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
@@ -18,14 +19,14 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use HasProfilePhoto;
     use HasTeams;
+    use HasFactory;
     use Notifiable;
+    use Impersonate;
+    use HasApiTokens;
+    use HasProfilePhoto;
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
-    use HasRolesAndAbilities;
 
     /**
      * The attributes that are mass assignable.

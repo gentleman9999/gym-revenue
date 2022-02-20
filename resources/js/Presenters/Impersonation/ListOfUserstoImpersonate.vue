@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { Inertia } from "@inertiajs/inertia";
+
 export default {
     name: "ListOfUsersToImpersonate",
     components: {},
@@ -50,12 +52,8 @@ export default {
                 })
         },
         impersonateUser(userId) {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
+            Inertia.post(route("impersonation.start", { victimId: userId}));
+            this.$emit('close');
         }
     },
     mounted() {

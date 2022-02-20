@@ -80,8 +80,10 @@
                     </inertia-link>
                 </li>
 
-                <li v-if="$page.props.user.abilities.includes('users.impersonate') || $page.props.user.abilities.includes('*')">
-                    <a @click.prevent="openImpersonation($page.props.user.abilities)">Impersonation</a>
+                <li v-if="(!('is_being_impersonated' in $page.props.user)) && ($page.props.user.abilities.includes('users.impersonate') || $page.props.user.abilities.includes('*'))">
+                    <a @click.prevent="openImpersonation($page.props.user.abilities)">
+                        Impersonation
+                    </a>
                 </li>
                 <li>
                     <inertia-link
@@ -114,7 +116,8 @@
             <div class="border-t border-base-100-100"></div>
             <ul class="menu compact">
                 <li>
-                    <inertia-link href="#" @click="logout"> Log Out</inertia-link>
+                    <inertia-link href="#" @click="logout" v-if="(!('is_being_impersonated' in $page.props.user))"> Log Out</inertia-link>
+                    <inertia-link href="#" @click="leaveImpersonationMode" v-else> Leave Impersonation Mode</inertia-link>
                 </li>
             </ul>
         </template>
@@ -127,7 +130,7 @@
         ref="impModal"
         @close="impVars.showModal = false"
     >
-        <list-of-users-to-impersonate v-if="impVars.showModal"></list-of-users-to-impersonate>
+        <list-of-users-to-impersonate v-if="impVars.showModal" @close="impVars.closeModal()"></list-of-users-to-impersonate>
     </impersonation-modal>
 </template>
 
@@ -137,6 +140,7 @@ import {usePage} from "@inertiajs/inertia-vue3";
 import JetDropdown from "@/Components/Dropdown";
 import ImpersonationModal from "@/Components/SweetModal3/SweetModal";
 import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
+import {Inertia} from "@inertiajs/inertia";
 
 export default defineComponent({
     components: {
@@ -153,6 +157,9 @@ export default defineComponent({
         const page = usePage();
         let impVars = {
             showModal: false,
+            closeModal() {
+                impModal.value.close();
+            },
         };
         const impModal = ref(null);
         const openImpersonation = (abilities) => {
@@ -169,8 +176,15 @@ export default defineComponent({
                 }).show();
             }
         }
+
+        const leaveImpersonationMode = () => {
+            Inertia.post(route("impersonation.stop", {}));
+        }
         const showClientSettings = computed(() => page.props.value.user.current_client_id);
-        return {showClientSettings, openImpersonation, impModal, impVars};
+        return {
+            showClientSettings, openImpersonation,
+            leaveImpersonationMode, impModal, impVars
+        };
     }
 });
 </script>

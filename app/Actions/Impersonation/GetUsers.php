@@ -142,8 +142,11 @@ class GetUsers
 
         if(count($result) > 0)
         {
-            $code = 200;
-            $results = $result;
+            if(request()->user()->can('users.impersonate', User::class))
+            {
+                $code = 200;
+                $results = $result;
+            }
         }
 
         return response($results, $code);

@@ -64,7 +64,13 @@ class HandleInertiaRequests extends Middleware
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
+
             ];
+
+            if(session()->has(config('laravel-impersonate.session_key')))
+            {
+                $shared['user.is_being_impersonated'] = session()->get(config('laravel-impersonate.session_key'));
+            }
         }
         $previousUrl = url()->previous();
 
