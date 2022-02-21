@@ -6,6 +6,7 @@ use App\Models\Comms\EmailTemplates;
 use App\Models\GatewayProviders\GatewayProviderType;
 use App\Services\GatewayProviders\GatewayProviderService;
 use App\Services\GatewayProviders\Profiles\Email\EmailGatewayProvider;
+use App\Services\GatewayProviders\Profiles\Email\Mailgun;
 
 class EmailGatewayProviderService extends GatewayProviderService
 {
@@ -38,8 +39,13 @@ class EmailGatewayProviderService extends GatewayProviderService
             switch($model->value)
             {
                 case 'default_cnb':
-
-                    $results = '';// new Twilio($deets, $user_id);
+                    $deets = [
+                        'mailgun_domain' => env('MAILGUN_DOMAIN'),
+                        'mailgun_secret' => env('MAILGUN_SECRET'),
+                        'mailgun_endpoint' => env('MAILGUN_ENDPOINT'),
+                        'mailgun_from_addr' => env('MAIL_FROM_ADDRESS')
+                    ];
+                    $results = new Mailgun($deets, $user_id);
                     break;
                 // default will be the slug name given to the
                 // client_gateway_integrations configuration

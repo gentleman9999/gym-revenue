@@ -42,9 +42,9 @@ class SMSGatewayProviderService extends GatewayProviderService
             {
                 case 'default_cnb':
                     $deets = [
-                        'twilio_no' => env('TWILIO_NO'),
-                        'twilio_sid' => env('TWILIO_SID'),
-                        'twilio_token' => env('TWILIO_TOKEN')
+                        'mailgun_' => env('TWILIO_NO'),
+                        'MAILGUN_ENDPOINT' => env('TWILIO_SID'),
+                        'MAILGUN_ENDPOINT' => env('TWILIO_TOKEN')
                     ];
                     $results = new Twilio($deets, $user_id);
                 break;
