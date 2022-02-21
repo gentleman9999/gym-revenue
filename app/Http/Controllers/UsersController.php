@@ -173,7 +173,13 @@ class UsersController extends Controller
         $data = $user->toArray();
         if ($user->security_role) {
             $security_role = SecurityRole::find($user->security_role->value);
-            $data['security_role'] = $security_role->toArray();
+            $data['security_role'] = $security_role->security_role;
+        }else{
+            $data['role'] = $user->teams->keyBy('id')[$current_team->id]->pivot->role;
+        }
+
+        if ($user->phone_number) {
+            $data['phone'] = $user->phone_number->value;
         }
 
         $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {

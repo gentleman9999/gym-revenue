@@ -1,133 +1,60 @@
 <template>
-    <div class="grid grid-cols-6 gap-6">
-        <div class="col-span-4">
-            <jet-label for="name" value="Name" />
-            <input
-                id="name"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.name"
-            />
+    <div class="grid grid-cols-6 gap-4">
+        <div class="field col-span-4">
+            <label>Name:</label>
+            <div class="data">
+                {{ location.name }}
+            </div>
         </div>
-        <div class="col-span-2">
-            <jet-label for="location_no" value="Location Number/ID" />
-            <input
-                id="location_no"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.location_no"
-            />
+        <div class="field col-span-2">
+            <label>Location Number/ID:</label>
+            <div class="data">
+                {{ location.location_no }}
+            </div>
         </div>
-        <div class="col-span-4">
-            <jet-label for="city" value="City" />
-            <input
-                id="city"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.city"
-            />
+        <div class="field col-span-2">
+            <label>City:</label>
+            <div class="data">
+                {{ location.city }}
+            </div>
         </div>
-        <div class="col-span-1">
-            <jet-label for="state" value="State" />
-            <input
-                id="state"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.state"
-            />
+        <div class="field col-span-2">
+            <label>State:</label>
+            <div class="data">
+                {{ location.state }}
+            </div>
         </div>
-        <div class="col-span-1">
-            <jet-label for="zip" value="ZIP Code" />
-            <input
-                id="zip"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.zip"
-            />
+        <div class="field col-span-2">
+            <label>ZIP Code:</label>
+            <div class="data">
+                {{ location.zip }}
+            </div>
         </div>
 
-        <div class="col-span-6 space-y-2">
-            <jet-label for="address1" value="Address" />
-            <input
-                id="address1"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.address1"
-            />
-            <input
-                id="address2"
-                type="text"
-                class="block w-full mt-1"
-                :value="location.address2"
-            />
+        <div class="flex flex-col col-span-6 space-y-2">
+            <label>Address:</label>
+            <div class="data">
+                {{ location.address1 }}
+            </div>
+            <div class="data">
+                {{ location.address2 }}
+            </div>
         </div>
-
-<!--        <div class="col-span-2 space-y-2">-->
-<!--            <jet-label for="phone" value="Phone" />-->
-<!--            <input-->
-<!--                id="phone"-->
-<!--                type="text"-->
-<!--                class="block w-full mt-1"-->
-<!--                :value="location.phone"-->
-<!--            />-->
-<!--        </div>-->
-
-<!--        <div class="col-span-2 space-y-2">-->
-<!--            <jet-label for="opendate" value="Open Date" />-->
-<!--            <input-->
-<!--                id="opendate"-->
-<!--                type="text"-->
-<!--                class="block w-full mt-1"-->
-<!--                :value="location.opendate"-->
-<!--            />-->
-<!--        </div>-->
-<!--        <div class="col-span-2 space-y-2">-->
-<!--            <jet-label for="closedate" value="Close Date" />-->
-<!--            <input-->
-<!--                id="closedate"-->
-<!--                type="text"-->
-<!--                class="block w-full mt-1"-->
-<!--                :value="location.closedate"-->
-<!--            />-->
-<!--        </div>-->
-
-<!--        <div class="col-span-2 space-y-2">-->
-<!--            <jet-label for="poc_first" value="POC First" />-->
-<!--            <input-->
-<!--                id="poc_first"-->
-<!--                type="text"-->
-<!--                class="block w-full mt-1"-->
-<!--                :value="location.poc_first"-->
-<!--            />-->
-<!--        </div>-->
-<!--        <div class="col-span-2 space-y-2">-->
-<!--            <jet-label for="poc_last" value="POC Last" />-->
-<!--            <input-->
-<!--                id="poc_last"-->
-<!--                type="text"-->
-<!--                class="block w-full mt-1"-->
-<!--                :value="location.poc_last"-->
-<!--            />-->
-<!--        </div>-->
-<!--        <div class="col-span-2 space-y-2">-->
-<!--            <jet-label for="poc_phone" value="POC Phone" />-->
-<!--            <input-->
-<!--                id="poc_phone"-->
-<!--                type="text"-->
-<!--                class="block w-full mt-1"-->
-<!--                :value="location.poc_phone"-->
-<!--            />-->
-<!--        </div>-->
     </div>
 </template>
 
-<script>
-import JetLabel from "@/Jetstream/Label";
+<style scoped>
+input {
+    @apply input-xs;
+}
+.field {
+    @apply flex flex-row gap-2;
+}
+</style>
 
+
+<script>
 export default {
-    components: {
-        JetLabel,
-    },
     props: ["location"],
 };
 </script>

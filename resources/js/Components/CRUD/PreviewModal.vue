@@ -1,7 +1,7 @@
 <template>
     <sweet-modal
         :title="`${modelName.toUpperCase()} PREVIEW`"
-        width="85%"
+        width="50%"
         overlayTheme="dark"
         modal-theme="dark"
         enable-mobile-fullscreen
