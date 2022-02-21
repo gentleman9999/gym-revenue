@@ -67,14 +67,14 @@ class GatewayProviderDetailsSeeder extends Seeder
                     'gateway_id' => $gateways['mailgun']['id'],
                     'detail' => 'access_credential',
                     'value' => 'default_mail_from_address',
-                    'misc' => ['required' => false],
+                    'misc' => ['required' => false, 'value' => 'automailer@mail.trufitathleticclubs.com'],
                     'active' => 1
                 ],
                 [
                     'gateway_id' => $gateways['mailgun']['id'],
                     'detail' => 'access_credential',
                     'value' => 'default_mail_from_name',
-                    'misc' => ['required' => false],
+                    'misc' => ['required' => false, 'value' => 'GymRevenue'],
                     'active' => 1
                 ]
 
