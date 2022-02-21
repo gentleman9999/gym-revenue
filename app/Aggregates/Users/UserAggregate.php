@@ -74,7 +74,7 @@ class UserAggregate extends AggregateRoot
         $client = new Client();
         foreach($results as $idx => $team)
         {
-            if(($client->id ?? null) != $team['client_id'])
+            if(!is_null($team['client_id']) && (($client->id ?? null) != $team['client_id']))
             {
                 $client = $client->find($team['client_id']);
             }
