@@ -106,6 +106,11 @@ class EmailGatewayProviderService extends GatewayProviderService
         return $this->email_template->markup;
     }
 
+    public function getSubject() : string
+    {
+        return $this->email_template->subject;
+    }
+
     public function getTranslatedMessage()
     {
         $raw_message = $this->getRawMessage();
@@ -118,7 +123,8 @@ class EmailGatewayProviderService extends GatewayProviderService
         $results = false;
 
         $msg = $this->getRawMessage();
-        $response = $this->gateway->fireMsg($email_address, $msg);
+        $subject = $this->getSubject();
+        $response = $this->gateway->fireMsg($email_address, $subject, $msg);
 
         return $results;
     }

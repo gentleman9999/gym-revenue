@@ -20,7 +20,7 @@ class Mailgun extends EmailGatewayProvider
         $this->client = new MailgunClient($this->mailgun_secret);
     }
 
-    public function fireMsg($email_address, $msg)
+    public function fireMsg($email_address, $subject, $msg)
     {
         $results = false;
 
@@ -31,7 +31,7 @@ class Mailgun extends EmailGatewayProvider
         $Mailgun->messages()->send($this->mailgun_domain, [
                 'from'    => env('MAIL_FROM_ADDRESS'),
                 'to'      => $email_address,
-                'subject' => 'test', //not sure what to do with this yet
+                'subject' => $subject,
                 'text'    => $clean_msg,
                 'recipient-variables' => $this->mailgun_domain
         ]);
