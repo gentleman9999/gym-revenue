@@ -18,7 +18,7 @@ class EmailGatewayProviderService extends GatewayProviderService
         $this->email_template = $email_template;
         $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();
         parent::__construct($model);
-        $this->setAssociatedClient($this->sms_template->client_id);
+        $this->setAssociatedClient($this->email_template->client_id);
     }
 
     public function initEmailGateway($user_id) : void
