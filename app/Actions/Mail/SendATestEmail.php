@@ -32,7 +32,7 @@ class SendATestEmail
 
         $data = request()->all();
         $user = request()->user();
-        $email_detail = $user->email()->first();
+        $email_detail = $user->email;
 
         // Get the user and check if there is an email or fail with string
         if(!is_null($email_detail))
