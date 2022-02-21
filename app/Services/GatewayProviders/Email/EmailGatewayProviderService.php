@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GatewayProfiles\SMS;
+namespace App\Services\GatewayProfiles\Email;
 
 use App\Models\Comms\EmailTemplates;
 use App\Models\GatewayProviders\GatewayProviderType;
