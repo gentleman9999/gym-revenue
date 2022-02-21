@@ -167,6 +167,12 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    public function logClientEmailActivity($template_id, $response, $client_id = null)
+    {
+        $this->recordThat(new UserReceivedEmail($this->uuid(), $template_id, $response, $client_id));
+        return $this;
+    }
+
     public function getTeams()
     {
         $results = $this->teams;
@@ -218,6 +224,11 @@ class UserAggregate extends AggregateRoot
     public function getPhoneNumber()
     {
         return $this->phone_number;
+    }
+
+    public function getEmailAddress()
+    {
+        return $this->email;
     }
 
     public function getProperty(string $prop)
