@@ -42,16 +42,16 @@ class SMSGatewayProviderService extends GatewayProviderService
             {
                 case 'default_cnb':
                     $deets = [
-                        'mailgun_' => env('TWILIO_NO'),
-                        'MAILGUN_ENDPOINT' => env('TWILIO_SID'),
-                        'MAILGUN_ENDPOINT' => env('TWILIO_TOKEN')
+                        'twilio_no' => env('TWILIO_NO'),
+                        'twilio_sid' => env('TWILIO_SID'),
+                        'twilio_token' => env('TWILIO_TOKEN')
                     ];
                     $results = new Twilio($deets, $user_id);
                 break;
                 // default will be the slug name given to the
-                // client_gateway_integrations configuration
+
                 default:
-                    /*
+
                      $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                         ->whereNickname($model->value)->whereActive(1)->first();
 
@@ -66,12 +66,28 @@ class SMSGatewayProviderService extends GatewayProviderService
                             $deets = [];
                             foreach ($gateway_provider_record->details as $detail)
                             {
-                                if($detail->detail == 'access_credentaisl')
+                                if($detail->detail == 'access_credentais')
+                                {
+                                    if($detail->value == 'twilio_no')
+                                    {
+                                        $value = json_decode($detail->misc);
+                                        $deets['twilio_no'] = $value['value'];
+                                    }
+                                    if($detail->value == 'twilio_sid')
+                                    {
+                                        $value = json_decode($detail->misc);
+                                        $deets['twilio_sid'] = $value['value'];
+                                    }
+                                    if($detail->value == 'twilio_token')
+                                    {
+                                        $value = json_decode($detail->misc);
+                                        $deets['twilio_token'] = $value['value'];
+                                    }
+                                }
                             }
                             $gateway = new $gateway_provider_record->profile_class();
                         }
                     }
-                     */
 
             }
         }
