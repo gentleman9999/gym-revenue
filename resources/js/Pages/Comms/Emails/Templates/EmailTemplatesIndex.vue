@@ -54,7 +54,7 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import ConfirmSendModal from "@/Components/SweetModal3/SweetModal";
-import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS";
+import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail";
 
 library.add(faChevronDoubleLeft, faEllipsisH)
 
@@ -70,15 +70,12 @@ export default defineComponent({
     },
     props: ["title", "filters", "templates"],
     setup(props) {
-
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
         const handleConfirmTrash = () => {
-            Inertia.delete(
-                route("comms.email-templates.trash", confirmTrash.value)
-            );
+            Inertia.delete(route("comms.email-templates.trash", confirmTrash.value));
             confirmTrash.value = null;
         };
 
@@ -89,7 +86,6 @@ export default defineComponent({
                 templateName: ''
             }
         };
-
 
         const handleOpenSendModal = (data) => {
             console.log('looking at data', data, sendVars)
@@ -150,15 +146,9 @@ export default defineComponent({
             }).show();
         };
         return {
-            handleClickTrash,
-            confirmTrash,
-            handleConfirmTrash,
-            fields,
-            actions,
-            handleOpenSendModal,
-            sendVars,
-            confirmSend,
-            handleCloseTextModal
+            fields, actions,
+            handleClickTrash, confirmTrash, handleConfirmTrash,
+            handleOpenSendModal, handleCloseTextModal, confirmSend, sendVars
         };
     },
 });
