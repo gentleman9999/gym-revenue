@@ -32,7 +32,7 @@ abstract class EmailGatewayProvider extends GatewayProfile implements EmailProfi
         return $this->interpreter->translate($msg);
     }
 
-    public function fireMsg($phone_number, $msg)
+    public function fireMsg($phone_number, $subject, $msg)
     {
         return true;
     }
