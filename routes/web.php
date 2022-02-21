@@ -41,6 +41,9 @@ Route::middleware(['auth:sanctum', 'verified'])->put('/locations/{id}', \App\Htt
 Route::middleware(['auth:sanctum', 'verified'])->delete('/locations/{id}', \App\Http\Controllers\LocationsController::class . '@trash')->name('locations.trash');
 Route::middleware(['auth:sanctum', 'verified'])->post('/locations/{id}/restore', \App\Http\Controllers\LocationsController::class . '@restore')->name('locations.restore');
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/user/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
+});
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
     Route::get('/email-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_index')->name('comms.email-templates');
@@ -74,6 +77,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
     Route::put('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_update')->name('comms.sms-templates.update');
     Route::delete('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_trash')->name('comms.sms-templates.trash');
     Route::post('/sms-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_restore')->name('comms.sms-templates.restore');
+    Route::post('/sms-templates/test', \App\Actions\Sms\SendATestText::class)->name('comms.sms-templates.test-msg');
 
 });
 

@@ -20,7 +20,7 @@ class UserProfileController extends Controller
     public function show(Request $request)
     {
         $addl_data = [
-            'phone' => '2524129013',
+            'phone' => '',
             'address1' => '',
             'address2' => '',
             'city' => '',

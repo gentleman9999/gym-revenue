@@ -20,6 +20,7 @@ class CreateGatewayProvidersTable extends Migration
             $table->text('desc')->nullable();
             $table->string('vendor')->nullable();
             $table->uuid('provider_type');
+            $table->string('profile_class')->nullable();
             $table->float('provider_rate',8,2)->default(0.00);
             $table->float('provider_bulk_rate',8,2)->default(0.00);
             $table->float('gr_commission_rate',8,2)->default(0.00);

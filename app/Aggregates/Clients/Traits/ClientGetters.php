@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Clients\Traits;
 
+use App\Aggregates\Clients\ClientGatewayActivityAggregate;
 use App\Models\User;
 use mysql_xdevapi\Exception;
 
@@ -49,5 +50,10 @@ trait ClientGetters
         }
 
         return $results;
+    }
+
+    public function getGatewayAggregate()
+    {
+        return ClientGatewayActivityAggregate::retrieve($this->uuid());
     }
 }

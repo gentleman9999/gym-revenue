@@ -31,6 +31,12 @@
         >
             Are you sure you want to remove this template?  It will be removed from any assigned campaigns.
         </confirm>
+        <confirm-send-form
+            v-if="confirmSend"
+            :template-id="sendVars.templateId"
+            :template-name="sendVars.templateName"
+            @close="handleCloseTextModal"
+        ></confirm-send-form>
     </app-layout>
 </template>
 
@@ -40,6 +46,8 @@ import {Inertia} from "@inertiajs/inertia";
 
 import AppLayout from '@/Layouts/AppLayout'
 import Confirm from "@/Components/Confirm";
+import ConfirmSendModal from "@/Components/SweetModal3/SweetModal";
+import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 
 import {library} from '@fortawesome/fontawesome-svg-core';
@@ -54,7 +62,9 @@ export default defineComponent({
         AppLayout,
         FontAwesomeIcon,
         Confirm,
-        GymRevenueCrud
+        GymRevenueCrud,
+        ConfirmSendModal,
+        ConfirmSendForm
     },
     props: ['title', 'filters', 'templates'],
     setup(props) {
@@ -67,6 +77,27 @@ export default defineComponent({
             confirmTrash.value = null;
         };
 
+        const confirmSend = ref(null);
+        const sendVars = () => {
+            return {
+                templateId: '',
+                templateName: ''
+            }
+        };
+
+        const handleOpenSendModal = (data) => {
+            console.log('looking at data', data, sendVars)
+            confirmSend.value = data.id;
+            sendVars.templateId = data.id;
+            sendVars.templateName = data.name;
+            //sendModal.value.open();
+        }
+        const handleCloseTextModal = () => {
+            sendVars.templateId = '';
+            sendVars.templateName = '';
+            //sendModal.value.close();
+            confirmSend.value = null;
+        }
         const fields = computed(() => {
             return [
                 "name",
@@ -95,8 +126,8 @@ export default defineComponent({
         const actions = computed(() => {
             return {
                 selfSend: {
-                    label: "Send You a Test Message",
-                    handler: () => comingSoon(),
+                    label: "Send You a Test Msg",
+                    handler: ({data}) => handleOpenSendModal(data),
                 },
                 trash:{
                     handler: ({data}) => handleClickTrash(data.id)
@@ -113,7 +144,11 @@ export default defineComponent({
             }).show();
         };
 
-        return { handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions };
+        return {
+            fields, actions,
+            handleClickTrash, confirmTrash, handleConfirmTrash,
+            handleOpenSendModal, handleCloseTextModal, confirmSend, sendVars
+        };
     },
 });
 </script>

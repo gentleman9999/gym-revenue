@@ -117,7 +117,7 @@
                 <input id="zip" type="number" class="mt-1 block w-full" v-model="form.zip" maxlength="5" />
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
             </div>
-            
+
         </template>
 
         <template #actions>

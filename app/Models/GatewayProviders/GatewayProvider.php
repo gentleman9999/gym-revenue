@@ -19,7 +19,7 @@ class GatewayProvider extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'name', 'slug', 'desc', 'vendor', 'provider_type', 'provider_rate', 'gr_commission_rate', 'gr_commission_bulk_rate','active', 'misc'
+        'name', 'slug', 'desc', 'vendor', 'provider_type','profile_class', 'provider_rate', 'gr_commission_rate', 'gr_commission_bulk_rate','active', 'misc'
     ];
 
     protected $casts = [
@@ -38,5 +38,10 @@ class GatewayProvider extends Model
         }
 
         return $results;
+    }
+
+    public function details()
+    {
+        return $this->hasMany(GatewayProviderDetail::class, 'gateway_id', 'id');
     }
 }

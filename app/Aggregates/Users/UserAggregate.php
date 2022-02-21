@@ -7,6 +7,7 @@ use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
+use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
@@ -20,9 +21,47 @@ class UserAggregate extends AggregateRoot
     protected $client_id = '';
     protected $teams = [];
     protected array $activity_history = [];
+    protected $phone_number = '';
+    protected string $name = '';
+    protected string $first_name = '';
+    protected string $last_name = '';
+    protected string $email = '';
+    protected string $alt_email = '';
+    protected string $address1 = '';
+    protected string $address2 = '';
+    protected string $city = '';
+    protected string $state = '';
+    protected string $zip = '';
+    protected string $job_title = '';
+
 
     public function applyNewUser(UserCreated $event)
     {
+        if(array_key_exists('name', $event->payload))
+        {
+            $this->name = $event->payload['name'];
+        }
+
+        if(array_key_exists('phone', $event->payload))
+        {
+            $this->phone_number = $event->payload['phone'];
+        }
+
+        // @todo - put something useful here
+    }
+
+    public function applyUserUpdated(UserUpdated $event)
+    {
+        if(array_key_exists('name', $event->payload))
+        {
+            $this->name = $event->payload['name'];
+        }
+
+        if(array_key_exists('phone', $event->payload))
+        {
+            $this->phone_number = $event->payload['phone'];
+        }
+
         // @todo - put something useful here
     }
 
@@ -69,6 +108,21 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
+    public function applyUserReceivedTextMsg(UserReceivedTextMsg $event)
+    {
+        $this->activity_history[] = [
+            'event' => 'sms-transmission',
+            'details' => [
+                'user_id' => $event->user,
+                'template_id' => $event->template,
+                'misc' => [
+                    'response' => $event->response,
+                    'client' => $event->client ?? null
+                ]
+            ],
+        ];
+    }
+
 
     public function createUser(string $created_by_user_id, array $payload)
     {
@@ -104,6 +158,12 @@ class UserAggregate extends AggregateRoot
 
         $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name, $client_id));
 
+        return $this;
+    }
+
+    public function logClientSMSActivity($template_id, $response, $client_id = null)
+    {
+        $this->recordThat(new UserReceivedTextMsg($this->uuid(), $template_id, $response, $client_id));
         return $this;
     }
 
@@ -148,5 +208,28 @@ class UserAggregate extends AggregateRoot
     {
         $this->recordThat(new UserStoppedBeingImpersonated($this->uuid(), $coward_id, date('Y-m-d H:i:s')));
         return $this;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getPhoneNumber()
+    {
+        return $this->phone_number;
+    }
+
+    public function getProperty(string $prop)
+    {
+        switch($prop)
+        {
+            case 'name':
+                return $this->getName();
+                break;
+
+            default:
+                return false;
+        }
     }
 }

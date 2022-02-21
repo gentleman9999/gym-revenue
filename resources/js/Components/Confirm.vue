@@ -1,7 +1,7 @@
 <template>
     <sweet-modal
         :title="title"
-        width="85%"
+        :width="width"
         overlayTheme="dark"
         modal-theme="dark"
         hideCloseButton
@@ -10,12 +10,12 @@
         <slot />
         <template #button >
             <slot name="cancelButton">
-                <button @click="emit('cancel'); modal.close()" class="btn btn-error">
+                <button @click="emit('cancel'); modal.close()" class="btn btn-error hover:text-white">
                     Cancel
                 </button>
             </slot>
             <slot name="confirmButton">
-                <button @click="emit('confirm'); modal.close()" class="btn btn-success">
+                <button @click="emit('confirm'); modal.close()" class="btn btn-success hover:text-white ml-2">
                     Confirm
                 </button>
             </slot>
@@ -31,6 +31,11 @@ export default defineComponent({
             type: String,
             required: true,
         },
+        width: {
+            type: String,
+            required: false,
+            default: '85%'
+        }
     },
     emits: ["confirm"],
     components: { SweetModal },
