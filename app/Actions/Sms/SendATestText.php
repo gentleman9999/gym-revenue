@@ -5,7 +5,6 @@ namespace App\Actions\Sms;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\ClientDetail;
 use App\Models\Comms\SmsTemplates;
-use App\Services\GatewayProfiles\SMS\SMSGatewayProviderService;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SendATestText

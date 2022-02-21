@@ -133,7 +133,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
 //    for some reason, the commented route below gets overridden by the default teams route
     //Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
-    Route::put('/update/{id}', \App\Http\Controllers\TeamController::class . '@update')->name('teams.update');
+    Route::put('/update/{id}', \App\Http\Controllers\TeamController::class . '@update')->name('team.update');
     Route::delete('/{id}', \App\Http\Controllers\TeamController::class . '@delete')->name('teams.delete');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
