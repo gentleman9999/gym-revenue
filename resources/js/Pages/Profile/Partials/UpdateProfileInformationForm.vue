@@ -41,19 +41,83 @@
                 <jet-input-error :message="form.errors.photo" class="mt-2" />
             </div>
 
+            <!-- First Name -->
+            <div class="col-span-3 sm:col-span-3">
+                <jet-label for="first_name" value="First Name" />
+                <input id="first_name" type="text" class="mt-1 block w-full" v-model="form['first_name']" autocomplete="name" />
+                <jet-input-error :message="form.errors['first_name']" class="mt-2" />
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-span-3 sm:col-span-3">
+                <jet-label for="last_name" value="Last Name" />
+                <input id="last_name" type="text" class="mt-1 block w-full" v-model="form['last_name']" autocomplete="name" />
+                <jet-input-error :message="form.errors['last_name']" class="mt-2" />
+            </div>
             <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-3 sm:col-span-3">
                 <jet-label for="name" value="Name" />
                 <input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
 
+            <!-- Phone # -->
+            <div class="col-span-3 sm:col-span-3">
+                <jet-label for="phone" value="Phone #" />
+                <input id="phone" type="number" class="mt-1 block w-full" v-model="form.phone" />
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
+            </div>
+
             <!-- Email -->
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-3 sm:col-span-3">
                 <jet-label for="email" value="Email" />
                 <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
+
+            <!-- AltEmail -->
+            <div class="col-span-3 sm:col-span-3">
+                <jet-label for="altEmail" value="Personal Email" />
+                <input id="altEmail" type="email" class="mt-1 block w-full" v-model="form.altEmail" />
+                <jet-input-error :message="form.errors.altEmail" class="mt-2" />
+            </div>
+
+
+            <!-- Address 1 -->
+            <div class="col-span-6 sm:col-span-6">
+                <jet-label for="address1" value="Address1" />
+                <input id="address1" type="text" class="mt-1 block w-full" v-model="form.address1" />
+                <jet-input-error :message="form.errors.address1" class="mt-2" />
+            </div>
+
+            <!-- Address 2 -->
+            <div class="col-span-6 sm:col-span-6">
+                <jet-label for="address2" value="Address2" />
+                <input id="address2" type="text" class="mt-1 block w-full" v-model="form.address2" />
+                <jet-input-error :message="form.errors.address2" class="mt-2" />
+            </div>
+
+            <!-- City -->
+            <div class="col-span-3 sm:col-span-3">
+                <jet-label for="city" value="City" />
+                <input id="city" type="text" class="mt-1 block w-full" v-model="form.city" />
+                <jet-input-error :message="form.errors.city" class="mt-2" />
+            </div>
+
+            <!-- State -->
+            <div class="col-span-1 sm:col-span-1">
+                <jet-label for="state" value="State" />
+                <input id="state" type="text" class="mt-1 block w-full" v-model="form.state" maxlength="2" @keyup="upperCaseF(form.state)"/>
+                <jet-input-error :message="form.errors.state" class="mt-2" />
+            </div>
+
+            <!-- Zip -->
+            <div class="col-span-2 sm:col-span-2">
+                <jet-label for="zip" value="Zip Code" />
+                <input id="zip" type="number" class="mt-1 block w-full" v-model="form.zip" maxlength="5" />
+                <jet-input-error :message="form.errors.zip" class="mt-2" />
+            </div>
+            
         </template>
 
         <template #actions>
@@ -89,14 +153,24 @@
             JetSecondaryButton,
         },
 
-        props: ['user'],
+        props: ['user', 'addlData'],
 
         data() {
             return {
                 form: this.$inertia.form({
                     _method: 'PUT',
+                    id: this.user.id,
+                    'first_name': this.user['first_name'],
+                    'last_name': this.user['last_name'],
+                    address1: this.addlData.address1,
+                    address2: this.addlData.address2,
+                    city: this.addlData.city,
+                    state: this.addlData.state,
+                    zip: this.addlData.zip,
+                    jobTitle: this.addlData.jobTitle,
                     name: this.user.name,
                     email: this.user.email,
+                    phone: this.addlData.phone,
                     photo: null,
                 }),
 
@@ -105,6 +179,9 @@
         },
 
         methods: {
+            upperCaseF(text) {
+                this.form.state = text.toUpperCase();
+            },
             updateProfileInformation() {
                 if (this.$refs.photo) {
                     this.form.photo = this.$refs.photo.files[0]

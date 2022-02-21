@@ -90,6 +90,10 @@ class UpdateUser implements UpdatesUserProfileInformation
      */
     public function update($user, array $input)
     {
-        $this->run($input);
+        if(!array_key_exists('id', $input))
+        {
+            $input['id'] = $user->id;
+        }
+        $this->run($input, $user);
     }
 }

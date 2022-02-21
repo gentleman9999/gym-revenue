@@ -185,7 +185,7 @@ class UserProjector extends Projector
             $client_id = $user->associated_client ? $user->associated_client->value : null;
 
             //if we were provided a security_role, update the users security_role
-            if ($data['security_role']) {
+            if ($data['security_role'] ?? false) {
                 $old_security_role = SecurityRole::with('role')->find($user->security_role->value);
                 $old_role = $old_security_role->role->name;
 
