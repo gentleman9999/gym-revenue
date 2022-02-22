@@ -41,6 +41,8 @@ class EmailGatewayProviderService extends GatewayProviderService
             switch($model->value)
             {
                 case 'default_cnb':
+
+                    /*
                     $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                         ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('mailgun')->first();
 
@@ -70,7 +72,13 @@ class EmailGatewayProviderService extends GatewayProviderService
                                 }
                             }
                         }
-                    }
+                    }*/
+                    $deets = [
+                        'mailgun_domain' => env('MAILGUN_DOMAIN'),
+                        'mailgun_secret' => env('MAILGUN_SECRET'),
+                        'mailgun_endpoint' => env('MAILGUN_ENDPOINT'),
+                        'mailgun_from_addr' => env('MAIL_FROM_ADDRESS')
+                    ];
                     $results = new Mailgun($deets, $user_id);
                     break;
                 // default will be the slug name given to the

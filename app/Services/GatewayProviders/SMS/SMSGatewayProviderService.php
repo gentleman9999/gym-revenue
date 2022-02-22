@@ -41,6 +41,7 @@ class SMSGatewayProviderService extends GatewayProviderService
             switch($model->value)
             {
                 case 'default_cnb':
+                    /*
                     $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                         ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('twilio')->first();
 
@@ -70,6 +71,12 @@ class SMSGatewayProviderService extends GatewayProviderService
                             }
                         }
                     }
+                    */
+                    $deets = [
+                        'twilio_no' => env('TWILIO_NO'),
+                        'twilio_sid' => env('TWILIO_SID'),
+                        'twilio_token' => env('TWILIO_TOKEN')
+                    ];
                     $results = new Twilio($deets, $user_id);
                 break;
                 // default will be the slug name given to the
