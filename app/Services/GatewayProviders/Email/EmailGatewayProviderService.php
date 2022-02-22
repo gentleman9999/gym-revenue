@@ -41,20 +41,8 @@ class EmailGatewayProviderService extends GatewayProviderService
             switch($model->value)
             {
                 case 'default_cnb':
-                    $deets = [
-                        'mailgun_domain' => env('MAILGUN_DOMAIN'),
-                        'mailgun_secret' => env('MAILGUN_SECRET'),
-                        'mailgun_endpoint' => env('MAILGUN_ENDPOINT'),
-                        'mailgun_from_addr' => env('MAIL_FROM_ADDRESS')
-                    ];
-                    $results = new Mailgun($deets, $user_id);
-                    break;
-                // default will be the slug name given to the
-                // client_gateway_integrations configuration
-
-                default:
                     $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
-                        ->whereNickname($model->value)->whereActive(1)->first();
+                        ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('mailgun')->first();
 
                     if(!is_null($client_integration_record))
                     {
@@ -63,35 +51,61 @@ class EmailGatewayProviderService extends GatewayProviderService
 
                         if(!is_null($gateway_provider_record))
                         {
-                            // @todo - get the credentials
                             $deets = [];
                             foreach ($gateway_provider_record->details as $detail)
                             {
-                                if($detail->detail == 'access_credentais')
+                                if($detail->detail == 'access_credential')
                                 {
                                     if($detail->value == 'mailgun_domain')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['mailgun_domain'] = $value['value'];
-                                    }
+                                        $deets['mailgun_domain'] = $detail->misc['value'];
+
                                     if($detail->value == 'mailgun_secret')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['mailgun_secret'] = $value['value'];
-                                    }
+                                        $deets['mailgun_secret'] = $detail->misc['value'];
+
                                     if($detail->value == 'mailgun_endpoint')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['mailgun_endpoint'] = $value['value'];
-                                    }
+                                        $deets['mailgun_endpoint'] = $detail->misc['value'];
+
                                     if($detail->value == 'mailgun_from_addr')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['mailgun_from_addr'] = $value['value'];
-                                    }
+                                        $deets['mailgun_from_addr'] = $detail->misc['value'];
                                 }
                             }
-                            $gateway = new $gateway_provider_record->profile_class();
+                        }
+                    }
+                    $results = new Mailgun($deets, $user_id);
+                    break;
+                // default will be the slug name given to the
+                // client_gateway_integrations configuration
+
+                default:
+                    $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
+                        ->whereNickname($model->value)->whereActive(1)->first(); //This needs to find the correct gateway_slug, right now it doesn't
+
+                    if(!is_null($client_integration_record))
+                    {
+                        $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
+                            ->with('details')->first();
+
+                        if(!is_null($gateway_provider_record))
+                        {
+                            $deets = [];
+                            foreach ($gateway_provider_record->details as $detail)
+                            {
+                                if($detail->detail == 'access_credential')
+                                {
+                                    if($detail->value == 'mailgun_domain')
+                                        $deets['mailgun_domain'] = $detail->misc['value'];
+
+                                    if($detail->value == 'mailgun_secret')
+                                        $deets['mailgun_secret'] = $detail->misc['value'];
+
+                                    if($detail->value == 'mailgun_endpoint')
+                                        $deets['mailgun_endpoint'] = $detail->misc['value'];
+
+                                    if($detail->value == 'mailgun_from_addr')
+                                        $deets['mailgun_from_addr'] = $detail->misc['value'];
+                                }
+                            }
+                            //$gateway = new $gateway_provider_record->profile_class();
                         }
                     }
 

@@ -41,19 +41,8 @@ class SMSGatewayProviderService extends GatewayProviderService
             switch($model->value)
             {
                 case 'default_cnb':
-                    $deets = [
-                        'twilio_no' => env('TWILIO_NO'),
-                        'twilio_sid' => env('TWILIO_SID'),
-                        'twilio_token' => env('TWILIO_TOKEN')
-                    ];
-                    $results = new Twilio($deets, $user_id);
-                break;
-                // default will be the slug name given to the
-
-                default:
-
-                     $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
-                        ->whereNickname($model->value)->whereActive(1)->first();
+                    $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
+                        ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('twilio')->first();
 
                     if(!is_null($client_integration_record))
                     {
@@ -66,23 +55,52 @@ class SMSGatewayProviderService extends GatewayProviderService
                             $deets = [];
                             foreach ($gateway_provider_record->details as $detail)
                             {
-                                if($detail->detail == 'access_credentais')
+                                if($detail->detail == 'access_credential')
                                 {
                                     if($detail->value == 'twilio_no')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['twilio_no'] = $value['value'];
-                                    }
+                                        $deets['twilio_no'] = $detail->misc['value'];
+
                                     if($detail->value == 'twilio_sid')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['twilio_sid'] = $value['value'];
-                                    }
+                                        $deets['twilio_sid'] = $detail->misc['value'];
+
                                     if($detail->value == 'twilio_token')
-                                    {
-                                        $value = json_decode($detail->misc);
-                                        $deets['twilio_token'] = $value['value'];
-                                    }
+                                        $deets['twilio_token'] = $detail->misc['value'];
+
+                                }
+                            }
+                        }
+                    }
+                    $results = new Twilio($deets, $user_id);
+                break;
+                // default will be the slug name given to the
+                // client_gateway_integrations configuration
+
+                default:
+                     $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
+                        ->whereNickname($model->value)->whereActive(1)->first(); //This needs to find the correct gateway_slug, right now it doesn't
+
+                    if(!is_null($client_integration_record))
+                    {
+                        $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
+                            ->with('details')->first();
+
+                        if(!is_null($gateway_provider_record))
+                        {
+                            // @todo - get the credentials
+                            $deets = [];
+                            foreach ($gateway_provider_record->details as $detail)
+                            {
+                                if($detail->detail == 'access_credential')
+                                {
+                                    if($detail->value == 'twilio_no')
+                                        $deets['twilio_no'] = $detail->misc['value'];
+
+                                    if($detail->value == 'twilio_sid')
+                                        $deets['twilio_sid'] = $detail->misc['value'];
+
+                                    if($detail->value == 'twilio_token')
+                                        $deets['twilio_token'] = $detail->misc['value'];
+
                                 }
                             }
                             $gateway = new $gateway_provider_record->profile_class();
