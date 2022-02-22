@@ -12,6 +12,7 @@
         <gym-revenue-crud
             base-route="security-roles"
             model-name="Security Role"
+            model-key="role"
             :fields="fields"
             :resource="securityRoles"
             :actions="{

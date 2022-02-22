@@ -5,7 +5,8 @@
         </template>
         <gym-revenue-crud
             base-route="files"
-            model-name="file"
+            model-name="File"
+            model-key="file"
             :fields="fields"
             :resource="files"
             titleField="filename"

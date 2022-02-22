@@ -440,4 +440,61 @@ if(!$location->id){
 
         return $results;
     }
+
+    public function view($id)
+    {
+        $user = request()->user();
+        if($user->cannot('locations.read', $user->currentTeam()->first()))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        if (!$id) {
+            Alert::error("No Location ID provided")->flash();
+            return Redirect::back();
+        }
+        $locationdetails = LocationDetails::where('location_id',$id)->get();
+        $phone ='';
+        $poc_first ='';
+        $poc_last ='';
+        $poc_phone ='';
+        $opendate ='';
+        $closedate ='';
+
+
+        foreach ($locationdetails as $locationitems){
+//dd($locationitems);
+            if($locationitems->field == 'phone') {
+                $phone = $locationitems->value;
+            }
+            if($locationitems->field == 'poc_first') {
+                $poc_first = $locationitems->value;
+            }
+            if($locationitems->field == 'poc_last') {
+                $poc_last = $locationitems->value;
+            }
+            if($locationitems->field == 'poc_phone') {
+                $poc_phone = $locationitems->value;
+            }
+            if($locationitems->field == 'open_date') {
+                $opendate = $locationitems->value;
+            }
+            if($locationitems->field == 'close_date') {
+                $closedate = $locationitems->value;
+            }
+
+        }
+
+        $data = Location::findOrFail($id)->toArray();
+        $data['phone'] = $phone;
+        $data['poc_first'] = $poc_first;
+        $data['poc_last'] = $poc_last;
+        $data['poc_phone'] = $poc_phone;
+        $data['opendate'] = $opendate;
+        $data['closedate'] = $closedate;
+
+        return $data;
+    }
+
 }

@@ -17,6 +17,7 @@
         <gym-revenue-crud
             base-route="comms.sms-campaigns"
             model-name="SMS Campaign"
+            model-key="campaign"
             :fields="fields"
             :resource="campaigns"
             :actions="actions"

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GatewayProfiles\SMS;
+namespace App\Services\GatewayProviders\SMS;
 
 use App\Models\Comms\SmsTemplates;
 use App\Models\GatewayProviders\ClientGatewayIntegration;

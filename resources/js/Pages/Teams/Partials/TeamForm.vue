@@ -137,7 +137,7 @@ export default defineComponent({
         }
         const form = useForm(team);
 
-        let handleSubmit = () => form.put(route("teams.update", team.id));
+        let handleSubmit = () => form.put(route("team.update", team.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("teams.store"));
         }

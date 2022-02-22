@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown dropdown-end">
         <slot name="trigger">
-            <div class="btn btn-ghost"  tabindex="0" >
+            <div class="btn btn-ghost" tabindex="0">
                 <font-awesome-icon icon="ellipsis-h" size="lg" />
             </div>
         </slot>
@@ -11,12 +11,15 @@
                 tabindex="0"
                 class="p-2 shadow menu dropdown-content bg-base-300 rounded-box w-52"
             >
-                <li v-for="([key, action]) in Object.entries(actions)" :key="key">
+                <li v-for="[key, action] in Object.entries(actions)" :key="key">
                     <a
-                        @click.prevent="() => action.handler({ data, baseRoute })"
+                        @click.prevent="
+                            () => action.handler({ data, baseRoute })
+                        "
                         href="#"
-                        >{{ action.label }}</a
                     >
+                        {{ action.label }}
+                    </a>
                 </li>
             </ul>
         </slot>
@@ -28,7 +31,8 @@ import { defineComponent, computed, ref } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { getActions} from "./helpers/actions";
+import { getActions } from "./helpers/actions";
+
 library.add(faEllipsisH);
 
 export default defineComponent({
@@ -42,6 +46,14 @@ export default defineComponent({
             required: true,
         },
         baseRoute: {
+            type: String,
+            required: true,
+        },
+        hasPreviewComponent: {
+            type: Boolean,
+            default: false,
+        },
+        modelName: {
             type: String,
             required: true,
         },

@@ -18,6 +18,7 @@
         <gym-revenue-crud
             base-route="comms.email-templates"
             model-name="Email Template"
+            model-key="template"
             :fields="fields"
             :resource="templates"
             :actions="actions"

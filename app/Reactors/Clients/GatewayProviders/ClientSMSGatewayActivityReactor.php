@@ -5,7 +5,7 @@ namespace App\Reactors\Clients\GatewayProviders;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Comms\SmsTemplates;
 use App\Models\User;
-use App\Services\GatewayProfiles\SMS\SMSGatewayProviderService;
+use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
 use App\StorableEvents\Clients\Activity\GatewayProviders\SMS\UserSentATestSMS;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;

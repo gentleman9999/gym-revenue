@@ -18,6 +18,7 @@
         <gym-revenue-crud
             base-route="comms.sms-templates"
             model-name="SMS Template"
+            model-key="template"
             :fields="fields"
             :resource="templates"
             :actions="actions"
