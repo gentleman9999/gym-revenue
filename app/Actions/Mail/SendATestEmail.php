@@ -3,10 +3,13 @@
 namespace App\Actions\Email;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\ClientDetail;
 use App\Models\Comms\EmailTemplates;
 use App\Services\GatewayProfiles\Email\EmailGatewayProviderService;
+use App\Services\GatewayProviders\MessageInterpreters\Email\StandardEmailInterpreter;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Mailgun\Mailgun as MailgunClient;
 
 class SendATestEmail
 {
@@ -55,29 +58,35 @@ class SendATestEmail
                 // Verify the sms going with the client of the active team is the same or its a gymrevenue template
                 if($client_id == $email_template_record->client_id)
                 {
-
+                    $user_aggy = UserAggregate::retrieve($user->id);
                     if(is_null($client_id))
                     {
                         /**
-                         * STEPS
-                         * @todo - make a set of gateway provider services
-                         * 4. If the active team's client is gymrevenue, use the service, to easy fire the message with the built in integration with Twilio
-                         * 5. else use the service to get the correct gateway
-                         * 6. use the service to pull the profile of the gateway and fire
-                         * 7. In all cases do the User aggy to log the action
-                         * 8. In client cases, log the action with the client too, so that it's projector can add an invoicing record and activity_history
-                         */
-                        /**
-                         * Actual Steps
                          * @todo - make an AdminUserGatewayActivityAggregate and attach it to UserAggy with Bouncer ACL
-                         * 1. Send the test message event
                          */
-                        $results = 'Cape & Bay Teams Are Not Ready Yet.';
+
+                        $SEI = new StandardEmailInterpreter($user->id);
+                        $clean_msg = $SEI->translate($email_template_record->markup);
+                        $Mailgun = MailgunClient::create(env('MAILGUN_SECRET'));
+
+                        $Mailgun->messages()->send(env('MAILGUN_DOMAIN'), [
+                            'from'    => env('MAIL_FROM_ADDRESS'),
+                            'to'      => $email_detail,
+                            'subject' => $email_template_record->subject,
+                            'text'    => $clean_msg,
+                        ]);
+
+                        $user_aggy->logClientEmailActivity($email_template_record->subject ?? 'Test Email - No Subject Configured',
+                            $email_template_record->id, $Mailgun->getLastResponse())
+                            ->persist();
+
+                        $results = true;
                     }
                     else
                     {
                         ClientAggregate::retrieve($client_id)->getGatewayAggregate()
-                            ->sendATestEmailMessage($email_template_record->subject ?? 'Test', $email_template_record->id, $user->id)
+                            ->sendATestEmailMessage($email_template_record->subject ?? 'Test Email - No Subject Configured',
+                                $email_template_record->id, $user->id)
                             ->persist();
                         $results = true;
 
