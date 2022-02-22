@@ -6,7 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\ClientDetail;
 use App\Models\Comms\SmsTemplates;
-use App\Services\GatewayProfiles\SMS\SMSGatewayProviderService;
+use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
 use App\Services\GatewayProviders\MessageInterpreters\SMS\StandardSMSInterpreter;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Twilio\Rest\Client as TwilioClient;
