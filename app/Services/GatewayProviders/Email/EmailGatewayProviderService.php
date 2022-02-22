@@ -134,13 +134,11 @@ class EmailGatewayProviderService extends GatewayProviderService
 
     public function fire($email_address)
     {
-        $results = false;
-
         $msg = $this->getRawMessage();
         $subject = $this->getSubject();
         $response = $this->gateway->fireMsg($email_address, $subject, $msg);
 
-        return $results;
+        return $response;
     }
 
     public function fireBulk()

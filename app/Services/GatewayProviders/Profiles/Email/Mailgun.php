@@ -32,7 +32,7 @@ class Mailgun extends EmailGatewayProvider
                 'from'    => env('MAIL_FROM_ADDRESS'),
                 'to'      => $email_address,
                 'subject' => $subject,
-                'text'    => $clean_msg,
+                'html'    => $clean_msg,
                 //'recipient-variables' => $this->mailgun_domain
         ]);
 

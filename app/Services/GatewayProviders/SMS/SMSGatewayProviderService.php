@@ -128,12 +128,10 @@ class SMSGatewayProviderService extends GatewayProviderService
 
     public function fire($phone_number)
     {
-        $results = false;
-
         $msg = $this->getRawMessage();
         $response = $this->gateway->fireMsg($phone_number, $msg);
 
-        return $results;
+        return $response;
     }
 
     public function fireBulk()

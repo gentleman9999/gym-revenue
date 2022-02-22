@@ -73,7 +73,7 @@ class SendATestEmail
                             'from'    => env('MAIL_FROM_ADDRESS'),
                             'to'      => $email_detail,
                             'subject' => $email_template_record->subject,
-                            'text'    => $clean_msg,
+                            'html'    => $clean_msg,
                         ]);
 
                         $user_aggy->logClientEmailActivity($email_template_record->subject ?? 'Test Email - No Subject Configured',
