@@ -26,7 +26,7 @@ class ClientEmailGatewayActivityReactor extends Reactor implements ShouldQueue
         $response = $gateway_service->fire($user_aggy->getEmailAddress());
 
         // In all cases do the User aggy to log the action
-        $user_aggy->logClientSMSActivity($event->template, $response, $event->client)->persist();
+        $user_aggy->logClientEmailActivity($event->subject, $event->template, $response, $event->client)->persist();
         /**
          * STEPS
          * 7.
