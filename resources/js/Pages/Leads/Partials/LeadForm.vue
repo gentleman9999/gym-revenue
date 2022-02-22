@@ -200,7 +200,7 @@ export default {
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
-        lead.updated = new Date(lead.last_updated.updated_at).toLocaleDateString("en-US");
+        lead.updated = new Date(lead.last_updated?.updated_at).toLocaleDateString("en-US");
         if (!lead) {
             lead = {
                 first_name: null,
