@@ -6,7 +6,7 @@ use App\StorableEvents\Clients\Activity\GatewayProviders\Email\UserSentATestEmai
 use App\StorableEvents\Clients\Activity\GatewayProviders\SMS\UserSentATestSMS;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
-class ClientsBillingActivityProjctor extends Projector
+class ClientsBillingActivityProjector extends Projector
 {
     public function onUserSentATestSMS(UserSentATestSMS $event)
     {
