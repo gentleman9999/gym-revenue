@@ -7,6 +7,7 @@ use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
+use App\StorableEvents\Users\Activity\SMS\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
@@ -123,6 +124,22 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
+    public function applyUserReceivedEmail(UserReceivedEmail $event)
+    {
+        $this->activity_history[] = [
+            'event' => 'email-transmission',
+            'details' => [
+                'user_id' => $event->user,
+                'subject' => $event->subject,
+                'template_id' => $event->template,
+                'misc' => [
+                    'response' => $event->response,
+                    'client' => $event->client ?? null
+                ]
+            ],
+        ];
+    }
+
 
     public function createUser(string $created_by_user_id, array $payload)
     {
@@ -167,9 +184,9 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function logClientEmailActivity($template_id, $response, $client_id = null)
+    public function logClientEmailActivity($subject, $template_id, $response, $client_id = null)
     {
-        $this->recordThat(new UserReceivedEmail($this->uuid(), $template_id, $response, $client_id));
+        $this->recordThat(new UserReceivedEmail($this->uuid(), $subject, $template_id, $response, $client_id));
         return $this;
     }
 
