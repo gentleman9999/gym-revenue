@@ -1,6 +1,6 @@
 <?php
 
-namespace App\StorableEvents\Users\Activity\SMS;
+namespace App\StorableEvents\Users\Activity\Email;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 

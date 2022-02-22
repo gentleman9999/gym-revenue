@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Email;
+namespace App\Actions\Mail;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;

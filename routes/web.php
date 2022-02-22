@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
     Route::put('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_update')->name('comms.email-templates.update');
     Route::delete('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_trash')->name('comms.email-templates.trash');
     Route::post('/email-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_restore')->name('comms.email-templates.restore');
-    Route::post('/email-templates/test', \App\Actions\Email\SendATestEmail::class)->name('comms.email-templates.test-msg');
+    Route::post('/email-templates/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
 
     Route::get('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_index')->name('comms.email-campaigns');
     Route::get('/email-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_create')->name('comms.email-campaigns.create');
