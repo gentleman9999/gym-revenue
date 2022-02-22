@@ -48,6 +48,12 @@ class UserAggregate extends AggregateRoot
             $this->phone_number = $event->payload['phone'];
         }
 
+        if(array_key_exists('email', $event->payload))
+        {
+            $this->email = $event->payload['email'];
+        }
+
+
         // @todo - put something useful here
     }
 
@@ -61,6 +67,11 @@ class UserAggregate extends AggregateRoot
         if(array_key_exists('phone', $event->payload))
         {
             $this->phone_number = $event->payload['phone'];
+        }
+
+        if(array_key_exists('email', $event->payload))
+        {
+            $this->email = $event->payload['email'];
         }
 
         // @todo - put something useful here
