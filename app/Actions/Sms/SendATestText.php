@@ -76,10 +76,18 @@ class SendATestText
                     }
                     else
                     {
-                        ClientAggregate::retrieve($client_id)->getGatewayAggregate()
-                            ->sendATestSMSMessage($sms_template_record->id, $user->id)
-                            ->persist();
-                        $results = true;
+                        if($current_team_id == 1)
+                        {
+                            ClientAggregate::retrieve($client_id)->getGatewayAggregate()
+                                ->sendATestSMSMessage($sms_template_record->id, $user->id)
+                                ->persist();
+                            $results = true;
+                        }else{
+                            ClientAggregate::retrieve($client_id)->getGatewayAggregate()
+                                ->sendATestSMSMessage($sms_template_record->id, $user->id)
+                                ->persist();
+                            $results = true;
+                        }
 
                     }
 
