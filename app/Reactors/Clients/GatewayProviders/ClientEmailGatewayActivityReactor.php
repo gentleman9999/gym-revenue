@@ -5,7 +5,7 @@ namespace App\Reactors\Clients\GatewayProviders;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Comms\EmailTemplates;
 use App\Models\User;
-use App\Services\GatewayProfiles\Email\EmailGatewayProviderService;
+use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use App\StorableEvents\Clients\Activity\GatewayProviders\Email\UserSentATestEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;

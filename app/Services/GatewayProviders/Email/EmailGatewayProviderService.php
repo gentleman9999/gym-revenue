@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\GatewayProfiles\Email;
+namespace App\Services\GatewayProviders\Email;
 
 use App\Models\Comms\EmailTemplates;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
