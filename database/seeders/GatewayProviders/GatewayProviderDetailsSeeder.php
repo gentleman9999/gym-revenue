@@ -23,21 +23,21 @@ class GatewayProviderDetailsSeeder extends Seeder
                     'gateway_id' => $gateways['twilio']['id'],
                     'detail' => 'access_credential',
                     'value' => 'twilio_sid',
-                    'misc' => ['required' => true,'value' => 'AC736b5b35b4217cb32e3d907c3a5a8914'],
+                    'misc' => ['required' => true,'value' => 'AC6bad234db52cb4f7a8c466c92a8e8a50'],
                     'active' => 1
                 ],
                 [
                     'gateway_id' => $gateways['twilio']['id'],
                     'detail' => 'access_credential',
                     'value' => 'twilio_token',
-                    'misc' => ['required' => true,'value' => 'b700f3dbecb34f37c994263b250a98e7'],
+                    'misc' => ['required' => true,'value' => '1531e87775390625d404a50bc0c15052'],
                     'active' => 1
                 ],
                 [
                     'gateway_id' => $gateways['twilio']['id'],
                     'detail' => 'access_credential',
                     'value' => 'twilio_no',
-                    'misc' => ['required' => true,'value' => '+19106345244'],
+                    'misc' => ['required' => true,'value' => '+19562753856'],
                     'active' => 1
                 ],
             ],
