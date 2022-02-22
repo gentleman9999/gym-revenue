@@ -4,6 +4,7 @@ namespace Database\Seeders\Users;
 
 
 use App\Models\Clients\Client;
+use App\Models\Clients\Location;
 use Illuminate\Support\Facades\Artisan;
 
 class ClientUserSeeder extends UserSeeder
@@ -68,6 +69,7 @@ class ClientUserSeeder extends UserSeeder
     protected function addUser(array $user)
     {
         $client = Client::whereName($user['client'])->first();
-        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['last_name']}\" --email={$user['email']} --client={$client->id} --role=\"{$user['role']}\"");
+        $home_club = Location::whereClientId($client->id)->first()->gymrevenue_id;
+        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['last_name']}\" --email={$user['email']} --client={$client->id} --role=\"{$user['role']}\" --homeclub=\"{$home_club}\"");
     }
 }

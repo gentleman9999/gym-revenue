@@ -45,6 +45,7 @@ class UserProjector extends Projector
                 'state' => $data['state'] ?? null,
                 'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
+                'home_club' => $data['home_club'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the
@@ -73,6 +74,7 @@ class UserProjector extends Projector
                     'value' => $team->id,
                     'active' => 1
                 ]);
+
             }
 
             $role = null;
@@ -173,6 +175,7 @@ class UserProjector extends Projector
                 'state' => $data['state'] ?? null,
                 'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
+                'home_club' => $data['home_club'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the
@@ -214,11 +217,13 @@ class UserProjector extends Projector
 
                     //remove all old abilties that were assigned
                     $old_security_role->abilities()->each(function ($ability) use ($user, $team) {
-                        Bouncer::disallow($user)->to($ability->name, $team);
+                        if($ability){
+                            Bouncer::disallow($user)->to($ability['ability'], $ability['entity']);
+                        }
                     });
                     //now add all new abilities
                     $security_role->abilities()->each(function ($ability) use ($user, $team) {
-                        Bouncer::allow($user)->to($ability->name, $team);
+                        Bouncer::allow($user)->to($ability['ability'], $ability['entity']);
                     });
                 }
                 //syncWithoutDetaching so CB user team associations dont get removed

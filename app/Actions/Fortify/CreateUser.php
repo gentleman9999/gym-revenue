@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
+use App\Models\Clients\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -34,6 +35,7 @@ class CreateUser implements CreatesNewUsers
                             {--email= : the email of the user}
                             {--role= : the role of the user}
                             {--client= : the uuid of the client to assign }
+                            {--homeclub= : the gymrevenue_id of the home_club to assign }
     ';
 
     /**
@@ -54,20 +56,21 @@ class CreateUser implements CreatesNewUsers
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'altEmail' => ['sometimes','required', 'email'],
+            'altEmail' => ['sometimes', 'required', 'email'],
             'address1' => ['required'],
             'address2' => ['sometimes', 'nullable'],
             'city' => ['required'],
             'state' => ['required'],
             'zip' => ['required'],
             'jobTitle' => ['required'],
-            'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
+            'client_id' => ['sometimes', 'nullable', 'string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
             'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
-            'phone' => ['sometimes', 'digits:10'] //should be required, but seeders don't have phones.
+            'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
+            'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
         ];
     }
 
@@ -91,8 +94,7 @@ class CreateUser implements CreatesNewUsers
             ->createUser($current_user->id ?? "Auto Generated", $data);
 
         $user_teams = $data['team_ids'] ?? [$data['team_id']] ?? [];
-        foreach ($user_teams as $i => $team_id)
-        {
+        foreach ($user_teams as $i => $team_id) {
             // Since the user needs to have their team added in a single transaction in createUser
             // A projector won't get executed (for now) but an apply function will run on the next retrieval
             $team_name = Team::getTeamName($team_id);
@@ -143,6 +145,7 @@ class CreateUser implements CreatesNewUsers
         $email = $this->getEmail($first_name);
         $client = $this->getClient($first_name);
         $role = $this->getRole($first_name, $client);
+        $home_club = $this->getHomeClub($first_name, $client);
 
         $team_id = 1;//capeandbay team
         if ($client) {
@@ -163,7 +166,8 @@ class CreateUser implements CreatesNewUsers
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'password' => 'Hello123!',
-                'team_id' => $team_id
+                'team_id' => $team_id,
+                'home_club' => $home_club
             ]
         );
     }
@@ -216,14 +220,15 @@ class CreateUser implements CreatesNewUsers
             }
         }
 
-
         $clients = ['Cape & Bay'];
         $client_ids = [];
         $db_clients = Client::whereActive(1)->get();
-        foreach ($db_clients as $idx => $client_id) {
-            $clients[$idx + 1] = $client_id->name;
-            $client_ids[$idx + 1] = $client_id->id;
+
+        foreach ($db_clients as $idx => $client) {
+            $clients[$idx + 1] = $client->name;
+            $client_ids[$idx + 1] = $client->id;
         }
+
         $this->command->info('Associate an Account with this user.');
         foreach ($clients as $idx => $name) {
             $this->command->warn("[{$idx}] {$name}");
@@ -246,7 +251,7 @@ class CreateUser implements CreatesNewUsers
 
         if (is_null($selected_role)) {
             $roles = [];
-            if (!is_null($client_choice)) {
+            if ($client_choice) {
                 $roles[] = 'Account Owner';
                 $roles[] = 'Regional Admin';
                 $roles[] = 'Location Manager';
@@ -263,6 +268,21 @@ class CreateUser implements CreatesNewUsers
         }
 
         return $selected_role;
+    }
+
+    private function getHomeClub(string $user_name, string $client_choice = null)
+    {
+        $selected_home_club = $this->command->option('homeclub');
+
+        if (is_null($selected_home_club) && $client_choice) {
+            $all_locations = Location::whereClientId($client_choice)->get(['name', 'gymrevenue_id']);
+            $locations = $all_locations->pluck('name')->toArray();
+
+            $club_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
+            $selected_home_club = $all_locations->keyBy('name')[$club_choice]->gymrevenue_id;
+        }
+
+        return $selected_home_club;
     }
 
 

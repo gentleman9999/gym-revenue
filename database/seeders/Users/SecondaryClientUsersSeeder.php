@@ -29,7 +29,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'owl@kalamazoo.com',
                 'role' => 'Location Manager',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['The Kalamazoo Home Office', 'Zoo Sales Team', 'The Kalamazoo Gym #1'],
+                'team_names' => ['The Kalamazoo Home Office', 'Zoo Sales Team', 'The Kalamazoo Gym #1'],
             ],
             [
                 'first_name' => 'SK',
@@ -37,7 +37,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'kahn@kalamazoo.com',
                 'role' => 'Regional Admin',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
+                'team_names' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
             ],
             [
                 'first_name' => 'Baloo',
@@ -45,7 +45,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'baloo@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
+                'team_names' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
             ],
             [
                 'first_name' => 'Louie',
@@ -53,7 +53,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'louie@kalamazoo.com',
                 'role' => 'Sales Rep',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
+                'team_names' => ['Zoo Sales Team','The Kalamazoo Gym #1'],
             ],
             [
                 'first_name' => 'Mow',
@@ -61,7 +61,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'boy@kalamazoo.com',
                 'role' => 'Employee',
                 'client' => 'The Kalamazoo',
-                'team_ids' => ['Zoo Sales Team', 'The Kalamazoo Gym #1'],
+                'team_names' => ['Zoo Sales Team', 'The Kalamazoo Gym #1'],
             ],
 
             // Bodies By Brett
@@ -78,7 +78,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'bkirk@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
-                'team_ids' => [
+                'team_names' => [
                     'iFit Home Office', 'iFit Virginia',
                     'VA - Va Beach 1', 'VA - Va Beach 2'
                 ],
@@ -89,7 +89,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'kroberts@iFit.com',
                 'role' => 'Regional Admin',
                 'client' => 'iFit',
-                'team_ids' => [
+                'team_names' => [
                     'iFit Home Office', 'iFit Georgia',
                     'iFit Florida', 'FL - Tampa 1',
                     'FL - Lake City', 'FL - Hilliard',
@@ -104,7 +104,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'owl@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Virginia', 'iFit Sales Team', 'VA - Va Beach 1', 'VA - Va Beach 2'],
+                'team_names' => ['iFit Virginia', 'iFit Sales Team', 'VA - Va Beach 1', 'VA - Va Beach 2'],
             ],
             [
                 'first_name' => 'Abbi',
@@ -112,7 +112,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'aabing@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Florida', 'iFit Sales Team','FL - Tampa 2', 'iFit Sales Team Florida'],
+                'team_names' => ['iFit Florida', 'iFit Sales Team','FL - Tampa 2', 'iFit Sales Team Florida'],
             ],
             [
                 'first_name' => 'Mark',
@@ -120,7 +120,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'mroughy@iFit.com',
                 'role' => 'Location Manager',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Georgia','iFit Sales Team','GA - Atlanta 1','iFit Sales Team Georgia/VA'],
+                'team_names' => ['iFit Georgia','iFit Sales Team','GA - Atlanta 1','iFit Sales Team Georgia/VA'],
             ],
             [
                 'first_name' => 'Jessica',
@@ -128,7 +128,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'jhornsby@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Sales Team', 'GA - Atlanta 16','iFit Sales Team Georgia/VA'],
+                'team_names' => ['iFit Sales Team', 'GA - Atlanta 16','iFit Sales Team Georgia/VA'],
             ],
             [
                 'first_name' => 'Marco',
@@ -136,7 +136,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'email' => 'mlopez@iFit.com',
                 'role' => 'Sales Rep',
                 'client' => 'iFit',
-                'team_ids' => ['iFit Sales Team', 'FL - Tampa 2','iFit Sales Team Florida'],
+                'team_names' => ['iFit Sales Team', 'FL - Tampa 2','iFit Sales Team Florida'],
             ],
         ];
     }
@@ -145,7 +145,12 @@ class SecondaryClientUsersSeeder extends UserSeeder
     {
         $client = Client::whereName($user['client'])->first();
 
-        $team_ids = Team::whereIn('name', $user['team_ids'])->get(['id'])->pluck('id');
+        $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
+        $team_ids = $teams->pluck('id');
+
+        $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
+
+        $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() -1 )];
 
         CreateUser::run([
             'client_id' => $client->id,
@@ -154,7 +159,8 @@ class SecondaryClientUsersSeeder extends UserSeeder
             'email' => $user['email'],
             'password' => 'Hello123!',
             'team_ids' => $team_ids,
-            'role' => $user['role']
+            'role' => $user['role'],
+            'home_club' => $home_club
         ]);
     }
 }
