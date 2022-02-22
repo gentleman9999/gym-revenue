@@ -20,7 +20,7 @@ class ClientEmailGatewayActivityReactor extends Reactor implements ShouldQueue
         $gateway_service = new EmailGatewayProviderService(EmailTemplates::find($event->template));
 
         // use the service to get the correct gateway & pull the profile
-        $gateway_service->initEmailGateway($event->user);
+-+        $gateway_service->initEmailGateway($event->user);
 
         // Get the user's email and use the service to fire the message
         $response = $gateway_service->fire($user_aggy->getEmailAddress());

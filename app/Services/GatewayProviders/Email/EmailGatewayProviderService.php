@@ -108,7 +108,7 @@ class EmailGatewayProviderService extends GatewayProviderService
 
     public function getSubject() : string
     {
-        return $this->email_template->subject;
+        return $this->email_template->subject ?? '';
     }
 
     public function getTranslatedMessage()

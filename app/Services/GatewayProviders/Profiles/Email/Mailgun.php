@@ -17,7 +17,7 @@ class Mailgun extends EmailGatewayProvider
             'mailgun_from_addr' => $this->mailgun_from_addr = $access_credentials['mailgun_from_addr'] ?? null
         ];
         parent::__construct($details, 'Mailgun', $user_id, $interpreter);
-        $this->client = new MailgunClient($this->mailgun_secret);
+        //$this->client = new MailgunClient($this->mailgun_secret);
     }
 
     public function fireMsg($email_address, $subject, $msg)
@@ -33,7 +33,7 @@ class Mailgun extends EmailGatewayProvider
                 'to'      => $email_address,
                 'subject' => $subject,
                 'text'    => $clean_msg,
-                'recipient-variables' => $this->mailgun_domain
+                //'recipient-variables' => $this->mailgun_domain
         ]);
 
         if($Mailgun)

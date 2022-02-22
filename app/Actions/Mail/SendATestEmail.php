@@ -77,7 +77,7 @@ class SendATestEmail
                     else
                     {
                         ClientAggregate::retrieve($client_id)->getGatewayAggregate()
-                            ->sendATestSMSMessage($email_template_record->id, $user->id)
+                            ->sendATestEmailMessage($email_template_record->subject ?? 'Test', $email_template_record->id, $user->id)
                             ->persist();
                         $results = true;
 
