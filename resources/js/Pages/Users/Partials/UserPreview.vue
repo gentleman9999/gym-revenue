@@ -1,0 +1,61 @@
+<template>
+    <div class="grid grid-cols-6 gap-4">
+        <div class="field col-span-6 lg:col-span-3">
+            <label>Name:</label>
+            <div class="data">
+                {{ user.name }}
+            </div>
+        </div>
+        <div class="field col-span-6 lg:col-span-3">
+            <label>Email:</label>
+            <div class="data">
+                {{ user.email }}
+            </div>
+        </div>
+
+        <div class="field col-span-6 lg:col-span-3">
+            <label>Phone:</label>
+            <div class="data">
+                {{ user.phone }}
+            </div>
+        </div>
+        <div class="field col-span-6 lg:col-span-3" v-if="user.security_role">
+            <label>Security Role:</label>
+            <div class="data">
+                {{ user.security_role }}
+            </div>
+        </div>
+        <div class="field col-span-6 lg:col-span-3" v-else>
+            <label>Role:</label>
+            <div class="data">
+                {{ user.role }}
+            </div>
+        </div>
+        <template v-if="user.teams?.length">
+            <label class="col-span-6">Teams:</label>
+            <a
+                v-for="team in user.teams"
+                class="col-span-6 xl:col-span-3 bg-primary bg-opacity-25 py-2 px-4 rounded-lg flex flex-row"
+                :href="route('teams', { preview: team.id })"
+            >
+                {{ team.name }}
+                <div class="flex-grow" />
+            </a>
+        </template>
+    </div>
+</template>
+
+<style scoped>
+input {
+    @apply input-xs;
+}
+.field {
+    @apply flex flex-row gap-2;
+}
+</style>
+
+<script>
+export default {
+    props: ["user"],
+};
+</script>

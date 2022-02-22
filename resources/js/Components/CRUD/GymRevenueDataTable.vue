@@ -38,14 +38,16 @@
                     v-for="row in data"
                     :key="row.id"
                     :is="rowComponent"
-                    v-bind="{ [modelName]: row }"
+                    v-bind="{ [modelKey]: row }"
                     :data="row"
                     :fields="fields"
                     :titleField="titleField"
                     :actions="actions"
                     :model-name="modelName"
+                    :model-key="modelKey"
                     :model-name-plural="modelNamePlural"
                     :base-route="baseRoute"
+                    :has-preview-component="!!previewComponent"
                 />
 
                 <tr v-if="!data?.length">
@@ -117,6 +119,10 @@ export default {
         modelNamePlural: {
             type: String,
         },
+        modelKey: {
+            type:String,
+            required: true,
+        },
         titleField: {
             type: String,
         },
@@ -136,6 +142,9 @@ export default {
             type: Boolean,
             default: true,
         },
+        previewComponent: {
+            type: Object
+        }
     },
     setup(props) {
         const fields = getFields(props);

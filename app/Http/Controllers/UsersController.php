@@ -156,4 +156,39 @@ class UsersController extends Controller
             'securityRoles' => $security_roles
         ]);
     }
+
+    public function view($id)
+    {
+        $requesting_user = request()->user();
+        $current_team = $requesting_user->currentTeam()->first();
+        if ($requesting_user->cannot('users.read', $current_team)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+        $requesting_user_teams = $requesting_user->teams ?? [];
+
+        $user = User::with('details', 'teams', 'phone_number')->findOrFail($id);
+        $user_teams = $user->teams ?? [];
+
+        $data = $user->toArray();
+        if ($user->security_role) {
+            $security_role = SecurityRole::find($user->security_role->value);
+            $data['security_role'] = $security_role->security_role;
+        }else{
+            $data['role'] = $user->teams->keyBy('id')[$current_team->id]->pivot->role;
+        }
+
+        if ($user->phone_number) {
+            $data['phone'] = $user->phone_number->value;
+        }
+
+        $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
+            //only return teams that the current user also has access to
+            return $requesting_user_teams->contains(function ($requesting_user_team) use($user_team) {
+                return $requesting_user_team->id === $user_team->id;
+            });
+        });
+
+        return $data;
+    }
 }

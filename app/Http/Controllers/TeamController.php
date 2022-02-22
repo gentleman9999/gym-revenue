@@ -43,7 +43,8 @@ class TeamController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => Location::whereClientId($client_id)->get(),
-                'teams' => $teams
+                'teams' => $teams,
+                'preview' => $request->preview ?? null
             ]);
         } else if ($current_user->isCapeAndBayUser()) {
             $current_team = $current_user->currentTeam()->first();
@@ -54,7 +55,8 @@ class TeamController extends Controller
                     ->paginate(10),
                 'filters' => $request->all('search', 'club', 'team'),
                 'clubs' => [],
-                'teams' => $teams
+                'teams' => $teams,
+                'preview' => $request->preview ?? null
             ]);
         }
 
@@ -209,5 +211,36 @@ class TeamController extends Controller
         Alert::success("Team '{$team->name}' deleted")->flash();
 
         return Redirect::back();
+    }
+
+    public function view($teamId)
+    {
+        if (request()->user()->cannot('teams.read', request()->user()->currentTeam()->first())) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        $current_team = Team::find($teamId);
+        $data['team'] = $current_team;
+
+        $team_users = $current_team->team_users()->get();
+        $non_admin_users = [];
+        foreach ($team_users as $team_user)
+        {
+            if($team_user->role !== 'Admin') $non_admin_users[] = $team_user;
+        }
+
+        if(count($non_admin_users) > 0) {
+            $first_user = User::find($non_admin_users[0]->user_id);
+            $data['clubs'] = Location::whereClientId($first_user->client()[0]->id)->get();
+            $data['client'] = Client::find($first_user->client()[0]->id);
+        }
+
+        if (request()->user()->isCapeAndBayUser())
+            $data['users'] = $team_users;
+        else
+            $data['users'] = $non_admin_users;
+
+        return $data;
     }
 }

@@ -130,20 +130,22 @@ By Claimed employee
             <pagination class="mt-4" :links="resource.links" />
         </slot>
     </jet-bar-container>
+    <preview-modal v-if="previewComponent" :preview-component="previewComponent" :model-name="modelName" :model-key="modelKey"/>
 </template>
 
 <script>
 import { ref, defineComponent, watch } from "vue";
+import { Inertia } from "@inertiajs/inertia";
+import { merge } from "lodash";
 import Pagination from "@/Components/Pagination";
 import GymRevenueDataCards from "./GymRevenueDataCards";
 import GymRevenueDataTable from "./GymRevenueDataTable";
 import SearchFilter from "@/Components/CRUD/SearchFilter";
 import JetBarContainer from "@/Components/JetBarContainer";
-import { Inertia } from "@inertiajs/inertia";
-import { merge } from "lodash";
+import PreviewModal from "@/Components/CRUD/PreviewModal";
+import LeadForm from '@/Pages/Leads/Partials/LeadForm'
 import {useSearchFilter} from "./helpers/useSearchFilter";
 
-import LeadForm from '@/Pages/Leads/Partials/LeadForm'
 export default defineComponent({
     components: {
         GymRevenueDataCards,
@@ -152,6 +154,7 @@ export default defineComponent({
         SearchFilter,
         JetBarContainer,
         LeadForm,
+        PreviewModal
     },
     props: {
         fields: {
@@ -167,6 +170,10 @@ export default defineComponent({
         modelName: {
             type: String,
             default: "record",
+        },
+        modelKey:{
+            type:String,
+            required: true
         },
         modelNamePlural: {
             type: String,
@@ -196,6 +203,9 @@ export default defineComponent({
             type: Object,
             default: GymRevenueDataCards,
         },
+        previewComponent: {
+            type: Object
+        }
     },
 
     setup(props) {

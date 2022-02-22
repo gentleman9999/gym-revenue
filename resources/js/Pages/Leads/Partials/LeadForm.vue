@@ -200,6 +200,7 @@ export default {
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
+        lead.updated = new Date(lead.last_updated.updated_at).toLocaleDateString("en-US");
         if (!lead) {
             lead = {
                 first_name: null,
@@ -221,8 +222,7 @@ export default {
                 lead_status: '',
             }
             operation = 'Create';
-        }
-        else {
+        } else {
             console.log('Lead Owner',lead)
 
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
@@ -231,7 +231,7 @@ export default {
             lead.dob =  ('dob' in lead  && (lead.dob !== null)) ? lead.dob.value : null;
             lead.opportunity =  ('opportunity' in lead  && (lead.opportunity !== null)) ? lead.opportunity.value : null;
             lead['last_updated'] = ('last_updated' in lead  && (lead.last_updated !== null))
-                ? `Last Updated by ${lead.last_updated.value} at ${new Date(lead.last_updated.updated_at).toLocaleDateString("en-US")}`
+                ? `Last Updated by ${lead.last_updated.value} at ${lead.updated}`
                 : 'This lead has never been updated';
 
             lead['lead_owner'] = ('lead_owner' in lead  && (lead.lead_owner !== null)) ? lead.lead_owner.value : '';

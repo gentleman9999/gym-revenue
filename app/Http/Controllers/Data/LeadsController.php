@@ -258,7 +258,7 @@ class LeadsController extends Controller
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
             $default_team_name = $client->default_team_name->value;
-            
+
             $team_locations = [];
 
             if ($current_team->id != $default_team_name) {

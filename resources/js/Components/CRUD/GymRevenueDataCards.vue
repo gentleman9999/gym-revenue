@@ -7,14 +7,16 @@
             <component
                 v-for="row in resource?.data || []"
                 :is="cardComponent"
-                v-bind="{ [modelName]: row }"
+                v-bind="{ [modelKey]: row }"
                 :data="row"
                 :fields="fields"
                 :titleField="titleField"
                 :actions="actions"
                 :model-name="modelName"
+                :model-key="modelKey"
                 :model-name-plural="modelNamePlural"
                 :base-route="baseRoute"
+                :has-preview-component="!!previewComponent"
             />
             <div v-if="!resource?.data?.length" class="rounded-xl p-4 bg-base-100">
                 <div>
@@ -61,6 +63,10 @@ export default {
             type: String,
             default: 'Record',
         },
+        modelKey:{
+            type:String,
+            required: true,
+        },
         modelNamePlural: {
             type: String,
         },
@@ -75,6 +81,9 @@ export default {
             type: [Object, Boolean],
             default: {},
         },
+        previewComponent: {
+            type: Object
+        }
     },
     setup(props) {
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";

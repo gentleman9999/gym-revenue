@@ -16,36 +16,36 @@
                 </div>
             <div class="col-span-2">
                 <jet-label for="location_no" value="Location Number/ID"/>
-                <input id="location_no" type="text" class="block w-full mt-1" v-model="form.location_no" autofocus/>
+                <input id="location_no" type="text" class="block w-full mt-1" v-model="form.location_no" />
                 <jet-input-error :message="form.errors.location_no" class="mt-2"/>
             </div>
                 <div class="col-span-4">
                     <jet-label for="city" value="City"/>
-                    <input id="city" type="text" class="block w-full mt-1" v-model="form.city" autofocus/>
+                    <input id="city" type="text" class="block w-full mt-1" v-model="form.city" />
                     <jet-input-error :message="form.errors.city" class="mt-2"/>
                 </div>
                 <div  class="col-span-1">
                     <jet-label for="state" value="State"/>
-                    <input id="state" type="text" class="block w-full mt-1" v-model="form.state" autofocus/>
+                    <input id="state" type="text" class="block w-full mt-1" v-model="form.state" />
                     <jet-input-error :message="form.errors.state" class="mt-2"/>
                 </div>
             <div  class="col-span-1">
                 <jet-label for="zip" value="ZIP Code"/>
-                <input id="zip" type="text" class="block w-full mt-1" v-model="form.zip" autofocus/>
+                <input id="zip" type="text" class="block w-full mt-1" v-model="form.zip" />
                 <jet-input-error :message="form.errors.zip" class="mt-2"/>
             </div>
 
                 <div class="col-span-6 space-y-2">
                     <jet-label for="address1" value="Address"/>
-                    <input id="address1" type="text" class="block w-full mt-1" v-model="form.address1" autofocus/>
+                    <input id="address1" type="text" class="block w-full mt-1" v-model="form.address1" />
                     <jet-input-error :message="form.errors.address1" class="mt-2"/>
-                    <input id="address2" type="text" class="block w-full mt-1" v-model="form.address2" autofocus/>
+                    <input id="address2" type="text" class="block w-full mt-1" v-model="form.address2" />
                     <jet-input-error :message="form.errors.address2" class="mt-2"/>
                 </div>
 
             <div class="col-span-2 space-y-2">
                 <jet-label for="phone" value="Phone"/>
-                <input id="phone" type="text" class="block w-full mt-1" v-model="form.phone" autofocus/>
+                <input id="phone" type="text" class="block w-full mt-1" v-model="form.phone" />
                 <jet-input-error :message="form.errors.phone" class="mt-2"/>
             </div>
 
@@ -64,17 +64,17 @@
 
             <div class="col-span-2 space-y-2">
                 <jet-label for="poc_first" value="POC First"/>
-                <input id="poc_first" type="text" class="block w-full mt-1" v-model="form.poc_first" autofocus/>
+                <input id="poc_first" type="text" class="block w-full mt-1" v-model="form.poc_first" />
                 <jet-input-error :message="form.errors.poc_first" class="mt-2"/>
             </div>
             <div class="col-span-2 space-y-2">
                 <jet-label for="poc_last" value="POC Last"/>
-                <input id="poc_last" type="text" class="block w-full mt-1" v-model="form.poc_last" autofocus/>
+                <input id="poc_last" type="text" class="block w-full mt-1" v-model="form.poc_last" />
                 <jet-input-error :message="form.errors.poc_last" class="mt-2"/>
             </div>
             <div class="col-span-2 space-y-2">
                 <jet-label for="poc_phone" value="POC Phone"/>
-                <input id="poc_phone" type="text" class="block w-full mt-1" v-model="form.poc_phone"  autofocus/>
+                <input id="poc_phone" type="text" class="block w-full mt-1" v-model="form.poc_phone"  />
                 <jet-input-error :message="form.errors.poc_phone" class="mt-2"/>
             </div>
 
@@ -131,13 +131,15 @@ export default {
     },
     props: ['clientId', 'location','phone','poc_first','poc_last','poc_phone','opendate','closedate','location_no','DatePicker'],
     setup(props, context) {
+        const page = usePage();
+
         let location = props.location;
-        let phone = usePage().props.value.phone;
-        let poc_first = usePage().props.value.poc_first;
-        let poc_last = usePage().props.value.poc_last;
-        let poc_phone = usePage().props.value.poc_phone;
-        let opendate = usePage().props.value.opendate;
-        let closedate = usePage().props.value.closedate;
+        let phone = page.props.value.phone;
+        let poc_first = page.props.value.poc_first;
+        let poc_last = page.props.value.poc_last;
+        let poc_phone = page.props.value.poc_phone;
+        let opendate = page.props.value.opendate;
+        let closedate = page.props.value.closedate;
 
         let operation = 'Update';
         if (!location) {
