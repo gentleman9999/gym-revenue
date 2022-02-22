@@ -154,30 +154,82 @@
                     class="mt-2"
                 />
             </div>
-        </template>
 
-        <template #actions>
-            <Button
-                type="button"
-                @click="$inertia.visit(route('users'))"
-                :class="{ 'opacity-25': form.processing }"
-                error
-                outline
-                :disabled="form.processing"
-            >
-                Cancel
-            </Button>
-            <div class="flex-grow" />
-            <Button
-                class="btn-secondary"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                :loading="form.processing"
-            >
-                {{ buttonText }}
-            </Button>
-        </template>
-    </jet-form-section>
+            <!-- Location of Work -->
+            <div class="form-control col-span-9" v-if="clientId">
+                <jet-label for="all_locations" value="Location of work"/>
+                <select
+                    id="role"
+                    class="block w-full mt-1"
+                    v-model="form.all_locations"
+                >
+                    <option
+                        v-for="{ location_name,  location_id } in all_locations"
+                        :value="location_id"
+                    >
+                        {{ location_name.name }}
+                    </option>
+                </select>
+                {{all_locations}}
+         <!--       {{ all_locations }}  {{joblocation}} {{location_city}} {{location_state}}
+                {{$page.props.user.all_locations}}   {{$page.props.user.all_locations}}
+                -->
+                <jet-input-error
+                    :message="form.errors.all_locations"
+                    class="mt-2"
+                />
+            </div>
+            <!-- Start Date -->
+
+            <div class="form-control col-span-3">
+                <jet-label for="dob" value="Date / Start of Work"/>
+                <DatePicker v-model="form['start_date']"  dark />
+                <jet-input-error :message="form.errors.start_date" class="mt-2"/>
+            </div>
+
+            <!-- End Date -->
+            <div class="form-control col-span-3">
+                <jet-label for="dob" value="Date / End of Work"/>
+                <DatePicker v-model="form['end_date']"  dark />
+                <jet-input-error :message="form.errors.end_date" class="mt-2"/>
+            </div>
+
+
+            <!-- Termination Date -->
+            <div class="form-control col-span-3">
+                <jet-label for="dob" value="Date of Termination"/>
+                <DatePicker v-model="form['Termination_date']"  dark />
+                <jet-input-error :message="form.errors.Termination_date" class="mt-2"/>
+            </div>
+
+
+            <!-- Notes -->
+
+
+       </template>
+
+       <template #actions>
+           <Button
+               type="button"
+               @click="$inertia.visit(route('users'))"
+               :class="{ 'opacity-25': form.processing }"
+               error
+               outline
+               :disabled="form.processing"
+           >
+               Cancel
+           </Button>
+           <div class="flex-grow" />
+           <Button
+               class="btn-secondary"
+               :class="{ 'opacity-25': form.processing }"
+               :disabled="form.processing"
+               :loading="form.processing"
+           >
+               {{ buttonText }}
+           </Button><br/><br/><br/><br/>
+       </template>
+   </jet-form-section>
 </template>
 
 <script>
@@ -189,90 +241,98 @@ import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
+import DatePicker from 'vue3-date-time-picker';
+import 'vue3-date-time-picker/dist/main.css';
 
 export default {
-    components: {
-        AppLayout,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-    },
-    props: ["clientId", "user", "clientName"],
-    emits: ["success"],
-    setup(props, { emit }) {
-        const page = usePage();
-        let user = props.user;
-        const securityRoles = page.props.value.securityRoles;
-        const team_id = page.props.value.user.current_team_id;
-        let phone = ((user !== undefined)
-            && ('phone_number' in user)
-            && (user['phone_number'])
-            && ('value' in user['phone_number'])
-        ) ? user['phone_number'].value : null;
+   components: {
+       AppLayout,
+       Button,
+       JetFormSection,
+       JetInputError,
+       JetLabel,
+       DatePicker,
+   },
+   props: ["clientId", "user", "clientName","all_locations"],
+   emits: ["success"],
+   setup(props, { emit }) {
+       const page = usePage();
+       let user = props.user;
+       const securityRoles = page.props.value.securityRoles;
 
-        let operation = "Update";
-        if (user) {
-            user.security_role =
-                user?.details?.find((detail) => detail.name === "security_role")
-                    ?.value || null;
-            user.team_id = team_id;
-            user.first_name = user["first_name"];
-            user.last_name = user["last_name"];
-            user.altEmail = (('alt_email' in user) && (user['alt_email'] !== null)) ? user['alt_email'].value ?? '' : '';
-            user.address1 = (('address1' in user)  && (user['address1'] !== null)) ? user['address1'].value : '';
-            user.address2 = (('address2' in user)  && (user['address2'] !== null)) ? user['address2'].value : '';
-            user.city     = (('city' in user) && (user['city'] !== null)) ? user['city'].value : '';
-            user.state    = (('state' in user) && (user['state'] !== null)) ? user['state'].value : '';
-            user.zip      = (('zip' in user) && (user['zip'] !== null)) ? user['zip'].value : '';
-            user.jobTitle = (('job_title' in user) && (user['job_title'] !== null)) ? user['job_title'].value : '';
-            user.phone = phone;
-            user.security_role =
-                user?.details?.find((detail) => detail.name === "security_role")
-                    ?.value || null;
-            console.log({ user });
-        } else {
-            user = {
-                first_name: "",
-                last_name: "",
-                email: '',
-                altEmail: '',
-                security_role: '',
-                phone:'',
-                address1: '',
-                address2: '',
-                city: '',
-                team_id,
-		state: '',
-                zip: '',
-                jobTitle: '',
-                client_id: props.clientId
-            };
-            //only add clientId when applicable to make user validation rules work better
-            if (props.clientId) {
-                user.client_id = props.clientId;
-            }
-            operation = "Create";
-        }
+       const all_locations = page.props.value.all_locations;
 
-        const form = useForm(user);
-        let upperCaseF = (text) => {
-            form.state = text.toUpperCase();
-        };
+       const team_id = page.props.value.user.current_team_id;
+       let phone = ((user !== undefined)
+           && ('phone_number' in user)
+           && (user['phone_number'])
+           && ('value' in user['phone_number'])
+       ) ? user['phone_number'].value : null;
 
-        let handleSubmit = () => form.put(route("users.update", user.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("users.store"));
-        }
+       let operation = "Update";
+       if (user) {
+           user.security_role =
+               user?.details?.find((detail) => detail.name === "security_role")
+                   ?.value || null;
+           user.team_id = team_id;
+           user.first_name = user["first_name"];
+           user.last_name = user["last_name"];
+           user.altEmail = (('alt_email' in user) && (user['alt_email'] !== null)) ? user['alt_email'].value ?? '' : '';
+           user.address1 = (('address1' in user)  && (user['address1'] !== null)) ? user['address1'].value : '';
+           user.address2 = (('address2' in user)  && (user['address2'] !== null)) ? user['address2'].value : '';
+           user.city     = (('city' in user) && (user['city'] !== null)) ? user['city'].value : '';
+           user.state    = (('state' in user) && (user['state'] !== null)) ? user['state'].value : '';
+           user.zip      = (('zip' in user) && (user['zip'] !== null)) ? user['zip'].value : '';
+           user.jobTitle = (('job_title' in user) && (user['job_title'] !== null)) ? user['job_title'].value : '';
+           user.phone = phone;
+           user.security_role =
+               user?.details?.find((detail) => detail.name === "security_role")
+                   ?.value || null;
+           console.log({ user });
 
-        return {
-            form,
-            buttonText: operation,
-            operation,
-            handleSubmit,
-            securityRoles,
-	    upperCaseF
-        };
-    },
+       } else {
+           user = {
+               first_name: "",
+               last_name: "",
+               email: '',
+               altEmail: '',
+               security_role: '',
+               phone:'',
+               address1: '',
+               address2: '',
+               city: '',
+               team_id,
+       state: '',
+               zip: '',
+               jobTitle: '',
+               all_locations: '',
+               client_id: props.clientId
+           };
+           //only add clientId when applicable to make user validation rules work better
+           if (props.clientId) {
+               user.client_id = props.clientId;
+           }
+           operation = "Create";
+       }
+
+       const form = useForm(user);
+       let upperCaseF = (text) => {
+           form.state = text.toUpperCase();
+       };
+
+       let handleSubmit = () => form.put(route("users.update", user.id));
+       if (operation === "Create") {
+           handleSubmit = () => form.post(route("users.store"));
+       }
+
+       return {
+           form,
+           buttonText: operation,
+           operation,
+           handleSubmit,
+           securityRoles,
+       upperCaseF
+       };
+   },
 };
 </script>
