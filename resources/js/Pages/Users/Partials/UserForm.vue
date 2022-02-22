@@ -154,6 +154,26 @@
                     class="mt-2"
                 />
             </div>
+            <!-- Home Club -->
+            <div class="form-control col-span-3" v-if="clientId">
+                <jet-label for="role" value="Home Club"/>
+                <select
+                    id="home_club"
+                    class="block w-full mt-1"
+                    v-model="form.home_club"
+                >
+                    <option
+                        v-for="{ gymrevenue_id, name } in locations"
+                        :value="gymrevenue_id"
+                    >
+                        {{ name }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.home_club"
+                    class="mt-2"
+                />
+            </div>
         </template>
 
         <template #actions>
@@ -204,6 +224,7 @@ export default {
         const page = usePage();
         let user = props.user;
         const securityRoles = page.props.value.securityRoles;
+        const locations = page.props.value.locations;
         const team_id = page.props.value.user.current_team_id;
         let phone = ((user !== undefined)
             && ('phone_number' in user)
@@ -226,6 +247,7 @@ export default {
             user.state    = (('state' in user) && (user['state'] !== null)) ? user['state'].value : '';
             user.zip      = (('zip' in user) && (user['zip'] !== null)) ? user['zip'].value : '';
             user.jobTitle = (('job_title' in user) && (user['job_title'] !== null)) ? user['job_title'].value : '';
+            user.home_club = (('home_club' in user) && (user['home_club'] !== null)) ? user['home_club'].value : '';
             user.phone = phone;
             user.security_role =
                 user?.details?.find((detail) => detail.name === "security_role")
@@ -251,6 +273,7 @@ export default {
             //only add clientId when applicable to make user validation rules work better
             if (props.clientId) {
                 user.client_id = props.clientId;
+                user.home_club = null;
             }
             operation = "Create";
         }
@@ -271,7 +294,8 @@ export default {
             operation,
             handleSubmit,
             securityRoles,
-	    upperCaseF
+            upperCaseF,
+            locations
         };
     },
 };

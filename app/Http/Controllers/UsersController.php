@@ -28,7 +28,7 @@ class UsersController extends Controller
             // If the active team is a client's-default team get all members
             if($is_default_team)
             {
-                $users = User::with('teams')->whereHas('detail', function ($query) use ($client_id) {
+                $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10);
@@ -43,7 +43,7 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('id', $user_ids)
-                    ->with('teams')
+                    ->with(['teams', 'home_club'])
                     ->filter($request->only('search', 'club', 'team'))
                     ->paginate(10);
             }
@@ -56,6 +56,9 @@ class UsersController extends Controller
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
+
+                $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
+
             }
 
             return Inertia::render('Users/Show', [
@@ -118,10 +121,16 @@ class UsersController extends Controller
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
 
+        $locations = null;
+        if($client){
+            $locations = Location::whereClientId($client->id)->get(['name', 'gymrevenue_id']);
+        }
+
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
             'securityRoles' => $security_roles,
-            'clientName' => $client_name
+            'clientName' => $client_name,
+            'locations' => $locations
         ]);
     }
 
@@ -137,7 +146,7 @@ class UsersController extends Controller
 
         $user = $me->with([
                 'details', 'phone_number', 'altEmail', 'address1', 'address2',
-                'city', 'state', 'zip', 'jobTitle'
+                'city', 'state', 'zip', 'jobTitle', 'home_club'
             ])->findOrFail($id);
 
         if($me->id == $user->id)
@@ -151,9 +160,16 @@ class UsersController extends Controller
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
 
+        $locations = null;
+        if($user->isClientUser()){
+            $locations = Location::whereClientId($user->client()->first()->id)->get(['name', 'gymrevenue_id']);
+        }
+
+
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
-            'securityRoles' => $security_roles
+            'securityRoles' => $security_roles,
+            'locations' => $locations
         ]);
     }
 
