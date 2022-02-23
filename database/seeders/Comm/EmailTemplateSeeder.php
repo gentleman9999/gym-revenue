@@ -24,7 +24,7 @@ class EmailTemplateSeeder extends Seeder
             'active' => 1,
             'created_by_user_id' => 'auto'
         ]);
-        $cnb_record->markup = base64_encode($default_markup);
+        $cnb_record->markup = $default_markup;
         $cnb_record->save();
 
         $clients = Client::whereActive(1)->get();

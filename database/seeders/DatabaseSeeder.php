@@ -108,15 +108,15 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Lead Status Seeder');
         $this->call(LeadStatusSeeder::class);
 
+        // This seeder assigns locations to teams
+        VarDumper::dump('Running Client Team/Location Assignments Seeder');
+        $this->call(TeamLocationsSeeder::class);
+
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
         // they are also assigned security roles, and teams
         // @todo - make the security role logic assign the roles and disallow the full ability
         VarDumper::dump('Running Client Secondary Users Seeder');
         $this->call(SecondaryClientUsersSeeder::class);
-
-        // This seeder assigns locations to teams
-        VarDumper::dump('Running Client Team/Location Assignments Seeder');
-        $this->call(TeamLocationsSeeder::class);
 
         // This seeder generates dummy leads for each client
         VarDumper::dump('Running Leads Dummy Data Seeder');

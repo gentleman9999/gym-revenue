@@ -207,6 +207,11 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'default_team');
     }
 
+    public function home_club()
+    {
+        return $this->detail()->where('name', '=', 'home_club');
+    }
+
     public function associated_client()
     {
         return $this->detail()->where('name', '=', 'associated_client');

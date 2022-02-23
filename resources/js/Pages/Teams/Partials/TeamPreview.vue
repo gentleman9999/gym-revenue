@@ -16,9 +16,9 @@
     </div>
 
     <div className="grid grid-cols-6 gap-6 mt-4">
-        <div className="form-control col-span-3 lg:col-span-3">
+        <div className="form-control col-span-6 lg:col-span-4">
             <h1>Users</h1>
-            <table class="table table-compact w-full">
+            <table class="table table-compact w-full" v-if="team.users?.length">
                 <!-- head -->
                 <thead>
                     <tr>
@@ -52,10 +52,11 @@
                     </tr>
                 </tbody>
             </table>
+            <div v-else>No users assigned</div>
         </div>
 
         <div
-            className="form-control col-span-3 lg:col-span-3"
+            className="form-control col-span-6 lg:col-span-2"
             v-if="team.clubs"
         >
             <h1>Locations</h1>

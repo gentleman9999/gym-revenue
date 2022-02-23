@@ -81,7 +81,7 @@ export default defineComponent({
         UserPreview
     },
     props: ["users", "filters", "clubs", "teams", 'clientName'],
-    setup() {
+    setup(props) {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
@@ -102,7 +102,13 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
-        const fields = ["name", "email", /*"home-club",*/"role",/*"is-manager",*/ 'home_team'];
+        let fields = ["name", "email", "role",/*"is-manager",*/ 'home_team'];
+        if(page.props.value.user.current_client_id){
+            fields = ["name", "email", {
+                name: "home_club_name",
+                label: "Home Club",
+            },"role",/*"is-manager",*/ 'home_team'];
+        }
 
         // const shouldShowDelete = ({ data }) => {
         //     console.log({ability: abilities.value.includes("users.delete")});

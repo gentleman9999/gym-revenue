@@ -14,6 +14,7 @@
                 </inertia-link>
             </div>
         </template>
+
         <gym-revenue-crud
             base-route="comms.email-templates"
             model-name="Email Template"
@@ -33,6 +34,12 @@
             Are you sure you want to remove this template? It will be removed
             from any assigned campaigns.
         </confirm>
+        <confirm-send-form
+            v-if="confirmSend"
+            :template-id="sendVars.templateId"
+            :template-name="sendVars.templateName"
+            @close="handleCloseTextModal"
+        ></confirm-send-form>
     </app-layout>
 </template>
 
@@ -47,6 +54,8 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import ConfirmSendModal from "@/Components/SweetModal3/SweetModal";
+import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail";
 
 library.add(faChevronDoubleLeft, faEllipsisH)
 
@@ -57,9 +66,41 @@ export default defineComponent({
         AppLayout,
         Confirm,
         GymRevenueCrud,
+        ConfirmSendModal,
+        ConfirmSendForm
     },
     props: ["title", "filters", "templates"],
     setup(props) {
+        const confirmTrash = ref(null);
+        const handleClickTrash = (id) => {
+            confirmTrash.value = id;
+        };
+        const handleConfirmTrash = () => {
+            Inertia.delete(route("comms.email-templates.trash", confirmTrash.value));
+            confirmTrash.value = null;
+        };
+
+        const confirmSend = ref(null);
+        const sendVars = () => {
+            return {
+                templateId: '',
+                templateName: ''
+            }
+        };
+
+        const handleOpenSendModal = (data) => {
+            console.log('looking at data', data, sendVars)
+            confirmSend.value = data.id;
+            sendVars.templateId = data.id;
+            sendVars.templateName = data.name;
+            //sendModal.value.open();
+        }
+        const handleCloseTextModal = () => {
+            sendVars.templateId = '';
+            sendVars.templateName = '';
+            //sendModal.value.close();
+            confirmSend.value = null;
+        }
         const fields = computed(() => {
             return [
                 "name",
@@ -89,7 +130,7 @@ export default defineComponent({
             return {
                 selfSend: {
                     label: "Send You a Test Email",
-                    handler: () => comingSoon(),
+                    handler: ({data}) => handleOpenSendModal(data),
                 },
                 trash:{
                     handler: ({data}) => handleClickTrash(data.id)
@@ -105,22 +146,10 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         };
-        const confirmTrash = ref(null);
-        const handleClickTrash = (id) => {
-            confirmTrash.value = id;
-        };
-        const handleConfirmTrash = () => {
-            Inertia.delete(
-                route("comms.email-templates.trash", confirmTrash.value)
-            );
-            confirmTrash.value = null;
-        };
         return {
-            handleClickTrash,
-            confirmTrash,
-            handleConfirmTrash,
-            fields,
-            actions,
+            fields, actions,
+            handleClickTrash, confirmTrash, handleConfirmTrash,
+            handleOpenSendModal, handleCloseTextModal, confirmSend, sendVars
         };
     },
 });

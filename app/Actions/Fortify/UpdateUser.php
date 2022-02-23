@@ -46,7 +46,8 @@ class UpdateUser implements UpdatesUserProfileInformation
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
-            'phone' => ['sometimes', 'digits:10'] //should be required, but seeders don't have phones.
+            'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
+            'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
         ];
     }
 

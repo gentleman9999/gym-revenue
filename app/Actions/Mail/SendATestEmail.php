@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Actions\Sms;
+namespace App\Actions\Mail;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\ClientDetail;
-use App\Models\Comms\SmsTemplates;
-use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
-use App\Services\GatewayProviders\MessageInterpreters\SMS\StandardSMSInterpreter;
+use App\Models\Comms\EmailTemplates;
+use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
+use App\Services\GatewayProviders\MessageInterpreters\Email\StandardEmailInterpreter;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Twilio\Rest\Client as TwilioClient;
+use Mailgun\Mailgun as MailgunClient;
 
-class SendATestText
+class SendATestEmail
 {
     use AsAction {
         __invoke as protected invokeFromLaravelActions;
@@ -25,7 +25,7 @@ class SendATestText
     public function rules() : array
     {
         return [
-            'templateId' => 'bail|required|exists:sms_templates,id'
+            'templateId' => 'bail|required|exists:email_templates,id'
         ];
     }
 
@@ -35,15 +35,15 @@ class SendATestText
 
         $data = request()->all();
         $user = request()->user();
-        $phone_detail = $user->phone_number()->first();
+        $email_detail = $user->email;
 
-        // Get the user and check if there is a phone number or fail with string
-        if(!is_null($phone_detail))
+        // Get the user and check if there is an email or fail with string
+        if(!is_null($email_detail))
         {
             // Get the sms template from sms templates or fail with string
-            $sms_template_record = SmsTemplates::find($data['templateId']);
+            $email_template_record = EmailTemplates::find($data['templateId']);
 
-            if(!is_null($sms_template_record))
+            if(!is_null($email_template_record))
             {
                 $current_team_id = $user->current_team_id;
 
@@ -56,7 +56,7 @@ class SendATestText
                 }
 
                 // Verify the sms going with the client of the active team is the same or its a gymrevenue template
-                if($client_id == $sms_template_record->client_id)
+                if($client_id == $email_template_record->client_id)
                 {
                     $user_aggy = UserAggregate::retrieve($user->id);
                     if(is_null($client_id))
@@ -65,21 +65,28 @@ class SendATestText
                          * @todo - make an AdminUserGatewayActivityAggregate and attach it to UserAggy with Bouncer ACL
                          */
 
-                        $SEI = new StandardSMSInterpreter($user->id);
-                        $client = new TwilioClient(env("TWILIO_SID"), env("TWILIO_TOKEN"));
+                        $SEI = new StandardEmailInterpreter($user->id);
+                        $clean_msg = $SEI->translate($email_template_record->markup);
+                        $Mailgun = MailgunClient::create(env('MAILGUN_SECRET'));
 
-                        $clean_msg = $SEI->translate($sms_template_record->markup);
-                        $payload = ['from' => env("TWILIO_NO"), 'body' => $clean_msg];
-                        $message = $client->messages->create($phone_detail->value, $payload);
+                        $Mailgun->messages()->send(env('MAILGUN_DOMAIN'), [
+                            'from'    => env('MAIL_FROM_ADDRESS'),
+                            'to'      => $email_detail,
+                            'subject' => $email_template_record->subject,
+                            'html'    => $clean_msg,
+                        ]);
 
-                        $user_aggy->logClientSmsActivity($sms_template_record->id, $message)->persist();
+                        $user_aggy->logClientEmailActivity($email_template_record->subject ?? 'Test Email - No Subject Configured',
+                            $email_template_record->id, $Mailgun->getLastResponse())
+                            ->persist();
 
                         $results = true;
                     }
                     else
                     {
                         ClientAggregate::retrieve($client_id)->getGatewayAggregate()
-                            ->sendATestSMSMessage($sms_template_record->id, $user->id)
+                            ->sendATestEmailMessage($email_template_record->subject ?? 'Test Email - No Subject Configured',
+                                $email_template_record->id, $user->id)
                             ->persist();
                         $results = true;
 
@@ -98,7 +105,7 @@ class SendATestText
         }
         else
         {
-            $results = 'Missing Phone on Profile. Add it to use this feature.';
+            $results = 'Missing Email on Profile. Add it to use this feature.';
         }
 
         return $results;

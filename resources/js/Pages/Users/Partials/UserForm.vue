@@ -154,6 +154,27 @@
                     class="mt-2"
                 />
             </div>
+            <!-- Home Club -->
+            <div class="form-control col-span-3" v-if="clientId">
+                <jet-label for="role" value="Home Club"/>
+                <select
+                    id="home_club"
+                    class="block w-full mt-1"
+                    v-model="form.home_club"
+                >
+                    <option
+                        v-for="{ gymrevenue_id, name } in locations"
+                        :value="gymrevenue_id"
+                    >
+                        {{ name }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.home_club"
+                    class="mt-2"
+                />
+            </div>
+
 
 
             <!-- Start Date -->
@@ -226,102 +247,103 @@ import DatePicker from 'vue3-date-time-picker';
 import 'vue3-date-time-picker/dist/main.css';
 
 export default {
-   components: {
-       AppLayout,
-       Button,
-       JetFormSection,
-       JetInputError,
-       JetLabel,
-       DatePicker,
-   },
-   props: ["clientId", "user", "clientName"],
-   emits: ["success"],
-   setup(props, { emit }) {
-       const page = usePage();
-       let user = props.user;
-       const securityRoles = page.props.value.securityRoles;
+    components: {
+        AppLayout,
+        Button,
+        JetFormSection,
+        JetInputError,
+        JetLabel,
+            DatePicker
+    },
+    props: ["clientId", "user", "clientName"],
+    emits: ["success"],
+    setup(props, { emit }) {
+        const page = usePage();
+        let user = props.user;
+        const securityRoles = page.props.value.securityRoles;
+        const locations = page.props.value.locations;
 
 
-       const team_id = page.props.value.user.current_team_id;
-       let phone = ((user !== undefined)
-           && ('phone_number' in user)
-           && (user['phone_number'])
-           && ('value' in user['phone_number'])
-       ) ? user['phone_number'].value : null;
+        const team_id = page.props.value.user.current_team_id;
+        let phone = ((user !== undefined)
+            && ('phone_number' in user)
+            && (user['phone_number'])
+            && ('value' in user['phone_number'])
+        ) ? user['phone_number'].value : null;
 
-       let operation = "Update";
-       if (user) {
-           user.security_role =
-               user?.details?.find((detail) => detail.name === "security_role")
-                   ?.value || null;
-           user.team_id = team_id;
-           user.first_name = user["first_name"];
-           user.last_name = user["last_name"];
-           user.altEmail = (('alt_email' in user) && (user['alt_email'] !== null)) ? user['alt_email'].value ?? '' : '';
-           user.address1 = (('address1' in user)  && (user['address1'] !== null)) ? user['address1'].value : '';
-           user.address2 = (('address2' in user)  && (user['address2'] !== null)) ? user['address2'].value : '';
-           user.city     = (('city' in user) && (user['city'] !== null)) ? user['city'].value : '';
-           user.state    = (('state' in user) && (user['state'] !== null)) ? user['state'].value : '';
-           user.zip      = (('zip' in user) && (user['zip'] !== null)) ? user['zip'].value : '';
-           user.jobTitle = (('job_title' in user) && (user['job_title'] !== null)) ? user['job_title'].value : '';
-           user.phone = phone;
-           user.security_role =
-               user?.details?.find((detail) => detail.name === "security_role")
-                   ?.value || null;
-           user.start_date =(('start_date' in user) && (user['start_date'] !== null)) ? user['start_date'].value ?? '' : '';
-           user.end_date =(('end_date' in user) && (user['end_date'] !== null)) ? user['end_date'].value ?? '' : '';
-           user.termination_date =(('termination_date' in user) && (user['termination_date'] !== null)) ? user['termination_date'].value ?? '' : '';
-           user.notes =(('notes' in user) && (user['notes'] !== null)) ? user['notes'].value ?? '' : '';
+        let operation = "Update";
+        if (user) {
+            user.security_role =
+                user?.details?.find((detail) => detail.name === "security_role")
+                    ?.value || null;
+            user.team_id = team_id;
+            user.first_name = user["first_name"];
+            user.last_name = user["last_name"];
+            user.altEmail = (('alt_email' in user) && (user['alt_email'] !== null)) ? user['alt_email'].value ?? '' : '';
+            user.address1 = (('address1' in user)  && (user['address1'] !== null)) ? user['address1'].value : '';
+            user.address2 = (('address2' in user)  && (user['address2'] !== null)) ? user['address2'].value : '';
+            user.city     = (('city' in user) && (user['city'] !== null)) ? user['city'].value : '';
+            user.state    = (('state' in user) && (user['state'] !== null)) ? user['state'].value : '';
+            user.zip      = (('zip' in user) && (user['zip'] !== null)) ? user['zip'].value : '';
+            user.jobTitle = (('job_title' in user) && (user['job_title'] !== null)) ? user['job_title'].value : '';
+            user.home_club = (('home_club' in user) && (user['home_club'] !== null)) ? user['home_club'].value : '';
+            user.phone = phone;
+            user.start_date =(('start_date' in user) && (user['start_date'] !== null)) ? user['start_date'].value ?? '' : '';
+            user.end_date =(('end_date' in user) && (user['end_date'] !== null)) ? user['end_date'].value ?? '' : '';
+            user.termination_date =(('termination_date' in user) && (user['termination_date'] !== null)) ? user['termination_date'].value ?? '' : '';
+            user.notes =(('notes' in user) && (user['notes'] !== null)) ? user['notes'].value ?? '' : '';
 
-           console.log({ user });
-
-       } else {
-           user = {
-               first_name: "",
-               last_name: "",
-               email: '',
-               altEmail: '',
-               security_role: '',
-               phone:'',
-               address1: '',
-               address2: '',
-               city: '',
-               team_id,
-               state: '',
-               zip: '',
-               jobTitle: '',
-               notes: '',
-               start_date:'',
-               end_date:'',
-               termination_date:'',
-               client_id: props.clientId
-           };
-           //only add clientId when applicable to make user validation rules work better
-           if (props.clientId) {
-               user.client_id = props.clientId;
-           }
-           operation = "Create";
-       }
-
-       const form = useForm(user);
-       let upperCaseF = (text) => {
-           form.state = text.toUpperCase();
-       };
+            user.security_role =
+                user?.details?.find((detail) => detail.name === "security_role")
+                    ?.value || null;
+            console.log({ user });
+        } else {
+            user = {
+                first_name: "",
+                last_name: "",
+                email: '',
+                altEmail: '',
+                security_role: '',
+                phone:'',
+                address1: '',
+                address2: '',
+                city: '',
+                team_id,
+                notes: '',
+                start_date:'',
+                end_date:'',
+                termination_date:'',
+		state: '',
+                zip: '',
+                jobTitle: '',
+                client_id: props.clientId
+            };
+            //only add clientId when applicable to make user validation rules work better
+            if (props.clientId) {
+                user.client_id = props.clientId;
+                user.home_club = null;
+                user.notes = null;
+                user.start_date = null;
+                user.end_date = null;
+                user.termination_date = null;
+            }
+            operation = "Create";
+        }
 
        let handleSubmit = () => form.put(route("users.update", user.id));
        if (operation === "Create") {
            handleSubmit = () => form.post(route("users.store"));
        }
 
-       return {
-           form,
-           buttonText: operation,
-           operation,
-           handleSubmit,
-           securityRoles,
-       upperCaseF,
-
-       };
-   },
+        return {
+            form,
+            buttonText: operation,
+            operation,
+            handleSubmit,
+            securityRoles,
+            upperCaseF,
+            locations
+        };
+    },
 };
 </script>

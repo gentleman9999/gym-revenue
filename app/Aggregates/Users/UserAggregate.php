@@ -7,6 +7,7 @@ use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
+use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
@@ -50,6 +51,12 @@ class UserAggregate extends AggregateRoot
             $this->phone_number = $event->payload['phone'];
         }
 
+        if(array_key_exists('email', $event->payload))
+        {
+            $this->email = $event->payload['email'];
+        }
+
+
         // @todo - put something useful here
     }
 
@@ -63,6 +70,11 @@ class UserAggregate extends AggregateRoot
         if(array_key_exists('phone', $event->payload))
         {
             $this->phone_number = $event->payload['phone'];
+        }
+
+        if(array_key_exists('email', $event->payload))
+        {
+            $this->email = $event->payload['email'];
         }
 
         // @todo - put something useful here
@@ -126,6 +138,22 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
+    public function applyUserReceivedEmail(UserReceivedEmail $event)
+    {
+        $this->activity_history[] = [
+            'event' => 'email-transmission',
+            'details' => [
+                'user_id' => $event->user,
+                'subject' => $event->subject,
+                'template_id' => $event->template,
+                'misc' => [
+                    'response' => $event->response,
+                    'client' => $event->client ?? null
+                ]
+            ],
+        ];
+    }
+
 
     public function createUser(string $created_by_user_id, array $payload)
     {
@@ -167,6 +195,12 @@ class UserAggregate extends AggregateRoot
     public function logClientSMSActivity($template_id, $response, $client_id = null)
     {
         $this->recordThat(new UserReceivedTextMsg($this->uuid(), $template_id, $response, $client_id));
+        return $this;
+    }
+
+    public function logClientEmailActivity($subject, $template_id, $response, $client_id = null)
+    {
+        $this->recordThat(new UserReceivedEmail($this->uuid(), $subject, $template_id, $response, $client_id));
         return $this;
     }
 
@@ -221,6 +255,11 @@ class UserAggregate extends AggregateRoot
     public function getPhoneNumber()
     {
         return $this->phone_number;
+    }
+
+    public function getEmailAddress()
+    {
+        return $this->email;
     }
 
     public function getProperty(string $prop)
