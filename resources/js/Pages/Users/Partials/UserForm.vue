@@ -268,6 +268,10 @@ export default {
            user.security_role =
                user?.details?.find((detail) => detail.name === "security_role")
                    ?.value || null;
+           user.start_date =(('start_date' in user) && (user['start_date'] !== null)) ? user['start_date'].value ?? '' : '';
+           user.end_date =(('end_date' in user) && (user['end_date'] !== null)) ? user['end_date'].value ?? '' : '';
+           user.termination_date =(('termination_date' in user) && (user['termination_date'] !== null)) ? user['termination_date'].value ?? '' : '';
+           user.notes =(('notes' in user) && (user['notes'] !== null)) ? user['notes'].value ?? '' : '';
 
            console.log({ user });
 

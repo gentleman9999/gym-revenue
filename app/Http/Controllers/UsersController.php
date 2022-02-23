@@ -138,7 +138,7 @@ class UsersController extends Controller
 
         $user = $me->with([
                 'details', 'phone_number', 'altEmail', 'address1', 'address2',
-                'city', 'state', 'zip', 'jobTitle'
+                'city', 'state', 'zip', 'jobTitle','notes', 'start_date', 'end_date', 'termination_date'
             ])->findOrFail($id);
 
         if($me->id == $user->id)
@@ -151,7 +151,7 @@ class UsersController extends Controller
             $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
-
+//dd($me,$user);
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
             'securityRoles' => $security_roles

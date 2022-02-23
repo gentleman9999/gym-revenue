@@ -181,7 +181,22 @@ class User extends Authenticatable
     {
         return $this->detail()->where('name', '=', 'jobTitle');
     }
-
+    public function notes()
+    {
+        return $this->detail()->where('name', '=', 'notes');
+    }
+    public function start_date()
+    {
+        return $this->detail()->where('name', '=', 'start_date');
+    }
+    public function end_date()
+    {
+        return $this->detail()->where('name', '=', 'end_date');
+    }
+    public function termination_date()
+    {
+        return $this->detail()->where('name', '=', 'termination_date');
+    }
     public function teams()
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');

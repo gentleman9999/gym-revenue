@@ -77,7 +77,26 @@ class UserProfileController extends Controller
         {
             $addl_data['jobTitle'] = $jobTitle->value;
         }
-
+        $start_date = $user->start_date()->first();
+        if(!is_null($start_date))
+        {
+            $addl_data['start_date'] = $start_date->value;
+        }
+        $end_date = $user->end_date()->first();
+        if(!is_null($end_date))
+        {
+            $addl_data['end_date'] = $end_date->value;
+        }
+        $termination_date = $user->termination_date()->first();
+        if(!is_null($termination_date))
+        {
+            $addl_data['termination_date'] = $termination_date->value;
+        }
+        $notes = $user->notes()->first();
+        if(!is_null($notes))
+        {
+            $addl_data['notes'] = $notes->value;
+        }
         return Jetstream::inertia()->render($request, 'Profile/Show', [
             'sessions' => $this->sessions($request)->all(),
             'addlData' => $addl_data
