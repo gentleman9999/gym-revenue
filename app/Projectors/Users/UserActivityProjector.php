@@ -3,7 +3,7 @@
 namespace App\Projectors\Users;
 
 use App\Models\UserDetails;
-use App\StorableEvents\Users\Activity\SMS\UserReceivedEmail;
+use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
