@@ -7,7 +7,7 @@ use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
-use App\StorableEvents\Users\Activity\SMS\UserReceivedEmail;
+use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;

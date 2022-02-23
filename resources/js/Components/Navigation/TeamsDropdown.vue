@@ -66,7 +66,7 @@
             <small>{{ $page.props.user.current_team.name }}</small>
           </div>
 
-            <ul class="menu compact">
+            <ul class="menu compact overflow-y-scroll max-h-60">
                 <li  v-for="team in $page.props.user.all_teams" :key="team.id">
                     <inertia-link href="#" @click="switchToTeam(team)" class="flex items-center">
                             <svg
