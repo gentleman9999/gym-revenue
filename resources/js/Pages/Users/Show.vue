@@ -15,7 +15,7 @@
             :preview-component="UserPreview"
         >
             <template #filter>
-                <search-filter
+                <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
@@ -41,7 +41,7 @@
                             </option>
                         </select>
                     </div>
-                </search-filter>
+                </simple-search-filter>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -64,8 +64,7 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import UserForm from "./Partials/UserForm";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 import UserPreview from "@/Pages/Users/Partials/UserPreview";
 
@@ -76,7 +75,7 @@ export default defineComponent({
         GymRevenueCrud,
         UserForm,
         Confirm,
-        SearchFilter,
+        SimpleSearchFilter,
         PageToolbarNav,
         UserPreview
     },

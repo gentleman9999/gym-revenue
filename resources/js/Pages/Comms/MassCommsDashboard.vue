@@ -68,7 +68,7 @@
                 title-field="type"
             >
                 <template #filter>
-                    <search-filter
+                    <simple-search-filter
                         v-model:modelValue="form.search"
                         class="w-full max-w-md mr-4"
                         @reset="reset"
@@ -141,7 +141,7 @@
                                 </ul>
                             </template>
                         </template>
-                    </search-filter>
+                    </simple-search-filter>
                 </template>
             </gym-revenue-crud>
         </jet-bar-container>
@@ -155,8 +155,7 @@ import JetDropdown from "@/Components/Dropdown";
 import JetBarContainer from "@/Components/JetBarContainer";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import MassCommDataButton from "./Partials/MassCommDataButton";
 import MassCommStat from "./Partials/MassCommStat";
 
@@ -167,7 +166,7 @@ export default defineComponent({
         JetDropdown,
         GymRevenueCrud,
         JetBarContainer,
-        SearchFilter,
+        SimpleSearchFilter,
         MassCommDataButton,
         MassCommStat,
     },

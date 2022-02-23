@@ -1,6 +1,6 @@
 <template>
 
-    <search-filter
+    <simple-search-filter
         v-model:modelValue="form.search"
         class="w-full max-w-md mr-4"
         @reset="reset"
@@ -97,17 +97,16 @@ class="mt-1 w-full form-select"
 -->
         </div>
         <!-- End filters if within Leads/Index -->
-    </search-filter>
+    </simple-search-filter>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
-import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
 
 export default defineComponent({
     components: {
-        SearchFilter,
+        SimpleSearchFilter,
     },
     props:{
         baseRoute:{

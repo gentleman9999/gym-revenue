@@ -2,7 +2,7 @@
     <jet-bar-container class="relative">
         <div class="flex flex-row items-center flex-wrap mb-4 gap-2">
             <slot name="filter">
-                <search-filter
+                <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
@@ -16,7 +16,7 @@
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
-                </search-filter>
+                </simple-search-filter>
             </slot>
             <div class="flex-grow" />
             <slot name="top-actions">
@@ -57,7 +57,7 @@ import { merge } from "lodash";
 import Pagination from "@/Components/Pagination";
 import GymRevenueDataCards from "./GymRevenueDataCards";
 import GymRevenueDataTable from "./GymRevenueDataTable";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import JetBarContainer from "@/Components/JetBarContainer";
 import PreviewModal from "@/Components/CRUD/PreviewModal";
 import LeadForm from '@/Pages/Leads/Partials/LeadForm'
@@ -68,7 +68,7 @@ export default defineComponent({
         GymRevenueDataCards,
         GymRevenueDataTable,
         Pagination,
-        SearchFilter,
+        SimpleSearchFilter,
         JetBarContainer,
         LeadForm,
         PreviewModal
