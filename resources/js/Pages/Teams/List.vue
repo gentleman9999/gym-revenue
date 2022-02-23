@@ -17,6 +17,8 @@
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
                 >
                     <div class="form-control" v-if="clubs?.length">
                         <span class="label label-text">Club</span>
@@ -64,7 +66,7 @@ export default defineComponent({
         const baseRoute = "teams";
 	const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        const {form, reset} = useSearchFilter('teams', {
+        const {form, reset, clearFilters, clearSearch} = useSearchFilter('teams', {
             club: null
         });
         const confirmDelete = ref(null);
@@ -109,7 +111,9 @@ export default defineComponent({
             form,
             reset,
             TeamPreview,
-            baseRoute
+            baseRoute,
+            clearFilters,
+            clearSearch
         };
     },
 });

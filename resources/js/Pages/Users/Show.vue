@@ -19,6 +19,8 @@
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
                 >
                     <div class="form-control" v-if="clubs?.length">
                         <span class="label label-text">Club</span>
@@ -88,7 +90,7 @@ export default defineComponent({
         console.log("teamId", teamId.value);
         console.log("abilities", abilities.value);
 
-        const { form, reset } = useSearchFilter("users", {
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter("users", {
             team: null,
             club: null,
         });
@@ -164,8 +166,10 @@ export default defineComponent({
             handleConfirmDelete,
             form,
             reset,
+            clearFilters,
+            clearSearch,
             navLinks,
-            UserPreview
+            UserPreview,
         };
     },
 });

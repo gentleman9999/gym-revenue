@@ -23,9 +23,11 @@
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
                 >
                     <template #content>
-                        <div class="block px-4 py-2 text-xs w-60">
+                        <div class="py-2 text-xs w-60">
                             <div class="block py-2 text-xs text-white">
                                 Closed Clubs:
                             </div>
@@ -101,7 +103,7 @@ export default defineComponent({
     ],
     setup(props) {
         const baseRoute = "locations";
-        const { form, reset } = useSearchFilter(baseRoute, {
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(baseRoute, {
             //  preserveState: false,
         });
 
@@ -130,6 +132,8 @@ export default defineComponent({
             Inertia,
             form,
             reset,
+            clearFilters,
+            clearSearch,
             LocationPreview,
         }; //, fields
     },

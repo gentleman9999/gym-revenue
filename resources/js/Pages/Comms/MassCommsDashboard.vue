@@ -72,6 +72,8 @@
                         v-model:modelValue="form.search"
                         class="w-full max-w-md mr-4"
                         @reset="reset"
+                        @clear-filters="clearFilters"
+                        @clear-search="clearSearch"
                     >
                         <template #trigger>
                             <span class="inline-flex rounded-md">
@@ -173,7 +175,7 @@ export default defineComponent({
     props: ["title", "audiences", "activeAudience", "stats", "historyFeed"],
     setup(props) {
         const baseRoute = "comms.dashboard";
-        const { form, reset } = useSearchFilter(baseRoute, {
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(baseRoute, {
             audience: props.activeAudience,
         });
         const fields = [
@@ -217,6 +219,8 @@ export default defineComponent({
             baseRoute,
             form,
             reset,
+            clearFilters,
+            clearSearch
         };
     },
 });

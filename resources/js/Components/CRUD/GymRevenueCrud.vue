@@ -20,8 +20,10 @@
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
                     @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
                 >
-                    <div class="block py-2 text-xs text-gray-400">Trashed:</div>
+                    <div class="block py-2 text-xs text-base-content text-opacity-80">Trashed:</div>
                     <select
                         v-model="form.trashed"
                         class="mt-1 w-full form-select"
@@ -134,7 +136,7 @@ export default defineComponent({
     },
 
     setup(props) {
-        const { form, reset } = useSearchFilter(props.baseRoute);
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(props.baseRoute);
 
         const defaultTopActions = {
             create: {
@@ -162,7 +164,7 @@ export default defineComponent({
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return { form, topActions, reset };
+        return { form, topActions, reset, clearFilters, clearSearch };
     },
 });
 </script>
