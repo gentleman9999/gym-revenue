@@ -6,7 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\ClientDetail;
 use App\Models\Comms\EmailTemplates;
-use App\Services\GatewayProvider\Email\EmailGatewayProviderService;
+use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use App\Services\GatewayProviders\MessageInterpreters\Email\StandardEmailInterpreter;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Mailgun\Mailgun as MailgunClient;
