@@ -1,10 +1,24 @@
 <template>
     <jet-bar-container class="relative">
-        <div class="flex flex-row items-center flex-wrap mb-4 gap-2">
+        <div class="grid grid-cols-3 items-center flex-wrap mb-4 gap-x-4 gap-y-6">
+            <slot name="top-actions">
+                <div class="flex flex-row col-span-3  lg:col-span-2 gap-2">
+                    <button
+                        v-for="action in Object.values(topActions)"
+                        class="btn btn-sm text-xs"
+                        :class="action.class"
+                        @click.prevent="
+                            () => action.handler({ data, baseRoute })
+                        "
+                    >
+                        {{ action.label }}
+                    </button>
+                </div>
+            </slot>
             <slot name="filter">
                 <simple-search-filter
                     v-model:modelValue="form.search"
-                    class="w-full max-w-md mr-4"
+                    class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
                     @reset="reset"
                 >
                     <div class="block py-2 text-xs text-gray-400">Trashed:</div>
@@ -17,17 +31,6 @@
                         <option value="only">Only Trashed</option>
                     </select>
                 </simple-search-filter>
-            </slot>
-            <div class="flex-grow" />
-            <slot name="top-actions">
-                <button
-                    v-for="action in Object.values(topActions)"
-                    class="btn"
-                    :class="action.class"
-                    @click.prevent="() => action.handler({ data, baseRoute })"
-                >
-                    {{ action.label }}
-                </button>
             </slot>
         </div>
 
@@ -47,7 +50,12 @@
             <pagination class="mt-4" :links="resource.links" />
         </slot>
     </jet-bar-container>
-    <preview-modal v-if="previewComponent" :preview-component="previewComponent" :model-name="modelName" :model-key="modelKey"/>
+    <preview-modal
+        v-if="previewComponent"
+        :preview-component="previewComponent"
+        :model-name="modelName"
+        :model-key="modelKey"
+    />
 </template>
 
 <script>
@@ -60,8 +68,8 @@ import GymRevenueDataTable from "./GymRevenueDataTable";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import JetBarContainer from "@/Components/JetBarContainer";
 import PreviewModal from "@/Components/CRUD/PreviewModal";
-import LeadForm from '@/Pages/Leads/Partials/LeadForm'
-import {useSearchFilter} from "./helpers/useSearchFilter";
+import LeadForm from "@/Pages/Leads/Partials/LeadForm";
+import { useSearchFilter } from "./helpers/useSearchFilter";
 
 export default defineComponent({
     components: {
@@ -71,7 +79,7 @@ export default defineComponent({
         SimpleSearchFilter,
         JetBarContainer,
         LeadForm,
-        PreviewModal
+        PreviewModal,
     },
     props: {
         fields: {
@@ -88,9 +96,9 @@ export default defineComponent({
             type: String,
             default: "record",
         },
-        modelKey:{
-            type:String,
-            required: true
+        modelKey: {
+            type: String,
+            required: true,
         },
         modelNamePlural: {
             type: String,
@@ -121,12 +129,12 @@ export default defineComponent({
             default: GymRevenueDataCards,
         },
         previewComponent: {
-            type: Object
-        }
+            type: Object,
+        },
     },
 
     setup(props) {
-        const {form, reset} = useSearchFilter(props.baseRoute);
+        const { form, reset } = useSearchFilter(props.baseRoute);
 
         const defaultTopActions = {
             create: {
@@ -134,7 +142,11 @@ export default defineComponent({
                 // handler: () =>
                 //     Inertia.visit(route(`${props.baseRoute}.create`)),
                 handler: () => {
-                    console.log('handler',`${props.baseRoute}.create`, route(`${props.baseRoute}.create`) )
+                    console.log(
+                        "handler",
+                        `${props.baseRoute}.create`,
+                        route(`${props.baseRoute}.create`)
+                    );
                     Inertia.visit(route(`${props.baseRoute}.create`));
                 },
                 class: ["btn-primary"],
@@ -152,9 +164,5 @@ export default defineComponent({
         }
         return { form, topActions, reset };
     },
-},
-
-);
-
+});
 </script>
-

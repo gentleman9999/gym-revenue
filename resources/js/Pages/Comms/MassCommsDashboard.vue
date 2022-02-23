@@ -77,7 +77,7 @@
                             <span class="inline-flex rounded-md">
                                 <button
                                     type="button"
-                                    class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
+                                    class="btn btn-sm text-xs inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
                                 >
                                     {{
                                         form.audience in audiences

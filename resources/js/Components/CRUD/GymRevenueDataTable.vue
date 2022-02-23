@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <slot name="pre" />
-        <table class="table w-full" :class="{ 'table-zebra': zebra }">
+        <table class="table table-compact w-full" :class="{ 'table-zebra': zebra }">
             <thead>
                 <slot name="thead">
                     <tr>

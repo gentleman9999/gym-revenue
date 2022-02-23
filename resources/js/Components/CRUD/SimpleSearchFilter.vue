@@ -1,6 +1,6 @@
 <template>
-    <div class="flex items-center">
-        <div class="flex w-full bg-base-300 shadow rounded">
+    <div class="flex items-center col-span-3 lg:col-span-1" v-bind="$attrs">
+        <div class="flex w-full gap-2 items-center shadow rounded">
             <dropdown align="start" width="60">
                 <template #trigger>
                     <slot name="trigger">
@@ -41,24 +41,40 @@
                             </div>
                         </div>
                     </slot>
-
                 </template>
             </dropdown>
-            <input
-                class="relative w-full px-6 py-3 rounded-r focus:ring"
-                autocomplete="off"
-                type="text"
-                name="search"
-                placeholder="Search…"
-                :value="modelValue"
-                @input="$emit('update:modelValue', $event.target.value)"
-            />
+            <div class="relative flex-grow">
+                <input
+                    class="relative w-full px-6 py-3 rounded-r focus:ring"
+                    autocomplete="off"
+                    type="text"
+                    name="search"
+                    placeholder="Search…"
+                    :value="modelValue"
+                    @input="$emit('update:modelValue', $event.target.value)"
+                />
+                <button
+                    class="flex items-center justify-center absolute inset-y-0 right-2 text-sm"
+                    @click="$emit('reset')"
+                >
+                    X
+                </button>
+            </div>
         </div>
-        <button class="ml-3 text-sm" type="button" @click="$emit('reset')">
-            Reset
-        </button>
     </div>
 </template>
+
+<style scoped>
+label {
+    @apply label label-text py-0 text-xs text-gray-400;
+}
+input {
+    @apply input input-sm input-bordered;
+}
+select {
+    @apply select select-sm select-bordered;
+}
+</style>
 
 <script>
 import Dropdown from "@/Components/Dropdown";
