@@ -65,20 +65,10 @@ class SendATestEmail
                          * @todo - make an AdminUserGatewayActivityAggregate and attach it to UserAggy with Bouncer ACL
                          */
 
-                        $SEI = new StandardEmailInterpreter($user->id);
-                        $clean_msg = $SEI->translate($email_template_record->markup);
-                        $Mailgun = MailgunClient::create(env('MAILGUN_SECRET'));
-
-                        $Mailgun->messages()->send(env('MAILGUN_DOMAIN'), [
-                            'from'    => env('MAIL_FROM_ADDRESS'),
-                            'to'      => $email_detail,
-                            'subject' => $email_template_record->subject,
-                            'html'    => $clean_msg,
-                        ]);
-
-                        $user_aggy->logClientEmailActivity($email_template_record->subject ?? 'Test Email - No Subject Configured',
-                            $email_template_record->id, $Mailgun->getLastResponse())
-                            ->persist();
+                        $gateway_service = new EmailGatewayProviderService(EmailTemplates::find($email_template_record->id));
+                        $gateway_service->initEmailGateway($user->id);
+                        $response = $gateway_service->fire($user_aggy->getEmailAddress());
+                        $user_aggy->logClientEmailActivity($email_template_record->subject, $email_template_record->id, $response)->persist();
 
                         $results = true;
                     }

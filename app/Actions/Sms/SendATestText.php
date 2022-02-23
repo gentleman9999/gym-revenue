@@ -65,14 +65,10 @@ class SendATestText
                          * @todo - make an AdminUserGatewayActivityAggregate and attach it to UserAggy with Bouncer ACL
                          */
 
-                        $SEI = new StandardSMSInterpreter($user->id);
-                        $client = new TwilioClient(env("TWILIO_SID"), env("TWILIO_TOKEN"));
-
-                        $clean_msg = $SEI->translate($sms_template_record->markup);
-                        $payload = ['from' => env("TWILIO_NO"), 'body' => $clean_msg];
-                        $message = $client->messages->create($phone_detail->value, $payload);
-
-                        $user_aggy->logClientSmsActivity($sms_template_record->id, $message)->persist();
+                        $gateway_service = new SMSGatewayProviderService(SmsTemplates::find($sms_template_record->id));
+                        $gateway_service->initSMSGateway($user->id);
+                        $response = $gateway_service->fire($user_aggy->getPhoneNumber());
+                        $user_aggy->logClientSMSActivity($sms_template_record->id, $response)->persist();
 
                         $results = true;
                     }
