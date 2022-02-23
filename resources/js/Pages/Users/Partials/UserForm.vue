@@ -234,7 +234,7 @@ export default {
        JetLabel,
        DatePicker,
    },
-   props: ["clientId", "user", "clientName","notes","start_date"],
+   props: ["clientId", "user", "clientName"],
    emits: ["success"],
    setup(props, { emit }) {
        const page = usePage();

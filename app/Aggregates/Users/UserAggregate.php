@@ -36,7 +36,7 @@ class UserAggregate extends AggregateRoot
     protected string $notes = '';
     protected string $start_date = '';
     protected string $end_date = '';
-    protected string $Termination_date = '';
+    protected string $termination_date = '';
 
     public function applyNewUser(UserCreated $event)
     {

@@ -151,7 +151,7 @@ class UsersController extends Controller
             $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
         }
         $security_roles = $security_roles->get(['id', 'security_role']);
-//dd($me,$user);
+
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
             'securityRoles' => $security_roles

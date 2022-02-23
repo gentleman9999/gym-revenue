@@ -28,6 +28,7 @@ class UserProfileController extends Controller
             'zip' => '',
             'jobTitle' => '',
             'altEmail' => '',
+            'start_date' => '',
         ];
         $user = auth()->user();
         $phone = $user->phone_number()->first();
