@@ -138,5 +138,61 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 02-23-2022',
+            'value' => '2022-02-23',
+            'misc' => [
+                'buildno' => '20220223',
+                'version' => '0.12.30',
+                'notes' => [
+                    'Dashboard Placeholder UI Refresh',
+                    '* - The active team is visible from the dashboard',
+                    '* - Cape & Bay teams are now known as GymRevenue teams. The names have not changed though.',
+                    '* - GymRevenue Users inside a GymRevenue team see a team switcher on the left side  of the dash and The latest updates announcement on the right.',
+                    '* - The Cape & Bay Developers team has the teams switcher widget on the left and as TBD widget of tickets assigned to that developer',
+                    '* - Client Teams also have a refresh',
+                    '** - Account Owners, GR Admins, and Regional Managers see TBD widgets of Club/Locations and Sales Charts',
+                    '** - Location Managers see an empty todo list and club employee widgets',
+                    '** - Sales Reps and Employees see an empty Latest Claimable leads widget an empty todo list widget',
+                    'Mass Comm - You can now send yourself a test Text message of SMS Templates when inside of a Client team',
+                    '* - You must add a phone number in the Profile Manager page',
+                    'Mass Comm - You can now send yourself a text email of Email Templates when inside of a Client team',
+                    'User Management - User Preview is now available',
+                    'User Management - Create/Update: Swapped out Role Select for Security Role Select',
+                    'User Management - Create/Update: New Columns',
+                    '* - Personal Email',
+                    '* - Address 1 & 2',
+                    '* - City, State, Zip',
+                    '* - Job Title',
+                    'User Management - Update: Updated Business Rules',
+                    '* - Trying to edit yourself redirects you to the Profile Management page',
+                    '* - You can’t delete an Account Owner',
+                    '* - Users have to be granted the ability to edit leads within their security role',
+                    '* - You can’t remove the last member of a client.',
+                    '* - You can’t delete a user if they are the last member of a team',
+                    'Team Management - Team Preview is now available',
+                    'Team Management - Removed the ability to edit locations  when editing a Client’s default team because that team can see all locations',
+                    'Team Management - You can’t delete a client’s default team',
+                    'Club Management - Club Preview is now available',
+                    'Leads Management - Changed the formatting to Last Updated by verbiage making the timestamp more readable',
+                    'Profile Management - New Fields - ',
+                    '* - First Name',
+                    '* - Last Name',
+                    '* - Personal Email',
+                    '* - Job Title',
+                    '* - Address 1 & 2',
+                    '* - City, State, & Zip',
+                    'Admin Impersonation - GymRevenue and Account Owner users now have the ability to Impersonate a user.',
+                    '* - Records are logged when this occurs',
+                    '* - You cannot switch teams in this mode.',
+                    '* - The toolbar turns red when in impersonation mode',
+                    '* - The mode is available in the upper right hand menu dropdown with your name on it.',
+                    'Some backend optimizations in the dummy data seeder'
+                ]
+            ]
+        ]);
     }
 }
