@@ -13,10 +13,12 @@
             :preview-component="TeamPreview"
         >
             <template #filter>
-                <search-filter
+                <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
                 >
                     <div class="form-control" v-if="clubs?.length">
                         <span class="label label-text">Club</span>
@@ -25,7 +27,7 @@
                             <option v-for="club in clubs" :value="club.gymrevenue_id">{{club.name}}</option>
                         </select>
                     </div>
-                </search-filter>
+                </simple-search-filter>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -46,8 +48,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
-import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
 import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
 import {preview} from "@/Components/CRUD/helpers/previewData";
 import {usePage} from "@inertiajs/inertia-vue3";
@@ -57,7 +58,7 @@ export default defineComponent({
         AppLayout,
         GymRevenueCrud,
         Confirm,
-        SearchFilter,
+        SimpleSearchFilter,
         TeamPreview
     },
     props: ["filters", "clubs", "teams", "preview"],
@@ -65,7 +66,7 @@ export default defineComponent({
         const baseRoute = "teams";
 	const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        const {form, reset} = useSearchFilter('teams', {
+        const {form, reset, clearFilters, clearSearch} = useSearchFilter('teams', {
             club: null
         });
         const confirmDelete = ref(null);
@@ -110,7 +111,9 @@ export default defineComponent({
             form,
             reset,
             TeamPreview,
-            baseRoute
+            baseRoute,
+            clearFilters,
+            clearSearch
         };
     },
 });

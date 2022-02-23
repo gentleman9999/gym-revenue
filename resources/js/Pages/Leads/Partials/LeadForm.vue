@@ -200,7 +200,6 @@ export default {
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';
-        lead.updated = new Date(lead.last_updated?.updated_at).toLocaleDateString("en-US");
         if (!lead) {
             lead = {
                 first_name: null,
@@ -223,6 +222,8 @@ export default {
             }
             operation = 'Create';
         } else {
+            lead.updated = new Date(lead.last_updated?.updated_at).toLocaleDateString("en-US");
+
             console.log('Lead Owner',lead)
 
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;

@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown dropdown-end">
         <slot name="trigger">
-            <div class="btn btn-ghost" tabindex="0">
+            <div class="btn btn-ghost btn-sm" tabindex="0">
                 <font-awesome-icon icon="ellipsis-h" size="lg" />
             </div>
         </slot>
