@@ -174,9 +174,9 @@
 
             <!-- Termination Date -->
             <div class="form-control col-span-3">
-                <jet-label for="Termination_date" value="Date of Termination"/>
-                <DatePicker v-model="form['Termination_date']"  dark />
-                <jet-input-error :message="form.errors.Termination_date" class="mt-2"/>
+                <jet-label for="termination_date" value="Date of Termination"/>
+                <DatePicker v-model="form['termination_date']"  dark />
+                <jet-input-error :message="form.errors.termination_date" class="mt-2"/>
             </div>
 
 
@@ -234,7 +234,7 @@ export default {
        JetLabel,
        DatePicker,
    },
-   props: ["clientId", "user", "clientName"],
+   props: ["clientId", "user", "clientName","notes","start_date"],
    emits: ["success"],
    setup(props, { emit }) {
        const page = usePage();
@@ -268,6 +268,7 @@ export default {
            user.security_role =
                user?.details?.find((detail) => detail.name === "security_role")
                    ?.value || null;
+
            console.log({ user });
 
        } else {
@@ -282,9 +283,13 @@ export default {
                address2: '',
                city: '',
                team_id,
-       state: '',
+               state: '',
                zip: '',
                jobTitle: '',
+               notes: '',
+               start_date:'',
+               end_date:'',
+               termination_date:'',
                client_id: props.clientId
            };
            //only add clientId when applicable to make user validation rules work better
@@ -310,7 +315,8 @@ export default {
            operation,
            handleSubmit,
            securityRoles,
-       upperCaseF
+       upperCaseF,
+
        };
    },
 };

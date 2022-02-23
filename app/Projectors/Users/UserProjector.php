@@ -45,8 +45,12 @@ class UserProjector extends Projector
                 'state' => $data['state'] ?? null,
                 'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
+                'notes' => $data['notes'] ?? null,
+                'start_date' => $data['start_date'] ?? null,
+                'end_date' => $data['end_date'] ?? null,
+                'termination_date' => $data['termination_date'] ?? null,
             ];
-
+//dd($data,$details);
             // Go through the details and create them in the user_details via the
             // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
             foreach($details as $detail => $value)

@@ -121,7 +121,8 @@ class UsersController extends Controller
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
             'securityRoles' => $security_roles,
-            'clientName' => $client_name
+            'clientName' => $client_name,
+
         ]);
     }
 

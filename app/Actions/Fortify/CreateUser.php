@@ -61,6 +61,10 @@ class CreateUser implements CreatesNewUsers
             'state' => ['required'],
             'zip' => ['required'],
             'jobTitle' => ['required'],
+            'notes' => [] ,
+            'start_date' => '',
+            'end_date' => '',
+            'termination_date' => '',
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
             'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
@@ -68,6 +72,7 @@ class CreateUser implements CreatesNewUsers
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'] //should be required, but seeders don't have phones.
+
         ];
     }
 

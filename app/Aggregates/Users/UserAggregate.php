@@ -33,7 +33,10 @@ class UserAggregate extends AggregateRoot
     protected string $state = '';
     protected string $zip = '';
     protected string $job_title = '';
-
+    protected string $notes = '';
+    protected string $start_date = '';
+    protected string $end_date = '';
+    protected string $Termination_date = '';
 
     public function applyNewUser(UserCreated $event)
     {
