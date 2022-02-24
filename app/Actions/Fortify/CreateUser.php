@@ -153,6 +153,8 @@ class CreateUser implements CreatesNewUsers
         $role = $this->getRole($first_name, $client);
         $home_club = $this->getHomeClub($first_name, $client);
 
+
+
         $team_id = 1;//capeandbay team
         if ($client) {
             // Get the client's default-team name in client_details
@@ -174,10 +176,7 @@ class CreateUser implements CreatesNewUsers
                 'password' => 'Hello123!',
                 'team_id' => $team_id,
                 'home_club' => $home_club,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-                'termination_date' => $termination_date,
-                'notes' => $notes
+                
             ]
         );
     }
