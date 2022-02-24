@@ -329,6 +329,10 @@ export default {
             }
             operation = "Create";
         }
+        const form = useForm(user);
+        let upperCaseF = (text) => {
+            form.state = text.toUpperCase();
+        };
 
        let handleSubmit = () => form.put(route("users.update", user.id));
        if (operation === "Create") {

@@ -180,6 +180,10 @@ class UserProjector extends Projector
                 'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
                 'home_club' => $data['home_club'] ?? null,
+                'notes' => $data['notes'] ?? null,
+                'start_date' => $data['start_date'] ?? null,
+                'end_date' => $data['end_date'] ?? null,
+                'termination_date' => $data['termination_date'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the
