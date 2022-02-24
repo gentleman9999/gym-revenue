@@ -45,6 +45,22 @@ class EndUserActivityProjector extends Projector
             'value' => floor(time()-99999999),
         ]);
 
+        $opportunities = ['Low', 'Medium', 'High'];
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $lead->client_id,
+            'field' => 'opportunity',
+            'value' => $opportunities[rand(0, 2)],
+        ]);
+
+        $genders = ['male', 'female'];
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $lead->client_id,
+            'field' => 'gender',
+            'value' => $genders[rand(0, 1)],
+        ]);
+
         foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([
                     'lead_id' => $event->aggregateRootUuid(),

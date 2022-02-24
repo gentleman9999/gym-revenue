@@ -67,6 +67,10 @@ class LeadsController extends Controller
         $locations = Location::whereClientId($client_id)->get();
         $leadsource = LeadSource::whereClientId($client_id)->get();
 
+        $opportunities = LeadDetails::whereClientId($client_id)->whereField('opportunity')->get()->unique('value');
+
+        $opportunities = array_values($opportunities->toArray());
+
         $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
 
         if (!empty($prospects_model)) {
@@ -77,7 +81,7 @@ class LeadsController extends Controller
                 ->with('leadSource')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
-                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'))
+                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed', 'opportunity'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
 
@@ -88,10 +92,11 @@ class LeadsController extends Controller
             'routeName' => request()->route()->getName(),
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'),
+            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed', 'opportunity'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
             'grlocations' => $locations,
             'leadsources' => $leadsource,
+            'opportunities' => $opportunities,
             //     'leadsclaimed' => $claimed
 
         ]);

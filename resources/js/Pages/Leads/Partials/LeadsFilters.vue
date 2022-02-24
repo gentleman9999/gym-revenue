@@ -34,24 +34,31 @@
                 </option>
             </select>
         </div>
+
         <div class="form-control">
-            <label for="location" class="block py-1 text-xs text-gray-400">
-                Location:
-            </label>
-            <select
-                id="location"
-                v-model="form.grlocation"
-                class="mt-1 w-full form-select"
+            <label
+                for="location"
+                class="label label-text py-1 text-xs text-gray-400"
             >
-                <option :value="null" />
-                <option
-                    v-for="(grlocations, i) in this.$page.props.grlocations"
-                    :value="grlocations.gymrevenue_id"
-                >
-                    {{ grlocations.name }}
-                </option>
-            </select>
+                Locations:
+            </label>
+            <multiselect
+                v-model="form.grlocation"
+                class="py-2"
+                id="location"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.grlocations.map((loc) => ({
+                            label: loc.name,
+                            value: loc.gymrevenue_id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
         </div>
+
         <div class="form-control">
             <label
                 for="lead_source"
@@ -59,19 +66,45 @@
             >
                 Source:
             </label>
-            <select
-                id="lead_source"
+            <multiselect
                 v-model="form.leadsource"
-                class="mt-1 w-full form-select"
+                class="py-2"
+                id="lead_source"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.leadsources.map((leadsource) => ({
+                            label: leadsource.name,
+                            value: leadsource.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="form-control">
+            <label
+                for="opportunity"
+                class="label label-text py-1 text-xs text-gray-400"
             >
-                <option :value="null" />
-                <option
-                    v-for="(leadsources, i) in this.$page.props.leadsources"
-                    :value="leadsources.id"
-                >
-                    {{ leadsources.name }}
-                </option>
-            </select>
+                Opportunity:
+            </label>
+            <multiselect
+                v-model="form.opportunity"
+                class="py-2"
+                id="opportunity"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.opportunities.map((opportunity) => ({
+                            label: opportunity.value,
+                            value: opportunity.value,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
         </div>
     </beefy-search-filter>
 </template>
@@ -95,10 +128,13 @@ button{
 import { defineComponent } from "vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 
 export default defineComponent({
     components: {
         BeefySearchFilter,
+        Multiselect
     },
     props: {
         baseRoute: {
@@ -110,7 +146,8 @@ export default defineComponent({
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             props.baseRoute
         );
-        return { form, reset, clearFilters, clearSearch };
+        return { form, reset, clearFilters, clearSearch,
+            multiselectClasses: getDefaultMultiselectTWClasses() };
     },
 });
 </script>

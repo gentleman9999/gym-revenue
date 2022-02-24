@@ -149,11 +149,19 @@ class Lead extends Model
             $query->where('lead_type_id', 'like', $typeoflead);
             /* Filter for Location(s) */
         })->when($filters['grlocation'] ?? null, function ($query, $grlocation) {
-            $query->where('gr_location_id', 'like', $grlocation . '%');
+            $query->whereIn('gr_location_id',  $grlocation);
+            //$query->where('gr_location_id', 'like', $grlocation . '%');
             /* Filter for Lead Sources */
         })->when($filters['leadsource'] ?? null, function ($query, $leadsource) {
-            $query->where('lead_source_id', 'like', $leadsource . '%');
-            //          dd($query,$leadsource);
+            $query->whereIn('lead_source_id',  $leadsource);
+            //$query->where('lead_source_id', 'like', $leadsource . '%');
+            /* Filter for Lead Sources */
+        })->when($filters['opportunity'] ?? null, function ($query, $opportunity) {
+
+            $query->whereHas('opportunity', function ($query) use ($opportunity) {
+                $query->whereIn('value',  $opportunity);
+            });
+
         })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed) {
 
             $query->with('leadsclaimed');

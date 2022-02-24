@@ -45,9 +45,18 @@ export const useSearchFilter = (
 
 const paramsToObject = (entries) => {
     const result = {};
-    for (const [key, value] of entries) {
+    for (let [key, value] of entries) {
         // each 'entry' is a [key, value] tupple
-        result[key] = value;
+        if(key.endsWith('[]')){
+            key = key.replace('[]', '');
+            if(result[key]){
+                result[key].push(value)
+            }else{
+                result[key] = [value]
+            }
+        }else{
+            result[key] = value;
+        }
     }
     return result;
 };
