@@ -20,7 +20,8 @@ class EmailGatewayProviderService extends GatewayProviderService
         $this->email_template = $email_template;
         $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();
         parent::__construct($model);
-        $this->setAssociatedClient($this->email_template->client_id);
+        if(!is_null($this->email_template->client_id))
+            $this->setAssociatedClient($this->email_template->client_id);
     }
 
     public function initEmailGateway($user_id) : void
@@ -35,13 +36,15 @@ class EmailGatewayProviderService extends GatewayProviderService
     {
         $results = false;
         $model = $this->email_template->gateway()->first();
+        $provider = 'default_cnb'; //can't use default because that requires client_id
 
         if(!is_null($model))
         {
-            switch($model->value)
+            $provider = $model->value;
+        }
+            switch($provider)
             {
                 case 'default_cnb':
-
                     /*
                     $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                         ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('mailgun')->first();
@@ -118,7 +121,7 @@ class EmailGatewayProviderService extends GatewayProviderService
                     }
 
             }
-        }
+
 
         return $results;
     }

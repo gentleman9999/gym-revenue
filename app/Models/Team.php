@@ -58,8 +58,8 @@ class Team extends JetstreamTeam
 
     public function client_details()
     {
-        return $this->hasMany(ClientDetail::class, 'value',  'id')
-            ->where('detail','=', 'team')
+        return $this->hasMany(ClientDetail::class, 'value', 'id')
+            ->where('detail', '=', 'team')
             ->with('client');
     }
 
@@ -70,8 +70,8 @@ class Team extends JetstreamTeam
 
     public function default_team_details()
     {
-        return $this->hasOne(ClientDetail::class, 'value',  'id')
-            ->where('detail','=', 'default-team')
+        return $this->hasOne(ClientDetail::class, 'value', 'id')
+            ->where('detail', '=', 'default-team')
             ->with('client');
     }
 
@@ -88,8 +88,7 @@ class Team extends JetstreamTeam
 
         $record = $this->select('id')->where('name', '=', $name)->first();
 
-        if(!is_null($record))
-        {
+        if (!is_null($record)) {
             $results = $record->id;
         }
 
@@ -116,14 +115,8 @@ class Team extends JetstreamTeam
                 $query->where('name', 'like', '%' . $search . '%');
             });
         })->when($filters['club'] ?? null, function ($query, $club_id) {
-            $query->whereHas('teams', function ($query) use ($club_id) {
-                return $query->whereHas('detail', function ($query) use ($club_id) {
-                    return $query->whereName('team-location')->whereValue($club_id);
-                });
-            });
-        })->when($filters['team'] ?? null, function ($query, $team_id) {
-            $query->whereHas('teams', function ($query) use ($team_id) {
-                return $query->whereTeamId($team_id);
+            return $query->whereHas('detail', function ($query) use ($club_id) {
+                return $query->whereName('team-location')->whereValue($club_id);
             });
         });
     }
@@ -134,8 +127,7 @@ class Team extends JetstreamTeam
 
         $model = self::select('name')->whereId($team_id)->first();
 
-        if(!is_null($model))
-        {
+        if (!is_null($model)) {
             $results = $model->name;
         }
 
@@ -150,8 +142,7 @@ class Team extends JetstreamTeam
             ->whereValue($team_id)->with('client')
             ->first();
 
-        if(!is_null($model))
-        {
+        if (!is_null($model)) {
             $results = $model->client;
         }
 

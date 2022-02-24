@@ -68,16 +68,18 @@
                 title-field="type"
             >
                 <template #filter>
-                    <search-filter
+                    <simple-search-filter
                         v-model:modelValue="form.search"
                         class="w-full max-w-md mr-4"
                         @reset="reset"
+                        @clear-filters="clearFilters"
+                        @clear-search="clearSearch"
                     >
                         <template #trigger>
                             <span class="inline-flex rounded-md">
                                 <button
                                     type="button"
-                                    class="inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
+                                    class="btn btn-sm text-xs inline-flex items-center px-3 py-2 border border-white text-sm leading-4 font-medium rounded-md bg-white hover:bg-base-100 bg-base-200 focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
                                 >
                                     {{
                                         form.audience in audiences
@@ -141,7 +143,7 @@
                                 </ul>
                             </template>
                         </template>
-                    </search-filter>
+                    </simple-search-filter>
                 </template>
             </gym-revenue-crud>
         </jet-bar-container>
@@ -155,8 +157,7 @@ import JetDropdown from "@/Components/Dropdown";
 import JetBarContainer from "@/Components/JetBarContainer";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import MassCommDataButton from "./Partials/MassCommDataButton";
 import MassCommStat from "./Partials/MassCommStat";
 
@@ -167,14 +168,14 @@ export default defineComponent({
         JetDropdown,
         GymRevenueCrud,
         JetBarContainer,
-        SearchFilter,
+        SimpleSearchFilter,
         MassCommDataButton,
         MassCommStat,
     },
     props: ["title", "audiences", "activeAudience", "stats", "historyFeed"],
     setup(props) {
         const baseRoute = "comms.dashboard";
-        const { form, reset } = useSearchFilter(baseRoute, {
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(baseRoute, {
             audience: props.activeAudience,
         });
         const fields = [
@@ -218,6 +219,8 @@ export default defineComponent({
             baseRoute,
             form,
             reset,
+            clearFilters,
+            clearSearch
         };
     },
 });
