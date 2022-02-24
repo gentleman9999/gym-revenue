@@ -20,7 +20,8 @@ class SMSGatewayProviderService extends GatewayProviderService
         $this->sms_template = $sms_template;
         $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();
         parent::__construct($model);
-        $this->setAssociatedClient($this->sms_template->client_id);
+        if(!is_null($this->sms_template->client_id))
+            $this->setAssociatedClient($this->sms_template->client_id);
     }
 
     public function initSMSGateway($user_id) : void
@@ -35,10 +36,13 @@ class SMSGatewayProviderService extends GatewayProviderService
     {
         $results = false;
         $model = $this->sms_template->gateway()->first();
+        $provider = 'default_cnb'; //can't use default because that requires client_id
 
         if(!is_null($model))
         {
-            switch($model->value)
+            $provider = $model->value;
+        }
+            switch($provider)
             {
                 case 'default_cnb':
                     /*
@@ -115,7 +119,7 @@ class SMSGatewayProviderService extends GatewayProviderService
                     }
 
             }
-        }
+
 
         return $results;
     }

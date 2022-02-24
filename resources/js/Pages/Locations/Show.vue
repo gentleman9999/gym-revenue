@@ -19,13 +19,15 @@
             :preview-component="LocationPreview"
             ><!--base-route="locations"-->
             <template #filter>
-                <search-filter
+                <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
                 >
                     <template #content>
-                        <div class="block px-4 py-2 text-xs w-60">
+                        <div class="py-2 text-xs w-60">
                             <div class="block py-2 text-xs text-white">
                                 Closed Clubs:
                             </div>
@@ -55,7 +57,7 @@
                             </select>
                         </div>
                     </template>
-                </search-filter>
+                </simple-search-filter>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -73,8 +75,7 @@ import { defineComponent, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 //import {ref} from "vue/dist/vue";
-import SearchFilter from "@/Components/CRUD/SearchFilter";
-import { Inertia } from "@inertiajs/inertia";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 
 import Button from "@/Components/Button";
@@ -89,7 +90,7 @@ export default defineComponent({
         Confirm,
         JetBarContainer,
         Button,
-        SearchFilter,
+        SimpleSearchFilter,
     },
     props: [
         "sessions",
@@ -102,7 +103,7 @@ export default defineComponent({
     ],
     setup(props) {
         const baseRoute = "locations";
-        const { form, reset } = useSearchFilter(baseRoute, {
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(baseRoute, {
             //  preserveState: false,
         });
 
@@ -131,6 +132,8 @@ export default defineComponent({
             Inertia,
             form,
             reset,
+            clearFilters,
+            clearSearch,
             LocationPreview,
         }; //, fields
     },

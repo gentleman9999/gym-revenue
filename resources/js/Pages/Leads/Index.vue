@@ -4,12 +4,16 @@
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
-            base-route="data.leads"
+            :base-route="baseRoute"
             :top-actions="{
                 create: { label: 'Add Lead' },
             }"
             :actions="actions"
-        />
+        >
+            <template #filter>
+                <leads-filters :base-route="baseRoute" />
+            </template>
+        </gym-revenue-crud>
         <confirm
             title="Really Trash?"
             v-if="confirmTrash"
@@ -47,9 +51,11 @@ import LeadInteraction from "./Partials/LeadInteractionContainer";
 import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
 import PageToolbarNav from "@/Components/PageToolbarNav";
+import LeadsFilters from "@/Pages/Leads/Partials/LeadsFilters";
 
 export default defineComponent({
     components: {
+        LeadsFilters,
         PageToolbarNav,
         GymRevenueCrud,
         AppLayout,
@@ -158,6 +164,7 @@ export default defineComponent({
                 (confirmTrash.value = null)
             );
         };
+        const baseRoute = 'data.leads';
         const navLinks = [
             {
                 label: 'Dashboard',
@@ -217,7 +224,8 @@ export default defineComponent({
             actions,
             Inertia,
             comingSoon,
-            navLinks
+            navLinks,
+            baseRoute
         };
     },
 });

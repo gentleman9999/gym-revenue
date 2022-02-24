@@ -1,6 +1,6 @@
 <template>
-    <div class="flex items-center">
-        <div class="flex w-full bg-base-300 shadow rounded">
+    <div class="flex items-center col-span-3 lg:col-span-1" v-bind="$attrs">
+        <div class="flex w-full gap-2 items-center shadow rounded">
             <dropdown align="start" width="60">
                 <template #trigger>
                     <slot name="trigger">
@@ -10,7 +10,6 @@
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-base-300 hover:bg-base-100 hover: focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
                             >
                                 Filter
-
                                 <svg
                                     class="ml-2 -mr-0.5 h-4 w-4"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -29,36 +28,58 @@
                 </template>
 
                 <template #content>
-                    <slot name="content">
-                        <div class="w-60">
-                            <div class="block px-4 py-2 text-xs">Filters</div>
+                    <div class="w-60 mx-4 pt-2 pb-4">
+                        <slot name="content">
                             <div
                                 slot="dropdown"
-                                class="px-4 py-6 w-screen shadow-xl bg-base-300 rounded"
+                                class="shadow-xl rounded"
                                 :style="{ maxWidth: `100%` }"
                             >
                                 <slot />
                             </div>
-                        </div>
-                    </slot>
-
+                        </slot>
+                        <button
+                            @click="$emit('clear-filters')"
+                            class="btn btn-sm btn-outline mt-4 w-full"
+                        >
+                            Clear Filters
+                        </button>
+                    </div>
                 </template>
             </dropdown>
-            <input
-                class="relative w-full px-6 py-3 rounded-r focus:ring"
-                autocomplete="off"
-                type="text"
-                name="search"
-                placeholder="Search…"
-                :value="modelValue"
-                @input="$emit('update:modelValue', $event.target.value)"
-            />
+            <div class="relative flex-grow">
+                <input
+                    class="relative w-full px-6 py-3 rounded-r focus:ring"
+                    autocomplete="off"
+                    type="text"
+                    name="search"
+                    placeholder="Search…"
+                    :value="modelValue"
+                    @input="$emit('update:modelValue', $event.target.value)"
+                />
+                <button
+                    class="flex items-center justify-center absolute inset-y-0 right-2 text-sm"
+                    @click="$emit('clear-search')"
+                    aria-label="Close Filters"
+                >
+                    X
+                </button>
+            </div>
         </div>
-        <button class="ml-3 text-sm" type="button" @click="$emit('reset')">
-            Reset
-        </button>
     </div>
 </template>
+
+<style scoped>
+label {
+    @apply label label-text py-0 text-xs text-gray-400;
+}
+input {
+    @apply input input-sm input-bordered;
+}
+select {
+    @apply select select-sm select-bordered;
+}
+</style>
 
 <script>
 import Dropdown from "@/Components/Dropdown";
