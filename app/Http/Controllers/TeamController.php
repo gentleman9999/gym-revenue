@@ -96,7 +96,7 @@ class TeamController extends Controller
      */
     public function edit(Request $request, $teamId)
     {
-        if (request()->user()->cannot('teams.update', request()->user()->currentTeam()->first())) {
+        if (request()->user()->cannot('teams.update', Team::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
@@ -215,7 +215,7 @@ class TeamController extends Controller
 
     public function view($teamId)
     {
-        if (request()->user()->cannot('teams.read', request()->user()->currentTeam()->first())) {
+        if (request()->user()->cannot('teams.read', Team::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }

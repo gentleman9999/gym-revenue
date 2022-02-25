@@ -49,7 +49,7 @@ class LocationsController extends Controller
         $is_client_user = $user->isClientUser();
         $page_count = 10;
 
-        if($user->cannot('locations.read', $user->currentTeam()->first()))
+        if($user->cannot('locations.read', Location::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -80,7 +80,7 @@ class LocationsController extends Controller
     public function create()
     {
         $user = request()->user();
-        if($user->cannot('locations.create', $user->currentTeam()->first()))
+        if($user->cannot('locations.create', Location::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -94,7 +94,7 @@ class LocationsController extends Controller
     public function edit($id)
     {
         $user = request()->user();
-        if($user->cannot('locations.update', $user->currentTeam()->first()))
+        if($user->cannot('locations.update', Location::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -313,7 +313,7 @@ if(!$location->id){
     public function trash($id)
     {
         $user = request()->user();
-        if($user->cannot('locations.trash', $user->currentTeam()->first()))
+        if($user->cannot('locations.trash', Location::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::route('locations');
@@ -444,7 +444,7 @@ if(!$location->id){
     public function view($id)
     {
         $user = request()->user();
-        if($user->cannot('locations.read', $user->currentTeam()->first()))
+        if($user->cannot('locations.read', Location::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
