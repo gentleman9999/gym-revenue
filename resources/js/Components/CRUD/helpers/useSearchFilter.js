@@ -47,14 +47,14 @@ const paramsToObject = (entries) => {
     const result = {};
     for (let [key, value] of entries) {
         // each 'entry' is a [key, value] tupple
-        if(key.endsWith('[]')){
+        if(key.endsWith('[]')) {
             key = key.replace('[]', '');
-            if(result[key]){
+            if(result[key]) {
                 result[key].push(value)
-            }else{
+            } else {
                 result[key] = [value]
             }
-        }else{
+        } else {
             result[key] = value;
         }
     }
