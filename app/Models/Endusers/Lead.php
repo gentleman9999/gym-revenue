@@ -111,6 +111,11 @@ class Lead extends Model
         return $this->detail()->whereField('opportunity')->whereActive(1);
     }
 
+    public function agreementNumber()
+    {
+        return $this->detail()->whereField('agreement_number')->whereActive(1);
+    }
+
     public function last_updated()
     {
         return $this->detail()->whereField('updated')->whereActive(1)
@@ -131,9 +136,13 @@ class Lead extends Model
                     ->orWhereHas('location', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
                     })
+                    ->orWhereHas('agreementNumber', function ($query) use ($search) {
+                        $query->where('value', 'like', '%' . $search . '%');
+                    })
                     ->orWhereHas('client', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
                     });
+
             });
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
@@ -144,29 +153,60 @@ class Lead extends Model
             /* created date will need a calendar date picker and the leads need different created_at dates */
         })->when($filters['createdat'] ?? null, function ($query, $createdat) {
             $query->where('created_at', 'like', $createdat . '%');
+
             /* filters for typeoflead the data schema changed so lets get back to this */
         })->when($filters['typeoflead'] ?? null, function ($query, $typeoflead) {
-            $query->where('lead_type_id', 'like', $typeoflead);
+            $query->whereIn('lead_type_id',  $typeoflead);
+
             /* Filter for Location(s) */
         })->when($filters['grlocation'] ?? null, function ($query, $grlocation) {
             $query->whereIn('gr_location_id',  $grlocation);
-            //$query->where('gr_location_id', 'like', $grlocation . '%');
+
             /* Filter for Lead Sources */
         })->when($filters['leadsource'] ?? null, function ($query, $leadsource) {
             $query->whereIn('lead_source_id',  $leadsource);
-            //$query->where('lead_source_id', 'like', $leadsource . '%');
+
             /* Filter for Lead Sources */
         })->when($filters['opportunity'] ?? null, function ($query, $opportunity) {
 
             $query->whereHas('opportunity', function ($query) use ($opportunity) {
                 $query->whereIn('value',  $opportunity);
+                //$query->where('value', '=', $opportunity); <- for single select
             });
 
         })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed) {
 
-            $query->with('leadsclaimed');
+            $query->whereHas('leadsclaimed', function ($query) use ($leadsclaimed) {
+                $query->whereIn('value',  $leadsclaimed);
+            });
+
+        })->when($filters['dob'] ?? null, function ($query, $dob) {
+
+            $query->whereHas('dob', function ($query) use ($dob) {
+                $query->whereBetween('value', $dob);
+            });
+        /** Everything below already is redundant bc of the main search - but if it's in the ticket we do it. */
+        })->when($filters['nameSearch'] ?? null, function ($query, $search) {
+
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%');
+
+        })->when($filters['phoneSearch'] ?? null, function ($query, $search) {
+
+            $query->where('primary_phone','like', '%' . $search . '%');
+
+        })->when($filters['emailSearch'] ?? null, function ($query, $search) {
+
+            $query->where('email','like', '%' . $search . '%');
+
+        })->when($filters['agreementSearch'] ?? null, function ($query, $search) {
+
+            $query->whereHas('agreementNumber', function ($query) use ($search) {
+                $query->where('value', 'like', '%' . $search . '%');
+            });
 
         });
+
     }
 
     /**

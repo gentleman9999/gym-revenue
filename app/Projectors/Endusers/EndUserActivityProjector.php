@@ -61,6 +61,14 @@ class EndUserActivityProjector extends Projector
             'value' => $genders[rand(0, 1)],
         ]);
 
+        $date_range = mt_rand(1262055681,1262215681);
+        LeadDetails::create([
+            'lead_id' => $event->id,
+            'client_id' => $lead->client_id,
+            'field' => 'dob',
+            'value' => date("Y-m-d H:i:s", $date_range), //seeds with a time of birth as if we have the birth certificate. Feature not a bug. lol
+        ]);
+
         foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([
                     'lead_id' => $event->aggregateRootUuid(),

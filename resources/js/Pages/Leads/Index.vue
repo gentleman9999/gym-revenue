@@ -65,7 +65,7 @@ export default defineComponent({
         LeadInteraction,
     },
     props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user',
-        'opportunities'],
+        'opportunities', 'leadsclaimed', 'dob', 'nameSearch'],
     setup(props) {
         const comingSoon = () => {
             new Noty({
