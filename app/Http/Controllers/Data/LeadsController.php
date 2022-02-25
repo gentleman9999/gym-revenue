@@ -151,7 +151,7 @@ class LeadsController extends Controller
         $team_users = $current_team->team_users()->get();
 
 
-        if($user->cannot('leads.create', $current_team))
+        if($user->cannot('leads.create',Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -323,7 +323,7 @@ class LeadsController extends Controller
     public function edit($lead_id)
     {
         $user = request()->user();
-        if($user->cannot('leads.update', $user->currentTeam()->first()))
+        if($user->cannot('leads.update', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -459,7 +459,7 @@ if(!$middle_name){
     {
         $data = request()->all();
         $user = request()->user();
-        if($user->cannot('leads.contact', $user->currentTeam()->first()))
+        if($user->cannot('leads.contact', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -555,7 +555,7 @@ if(!$middle_name){
     public function contact($lead_id)
     {
         $user = request()->user();
-        if($user->cannot('leads.contact', $user->currentTeam()->first()))
+        if($user->cannot('leads.contact', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back()->with('selectedLeadDetailIndex', 0);
@@ -607,7 +607,7 @@ if(!$middle_name){
     {
         $user = request()->user();
         $current_team = $user->currentTeam()->first();
-        if($user->cannot('leads.trash', $current_team))
+        if($user->cannot('leads.trash', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
