@@ -207,7 +207,7 @@
                 <textarea v-model="form['notes']"  dark  rows="5" cols="33"/>
                 <jet-input-error :message="form.errors.notes" class="mt-2"/>
             </div>
-
+{{notes}}
        </template>
 
        <template #actions>
@@ -262,6 +262,7 @@ export default {
         let user = props.user;
         const securityRoles = page.props.value.securityRoles;
         const locations = page.props.value.locations;
+const notes = page.props.value.selectedUser.notes;
 
 
         const team_id = page.props.value.user.current_team_id;
@@ -346,7 +347,8 @@ export default {
             handleSubmit,
             securityRoles,
             upperCaseF,
-            locations
+            locations,
+            notes
         };
     },
 };

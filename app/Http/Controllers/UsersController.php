@@ -165,6 +165,7 @@ class UsersController extends Controller
             $locations = Location::whereClientId($user->client()->first()->id)->get(['name', 'gymrevenue_id']);
         }
 
+//dd($user);
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
