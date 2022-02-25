@@ -20,11 +20,13 @@ class CreateLeadsTable extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();
-            $table->string('mobile_phone')->nullable();
-            $table->string('home_phone')->nullable();
-
-            $table->string('ip_address')->nullable();
-            $table->string('lead_type')->nullable();
+            $table->string('primary_phone')->nullable();
+            $table->string('alternate_phone')->nullable();
+            $table->string('gender')->nullable();
+            $table->integer('lead_type_id');
+            $table->uuid('lead_source_id');
+            $table->integer('membership_type_id');
+            $table->string('ip_address');
             $table->timestamps();
             $table->softDeletes();
         });

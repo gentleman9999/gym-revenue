@@ -223,7 +223,7 @@ class LeadsController extends Controller
 
         // This is where all the details go
         $detail_keys = [
-            'middle_name', 'dob', 'gender', 'opportunity',
+            'middle_name', 'dob', 'opportunity',
             'lead_status'
         ];
 
@@ -371,7 +371,7 @@ class LeadsController extends Controller
                 'detailsDesc',
                 'profile_picture',
                 'trialMemberships',
-                'middle_name', 'gender', 'dob',
+                'middle_name', 'dob',
                 'opportunity',
                 'lead_owner',
                 'lead_status',
@@ -435,7 +435,7 @@ if(!$middle_name){
 
         // This is where all the details go
         $detail_keys = [
-            'middle_name', 'dob', 'gender', 'opportunity',
+            'middle_name', 'dob', 'opportunity',
             'lead_status'
         ];
 
@@ -452,7 +452,7 @@ if(!$middle_name){
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
 
 
-        return Redirect::route('data.leads');
+        return Redirect::back();
     }
 
     public function assign()

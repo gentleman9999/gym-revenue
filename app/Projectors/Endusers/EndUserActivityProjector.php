@@ -29,7 +29,11 @@ class EndUserActivityProjector extends Projector
 {
     public function onNewLeadMade(NewLeadMade $event)
     {
-        $lead = Lead::create($event->lead);
+        //get only the keys we care about (the ones marked as fillable)
+        $lead_table_data = array_filter($event->lead, function ($key) {
+            return in_array($key, (new Lead)->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+        $lead = Lead::create($lead_table_data);
 
         LeadDetails::create([
             'lead_id' => $lead->id,
@@ -45,29 +49,15 @@ class EndUserActivityProjector extends Projector
             'value' => floor(time()-99999999),
         ]);
 
-        $opportunities = ['Low', 'Medium', 'High'];
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $lead->client_id,
-            'field' => 'opportunity',
-            'value' => $opportunities[rand(0, 2)],
-        ]);
-
-        $genders = ['male', 'female'];
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $lead->client_id,
-            'field' => 'gender',
-            'value' => $genders[rand(0, 1)],
-        ]);
-
-        $date_range = mt_rand(1262055681,1262215681);
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $lead->client_id,
-            'field' => 'dob',
-            'value' => date("Y-m-d H:i:s", $date_range), //seeds with a time of birth as if we have the birth certificate. Feature not a bug. lol
-        ]);
+        foreach ($event->lead['details'] ?? [] as $field => $value) {
+            LeadDetails::create([
+                    'lead_id' => $event->aggregateRootUuid(),
+                    'client_id' => $lead->client_id,
+                    'field' => $field,
+                    'value' => $value
+                ]
+            );
+        }
 
         foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([
