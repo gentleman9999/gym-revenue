@@ -63,10 +63,10 @@ class CreateUser implements CreatesNewUsers
             'state' => ['required'],
             'zip' => ['required'],
             'jobTitle' => ['required'],
-            'notes' => [] ,
-            'start_date' => '',
-            'end_date' => '',
-            'termination_date' => '',
+            'notes' => ['sometimes'] ,
+            'start_date' => ['sometimes'] ,
+            'end_date' => ['sometimes'] ,
+            'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
 
             'team_id' => ['required', 'integer', 'exists:teams,id'],
@@ -176,7 +176,7 @@ class CreateUser implements CreatesNewUsers
                 'password' => 'Hello123!',
                 'team_id' => $team_id,
                 'home_club' => $home_club,
-                
+
             ]
         );
     }

@@ -36,10 +36,10 @@ class UpdateUser implements UpdatesUserProfileInformation
             'state' => ['required'],
             'zip' => ['required'],
             'jobTitle' => ['required'],
-            'start_date' => '',
-            'end_date' => '',
-            'termination_date' => '',
-            'notes' => '',
+            'start_date' => ['sometimes'],
+            'end_date' =>  ['sometimes'],
+            'termination_date' =>  ['sometimes'],
+            'notes' =>  ['sometimes'],
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required','integer', 'exists:teams,id'],
             'security_role' => ['nullable','string', 'max:255', 'exists:security_roles,id'],
@@ -63,6 +63,7 @@ class UpdateUser implements UpdatesUserProfileInformation
         if ($client_id) {
             ClientAggregate::retrieve($client_id)->updateUser($current_user->id, $data)->persist();
         }
+
         return User::find($data['id']);
     }
 
