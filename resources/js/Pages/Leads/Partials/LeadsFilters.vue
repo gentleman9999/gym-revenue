@@ -61,6 +61,19 @@
         </div>
 
         <div class="form-control">
+            <label for="last_updated"> Sort By: </label>
+            <select
+                id="last_updated"
+                v-model="form.lastupdated"
+                class="mt-1 w-full form-select"
+            >
+                <option :value="null" />
+                <option value="ASC">Most Recent</option>
+                <option value="DESC">Least Recent</option>
+            </select>
+        </div>
+
+        <div class="form-control">
             <label
                 for="leads_claimed"
                 class="label label-text py-1 text-xs text-gray-400"

@@ -185,7 +185,11 @@ class Lead extends Model
             $query->whereHas('dob', function ($query) use ($dob) {
                 $query->whereBetween('value', $dob);
             });
-        /** Everything below already is redundant bc of the main search - but if it's in the ticket we do it. */
+        })->when($filters['lastupdated'] ?? null, function ($query, $search) {
+
+            $query->orderBy('updated_at', $search);
+
+            /** Everything below already is redundant bc of the main search - but if it's in the ticket we do it. */
         })->when($filters['nameSearch'] ?? null, function ($query, $search) {
 
                 $query->where('first_name', 'like', '%' . $search . '%')

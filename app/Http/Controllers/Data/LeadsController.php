@@ -56,22 +56,13 @@ class LeadsController extends Controller
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
+
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
-
         $page_count = 10;
         $prospects = [];
-
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
-
-        $locations = Location::whereClientId($client_id)->get();
-        $leadsource = LeadSource::whereClientId($client_id)->get();
-
         $opportunities = LeadDetails::whereClientId($client_id)->whereField('opportunity')->get()->unique('value');
-
-        $opportunities = array_values($opportunities->toArray());
-
-        $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value');
 
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
@@ -82,7 +73,7 @@ class LeadsController extends Controller
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
-                                            'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch'))
+                                            'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
 
@@ -94,12 +85,12 @@ class LeadsController extends Controller
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
-                                            'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch'),
+                                            'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
-            'grlocations' => $locations,
-            'leadsources' => $leadsource,
-            'opportunities' => $opportunities,
-            'leadsclaimed' => $claimed
+            'grlocations' => Location::whereClientId($client_id)->get(),
+            'leadsources' => LeadSource::whereClientId($client_id)->get(),
+            'opportunities' => array_values($opportunities->toArray()),
+            'leadsclaimed' => LeadDetails::whereClientId($client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value')
 
         ]);
     }
