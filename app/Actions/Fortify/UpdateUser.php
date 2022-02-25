@@ -47,7 +47,7 @@ class UpdateUser implements UpdatesUserProfileInformation
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
-            'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
+            'home_club' => ['nullable', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
         ];
     }
 
