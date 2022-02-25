@@ -29,7 +29,11 @@ class EndUserActivityProjector extends Projector
 {
     public function onNewLeadMade(NewLeadMade $event)
     {
-        $lead = Lead::create($event->lead);
+        //get only the keys we care about (the ones marked as fillable)
+        $lead_table_data = array_filter($event->lead, function ($key) {
+            return in_array($key, (new Lead)->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+        $lead = Lead::create($lead_table_data);
 
         LeadDetails::create([
             'lead_id' => $lead->id,
@@ -44,6 +48,16 @@ class EndUserActivityProjector extends Projector
             'field' => 'agreement_number',
             'value' => floor(time()-99999999),
         ]);
+
+        foreach ($event->lead['details'] ?? [] as $field => $value) {
+            LeadDetails::create([
+                    'lead_id' => $event->aggregateRootUuid(),
+                    'client_id' => $lead->client_id,
+                    'field' => $field,
+                    'value' => $value
+                ]
+            );
+        }
 
         foreach ($event->lead['services'] ?? [] as $service_id) {
             LeadDetails::create([

@@ -56,18 +56,13 @@ class LeadsController extends Controller
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
+
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
-
         $page_count = 10;
         $prospects = [];
-
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
-
-        $locations = Location::whereClientId($client_id)->get();
-        $leadsource = LeadSource::whereClientId($client_id)->get();
-
-        $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        $opportunities = LeadDetails::whereClientId($client_id)->whereField('opportunity')->get()->unique('value');
 
         if (!empty($prospects_model)) {
             $prospects = $prospects_model
@@ -77,7 +72,8 @@ class LeadsController extends Controller
                 ->with('leadSource')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
-                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'))
+                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
+                                            'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
 
@@ -88,11 +84,13 @@ class LeadsController extends Controller
             'routeName' => request()->route()->getName(),
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource', 'leadsclaimed'),
+            'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
+                                            'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'),
             'lead_types' => LeadType::whereClientId($client_id)->get(),
-            'grlocations' => $locations,
-            'leadsources' => $leadsource,
-            //     'leadsclaimed' => $claimed
+            'grlocations' => Location::whereClientId($client_id)->get(),
+            'leadsources' => LeadSource::whereClientId($client_id)->get(),
+            'opportunities' => array_values($opportunities->toArray()),
+            'leadsclaimed' => LeadDetails::whereClientId($client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value')
 
         ]);
     }
@@ -153,7 +151,7 @@ class LeadsController extends Controller
         $team_users = $current_team->team_users()->get();
 
 
-        if($user->cannot('leads.create', $current_team))
+        if($user->cannot('leads.create',Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -225,7 +223,7 @@ class LeadsController extends Controller
 
         // This is where all the details go
         $detail_keys = [
-            'middle_name', 'dob', 'gender', 'opportunity',
+            'middle_name', 'dob', 'opportunity',
             'lead_status'
         ];
 
@@ -325,7 +323,7 @@ class LeadsController extends Controller
     public function edit($lead_id)
     {
         $user = request()->user();
-        if($user->cannot('leads.update', $user->currentTeam()->first()))
+        if($user->cannot('leads.update', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -373,7 +371,7 @@ class LeadsController extends Controller
                 'detailsDesc',
                 'profile_picture',
                 'trialMemberships',
-                'middle_name', 'gender', 'dob',
+                'middle_name', 'dob',
                 'opportunity',
                 'lead_owner',
                 'lead_status',
@@ -437,7 +435,7 @@ if(!$middle_name){
 
         // This is where all the details go
         $detail_keys = [
-            'middle_name', 'dob', 'gender', 'opportunity',
+            'middle_name', 'dob', 'opportunity',
             'lead_status'
         ];
 
@@ -454,14 +452,14 @@ if(!$middle_name){
         Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
 
 
-        return Redirect::route('data.leads');
+        return Redirect::back();
     }
 
     public function assign()
     {
         $data = request()->all();
         $user = request()->user();
-        if($user->cannot('leads.contact', $user->currentTeam()->first()))
+        if($user->cannot('leads.contact', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -557,7 +555,7 @@ if(!$middle_name){
     public function contact($lead_id)
     {
         $user = request()->user();
-        if($user->cannot('leads.contact', $user->currentTeam()->first()))
+        if($user->cannot('leads.contact', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back()->with('selectedLeadDetailIndex', 0);
@@ -609,7 +607,7 @@ if(!$middle_name){
     {
         $user = request()->user();
         $current_team = $user->currentTeam()->first();
-        if($user->cannot('leads.trash', $current_team))
+        if($user->cannot('leads.trash', Lead::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();

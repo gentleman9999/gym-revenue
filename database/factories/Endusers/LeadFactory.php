@@ -23,7 +23,8 @@ class LeadFactory extends Factory
      */
     public function definition()
     {
-        $first_name = $this->faker->firstName();
+        $gender = $this->faker->randomElement(['male', 'female']) ;
+        $first_name = $this->faker->firstName($gender);
         $last_name = $this->faker->lastName();
         $username = "{$first_name}.{$last_name}";
         $domain = $this->faker->freeEmailDomain;
@@ -37,6 +38,7 @@ class LeadFactory extends Factory
             'email' => $email,
             'primary_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()),
             'ip_address' => $this->faker->ipv4(),
+            'gender' => $gender
         ];
     }
 

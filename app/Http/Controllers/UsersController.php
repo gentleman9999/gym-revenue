@@ -108,7 +108,7 @@ class UsersController extends Controller
         $client_name = (!is_null($client_detail)) ? $client->name : 'Cape & Bay';
 
         // The logged in user needs the ability to create users scoped to the current team to continue
-        if($user->cannot('users.create', $current_team))
+        if($user->cannot('users.create', User::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -138,7 +138,7 @@ class UsersController extends Controller
     {
         $me = request()->user();
         $current_team = $me->currentTeam()->first();
-        if($me->cannot('users.update', $current_team))
+        if($me->cannot('users.update', User::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
@@ -178,7 +178,7 @@ class UsersController extends Controller
     {
         $requesting_user = request()->user();
         $current_team = $requesting_user->currentTeam()->first();
-        if ($requesting_user->cannot('users.read', $current_team)) {
+        if ($requesting_user->cannot('users.read', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }

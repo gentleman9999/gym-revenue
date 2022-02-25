@@ -6,6 +6,47 @@
         @clear-filters="clearFilters"
         @clear-search="clearSearch"
     >
+
+        <div class="form-control">
+            <label
+                for="nameSearch"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Name Search:
+            </label>
+            <input id="nameSearch" v-model="form.nameSearch" placeholder="John">
+        </div>
+
+        <div class="form-control">
+            <label
+                for="phoneSearch"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Phone Search:
+            </label>
+            <input id="phoneSearch" v-model="form.phoneSearch" placeholder="5558675309">
+        </div>
+
+        <div class="form-control">
+            <label
+                for="emailSearch"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Email Search:
+            </label>
+            <input id="emailSearch" v-model="form.emailSearch" placeholder="noreply@notarealaddress.com">
+        </div>
+
+        <div class="form-control">
+            <label
+                for="agreementSearch"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Agreement Number Search:
+            </label>
+            <input id="agreementSearch" v-model="form.agreementSearch" placeholder="1545804477">
+        </div>
+
         <div class="form-control">
             <label for="trashed"> Trashed: </label>
             <select
@@ -18,40 +59,92 @@
                 <option value="only">Only Trashed</option>
             </select>
         </div>
+
         <div class="form-control">
-            <label for="lead_type"> Type: </label>
+            <label for="last_updated"> Sort By: </label>
             <select
-                id="lead_type"
-                v-model="form.typeoflead"
+                id="last_updated"
+                v-model="form.lastupdated"
                 class="mt-1 w-full form-select"
             >
                 <option :value="null" />
-                <option
-                    v-for="(lead_types, i) in this.$page.props.lead_types"
-                    :value="lead_types.id"
-                >
-                    {{ lead_types.name }}
-                </option>
+                <option value="ASC">Most Recent</option>
+                <option value="DESC">Least Recent</option>
             </select>
         </div>
+
         <div class="form-control">
-            <label for="location" class="block py-1 text-xs text-gray-400">
-                Location:
+            <label
+                for="leads_claimed"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Leads Claimed By:
             </label>
-            <select
-                id="location"
-                v-model="form.grlocation"
-                class="mt-1 w-full form-select"
-            >
-                <option :value="null" />
-                <option
-                    v-for="(grlocations, i) in this.$page.props.grlocations"
-                    :value="grlocations.gymrevenue_id"
-                >
-                    {{ grlocations.name }}
-                </option>
-            </select>
+            <multiselect
+                v-model="form.leadsclaimed"
+                class="py-2"
+                id="leads_claimed"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.leadsclaimed.map((user) => ({
+                            label: user.name,
+                            value: user.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
         </div>
+
+        <div class="form-control">
+            <label
+                for="lead_type"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Lead Type:
+            </label>
+            <multiselect
+                v-model="form.typeoflead"
+                class="py-2"
+                id="lead_type"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.lead_types.map((type) => ({
+                            label: type.name,
+                            value: type.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="form-control">
+            <label
+                for="location"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Locations:
+            </label>
+            <multiselect
+                v-model="form.grlocation"
+                class="py-2"
+                id="location"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.grlocations.map((loc) => ({
+                            label: loc.name,
+                            value: loc.gymrevenue_id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
         <div class="form-control">
             <label
                 for="lead_source"
@@ -59,20 +152,57 @@
             >
                 Source:
             </label>
-            <select
-                id="lead_source"
+            <multiselect
                 v-model="form.leadsource"
-                class="mt-1 w-full form-select"
-            >
-                <option :value="null" />
-                <option
-                    v-for="(leadsources, i) in this.$page.props.leadsources"
-                    :value="leadsources.id"
-                >
-                    {{ leadsources.name }}
-                </option>
-            </select>
+                class="py-2"
+                id="lead_source"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.leadsources.map((leadsource) => ({
+                            label: leadsource.name,
+                            value: leadsource.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
         </div>
+
+        <div class="form-control">
+            <label
+                for="opportunity"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Opportunity:
+            </label>
+            <multiselect
+                v-model="form.opportunity"
+                class="py-2"
+                id="opportunity"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.opportunities.map((opportunity) => ({
+                            label: opportunity.value,
+                            value: opportunity.value,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="form-control">
+            <label
+                for="dob"
+                class="label label-text py-1 text-xs text-gray-400"
+            >
+                Date of Birth:
+            </label>
+            <DatePicker id="dob" v-model="form.dob" :enableTimePicker="false"  range dark />
+        </div>
+
     </beefy-search-filter>
 </template>
 
@@ -95,10 +225,15 @@ button{
 import { defineComponent } from "vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
+import DatePicker from "vue3-date-time-picker";
 
 export default defineComponent({
     components: {
         BeefySearchFilter,
+        Multiselect,
+        DatePicker
     },
     props: {
         baseRoute: {
@@ -110,7 +245,8 @@ export default defineComponent({
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             props.baseRoute
         );
-        return { form, reset, clearFilters, clearSearch };
+        return { form, reset, clearFilters, clearSearch,
+            multiselectClasses: getDefaultMultiselectTWClasses() };
     },
 });
 </script>

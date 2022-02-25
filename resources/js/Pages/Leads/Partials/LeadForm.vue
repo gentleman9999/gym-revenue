@@ -228,7 +228,6 @@ export default {
 
             lead.agreement_number = lead.details_desc.find(detail => detail.field==='agreement_number').value;
             lead.middle_name =  ('middle_name' in lead  && (lead.middle_name !== null)) ? lead.middle_name.value : null;
-            lead.gender =  ('gender' in lead  && (lead.gender !== null)) ? lead.gender.value : null;
             lead.dob =  ('dob' in lead  && (lead.dob !== null)) ? lead.dob.value : null;
             lead.opportunity =  ('opportunity' in lead  && (lead.opportunity !== null)) ? lead.opportunity.value : null;
             lead['last_updated'] = ('last_updated' in lead  && (lead.last_updated !== null))
