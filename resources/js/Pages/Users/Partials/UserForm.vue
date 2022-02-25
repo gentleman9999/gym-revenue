@@ -181,14 +181,14 @@
 
             <div class="form-control col-span-3">
                 <jet-label for="start_date" value="Date / Start of Work"/>
-                <DatePicker v-model="form['start_date']"  dark />
+                <DatePicker v-model="form['start_date']"  :enableTimePicker="false" dark />
                 <jet-input-error :message="form.errors.start_date" class="mt-2"/>
             </div>
 
             <!-- End Date -->
             <div class="form-control col-span-3">
                 <jet-label for="end_date" value="Date / End of Work"/>
-                <DatePicker v-model="form['end_date']"  dark />
+                <DatePicker v-model="form['end_date']" :enableTimePicker="false" dark />
                 <jet-input-error :message="form.errors.end_date" class="mt-2"/>
             </div>
 
@@ -196,7 +196,7 @@
             <!-- Termination Date -->
             <div class="form-control col-span-3">
                 <jet-label for="termination_date" value="Date of Termination"/>
-                <DatePicker v-model="form['termination_date']"  dark />
+                <DatePicker v-model="form['termination_date']" :enableTimePicker="false" dark />
                 <jet-input-error :message="form.errors.termination_date" class="mt-2"/>
             </div>
 
@@ -244,6 +244,7 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import DatePicker from 'vue3-date-time-picker';
+
 import 'vue3-date-time-picker/dist/main.css';
 
 export default {
