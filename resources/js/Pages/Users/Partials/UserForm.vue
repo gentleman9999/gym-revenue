@@ -207,7 +207,7 @@
                 <textarea v-model="form['notes']"  dark  rows="5" cols="33"/>
                 <jet-input-error :message="form.errors.notes" class="mt-2"/>
             </div>
-{{notes}}
+
        </template>
 
        <template #actions>
