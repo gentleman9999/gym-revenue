@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Actions\Clients\Locations\CreateLocation;
 use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
@@ -381,17 +382,12 @@ class LocationSeeder extends Seeder
             if(is_null($loc_record))
             {
                 VarDumper::dump("Adding {$location['name']}");
-                $this->addLocation($location);
+                CreateLocation::run($location);
             }
             else
             {
                 VarDumper::dump("Skipping {$location['name']}!");
             }
         }
-    }
-
-    private function addLocation(array $details)
-    {
-        Location::create($details);
     }
 }
