@@ -3,8 +3,10 @@
 namespace Database\Seeders\Users;
 
 
+use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
+use App\Models\Team;
 use Illuminate\Support\Facades\Artisan;
 
 class ClientUserSeeder extends UserSeeder
@@ -69,7 +71,24 @@ class ClientUserSeeder extends UserSeeder
     protected function addUser(array $user)
     {
         $client = Client::whereName($user['client'])->first();
+
         $home_club = Location::whereClientId($client->id)->first()->gymrevenue_id;
-        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['last_name']}\" --email={$user['email']} --client={$client->id} --role=\"{$user['role']}\" --homeclub=\"{$home_club}\"");
+
+        $senior_managers = ['Regional Manager', 'Account Owner', 'Admin', 'Regional Manager'];
+        $managers = ['Location Manager'];
+
+        $is_manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
+
+        CreateUser::run([
+            'client_id' => $client->id,
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
+            'email' => $user['email'],
+            'password' => 'Hello123!',
+//            'team_ids' => $team_ids,
+            'role' => $user['role'],
+            'home_club' => $home_club,
+            'is_manager' => $is_manager
+        ]);
     }
 }

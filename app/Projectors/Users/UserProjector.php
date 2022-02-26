@@ -50,6 +50,7 @@ class UserProjector extends Projector
                 'end_date' => $data['end_date'] ?? null,
                 'termination_date' => $data['termination_date'] ?? null,
                 'home_club' => $data['home_club'] ?? null,
+                'is_manager' => $data['is_manager'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the
@@ -122,7 +123,7 @@ class UserProjector extends Projector
             }
 
             //attach the user to their teams
-            $user_teams = $data['team_ids'] ?? [$data['team_id']] ?? [];
+            $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
 
             foreach ($user_teams as $i => $team_id) {
                 if ($i === 0) {
@@ -184,6 +185,7 @@ class UserProjector extends Projector
                 'start_date' => $data['start_date'] ?? null,
                 'end_date' => $data['end_date'] ?? null,
                 'termination_date' => $data['termination_date'] ?? null,
+                'is_manager' => $data['is_manager'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the

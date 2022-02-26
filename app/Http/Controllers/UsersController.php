@@ -28,7 +28,7 @@ class UsersController extends Controller
             // If the active team is a client's-default team get all members
             if($is_default_team)
             {
-                $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
+                $users = User::with(['teams', 'home_club', 'is_manager'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only('search', 'club', 'team'))
                     ->paginate(10);
@@ -43,7 +43,7 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('id', $user_ids)
-                    ->with(['teams', 'home_club'])
+                    ->with(['teams', 'home_club', 'is_manager'])
                     ->filter($request->only('search', 'club', 'team'))
                     ->paginate(10);
             }
@@ -70,7 +70,7 @@ class UsersController extends Controller
             ]);
         } else {
             //cb team selected
-            $users = User::whereHas('teams', function ($query) use ($request) {
+            $users = User::with( 'is_manager')->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
             })->filter($request->only('search', 'club', 'team'))
                 ->paginate(10);
