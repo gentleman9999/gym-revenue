@@ -216,6 +216,7 @@ class UserProjector extends Projector
 
                 $teams = $user->teams;
 
+                /*
                 foreach ($teams as $team) {
                     //only update role for teams owned by their associated client
                     $team_client = $team->client_details[0]->client;
@@ -233,7 +234,8 @@ class UserProjector extends Projector
                     $security_role->abilities()->each(function ($ability) use ($user, $team) {
                         Bouncer::allow($user)->to($ability['ability'], $ability['entity']);
                     });
-                }
+                } */
+
                 //syncWithoutDetaching so CB user team associations dont get removed
                 $user->teams()->syncWithoutDetaching($team_roles_to_sync);
             }
