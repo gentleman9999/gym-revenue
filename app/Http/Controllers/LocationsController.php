@@ -4,32 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
 use App\Models\TeamDetail;
 use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
-use Illuminate\Foundation\Http\FormRequest;
-use Silber\Bouncer\Bouncer;
 
 
 class LocationsController extends Controller
 {
     protected $rules = [
 
-        'poc_last' =>['sometimes'],
+        'poc_last' => ['sometimes'],
         'name' => ['required', 'max:50'],
         'city' => ['required', 'max:30'],
         'state' => ['required', 'size:2'],
         'client_id' => ['required'],
-        'address1' => ['required','max:200'],
+        'address1' => ['required', 'max:200'],
         'address2' => [],
         'zip' => ['required', 'size:5'],
         'phone' => [],
@@ -49,14 +43,12 @@ class LocationsController extends Controller
         $is_client_user = $user->isClientUser();
         $page_count = 10;
 
-        if($user->cannot('locations.read', $user->currentTeam()->first()))
-        {
+        if ($user->cannot('locations.read', $user->currentTeam()->first())) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
 
-        if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
-        {
+        if (!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
             $locations = $locations->with('client')
                 ->filter($request->only('search', 'trashed'))
                 ->paginate($page_count);
@@ -80,8 +72,7 @@ class LocationsController extends Controller
     public function create()
     {
         $user = request()->user();
-        if($user->cannot('locations.create', $user->currentTeam()->first()))
-        {
+        if ($user->cannot('locations.create', $user->currentTeam()->first())) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
@@ -94,8 +85,7 @@ class LocationsController extends Controller
     public function edit($id)
     {
         $user = request()->user();
-        if($user->cannot('locations.update', $user->currentTeam()->first()))
-        {
+        if ($user->cannot('locations.update', $user->currentTeam()->first())) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
@@ -104,258 +94,46 @@ class LocationsController extends Controller
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
         }
-        $locationdetails =[];
-        $locationdetails = LocationDetails::where('location_id',$id)->get();
-        $locationitems= [];
-        $phone ='';
-        $poc_first ='';
-        $poc_last ='';
-        $poc_phone ='';
-        $opendate ='';
-        $closedate ='';
+        $locationdetails = LocationDetails::where('location_id', $id)->get();
+        $phone = '';
+        $poc_first = '';
+        $poc_last = '';
+        $poc_phone = '';
+        $open_date = '';
+        $close_date = '';
 
 
-         foreach ($locationdetails as $locationitems){
+        foreach ($locationdetails as $locationitems) {
 //dd($locationitems);
-             if($locationitems->field == 'phone') {
-                 $phone = $locationitems->value;
-             }
-             if($locationitems->field == 'poc_first') {
-                 $poc_first = $locationitems->value;
-             }
-             if($locationitems->field == 'poc_last') {
-                 $poc_last = $locationitems->value;
-             }
-             if($locationitems->field == 'poc_phone') {
-                 $poc_phone = $locationitems->value;
-             }
-             if($locationitems->field == 'open_date') {
-                 $opendate = $locationitems->value;
-             }
-             if($locationitems->field == 'close_date') {
-                 $closedate = $locationitems->value;
-             }
+            if ($locationitems->field == 'phone') {
+                $phone = $locationitems->value;
+            }
+            if ($locationitems->field == 'poc_first') {
+                $poc_first = $locationitems->value;
+            }
+            if ($locationitems->field == 'poc_last') {
+                $poc_last = $locationitems->value;
+            }
+            if ($locationitems->field == 'poc_phone') {
+                $poc_phone = $locationitems->value;
+            }
+            if ($locationitems->field == 'open_date') {
+                $open_date = $locationitems->value;
+            }
+            if ($locationitems->field == 'close_date') {
+                $close_date = $locationitems->value;
+            }
 
-}
-
+        }
         return Inertia::render('Locations/Edit', [
             'location' => Location::find($id),
             'phone' => $phone,
             'poc_first' => $poc_first,
             'poc_last' => $poc_last,
             'poc_phone' => $poc_phone,
-            'opendate' => $opendate,
-            'closedate' => $closedate,
+            'open_date' => $open_date,
+            'close_date' => $close_date,
         ]);
-    }
-
-
-    public function store(Request $request)
-    {
-        $client_id = $request->user()->currentClientId();
-
-        $request->merge(['gymrevenue_id' => GenerateGymRevenueId::run($client_id)]);
-
-        $location = Location::create(
-            $request->validate($this->rules)
-        );
- //    dd($location->id,$request,$request->phone);
-        $client_id = request()->user()->currentClientId();
-
-if(!$location->id){
-    Alert::error("No Location ID provided")->flash();
-    return Redirect::route('locations');
-}
-        if($request->phone) {
-    LocationDetails::create(['location_id' => $location->id,
-            'client_id' => $client_id,
-            'field' => 'phone',
-            'value' => $request->phone,
-            'misc' =>  ['userid',request()->user()->id]
-        ]
-    );
-}
-        if($request->poc_first) {
-            LocationDetails::create(['location_id' => $location->id,
-                    'client_id' => $client_id,
-                    'field' => 'poc_first',
-                    'value' => $request->poc_first,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->poc_last) {
-            LocationDetails::create(['location_id' => $location->id,
-                    'client_id' => $client_id,
-                    'field' => 'poc_last',
-                    'value' => $request->poc_last,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->poc_phone) {
-            LocationDetails::create(['location_id' => $location->id,
-                    'client_id' => $client_id,
-                    'field' => 'poc_phone',
-                    'value' => $request->poc_phone,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->opendate) {
-            LocationDetails::create(['location_id' => $location->id,
-                    'client_id' => $client_id,
-                    'field' => 'open_date',
-                    'value' => $request->opendate,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->closedate) {
-            LocationDetails::create(['location_id' => $location->id,
-                    'client_id' => $client_id,
-                    'field' => 'close_date',
-                    'value' => $request->closedate,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-
-
-        Alert::success("Location '{$location->name}' was created")->flash();
-
-        return Redirect::route('locations');
-    }
-
-    public function update(Request $request, $id)
-    {
-      //  dd($request->validate($this->rules));
-
-        if (!$id) {
-            Alert::error("No Location ID provided")->flash();
-            return Redirect::route('locations');
-        }
-        $client_id = request()->user()->currentClientId();
-        $location = Location::findOrFail($id);
-        $location->updateOrFail($request->validate($this->rules));
-        //echo $this->validate(request()->all());
-
-
-        $data =  request()->all();
-     //   dd($data,$request,$request->phone,$client_id,$request->validate($this->rules));
-
-
-        if($request->phone) {
-            LocationDetails::create(['location_id' => $id,
-                    'client_id' => $client_id,
-                    'field' => 'phone',
-                    'value' => $request->phone,
-                    'misc' =>  ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->poc_first) {
-            LocationDetails::create(['location_id' => $id,
-                    'client_id' => $client_id,
-                    'field' => 'poc_first',
-                    'value' => $request->poc_first,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->poc_last) {
-            LocationDetails::create(['location_id' => $id,
-                    'client_id' => $client_id,
-                    'field' => 'poc_last',
-                    'value' => $request->poc_last,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->poc_phone) {
-            LocationDetails::create(['location_id' => $id,
-                    'client_id' => $client_id,
-                    'field' => 'poc_phone',
-                    'value' => $request->poc_phone,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->opendate) {
-            LocationDetails::create(['location_id' => $id,
-                    'client_id' => $client_id,
-                    'field' => 'open_date',
-                    'value' => $request->opendate,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-        if($request->closedate) {
-            LocationDetails::create(['location_id' => $id,
-                    'client_id' => $client_id,
-                    'field' => 'close_date',
-                    'value' => $request->closedate,
-                    'misc' => ['userid',request()->user()->id]
-                ]
-            );
-        }
-
-
-
-
-
-
-        Alert::success("Location '{$location->name}' updated")->flash();
-
-        return Redirect::route('locations');
-    }
-
-    public function trash($id)
-    {
-        $user = request()->user();
-        if($user->cannot('locations.trash', $user->currentTeam()->first()))
-        {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-            return Redirect::route('locations');
-        }
-
-        if (!$id) {
-            Alert::error("No Location ID provided")->flash();
-            return Redirect::route('locations');
-        }
-
-        $location = Location::findOrFail($id);
-
-        $success = $location->deleteOrFail();
-
-        Alert::success("Location '{$location->name}' trashed")->flash();
-
-        //we need to update current_location_id where applicable
-        $client = $location->client()->first();
-        $default_location = $client->locations()->first();
-        //TODO:we could add an optional default location ID in Clients/ClientDetails and/or Team/TeamDetails,
-        // then fall back to the line above when not set
-        //We could also show a modal trap, forcing them to select a new location before they can do anything in the app.
-        //we will also need to do a similar operation with a user switches TEAMS
-        if ($default_location !== null) {
-            User::whereCurrentLocationId($id)->update(['current_location_id' => $default_location->id]);
-        }
-
-        return Redirect::back();
-    }
-
-    public function restore(Request $request, $id)
-    {
-        if (!$id) {
-            Alert::error("No Location ID provided")->flash();
-            return Redirect::back();
-        }
-        $location = Location::withTrashed()->findOrFail($id);
-        $location->restore();
-
-        Alert::success("Location '{$location->name}' restored")->flash();
-
-        return Redirect::back();
     }
 
     /**
@@ -397,30 +175,24 @@ if(!$location->id){
             : new Location();
         */
 
-        if((!is_null($client_id)))
-        {
+        if ((!is_null($client_id))) {
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
             $default_team_name = $client->default_team_name->value;
 
             // The active_team is the current client's default_team (gets all the client's locations)
-            if($current_team->id == $default_team_name)
-            {
+            if ($current_team->id == $default_team_name) {
                 $results = Location::whereClientId($client_id);
-            }
-            else
-            {
+            } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->whereActive(1)
                     ->get();
 
-                if(count($team_locations) > 0)
-                {
+                if (count($team_locations) > 0) {
                     $in_query = [];
                     // so get the teams listed in team_details
-                    foreach($team_locations as $team_location)
-                    {
+                    foreach ($team_locations as $team_location) {
                         $in_query[] = $team_location->value;
                     }
 
@@ -428,12 +200,9 @@ if(!$location->id){
                         ->whereIn('gymrevenue_id', $in_query);
                 }
             }
-        }
-        else
-        {
+        } else {
             // Cape & Bay user
-            if(!$is_client_user)
-            {
+            if (!$is_client_user) {
                 $results = new Location();
             }
         }
@@ -444,8 +213,7 @@ if(!$location->id){
     public function view($id)
     {
         $user = request()->user();
-        if($user->cannot('locations.read', $user->currentTeam()->first()))
-        {
+        if ($user->cannot('locations.read', $user->currentTeam()->first())) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
@@ -454,33 +222,33 @@ if(!$location->id){
             Alert::error("No Location ID provided")->flash();
             return Redirect::back();
         }
-        $locationdetails = LocationDetails::where('location_id',$id)->get();
-        $phone ='';
-        $poc_first ='';
-        $poc_last ='';
-        $poc_phone ='';
-        $opendate ='';
-        $closedate ='';
+        $locationdetails = LocationDetails::where('location_id', $id)->get();
+        $phone = '';
+        $poc_first = '';
+        $poc_last = '';
+        $poc_phone = '';
+        $opendate = '';
+        $closedate = '';
 
 
-        foreach ($locationdetails as $locationitems){
+        foreach ($locationdetails as $locationitems) {
 //dd($locationitems);
-            if($locationitems->field == 'phone') {
+            if ($locationitems->field == 'phone') {
                 $phone = $locationitems->value;
             }
-            if($locationitems->field == 'poc_first') {
+            if ($locationitems->field == 'poc_first') {
                 $poc_first = $locationitems->value;
             }
-            if($locationitems->field == 'poc_last') {
+            if ($locationitems->field == 'poc_last') {
                 $poc_last = $locationitems->value;
             }
-            if($locationitems->field == 'poc_phone') {
+            if ($locationitems->field == 'poc_phone') {
                 $poc_phone = $locationitems->value;
             }
-            if($locationitems->field == 'open_date') {
+            if ($locationitems->field == 'open_date') {
                 $opendate = $locationitems->value;
             }
-            if($locationitems->field == 'close_date') {
+            if ($locationitems->field == 'close_date') {
                 $closedate = $locationitems->value;
             }
 

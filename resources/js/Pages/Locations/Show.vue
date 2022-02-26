@@ -111,18 +111,10 @@ export default defineComponent({
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
-        handleClickTrash();
-        const handleConfirmTrash = () => {
-            /* */
 
-            axios.delete(route("locations.trash", confirmTrash.value)).then(
-                (response) => {
-                    setTimeout(() => response($result, 200), 10000);
-                },
-                Inertia.reload(),
-                //           location.reload(),
-                (confirmTrash.value = null)
-            );
+        const handleConfirmTrash = () => {
+            Inertia.delete(route("locations.trash", confirmTrash.value));
+            confirmTrash.value = null;
         };
 
         return {
