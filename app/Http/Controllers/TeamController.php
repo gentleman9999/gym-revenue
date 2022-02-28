@@ -34,8 +34,10 @@ class TeamController extends Controller
         $current_user = $request->user();
         $client_id = $current_user->currentClientId();
         $current_team = request()->user()->currentTeam()->first();
-        $users = $current_team->team_users()->get();
-
+     //   $users = $current_team->team_users()->get();
+        $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
+            return $query->whereName('associated_client')->whereValue($client_id);
+        })->get();
 
         if ($client_id)
         {
