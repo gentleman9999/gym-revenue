@@ -15,7 +15,7 @@
             :preview-component="UserPreview"
         >
             <template #filter>
-                <simple-search-filter
+                <beefy-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
@@ -23,8 +23,13 @@
                     @clear-search="clearSearch"
                 >
                     <div class="form-control" v-if="clubs?.length">
-                        <span class="label label-text">Club</span>
-                        <select class="select" v-model="form.club">
+                        <label
+                            for="club"
+                            class="label label-text py-1 text-xs text-gray-400"
+                        >
+                            Club
+                            </label>
+                        <select id="club" class="mt-1 w-full form-select" v-model="form.club">
                             <option></option>
                             <option
                                 v-for="club in clubs"
@@ -35,15 +40,20 @@
                         </select>
                     </div>
                     <div class="form-control" v-if="teams?.length">
-                        <span class="label label-text">Team</span>
-                        <select class="select" v-model="form.team">
+                        <label
+                            for="team"
+                            class="label label-text py-1 text-xs text-gray-400"
+                        >
+                            Team
+                        </label>
+                        <select id="team" class="mt-1 w-full form-select" v-model="form.team">
                             <option></option>
                             <option v-for="team in teams" :value="team.id">
                                 {{ team.name }}
                             </option>
                         </select>
                     </div>
-                </simple-search-filter>
+                </beefy-search-filter>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -66,13 +76,16 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import UserForm from "./Partials/UserForm";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 import UserPreview from "@/Pages/Users/Partials/UserPreview";
+import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
 
 
 export default defineComponent({
     components: {
+        BeefySearchFilter,
         AppLayout,
         GymRevenueCrud,
         UserForm,
@@ -81,7 +94,7 @@ export default defineComponent({
         PageToolbarNav,
         UserPreview
     },
-    props: ["users", "filters", "clubs", "teams", 'clientName'],
+    props: ["users", "filters", "clubs", "teams", 'clientName', 'potentialRoles'],
     setup(props) {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);

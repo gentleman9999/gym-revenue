@@ -17,8 +17,10 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
+
         // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->currentClientId();
+        $roles = ['test'];
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -30,7 +32,7 @@ class UsersController extends Controller
             {
                 $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
-                })->filter($request->only('search', 'club', 'team'))
+                })->filter($request->only('search', 'club', 'team', 'role'))
                     ->paginate(10);
             }
             else
@@ -44,7 +46,7 @@ class UsersController extends Controller
                 }
                 $users = User::whereIn('id', $user_ids)
                     ->with(['teams', 'home_club'])
-                    ->filter($request->only('search', 'club', 'team'))
+                    ->filter($request->only('search', 'club', 'team', 'role'))
                     ->paginate(10);
             }
 
@@ -63,16 +65,17 @@ class UsersController extends Controller
 
             return Inertia::render('Users/Show', [
                 'users' => $users,
-                'filters' => $request->all('search', 'club', 'team'),
+                'filters' => $request->all('search', 'club', 'team', 'role'),
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : [],
-                'clientName' => $client->name
+                'clientName' => $client->name,
+                'potentialRoles' => $roles,
             ]);
         } else {
             //cb team selected
             $users = User::whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
-            })->filter($request->only('search', 'club', 'team'))
+            })->filter($request->only('search', 'club', 'team', 'role'))
                 ->paginate(10);
 
             foreach($users as $idx => $user)
@@ -86,10 +89,11 @@ class UsersController extends Controller
 
             return Inertia::render('Users/Show', [
                 'users' => $users,
-                'filters' => $request->all('search', 'club', 'team'),
+                'filters' => $request->all('search', 'club', 'team', 'role'),
                 'clubs' => [],
                 'teams' => [],
-                'clientName' => 'Cape & Bay/GymRevenue'
+                'clientName' => 'Cape & Bay/GymRevenue',
+                'potentialRoles' => $roles,
             ]);
         }
     }

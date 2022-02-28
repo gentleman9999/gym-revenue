@@ -222,6 +222,7 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'security_role');
     }
 
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
@@ -238,6 +239,11 @@ class User extends Authenticatable
             $query->whereHas('teams', function ($query) use ($team_id) {
                 return $query->whereTeamId($team_id);
             });
-        });
+        })->when($filters['role'] ?? null, function ($query, $role) {
+            $query->whereHas('team', function ($query) use ($role) {
+                $query->whereIn('role', $role);
+            });
+        })
+        ;
     }
 }
