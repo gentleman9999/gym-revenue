@@ -74,7 +74,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
             [
                 'first_name' => 'Ronda',
                 'last_name' => 'McTonda',
-                'email' => 'mscott@kalamazoo.com',
+                'email' => 'rmctonda@kalamazoo.com',
                 'role' => 'Employee',
                 'client' => 'The Kalamazoo',
                 'team_names' => ['The Kalamazoo Gym #1'],
