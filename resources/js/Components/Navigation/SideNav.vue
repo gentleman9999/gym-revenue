@@ -1,6 +1,6 @@
 <template>
     <div
-        class="fixed inset-0 z-10 lg:position-unset flex flex-col bg-gradient-to-b from-gray-700 to-base-300 flex-shrink-0 transform transition transition-transform"
+        class="fixed inset-0 lg:position-unset flex flex-col bg-gradient-to-b from-gray-700 to-base-300 flex-shrink-0 transform transition transition-transform"
         style="transition-property: width, transform"
         :class="{
             'w-full lg:w-72 translate-x-0': expanded,

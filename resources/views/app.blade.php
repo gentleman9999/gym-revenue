@@ -20,10 +20,16 @@
         <script src="{{ mix('js/app.js') }}" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     </head>
-    <body class="font-sans antialiased">
-        @inertia
+    <body class="font-sans antialiased flex flex-col min-h-100vh">
+    <div class="flex flex-1">
+        <div class="flex-1">
 
-        <footer class="bg-base-200 p-4 text-gray-400 fixed inset-x-0 bottom-0">
+            @inertia
+
+        </div>
+    </div>
+
+        <footer class="bg-base-200 p-4 text-gray-400 w-full">
             <div class="text-muted ml-auto mr-auto text-center">
                 <div class="inner-footer">
                     <small><b>CONCEPTUAL PROTOTYPE</b> | v.<b>{!! env('APP_VERSION') !!}</b> | Build <b>{!! env('APP_BUILD') !!}</b></small> | <b><small>© 2022 GymRevenue.</small></b>

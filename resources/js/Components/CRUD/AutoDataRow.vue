@@ -59,6 +59,10 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        modelKey: {
+            type: String,
+            default: "Record",
+        },
         modelName: {
             type: String,
             default: "Record",

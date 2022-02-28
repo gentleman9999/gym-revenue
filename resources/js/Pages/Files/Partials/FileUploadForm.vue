@@ -93,6 +93,7 @@ library.add(faTimes);
 
 const props = defineProps({
     clientId: { type: String, required: true },
+    userId: { type: String },
     file: { type: Object, required: true },
 });
 
@@ -108,6 +109,7 @@ const form = useForm({
     filename: props.file.name,
     original_filename: props.file.name,
     client_id: props.clientId,
+    user_id: props.userId,
     size: props.file.size,
     // is_public: true,
 });

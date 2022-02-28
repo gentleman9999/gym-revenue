@@ -129,6 +129,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update');
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
+    Route::post('/{id}/documents', \App\Actions\Jetstream\UploadDocForUser::class . '@upload')->name('users.documents.create')->where(['id' => '[0-9]+']);
+
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {

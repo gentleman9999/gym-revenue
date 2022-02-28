@@ -146,7 +146,8 @@ class UsersController extends Controller
 
         $user = $me->with([
                 'details', 'phone_number', 'altEmail', 'address1', 'address2',
-                'city', 'state', 'zip', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date'
+                'city', 'state', 'zip', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date',
+                'files'
             ])->findOrFail($id);
 
         if($me->id == $user->id)
@@ -184,7 +185,7 @@ class UsersController extends Controller
         }
         $requesting_user_teams = $requesting_user->teams ?? [];
 
-        $user = User::with('details', 'teams', 'phone_number')->findOrFail($id);
+        $user = User::with('details', 'teams', 'phone_number', 'files')->findOrFail($id);
         $user_teams = $user->teams ?? [];
 
         $data = $user->toArray();

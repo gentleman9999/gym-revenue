@@ -90,6 +90,7 @@
                             :file="file"
                             :key="file"
                             :client-id="clientId"
+                            :user-id="user?.id"
                             @remove="removeFile"
                             @input="fileUploadUpdated"
                             :ref="
@@ -110,7 +111,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <button
                 type="button"
-                @click="$inertia.visit(route('files'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 class="btn btn-error"
                 error
@@ -148,7 +149,17 @@ import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     clientId: { type: String, required: true },
+    user: { type: Object },
+    formSubmitOptions: { type: Object },
+    handleCancel: {type: Function}
 });
+
+const defaultHandleCancel = () => {
+    Inertia.visit(route('files'));
+}
+const handleCancel = props.handleCancel || defaultHandleCancel;
+
+const emit = defineEmits(["submitted"]);
 
 const uploadDragoverTracking = ref(false);
 const uploadDragoverEvent = ref(false);
@@ -180,11 +191,11 @@ const droppedFileValidator = (file) => {
     return false;
 };
 const removeFile = (file) => {
-    console.log('removeFile', file);
+    console.log("removeFile", file);
     form.files = form.files.filter((f, i) => {
         const shouldKeep = f !== file;
         if (!shouldKeep) {
-            console.log('about to splice fileRefs', fileRefs.value, i);
+            console.log("about to splice fileRefs", fileRefs.value, i);
             fileRefs.value.splice(i, 1);
             fileRefs.value = [...fileRefs.value];
         }
@@ -201,7 +212,7 @@ onBeforeUpdate(() => {
 const uploadedFiles = computed(() =>
     fileRefs.value.filter((ref) => {
         console.log({ form: ref.form, id: ref.form.id });
-        return ref.form.id !== null && ref.form.id !== undefined ;
+        return ref.form.id !== null && ref.form.id !== undefined;
     })
 );
 const numUploadedFiles = computed(() => uploadedFiles.value.length);
@@ -215,10 +226,19 @@ const formInvalid = computed(() => {
 
 // const handleSubmit = () => form.post(`/files`);
 
-const allFiles = computed(() => fileRefs.value.map((fileRef) => fileRef.form.data()));
+const allFiles = computed(() =>
+    fileRefs.value.map((fileRef) => fileRef.form.data())
+);
+
+const formSubmitOptions = props?.formSubmitOptions || {};
 
 const handleSubmit = () => {
-    Inertia.post(route("files.store"), allFiles.value);
+    Inertia.post(route("files.store"), allFiles.value, {
+        onSuccess: () => {
+            emit("submitted");
+        },
+        ...formSubmitOptions,
+    });
 };
 
 const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
@@ -229,6 +249,8 @@ const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
         );
     }
 });
+defineExpose({ reset: form.reset });
+
 
 onUnmounted(removeRouteGuard);
 </script>

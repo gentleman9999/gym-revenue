@@ -2,7 +2,7 @@
     <component
         v-if="field.component"
         :is="field.component"
-        v-bind="{ ...field.props, [modelName]: data, data, value , field }"
+        v-bind="{ ...field.props, [modelKey]: data, data, value , field }"
     >
         {{ value }}
     </component>
@@ -40,7 +40,11 @@ export default defineComponent({
         modelName:{
             type: String,
             required: true
-        }
+        },
+        modelKey: {
+            type: String,
+            required: true
+        },
     },
     components: {
         VueJsonPretty,

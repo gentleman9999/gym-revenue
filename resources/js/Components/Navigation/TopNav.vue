@@ -86,55 +86,55 @@
                         />
                     </div>
 
-                    <div class="ml-3 relative">
-                        <button @click="comingSoon()">
-                            <font-awesome-icon
-                                :icon="['fas', 'search']"
-                                size="sm"
-                            />
-                        </button>
-                    </div>
-                    <div class="ml-3 relative">
-                        <button @click="comingSoon()">
-                            <font-awesome-icon
-                                :icon="['fas', 'plus-circle']"
-                                size="sm"
-                            />
-                        </button>
-                    </div>
-                    <div class="ml-3 relative">
-                        <button @click="comingSoon()">
-                            <font-awesome-icon
-                                :icon="['fas', 'question-circle']"
-                                size="sm"
-                            />
-                        </button>
-                    </div>
-                    <div class="ml-3 relative">
-                        <button @click="comingSoon()">
-                            <font-awesome-icon
-                                :icon="['fas', 'th']"
-                                size="sm"
-                            />
-                        </button>
-                    </div>
-                    <div class="ml-3 relative">
-                        <button @click="comingSoon()">
-                            <font-awesome-icon
-                                :icon="['fas', 'user-circle']"
-                                size="sm"
-                            />
-                        </button>
-                    </div>
-                    <noty-bell></noty-bell>
-                    <div class="ml-3 relative">
-                        <button @click="comingSoon()">
-                            <font-awesome-icon
-                                :icon="['far', 'file-medical']"
-                                size="sm"
-                            />
-                        </button>
-                    </div>
+<!--                    <div class="ml-3 relative">-->
+<!--                        <button @click="comingSoon()">-->
+<!--                            <font-awesome-icon-->
+<!--                                :icon="['fas', 'search']"-->
+<!--                                size="sm"-->
+<!--                            />-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="ml-3 relative">-->
+<!--                        <button @click="comingSoon()">-->
+<!--                            <font-awesome-icon-->
+<!--                                :icon="['fas', 'plus-circle']"-->
+<!--                                size="sm"-->
+<!--                            />-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="ml-3 relative">-->
+<!--                        <button @click="comingSoon()">-->
+<!--                            <font-awesome-icon-->
+<!--                                :icon="['fas', 'question-circle']"-->
+<!--                                size="sm"-->
+<!--                            />-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="ml-3 relative">-->
+<!--                        <button @click="comingSoon()">-->
+<!--                            <font-awesome-icon-->
+<!--                                :icon="['fas', 'th']"-->
+<!--                                size="sm"-->
+<!--                            />-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="ml-3 relative">-->
+<!--                        <button @click="comingSoon()">-->
+<!--                            <font-awesome-icon-->
+<!--                                :icon="['fas', 'user-circle']"-->
+<!--                                size="sm"-->
+<!--                            />-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <noty-bell></noty-bell>-->
+<!--                    <div class="ml-3 relative">-->
+<!--                        <button @click="comingSoon()">-->
+<!--                            <font-awesome-icon-->
+<!--                                :icon="['far', 'file-medical']"-->
+<!--                                size="sm"-->
+<!--                            />-->
+<!--                        </button>-->
+<!--                    </div>-->
                     <!-- Notifications -->
 
                     <!-- Settings Dropdown -->

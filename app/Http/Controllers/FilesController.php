@@ -22,6 +22,7 @@ class FilesController extends Controller
 
         $files = File::with('client')
             ->whereClientId($client_id)
+            ->whereUserId(null)
             ->filter($request->only('search', 'trashed'))
             ->paginate($page_count);
 
@@ -83,7 +84,8 @@ class FilesController extends Controller
             '*.key' => 'max:255|required',
 //            '*.is_public' =>'boolean|required',
             '*.size' => 'integer|min:1|required',//TODO: add max size
-            '*.client_id' => 'exists:clients,id|required'
+            '*.client_id' => 'exists:clients,id|required',
+            '*.user_id' => 'nullable|exists:users,id'
         ]);
         foreach($data as $row){
 //
@@ -96,7 +98,7 @@ class FilesController extends Controller
                 Alert::error("An error occurred while creating'{$file->filename}' ")->flash();
             }
         }
-        return Redirect::route('files');
+        return Redirect::back();
     }
 
     public function trash(Request $request, $id)
@@ -110,7 +112,7 @@ class FilesController extends Controller
         $file->deleteOrFail();
         Alert::success("File '{$file->filename}' trashed")->flash();
 
-        return Redirect::route('files');
+        return Redirect::back();
     }
 
     public function delete(Request $request, $id)
@@ -125,7 +127,7 @@ class FilesController extends Controller
 
         Alert::success("File '{$file->filename}' permanently deleted")->flash();
 
-        return Redirect::route('files');
+        return Redirect::back();
     }
 
     public function restore(Request $request, $id)

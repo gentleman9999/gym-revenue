@@ -138,6 +138,11 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
     }
 
+    public function files()
+    {
+        return $this->hasMany(File::class, 'user_id', 'id');
+    }
+
     public function phone()
     {
         return $this->detail()->where('name', '=', 'phone');
