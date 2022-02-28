@@ -113,7 +113,7 @@ class CreateUser implements CreatesNewUsers
         if ($client_id) {
             ClientAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
         }
-        //we should use App/Helpers/Uuid to generate an id, but we can use email for now since its unique
+
         $created_user = User::findOrFail($id);
 
         $should_send_welcome_email = $data['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not

@@ -3,8 +3,8 @@
 namespace App\Models\Clients;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LocationDetails extends Model
 {
@@ -16,7 +16,7 @@ class LocationDetails extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['location_id', 'client_id',  'field', 'value', 'misc', 'active'];
+    protected $fillable = ['location_id', 'client_id', 'field', 'value', 'misc', 'active'];
 
     protected $casts = [
         'misc' => 'array'
@@ -27,4 +27,15 @@ class LocationDetails extends Model
         return $this->belongsTo(Location::class);
     }
 
+    public static function createOrUpdateRecord($location_id, $client_id, $field, $value)
+    {
+        $model = self::firstOrCreate([
+            'location_id' => $location_id,
+            'client_id' => $client_id,
+            'field' => $field
+        ]);
+
+        $model->value = $value;
+        $model->save();
+    }
 }
