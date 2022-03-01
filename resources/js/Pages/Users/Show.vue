@@ -1,10 +1,7 @@
 <template>
     <app-layout :title="title">
         <!--        security roles not yet implemented - hide for now-->
-        <page-toolbar-nav
-            :title="clientName + ' Users'"
-            :links="navLinks"
-        />
+        <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
         <gym-revenue-crud
             base-route="users"
             model-name="User"
@@ -66,10 +63,10 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import UserForm from "./Partials/UserForm";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 import UserPreview from "@/Pages/Users/Partials/UserPreview";
-
 
 export default defineComponent({
     components: {
@@ -79,9 +76,9 @@ export default defineComponent({
         Confirm,
         SimpleSearchFilter,
         PageToolbarNav,
-        UserPreview
+        UserPreview,
     },
-    props: ["users", "filters", "clubs", "teams", 'clientName'],
+    props: ["users", "filters", "clubs", "teams", "clientName"],
     setup(props) {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
@@ -90,10 +87,13 @@ export default defineComponent({
         console.log("teamId", teamId.value);
         console.log("abilities", abilities.value);
 
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter("users", {
-            team: null,
-            club: null,
-        });
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+            "users",
+            {
+                team: null,
+                club: null,
+            }
+        );
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -103,12 +103,33 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
-        let fields = ["name", "email", "role",/*"is-manager",*/ 'home_team'];
-        if(page.props.value.user.current_client_id){
-            fields = ["name", "email", {
-                name: "home_club_name",
-                label: "Home Club",
-            },"role",/*"is-manager",*/ 'home_team'];
+        let fields = [
+            "name",
+            "email",
+            "role",
+            {
+                name: "is_manager",
+                label: "Manager",
+                transform: (data) => data?.value,
+            },
+            "home_team",
+        ];
+        if (page.props.value.user.current_client_id) {
+            fields = [
+                "name",
+                "email",
+                {
+                    name: "home_club_name",
+                    label: "Home Club",
+                },
+                "role",
+                {
+                    name: "is_manager",
+                    label: "Manager",
+                    transform: (data) => data.value,
+                },
+                "home_team",
+            ];
         }
 
         // const shouldShowDelete = ({ data }) => {
@@ -117,14 +138,16 @@ export default defineComponent({
         // }
 
         const shouldShowDelete = ({ data }) =>
-            (abilities.value.includes("users.delete") || abilities.value.includes("*"))&&
-            data.teams?.find((team) => team.id === teamId.value)?.pivot?.role !==
-            "Account Owner";
+            (abilities.value.includes("users.delete") ||
+                abilities.value.includes("*")) &&
+            data.teams?.find((team) => team.id === teamId.value)?.pivot
+                ?.role !== "Account Owner";
 
         const shouldShowEdit = ({ data }) =>
-            (abilities.value.includes("users.update") || abilities.value.includes("*")) &&
-            data.teams?.find((team) => team.id === teamId.value)?.pivot?.role !==
-            "Account Owner";
+            (abilities.value.includes("users.update") ||
+                abilities.value.includes("*")) &&
+            data.teams?.find((team) => team.id === teamId.value)?.pivot
+                ?.role !== "Account Owner";
 
         const actions = {
             trash: false,
@@ -138,23 +161,23 @@ export default defineComponent({
                 shouldRender: shouldShowEdit,
             },
         };
-        console.log('Jesus H Christ', )
+        console.log("Jesus H Christ");
 
         let navLinks = [
             {
                 label: "Users",
                 href: route("users"),
                 onClick: null,
-                active: true
+                active: true,
             },
         ];
 
-        if(page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_client_id) {
             navLinks.push({
                 label: "Security Roles",
                 href: route("security-roles"),
                 onClick: null,
-                active: false
+                active: false,
             });
         }
 

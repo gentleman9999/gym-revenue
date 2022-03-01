@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Users;
 
+use App\Actions\Fortify\CreateUser;
 use App\Models\Team;
 use Illuminate\Support\Facades\Artisan;
 
@@ -84,6 +85,16 @@ class CapeAndBayUserSeeder extends UserSeeder
 
     protected function addUser(array $user)
     {
-        Artisan::call("user:create --firstname=\"{$user['first_name']}\" --lastname=\"{$user['last_name']}\" --email={$user['email']} --client=0 --role=Admin");
+        CreateUser::run([
+            'client_id' => null,
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
+            'email' => $user['email'],
+            'password' => 'Hello123!',
+            'team_id' => 1,
+            'role' => 'admin',
+//            'home_club' => $home_club,
+            'is_manager' => 'Senior Manager'
+        ]);
     }
 }

@@ -222,6 +222,11 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'security_role');
     }
 
+    public function is_manager()
+    {
+        return $this->detail()->where('name', '=', 'is_manager');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

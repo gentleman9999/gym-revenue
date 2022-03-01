@@ -84,6 +84,13 @@ class SecondaryTeamsSeeder extends Seeder
                 'default_team' => 0,
                 'client_id' => Client::where('name', 'The Kalamazoo')->first()->id,
             ],
+            [
+                'user_id' => $kalamazoo_owner->id ?? 1,
+                'name' => 'The Kalamazoo Gym #2',
+                'personal_team' => 0,
+                'default_team' => 0,
+                'client_id' => Client::where('name', 'The Kalamazoo')->first()->id,
+            ],
 
             // Bodies By Brett
             [
