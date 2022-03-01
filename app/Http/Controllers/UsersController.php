@@ -19,6 +19,8 @@ class UsersController extends Controller
     {
         // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->currentClientId();
+        $roles = [];
+
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -30,7 +32,7 @@ class UsersController extends Controller
             {
                 $users = User::with(['teams', 'home_club', 'is_manager'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
-                })->filter($request->only('search', 'club', 'team'))
+                })->filter($request->only('search', 'club', 'team', 'roles'))
                     ->paginate(10);
             }
             else
@@ -44,10 +46,9 @@ class UsersController extends Controller
                 }
                 $users = User::whereIn('id', $user_ids)
                     ->with(['teams', 'home_club', 'is_manager'])
-                    ->filter($request->only('search', 'club', 'team'))
+                    ->filter($request->only('search', 'club', 'team', 'roles'))
                     ->paginate(10);
             }
-
 
             foreach($users as $idx => $user)
             {
@@ -58,21 +59,23 @@ class UsersController extends Controller
                 $users[$idx]->home_team = $default_team->name;
 
                 $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
-
+                $roles[] = $role->name;
             }
+
 
             return Inertia::render('Users/Show', [
                 'users' => $users,
-                'filters' => $request->all('search', 'club', 'team'),
+                'filters' => $request->all('search', 'club', 'team', 'roles'),
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : [],
-                'clientName' => $client->name
+                'clientName' => $client->name,
+                'potentialRoles' => array_unique($roles),
             ]);
         } else {
             //cb team selected
             $users = User::with( 'is_manager')->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
-            })->filter($request->only('search', 'club', 'team'))
+            })->filter($request->only('search', 'club', 'team', 'roles'))
                 ->paginate(10);
 
             foreach($users as $idx => $user)
@@ -82,17 +85,20 @@ class UsersController extends Controller
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
+                $roles[] = $role->name;
             }
 
             return Inertia::render('Users/Show', [
                 'users' => $users,
-                'filters' => $request->all('search', 'club', 'team'),
+                'filters' => $request->all('search', 'club', 'team', 'roles'),
                 'clubs' => [],
                 'teams' => [],
-                'clientName' => 'Cape & Bay/GymRevenue'
+                'clientName' => 'Cape & Bay/GymRevenue',
+                'potentialRoles' => array_unique($roles),
             ]);
         }
     }
+
 
     public function create(Request $request)
     {
@@ -164,8 +170,6 @@ class UsersController extends Controller
         if($user->isClientUser()){
             $locations = Location::whereClientId($user->client()->first()->id)->get(['name', 'gymrevenue_id']);
         }
-
-//dd($user);
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $user,
