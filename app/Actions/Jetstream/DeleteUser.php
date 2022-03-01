@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
 use Laravel\Jetstream\Jetstream;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
@@ -44,7 +45,13 @@ class DeleteUser implements DeletesUsers
         };
     }
 
-    public function asController(Request $request, $id)
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+        return $current_user->can('users.delete', $current_user->currentTeam()->first());
+    }
+
+    public function asController(ActionRequest $request, $id)
     {
         $me = request()->user();
         $user = User::findOrFail($id);

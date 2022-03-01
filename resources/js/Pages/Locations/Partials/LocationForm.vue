@@ -50,16 +50,16 @@
             </div>
 
             <div class="col-span-2 space-y-2">
-                <jet-label for="opendate" value="Open Date"/>
-                <DatePicker id="opendate" v-model="form.opendate"  dark />
+                <jet-label for="open_date" value="Open Date"/>
+                <DatePicker id="open_date" v-model="form.open_date"  dark />
 
-                <jet-input-error :message="form.errors.opendate" class="mt-2"/>
+                <jet-input-error :message="form.errors.open_date" class="mt-2"/>
             </div>
             <div class="col-span-2 space-y-2">
-                <jet-label for="closedate" value="Close Date"/>
-                <DatePicker id="closedate" v-model="form.closedate"  dark />
+                <jet-label for="close_date" value="Close Date"/>
+                <DatePicker id="close_date" v-model="form.close_date"  dark />
 
-                <jet-input-error :message="form.errors.closedate" class="mt-2"/>
+                <jet-input-error :message="form.errors.close_date" class="mt-2"/>
             </div>
 
             <div class="col-span-2 space-y-2">
@@ -95,17 +95,6 @@
         </template>
 
     </jet-form-section>
-
-    <!--           {{this.$page.props.phone}} ------
-       {{this.$page.props.poc_first}}
-    {{this.$page.props.poc_last}}
-        {{this.$page.props.poc_phone}}
-         {{this.$page.props.opendate}}
-         {{this.$page.proosedate}}
--->
-  <!--
-
-       {{this.$page.props.locationitems}}  -->
 </template>
 
 <script>
@@ -129,7 +118,7 @@ export default {
         JetLabel,
         DatePicker,
     },
-    props: ['clientId', 'location','phone','poc_first','poc_last','poc_phone','opendate','closedate','location_no','DatePicker'],
+    props: ['clientId', 'location','phone','poc_first','poc_last','poc_phone','open_date','close_date','location_no','DatePicker'],
     setup(props, context) {
         const page = usePage();
 
@@ -138,8 +127,8 @@ export default {
         let poc_first = page.props.value.poc_first;
         let poc_last = page.props.value.poc_last;
         let poc_phone = page.props.value.poc_phone;
-        let opendate = page.props.value.opendate;
-        let closedate = page.props.value.closedate;
+        let open_date = page.props.value.open_date;
+        let close_date = page.props.value.close_date;
 
         let operation = 'Update';
         if (!location) {
@@ -154,19 +143,19 @@ export default {
                 poc_first:null,
                 poc_last:null,
                 poc_phone:null,
-                opendate:null,
-                closedate:null,
+                open_date:null,
+                close_date:null,
                 location_no:null,
                 client_id: props.clientId
             }
             operation = 'Create';
         }else{
-                location.phone = phone,
-                location.poc_first = poc_first,
-                location.poc_last = poc_last,
-                location.poc_phone = poc_phone,
-                location.opendate = opendate,
-                location.closedate = closedate
+                location.phone = phone;
+                location.poc_first = poc_first;
+                location.poc_last = poc_last;
+                location.poc_phone = poc_phone;
+                location.open_date = open_date;
+                location.close_date = close_date;
 
                 let address1 = location.address1;
                 let address2 = location.address2;
