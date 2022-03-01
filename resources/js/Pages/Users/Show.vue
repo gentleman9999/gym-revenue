@@ -53,6 +53,33 @@
                             </option>
                         </select>
                     </div>
+
+                    <div class="form-control">
+                        <label
+                            for="roles"
+                            class="label label-text py-1 text-xs text-gray-400"
+                        >
+                            Roles:
+                        </label>
+                        <multiselect
+                            v-model="form.roles"
+                            class="py-2"
+                            id="roles"
+                            mode="tags"
+                            :close-on-select="false"
+                            :create-option="true"
+                            :options="
+                         this.$page.props.potentialRoles.map((role) => ({
+                            label: role.name,
+                            value: role.name.substring(0,5),
+                        }))
+                    "
+                            :classes="multiselectClasses"
+                        />
+                    </div>
+
+
+
                 </beefy-search-filter>
             </template>
         </gym-revenue-crud>
@@ -81,7 +108,8 @@ import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 import UserPreview from "@/Pages/Users/Partials/UserPreview";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
-
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 
 export default defineComponent({
     components: {
@@ -92,7 +120,8 @@ export default defineComponent({
         Confirm,
         SimpleSearchFilter,
         PageToolbarNav,
-        UserPreview
+        UserPreview,
+        Multiselect
     },
     props: ["users", "filters", "clubs", "teams", 'clientName', 'potentialRoles'],
     setup(props) {
@@ -183,6 +212,7 @@ export default defineComponent({
             clearSearch,
             navLinks,
             UserPreview,
+            multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },
 });

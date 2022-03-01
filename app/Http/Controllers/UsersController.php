@@ -20,7 +20,7 @@ class UsersController extends Controller
 
         // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->currentClientId();
-        $roles = ['test'];
+      //  $roles = ['test'];
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -60,16 +60,18 @@ class UsersController extends Controller
                 $users[$idx]->home_team = $default_team->name;
 
                 $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
-
+                $roles[] = $user->roles()->first();
             }
+            $nroles = $this->unique_multidim_array($roles, 'id');
+            $nroles = array_values($nroles);
 
             return Inertia::render('Users/Show', [
                 'users' => $users,
-                'filters' => $request->all('search', 'club', 'team', 'role'),
+                'filters' => $request->all('search', 'club', 'team', 'roles'),
                 'clubs' => Location::whereClientId($client_id)->get(),
                 'teams' => $client_id ? Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value')) : [],
                 'clientName' => $client->name,
-                'potentialRoles' => $roles,
+                'potentialRoles' => $nroles,
             ]);
         } else {
             //cb team selected
@@ -97,6 +99,23 @@ class UsersController extends Controller
             ]);
         }
     }
+
+    public function unique_multidim_array($array, $key) {
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+
+        foreach($array as $val) {
+            if (!in_array($val[$key], $key_array)) {
+                $key_array[$i] = $val[$key];
+                $temp_array[$i] = $val;
+            }
+            $i++;
+        }
+        return $temp_array;
+    }
+
+
 
     public function create(Request $request)
     {

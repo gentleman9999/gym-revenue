@@ -239,9 +239,9 @@ class User extends Authenticatable
             $query->whereHas('teams', function ($query) use ($team_id) {
                 return $query->whereTeamId($team_id);
             });
-        })->when($filters['role'] ?? null, function ($query, $role) {
-            $query->whereHas('team', function ($query) use ($role) {
-                $query->whereIn('role', $role);
+        })->when($filters['roles'] ?? null, function ($query, $role) {
+            $query->whereHas('teams', function ($query) use ($role) {
+                $query->whereIn('role', 'like','%'.$role.'%');
             });
         })
         ;
