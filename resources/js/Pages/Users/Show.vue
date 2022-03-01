@@ -59,7 +59,7 @@
                             for="roles"
                             class="label label-text py-1 text-xs text-gray-400"
                         >
-                            Roles:
+                            Role:
                         </label>
                         <select id="roles" class="mt-1 w-full form-select" v-model="form.roles">
                             <option></option>
