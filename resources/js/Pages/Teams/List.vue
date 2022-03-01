@@ -13,21 +13,50 @@
             :preview-component="TeamPreview"
         >
             <template #filter>
-                <simple-search-filter
+                <beefy-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
                     @clear-filters="clearFilters"
                     @clear-search="clearSearch"
                 >
+                    <div class="form-control">
+                        <label
+                            for="users"
+                            class="label label-text py-1 text-xs text-gray-400"
+                        >
+                            Users:
+                        </label>
+                        <multiselect
+                            v-model="form.users"
+                            class="py-2"
+                            id="users"
+                            mode="tags"
+                            :close-on-select="false"
+                            :create-option="true"
+                            :options="
+                         this.$page.props.potentialUsers.map((user) => ({
+                            label: user.name,
+                            value: user.id,
+                        }))
+                    "
+                            :classes="multiselectClasses"
+                        />
+                    </div>
+
                     <div class="form-control" v-if="clubs?.length">
-                        <span class="label label-text">Club</span>
-                        <select class="select" v-model="form.club">
+                        <label
+                            for="club"
+                            class="label label-text py-1 text-xs text-gray-400"
+                        >
+                            Club
+                        </label>
+                        <select  class="mt-1 w-full form-select" v-model="form.club">
                             <option></option>
                             <option v-for="club in clubs" :value="club.gymrevenue_id">{{club.name}}</option>
                         </select>
                     </div>
-                </simple-search-filter>
+                </beefy-search-filter>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -48,20 +77,24 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import {Inertia} from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
 import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
 import {preview} from "@/Components/CRUD/helpers/previewData";
 import {usePage} from "@inertiajs/inertia-vue3";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 
 export default defineComponent({
     components: {
         AppLayout,
         GymRevenueCrud,
         Confirm,
-        SimpleSearchFilter,
-        TeamPreview
+        BeefySearchFilter,
+        TeamPreview,
+        Multiselect
     },
-    props: ["filters", "clubs", "teams", "preview"],
+    props: ["filters", "clubs", "teams", "preview", "potentialUsers"],
     setup(props) {
         const baseRoute = "teams";
 	const page = usePage();
@@ -113,7 +146,8 @@ export default defineComponent({
             TeamPreview,
             baseRoute,
             clearFilters,
-            clearSearch
+            clearSearch,
+            multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },
 });
