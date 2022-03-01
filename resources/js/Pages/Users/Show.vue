@@ -71,7 +71,8 @@
                             :options="
                          this.$page.props.potentialRoles.map((role) => ({
                             label: role.name,
-                            value: role.name.substring(0,5),
+                           // value: role.name.substring(0,5),
+                              value: role.name,
                         }))
                     "
                             :classes="multiselectClasses"

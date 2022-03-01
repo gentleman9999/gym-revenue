@@ -201,7 +201,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
     }
-
+    public function potentialRoles()
+    {
+        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
+    }
     public function default_team()
     {
         return $this->detail()->where('name', '=', 'default_team');
@@ -240,8 +243,9 @@ class User extends Authenticatable
                 return $query->whereTeamId($team_id);
             });
         })->when($filters['roles'] ?? null, function ($query, $role) {
-            $query->whereHas('teams', function ($query) use ($role) {
-                $query->whereIn('role', 'like','%'.$role.'%');
+             $query->whereHas('potentialRoles', function ($query) use ($role) {
+                $query->whereIn('role', $role);
+
             });
         })
         ;
