@@ -1,6 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import 'vue-select/dist/vue-select';
 
 .sweet-modal-overlay{
     @apply mt-16;
@@ -75,4 +76,26 @@
 .dp__disabled{
     @apply !bg-base-300;
 }
-
+.items-end {
+    align-items: end;
+}
+.w-100 {
+    width: 100%;
+}
+.vs__dropdown-menu {
+    background: #1a202c !important;
+}
+.vs__selected {
+    color: #e0e0e0;
+    height: 38px;
+    border-color: #505050;
+    background-color: hsla(var(--b1) / var(--tw-bg-opacity, 1));
+}
+.vs__dropdown-toggle {
+    height: 48px;
+    margin-top: 4px;
+    border-radius: var(--rounded-btn, .5rem);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: hsla(var(--b1) / var(--tw-bg-opacity, 1));
+}

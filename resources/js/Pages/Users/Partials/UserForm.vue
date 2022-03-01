@@ -89,18 +89,11 @@
             </div>
             <!-- State -->
             <div class="form-control col-span-3">
-                <jet-label for="state" value="State"/>
-                <input
-                    id="state"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.state"
-                    maxlength="2"
-                    @keyup="upperCaseF(form.state)"
-                    autofocus
-                />
-                <jet-input-error :message="form.errors.state" class="mt-2"/>
+                <jet-label for="state" value="State" />
+                <v-select id="state" v-model="form.state" :options="optionStates" :reduce="(option) => option.code" label="label"></v-select>
+                <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
+
             <!-- Zip -->
             <div class="form-control col-span-3">
                 <jet-label for="zip" value="Zip Code"/>
@@ -244,8 +237,9 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import DatePicker from 'vue3-date-time-picker';
-
 import 'vue3-date-time-picker/dist/main.css';
+import vSelect from 'vue-select'
+import states from "@/Pages/Comms/States/statesOfUnited";
 
 export default {
     components: {
@@ -254,7 +248,8 @@ export default {
         JetFormSection,
         JetInputError,
         JetLabel,
-            DatePicker
+        DatePicker,
+        'v-select': vSelect
     },
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
@@ -348,7 +343,7 @@ export default {
             securityRoles,
             upperCaseF,
             locations,
-
+            optionStates: states
         };
     },
 };
