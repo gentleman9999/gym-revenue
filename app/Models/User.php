@@ -228,6 +228,7 @@ class User extends Authenticatable
 
     public function scopeFilter($query, array $filters)
     {
+        $stop = 0;
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
@@ -244,7 +245,7 @@ class User extends Authenticatable
             });
         })->when($filters['roles'] ?? null, function ($query, $role) {
              $query->whereHas('potentialRoles', function ($query) use ($role) {
-                $query->whereIn('role', $role);
+                $query->where('role', '=', $role );
 
             });
         })

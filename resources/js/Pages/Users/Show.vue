@@ -61,22 +61,15 @@
                         >
                             Roles:
                         </label>
-                        <multiselect
-                            v-model="form.roles"
-                            class="py-2"
-                            id="roles"
-                            mode="tags"
-                            :close-on-select="false"
-                            :create-option="true"
-                            :options="
-                         this.$page.props.potentialRoles.map((role) => ({
-                            label: role.name,
-                           // value: role.name.substring(0,5),
-                              value: role.name,
-                        }))
-                    "
-                            :classes="multiselectClasses"
-                        />
+                        <select id="roles" class="mt-1 w-full form-select" v-model="form.roles">
+                            <option></option>
+                            <option
+                                v-for="role in potentialRoles"
+                                :value="role"
+                            >
+                                {{ role }}
+                            </option>
+                        </select>
                     </div>
 
 
