@@ -121,6 +121,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::post('/{id}/restore', \App\Http\Controllers\FilesController::class . '@restore')->name('files.restore');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
+    Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
+
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
