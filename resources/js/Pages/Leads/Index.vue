@@ -9,7 +9,15 @@
                 create: { label: 'Add Lead' },
             }"
             :actions="actions"
+           
+            :preview-component="LeadPreview"
         >
+
+
+
+
+
+
             <template #filter>
                 <leads-filters :base-route="baseRoute" />
             </template>
@@ -35,6 +43,10 @@
                 <option value="other">Other</option>
             </select>
         </confirm>
+
+
+
+
     </app-layout>
 </template>
 
@@ -52,6 +64,8 @@ import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 import LeadsFilters from "@/Pages/Leads/Partials/LeadsFilters";
+import LeadPreview from "@/Pages/Leads/Partials/LeadPreview";
+//import UserPreview from "@/Pages/Users/Partials/UserPreview";
 
 export default defineComponent({
     components: {
@@ -63,6 +77,7 @@ export default defineComponent({
         Button,
         JetBarContainer,
         LeadInteraction,
+        LeadPreview,
     },
     props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user',
         'opportunities', 'leadsclaimed', 'dob', 'nameSearch'],
@@ -226,7 +241,8 @@ export default defineComponent({
             Inertia,
             comingSoon,
             navLinks,
-            baseRoute
+            baseRoute,
+            LeadPreview
         };
     },
 });

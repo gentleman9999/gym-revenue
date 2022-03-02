@@ -723,4 +723,75 @@ if(!$middle_name){
 //        return Redirect::route('data.leads');
         return Redirect::back();
     }
+
+    public function view($lead_id)
+    {
+        $user = request()->user();
+        if ($user->cannot('leads.update', Lead::class)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+        if (!$lead_id) {
+            Alert::error("Access Denied or Lead does not exist")->flash();
+            return Redirect::route('data.leads');
+        }
+        //@TODO: we may want to embed the currentClientId in the form as a field
+        //instead of getting the value here.  if you have multiple tabs open, and
+        // one has an outdated currentClient id, creating would have unintended ]
+        //consequences, potentially adding the lead to the wrong client, or
+        //just error out. also check for other areas in the app for similar behavior
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
+        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+
+        $locations = [];
+        foreach ($locations_records as $location) {
+            $locations[$location->gymrevenue_id] = $location->name;
+        }
+
+        $lead_types = LeadType::whereClientId($client_id)->get();
+        $lead_sources = LeadSource::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
+
+        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
+
+        $current_team = $user->currentTeam()->first();
+        $team_users = $current_team->team_users()->get();
+        /**
+         * STEPS for team users
+         * 1. No CnB Admins unless it is you
+         * 2. Unless Cnb Admin, no admin users
+         */
+        $available_lead_owners = [];
+        foreach ($team_users as $team_user) {
+            $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
+        }
+
+
+        $data = [
+            'lead' => Lead::whereId($lead_id)->with(
+                'detailsDesc',
+                'profile_picture',
+                'trialMemberships',
+                'middle_name', 'dob',
+                'opportunity',
+                'lead_owner',
+                'lead_status',
+                'last_updated'
+            )->first(),
+            'user_id' => $user->id,
+            'locations' => $locations,
+            'lead_types' => $lead_types,
+            'lead_sources' => $lead_sources,
+            'lead_statuses' => $lead_statuses,
+            'trialDates' => $lead_aggy->trial_dates,
+            'lead_owners' => $available_lead_owners,
+            'interactionCount' => $lead_aggy->getInteractionCount()
+        ];
+
+
+        return $data;
+
+    }
 }
