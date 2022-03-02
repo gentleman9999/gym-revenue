@@ -48,28 +48,4 @@ class FilesController extends Controller
         return Inertia::render('Files/Upload', [
         ]);
     }
-
-    public function update(Request $request, $id)
-    {
-        if (!$id) {
-            Alert::error("No file ID provided")->flash();
-            return Redirect::route('files');
-        }
-        $data = $request->validate([
-            'filename' => 'max:255|required',
-            'file_uuid' => 'uuid'
-        ]);
-
-        $file = File::findOrFail($id);
-        $new_filename = $data['filename'];
-        $old_filename= $file->filename;
-        $data['extension'] = last(explode('.', $new_filename));
-
-        if($new_filename !== $old_filename){
-            $file->updateOrFail($data);
-        }
-        Alert::success("File '{$file->filename}' updated")->flash();
-
-        return Redirect::route('files');
-    }
 }
