@@ -90,7 +90,15 @@
             <!-- State -->
             <div class="form-control col-span-3">
                 <jet-label for="state" value="State" />
-                <v-select id="state" v-model="form.state" :options="optionStates" :reduce="(option) => option.code" label="label"></v-select>
+                    <multiselect
+                        id="state"
+                        class="mt-1 multiselect-search"
+                        v-model="form.state"
+                        :searchable="true"
+                        :create-option="true"
+                        :options="optionStates"
+                        :classes="multiselectClasses"
+                    />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
 
@@ -238,7 +246,8 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import DatePicker from 'vue3-date-time-picker';
 import 'vue3-date-time-picker/dist/main.css';
-import vSelect from 'vue-select'
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
 
 export default {
@@ -249,7 +258,7 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
-        'v-select': vSelect
+        'multiselect': Multiselect
     },
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
@@ -343,7 +352,8 @@ export default {
             securityRoles,
             upperCaseF,
             locations,
-            optionStates: states
+            optionStates: states,
+            multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },
 };
