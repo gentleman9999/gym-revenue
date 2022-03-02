@@ -62,12 +62,10 @@
 
         <div class="field col-span-6 lg:col-span-3">
             <label>Club/Location:</label>
-            {{data.lead.gr_location_id}}
             <div class="data">
-
+                {{data.lead.gr_location_id}}
             </div>
         </div>
-
 <!--
         <div class="field col-span-6 lg:col-span-6">
         {{data}}
