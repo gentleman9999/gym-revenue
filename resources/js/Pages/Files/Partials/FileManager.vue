@@ -111,7 +111,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <button
                 type="button"
-                @click="handleCancel"
+                @click="resolvedHandleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 class="btn btn-error"
                 error
@@ -157,7 +157,7 @@ const props = defineProps({
 const defaultHandleCancel = () => {
     Inertia.visit(route('files'));
 }
-const handleCancel = props.handleCancel || defaultHandleCancel;
+const resolvedHandleCancel = props.handleCancel || defaultHandleCancel;
 
 const emit = defineEmits(["submitted"]);
 
@@ -236,6 +236,8 @@ const handleSubmit = () => {
     Inertia.post(route("files.store"), allFiles.value, {
         onSuccess: () => {
             emit("submitted");
+            form.reset();
+            fileRefs.value.forEach((fileRef) => fileRef.form.reset());
         },
         ...formSubmitOptions,
     });

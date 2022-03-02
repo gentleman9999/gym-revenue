@@ -113,12 +113,12 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function () {
     Route::get('/', \App\Http\Controllers\FilesController::class . '@index')->name('files');
     Route::get('/upload', \App\Http\Controllers\FilesController::class . '@upload')->name('files.upload');
-    Route::post('/', \App\Http\Controllers\FilesController::class . '@store')->name('files.store');
+    Route::post('/', \App\Actions\Clients\Files\CreateFiles::class)->name('files.store');
     Route::get('/edit/{id}', \App\Http\Controllers\FilesController::class . '@edit')->name('files.edit');
-    Route::put('/{id}', \App\Http\Controllers\FilesController::class . '@update')->name('files.update');
-    Route::delete('/{id}', \App\Http\Controllers\FilesController::class . '@trash')->name('files.trash');
-    Route::delete('/{id}/force', \App\Http\Controllers\FilesController::class . '@delete')->name('files.delete');
-    Route::post('/{id}/restore', \App\Http\Controllers\FilesController::class . '@restore')->name('files.restore');
+    Route::put('/{id}', \App\Actions\Clients\Files\RenameFile::class)->name('files.update');
+    Route::delete('/{id}', \App\Actions\Clients\Files\TrashFile::class)->name('files.trash');
+    Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
+    Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {

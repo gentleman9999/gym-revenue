@@ -7,10 +7,11 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 class FileDeleted extends ShouldBeStored
 {
     public $user;
-    public $key;
-    public function __construct(string $user, string $key)
+    public $id;
+
+    public function __construct(string $user, string $id)
     {
         $this->user = $user;
-        $this->key = $key;
+        $this->id = $id;
     }
 }

@@ -18,33 +18,33 @@ class FileAggregate extends AggregateRoot
 
     protected static bool $allowConcurrency = true;
 
-    public function createFile(string $userId, string $tmpKey, $clientId)
+    public function create(string $userId, array $data)
     {
-        $this->recordThat(new FileCreated($userId, $tmpKey ,$this->uuid()));
+        $this->recordThat(new FileCreated($userId, $data));
         return $this;
     }
 
-    public function trashFile(string $userId)
+    public function trash(string $userId)
     {
-        $this->recordThat(new FileTrashed($userId));
+        $this->recordThat(new FileTrashed($userId, $this->uuid()));
         return $this;
     }
 
-    public function restoreFile(string $userId)
+    public function restore(string $userId)
     {
-        $this->recordThat(new FileRestored($userId));
+        $this->recordThat(new FileRestored($userId, $this->uuid()));
         return $this;
     }
 
-    public function deleteFile(string $userId, $key)
+    public function delete(string $userId)
     {
-        $this->recordThat(new FileDeleted($userId, $key));
+        $this->recordThat(new FileDeleted($userId, $this->uuid()));
         return $this;
     }
 
-    public function renameFile(string $userId, $oldFilename, $newFilename)
+    public function rename(string $userId, $data)
     {
-        $this->recordThat(new FileRenamed($userId, $oldFilename, $newFilename));
+        $this->recordThat(new FileRenamed($userId, $data));
         return $this;
     }
 }

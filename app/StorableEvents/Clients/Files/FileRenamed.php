@@ -6,11 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class FileRenamed extends ShouldBeStored
 {
-    public $user, $oldFilename, $newFilename;
-    public function __construct(string $user, string $oldFilename, string $newFilename)
+    public $user, $data;
+    public function __construct(string $user, array $data)
     {
         $this->user = $user;
-        $this->oldFilename = $oldFilename;
-        $this->newFilename = $newFilename;
+        $this->data = $data;
     }
 }

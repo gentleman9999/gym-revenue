@@ -6,12 +6,11 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class FileCreated extends ShouldBeStored
 {
-    public $user, $tmpKey, $fileId;
+    public $user, $data;
 
-    public function __construct(string $user, string $tmpKey, $fileId)
+    public function __construct(string $user, array $data)
     {
         $this->user = $user;
-        $this->tmpKey = $tmpKey;
-        $this->fileId = $fileId;
+        $this->data = $data;
     }
 }

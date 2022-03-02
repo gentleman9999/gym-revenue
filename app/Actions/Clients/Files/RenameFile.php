@@ -19,7 +19,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Console\Command;
 
 
-class CreateFile
+class RenameFile
 {
     use AsAction;
 
@@ -33,12 +33,6 @@ class CreateFile
         return [
             'id' => 'uuid|required',
             'filename' => 'max:255|required',
-            'original_filename' => 'max:255|required',
-            'extension' => 'required|string|min:3|max:4',
-            'bucket' => 'max:255|required',
-            'key' => 'max:255|required',
-//            'is_public' =>'boolean|required',
-            'size' => 'integer|min:1|required',//TODO: add max size
             'client_id' => 'exists:clients,id|required',
             'user_id' => 'sometimes|nullable|exists:users,id'
         ];
@@ -47,7 +41,7 @@ class CreateFile
     public function handle($data, $current_user = null)
     {
 
-        FileAggregate::retrieve($data['id'])->create($current_user->id ?? "Auto Generated", $data)->persist();
+        FileAggregate::retrieve($data['id'])->rename($current_user->id ?? "Auto Generated", $data)->persist();
         return File::findOrFail($data['id']);
     }
 

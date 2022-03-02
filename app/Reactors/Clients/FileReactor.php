@@ -20,13 +20,13 @@ class FileReactor extends Reactor implements ShouldQueue
 {
 
     public function onFileCreated(FileCreated $event){
-        $file = File::find($event->fileId);
+        $file = File::find($event->data['id']);
         if(!empty($file)){
-            $destKey = "{$file->client_id}/{$event->fileId}";
+            $destKey = "{$event->data['id']}/{$event->data['id']}";
             if($file->user_id){
-                $destKey = "{$file->client_id}/{$file->user_id}/{$event->fileId}";
+                $destKey = "{$file->client_id}/{$file->user_id}/{$event->data['id']}";
             }
-            Storage::disk('s3')->move($event->tmpKey, $destKey);
+            Storage::disk('s3')->move($event->data['key'], $destKey);
             $file->key = $destKey;
             $file->url = Storage::disk('s3')->url($destKey);
             $file->save();
