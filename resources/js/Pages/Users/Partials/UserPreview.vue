@@ -42,6 +42,18 @@
                 <div class="flex-grow" />
             </a>
         </template>
+        <template v-if="user.files?.length">
+            <label class="col-span-6">Files:</label>
+            <a
+                v-for="file in user.files"
+                class="col-span-6 xl:col-span-3 bg-primary bg-opacity-25 py-2 px-4 rounded-lg flex flex-row"
+                :href="file.url"
+                :download="file.filename"
+            >
+                {{ file.filename }}
+                <div class="flex-grow" />
+            </a>
+        </template>
     </div>
 </template>
 
