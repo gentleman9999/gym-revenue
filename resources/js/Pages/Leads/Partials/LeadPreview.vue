@@ -1,4 +1,5 @@
 <template>
+
     <div class="grid grid-cols-6 gap-4">
         <div class="field col-span-6 lg:col-span-3">
             <label>Name:</label>
@@ -62,15 +63,28 @@
 
         <div class="field col-span-6 lg:col-span-3">
             <label>Club/Location:</label>
-            <div class="data">
-                {{data.lead.gr_location_id}}
-            </div>
+            <div class="data"><!-- {{data.lead.gr_location_id}} --> {{ data.clublocation.name }}
+         </div>
+
+
+
         </div>
 <!--
-        <div class="field col-span-6 lg:col-span-6">
-        {{data}}
-        </div>
+{{data.lead.gr_location_id}}
+</div>  {{lead.club}}
+{{data.locations}}{{ data.club }}
+
+            {{data.locations}}
+{{data.locations.indexOf(data.lead.gr_location_id)}}
+
+  <div v-for=""
+    v-for="(clubname, idx) in lead_statuses"
+this.articles.indexOf(article)
 -->
+        <div class="field col-span-6 lg:col-span-6">
+    <!--    {{data}}    -->
+        </div>
+
     </div>
 </template>
 
@@ -85,6 +99,7 @@ input {
 
 <script>
 export default {
-    props: ["data","lead"],
+    props: ["data","lead","club"],
+
 };
 </script>
