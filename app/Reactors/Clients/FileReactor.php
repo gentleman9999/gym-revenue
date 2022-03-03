@@ -34,7 +34,7 @@ class FileReactor extends Reactor implements ShouldQueue
     }
     public function onFileDeleted(FileDeleted $event)
     {
-        Storage::disk('s3')->delete($event->key);
+        Storage::disk('s3')->delete($event->data['key']);
     }
 //@TODO: we should create thumbnails for image types somewhere
 }

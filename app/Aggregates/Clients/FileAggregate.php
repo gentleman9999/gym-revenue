@@ -36,9 +36,9 @@ class FileAggregate extends AggregateRoot
         return $this;
     }
 
-    public function delete(string $userId)
+    public function delete(string $userId, array $data)
     {
-        $this->recordThat(new FileDeleted($userId, $this->uuid()));
+        $this->recordThat(new FileDeleted($userId, $this->uuid(), $data));
         return $this;
     }
 

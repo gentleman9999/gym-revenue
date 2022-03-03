@@ -27,7 +27,7 @@ class DeleteFile
     public function handle($id, $current_user = null)
     {
         $deleted = File::withTrashed()->findOrFail($id);
-        FileAggregate::retrieve($id)->delete($current_user->id ?? "Auto Generated")->persist();
+        FileAggregate::retrieve($id)->delete($current_user->id ?? "Auto Generated", $deleted)->persist();
 
         return $deleted;
     }

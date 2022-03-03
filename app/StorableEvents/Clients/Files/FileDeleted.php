@@ -8,10 +8,12 @@ class FileDeleted extends ShouldBeStored
 {
     public $user;
     public $id;
+    public $data;
 
-    public function __construct(string $user, string $id)
+    public function __construct(string $user, string $id, $data)
     {
         $this->user = $user;
         $this->id = $id;
+        $this->data = $data;
     }
 }

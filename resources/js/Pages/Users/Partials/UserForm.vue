@@ -1,5 +1,12 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
+        <template #title>
+            User Profile
+        </template>
+
+        <template #description>
+            Information about the user.
+        </template>
         <template #form>
             <!-- First Name -->
             <div class="form-control col-span-4">
@@ -233,10 +240,41 @@
                 <textarea v-model="form['notes']" dark rows="5" cols="33" />
                 <jet-input-error :message="form.errors.notes" class="mt-2" />
             </div>
+        </template>
 
+        <template #actions>
+            <Button
+                type="button"
+                @click="$inertia.visit(route('users'))"
+                :class="{ 'opacity-25': form.processing }"
+                error
+                outline
+                :disabled="form.processing"
+            >
+                Cancel
+            </Button>
+            <div class="flex-grow" />
+            <Button
+                class="btn-secondary"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+                :loading="form.processing"
+            >
+                {{ buttonText }}
+            </Button>
+        </template>
+    </jet-form-section>
+    <jet-form-section v-if="clientId && user?.files" class="mt-16">
+        <template #title>
+            Documents
+        </template>
+
+        <template #description>
+            Documents attached to the user.
+        </template>
+        <template #form>
             <!-- Files -->
-            <div v-if="clientId && user?.files" class="col-span-6">
-                <jet-label for="notes" value="Files" />
+            <div class="col-span-6">
                 <div class="flex flex-col gap-2">
                     <template v-if="user?.files?.length">
                         <div
@@ -248,7 +286,7 @@
                                     :href="file.url"
                                     :download="file.filename"
                                     target="_blank"
-                                    >{{ file.filename }}</a
+                                >{{ file.filename }}</a
                                 >
                             </div>
                             <button
@@ -260,13 +298,8 @@
                             </button>
                         </div>
                     </template>
-                    <button
-                        class="btn btn-outline"
-                        type="button"
-                        @click="fileManagerModal.open"
-                    >
-                        Upload Files
-                    </button>
+                    <div v-else class="opacity-50"> No documents found. </div>
+
                 </div>
             </div>
             <daisy-modal
@@ -294,27 +327,14 @@
                 }}'? This is permanent, and cannot be undone.
             </confirm>
         </template>
-
         <template #actions>
-            <Button
+            <button
+                class="btn btn-secondary"
                 type="button"
-                @click="$inertia.visit(route('users'))"
-                :class="{ 'opacity-25': form.processing }"
-                error
-                outline
-                :disabled="form.processing"
+                @click="fileManagerModal.open"
             >
-                Cancel
-            </Button>
-            <div class="flex-grow" />
-            <Button
-                class="btn-secondary"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                :loading="form.processing"
-            >
-                {{ buttonText }}
-            </Button>
+                Upload Files
+            </button>
         </template>
     </jet-form-section>
 </template>
@@ -470,7 +490,7 @@ export default {
         }
 
         const handleConfirmDeleteFile = () => {
-            Inertia.delete(route("files.delete", wantsToDeleteFile.value), {
+            Inertia.delete(route("files.trash", wantsToDeleteFile.value), {
                 preserveScroll: true,
             });
             wantsToDeleteFile.value = null;
