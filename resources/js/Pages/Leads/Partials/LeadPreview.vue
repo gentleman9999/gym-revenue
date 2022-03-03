@@ -1,5 +1,4 @@
 <template>
-
     <div class="grid grid-cols-6 gap-4">
         <div class="field col-span-6 lg:col-span-3">
             <label>Name:</label>
@@ -7,7 +6,6 @@
                 {{ data.lead.first_name }}
             <span v-if="data.lead.middle_name">{{ data.lead.middle_name.value }}</span>
                 {{ data.lead.last_name}}
-
             </div>
         </div>
         <div class="field col-span-6 lg:col-span-3">
@@ -27,6 +25,9 @@
             <div class="data" v-if="data.lead.alternate_phone">
             {{data.lead.alternate_phone}}
             </div>
+            <div class="data" v-if="!data.lead.alternate_phone">
+                Not Available
+            </div>
         </div>
         <div class="field col-span-6 lg:col-span-3">
             <label>Gender:</label>
@@ -40,7 +41,6 @@
             <div class="data" v-if="data.lead.dob">
              {{ new Date(data.lead.dob.value).toLocaleDateString("en-US") }}
             </div>
-
         </div>
         <div class="field col-span-6 lg:col-span-3" >
             <label>Lead Owner Email:</label>
@@ -53,21 +53,16 @@
             </div>
         <div class="field col-span-6 lg:col-span-3">
             <label>Contact:</label>
-
             <div class="data">
                 Called: {{data.interactionCount.calledCount}} <br/>
                 Emailed: {{data.interactionCount.emailedCount}} <br/>
                 Text: {{data.interactionCount.smsCount}} <br/>
             </div>
         </div>
-
         <div class="field col-span-6 lg:col-span-3">
             <label>Club/Location:</label>
             <div class="data"><!-- {{data.lead.gr_location_id}} --> {{ data.clublocation.name }}
          </div>
-
-
-
         </div>
 <!--
 {{data.lead.gr_location_id}}
@@ -87,7 +82,6 @@ this.articles.indexOf(article)
 
     </div>
 </template>
-
 <style scoped>
 input {
     @apply input-xs;

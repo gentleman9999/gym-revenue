@@ -23,7 +23,7 @@
     <body class="font-sans antialiased">
         @inertia
 
-        <footer class="bg-base-200 p-4 text-gray-400 fixed inset-x-0 bottom-0">
+        <footer class="bg-base-200 p-2 text-gray-400 fixed inset-x-0 bottom-0">
             <div class="text-muted ml-auto mr-auto text-center">
                 <div class="inner-footer">
                     <small><b>CONCEPTUAL PROTOTYPE</b> | v.<b>{!! env('APP_VERSION') !!}</b> | Build <b>{!! env('APP_BUILD') !!}</b></small> | <b><small>© 2022 GymRevenue.</small></b>

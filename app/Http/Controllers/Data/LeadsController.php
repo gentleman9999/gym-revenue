@@ -719,7 +719,7 @@ class LeadsController extends Controller
     public function view($lead_id)
     {
         $user = request()->user();
-        if ($user->cannot('leads.update', Lead::class)) {
+        if ($user->cannot('leads.read', Lead::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
@@ -739,9 +739,9 @@ class LeadsController extends Controller
         }
 
 
-        $lead_types = LeadType::whereClientId($client_id)->get();
-        $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
+ //       $lead_types = LeadType::whereClientId($client_id)->get();
+ //       $lead_sources = LeadSource::whereClientId($client_id)->get();
+ //       $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
 
@@ -752,31 +752,22 @@ class LeadsController extends Controller
         foreach ($team_users as $team_user) {
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
-        $dat = Lead::whereId($lead_id)->with(
-                'detailsDesc'
-            )->first();
-
-
-      $locid = Location::where('gymrevenue_id',$dat->gr_location_id)->first();
+        $dat = Lead::whereId($lead_id)->with('detailsDesc')->first();
+        $locid = Location::where('gymrevenue_id',$dat->gr_location_id)->first();
 
         $data = [
             'lead' => Lead::whereId($lead_id)->with(
-                'detailsDesc',
-                'profile_picture',
-                'trialMemberships',
-                'middle_name', 'dob',
-                'opportunity',
-                'lead_owner',
-                'lead_status',
-                'last_updated'
+                'detailsDesc', 'profile_picture', 'trialMemberships',
+                'middle_name', 'dob', 'opportunity',
+                'lead_owner', 'lead_status',  'last_updated'
             )->first(),
             'user_id' => $user->id,
             'locations' => $locations,
             'clublocation' => $locid,
-            'lead_types' => $lead_types,
-            'lead_sources' => $lead_sources,
-            'lead_statuses' => $lead_statuses,
-            'trialDates' => $lead_aggy->trial_dates,
+ //           'lead_types' => $lead_types,
+ //           'lead_sources' => $lead_sources,
+ //           'lead_statuses' => $lead_statuses,
+ //           'trialDates' => $lead_aggy->trial_dates,
             'lead_owners' => $available_lead_owners,
             'interactionCount' => $lead_aggy->getInteractionCount(),
             'dat' => $dat
