@@ -14,7 +14,7 @@ class CalendarProjector extends Projector
 {
     public function onCalenderEventCreated(CalendarEventCreated $event)
     {
-        $event = CalendarEvent::create([
+        CalendarEvent::create([
             'client_id' => $event->client,
             'title' => $event->title,
             'full_day_event' => false,
@@ -28,20 +28,22 @@ class CalendarProjector extends Projector
 
     public function onCalenderEventUpdated(CalendarEventUpdated $event)
     {
-        $event = CalendarEvent::createOrUpdateRecord([
+        CalendarEvent::createOrUpdateRecord([
             'id' => $event->id,
             'client_id' => $event->client,
             'title' => $event->title,
             'full_day_event' => false,
             'start' => $event->start,
             'end' => $event->end,
+            'options' => $event->options ?? null,
+            'event_type_id' => $event->type,
         ]);
     }
 
 
     public function onCalenderEventDeleted(CalendarEventDeleted $event)
     {
-
+        CalendarEvent::withTrashed()->findOrFail($event->id)->forceDelete();
     }
 
     public function onCalenderEventTypeCreated(CalendarEventTypeCreated $event)

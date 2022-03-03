@@ -33,9 +33,10 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import { Inertia } from "@inertiajs/inertia";
 import '@fullcalendar/core/vdom' // solves problem with Vite
-import FullCalendar from '@fullcalendar/vue3'
+import FullCalendar, { CalendarOptions, EventApi, DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 export default defineComponent({
     components: {
@@ -47,19 +48,12 @@ export default defineComponent({
     props: ["sessions", "events", "title", "isClientUser", "filters"],
 
     setup(props) {
-        const selectedFile = ref(null);
-        const modal = ref(null);
 
-        watchEffect(() => {
-            if (selectedFile.value) {
-                modal.value.open();
-            }
-        });
+
         return {
-            modal,
             Inertia,
             calendarOptions: {
-                plugins: [ dayGridPlugin, timeGridPlugin],
+                plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin],
                 initialView: 'dayGridMonth',
                 events: props.events,
                 headerToolbar: {
@@ -72,8 +66,19 @@ export default defineComponent({
                 selectMirror: true,
                 dayMaxEvents: true,
                 weekends: true,
+                select: function(data) {
+                    console.log('select. '+data);
+                },
+                eventClick: function(data) {
+                    data.jsEvent.preventDefault(); // don't let the browser navigate
+                    console.log('event clicked: '+data.event.title);
+
+                    if (data.event.url) {
+                        window.open(data.event.url);
+                    }
+                },
             }
-        };
-    },
+        }
+    }
 });
 </script>

@@ -38,7 +38,9 @@ class CalendarController extends Controller
 
     public function store(Request $request)
     {
-
+        CalendarAggregate::retrieve($request->user()->currentClientId())
+            ->createCalendarEvent($request->title, $request->all_day_event, $request->start, $request->end, $request->type)
+            ->persist();
         return Redirect::route('calendar');
     }
 
@@ -49,6 +51,14 @@ class CalendarController extends Controller
         return Inertia::render('Calendar/Edit', [
             'client_id' => $client_id
         ]);
+    }
+
+    public function update(Request $request)
+    {
+        CalendarAggregate::retrieve($request->user()->currentClientId())
+            ->updateCalendarEvent($request->id, $request->title, $request->all_day_event, $request->start, $request->end, $request->type)
+            ->persist();
+        return Redirect::route('calendar');
     }
 
 

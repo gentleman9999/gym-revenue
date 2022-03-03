@@ -6,14 +6,11 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class CalendarEventDeleted extends ShouldBeStored
 {
-    public $id, $client, $title, $start, $end;
+    public $id, $client;
 
-    public function __construct($id, $client, $title, $start, $end)
+    public function __construct($client, $id)
     {
-        $this->id = $id;
         $this->client = $client;
-        $this->title = $title;
-        $this->start = $start;
-        $this->end = $end;
+        $this->id = $id;
     }
 }

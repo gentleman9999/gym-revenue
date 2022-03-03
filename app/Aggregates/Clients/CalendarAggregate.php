@@ -18,15 +18,15 @@ class CalendarAggregate extends AggregateRoot
         return $this;
     }
 
-    public function updateCalendarEvent(string $id, $title, $start, $end)
+    public function updateCalendarEvent(string $id, $title, $start, $end, $options, $type)
     {
-        $this->recordThat(new CalendarEventUpdated($this->uuid(), $id, $title, $start, $end));
+        $this->recordThat(new CalendarEventUpdated($this->uuid(), $id, $title, $start, $end, $options, $type));
         return $this;
     }
 
-    public function deleteCalendarEvent(string $id, $title, $start, $end)
+    public function deleteCalendarEvent(string $id,)
     {
-        $this->recordThat(new CalendarEventDeleted($this->uuid(), $id, $title, $start, $end));
+        $this->recordThat(new CalendarEventDeleted($this->uuid(), $id));
         return $this;
     }
 
