@@ -194,5 +194,45 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 03-02-2022',
+            'value' => '2022-03-02',
+            'misc' => [
+                'buildno' => '20220302',
+                'version' => '0.13.31',
+                'notes' => [
+                    'Mass Comm - You can now send yourself a test Text message of SMS Templates when inside of a GymRevenue team.',
+                    'Mass Comm - You can now send yourself a test Email message of Email Templates when inside of a GymRevenue team.',
+                    'User Mgnt - New Filters - ',
+                    '* -- By Role',
+                    '* -- By Team',
+                    '* -- By Home Club',
+                    'User Mgnt Create/Update - New Fields - ',
+                    '* -- Home Club',
+                    '* -- Start/End/Termination Dates',
+                    '* -- Notes',
+                    'Team Mgnt - New Filters - ',
+                    '* -- Filter via which teams have a specific user assigned',
+                    '* -- Filter via which teams have a specific club assigned',
+                    'Lead Mgnt - New Filters - ',
+                    '* -- Name',
+                    '* -- Phone #',
+                    '* -- Email',
+                    '* -- Agreement',
+                    '* -- Deleted',
+                    '* -- Sort By Newest/Oldest',
+                    '* -- By claimed Sales Rep',
+                    '* -- Lead Type',
+                    '* -- Lead Source',
+                    '* -- Club',
+                    '* -- Opportunity',
+                    '* -- By DoB',
+                    'Misc - Event Tracking Optimizations',
+                    'Misc - Switch Team Dropdown is now scrollable',
+                ]
+            ]
+        ]);
     }
 }
