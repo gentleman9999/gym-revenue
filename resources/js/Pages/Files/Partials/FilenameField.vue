@@ -17,6 +17,7 @@
             <a
                 :href="file.url"
                 :download="file.filename"
+                target="_blank"
                 class="link link-hover"
                 >{{ file.filename }}</a
             >

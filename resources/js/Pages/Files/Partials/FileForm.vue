@@ -10,7 +10,13 @@
         <template #form>
             <div class="col-span-6">
                 <jet-label for="filename" value="Current Filename" />
-                <a :href="file.url" :download="file.filename" class="link link-hover">{{file.filename}}</a>
+                <a
+                    :href="file.url"
+                    :download="file.filename"
+                    target="_blank"
+                    class="link link-hover"
+                    >{{ file.filename }}</a
+                >
                 <jet-input-error :message="form.errors.file" class="mt-2" />
             </div>
 
@@ -32,16 +38,16 @@
 
         <template #actions>
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-<!--            <Button-->
-<!--                type="button"-->
-<!--                @click="$inertia.visit(route('files'))"-->
-<!--                :class="{ 'opacity-25': form.processing }"-->
-<!--                error-->
-<!--                outline-->
-<!--                :disabled="form.processing"-->
-<!--            >-->
-<!--                Cancel-->
-<!--            </Button>-->
+            <!--            <Button-->
+            <!--                type="button"-->
+            <!--                @click="$inertia.visit(route('files'))"-->
+            <!--                :class="{ 'opacity-25': form.processing }"-->
+            <!--                error-->
+            <!--                outline-->
+            <!--                :disabled="form.processing"-->
+            <!--            >-->
+            <!--                Cancel-->
+            <!--            </Button>-->
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
@@ -75,8 +81,8 @@ export default {
         JetLabel,
     },
     props: ["clientId", "file"],
-    emits: ['success'],
-    setup(props, {emit}) {
+    emits: ["success"],
+    setup(props, { emit }) {
         let urlPrev = usePage().props.value.urlPrev;
         let file = props.file;
 
@@ -84,7 +90,7 @@ export default {
 
         let handleSubmit = async () => {
             await form.put(route("files.update", file.id));
-            emit('success');
+            emit("success");
         };
 
         return { form, buttonText: "Update", handleSubmit, urlPrev };

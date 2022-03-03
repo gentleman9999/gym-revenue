@@ -49,6 +49,7 @@
                 class="col-span-6 xl:col-span-3 bg-primary bg-opacity-25 py-2 px-4 rounded-lg flex flex-row"
                 :href="file.url"
                 :download="file.filename"
+                target="_blank"
             >
                 {{ file.filename }}
                 <div class="flex-grow" />

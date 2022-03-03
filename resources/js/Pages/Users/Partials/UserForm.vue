@@ -244,9 +244,12 @@
                             class="rounded-lg bg-base-100 p-2 flex items-center"
                         >
                             <div class="flex-grow">
-                                <a :href="file.url" :download="file.filename">{{
-                                    file.filename
-                                }}</a>
+                                <a
+                                    :href="file.url"
+                                    :download="file.filename"
+                                    target="_blank"
+                                    >{{ file.filename }}</a
+                                >
                             </div>
                             <button
                                 type="button"
