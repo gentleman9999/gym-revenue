@@ -20,6 +20,7 @@ class CalendarProjector extends Projector
             'full_day_event' => false,
             'start' => $event->start,
             'end' => $event->end,
+            'options' => $event->options ?? null,
             'event_type_id' => $event->type,
         ]);
     }

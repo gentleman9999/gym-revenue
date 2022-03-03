@@ -16,7 +16,9 @@ class CalendarController extends Controller
     {
         $client_id = request()->user()->currentClientId();
 
-        $eventsForTeam = CalendarEvent::whereClient_id($client_id)->get();
+        $eventsForTeam = CalendarEvent::whereClient_id($client_id)
+            ->with('type')
+            ->get();
 
         return Inertia::render('Calendar/Show', [
             'events' => $eventsForTeam,

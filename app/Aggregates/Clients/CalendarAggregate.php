@@ -12,9 +12,9 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 class CalendarAggregate extends AggregateRoot
 {
 
-    public function createCalendarEvent(string $title, $start, $end, $type)
+    public function createCalendarEvent(string $title, $start, $end, $options, $type)
     {
-        $this->recordThat(new CalendarEventCreated($this->uuid(), $title, $start, $end, $type));
+        $this->recordThat(new CalendarEventCreated($this->uuid(), $title, $start, $end, $options, $type));
         return $this;
     }
 

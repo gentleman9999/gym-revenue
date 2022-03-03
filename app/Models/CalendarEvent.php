@@ -32,6 +32,11 @@ class CalendarEvent extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function type()
+    {
+        return $this->hasOne('App\Models\CalendarEventType', 'id', 'event_type_id');
+    }
+
     /** Event Scoping with filters */
     public function scopeFilter($query, array $filters)
     {

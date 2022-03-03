@@ -25,6 +25,7 @@ class CalendarSeeder extends Seeder
         $datestart = strtotime('2022-03-01');
         $dateend = strtotime('2022-03-31');
         $daystep = 86400;
+        $test = ['color' => 'yellow', 'textColor' => 'black'];
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -42,7 +43,7 @@ class CalendarSeeder extends Seeder
                         $aggy = CalendarAggregate::retrieve($client->id)
                             ->createCalendarEvent( 'Test #'.$i.' for '.$client->name,
                                 date("Y-m-d", $datestart + ($randomday * $daystep)). ' '.$hour1.':00:00',
-                                date("Y-m-d", $datestart + ($randomday * $daystep)) .' '.$hour2.':00:00', $eventType->id)->persist();
+                                date("Y-m-d", $datestart + ($randomday * $daystep)) .' '.$hour2.':00:00', json_encode($test), $eventType->id)->persist();
                     }
                 }
             }
