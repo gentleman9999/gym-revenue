@@ -24,7 +24,7 @@ class CalendarAggregate extends AggregateRoot
         return $this;
     }
 
-    public function deleteCalendarEvent(string $id,)
+    public function deleteCalendarEvent(string $id)
     {
         $this->recordThat(new CalendarEventDeleted($this->uuid(), $id));
         return $this;

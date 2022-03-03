@@ -26,7 +26,6 @@ class CalendarController extends Controller
         ]);
     }
 
-
     public function create(Request $request)
     {
         $client_id = request()->user()->currentClientId();
@@ -34,14 +33,6 @@ class CalendarController extends Controller
         return Inertia::render('Calendar/Create', [
             'client_id' => $client_id
         ]);
-    }
-
-    public function store(Request $request)
-    {
-        CalendarAggregate::retrieve($request->user()->currentClientId())
-            ->createCalendarEvent($request->title, $request->all_day_event, $request->start, $request->end, $request->type)
-            ->persist();
-        return Redirect::route('calendar');
     }
 
     public function edit(Request $request)
@@ -53,31 +44,5 @@ class CalendarController extends Controller
         ]);
     }
 
-    public function update(Request $request)
-    {
-        CalendarAggregate::retrieve($request->user()->currentClientId())
-            ->updateCalendarEvent($request->id, $request->title, $request->all_day_event, $request->start, $request->end, $request->type)
-            ->persist();
-        return Redirect::route('calendar');
-    }
-
-
-    public function trash(Request $request, $id)
-    {
-
-        return Redirect::route('calendar');
-    }
-
-    public function delete(Request $request, $id)
-    {
-
-        return Redirect::route('calendar');
-    }
-
-    public function restore(Request $request, $id)
-    {
-
-        return Redirect::back();
-    }
 
 }
