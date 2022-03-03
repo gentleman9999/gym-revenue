@@ -123,7 +123,7 @@ class User extends Authenticatable
      */
     public function isAccountOwner()
     {
-        $current_team_id = $this->currentTeam()->first()->id;
+        $current_team_id = $this->currentTeam()->first()->id ?? null;
         $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
         return $current_team ?  $current_team->pivot->role === 'Account Owner' : false;
     }
