@@ -123,7 +123,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
-
+    Route::get('/create', \App\Http\Controllers\CalendarController::class . '@create')->name('calendar.create');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {

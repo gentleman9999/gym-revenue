@@ -3,7 +3,17 @@
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Calendar</h2>
         </template>
+
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+
+            <div class="flex flex-row col-span-3  lg:col-span-2 gap-2">
+                <button class="btn btn-sm text-xs"
+                        @click="$inertia.visit(route('calendar.create'))"
+                >
+                    New Event
+                </button>
+            </div>
+
             <FullCalendar :options="calendarOptions" />
         </div>
 

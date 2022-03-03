@@ -10,6 +10,7 @@ use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
+use Database\Seeders\Data\CalendarEventTypeSeeder;
 use Database\Seeders\Data\CalendarSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
@@ -138,6 +139,10 @@ class DatabaseSeeder extends Seeder
         // SMS Campaigns are Seeded for each client
         VarDumper::dump('Running SMS Campaign  Seeder');
         $this->call(SMSCampaignsSeeder::class);
+
+        // CalendarEventType Seeder
+        VarDumper::dump('Running Calender Event Type Seeder');
+        $this->call(CalendarEventTypeSeeder::class);
 
         // CalendarEvent Seeder
         VarDumper::dump('Running Calender Event Seeder');

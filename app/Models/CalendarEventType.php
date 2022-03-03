@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
  *
  * @mixin Builder
  */
-class CalendarEvent extends Model
+class CalendarEventType extends Model
 {
     use Notifiable, SoftDeletes, Uuid, HasFactory;
 
@@ -25,7 +25,7 @@ class CalendarEvent extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'title', 'full_day_event', 'start', 'end'];
+    protected $fillable = ['id', 'client_id', 'name', 'description'];
 
     public function client()
     {

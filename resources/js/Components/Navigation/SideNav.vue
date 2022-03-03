@@ -83,6 +83,27 @@
             </div>
             <!-- End Not Ready Yet -->
 
+            <!-- Calendar -->
+            <div
+                :class="
+                    route().current('calendar')
+                        ? 'bg-primary'
+                        : 'bg-transparent'
+                "
+                class="nav-link-container"
+                v-if="$page.props.user.current_client_id !== null"
+            >
+                <jet-nav-link class="jet-nav-link" :href="route('calendar')">
+                    <p>
+                        <font-awesome-icon
+                            :icon="['fad', 'calendar-alt']"
+                            size="lg"
+                        />
+                        Calendar
+                    </p>
+                </jet-nav-link>
+            </div>
+
             <!-- Clubs -->
             <div
                 :class="
