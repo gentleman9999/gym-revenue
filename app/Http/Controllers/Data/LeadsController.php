@@ -737,9 +737,6 @@ class LeadsController extends Controller
         foreach ($locations_records as $location) {
             $locations[$location->gymrevenue_id] = $location->name;
         }
- //       $lead_types = LeadType::whereClientId($client_id)->get();
- //       $lead_sources = LeadSource::whereClientId($client_id)->get();
- //       $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
