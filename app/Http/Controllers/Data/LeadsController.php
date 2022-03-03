@@ -727,27 +727,10 @@ class LeadsController extends Controller
             Alert::error("Access Denied or Lead does not exist")->flash();
             return Redirect::route('data.leads');
         }
-
         $user = request()->user();
-        $client_id = $user->currentClientId();
-        $is_client_user = $user->isClientUser();
-        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-
-        $locations = [];
-        foreach ($locations_records as $location) {
-            $locations[$location->gymrevenue_id] = $location->name;
-        }
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
-
-        $available_lead_owners = [];
-        foreach ($team_users as $team_user) {
-            $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
-        }
-        $dat = Lead::whereId($lead_id)->with('detailsDesc')->first();
-        $locid = Location::where('gymrevenue_id',$dat->gr_location_id)->first();
-
+        $data = Lead::whereId($lead_id)->with('detailsDesc')->first();
+        $locid = Location::where('gymrevenue_id',$data->gr_location_id)->first();
         $data = [
             'lead' => Lead::whereId($lead_id)->with(
                 'detailsDesc', 'profile_picture', 'trialMemberships',
@@ -755,11 +738,8 @@ class LeadsController extends Controller
                 'lead_owner', 'lead_status',  'last_updated'
             )->first(),
             'user_id' => $user->id,
-            'locations' => $locations,
-            'clublocation' => $locid,
-            'lead_owners' => $available_lead_owners,
+            'club_location' => $locid,
             'interactionCount' => $lead_aggy->getInteractionCount(),
-            'dat' => $dat
         ];
         return $data;
     }

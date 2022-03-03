@@ -4,7 +4,6 @@
             <label>Name:</label>
             <div class="data">
                 {{ data.lead.first_name }}
-            <span v-if="data.lead.middle_name">{{ data.lead.middle_name.value }}</span>
                 {{ data.lead.last_name}}
             </div>
         </div>
@@ -34,7 +33,6 @@
             <div class="data" v-if="data.lead.gender">
                 {{ data.lead.gender }}
             </div>
-
         </div>
         <div class="field col-span-6 lg:col-span-3" v-if="data.lead.dob.value">
             <label>Birthdate:</label>
@@ -61,25 +59,11 @@
         </div>
         <div class="field col-span-6 lg:col-span-3">
             <label>Club/Location:</label>
-            <div class="data"><!-- {{data.lead.gr_location_id}} --> {{ data.clublocation.name }}
+            <div class="data">{{ data.club_location.name }}
          </div>
         </div>
-<!--
-{{data.lead.gr_location_id}}
-</div>  {{lead.club}}
-{{data.locations}}{{ data.club }}
-
-            {{data.locations}}
-{{data.locations.indexOf(data.lead.gr_location_id)}}
-
-  <div v-for=""
-    v-for="(clubname, idx) in lead_statuses"
-this.articles.indexOf(article)
--->
         <div class="field col-span-6 lg:col-span-6">
-    <!--    {{data}}    -->
         </div>
-
     </div>
 </template>
 <style scoped>
