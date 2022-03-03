@@ -33,46 +33,34 @@ class TeamController extends Controller
     {
         $current_user = $request->user();
         $client_id = $current_user->currentClientId();
-        if ($client_id) {
+        $current_team = request()->user()->currentTeam()->first();
+     //   $users = $current_team->team_users()->get();
+        $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
+            return $query->whereName('associated_client')->whereValue($client_id);
+        })->get();
+
+        if ($client_id)
+        {
             $client = Client::with('teams')->find($client_id);
             $team_ids = $client->teams()->pluck('value');
-            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team'))
-                ->paginate(10);
-            return Inertia::render('Teams/List', [
-                'teams' => Team::filter($request->only('search', 'club', 'team'))
-                    ->paginate(10),
-                'filters' => $request->all('search', 'club', 'team'),
-                'clubs' => Location::whereClientId($client_id)->get(),
-                'teams' => $teams,
-                'preview' => $request->preview ?? null
-            ]);
-        } else if ($current_user->isCapeAndBayUser()) {
-            $current_team = $current_user->currentTeam()->first();
-            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team'))
-                ->paginate(10);
-            return Inertia::render('Teams/List', [
-                'teams' => Team::filter($request->only('search', 'club', 'team'))
-                    ->paginate(10),
-                'filters' => $request->all('search', 'club', 'team'),
-                'clubs' => [],
-                'teams' => $teams,
-                'preview' => $request->preview ?? null
-            ]);
+            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->paginate(10);
+            $clubs  = Location::whereClientId($client_id)->get();
+        }
+        else if ($current_user->isCapeAndBayUser())
+        {
+            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->paginate(10);
+            $clubs = [];
         }
 
 
-        //$teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team'))
-        //    ->paginate(10);
-
         return Inertia::render('Teams/List', [
-//            'teams' => Team::filter($request->only('search', 'club', 'team'))
-//                ->paginate(10),
-            'teams' => Team::filter($request->only('search', 'club', 'team'))
+            'teams' => Team::filter($request->only('search', 'club', 'team', 'users'))
                 ->paginate(10),
-            'filters' => $request->all('search', 'club', 'team'),
-            'clubs' => Location::whereClientId($client_id)->get(),
-            'users' => User::whereClientId($client_id),
-            'teams' => $teams
+            'filters' => $request->all('search', 'club', 'team', 'users'),
+            'clubs' => $clubs ?? null,
+            'teams' => $teams ?? null,
+            'preview' => $request->preview ?? null,
+            'potentialUsers' => $users,
         ]);
     }
 

@@ -123,7 +123,7 @@ class User extends Authenticatable
      */
     public function isAccountOwner()
     {
-        $current_team_id = $this->currentTeam()->first()->id;
+        $current_team_id = $this->currentTeam()->first()->id ?? null;
         $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
         return $current_team ?  $current_team->pivot->role === 'Account Owner' : false;
     }
@@ -206,7 +206,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
     }
-
+    public function potentialRoles()
+    {
+        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
+    }
     public function default_team()
     {
         return $this->detail()->where('name', '=', 'default_team');
@@ -227,8 +230,15 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'security_role');
     }
 
+    public function is_manager()
+    {
+        return $this->detail()->where('name', '=', 'is_manager');
+    }
+
+
     public function scopeFilter($query, array $filters)
     {
+        $stop = 0;
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
@@ -243,6 +253,12 @@ class User extends Authenticatable
             $query->whereHas('teams', function ($query) use ($team_id) {
                 return $query->whereTeamId($team_id);
             });
-        });
+        })->when($filters['roles'] ?? null, function ($query, $role) {
+             $query->whereHas('potentialRoles', function ($query) use ($role) {
+                $query->where('role', '=', $role );
+
+            });
+        })
+        ;
     }
 }

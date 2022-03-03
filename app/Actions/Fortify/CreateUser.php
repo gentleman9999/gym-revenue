@@ -68,15 +68,14 @@ class CreateUser implements CreatesNewUsers
             'end_date' => ['sometimes'] ,
             'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
-
             'team_id' => ['required', 'integer', 'exists:teams,id'],
             'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
 //        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
 //            'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
-            'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
-
+            'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
+            'is_manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager']
         ];
     }
 
@@ -99,7 +98,7 @@ class CreateUser implements CreatesNewUsers
         $user_aggy = UserAggregate::retrieve($id)
             ->createUser($current_user->id ?? "Auto Generated", $data);
 
-        $user_teams = $data['team_ids'] ?? [$data['team_id']] ?? [];
+        $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
         foreach ($user_teams as $i => $team_id) {
             // Since the user needs to have their team added in a single transaction in createUser
             // A projector won't get executed (for now) but an apply function will run on the next retrieval
@@ -113,7 +112,7 @@ class CreateUser implements CreatesNewUsers
         if ($client_id) {
             ClientAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
         }
-        //we should use App/Helpers/Uuid to generate an id, but we can use email for now since its unique
+
         $created_user = User::findOrFail($id);
 
         $should_send_welcome_email = $data['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
@@ -153,8 +152,6 @@ class CreateUser implements CreatesNewUsers
         $role = $this->getRole($first_name, $client);
         $home_club = $this->getHomeClub($first_name, $client);
 
-
-
         $team_id = 1;//capeandbay team
         if ($client) {
             // Get the client's default-team name in client_details
@@ -175,8 +172,7 @@ class CreateUser implements CreatesNewUsers
                 'last_name' => $last_name,
                 'password' => 'Hello123!',
                 'team_id' => $team_id,
-                'home_club' => $home_club,
-
+                'home_club' => $home_club
             ]
         );
     }

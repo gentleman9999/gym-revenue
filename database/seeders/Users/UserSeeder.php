@@ -27,7 +27,7 @@ abstract class UserSeeder extends Seeder
             }
             else
             {
-                VarDumper::dump("Skipping {$user['name']}!");
+                VarDumper::dump("Skipping {$user['first_name']} {$user['last_name']}!");
             }
 
         }

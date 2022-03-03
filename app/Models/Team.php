@@ -118,6 +118,10 @@ class Team extends JetstreamTeam
             return $query->whereHas('detail', function ($query) use ($club_id) {
                 return $query->whereName('team-location')->whereValue($club_id);
             });
+        })->when($filters['users'] ?? null, function ($query, $user) {
+            return $query->whereHas('team_users', function ($query) use ($user) {
+                $query->whereIn('user_id',  $user);
+            });
         });
     }
 

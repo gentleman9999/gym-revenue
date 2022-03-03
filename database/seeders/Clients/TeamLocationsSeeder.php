@@ -64,6 +64,11 @@ class TeamLocationsSeeder extends Seeder
             // The Z
             // TruFit
             // Stencils
+            [
+                'team_id' => Team::fetchTeamIDFromName( 'Stencils Portland'),
+                'name' => 'team-location',
+                'value' => Location::whereLocationNo('ST01')->first()->gymrevenue_id,
+            ],
             // SciFi Purple Gyms
             // iFit
             [
