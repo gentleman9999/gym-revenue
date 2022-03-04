@@ -16,7 +16,10 @@
                               :interaction-count="interactionCount"
             />
         </jet-bar-container>
+
     </app-layout>
+
+
 </template>
 
 <script>
