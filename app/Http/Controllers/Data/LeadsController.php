@@ -399,16 +399,8 @@ class LeadsController extends Controller
         $middle_name ='test';
         $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
         foreach($middle_names as $middle_name){
-            //     dd($middle_name);
         }
 
-        /*
-if(!$middle_name){
-    $middle_name ='';
-}else{
-    $middle_name = $middle_name;
-}
-*/
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
             'middle_name' => $middle_name,
@@ -722,5 +714,33 @@ if(!$middle_name){
         Alert::success("Lead Statuses updated")->flash();
 //        return Redirect::route('data.leads');
         return Redirect::back();
+    }
+
+    public function view($lead_id)
+    {
+        $user = request()->user();
+        if ($user->cannot('leads.read', Lead::class)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+        if (!$lead_id) {
+            Alert::error("Access Denied or Lead does not exist")->flash();
+            return Redirect::route('data.leads');
+        }
+        $user = request()->user();
+        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
+        $data = Lead::whereId($lead_id)->with('detailsDesc')->first();
+        $locid = Location::where('gymrevenue_id',$data->gr_location_id)->first();
+        $data = [
+            'lead' => Lead::whereId($lead_id)->with(
+                'detailsDesc', 'profile_picture', 'trialMemberships',
+                'middle_name', 'dob', 'opportunity',
+                'lead_owner', 'lead_status',  'last_updated'
+            )->first(),
+            'user_id' => $user->id,
+            'club_location' => $locid,
+            'interactionCount' => $lead_aggy->getInteractionCount(),
+        ];
+        return $data;
     }
 }
