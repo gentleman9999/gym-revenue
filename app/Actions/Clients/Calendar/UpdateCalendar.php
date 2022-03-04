@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Locations;
+namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
@@ -10,7 +10,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UpdateLocation
+class UpdateCalendar
 {
     use AsAction;
 
