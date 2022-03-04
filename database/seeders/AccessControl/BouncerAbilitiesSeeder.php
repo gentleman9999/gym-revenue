@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\AccessControl;
 
+use App\Models\CalendarEvent;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
@@ -25,7 +26,7 @@ class BouncerAbilitiesSeeder extends Seeder
     public function run()
     {
         $this->teams = Team::all();
-        $crud_models = collect(['users', 'locations', 'leads', 'files', 'teams', 'todo-list']);
+        $crud_models = collect(['users', 'locations', 'leads', 'files', 'teams', 'todo-list', 'calendar']);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
         // Create the Full Unrestricted Abilities
@@ -51,26 +52,26 @@ class BouncerAbilitiesSeeder extends Seeder
         //$this->allowEditInGroup(['users', 'locations', 'files', 'teams'], 'Admin');
 
         /** Account Owner */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams'], 'Account Owner');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams'], 'Account Owner');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Account Owner');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Account Owner');
         $this->allowImpersonationInGroup(['users'], 'Account Owner');
 
         /** Regional Admin */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams'], 'Regional Admin');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams'], 'Regional Admin');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Regional Admin');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Regional Admin');
         $this->allowImpersonationInGroup(['users'], 'Regional Admin');
 
         /** Location Manager */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list'], 'Location Manager');
-        $this->allowEditInGroup(['users', 'leads', 'teams', 'todo-list'], 'Location Manager');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager');
+        $this->allowEditInGroup(['users', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager');
         $this->allowImpersonationInGroup(['users'], 'Location Manager');
 
         /** Sales Rep */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list'], 'Sales Rep');
-        $this->allowEditInGroup(['leads', 'todo-list'], 'Regional Admin');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Sales Rep');
+        $this->allowEditInGroup(['leads', 'todo-list', 'calendar'], 'Regional Admin');
 
         /** Employee */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list'], 'Employee');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Employee');
         $this->allowEditInGroup(['leads', 'todo-list'], 'Employee');
 
 
@@ -146,6 +147,10 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'todo-list':
                     $entity = null;
                     break;
+                case 'calendar':
+                    $entity = CalendarEvent::class;
+                    break;
+
             }
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if($entity)
@@ -197,6 +202,9 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'files':
                 case 'todo-list':
                     $entity = null;
+                    break;
+                case 'calendar':
+                    $entity = CalendarEvent::class;
                     break;
             }
             // Allow the role to inherit the not Ability in full, but scoped to the team

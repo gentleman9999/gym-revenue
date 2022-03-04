@@ -174,7 +174,7 @@ export default defineComponent({
                 active: false
             },
             {
-                label: 'Calendar',
+                label: 'CalendarEvent',
                 href: '#',
                 onClick: comingSoon,
                 active: false
