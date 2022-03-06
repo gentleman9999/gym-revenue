@@ -4,13 +4,10 @@ namespace App\StorableEvents\Clients\Calendar;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class CalendarEventDeleted extends ShouldBeStored
+class CalendarEventTrashed extends ShouldBeStored
 {
-    public $user;
-    public $id;
-    public $client;
-
-    public function __construct(string $client, string $user, string $id)
+    public $user, $id, $client;
+    public function __construct(string $client, string $user, $id)
     {
         $this->client = $client;
         $this->user = $user;

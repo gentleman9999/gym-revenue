@@ -124,7 +124,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
-    Route::get('/create', \App\Http\Controllers\CalendarController::class . '@create')->name('calendar.create');
+    Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
+    Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {

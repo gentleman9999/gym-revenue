@@ -21,28 +21,10 @@ class CalendarController extends Controller
             ->get();
 
         return Inertia::render('Calendar/Show', [
-            'events' => $eventsForTeam,
+            'calendar_events' => $eventsForTeam,
+            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'client_id' => $client_id
         ]);
     }
-
-    public function create(Request $request)
-    {
-        $client_id = request()->user()->currentClientId();
-
-        return Inertia::render('Calendar/Create', [
-            'client_id' => $client_id
-        ]);
-    }
-
-    public function edit(Request $request)
-    {
-        $client_id = request()->user()->currentClientId();
-
-        return Inertia::render('Calendar/Edit', [
-            'client_id' => $client_id
-        ]);
-    }
-
 
 }

@@ -109,6 +109,9 @@
                     </label>
                 </div>
                 <date-picker v-model="form.schedule_date" dark :disabled="!canEditActiveInputs" v-if="!scheduleNow"
+                             :month-change-on-scroll="false"
+                             :auto-apply="true"
+                             :close-on-scroll="true"
                              :min-date=" new Date((new Date()).valueOf() - 1000*60*60*24)"/>
                 <!--                <select v-model="form.schedule_date" class="py-2">-->
                 <!--                    <option value="">Available Triggers</option>-->

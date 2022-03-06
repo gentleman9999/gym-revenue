@@ -4,7 +4,6 @@ namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
-use App\Models\Clients\Location;
 use Bouncer;
 use App\Actions\Fortify\PasswordValidationRules;
 use Illuminate\Http\Request;
@@ -13,7 +12,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class TrashCalendar
+class TrashCalendarEvent
 {
     use PasswordValidationRules, AsAction;
 
@@ -29,9 +28,9 @@ class TrashCalendar
         ];
     }
 
-    public function handle($data)
+    public function handle($data, $user=null)
     {
-        CalendarAggregate::retrieve($data['client_id'])->deleteCalendarEvent($data['id'])->persist();
+        CalendarAggregate::retrieve($data['client_id'])->deleteCalendarEvent($user->id ?? "Auto Generated", $data['id'])->persist();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -42,13 +41,13 @@ class TrashCalendar
 
     public function asController(Request $request, $id)
     {
-        $calendar = Location::findOrFail($id);
+        $calendar = CalendarEvent::findOrFail($id);
 
         $this->handle(
             $calendar->toArray()
         );
 
-        Alert::success("Calendar Event '{$calendar->name}' sent to trash")->flash();
+        Alert::success("Calendar Event '{$calendar->title}' sent to trash")->flash();
 
         return Redirect::back();
     }

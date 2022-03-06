@@ -4,13 +4,12 @@ namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
-use App\Models\Clients\Location;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UpdateCalendar
+class UpdateCalendarEvent
 {
     use AsAction;
 
@@ -22,21 +21,23 @@ class UpdateCalendar
     public function rules()
     {
         return [
-            'title' =>['required'],
-            'full_day_event' => ['required'],
+            'title' =>['required', 'string','max:50'],
+            'description' => ['required', 'nullable'],
+            'full_day_event' => ['required', 'boolean'],
             'start' => ['required'],
             'end' => ['required'],
-            'type' => ['required'],
+            'event_type_id' => ['required', 'exists:calendar_event_types,id'],
+            'client_id' => ['required', 'exists:clients,id']
         ];
     }
 
-    public function handle($data)
+    public function handle($data, $user=null)
     {
         CalendarAggregate::retrieve($data['client_id'])
-            ->updateCalendarEvent($data['id'], $data['title'], $data['full_day_event'], $data['start'], $data['end'], $data['type'])
+            ->updateCalendarEvent($user->id ?? "Auto Generated" , $data)
             ->persist();
 
-        return Location::find($data['id']);
+        return CalendarEvent::find($data['id']);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -53,7 +54,7 @@ class UpdateCalendar
             $data
         );
 
-        Alert::success("Calendar Event '{$calendar->name}' was updated")->flash();
+        Alert::success("Calendar Event '{$calendar->title}' was updated")->flash();
 
         return Redirect::back();
     }

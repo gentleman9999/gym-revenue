@@ -5,80 +5,116 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-
-            <div class="flex flex-row col-span-3  lg:col-span-2 gap-2">
-                <button class="btn btn-sm text-xs"
-                        @click="$inertia.visit(route('calendar.create'))"
-                >
+            <div class="flex flex-row col-span-3 lg:col-span-2 gap-2">
+                <button class="btn btn-sm text-xs" @click="handleClickNewEvent">
                     New Event
                 </button>
             </div>
 
-            <FullCalendar :options="calendarOptions" />
+            <FullCalendar :options="calendarOptions" ref="calendar" />
+            <daisy-modal ref="eventModal" id="eventModal">
+                <h1 class="font-bold mb-4">
+                    Create Event
+                </h1>
+                <calendar-event-form />
+            </daisy-modal>
+            <daisy-modal ref="editEventModal" id="editEventModal" >
+                <h1 class="font-bold mb-4">
+                    Edit Event
+                </h1>
+                <calendar-event-form v-if="selectedCalendarEvent" :calendar_event="selectedCalendarEvent" :key="selectedCalendarEvent"/>
+            </daisy-modal>
         </div>
-
     </app-layout>
 </template>
 
-<style scoped>
-td > div {
-    @apply h-16;
-}
-</style>
-
 <script>
-import { defineComponent, watchEffect, ref } from "vue";
+import { defineComponent, watch, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import { Inertia } from "@inertiajs/inertia";
-import '@fullcalendar/core/vdom' // solves problem with Vite
-import FullCalendar, { CalendarOptions, EventApi, DateSelectArg, EventClickArg } from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import "@fullcalendar/core/vdom"; // solves problem with Vite
+import FullCalendar, {
+    CalendarOptions,
+    EventApi,
+    DateSelectArg,
+    EventClickArg,
+} from "@fullcalendar/vue3";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import DaisyModal from "@/Components/DaisyModal";
+import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 
 export default defineComponent({
     components: {
+        CalendarEventForm,
+        DaisyModal,
         AppLayout,
         GymRevenueCrud,
         SweetModal,
         FullCalendar,
     },
-    props: ["sessions", "events", "title", "isClientUser", "filters"],
+    props: ["sessions", "calendar_events", "title", "isClientUser", "filters"],
 
     setup(props) {
-
-
+        const calendar = ref(null);
+        const createEventModal = ref();
+        const editEventModal = ref();
+        const selectedCalendarEvent = ref(null);
+        const handleClickNewEvent = () => {
+            selectedCalendarEvent.value = null;
+            createEventModal.value.open();
+        };
+        const clearSelectedEvent = () => (selectedCalendarEvent.value = null);
+        watch(props.calendar_events,()=>{
+            const fullCalendarApi = calendar.value?.getApi();
+            if(fullCalendarApi){
+                fullCalendarApi.refetchEvents();
+            }
+        })
         return {
             Inertia,
             calendarOptions: {
-                plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin],
-                initialView: 'dayGridMonth',
-                events: props.events,
+                plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+                initialView: "dayGridMonth",
+                events: props.calendar_events,
                 headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek,timeGridDay",
                 },
                 editable: true,
                 selectable: true,
                 selectMirror: true,
                 dayMaxEvents: true,
                 weekends: true,
-                select: function(data) {
-                    console.log('select. '+data);
+                select: function (data) {
+                    console.log("select. " + data);
                 },
-                eventClick: function(data) {
+                eventClick: function (data) {
                     data.jsEvent.preventDefault(); // don't let the browser navigate
-                    console.log('event clicked: '+data.event.title);
-
-                    if (data.event.url) {
-                        window.open(data.event.url);
+                    const id = data.event.id;
+                    if (!id) {
+                        return;
                     }
+                    // const response = await axios.get(route('calendar.event.show', id));
+                    // console.log("event clicked: ", response.data);
+                    selectedCalendarEvent.value = props.calendar_events.find(
+                        (event) => event.id === id
+                    );
+                    editEventModal.value.open();
+                    console.log("event clicked: ", selectedCalendarEvent.value);
                 },
-            }
-        }
-    }
+            },
+            eventModal: createEventModal,
+            editEventModal,
+            handleClickNewEvent,
+            selectedCalendarEvent,
+            clearSelectedEvent,
+            calendar
+        };
+    },
 });
 </script>

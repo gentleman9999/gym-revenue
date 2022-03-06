@@ -2,7 +2,7 @@
     <teleport to="body">
         <div class="modal" :class="{ 'modal-open': isOpen }">
             <div v-if="closable" class="absolute inset-0" @click="close"></div>
-            <div class="modal-box" v-bind="$attrs">
+            <div class="modal-box bg-base-200" v-bind="$attrs">
                 <button
                     type="button"
                     class="btn btn-ghost absolute top-2 right-2"

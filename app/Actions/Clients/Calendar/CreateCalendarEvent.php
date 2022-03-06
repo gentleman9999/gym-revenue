@@ -3,15 +3,15 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
+use App\Helpers\Uuid;
 use App\Models\CalendarEvent;
-use App\Models\Clients\Location;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-class CreateCalendar
+class CreateCalendarEvent
 {
     use AsAction;
 
@@ -23,23 +23,26 @@ class CreateCalendar
     public function rules()
     {
         return [
-            'title' =>['required'],
-            'full_day_event' => ['required'],
+            'title' =>['required', 'string','max:50'],
+            'description' => ['required', 'nullable'],
+            'full_day_event' => ['required', 'boolean'],
             'start' => ['required'],
             'end' => ['required'],
-            'type' => ['required'],
+            'event_type_id' => ['required', 'exists:calendar_event_types,id'],
+            'client_id' => ['required', 'exists:clients,id']
         ];
     }
 
-    public function handle($data)
+    public function handle($data, $user = null)
     {
         $id = Uuid::new();
-        $data['id'] = $id;  // TO-DO Add ID into create
+        $data['id'] = $id;
+//        dd($data);
         CalendarAggregate::retrieve($data['client_id'])
-            ->createCalendarEvent($data['title'], $data['full_day_event'], $data['start'], $data['end'], $data['type'])
+            ->createCalendarEvent($user->id ?? "Auto Generated", $data)
             ->persist();
 
-        return Location::findOrFail($id);
+        return CalendarEvent::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -52,12 +55,14 @@ class CreateCalendar
     {
 
         $calendar = $this->handle(
-            $request->validated()
+            $request->validated(),
+            $request->user()
         );
 
-        Alert::success("Calendar Event '{$calendar->name}' was created")->flash();
+        Alert::success("Calendar Event '{$calendar->title}' was created")->flash();
 
-        return Redirect::route('locations');
+//        return Redirect::route('calendar');
+        return Redirect::back();
     }
 
 }

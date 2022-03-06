@@ -26,7 +26,7 @@ class CalendarEventTypeSeeder extends Seeder
             if (count($clients) > 0) {
                 foreach ($clients as $client)
                 {
-                    VarDumper::dump('Creating Events for '.$client->name);
+                    VarDumper::dump('Creating Calendar Event Types for '.$client->name);
                     foreach ($types as $type)
                     {
                         $aggy = CalendarAggregate::retrieve($client->id)

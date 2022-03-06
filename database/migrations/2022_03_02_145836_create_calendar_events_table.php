@@ -17,6 +17,7 @@ class CreateCalendarEventsTable extends Migration
             $table->uuid('id')->unique()->primary();
             $table->foreignUuid('client_id');
             $table->string('title');
+            $table->longText('description')->nullable();
             $table->boolean('full_day_event');
             $table->dateTime('start');
             $table->dateTime('end')->nullable();

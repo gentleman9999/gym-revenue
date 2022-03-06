@@ -12,21 +12,33 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 class CalendarAggregate extends AggregateRoot
 {
 
-    public function createCalendarEvent(string $title, $start, $end, $options, $type)
+    public function createCalendarEvent(string $created_by_user_id, array $payload)
     {
-        $this->recordThat(new CalendarEventCreated($this->uuid(), $title, $start, $end, $options, $type));
+        $this->recordThat(new CalendarEventCreated($this->uuid(), $created_by_user_id, $payload));
         return $this;
     }
 
-    public function updateCalendarEvent(string $id, $title, $start, $end, $options, $type)
+    public function updateCalendarEvent(string $updated_by_user_id, array $payload)
     {
-        $this->recordThat(new CalendarEventUpdated($this->uuid(), $id, $title, $start, $end, $options, $type));
+        $this->recordThat(new CalendarEventUpdated($this->uuid(), $updated_by_user_id, $payload));
         return $this;
     }
 
-    public function deleteCalendarEvent(string $id)
+    public function deleteCalendarEvent(string $deleted_by_user_id, string $id)
     {
-        $this->recordThat(new CalendarEventDeleted($this->uuid(), $id));
+        $this->recordThat(new CalendarEventDeleted($this->uuid(), $deleted_by_user_id, $id));
+        return $this;
+    }
+
+    public function trashCalendarEvent(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new CalendarEventDeleted($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function restoreCalendarEvent(string $restored_by_user_id, string $id)
+    {
+        $this->recordThat(new CalendarEventDeleted($this->uuid(), $restored_by_user_id, $id));
         return $this;
     }
 

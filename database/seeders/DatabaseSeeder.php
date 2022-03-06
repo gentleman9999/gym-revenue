@@ -145,7 +145,10 @@ class DatabaseSeeder extends Seeder
         $this->call(CalendarEventTypeSeeder::class);
 
         // CalendarEvent Seeder
-        VarDumper::dump('Running Calender Event Seeder');
-        $this->call(CalendarSeeder::class);
+        if(env('SEED_CALENDAR_EVENTS', false) === true){
+            VarDumper::dump('Running Calender Event Seeder');
+            $this->call(CalendarSeeder::class);
+        }
+
     }
 }
