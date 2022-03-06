@@ -76,3 +76,9 @@
     @apply !bg-base-300;
 }
 
+
+*{
+    /*--fc-list-event-hover-bg-color: var(--b3);*/
+    --fc-list-event-hover-bg-color: hsla(var(--p) / var(--tw-bg-opacity, 1));
+    --fc-neutral-bg-color: hsla(var(--n) / var(--tw-bg-opacity, 1));
+}

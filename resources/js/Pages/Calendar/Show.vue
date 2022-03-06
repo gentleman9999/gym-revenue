@@ -44,6 +44,7 @@ import FullCalendar, {
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from '@fullcalendar/list';
 import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 
@@ -77,13 +78,13 @@ export default defineComponent({
         return {
             Inertia,
             calendarOptions: {
-                plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+                plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
                 initialView: "dayGridMonth",
                 events: props.calendar_events,
                 headerToolbar: {
-                    left: "prev,next today",
+                    left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
                     center: "title",
-                    right: "dayGridMonth,timeGridWeek,timeGridDay",
+                    right: "prev,next today",
                 },
                 editable: true,
                 selectable: true,
