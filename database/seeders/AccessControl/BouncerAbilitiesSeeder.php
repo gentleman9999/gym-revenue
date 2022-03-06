@@ -77,7 +77,7 @@ class BouncerAbilitiesSeeder extends Seeder
         $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];
         foreach ($roles_allowed_to_contact_leads as $role) {
             VarDumper::dump("Allowing $role to contact leads for teams");
-            Bouncer::allow($role)->to('leads.contact', Team::class);
+            Bouncer::allow($role)->to('leads.contact', Lead::class);
         }
         /*
         $this->teams->each(function ($team) use ($roles_allowed_to_contact_leads) {
