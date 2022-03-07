@@ -22,7 +22,7 @@ class UpdateCalendarEvent
     {
         return [
             'title' =>['required', 'string','max:50'],
-            'description' => ['required', 'nullable'],
+            'description' => ['string', 'nullable'],
             'full_day_event' => ['required', 'boolean'],
             'start' => ['required'],
             'end' => ['required'],

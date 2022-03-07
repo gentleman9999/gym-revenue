@@ -12,24 +12,25 @@
             </div>
 
             <FullCalendar :options="calendarOptions" ref="calendar" />
-            <daisy-modal ref="eventModal" id="eventModal">
-                <h1 class="font-bold mb-4">
-                    Create Event
-                </h1>
-                <calendar-event-form />
+            <daisy-modal ref="createEventModal" id="createEventModal">
+                <h1 class="font-bold mb-4">Create Event</h1>
+                <calendar-event-form @submitted="closeModals" />
             </daisy-modal>
-            <daisy-modal ref="editEventModal" id="editEventModal" >
-                <h1 class="font-bold mb-4">
-                    Edit Event
-                </h1>
-                <calendar-event-form v-if="selectedCalendarEvent" :calendar_event="selectedCalendarEvent" :key="selectedCalendarEvent"/>
+            <daisy-modal ref="editEventModal" id="editEventModal">
+                <h1 class="font-bold mb-4">Edit Event</h1>
+                <calendar-event-form
+                    v-if="selectedCalendarEvent"
+                    :calendar_event="selectedCalendarEvent"
+                    :key="selectedCalendarEvent"
+                    @submitted="closeModals"
+                />
             </daisy-modal>
         </div>
     </app-layout>
 </template>
 
 <script>
-import { defineComponent, watch, ref } from "vue";
+import { defineComponent, watch, watchEffect, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
@@ -44,7 +45,7 @@ import FullCalendar, {
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import listPlugin from '@fullcalendar/list';
+import listPlugin from "@fullcalendar/list";
 import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 
@@ -69,18 +70,34 @@ export default defineComponent({
             createEventModal.value.open();
         };
         const clearSelectedEvent = () => (selectedCalendarEvent.value = null);
-        watch(props.calendar_events,()=>{
-            const fullCalendarApi = calendar.value?.getApi();
-            if(fullCalendarApi){
-                fullCalendarApi.refetchEvents();
+        watchEffect(() => {
+            console.log("events changed!");
+            if (!props.calendar_events) {
+                return;
             }
-        })
+            const fullCalendarApi = calendar.value?.getApi();
+            if (fullCalendarApi) {
+                fullCalendarApi.refetchEvents();
+                console.log("refetched events", props.calendar_events);
+            }
+        });
+
+        const closeModals = () => {
+            createEventModal.value.close();
+            editEventModal.value.close();
+        };
         return {
             Inertia,
             calendarOptions: {
-                plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
+                plugins: [
+                    dayGridPlugin,
+                    timeGridPlugin,
+                    interactionPlugin,
+                    listPlugin,
+                ],
                 initialView: "dayGridMonth",
-                events: props.calendar_events,
+                events: (info, successCallback, failureCallback) =>
+                    successCallback(props.calendar_events),
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
                     center: "title",
@@ -109,12 +126,13 @@ export default defineComponent({
                     console.log("event clicked: ", selectedCalendarEvent.value);
                 },
             },
-            eventModal: createEventModal,
+            createEventModal,
             editEventModal,
             handleClickNewEvent,
             selectedCalendarEvent,
             clearSelectedEvent,
-            calendar
+            calendar,
+            closeModals,
         };
     },
 });

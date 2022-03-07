@@ -126,12 +126,11 @@ export default {
         DatePicker,
     },
     props: ["clientId", "calendar_event"],
-    setup(props, context) {
+    setup(props, { emit }) {
         const page = usePage();
 
         let calendarEvent = props.calendar_event;
         const calendarEventTypes = page.props.value.calendar_event_types;
-        // let phone = page.props.value.phone;
 
         let operation = "Update";
         if (!calendarEvent) {
@@ -148,26 +147,39 @@ export default {
         }
 
         const form = useForm(calendarEvent);
-        //
-        //    form.put(`/locations/${location.id}`);
+
+        const transformDate = (date) => {
+            if (!date?.toISOString) {
+                return date;
+            }
+
+            return date.toISOString().slice(0, 19).replace("T", " ");
+        };
+
         let handleSubmit = () =>
-            form.put(route("calendar.event.update", calendarEvent.id), {preserveScroll: true});
+            form
+                .transform((data) => ({
+                    ...data,
+                    start: transformDate(data.start),
+                    end: transformDate(data.end),
+                }))
+                .put(route("calendar.event.update", calendarEvent.id), {
+                    preserveScroll: true,
+                    onSuccess: () => emit("submitted"),
+                });
 
         if (operation === "Create") {
             handleSubmit = () =>
                 form
                     .transform((data) => ({
                         ...data,
-                        start: data.start
-                            .toISOString()
-                            .slice(0, 19)
-                            .replace("T", " "),
-                        end: data.end
-                            .toISOString()
-                            .slice(0, 19)
-                            .replace("T", " "),
+                        start: transformDate(data.start),
+                        end: transformDate(data.end),
                     }))
-                    .post(route("calendar.event.store"), {preserveScroll: true});
+                    .post(route("calendar.event.store"), {
+                        preserveScroll: true,
+                        onSuccess: () => emit("submitted"),
+                    });
         }
 
         return {
