@@ -3,6 +3,7 @@
 namespace App\Models\Endusers;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Models\Note;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -115,6 +116,11 @@ class Lead extends Model
     {
         return $this->detail()->whereField('updated')->whereActive(1)
             ->orderBy('created_at', 'DESC');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'entity_id')->whereEntityType(self::class);
     }
 
     public function scopeFilter($query, array $filters)

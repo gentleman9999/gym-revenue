@@ -8,6 +8,7 @@ use App\Models\Endusers\AudienceMember;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\TrialMembership;
+use App\Models\Note;
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
@@ -122,6 +123,23 @@ class EndUserActivityProjector extends Projector
         $old_data = $lead->toArray();
         $user = User::find($event->user);
         $lead->updateOrFail($event->lead);
+
+        $notes = $event->lead['notes'] ?? false;
+        if($notes){
+            Note::create([
+                'entity_id'=> $event->id,
+                'entity_type'=> Lead::class,
+                'note' => $notes,
+                'created_by_user_id' => $event->user
+            ]);
+            LeadDetails::create([
+                'lead_id' => $event->id,
+                'client_id' => $lead->client_id,
+                'field' => 'note_created',
+                'value' => $notes,
+            ]);
+        }
+
         LeadDetails::whereLeadId($event->id)->whereField('service_id')->delete();
         /*
         foreach ($event->lead['services'] ?? [] as $service_id) {
@@ -219,6 +237,16 @@ class EndUserActivityProjector extends Projector
             'value' => $event->user,
             'misc' => $misc,
         ]);
+
+        $notes = $misc['notes'] ?? false;
+        if($notes){
+            Note::create([
+                'entity_id'=> $event->lead,
+                'entity_type'=> Lead::class,
+                'note' => $notes,
+                'created_by_user_id' => $event->user
+            ]);
+        }
     }
 
     public function onSubscribedToAudience(SubscribedToAudience $event)
