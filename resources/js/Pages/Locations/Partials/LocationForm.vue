@@ -25,9 +25,17 @@
                     <jet-input-error :message="form.errors.city" class="mt-2"/>
                 </div>
                 <div  class="col-span-1">
-                    <jet-label for="state" value="State"/>
-                    <input id="state" type="text" class="block w-full mt-1" v-model="form.state" />
-                    <jet-input-error :message="form.errors.state" class="mt-2"/>
+                    <jet-label for="state" value="State" />
+                    <multiselect
+                        id="state"
+                        class="mt-1 multiselect-search"
+                        v-model="form.state"
+                        :searchable="true"
+                        :create-option="true"
+                        :options="optionStates"
+                        :classes="multiselectClasses"
+                    />
+                    <jet-input-error :message="form.errors.state" class="mt-2" />
                 </div>
             <div  class="col-span-1">
                 <jet-label for="zip" value="ZIP Code"/>
@@ -108,6 +116,9 @@ import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import DatePicker from 'vue3-date-time-picker';
 import 'vue3-date-time-picker/dist/main.css';
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
+import states from "@/Pages/Comms/States/statesOfUnited"
 
 export default {
     components: {
@@ -117,6 +128,7 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
+        'multiselect': Multiselect,
     },
     props: ['clientId', 'location','phone','poc_first','poc_last','poc_phone','open_date','close_date','location_no','DatePicker'],
     setup(props, context) {
@@ -172,7 +184,7 @@ export default {
             handleSubmit = () => form.post(route('locations.store'));
         }
 
-        return {form, buttonText: operation, handleSubmit}
+        return {form, buttonText: operation, handleSubmit, optionStates: states, multiselectClasses: getDefaultMultiselectTWClasses()}
     },
 }
 </script>

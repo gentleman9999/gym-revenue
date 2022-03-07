@@ -75,4 +75,12 @@
 .dp__disabled{
     @apply !bg-base-300;
 }
-
+.items-end {
+    align-items: end;
+}
+.w-100 {
+    width: 100%;
+}
+.multiselect-search input {
+    height: 44px;
+}
