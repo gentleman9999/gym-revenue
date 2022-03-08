@@ -105,9 +105,17 @@
             </div>
 
             <!-- State -->
-            <div class="col-span-1 sm:col-span-1">
+            <div class="col-span-3 sm:col-span-3">
                 <jet-label for="state" value="State" />
-                <input id="state" type="text" class="mt-1 block w-full" v-model="form.state" maxlength="2" @keyup="upperCaseF(form.state)"/>
+                    <multiselect
+                        id="state"
+                        class="mt-1 multiselect-search"
+                        v-model="form.state"
+                        :searchable="true"
+                        :create-option="true"
+                        :options="optionStates"
+                        :classes="multiselectClasses"
+                    />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
 
@@ -141,6 +149,9 @@
     import JetLabel from '@/Jetstream/Label'
     import JetActionMessage from '@/Jetstream/ActionMessage'
     import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+    import Multiselect from "@vueform/multiselect";
+    import {getDefaultMultiselectTWClasses} from "@/utils";
+    import states from "@/Pages/Comms/States/statesOfUnited"
 
     export default defineComponent({
         components: {
@@ -151,6 +162,7 @@
             JetInputError,
             JetLabel,
             JetSecondaryButton,
+            'multiselect': Multiselect,
         },
 
         props: ['user', 'addlData'],
@@ -173,8 +185,9 @@
                     phone: (this.addlData) ? this.addlData.phone : '',
                     photo: null,
                 }),
-
                 photoPreview: null,
+                optionStates: states,
+                multiselectClasses: getDefaultMultiselectTWClasses()
             }
         },
 

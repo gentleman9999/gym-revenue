@@ -2,7 +2,7 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6 flex flex-col items-start gap-8">
-                <div class="w-32 h-32 rounded-full overflow-hidden">
+                <div class="w-32 h-32 rounded-full overflow-hidden border" :style="borderStyle">
                     <img v-if="fileForm.url" :src="fileForm.url" alt="lead profile picture" class="w-full h-full object-cover"/>
                     <img v-else-if="form?.profile_picture?.misc?.url" :src="form.profile_picture.misc.url" alt="lead profile picture" class="w-full h-full object-cover"/>
                     <font-awesome-icon v-else icon="user-circle" size="6x" class="opacity-10 !h-full !w-full"/>
@@ -197,6 +197,29 @@ export default {
         'lead_sources', 'lead_owners',
         'lead_statuses', 'interactionCount',
     ],
+    computed: {
+        borderStyle() {
+            let color = 'transparent'
+            switch(this.form['opportunity']) {
+                case 'High':
+                    color = 'green';
+                    break;
+
+                case 'Medium':
+                    color = 'yellow';
+                    break;
+
+                case 'Low':
+                    color = 'red';
+                    break;
+
+            }
+            return {
+                'border-color': color,
+                'border-width': '5px'
+            }
+        }
+    },
     setup(props, context) {
         let lead = props.lead;
         let operation = 'Update';

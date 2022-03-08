@@ -103,17 +103,18 @@
             <!-- State -->
             <div class="form-control col-span-3">
                 <jet-label for="state" value="State" />
-                <input
-                    id="state"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.state"
-                    maxlength="2"
-                    @keyup="upperCaseF(form.state)"
-                    autofocus
-                />
+                    <multiselect
+                        id="state"
+                        class="mt-1 multiselect-search"
+                        v-model="form.state"
+                        :searchable="true"
+                        :create-option="true"
+                        :options="optionStates"
+                        :classes="multiselectClasses"
+                    />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
+
             <!-- Zip -->
             <div class="form-control col-span-3">
                 <jet-label for="zip" value="Zip Code" />
@@ -352,9 +353,12 @@ import JetLabel from "@/Jetstream/Label";
 import DatePicker from "vue3-date-time-picker";
 
 import "vue3-date-time-picker/dist/main.css";
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import DaisyModal from "@/Components/DaisyModal";
+import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager";
 
 export default {
@@ -365,6 +369,7 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
+	    Multiselect,
         Confirm,
         DaisyModal,
         FileManager,
@@ -522,6 +527,8 @@ export default {
             securityRoles,
             upperCaseF,
             locations,
+	    optionStates: states,
+            multiselectClasses: getDefaultMultiselectTWClasses(),
             wantsToDeleteFile,
             handleConfirmDeleteFile,
             fileManagerModal,
