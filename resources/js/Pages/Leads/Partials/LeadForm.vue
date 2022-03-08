@@ -260,9 +260,9 @@ export default {
         const form = useForm(lead)
         const fileForm = useForm({file:null});
 
-        let handleSubmit = () => form.put(`/data/leads/${lead.id}`);
+        let handleSubmit = () => form.put(`/data/leads/${lead.id}`, {onSuccess: () => form.notes=''});
         if (operation === 'Create') {
-            handleSubmit = () => form.post('/data/leads/create');
+            handleSubmit = () => form.post('/data/leads/create', {onSuccess: () => form.notes = ''});
         }
 
         const goBack = useGoBack(route('data.leads'));
