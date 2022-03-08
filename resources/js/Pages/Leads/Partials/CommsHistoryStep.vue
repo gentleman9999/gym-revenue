@@ -1,5 +1,5 @@
 <template>
-    <li class="step step-primary hover:bg-base-100 py-4 cursor-pointer w-32 rounded transition-colors duration-300 ease-in-out" :class="{active}">
+    <li v-if="heading" class="step step-primary hover:bg-base-100 py-4 cursor-pointer w-32 rounded transition-colors duration-300 ease-in-out" :class="{active}">
         <div class="after">
             <font-awesome-icon :icon="icon"/>
         </div>
@@ -43,11 +43,12 @@ import {
     faUserEdit,
     faUserPlus,
     faDoorOpen,
-    faDollarSign
+    faDollarSign,
+    faStickyNote
 } from '@fortawesome/pro-solid-svg-icons';
 import {library} from "@fortawesome/fontawesome-svg-core";
 
-library.add(faChevronDoubleDown, faUserPlus, faComment, faEnvelope, faUserEdit, faPhoneAlt, faDoorOpen, faDollarSign);
+library.add(faChevronDoubleDown, faUserPlus, faComment, faEnvelope, faUserEdit, faPhoneAlt, faDoorOpen, faDollarSign, faStickyNote);
 
 export default {
     components: {
@@ -84,6 +85,8 @@ export default {
                     return "Trial Started";
                 case "trial-used":
                     return "Trial Used";
+                case "note_created":
+                    return "Note Created";
             }
         })
         const icon = computed(() => {
@@ -105,6 +108,8 @@ export default {
                     return "dollar-sign";
                 case "trial-used":
                     return "door-open";
+                case "note_created":
+                    return "sticky-note"
             }
         })
 

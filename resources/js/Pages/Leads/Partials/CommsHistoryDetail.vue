@@ -92,6 +92,14 @@
                 {{ trialMembershipTypes.find(trial=>trial.id === detail.misc.trial_id).trial_length }}
             </div>
         </div>
+        <div class="form-control" v-if="detail.field === 'note_created'">
+            <label class="label">
+                <span class="label-text">Note</span>
+            </label>
+            <div type="text" readonly class="textarea textarea-ghost h-full" style="height:100%;">
+                {{detail.value}}
+            </div>
+        </div>
     </div>
 </template>
 <style scoped>
@@ -153,6 +161,8 @@ export default {
                     return "Trial Started";
                 case 'trial-used':
                     return "Trial Used";
+                case 'note_created':
+                    return "Note Created"
                 default:
                     console.error('what is this field?!?!', props.detail.field);
                     break;

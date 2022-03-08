@@ -129,6 +129,23 @@
                 </select>
                 <jet-input-error :message="form.errors['lead_statuses']" class="mt-2"/>
             </div>
+            <div class="form-divider"/>
+            <div class="form-control col-span-6">
+                <jet-label for="notes" value="Notes"/>
+                <textarea  v-model="form['notes']" id="notes"/>
+                <jet-input-error :message="form.errors['notes']" class="mt-2"/>
+            </div>
+
+            <div class="collapse col-span-6" tabindex="0" v-if="lead.all_notes?.length">
+                <div class="collapse-title text-sm font-medium">
+                    > Existing Notes
+                </div>
+                <div class="flex flex-col  gap-2 collapse-content">
+                    <div v-for="note in lead.all_notes" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2">
+                        {{note}}
+                    </div>
+                </div>
+            </div>
 
             <div v-if="typeof interactionCount !== 'undefined'" class="form-divider"/>
             <div v-if="typeof interactionCount !== 'undefined'" class="col-span-3">
@@ -242,9 +259,11 @@ export default {
                 opportunity:'',
                 lead_owner: props.userId,
                 lead_status: '',
+                notes: '',
             }
             operation = 'Create';
         } else {
+            lead.notes = '';
             lead.updated = new Date(lead.last_updated?.updated_at).toLocaleDateString("en-US");
 
             console.log('Lead Owner',lead)
@@ -264,9 +283,9 @@ export default {
         const form = useForm(lead)
         const fileForm = useForm({file:null});
 
-        let handleSubmit = () => form.put(`/data/leads/${lead.id}`);
+        let handleSubmit = () => form.put(`/data/leads/${lead.id}`, {onSuccess: () => form.notes=''});
         if (operation === 'Create') {
-            handleSubmit = () => form.post('/data/leads/create');
+            handleSubmit = () => form.post('/data/leads/create', {onSuccess: () => form.notes = ''});
         }
 
         const goBack = useGoBack(route('data.leads'));
