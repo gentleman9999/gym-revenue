@@ -188,7 +188,7 @@ class User extends Authenticatable
     }
     public function notes()
     {
-        return $this->hasMany(Note::class, 'entity_id')->whereEntityType(self::class);
+        return $this->hasMany('App\Models\Notes', 'entity_id')->whereEntityType(self::class);
     }
     public function start_date()
     {
