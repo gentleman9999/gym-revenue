@@ -184,7 +184,12 @@ export default {
             handleSubmit = () => form.post(route('locations.store'));
         }
 
-        return {form, buttonText: operation, handleSubmit, optionStates: states, multiselectClasses: getDefaultMultiselectTWClasses()}
+        let optionsStates = [];
+        for(let x in states) {
+            optionsStates.push(states[x].abbreviation);
+        }
+
+        return {form, buttonText: operation, handleSubmit, optionStates: optionsStates, multiselectClasses: getDefaultMultiselectTWClasses()}
     },
 }
 </script>
