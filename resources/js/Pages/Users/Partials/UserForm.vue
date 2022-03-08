@@ -241,6 +241,16 @@
                 <textarea v-model="form['notes']" dark rows="5" cols="33" />
                 <jet-input-error :message="form.errors.notes" class="mt-2" />
             </div>
+            <div class="collapse col-span-9" tabindex="0" v-if="user?.all_notes?.length">
+                <div class="collapse-title text-sm font-medium">
+                    > Existing Notes
+                </div>
+                <div class="flex flex-col  gap-2 collapse-content">
+                    <div v-for="note in user.all_notes" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2">
+                        {{note}}
+                    </div>
+                </div>
+            </div>
         </template>
 
         <template #actions>
@@ -489,9 +499,9 @@ export default {
             form.state = text.toUpperCase();
         };
 
-        let handleSubmit = () => form.put(route("users.update", user.id));
+        let handleSubmit = () => form.put(route("users.update", user.id), {onSuccess: () => form.notes=''});
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("users.store"));
+            handleSubmit = () => form.post(route("users.store"), {onSuccess: () => form.notes=''});
         }
 
         const handleConfirmDeleteFile = () => {

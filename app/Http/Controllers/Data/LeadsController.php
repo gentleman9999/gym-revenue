@@ -15,6 +15,7 @@ use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
+use App\Models\Note;
 use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -45,7 +46,8 @@ class LeadsController extends Controller
         'dob'                       => 'sometimes|required',
         'opportunity'               => 'sometimes|required',
         'lead_owner'                => 'sometimes|required|exists:users,id',
-        'lead_status'                => 'sometimes|required|exists:lead_statuses,id'
+        'lead_status'               => 'sometimes|required|exists:lead_statuses,id',
+        'notes'                     => 'required|nullable|string'
     ];
 
     public function index(Request $request)
@@ -211,6 +213,16 @@ class LeadsController extends Controller
             );
         }
 
+        $notes = $lead_data['notes'] ?? false;
+        if($notes){
+            Note::create([
+                'entity_id'=> $lead->id,
+                'entity_type'=> Lead::class,
+                'note' => $notes,
+                'created_by_user_id' => $user_id
+            ]);
+        }
+
         Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
 
         $aggy = EndUserActivityAggregate::retrieve($lead->id)
@@ -366,17 +378,26 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
+        $lead = Lead::whereId($lead_id)->with(
+            'detailsDesc',
+            'profile_picture',
+            'trialMemberships',
+            'middle_name', 'dob',
+            'opportunity',
+            'lead_owner',
+            'lead_status',
+            'last_updated',
+            'notes'
+        )->first();
+
+        //for some reason inertiajs converts "notes" key to empty string.
+        //so we set all_notes
+        $leadData = $lead->toArray();
+        $leadData['all_notes'] = $lead->notes->pluck('note')->toArray();
+
+
         return Inertia::render('Leads/Edit', [
-            'lead' => Lead::whereId($lead_id)->with(
-                'detailsDesc',
-                'profile_picture',
-                'trialMemberships',
-                'middle_name', 'dob',
-                'opportunity',
-                'lead_owner',
-                'lead_status',
-                'last_updated'
-            )->first(),
+            'lead' => $leadData,
             'user_id' => $user->id,
             'locations' => $locations,
             'lead_types' => $lead_types,

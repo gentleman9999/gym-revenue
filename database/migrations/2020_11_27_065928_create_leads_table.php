@@ -25,8 +25,8 @@ class CreateLeadsTable extends Migration
             $table->string('gender')->nullable();
             $table->integer('lead_type_id');
             $table->uuid('lead_source_id');
-            $table->integer('membership_type_id');
-            $table->string('ip_address');
+            $table->integer('membership_type_id')->nullable();
+            $table->string('ip_address')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

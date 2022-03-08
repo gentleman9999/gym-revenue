@@ -4,6 +4,7 @@ namespace App\Projectors\Users;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Security\SecurityRole;
+use App\Models\Note;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
@@ -21,7 +22,7 @@ class UserProjector extends Projector
     {
         $data = $event->payload;
         //setup a transaction so we if we have errors, we don't get a half-baked user
-        DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data, $event) {
             //get only the keys we care about (the ones marked as fillable)
             $user_table_data = array_filter($data, function ($key) {
                 return in_array($key, (new User)->getFillable());
@@ -45,7 +46,6 @@ class UserProjector extends Projector
                 'state' => $data['state'] ?? null,
                 'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
-                'notes' => $data['notes'] ?? null,
                 'start_date' => $data['start_date'] ?? null,
                 'end_date' => $data['end_date'] ?? null,
                 'termination_date' => $data['termination_date'] ?? null,
@@ -61,6 +61,16 @@ class UserProjector extends Projector
             }
 
             $client_id = $data['client_id'] ?? null;
+
+            $notes = $data['notes'] ?? false;
+            if($notes){
+                Note::create([
+                    'entity_id'=> $data['id'],
+                    'entity_type'=> User::class,
+                    'note' => $notes,
+                    'created_by_user_id' => $event->user
+                ]);
+            }
 
             if ($client_id) {
                 //setup their client association
@@ -161,7 +171,7 @@ class UserProjector extends Projector
         $data = $event->payload;
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
-        DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data, $event) {
             $user = User::with(['teams', 'associated_client', 'security_role'])->findOrFail($data['id']);
             $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
@@ -181,7 +191,6 @@ class UserProjector extends Projector
                 'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
                 'home_club' => $data['home_club'] ?? null,
-                'notes' => $data['notes'] ?? null,
                 'start_date' => $data['start_date'] ?? null,
                 'end_date' => $data['end_date'] ?? null,
                 'termination_date' => $data['termination_date'] ?? null,
@@ -196,6 +205,16 @@ class UserProjector extends Projector
             }
 
             $client_id = $user->associated_client ? $user->associated_client->value : null;
+
+            $notes = $data['notes'] ?? false;
+            if($notes){
+                Note::create([
+                    'entity_id'=> $data['id'],
+                    'entity_type'=> User::class,
+                    'note' => $notes,
+                    'created_by_user_id' => $event->user
+                ]);
+            }
 
             //if we were provided a security_role, update the users security_role
             if ($data['security_role'] ?? false) {

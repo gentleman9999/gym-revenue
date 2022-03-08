@@ -179,8 +179,13 @@ class UsersController extends Controller
             $locations = Location::whereClientId($user->client()->first()->id)->get(['name', 'gymrevenue_id']);
         }
 
+        //for some reason inertiajs converts "notes" key to empty string.
+        //so we set all_notes
+        $userData = $user->toArray();
+        $userData['all_notes'] = $user->notes->pluck('note')->toArray();
+
         return Inertia::render('Users/Edit', [
-            'selectedUser' => $user,
+            'selectedUser' => $userData,
             'securityRoles' => $security_roles,
             'locations' => $locations
         ]);
