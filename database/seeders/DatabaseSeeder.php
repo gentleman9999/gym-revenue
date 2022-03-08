@@ -4,7 +4,10 @@ namespace Database\Seeders;
 
 use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
 use Database\Seeders\AccessControl\BouncerRolesSeeder;
+use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
+use Database\Seeders\Clients\LocationSeeder;
+use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\SecurityRolesSeeder;
 use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
@@ -21,14 +24,11 @@ use Database\Seeders\Data\TrialMembershipTypeSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
-use Illuminate\Database\Seeder;
-use Database\Seeders\Clients\ClientSeeder;
-use Symfony\Component\VarDumper\VarDumper;
-use Database\Seeders\Users\ClientUserSeeder;
-use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
-use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Users\SecondaryClientUsersSeeder;
+use Database\Seeders\Users\ClientUserSeeder;
+use Database\Seeders\Users\NewClientSeeder;
+use Illuminate\Database\Seeder;
+use Symfony\Component\VarDumper\VarDumper;
 
 class DatabaseSeeder extends Seeder
 {
@@ -86,7 +86,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SecurityRolesSeeder::class);
 
         // Here Client Account Owners will be Generated for each client
-        // @todo - make the security role logic assign the roles and disallow the full ability
         VarDumper::dump('Running Client User Seeder');
         $this->call(ClientUserSeeder::class);
 
@@ -115,12 +114,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TeamLocationsSeeder::class);
 
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
-        // they are also assigned security roles, and teams
-        // @todo - make the security role logic assign the roles and disallow the full ability
-        // VarDumper::dump('Running Client Secondary Users Seeder');
-       // $this->call(SecondaryClientUsersSeeder::class);
-
-        VarDumper::dump('Testing new factory users');
+        VarDumper::dump('Running Client Users Seeder');
+        //$this->call(SecondaryClientUsersSeeder::class);
         $this->call(NewClientSeeder::class);
 
         // This seeder generates dummy leads for each client

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Users;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
