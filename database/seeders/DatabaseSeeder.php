@@ -117,8 +117,11 @@ class DatabaseSeeder extends Seeder
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
         // they are also assigned security roles, and teams
         // @todo - make the security role logic assign the roles and disallow the full ability
-        VarDumper::dump('Running Client Secondary Users Seeder');
-        $this->call(SecondaryClientUsersSeeder::class);
+        // VarDumper::dump('Running Client Secondary Users Seeder');
+       // $this->call(SecondaryClientUsersSeeder::class);
+
+        VarDumper::dump('Testing new factory users');
+        $this->call(NewClientSeeder::class);
 
         // This seeder generates dummy leads for each client
         VarDumper::dump('Running Leads Dummy Data Seeder');

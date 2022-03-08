@@ -58,7 +58,10 @@ class UsersController extends Controller
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
 
-                $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
+                //This is phil's fault
+                if(!is_null($users[$idx]->home_club->value))
+                    $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
+
                 $roles[] = $role->name;
             }
 

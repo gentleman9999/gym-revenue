@@ -60,6 +60,7 @@ class LocationSeeder extends Seeder
             // FitnessTruth
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 1',
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
@@ -68,6 +69,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 2',
                 'state' => 'TX',
                 'city' => 'Abernathy',
                 'zip' => '79311',
@@ -76,6 +78,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 3',
                 'state' => 'TX',
                 'city' => 'Abram',
                 'zip' => '78572',
@@ -84,6 +87,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 4',
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
@@ -92,6 +96,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 5',
                 'state' => 'TX',
                 'city' => 'Abernathy',
                 'zip' => '79311',
@@ -100,6 +105,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 6',
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
@@ -108,6 +114,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 7',
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
@@ -116,6 +123,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 8',
                 'state' => 'TX',
                 'city' => 'Abernathy',
                 'zip' => '79311',
@@ -124,6 +132,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 9',
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
@@ -132,6 +141,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'FitnessTruth',
+                'name' => 'FitnessTruth 10',
                 'state' => 'TN',
                 'city' => 'Adams',
                 'zip' => '37010',
@@ -141,6 +151,7 @@ class LocationSeeder extends Seeder
             // The Z
             [
                 'client_id' => 'The Z',
+                'name' => 'Zoo 1',
                 'state' => 'HI',
                 'city' => 'Honolulu',
                 'zip' => '96795',
@@ -149,6 +160,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'The Z',
+                'name' => 'Zoo 2',
                 'state' => 'HI',
                 'city' => 'Honolulu',
                 'zip' => '96795',
@@ -157,6 +169,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'The Z',
+                'name' => 'Zoo 3',
                 'state' => 'HI',
                 'city' => 'Honolulu',
                 'zip' => '96796',
@@ -165,6 +178,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'The Z',
+                'name' => 'Zoo 4',
                 'state' => 'HI',
                 'city' => 'Honolulu',
                 'zip' => '96797',
@@ -173,6 +187,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'The Z',
+                'name' => 'Zoo 5',
                 'state' => 'HI',
                 'city' => 'Honolulu',
                 'zip' => '96798',
@@ -181,6 +196,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'The Z',
+                'name' => 'Zoo 6',
                 'state' => 'HI',
                 'city' => 'Waimanalo',
                 'zip' => '96795',
@@ -190,6 +206,7 @@ class LocationSeeder extends Seeder
             // TruFit Athletic Clubs
             [
                 'client_id' => 'TruFit Athletic Clubs',
+                'name' => 'TruFit 1',
                 'state' => 'TX',
                 'city' => 'Amarillo',
                 'zip' => '79106',
@@ -198,6 +215,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'TruFit Athletic Clubs',
+                'name' => 'TruFit 2',
                 'state' => 'TN',
                 'city' => 'Antioch',
                 'zip' => '37013',
@@ -208,6 +226,7 @@ class LocationSeeder extends Seeder
             // Stencils
             [
                 'client_id' => 'Stencils',
+                'name' => 'Stencils 1',
                 'state' => 'CA',
                 'city' => 'Los Angeles',
                 'zip' => '90001',
@@ -216,6 +235,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'Stencils',
+                'name' => 'Stencils 2',
                 'state' => 'CA',
                 'city' => 'San Diego',
                 'zip' => '22400',
@@ -224,6 +244,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'Stencils',
+                'name' => 'Stencils 3',
                 'state' => 'CA',
                 'city' => 'San Jose',
                 'zip' => '94088',
@@ -232,6 +253,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'Stencils',
+                'name' => 'Stencils 4',
                 'state' => 'OR',
                 'city' => 'Portland',
                 'zip' => '97035',
@@ -249,6 +271,7 @@ class LocationSeeder extends Seeder
             ],
             [
                 'client_id' => 'Stencils',
+                'name' => 'Stencils 5',
                 'state' => 'OR',
                 'city' => 'Portland',
                 'zip' => '97035',
