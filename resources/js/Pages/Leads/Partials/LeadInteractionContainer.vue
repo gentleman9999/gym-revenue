@@ -5,7 +5,9 @@
                 <div class="col-span-12 lg:col-span-4 flex-shrink-0 bg-base-300 rounded-lg flex flex-col p-4">
                     <inertia-link :href="route('data.leads.edit', leadId)" class="flex flex-col items-center justify-center">
 
-                        <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
+                        <div class="rounded-full border" :style="borderStyle">
+                            <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
+                        </div>
                         <h1 class="text-center text-2xl">
                             {{ firstName }} {{ this.$page.props.middle_name.value }} {{ lastName }}
                         </h1>
@@ -92,6 +94,32 @@ export default defineComponent({
         }
     },
     computed: {
+        borderStyle() {
+            let color = 'transparent'
+            for (let idx in this.details) {
+                let d = this.details[idx];
+                if (d.field === 'opportunity') {
+                    switch(d.value) {
+                        case 'High':
+                            color = 'green';
+                            break;
+
+                        case 'Medium':
+                            color = 'yellow';
+                            break;
+
+                        case 'Low':
+                            color = 'red';
+                            break;
+
+                    }
+                }
+            }
+            return {
+                'border-color': color,
+                'border-width': '5px'
+            }
+        },
         claimedByUser() {
             let r = false;
 
