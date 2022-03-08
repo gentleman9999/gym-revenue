@@ -186,11 +186,19 @@
                     photo: null,
                 }),
                 photoPreview: null,
-                optionStates: states,
                 multiselectClasses: getDefaultMultiselectTWClasses()
             }
         },
+        computed: {
+            optionStates() {
+                let optionsStates = [];
+                for(let x in states) {
+                    optionsStates.push(states[x].abbreviation);
+                }
 
+                return optionsStates
+            }
+        },
         methods: {
             upperCaseF(text) {
                 this.form.state = text.toUpperCase();

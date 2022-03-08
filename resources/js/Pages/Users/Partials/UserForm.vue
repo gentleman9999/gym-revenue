@@ -519,6 +519,11 @@ export default {
             return fileManager.value?.reset;
         };
 
+        let optionsStates = [];
+        for(let x in states) {
+            optionsStates.push(states[x].abbreviation);
+        }
+
         return {
             form,
             buttonText: operation,
@@ -527,7 +532,7 @@ export default {
             securityRoles,
             upperCaseF,
             locations,
-	    optionStates: states,
+	        optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             wantsToDeleteFile,
             handleConfirmDeleteFile,
