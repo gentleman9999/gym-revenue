@@ -19,7 +19,13 @@ class UsersController extends Controller
     {
         // Check the client ID to determine if we are in Client or Cape & Bay space
         $client_id = $request->user()->currentClientId();
+
+        $team_users = $request->user()->currentTeam()->first()->team_users()->get();
         $roles = [];
+        foreach($team_users as $team_user)
+        {
+            $roles[] = $team_user->role;
+        }
 
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
@@ -62,7 +68,6 @@ class UsersController extends Controller
                 if(!is_null($users[$idx]->home_club->value))
                     $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
 
-                $roles[] = $role->name;
             }
 
 
@@ -88,7 +93,6 @@ class UsersController extends Controller
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
-                $roles[] = $role->name;
             }
 
             return Inertia::render('Users/Show', [
