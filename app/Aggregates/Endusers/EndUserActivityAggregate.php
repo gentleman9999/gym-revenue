@@ -5,6 +5,11 @@ namespace App\Aggregates\Endusers;
 use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
+use App\StorableEvents\Endusers\Leads\LeadCreated;
+use App\StorableEvents\Endusers\Leads\LeadDeleted;
+use App\StorableEvents\Endusers\Leads\LeadRestored;
+use App\StorableEvents\Endusers\Leads\LeadTrashed;
+use App\StorableEvents\Endusers\Leads\LeadUpdated;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
@@ -152,4 +157,36 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
+
+    ///new lead methods
+    public function createLead2(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadCreated($userId, $data));
+        return $this;
+    }
+
+    public function updateLead2($data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadUpdated($userId, $data));
+        return $this;
+    }
+
+    public function trashLead2(string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadTrashed($userId, $this->uuid()));
+        return $this;
+    }
+
+    public function restoreLead2(string $userId = 'Auto Generagted')
+    {
+        $this->recordThat(new LeadRestored($userId, $this->uuid()));
+        return $this;
+    }
+
+    public function deleteLead2(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadDeleted($userId, $this->uuid(), $data));
+        return $this;
+    }
+
 }

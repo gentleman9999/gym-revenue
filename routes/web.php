@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,10 +90,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Http\Controllers\Data\LeadsController::class . '@store')->name('data.leads.store');
+        Route::post('/create', \App\Actions\Endusers\CreateLead::class)->name('data.leads.store');
         Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{id}', \App\Http\Controllers\Data\LeadsController::class . '@update')->name('data.leads.update');
+        Route::put('/{id}', \App\Actions\Endusers\UpdateLead::class)->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');

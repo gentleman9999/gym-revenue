@@ -13,6 +13,11 @@ use App\Models\User;
 use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
+use App\StorableEvents\Endusers\Leads\LeadCreated;
+use App\StorableEvents\Endusers\Leads\LeadDeleted;
+use App\StorableEvents\Endusers\Leads\LeadRestored;
+use App\StorableEvents\Endusers\Leads\LeadTrashed;
+use App\StorableEvents\Endusers\Leads\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
@@ -24,10 +29,13 @@ use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\UpdateLead;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EndUserActivityProjector extends Projector
 {
+    private $details = ['middle_name', 'lead_status', 'dob', 'opportunity'];
+
     public function onNewLeadMade(NewLeadMade $event)
     {
         //get only the keys we care about (the ones marked as fillable)
@@ -335,5 +343,101 @@ class EndUserActivityProjector extends Projector
             'value' => $event->trial,
             'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
         ]);
+    }
+
+
+    ///new lead projections
+    public function onLeadCreated(LeadCreated $event)
+    {
+        //get only the keys we care about (the ones marked as fillable)
+        $lead_table_data = array_filter($event->data, function ($key) {
+            return in_array($key, (new Lead)->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+        $lead = Lead::create($lead_table_data);
+
+        LeadDetails::create([
+            'lead_id' => $lead->id,
+            'client_id' => $event->data['client_id'],
+            'field' => 'manual_create',
+//            'value' => $user->email,
+            'value' => $event->user,
+        ]);
+        LeadDetails::create([
+            'lead_id' => $lead->id,
+            'client_id' => $event->data['client_id'],
+            'field' => 'created',
+            'value' => Carbon::now()
+        ]);
+        LeadDetails::create([
+            'lead_id' => $lead->id,
+            'client_id' => $event->data['client_id'],
+            'field' => 'agreement_number',
+            'value' => floor(time()-99999999),
+        ]);
+
+        foreach ($this->details as $field) {
+            LeadDetails::createOrUpdateRecord($event->data['id'], $event->data['client_id'], $field, $event->data[$field] ?? null);
+        }
+
+        $notes = $event->data['notes'] ?? false;
+        if($notes){
+            Note::create([
+                'entity_id'=> $lead->id,
+                'entity_type'=> Lead::class,
+                'note' => $notes,
+                'created_by_user_id' => $event->user
+            ]);
+        }
+
+        if (array_key_exists('profile_picture', $event->data)) {
+            $file = $event->data['profile_picture'];
+            $destKey = "{$event->data['client_id']}/{$file['uuid']}";
+            Storage::disk('s3')->move($file['key'], $destKey);
+            $file['key'] = $destKey;
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+
+            LeadDetails::create([
+                    'lead_id' => $lead->id,
+                    'client_id' => $lead->client_id,
+                    'field' => 'profile_picture',
+                    'misc' => $file
+                ]
+            );
+        }
+    }
+
+    public function onLeadUpdated(LeadUpdated $event)
+    {
+        $lead = Lead::withTrashed()->findOrFail($event->data['id']);
+        $lead->updateOrFail($event->data);
+
+        foreach ($this->details as $field) {
+            LeadDetails::createOrUpdateRecord($event->data['id'], $event->data['client_id'], $field, $event->data[$field] ?? null);
+        }
+
+        $notes = $event->data['notes'] ?? false;
+        if($notes){
+            Note::create([
+                'entity_id'=> $lead->id,
+                'entity_type'=> Lead::class,
+                'note' => $notes,
+                'created_by_user_id' => $event->user
+            ]);
+        }
+    }
+
+    public function onLeadTrashed(LeadTrashed $event)
+    {
+        Lead::findOrFail($event->id)->deleteOrFail();
+    }
+
+    public function onLeadRestored(LeadRestored $event)
+    {
+        Lead::withTrashed()->findOrFail($event->id)->restore();
+    }
+
+    public function onLeadDeleted(LeadDeleted $event)
+    {
+        Lead::withTrashed()->findOrFail($event->id)->forceDelete();
     }
 }

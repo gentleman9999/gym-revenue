@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Data;
 
+use App\Actions\Endusers\CreateLead;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Clients\Client;
-use App\Models\Clients\Features\ClientService;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use Carbon\Carbon;
@@ -51,17 +51,13 @@ class LeadProspectSeeder extends Seeder
                             // @todo - no custom status in the seeder allowed...yet.
 
                             // For each fake user, run them through the EnduserActivityAggregate
-                            $aggy = EndUserActivityAggregate::retrieve($prospect->id);
                             $prospect_data = $prospect->toArray();
                             $date_range = mt_rand(1262055681,1262215681);
                             //generate details
-                            $prospect_data['details'] = [
-                                'opportunity' => ['Low', 'Medium', 'High'][rand(0,2)],
-                                'dob' => date("Y-m-d H:i:s", $date_range),
-                            ];
-                            $aggy->createNewLead($prospect_data)
-                                ->joinAudience('leads', $client->id, Lead::class)
-                                ->persist();
+                            $prospect_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0,2)];
+                            $prospect_data['dob'] = date("Y-m-d H:i:s", $date_range);
+                            $lead = CreateLead::run($prospect_data);
+                            $aggy = EndUserActivityAggregate::retrieve($lead->id);
 
                             $lead_type_free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
 
