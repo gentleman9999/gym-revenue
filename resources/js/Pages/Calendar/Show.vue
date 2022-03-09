@@ -5,10 +5,37 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="flex flex-row col-span-3 lg:col-span-2 gap-2">
+            <div class="flex flex-row col-span-3 lg:col-span-2 gap-2 mb-4">
                 <button class="btn btn-sm text-xs" @click="handleClickNewEvent">
                     New Event
                 </button>
+                <div class="flex-grow"/>
+                <simple-search-filter
+                    v-model:modelValue="form.search"
+                    class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
+                    @reset="reset"
+                    @clear-filters="clearFilters"
+                    @clear-search="clearSearch"
+                >
+                    <div class="block py-2 text-xs text-base-content text-opacity-80">Type:</div>
+                    <select
+                        v-model="form.calendar_event_type"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option v-for="{name, id} in calendar_event_types" :value="id">{{name}}</option>
+                    </select>
+                    <div class="block py-2 text-xs text-base-content text-opacity-80">Trashed:</div>
+                    <select
+                        v-model="form.trashed"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option value="with">With Trashed</option>
+                        <option value="only">Only Trashed</option>
+                    </select>
+                </simple-search-filter>
+
             </div>
 
             <FullCalendar :options="calendarOptions" ref="calendar" />
@@ -48,9 +75,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 
 export default defineComponent({
     components: {
+        SimpleSearchFilter,
         CalendarEventForm,
         DaisyModal,
         AppLayout,
@@ -58,9 +88,13 @@ export default defineComponent({
         SweetModal,
         FullCalendar,
     },
-    props: ["sessions", "calendar_events", "title", "isClientUser", "filters"],
+    props: ["sessions", "calendar_events","calendar_event_types", "title", "isClientUser", "filters"],
 
     setup(props) {
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+            "calendar",
+            {start: '', end: 'test'}
+        );
         const calendar = ref(null);
         const createEventModal = ref();
         const editEventModal = ref();
@@ -81,7 +115,10 @@ export default defineComponent({
                 event_type_id: data.event.extendedProps.event_type_id,
                 client_id: data.event.extendedProps.client_id,
             };
-            Inertia.put(route("calendar.event.update", calendarEvent.id), calendarEvent);
+            Inertia.put(
+                route("calendar.event.update", calendarEvent.id),
+                calendarEvent
+            );
         };
 
         const clearSelectedEvent = () => (selectedCalendarEvent.value = null);
@@ -101,6 +138,11 @@ export default defineComponent({
             createEventModal.value.close();
             editEventModal.value.close();
         };
+
+        const updateStartEnd = (start,end) => {
+            form.value.start = start;
+            form.value.end = end;
+        }
         return {
             Inertia,
             calendarOptions: {
@@ -120,8 +162,10 @@ export default defineComponent({
                     }
                 },*/
                 initialView: "dayGridMonth",
-                events: (info, successCallback, failureCallback) =>
-                    successCallback(props.calendar_events),
+                events: ({ start, end, startStr, endStr }, successCallback, failureCallback) => {
+                    updateStartEnd(startStr,endStr);
+                    successCallback(props.calendar_events)
+                },
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
                     center: "title",
@@ -151,7 +195,7 @@ export default defineComponent({
                 },
                 eventDrop: function (data) {
                     handleDroppedEvent(data);
-                }
+                },
             },
             createEventModal,
             editEventModal,
@@ -160,6 +204,10 @@ export default defineComponent({
             clearSelectedEvent,
             calendar,
             closeModals,
+            form,
+            reset,
+            clearSearch,
+            clearFilters,
         };
     },
 });
