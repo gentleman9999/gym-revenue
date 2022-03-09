@@ -71,7 +71,7 @@ class ClientUserSeeder extends UserSeeder
     protected function addUser(array $user)
     {
         $client = Client::whereName($user['client'])->first();
-
+        $home_office_team = $client->default_team_name()->first();
         $home_club = Location::whereClientId($client->id)->first()->gymrevenue_id;
 
         $senior_managers = ['Regional Manager', 'Account Owner', 'Admin', 'Regional Manager'];
@@ -85,6 +85,7 @@ class ClientUserSeeder extends UserSeeder
             'last_name' => $user['last_name'],
             'email' => $user['email'],
             'password' => 'Hello123!',
+            'team_id' => $home_office_team->value,
 //            'team_ids' => $team_ids,
             'role' => $user['role'],
             'home_club' => $home_club,

@@ -14,6 +14,26 @@
                     <jet-section-border />
                 </div>
 
+
+                <div v-if="$page.props.user.has_api_token">
+                    <show-api-token-form class="mt-10 sm:mt-0" v-if="(!('is_being_impersonated' in $page.props.user))" :token="addlData['token']"/>
+                    <jet-form-section v-else>
+                        <template #title>
+                            API Access
+                        </template>
+                        <template #description>
+                            View your Access Token! It will bo in the Authorization header with a Bearer in front of it.
+                        </template>
+                        <template #form>
+                            <div class="col-span-6 sm:col-span-4">
+                                <label>Viewing API tokens in impersonation mode is not authorized.</label>
+                            </div>
+                        </template>
+                    </jet-form-section>
+
+                    <jet-section-border />
+                </div>
+
                 <div v-if="$page.props.jetstream.canUpdatePassword">
                     <update-password-form class="mt-10 sm:mt-0" v-if="(!('is_being_impersonated' in $page.props.user))"/>
                     <jet-form-section v-else>
@@ -73,6 +93,7 @@
     import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm'
     import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm'
     import JetFormSection from '@/Jetstream/FormSection'
+    import ShowApiTokenForm from "@/Pages/Profile/Partials/ShowAPITokenForm";
 
     export default defineComponent({
         props: ['sessions', 'addlData'],
@@ -86,6 +107,7 @@
             UpdatePasswordForm,
             JetFormSection,
             UpdateProfileInformationForm,
+            ShowApiTokenForm
         },
     })
 </script>

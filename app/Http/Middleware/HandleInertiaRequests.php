@@ -63,6 +63,7 @@ class HandleInertiaRequests extends Middleware
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
+                'user.has_api_token' => (!is_null($user->api_token()->first())),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode()
 
             ];

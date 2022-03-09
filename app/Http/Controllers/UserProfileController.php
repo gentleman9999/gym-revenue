@@ -98,6 +98,13 @@ class UserProfileController extends Controller
         {
             $addl_data['notes'] = $notes->value;
         }
+
+        $api_token = $user->api_token()->first();
+        if(!is_null($api_token))
+        {
+            $addl_data['token'] = base64_decode($api_token->value);
+        }
+
         return Jetstream::inertia()->render($request, 'Profile/Show', [
             'sessions' => $this->sessions($request)->all(),
             'addlData' => $addl_data
