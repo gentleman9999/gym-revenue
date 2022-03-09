@@ -5,6 +5,7 @@ namespace App\Actions\Clients\Calendar;
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Helpers\Uuid;
 use App\Models\CalendarEvent;
+use App\Models\CalendarEventType;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
@@ -35,8 +36,11 @@ class CreateCalendarEvent
 
     public function handle($data, $user = null)
     {
+
+        $eventType = CalendarEventType::whereId($data['event_type_id'])->get();
         $id = Uuid::new();
         $data['id'] = $id;
+        $data['color'] = $eventType->first()->color;
 //        dd($data);
         CalendarAggregate::retrieve($data['client_id'])
             ->createCalendarEvent($user->id ?? "Auto Generated", $data)

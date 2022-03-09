@@ -69,6 +69,21 @@ export default defineComponent({
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
         };
+
+        const handleDroppedEvent = (data) => {
+            let calendarEvent = {
+                id: data.event.id,
+                title: data.event.title,
+                description: data.event.extendedProps.description,
+                full_day_event: data.event.extendedProps.full_day_event,
+                start: data.event.startStr.slice(0, 19).replace("T", " "),
+                end: data.event.endStr.slice(0, 19).replace("T", " "),
+                event_type_id: data.event.extendedProps.event_type_id,
+                client_id: data.event.extendedProps.client_id,
+            };
+            Inertia.put(route("calendar.event.update", calendarEvent.id), calendarEvent);
+        };
+
         const clearSelectedEvent = () => (selectedCalendarEvent.value = null);
         watchEffect(() => {
             console.log("events changed!");
@@ -95,6 +110,15 @@ export default defineComponent({
                     interactionPlugin,
                     listPlugin,
                 ],
+                /*
+                eventContent: function(arg) {
+                    console.error(arg)
+                    if (arg.event.extendedProps.type.type === "External Event") {
+                       console.log('yes')
+                    } else {
+                       console.log('Event Type '+arg.event.extendedProps.type.type )
+                    }
+                },*/
                 initialView: "dayGridMonth",
                 events: (info, successCallback, failureCallback) =>
                     successCallback(props.calendar_events),
@@ -125,6 +149,9 @@ export default defineComponent({
                     editEventModal.value.open();
                     console.log("event clicked: ", selectedCalendarEvent.value);
                 },
+                eventDrop: function (data) {
+                    handleDroppedEvent(data);
+                }
             },
             createEventModal,
             editEventModal,
