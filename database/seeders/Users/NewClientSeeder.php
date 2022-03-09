@@ -31,7 +31,8 @@ class NewClientSeeder extends Seeder
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->get();
             $team_names = [];
-            foreach ($teams as $team) {
+            foreach ($teams as $team)
+            {
                 $team_names[] = $team['name'];
             }
 
@@ -43,7 +44,7 @@ class NewClientSeeder extends Seeder
                         ->count(5)
                         ->make([
                             'client' => $client->name,
-                            'role' => 'Sales Rep',
+                            'role' => $role->security_role,
                             'team_names' => $team_names
                         ]);
                 } else if ($role->security_role === 'Club Associate') {
@@ -104,7 +105,8 @@ class NewClientSeeder extends Seeder
                         ]);
                 }
 
-                foreach($users as $user) {
+                foreach($users as $user)
+                {
 
                     $client = Client::whereName($user['client'])->first();
 
