@@ -300,34 +300,34 @@
                 class="col-span-3"
             >
                 Times Emailed:
-                <span class="badge badge-success badge-outline">{{
-                    interactionCount.emailedCount
-                }}</span>
+                <span class="badge badge-success badge-outline">
+                    {{ interactionCount.emailedCount }}
+                </span>
             </div>
             <div
                 v-if="typeof interactionCount !== 'undefined'"
                 class="col-span-3"
             >
                 Times Called:
-                <span class="badge badge-error badge-outline">{{
-                    interactionCount.calledCount
-                }}</span>
+                <span class="badge badge-error badge-outline">
+                    {{ interactionCount.calledCount }}
+                </span>
             </div>
             <div
                 v-if="typeof interactionCount !== 'undefined'"
                 class="col-span-3"
             >
                 Times Text Messaged:
-                <span class="badge badge-info badge-outline">{{
-                    interactionCount.smsCount
-                }}</span>
+                <span class="badge badge-info badge-outline">
+                    {{ interactionCount.smsCount }}
+                </span>
             </div>
 
             <div class="form-divider" />
             <div class="col-span-6">
-                <label v-if="'last_updated' in form">{{
-                    form["last_updated"]
-                }}</label>
+                <label v-if="'last_updated' in form">
+                    {{ form["last_updated"] }}
+                </label>
             </div>
         </template>
 
@@ -458,7 +458,7 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: null,
                 gender: lead.gender,
-            }
+            };
             leadData.notes = "";
             leadData.updated = new Date(
                 lead.last_updated?.updated_at
