@@ -56,7 +56,7 @@ class UpdateLead
             'lead_status'
         ])->findOrFail($data['id'])->toArray();
         $aggy = EndUserActivityAggregate::retrieve($data['id']);
-        $aggy->updateLead2($data, $old_data, $current_user->id ?? 'Auto Generated');
+        $aggy->updateLead($data, $old_data, $current_user->id ?? 'Auto Generated');
         if ($current_user) {
             $aggy->claimLead($current_user->id, $data['client_id']);
         }

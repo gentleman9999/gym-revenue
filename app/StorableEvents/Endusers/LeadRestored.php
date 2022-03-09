@@ -1,6 +1,6 @@
 <?php
 
-namespace App\StorableEvents\Endusers\Leads;
+namespace App\StorableEvents\Endusers;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 

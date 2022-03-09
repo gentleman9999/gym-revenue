@@ -460,9 +460,6 @@ export default {
                 gender: lead.gender,
             };
             leadData.notes = "";
-            leadData.updated = new Date(
-                lead.last_updated?.updated_at
-            ).toLocaleDateString("en-US");
 
             console.log("Lead Owner", lead);
 
@@ -480,8 +477,10 @@ export default {
                     ? lead.opportunity.value
                     : null;
             leadData["last_updated"] =
-                "last_updated" in lead && lead.last_updated !== null
-                    ? `Last Updated by ${lead.last_updated.value} at ${lead.updated}`
+                "last_updated" in lead && lead.last_updated
+                    ? `Last Updated by ${lead.last_updated.value} at ${new Date(
+                          lead.last_updated.updated_at
+                      ).toLocaleDateString("en-US")}`
                     : "This lead has never been updated";
 
             leadData["lead_owner"] =

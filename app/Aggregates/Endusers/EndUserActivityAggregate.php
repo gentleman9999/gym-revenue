@@ -2,22 +2,22 @@
 
 namespace App\Aggregates\Endusers;
 
+use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadCreated;
+use App\StorableEvents\Endusers\LeadDeleted;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
-use App\StorableEvents\Endusers\Leads\LeadCreated;
-use App\StorableEvents\Endusers\Leads\LeadDeleted;
-use App\StorableEvents\Endusers\Leads\LeadRestored;
-use App\StorableEvents\Endusers\Leads\LeadTrashed;
-use App\StorableEvents\Endusers\Leads\LeadUpdated;
-use App\StorableEvents\Endusers\TrialMembershipAdded;
-use App\StorableEvents\Endusers\TrialMembershipUsed;
+use App\StorableEvents\Endusers\LeadRestored;
+use App\StorableEvents\Endusers\LeadServicesSet;
+use App\StorableEvents\Endusers\LeadTrashed;
+use App\StorableEvents\Endusers\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
+use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\SubscribedToAudience;
-use App\StorableEvents\Endusers\LeadServicesSet;
+use App\StorableEvents\Endusers\TrialMembershipAdded;
+use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\UpdateLead;
-use App\StorableEvents\Endusers\LeadClaimedByRep;
-use App\StorableEvents\Endusers\LeadWasDeleted;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
@@ -120,32 +120,31 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
-    ///new lead methods
-    public function createLead2(array $data, string $userId = 'Auto Generated')
+    public function createLead(array $data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadCreated($userId, $data));
         return $this;
     }
 
-    public function updateLead2($data, $old_data, string $userId = 'Auto Generated')
+    public function updateLead($data, $old_data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadUpdated($userId, $data, $old_data));
         return $this;
     }
 
-    public function trashLead2(string $reason, string $userId = 'Auto Generated')
+    public function trashLead(string $reason, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadTrashed( $this->uuid(), $userId, $reason));
         return $this;
     }
 
-    public function restoreLead2(string $userId = 'Auto Generagted')
+    public function restoreLead(string $userId = 'Auto Generagted')
     {
         $this->recordThat(new LeadRestored($userId, $this->uuid()));
         return $this;
     }
 
-    public function deleteLead2(array $data, string $userId = 'Auto Generated')
+    public function deleteLead(array $data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadDeleted($userId, $this->uuid(), $data));
         return $this;

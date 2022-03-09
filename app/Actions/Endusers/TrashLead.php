@@ -28,7 +28,7 @@ class TrashLead
 
     public function handle($id, $current_user, $reason)
     {
-        EndUserActivityAggregate::retrieve($id)->trashLead2($reason, $current_user->id ?? "Auto Generated")->persist();
+        EndUserActivityAggregate::retrieve($id)->trashLead($reason, $current_user->id ?? "Auto Generated")->persist();
 
         return Lead::withTrashed()->findOrFail($id);
     }

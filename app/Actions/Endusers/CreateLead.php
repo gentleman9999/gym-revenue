@@ -52,7 +52,7 @@ class CreateLead
         $id = Uuid::new();//we should use uuid here
         $data['id'] = $id;
         $aggy = EndUserActivityAggregate::retrieve($data['id']);
-        $aggy->createLead2( $data, $current_user->id ?? 'Auto Generated');
+        $aggy->createLead( $data, $current_user->id ?? 'Auto Generated');
         $aggy->joinAudience('leads', $data['client_id'], Lead::class);
         if($current_user){
             $aggy->claimLead($current_user->id, $data['client_id']);

@@ -11,13 +11,13 @@ use App\Models\Endusers\TrialMembership;
 use App\Models\Note;
 use App\Models\User;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadCreated;
+use App\StorableEvents\Endusers\LeadDeleted;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
-use App\StorableEvents\Endusers\Leads\LeadCreated;
-use App\StorableEvents\Endusers\Leads\LeadDeleted;
-use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
-use App\StorableEvents\Endusers\Leads\LeadRestored;
-use App\StorableEvents\Endusers\Leads\LeadTrashed;
-use App\StorableEvents\Endusers\Leads\LeadUpdated;
+use App\StorableEvents\Endusers\LeadProfilePictureMoved;
+use App\StorableEvents\Endusers\LeadRestored;
+use App\StorableEvents\Endusers\LeadTrashed;
+use App\StorableEvents\Endusers\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
@@ -194,12 +194,13 @@ class EndUserActivityProjector extends Projector
         }, ARRAY_FILTER_USE_KEY);
         $lead = Lead::create($lead_table_data);
 
+        $user = User::find($event->user);
+
         LeadDetails::create([
             'lead_id' => $lead->id,
             'client_id' => $event->data['client_id'],
             'field' => 'creates',
-//            'value' => $user->email,
-            'value' => $event->user,
+            'value' => $user->email,
         ]);
         LeadDetails::create([
             'lead_id' => $lead->id,
@@ -235,12 +236,12 @@ class EndUserActivityProjector extends Projector
         $lead = Lead::withTrashed()->findOrFail($event->data['id']);
         $lead->updateOrFail($event->data);
 
+        $user = User::find($event->user);
         LeadDetails::create([
             'lead_id' => $lead->id,
             'client_id' => $lead->client_id,
             'field' => 'updated',
-//            'value' => $user->email,
-            'value' => $event->user,
+            'value' => $user->email,
         ]);
 
         //TODO: see if we are still using this. I feel like we got rid of it.

@@ -30,7 +30,7 @@ class RestoreLead
 
     public function handle($id, $current_user)
     {
-        EndUserActivityAggregate::retrieve($id)->restoreLead2($current_user->id ?? "Auto Generated")->persist();
+        EndUserActivityAggregate::retrieve($id)->restoreLead($current_user->id ?? "Auto Generated")->persist();
         return Lead::findOrFail($id);
     }
 
