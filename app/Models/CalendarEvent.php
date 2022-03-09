@@ -37,13 +37,26 @@ class CalendarEvent extends Model
         return $this->hasOne('App\Models\CalendarEventType', 'id', 'event_type_id');
     }
 
+    public function fixDate($data): array
+    {
+        $fixedArray = [];
+        foreach ($data as $item)
+        {
+            $fixedArray[] = substr(str_replace('T', ' ', $item), 0, 19);
+        }
+        return $fixedArray;
+    }
+
     /** Event Scoping with filters */
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('event', 'like', '%' . $search . '%');
+                $query->where('title', 'like', '%' . $search . '%');
             });
+        })->when($filters['start'] ?? null, function ($query) use ($filters) {
+            $query->whereBetween('start', $this->fixDate([$filters['start'],$filters['end']]));
         });
+
     }
 }
