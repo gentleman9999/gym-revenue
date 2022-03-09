@@ -42,9 +42,9 @@ class CalendarAggregate extends AggregateRoot
         return $this;
     }
 
-    public function createCalendarEventType(string $created_by_user_id, array $payload)
+    public function createCalendarEventType(string $name, $desc, $type)
     {
-        $this->recordThat(new CalendarEventTypeCreated($this->uuid(), $created_by_user_id, $payload));
+        $this->recordThat(new CalendarEventTypeCreated($this->uuid(), $name, $desc, $type));
         return $this;
     }
 

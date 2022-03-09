@@ -3,9 +3,7 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Helpers\Uuid;
 use App\Models\CalendarEvent;
-use App\Models\CalendarEventType;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
@@ -35,8 +33,6 @@ class UpdateCalendarEvent
 
     public function handle($data, $user=null)
     {
-        $eventType = CalendarEventType::whereId($data['event_type_id'])->get();
-        $data['color'] = $eventType->first()->color;
         CalendarAggregate::retrieve($data['client_id'])
             ->updateCalendarEvent($user->id ?? "Auto Generated" , $data)
             ->persist();
