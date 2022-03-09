@@ -100,8 +100,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
-        Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class . '@lead_trash')->name('data.leads.trash');
-        Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class . '@lead_restore')->name('data.leads.restore');
+        Route::delete('/delete/{id}', \App\Actions\Endusers\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\RestoreLead::class)->name('data.leads.restore');
         Route::get('/view/{id}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
 
     });

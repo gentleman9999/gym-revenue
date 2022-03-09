@@ -43,10 +43,9 @@ class DeleteLead
 
     public function asController(Request $request, $id)
     {
-        $lead = Location::findOrFail($id);
 
-        $this->handle(
-            $lead->toArray(),
+        $lead = $this->handle(
+            $id,
             $request->user(),
         );
 

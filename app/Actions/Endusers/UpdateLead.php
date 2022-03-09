@@ -21,35 +21,43 @@ class UpdateLead
     public function rules()
     {
         return [
-            'first_name'                => ['required', 'max:50'],
-            'middle_name'               => [],
-            'last_name'                 => ['required', 'max:30'],
-            'email'                     => ['required', 'email:rfc,dns'],
-            'primary_phone'             => ['sometimes'],
-            'alternate_phone'           => ['sometimes'],
-            'gr_location_id'            => ['required', 'exists:locations,gymrevenue_id'],
-            'lead_source_id'            => ['required', 'exists:lead_sources,id'],
-            'lead_type_id'              => ['required', 'exists:lead_types,id'],
-            'client_id'                 => 'required',
-            'profile_picture'           => 'sometimes',
-            'profile_picture.uuid'      => 'sometimes|required',
-            'profile_picture.key'       => 'sometimes|required',
+            'first_name' => ['required', 'max:50'],
+            'middle_name' => [],
+            'last_name' => ['required', 'max:30'],
+            'email' => ['required', 'email:rfc,dns'],
+            'primary_phone' => ['sometimes'],
+            'alternate_phone' => ['sometimes'],
+            'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
+            'lead_source_id' => ['required', 'exists:lead_sources,id'],
+            'lead_type_id' => ['required', 'exists:lead_types,id'],
+            'client_id' => 'required',
+            'profile_picture' => 'sometimes',
+            'profile_picture.uuid' => 'sometimes|required',
+            'profile_picture.key' => 'sometimes|required',
             'profile_picture.extension' => 'sometimes|required',
-            'profile_picture.bucket'    => 'sometimes|required',
-            'gender'                    => 'sometimes|required',
-            'dob'                       => 'sometimes|required',
-            'opportunity'               => 'sometimes|required',
-            'lead_owner'                => 'sometimes|required|exists:users,id',
-            'lead_status'               => 'sometimes|required|exists:lead_statuses,id',
-            'notes'                     => 'nullable|string'
+            'profile_picture.bucket' => 'sometimes|required',
+            'gender' => 'sometimes|required',
+            'dob' => 'sometimes|required',
+            'opportunity' => 'sometimes|required',
+            'lead_owner' => 'sometimes|required|exists:users,id',
+            'lead_status' => 'sometimes|required|exists:lead_statuses,id',
+            'notes' => 'nullable|string'
         ];
     }
 
     public function handle($data, $current_user)
     {
+        $old_data = Lead::with([
+            'profile_picture',
+            'middle_name',
+            'dob',
+            'opportunity',
+            'lead_owner',
+            'lead_status'
+        ])->findOrFail($data['id'])->toArray();
         $aggy = EndUserActivityAggregate::retrieve($data['id']);
-        $aggy->updateLead2( $data, $current_user->id ?? 'Auto Generated');
-        if($current_user){
+        $aggy->updateLead2($data, $old_data, $current_user->id ?? 'Auto Generated');
+        if ($current_user) {
             $aggy->claimLead($current_user->id, $data['client_id']);
         }
         $aggy->persist();

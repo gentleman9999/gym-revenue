@@ -42,14 +42,13 @@ class RestoreLead
 
     public function asController(Request $request, $id)
     {
-        $leads = Location::withTrashed()->findOrFail($id);
-
-        $this->handle(
-            $leads->toArray(),
+        $lead = $this->handle(
+            $id,
             $request->user(),
         );
 
-        Alert::success("Lead '{$leads->name}' restored.")->flash();
+
+        Alert::success("Lead '{$lead->name}' restored.")->flash();
 
 //        return Redirect::route('data.leads');
         return Redirect::back();

@@ -3,10 +3,8 @@
 namespace App\Actions\Endusers;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
-use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use Bouncer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -24,13 +22,13 @@ class TrashLead
     public function rules()
     {
         return [
-            //no rules since we only accept an id route param, which is validated in the route definition
+            'reason' => ['required','string']
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle($id, $current_user, $reason)
     {
-        EndUserActivityAggregate::retrieve($id)->trashLead2($current_user->id ?? "Auto Generated")->persist();
+        EndUserActivityAggregate::retrieve($id)->trashLead2($reason, $current_user->id ?? "Auto Generated")->persist();
 
         return Lead::withTrashed()->findOrFail($id);
     }
@@ -41,13 +39,14 @@ class TrashLead
         return $current_user->can('leads.trash', $current_user->currentTeam()->first());
     }
 
-    public function asController(Request $request, $id)
+    public function asController(ActionRequest $request, $id)
     {
-        $lead = Location::findOrFail($id);
+        $lead = Lead::findOrFail($id);
 
         $this->handle(
-            $lead->toArray(),
+            $id,
             $request->user(),
+            $request->validated()['reason']
         );
 
         Alert::success("Location '{$lead->name}' sent to trash")->flash();

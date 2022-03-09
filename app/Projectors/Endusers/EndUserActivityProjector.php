@@ -10,7 +10,6 @@ use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Note;
 use App\Models\User;
-use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
 use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
@@ -20,161 +19,17 @@ use App\StorableEvents\Endusers\Leads\LeadRestored;
 use App\StorableEvents\Endusers\Leads\LeadTrashed;
 use App\StorableEvents\Endusers\Leads\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
-use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
-use App\StorableEvents\Endusers\ManualLeadMade;
-use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
 use App\StorableEvents\Endusers\TrialMembershipAdded;
 use App\StorableEvents\Endusers\TrialMembershipUsed;
-use App\StorableEvents\Endusers\UpdateLead;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EndUserActivityProjector extends Projector
 {
     private $details = ['middle_name', 'lead_status', 'dob', 'opportunity'];
-
-    public function onNewLeadMade(NewLeadMade $event)
-    {
-        //get only the keys we care about (the ones marked as fillable)
-        $lead_table_data = array_filter($event->lead, function ($key) {
-            return in_array($key, (new Lead)->getFillable());
-        }, ARRAY_FILTER_USE_KEY);
-        $lead = Lead::create($lead_table_data);
-
-        LeadDetails::create([
-            'lead_id' => $lead->id,
-            'client_id' => $lead->client_id,
-            'field' => 'created',
-            'value' => $lead->created_at
-        ]);
-
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $lead->client_id,
-            'field' => 'agreement_number',
-            'value' => floor(time() - 99999999),
-        ]);
-
-        foreach ($event->lead['details'] ?? [] as $field => $value) {
-            LeadDetails::create([
-                    'lead_id' => $event->aggregateRootUuid(),
-                    'client_id' => $lead->client_id,
-                    'field' => $field,
-                    'value' => $value
-                ]
-            );
-        }
-
-        foreach ($event->lead['services'] ?? [] as $service_id) {
-            LeadDetails::create([
-                    'lead_id' => $event->aggregateRootUuid(),
-                    'client_id' => $lead->client_id,
-                    'field' => 'service_id',
-                    'value' => $service_id
-                ]
-            );
-        }
-    }
-
-    public function onManualLeadMade(ManualLeadMade $event)
-    {
-        $user = User::find($event->user);
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $event->lead['client_id'],
-            'field' => 'manual_create',
-            'value' => $user->email,
-        ]);
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $event->lead['client_id'],
-            'field' => 'created',
-            'value' => Carbon::now()
-        ]);
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $event->lead['client_id'],
-            'field' => 'agreement_number',
-            'value' => floor(time() - 99999999),
-        ]);
-    }
-
-    public function onLeadDetailUpdated(LeadDetailUpdated $event)
-    {
-        $detail = LeadDetails::firstOrCreate([
-            'lead_id' => $event->lead,
-            'client_id' => $event->client,
-            'field' => $event->key,
-        ]);
-
-        $detail->value = $event->value;
-        $misc = ['user' => $event->user];
-        $detail->misc = $misc;
-        $detail->save();
-    }
-
-    public function onAgreementNumberCreatedForLead(AgreementNumberCreatedForLead $event)
-    {
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $event->client,
-            'field' => 'agreement_number',
-            'value' => $event->agreement,
-        ]);
-    }
-
-    public function onUpdateLead(UpdateLead $event)
-    {
-        $lead = Lead::findOrFail($event->id);
-        $old_data = $lead->toArray();
-        $user = User::find($event->user);
-        $lead->updateOrFail($event->lead);
-
-        $notes = $event->lead['notes'] ?? false;
-        if ($notes) {
-            Note::create([
-                'entity_id' => $event->id,
-                'entity_type' => Lead::class,
-                'note' => $notes,
-                'created_by_user_id' => $event->user
-            ]);
-            LeadDetails::create([
-                'lead_id' => $event->id,
-                'client_id' => $lead->client_id,
-                'field' => 'note_created',
-                'value' => $notes,
-            ]);
-        }
-
-        LeadDetails::whereLeadId($event->id)->whereField('service_id')->delete();
-        /*
-        foreach ($event->lead['services'] ?? [] as $service_id) {
-            LeadDetails::firstOrCreate([
-                    'lead_id' => $event->aggregateRootUuid(),
-                    'client_id' => $lead->client_id,
-                    'field' => 'service_id',
-                    'value' => $service_id
-                ]
-            );
-        }
-        */
-
-        LeadDetails::create([
-            'lead_id' => $event->id,
-            'client_id' => $lead->client_id,
-            'field' => 'updated',
-            'value' => $user->email,
-            'misc' => [
-                'old_data' => $old_data,
-                'new_data' => $event->lead,
-                'user' => $event->user
-            ]
-        ]);
-    }
 
     public function onLeadClaimedByRep(LeadClaimedByRep $event)
     {
@@ -293,24 +148,6 @@ class EndUserActivityProjector extends Projector
 
     }
 
-    public function onLeadWasDeleted(LeadWasDeleted $event)
-    {
-        $lead = Lead::findOrFail($event->lead);
-        $client_id = $lead->client_id;
-        $success = $lead->deleteOrFail();
-
-        $uare = $event->user;
-
-        LeadDetails::create([
-            'client_id' => $client_id,
-            'lead_id' => $event->lead,
-            'field' => 'softdelete',
-            'value' => $uare,
-            'misc' => ['userid' => $uare]
-        ]);
-
-    }
-
     public function onTrialMembershipAdded(TrialMembershipAdded $event)
     {
         $lead = Lead::findOrFail($event->lead);
@@ -360,7 +197,7 @@ class EndUserActivityProjector extends Projector
         LeadDetails::create([
             'lead_id' => $lead->id,
             'client_id' => $event->data['client_id'],
-            'field' => 'manual_create',
+            'field' => 'creates',
 //            'value' => $user->email,
             'value' => $event->user,
         ]);
@@ -377,19 +214,7 @@ class EndUserActivityProjector extends Projector
             'value' => floor(time() - 99999999),
         ]);
 
-        foreach ($this->details as $field) {
-            LeadDetails::createOrUpdateRecord($event->data['id'], $event->data['client_id'], $field, $event->data[$field] ?? null);
-        }
-
-        $notes = $event->data['notes'] ?? false;
-        if ($notes) {
-            Note::create([
-                'entity_id' => $lead->id,
-                'entity_type' => Lead::class,
-                'note' => $notes,
-                'created_by_user_id' => $event->user
-            ]);
-        }
+        $this->createOrUpdateLeadDetailsAndNotes($event, $lead);
 
         if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
             $file = $event->data['profile_picture'];
@@ -410,19 +235,18 @@ class EndUserActivityProjector extends Projector
         $lead = Lead::withTrashed()->findOrFail($event->data['id']);
         $lead->updateOrFail($event->data);
 
-        foreach ($this->details as $field) {
-            LeadDetails::createOrUpdateRecord($event->data['id'], $event->data['client_id'], $field, $event->data[$field] ?? null);
-        }
+        LeadDetails::create([
+            'lead_id' => $lead->id,
+            'client_id' => $lead->client_id,
+            'field' => 'updated',
+//            'value' => $user->email,
+            'value' => $event->user,
+        ]);
 
-        $notes = $event->data['notes'] ?? false;
-        if ($notes) {
-            Note::create([
-                'entity_id' => $lead->id,
-                'entity_type' => Lead::class,
-                'note' => $notes,
-                'created_by_user_id' => $event->user
-            ]);
-        }
+        //TODO: see if we are still using this. I feel like we got rid of it.
+        LeadDetails::whereLeadId($lead->id)->whereField('service_id')->delete();
+
+        $this->createOrUpdateLeadDetailsAndNotes($event, $lead);
 
         if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
             $file = $event->data['profile_picture'];
@@ -439,7 +263,15 @@ class EndUserActivityProjector extends Projector
 
     public function onLeadTrashed(LeadTrashed $event)
     {
-        Lead::findOrFail($event->id)->deleteOrFail();
+        $lead = Lead::findOrFail($event->id);
+        $lead->deleteOrFail();
+        LeadDetails::create([
+            'client_id' => $lead->client_id,
+            'lead_id' => $lead->id,
+            'field' => 'softdelete',
+            'value' => $event->reason,
+            'misc' => ['userid' => $event->user]
+        ]);
     }
 
     public function onLeadRestored(LeadRestored $event)
@@ -456,4 +288,38 @@ class EndUserActivityProjector extends Projector
     {
         LeadDetails::whereLeadId($event->aggregateRootUuid())->whereField('profile_picture')->firstOrFail()->updateOrFail(['misc' => $event->file]);
     }
+
+    protected function createOrUpdateLeadDetailsAndNotes($event, $lead)
+    {
+        foreach ($this->details as $field) {
+            LeadDetails::createOrUpdateRecord($event->data['id'], $event->data['client_id'], $field, $event->data[$field] ?? null);
+        }
+
+        $notes = $event->data['notes'] ?? false;
+        if ($notes) {
+            Note::create([
+                'entity_id' => $lead->id,
+                'entity_type' => Lead::class,
+                'note' => $notes,
+                'created_by_user_id' => $event->user
+            ]);
+            LeadDetails::create([
+                'lead_id' => $lead->id,
+                'client_id' => $lead->client_id,
+                'field' => 'note_created',
+                'value' => $notes,
+            ]);
+        }
+
+        foreach ($event->lead['services'] ?? [] as $service_id) {
+            LeadDetails::create([
+                    'lead_id' => $event->aggregateRootUuid(),
+                    'client_id' => $lead->client_id,
+                    'field' => 'service_id',
+                    'value' => $service_id
+                ]
+            );
+        }
+    }
+
 }
