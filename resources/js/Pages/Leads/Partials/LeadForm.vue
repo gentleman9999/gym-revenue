@@ -13,8 +13,8 @@
                         class="w-full h-full object-cover"
                     />
                     <img
-                        v-else-if="form?.profile_picture?.misc?.url"
-                        :src="form.profile_picture.misc.url"
+                        v-else-if="lead?.profile_picture?.misc?.url"
+                        :src="lead.profile_picture.misc.url"
                         alt="lead profile picture"
                         class="w-full h-full object-cover"
                     />
@@ -420,13 +420,14 @@ export default {
     setup(props, context) {
         let lead = props.lead;
         let operation = "Update";
+        let leadData = null;
         if (!lead) {
-            lead = {
+            leadData = {
                 first_name: null,
                 middle_name: null,
                 last_name: null,
                 email: null,
-                primary_phone: null, //TODO:change to primary/alternate
+                primary_phone: null,
                 alternate_phone: null,
                 club_id: null,
                 client_id: props.clientId,
@@ -443,42 +444,57 @@ export default {
             };
             operation = "Create";
         } else {
-            lead.notes = "";
-            lead.updated = new Date(
+            leadData = {
+                first_name: lead.first_name,
+                middle_name: lead.middle_name,
+                last_name: lead.last_name,
+                email: lead.email,
+                primary_phone: lead.primary_phone,
+                alternate_phone: lead.alternate_phone,
+                club_id: lead.club_id,
+                client_id: props.clientId,
+                gr_location_id: lead.gr_location_id,
+                lead_type_id: lead.lead_type_id,
+                lead_source_id: lead.lead_source_id,
+                profile_picture: null,
+                gender: lead.gender,
+            }
+            leadData.notes = "";
+            leadData.updated = new Date(
                 lead.last_updated?.updated_at
             ).toLocaleDateString("en-US");
 
             console.log("Lead Owner", lead);
 
-            lead.agreement_number = lead.details_desc.find(
+            leadData.agreement_number = lead.details_desc.find(
                 (detail) => detail.field === "agreement_number"
             ).value;
-            lead.middle_name =
+            leadData.middle_name =
                 "middle_name" in lead && lead.middle_name !== null
                     ? lead.middle_name.value
                     : null;
-            lead.dob =
+            leadData.dob =
                 "dob" in lead && lead.dob !== null ? lead.dob.value : null;
-            lead.opportunity =
+            leadData.opportunity =
                 "opportunity" in lead && lead.opportunity !== null
                     ? lead.opportunity.value
                     : null;
-            lead["last_updated"] =
+            leadData["last_updated"] =
                 "last_updated" in lead && lead.last_updated !== null
                     ? `Last Updated by ${lead.last_updated.value} at ${lead.updated}`
                     : "This lead has never been updated";
 
-            lead["lead_owner"] =
+            leadData["lead_owner"] =
                 "lead_owner" in lead && lead.lead_owner !== null
                     ? lead.lead_owner.value
                     : "";
-            lead["lead_status"] =
+            leadData["lead_status"] =
                 "lead_status" in lead && lead.lead_status !== null
                     ? lead.lead_status.value
                     : "";
         }
 
-        const form = useForm(lead);
+        const form = useForm(leadData);
         const fileForm = useForm({ file: null });
 
         let handleSubmit = () =>

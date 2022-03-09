@@ -96,8 +96,11 @@ export default defineComponent({
                     listPlugin,
                 ],
                 initialView: "dayGridMonth",
-                events: (info, successCallback, failureCallback) =>
-                    successCallback(props.calendar_events),
+                events: (info, successCallback, failureCallback) => {
+                    //set window.location
+                    console.log({info});
+                    successCallback(props.calendar_events)
+                },
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
                     center: "title",

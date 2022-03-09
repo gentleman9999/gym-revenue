@@ -3,10 +3,13 @@
 namespace App\Reactors\Endusers;
 
 use App\Actions\Sms\Twilio\FireTwilioMsg;
+use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Utility\AppState;
+use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
+use App\StorableEvents\Endusers\Leads\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\NewLeadMade;
@@ -93,6 +96,29 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
             ]);
             $profile_picture->misc =  $file;
             $profile_picture->save();
+        }
+    }
+
+    public function onLeadUpdated(LeadUpdated $event)
+    {
+        $this->maybeMoveProfilePicture($event);
+    }
+
+    public function onLeadCreated(LeadCreated $event)
+    {
+        $this->maybeMoveProfilePicture($event);
+    }
+
+    protected function maybeMoveProfilePicture($event)
+    {
+        $file = $event->data['profile_picture'] ?? false;
+
+        if ($file) {
+            $destKey = "{$event->data['client_id']}/{$file['uuid']}";
+            Storage::disk('s3')->move($file['key'], $destKey);
+            $file['key'] = $destKey;
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+            EndUserActivityAggregate::retrieve($event->aggregateRootUuid())->recordThat(new LeadProfilePictureMoved($file))->persist();
         }
     }
 }

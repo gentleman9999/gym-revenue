@@ -15,6 +15,7 @@ use App\StorableEvents\Endusers\LeadClaimedByRep;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadDeleted;
+use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
 use App\StorableEvents\Endusers\Leads\LeadRestored;
 use App\StorableEvents\Endusers\Leads\LeadTrashed;
 use App\StorableEvents\Endusers\Leads\LeadUpdated;
@@ -55,7 +56,7 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $event->id,
             'client_id' => $lead->client_id,
             'field' => 'agreement_number',
-            'value' => floor(time()-99999999),
+            'value' => floor(time() - 99999999),
         ]);
 
         foreach ($event->lead['details'] ?? [] as $field => $value) {
@@ -98,7 +99,7 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $event->id,
             'client_id' => $event->lead['client_id'],
             'field' => 'agreement_number',
-            'value' => floor(time()-99999999),
+            'value' => floor(time() - 99999999),
         ]);
     }
 
@@ -106,7 +107,7 @@ class EndUserActivityProjector extends Projector
     {
         $detail = LeadDetails::firstOrCreate([
             'lead_id' => $event->lead,
-            'client_id' =>  $event->client,
+            'client_id' => $event->client,
             'field' => $event->key,
         ]);
 
@@ -116,7 +117,8 @@ class EndUserActivityProjector extends Projector
         $detail->save();
     }
 
-    public function onAgreementNumberCreatedForLead(AgreementNumberCreatedForLead $event){
+    public function onAgreementNumberCreatedForLead(AgreementNumberCreatedForLead $event)
+    {
         LeadDetails::create([
             'lead_id' => $event->id,
             'client_id' => $event->client,
@@ -133,10 +135,10 @@ class EndUserActivityProjector extends Projector
         $lead->updateOrFail($event->lead);
 
         $notes = $event->lead['notes'] ?? false;
-        if($notes){
+        if ($notes) {
             Note::create([
-                'entity_id'=> $event->id,
-                'entity_type'=> Lead::class,
+                'entity_id' => $event->id,
+                'entity_type' => Lead::class,
                 'note' => $notes,
                 'created_by_user_id' => $event->user
             ]);
@@ -247,10 +249,10 @@ class EndUserActivityProjector extends Projector
         ]);
 
         $notes = $misc['notes'] ?? false;
-        if($notes){
+        if ($notes) {
             Note::create([
-                'entity_id'=> $event->lead,
-                'entity_type'=> Lead::class,
+                'entity_id' => $event->lead,
+                'entity_type' => Lead::class,
                 'note' => $notes,
                 'created_by_user_id' => $event->user
             ]);
@@ -372,7 +374,7 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $lead->id,
             'client_id' => $event->data['client_id'],
             'field' => 'agreement_number',
-            'value' => floor(time()-99999999),
+            'value' => floor(time() - 99999999),
         ]);
 
         foreach ($this->details as $field) {
@@ -380,20 +382,17 @@ class EndUserActivityProjector extends Projector
         }
 
         $notes = $event->data['notes'] ?? false;
-        if($notes){
+        if ($notes) {
             Note::create([
-                'entity_id'=> $lead->id,
-                'entity_type'=> Lead::class,
+                'entity_id' => $lead->id,
+                'entity_type' => Lead::class,
                 'note' => $notes,
                 'created_by_user_id' => $event->user
             ]);
         }
 
-        if (array_key_exists('profile_picture', $event->data)) {
+        if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
             $file = $event->data['profile_picture'];
-            $destKey = "{$event->data['client_id']}/{$file['uuid']}";
-            Storage::disk('s3')->move($file['key'], $destKey);
-            $file['key'] = $destKey;
             $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
 
             LeadDetails::create([
@@ -416,13 +415,25 @@ class EndUserActivityProjector extends Projector
         }
 
         $notes = $event->data['notes'] ?? false;
-        if($notes){
+        if ($notes) {
             Note::create([
-                'entity_id'=> $lead->id,
-                'entity_type'=> Lead::class,
+                'entity_id' => $lead->id,
+                'entity_type' => Lead::class,
                 'note' => $notes,
                 'created_by_user_id' => $event->user
             ]);
+        }
+
+        if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
+            $file = $event->data['profile_picture'];
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+
+            LeadDetails::firstOrCreate([
+                    'lead_id' => $lead->id,
+                    'client_id' => $lead->client_id,
+                    'field' => 'profile_picture',
+                ]
+            )->updateOrFail(['misc' => $file]);
         }
     }
 
@@ -439,5 +450,10 @@ class EndUserActivityProjector extends Projector
     public function onLeadDeleted(LeadDeleted $event)
     {
         Lead::withTrashed()->findOrFail($event->id)->forceDelete();
+    }
+
+    public function onLeadProfilePictureMoved(LeadProfilePictureMoved $event)
+    {
+        LeadDetails::whereLeadId($event->aggregateRootUuid())->whereField('profile_picture')->firstOrFail()->updateOrFail(['misc' => $event->file]);
     }
 }

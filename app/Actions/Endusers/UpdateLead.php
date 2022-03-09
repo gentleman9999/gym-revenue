@@ -53,7 +53,7 @@ class UpdateLead
             $aggy->claimLead($current_user->id, $data['client_id']);
         }
         $aggy->persist();
-        return Lead::find($data['id']);
+        return Lead::findOrFail($data['id']);
     }
 
     public function authorize(ActionRequest $request): bool
