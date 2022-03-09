@@ -234,5 +234,26 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 03-09-2022',
+            'value' => '2022-03-09',
+            'misc' => [
+                'buildno' => '20220309',
+                'version' => '0.14.35',
+                'notes' => [
+                    'Users Mgnt - Can upload documentation connected to a User',
+                    'Leads Mgnt - A Lead Preview is now available',
+                    'Leads Mgnt - Added Opportunity-driven color-coded border around the Avatar in Edit and Sales Rep views',
+                    'Leads Mgnt - Sales Rep view : Notes are included in the history',
+                    'ToDo List - Setup a Calendar with pre-seeded dummy events',
+                    'Misc - Backend Optimizations enhancing the note functionality',
+                    'Misc - Backend pre-requisite code for the Calendar',
+                    'Misc - State field in Users,Locations  and Profile Management CRUDs use a Dropdown instead of typing in the stateA',
+                    'Misc - Added Sami’s last name to her account.'
+                ]
+            ]
+        ]);
     }
 }
