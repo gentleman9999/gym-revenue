@@ -25,7 +25,7 @@ class CalendarEventType extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'name', 'description'];
+    protected $fillable = ['id', 'client_id', 'name', 'description', 'color'];
 
     public function client()
     {

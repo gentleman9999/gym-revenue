@@ -95,6 +95,14 @@ export default defineComponent({
                     interactionPlugin,
                     listPlugin,
                 ],
+                eventContent: function(arg) {
+                    console.error(arg)
+                    if (arg.event.extendedProps.type.type === "External Event") {
+                        console.log('yes')
+                    } else {
+                        console.log('Event Type '+arg.event.extendedProps.type.type )
+                    }
+                },
                 initialView: "dayGridMonth",
                 events: (info, successCallback, failureCallback) =>
                     successCallback(props.calendar_events),

@@ -21,7 +21,15 @@ class CalendarEventTypeSeeder extends Seeder
             VarDumper::dump('Getting Clients');
             $clients = Client::whereActive(1)->get();
 
-            $types = ['Tour', 'Sales Meeting', 'Unavailable', 'Training and Development', 'Prospecting', 'External Event', 'Task Follow-Up'];
+            $types = [
+                'Tour' => ['name' => 'Tour', 'color' => 'red'],
+                'Sales Meeting' => ['name' => 'Sales Meeting', 'color' => 'yellow'],
+                'Unavailable' => ['name' => 'Unavailable', 'color' => 'purple'],
+                'Training and Development' => ['name' => 'Training and Development', 'color' => 'white'],
+                'Prospecting' => ['name' => 'Prospecting', 'color' => 'grey'],
+                'External Event' => ['name' => 'External Event', 'color' => 'blue'],
+                'Task Follow-Up' => ['name' => 'Task Follow-Up', 'color' => 'green']
+            ];
 
             if (count($clients) > 0) {
                 foreach ($clients as $client)
@@ -29,8 +37,17 @@ class CalendarEventTypeSeeder extends Seeder
                     VarDumper::dump('Creating Calendar Event Types for '.$client->name);
                     foreach ($types as $type)
                     {
-                        $aggy = CalendarAggregate::retrieve($client->id)
-                            ->createCalendarEventType($type.' for '.$client->name, 'Description for '.$client->name, $type)
+
+                        $payload = [
+                            'client_id' => $client->id,
+                            'name' => $type['name'].' Event Type for '.$client->name,
+                            'description' => $type['name'].' Event Type for '.$client->name,
+                            'type' => $type['name'],
+                            'color' => $type['color'],
+                        ];
+
+                        CalendarAggregate::retrieve($client->id)
+                            ->createCalendarEventType('Auto Generated', $payload)
                             ->persist();
                     }
                 }
