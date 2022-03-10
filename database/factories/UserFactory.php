@@ -31,7 +31,6 @@ class UserFactory extends Factory
             'first_name' => $firstName,
             'last_name' => $lastName,
             'name' => $firstName. ' ' .$lastName,
-            'email' => strtolower($firstName). '.' .strtolower($lastName). '@userfactory.com',
             'email_verified_at' => now(),
             'password' => bcrypt('Hello123!'), // password
         ];
@@ -69,5 +68,12 @@ class UserFactory extends Factory
                 }),
             'ownedTeams'
         );
+    }
+    public function configure()
+    {
+        return $this->afterMaking(function (User $user) {
+            $user->email = strtolower($user->first_name). '.' .strtolower($user->last_name). '@' . strtolower($user->client) . '.com';
+            return $user;
+        });
     }
 }
