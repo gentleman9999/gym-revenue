@@ -1,6 +1,6 @@
 <template>
     <!-- Cards Statics -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-2 mb-8 grid-cols-2 xl:grid-cols-4 xl:gap-6">
 
         <slot />
 

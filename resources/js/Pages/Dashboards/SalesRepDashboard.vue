@@ -1,27 +1,17 @@
 <template>
     <app-layout>
         <template #header>
-            <div class="flex flex-row justify-between" >
-                <div><p>Dashboard - {{ teamName }}</p></div>
-                <div><p>{{ accountName }}</p></div>
-            </div>
-
+            <dashboard-header :team-name="teamName" :account-name="accountName"/>
         </template>
 
         <jet-bar-container>
             <!-- @todo - leave the jet-bar-alert here and make it contextual, dynamic, pusher-enabled? -->
             <!-- <jet-bar-alert text="This is an alert message" /> -->
 
-            <jet-bar-stats-container>
-                <jet-bar-stat-card v-for="(widget, idx) in widgets" :title="widget.title" :number="widget.value" :type="widget.type">
-                    <template v-slot:icon>
-                        <jet-bar-icon :type="widget.icon" fill />
-                    </template>
-                </jet-bar-stat-card>
-            </jet-bar-stats-container>
+            <dashboard-stats :widgets="widgets" />
 
             <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid xl:grid-cols-2 gap-4">
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
                             <h2 class="card-title">Latest Claimable Leads</h2>
@@ -63,8 +53,6 @@
 import AppLayout from '@/Layouts/AppLayout'
 import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
-import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
-import JetBarStatCard from "@/Components/JetBarStatCard";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
@@ -83,6 +71,7 @@ import {
     faUser
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats";
 
 library.add(
     faBars,
@@ -103,13 +92,12 @@ export default {
         AppLayout,
         JetBarContainer,
         JetBarAlert,
-        JetBarStatsContainer,
-        JetBarStatCard,
         GymRevenueTable,
         JetBarBadge,
         JetBarIcon,
         AnnounceModal,
-        FontAwesomeIcon
+        FontAwesomeIcon,
+        DashboardStats
     },
     props: [
         'teamName',
