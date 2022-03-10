@@ -200,7 +200,7 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $lead->id,
             'client_id' => $event->data['client_id'],
             'field' => 'creates',
-            'value' => $user->email,
+            'value' => $user === null ? 'Auto Generated' : $user->email,
         ]);
         LeadDetails::create([
             'lead_id' => $lead->id,
