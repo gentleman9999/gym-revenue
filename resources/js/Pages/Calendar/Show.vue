@@ -93,7 +93,7 @@ export default defineComponent({
     setup(props) {
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             "calendar",
-            {start: '', end: 'test'}
+            {start: '', end: ''}
         );
         const calendar = ref(null);
         const createEventModal = ref();
