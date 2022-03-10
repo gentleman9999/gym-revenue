@@ -26,7 +26,6 @@ class CalendarSeeder extends Seeder
         $datestart = strtotime('2022-03-01');
         $dateend = strtotime('2022-03-31');
         $daystep = 86400;
-        $options = ['color' => 'yellow', 'textColor' => 'black'];
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -49,6 +48,7 @@ class CalendarSeeder extends Seeder
                             'title' => $title,
                             'start' => $start,
                             'end' => $end,
+                            'color' => $eventType->color,
                             'full_day_event' => 0,//todo:randomize,
                             'event_type_id' => $eventType->id
                         ];

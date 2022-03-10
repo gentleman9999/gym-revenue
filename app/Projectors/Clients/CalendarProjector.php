@@ -17,7 +17,6 @@ class CalendarProjector extends Projector
         CalendarEvent::create($event->data);
     }
 
-
     public function onCalenderEventUpdated(CalendarEventUpdated $event)
     {
         CalendarEvent::findOrFail($event->data['id'])->updateOrFail($event->data);
@@ -40,12 +39,7 @@ class CalendarProjector extends Projector
 
     public function onCalenderEventTypeCreated(CalendarEventTypeCreated $event)
     {
-        $event = CalendarEventType::create([
-            'client_id' => $event->client,
-            'name' => $event->name,
-            'description' => $event->desc,
-            'type' => $event->type,
-        ]);
+        CalendarEventType::create($event->data);
     }
 }
 
