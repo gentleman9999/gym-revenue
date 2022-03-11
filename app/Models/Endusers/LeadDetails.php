@@ -36,4 +36,17 @@ class LeadDetails extends Model
     {
         return $this->belongsTo('App\Models\Endusers\Lead', 'lead_id', 'id');
     }
+
+    public static function createOrUpdateRecord($lead_id, $client_id, $field, $value)
+    {
+        $model = self::firstOrCreate([
+            'lead_id' => $lead_id,
+            'client_id' => $client_id,
+            'field' => $field
+        ]);
+
+        $model->value = $value;
+        $model->save();
+    }
+
 }

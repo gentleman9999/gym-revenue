@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,18 +90,18 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Http\Controllers\Data\LeadsController::class . '@store')->name('data.leads.store');
+        Route::post('/create', \App\Actions\Endusers\CreateLead::class)->name('data.leads.store');
         Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{id}', \App\Http\Controllers\Data\LeadsController::class . '@update')->name('data.leads.update');
+        Route::put('/{id}', \App\Actions\Endusers\UpdateLead::class)->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
-        Route::delete('/delete/{id}', \App\Http\Controllers\Data\LeadsController::class . '@lead_trash')->name('data.leads.trash');
-        Route::post('/delete/{id}/restore', \App\Http\Controllers\Data\LeadsController::class . '@lead_restore')->name('data.leads.restore');
+        Route::delete('/delete/{id}', \App\Actions\Endusers\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\RestoreLead::class)->name('data.leads.restore');
         Route::get('/view/{id}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
 
     });
