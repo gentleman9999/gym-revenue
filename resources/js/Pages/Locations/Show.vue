@@ -2,7 +2,6 @@
     <app-layout :title="title">
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Locations</h2>
-            <!--           {{this.$page.props}}-->
         </template>
         <gym-revenue-crud
             base-route="locations"
@@ -17,7 +16,7 @@
                 },
             }"
             :preview-component="LocationPreview"
-            ><!--base-route="locations"-->
+            >
             <template #filter>
                 <simple-search-filter
                     v-model:modelValue="form.search"
@@ -58,6 +57,9 @@
                         </div>
                     </template>
                 </simple-search-filter>
+                <button class="btn btn-sm text-xs" @click="handleClickImport">
+                    Import Location
+                </button>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -66,22 +68,29 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to Close this Club?<BR />
+            Are you sure you want to Close this Club?
         </confirm>
+
+        <daisy-modal ref="importLocation" id="importLocation" class="lg:max-w-5xl bg-base-300">
+            <h1 class="font-bold mb-4">Import Location</h1>
+            <file-manager @submitted="closeModals" :client-id="$page.props.clientId" />
+        </daisy-modal>
+
     </app-layout>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-//import {ref} from "vue/dist/vue";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { Inertia } from "@inertiajs/inertia";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
-
 import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import LocationPreview from "@/Pages/Locations/Partials/LocationPreview";
+import DaisyModal from "@/Components/DaisyModal";
+import FileManager from "./Partials/FileManager";
 
 export default defineComponent({
     components: {
@@ -91,6 +100,8 @@ export default defineComponent({
         JetBarContainer,
         Button,
         SimpleSearchFilter,
+        DaisyModal,
+        FileManager
     },
     props: [
         "sessions",
@@ -100,6 +111,7 @@ export default defineComponent({
         "filters",
         "useSearchFilter",
         "SearchFilter",
+        "clientId"
     ],
     setup(props) {
         const baseRoute = "locations";
@@ -117,6 +129,15 @@ export default defineComponent({
             confirmTrash.value = null;
         };
 
+        const importLocation = ref();
+        const handleClickImport = () => {
+            importLocation.value.open();
+        };
+
+        const closeModals = () => {
+            importLocation.value.close();
+        };
+
         return {
             handleClickTrash,
             confirmTrash,
@@ -127,7 +148,10 @@ export default defineComponent({
             clearFilters,
             clearSearch,
             LocationPreview,
-        }; //, fields
+            closeModals,
+            handleClickImport,
+            importLocation
+        };
     },
     computed: {
         fields() {

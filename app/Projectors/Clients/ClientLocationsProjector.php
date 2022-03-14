@@ -2,13 +2,16 @@
 
 namespace App\Projectors\Clients;
 
+use App\Imports\LocationsImport;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
 use App\StorableEvents\Clients\Locations\LocationCreated;
+use App\StorableEvents\Clients\Locations\LocationImported;
 use App\StorableEvents\Clients\Locations\LocationDeleted;
 use App\StorableEvents\Clients\Locations\LocationRestored;
 use App\StorableEvents\Clients\Locations\LocationTrashed;
 use App\StorableEvents\Clients\Locations\LocationUpdated;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Bouncer;
 
@@ -25,6 +28,11 @@ class ClientLocationsProjector extends Projector
         foreach ($this->details as $field) {
             LocationDetails::createOrUpdateRecord($event->payload['id'], $event->client, $field, $event->payload[$field] ?? null);
         }
+    }
+
+    public function onLocationImported(LocationImported $event)
+    {
+        Excel::import(new LocationsImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function onLocationUpdated(LocationUpdated $event)

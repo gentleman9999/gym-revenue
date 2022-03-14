@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::get('/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
     Route::get('/view/{id}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
     Route::post('/', \App\Actions\Clients\Locations\CreateLocation::class)->name('locations.store');
+    Route::post('/', \App\Actions\Clients\Locations\ImportLocation::class)->name('locations.import');
     Route::put('/{id}', \App\Actions\Clients\Locations\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
     Route::delete('/{id}', \App\Actions\Clients\Locations\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
     Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
