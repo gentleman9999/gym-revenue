@@ -42,8 +42,40 @@ class SecurityRolesSeeder extends Seeder
                 'role' => 'Sales Rep',
             ],
             [
-                'security_role' => 'Employee',
+                'security_role' => 'Club Associate',
                 'role' => 'Employee',
+            ],
+            [
+                'security_role' => 'Floor Manager/Team Lead',
+                'role' => 'Employee',
+            ],
+            [
+                'security_role' => 'Fitness Trainer',
+                'role' => 'Fitness Trainer',
+            ],
+            [
+                'security_role' => 'Personal Trainer',
+                'role' => 'Personal Trainer',
+            ],
+            [
+                'security_role' => 'Instructor',
+                'role' => 'Instructor',
+            ],
+            [
+                'security_role' => 'Fitness Manager',
+                'role' => 'Fitness Manager',
+            ],
+            [
+                'security_role' => 'Sanitation',
+                'role' => 'Sanitation',
+            ],
+            [
+                'security_role' => 'Human Resources',
+                'role' => 'Human Resources',
+            ],
+            [
+                'security_role' => 'Day Care Manager',
+                'role' => 'Day Care Manager',
             ],
         ];
         $clients->each(function ($client) use ($security_roles, $roles) {
