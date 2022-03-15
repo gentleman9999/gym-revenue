@@ -2,17 +2,18 @@
     <jet-form-section @submitted="handleSubmit">
         <template #description>
             <ul class="list-disc ml-4">
-                <li>Ensure your document extension is .CSV</li>
-                <li>remove any header rows before importing</li>
+                <li>Ensure your document extension is '.CSV'.</li>
+                <li>Remove any/all header rows before importing.</li>
+                <li>The order of the columns are listed below.</li>
             </ul>
-            <p class="font-bold mt-4">Columns</p>
+            <p class="font-bold mt-4">Columns In Order</p>
             <ul class="list-decimal ml-4">
-                <li>NAME</li>
-                <li>LOC #</li>
-                <li>CITY</li>
-                <li>STATE (abrv)</li>
-                <li>ZIP</li>
-                <li>ADDRESS 1</li>
+                <li>Location Name</li>
+                <li>Location Number</li>
+                <li>City</li>
+                <li>State (Abbreviation)</li>
+                <li>Zip Code (5 digits)</li>
+                <li>Address 1</li>
             </ul>
         </template>
         <template #title> Import Locations </template>

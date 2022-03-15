@@ -14,11 +14,18 @@ class ImportLocation
 
     public function handle($data, $current_user = null)
     {
+        $result = false;
         foreach ($data as $item)
         {
+            if($item['extension'] === 'csv') {
                 ClientAggregate::retrieve($item['client_id'])->importLocation($current_user->id ?? "Auto Generated", $item['key'])->persist();
+                $result = true;
+            } else {
+                Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
+            }
+
         }
-        return true;
+        return $result;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -34,7 +41,8 @@ class ImportLocation
             $request->user(),
         );
 
-        Alert::success("CSV imported")->flash();
+        if($location) //If at-least one file was correct format and imported we display success
+            Alert::success("Location Import complete.")->flash();
 
         return Redirect::route('locations');
     }
