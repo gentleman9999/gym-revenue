@@ -21,6 +21,7 @@ class CreateCalendarEventsTable extends Migration
             $table->boolean('full_day_event');
             $table->dateTime('start');
             $table->dateTime('end')->nullable();
+            $table->string('color')->nullable();
             $table->json('options')->nullable();
             $table->foreignUuid('event_type_id');
             $table->softDeletes();

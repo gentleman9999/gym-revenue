@@ -3,15 +3,16 @@
 namespace App\Reactors\Endusers;
 
 use App\Actions\Sms\Twilio\FireTwilioMsg;
+use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Endusers\Lead;
-use App\Models\Endusers\LeadDetails;
 use App\Models\Utility\AppState;
+use App\StorableEvents\Endusers\LeadProfilePictureMoved;
+use App\StorableEvents\Endusers\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
-use App\StorableEvents\Endusers\NewLeadMade;
+use App\StorableEvents\Endusers\OldLeadProfilePictureDeleted;
 use App\StorableEvents\Endusers\SubscribedToAudience;
-use App\StorableEvents\Endusers\UpdateLead;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +24,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     {
         //Mail::to($addy)->send(new NewGrandOpeningLead($payload));
         $lead = Lead::find($event->lead);
-        if(!AppState::isSimuationMode()){
+        if (!AppState::isSimuationMode()) {
             Mail::to($lead->email)->send(new EmailFromRep($event->data, $event->lead, $event->user));
         }
     }
@@ -33,8 +34,8 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $lead = Lead::find($event->lead);
         $msg = $event->data['message'];
 
-        if(!AppState::isSimuationMode()){
-            FireTwilioMsg::dispatch($lead->primary_phone, $msg)->onQueue('grp-'.env('APP_ENV').'-jobs');
+        if (!AppState::isSimuationMode()) {
+            FireTwilioMsg::dispatch($lead->primary_phone, $msg)->onQueue('grp-' . env('APP_ENV') . '-jobs');
         }
     }
 
@@ -44,55 +45,48 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         // @todo - if so, then trigger it here and its aggregate will deal
         // @todo - with whatever is supposed to happen.
     }
-    public function onNewLeadMade(NewLeadMade $event)
+
+    public function onLeadUpdated(LeadUpdated $event)
     {
-        if(array_key_exists('profile_picture', $event->lead)){
-            $file = $event->lead['profile_picture'];
-            $destKey = "{$event->lead['client_id']}/{$file['uuid']}";
-            Storage::disk('s3')->move($file['key'], $destKey);
-            $file['key'] = $destKey;
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-
-            LeadDetails::create([
-                    'lead_id' => $event->lead['id'],
-                    'client_id' => $event->lead['client_id'],
-                    'field' => 'profile_picture',
-                    'misc' => $file
-                ]
-            );
-        }
-
-        if(array_key_exists('middle_name', $event->lead)){
-            $middle_name= $event->lead['middle_name'];
-            LeadDetails::create([
-                    'lead_id' => $event->lead['id'],
-                    'client_id' => $event->lead['client_id'],
-                    'field' => 'middle_name',
-                    'value' => $middle_name,
-                    'misc' => ['user' => $event->user ]
-                ]
-            );
-        }
-
-
-
+        $this->maybeMoveProfilePicture($event->aggregateRootUuid(), $event->data, $event->oldData);
     }
 
-    public function onUpdateLead(UpdateLead $event)
+    public function onLeadCreated(LeadCreated $event)
     {
-        if(array_key_exists('profile_picture', $event->lead) && $event->lead['profile_picture'] !== null){
-            $file = $event->lead['profile_picture'];
-            $destKey = "{$event->lead['client_id']}/{$file['uuid']}";
-            Storage::disk('s3')->move($file['key'], $destKey);
-            $file['key'] = $destKey;
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-            $profile_picture = LeadDetails::firstOrCreate([
-                'lead_id' => $event->id,
-                'client_id' => $event->lead['client_id'],
-                'field' => 'profile_picture',
-            ]);
-            $profile_picture->misc =  $file;
-            $profile_picture->save();
+        $this->maybeMoveProfilePicture($event->aggregateRootUuid(), $event->data);
+    }
+
+    public function onLeadProfilePictureMoved(LeadProfilePictureMoved $event)
+    {
+        if(!$event->oldFile){
+            return;
         }
+        EndUserActivityAggregate::retrieve($event->aggregateRootUuid())->recordThat(new OldLeadProfilePictureDeleted($event->oldFile))->persist();
+    }
+
+    public function onOldLeadProfilePictureDeleted(OldLeadProfilePictureDeleted $event)
+    {
+        Storage::disk('s3')->delete($event->file['key']);
+    }
+
+    protected function maybeMoveProfilePicture($lead_id, $data, $oldData = null)
+    {
+        $file = $data['profile_picture'] ?? false;
+
+        if (!$file) {
+            return;
+        }
+        $destKey = "{$data['client_id']}/{$file['uuid']}";
+        Storage::disk('s3')->move($file['key'], $destKey);
+        $file['key'] = $destKey;
+        $file['url'] = Storage::disk('s3')->url($file['key']);
+        $aggy = EndUserActivityAggregate::retrieve($lead_id);
+        if ($oldData['profile_picture']['misc'] ?? false) {
+            $aggy->recordThat(new LeadProfilePictureMoved($file, $oldData['profile_picture']['misc']));
+        } else {
+            $aggy->recordThat(new LeadProfilePictureMoved($file));
+        }
+        $aggy->persist();
+
     }
 }

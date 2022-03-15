@@ -190,68 +190,6 @@ class LeadsController extends Controller
         ]);
     }
 
-    public function store(Lead $lead_model)
-    {
-        $lead_data = request()->validate($this->rules);
-        $user_id = auth()->user()->id;
-
-        $lead = $lead_model->create($lead_data);
-
-        if (array_key_exists('profile_picture', $lead_data) && $lead_data['profile_picture']) {
-            $file = $lead_data['profile_picture'];
-            $destKey = "{$lead_data['client_id']}/{$file['uuid']}";
-            Storage::disk('s3')->move($file['key'], $destKey);
-            $file['key'] = $destKey;
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-
-            LeadDetails::create([
-                    'lead_id' => $lead->id,
-                    'client_id' => $lead->client_id,
-                    'field' => 'profile_picture',
-                    'misc' => $file
-                ]
-            );
-        }
-
-        $notes = $lead_data['notes'] ?? false;
-        if($notes){
-            Note::create([
-                'entity_id'=> $lead->id,
-                'entity_type'=> Lead::class,
-                'note' => $notes,
-                'created_by_user_id' => $user_id
-            ]);
-        }
-
-        Alert::success("Lead '{$lead_data['first_name']} {$lead_data['last_name']}' created")->flash();
-
-        $aggy = EndUserActivityAggregate::retrieve($lead->id)
-            ->manualNewLead($lead->toArray(), $user_id);
-
-        $owner = array_key_exists('lead_owner', $lead_data)
-            ? $lead_data['lead_owner'] : $user_id;
-
-        $aggy = $aggy->claimLead($owner, $lead_data['client_id']);
-
-        // This is where all the details go
-        $detail_keys = [
-            'middle_name', 'dob', 'opportunity',
-            'lead_status'
-        ];
-
-        foreach ($detail_keys as $detail_key)
-        {
-            if(array_key_exists($detail_key, $lead_data) && ($lead_data[$detail_key]))
-            {
-                $aggy = $aggy->createOrUpdateDetail($detail_key, $lead_data[$detail_key], $user_id, $lead_data['client_id']);
-            }
-        }
-
-        $aggy->persist();
-
-        return Redirect::route('data.leads');
-    }
-
     private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
     {
 
@@ -382,7 +320,8 @@ class LeadsController extends Controller
             'detailsDesc',
             'profile_picture',
             'trialMemberships',
-            'middle_name', 'dob',
+            'middle_name',
+            'dob',
             'opportunity',
             'lead_owner',
             'lead_status',
@@ -428,44 +367,6 @@ class LeadsController extends Controller
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
         ]);
-    }
-
-    public function update($lead_id)
-    {
-        if (!$lead_id) {
-            \Alert::info("Access Denied or Lead does not exist")->flash();
-            return Redirect::route('data.leads');
-        }
-
-
-        $data = request()->validate($this->rules);
-
-        $lead = Lead::find($lead_id);
-        $user = auth()->user();
-        $aggy = EndUserActivityAggregate::retrieve($lead_id)
-            ->updateLead($data, $user)
-            ->claimLead($data['lead_owner'], $lead->client_id);
-
-        // This is where all the details go
-        $detail_keys = [
-            'middle_name', 'dob', 'opportunity',
-            'lead_status'
-        ];
-
-        foreach ($detail_keys as $detail_key)
-        {
-            if(array_key_exists($detail_key, $data) && ($data[$detail_key]))
-            {
-                $aggy = $aggy->createOrUpdateDetail($detail_key, $data[$detail_key], $user->id, $lead->client_id);
-            }
-        }
-
-        $aggy->persist();
-
-        Alert::success("Lead '{$data['first_name']} {$data['last_name']}' updated")->flash();
-
-
-        return Redirect::back();
     }
 
     public function assign()
@@ -613,47 +514,6 @@ class LeadsController extends Controller
 //        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
 //        return redirect()->back()->with('selectedLeadDetailIndex', '0');
         return Redirect::back()->with('selectedLeadDetailIndex', 0);
-    }
-
-
-    public function lead_trash(Request $request, $lead_id)
-    {
-        $user = request()->user();
-        $current_team = $user->currentTeam()->first();
-        if($user->cannot('leads.trash', Lead::class))
-        {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-            return Redirect::back();
-        }
-
-        if (!$lead_id) {
-            Alert::error("No Lead ID provided")->flash();
-            return Redirect::back();
-        }
-        $lead = Lead::whereId($lead_id)->with('detailsDesc')->first();
-        $rmlead = EndUserActivityAggregate::retrieve($lead_id);
-        //       print_r($lead);
-
-        $rmlead->DeleteLead($lead->toArray(), auth()->user()->id)->persist();
-//    $rmlead->DeleteLead(request()->all(), auth()->user()->id)->persist();
-        Alert::success("Lead $lead->email trashed!")->flash();
-        return Redirect::back();
-
-    }
-
-
-    public function lead_restore(Request $request, $id)
-    {
-        if (!$id) {
-            Alert::error("No Lead ID provided")->flash();
-            return Redirect::back();
-        }
-        $lead = Lead::withTrashed()->findOrFail($id);
-        $lead->restore();
-//dd($lead);
-        Alert::success("Lead '{$lead->email}' restored")->flash();
-
-        return Redirect::back();
     }
 
     public function sources(Request $request)

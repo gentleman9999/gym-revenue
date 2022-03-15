@@ -6,13 +6,12 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class CalendarEventTypeCreated extends ShouldBeStored
 {
-    public $client, $name, $desc, $type;
+    public $user, $data, $client;
 
-    public function __construct($client, $name, $desc, $type)
+    public function __construct(string $client, string $user, array $data)
     {
         $this->client = $client;
-        $this->name = $name;
-        $this->desc = $desc;
-        $this->type = $type;
+        $this->user = $user;
+        $this->data = $data;
     }
 }

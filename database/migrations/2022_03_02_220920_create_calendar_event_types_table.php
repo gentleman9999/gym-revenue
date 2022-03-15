@@ -19,6 +19,7 @@ class CreateCalendarEventTypesTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('type');
+            $table->string('color');
             $table->softDeletes();
             $table->timestamps();
         });
