@@ -2,15 +2,14 @@
     <nav class="navbar sticky top-0 z-20 lg:flex p-0" :class="(('is_being_impersonated' in $page.props.user)) ? 'bg-error': 'bg-secondary'">
         <!-- Logo -->
         <div
-            class="flex-shrink-0 flex items-center bg-primary self-stretch w-72 justify-center"
+            class="flex-shrink-0 flex-grow lg:flex-grow-0 flex items-center bg-primary self-stretch w-72 justify-center"
         >
             <inertia-link :href="route('dashboard')">
                 <jet-application-mark class="block h-8 w-auto" />
             </inertia-link>
         </div>
-
         <!-- Primary Navigation Menu -->
-        <div class="max-w-8xl mx-4">
+        <div class="max-w-8xl">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <!-- <button
@@ -142,12 +141,11 @@
                         <settings-dropdown :logout="logout" />
                     </div>
                 </div>
-
                 <!-- Hamburger -->
-                <div class="-mr-2 flex items-center lg:hidden">
+                <div class="flex items-center lg:hidden">
                     <button
                         @click="toggleSideNav"
-                        class="p-4 inline-flex items-center justify-center p-2 rounded-md hover:bg-base-100 focus:outline-none focus:bg-base-100 focus: transition"
+                        class="h-full rounded-none px-6 inline-flex items-center justify-center p-2 rounded-md hover:bg-base-100 focus:outline-none focus:bg-base-100 focus: transition"
                     >
                         <svg
                             class="h-6 w-6"
