@@ -5,7 +5,7 @@
     <div v-else>
         <p>Scroll through this list to select a user you want to impersonate.</p>
         <div v-if="users.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
-            <table class="table w-full" :class="{ 'table-zebra': true }">
+            <table class="table w-full table-compact" :class="{ 'table-zebra': true }">
                 <tbody>
                     <tr v-for="(user, idx) in users">
                         <td>{{ user.name }}</td>
