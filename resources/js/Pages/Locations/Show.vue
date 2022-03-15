@@ -15,6 +15,7 @@
                     handler: ({ data }) => handleClickTrash(data.id),
                 },
             }"
+            :top-actions="topActions"
             :preview-component="LocationPreview"
             >
             <template #filter>
@@ -57,9 +58,6 @@
                         </div>
                     </template>
                 </simple-search-filter>
-                <button class="btn btn-sm text-xs" @click="handleClickImport">
-                    Import Location
-                </button>
             </template>
         </gym-revenue-crud>
         <confirm
@@ -72,7 +70,6 @@
         </confirm>
 
         <daisy-modal ref="importLocation" id="importLocation" class="lg:max-w-5xl bg-base-300">
-            <h1 class="font-bold mb-4">Import Location</h1>
             <file-manager @submitted="closeModals" :client-id="$page.props.clientId" />
         </daisy-modal>
 
@@ -138,6 +135,14 @@ export default defineComponent({
             importLocation.value.close();
         };
 
+        const topActions = {
+            import: {
+                label: "Import",
+                handler: handleClickImport,
+                class: 'btn-primary'
+            },
+        };
+
         return {
             handleClickTrash,
             confirmTrash,
@@ -150,7 +155,8 @@ export default defineComponent({
             LocationPreview,
             closeModals,
             handleClickImport,
-            importLocation
+            importLocation,
+            topActions
         };
     },
     computed: {

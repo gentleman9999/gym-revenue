@@ -1,12 +1,26 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
+        <template #description>
+            <ul class="list-disc ml-4">
+                <li>Ensure your document extension is .CSV</li>
+                <li>remove any header rows before importing</li>
+            </ul>
+            <p class="font-bold mt-4">Columns</p>
+            <ul class="list-decimal ml-4">
+                <li>NAME</li>
+                <li>LOC #</li>
+                <li>CITY</li>
+                <li>STATE (abrv)</li>
+                <li>ZIP</li>
+                <li>ADDRESS 1</li>
+            </ul>
+        </template>
+        <template #title> Import Locations </template>
         <template #form>
             <section class="col-span-6 overflow-hidden">
                 <div
                     class="max-w-screen-xl mx-auto text-center px-4 sm:px-6 lg:px-8"
                 >
-                    <h1>Ensure your document extension is .CSV and remove any header rows before importing.</h1>
-                    <h1>Column Rules in order: NAME | LOC # | CITY | STATE (abrv) | ZIP | ADDRESS 1</h1>
                     <div class="max-w-3xl mx-auto lg:max-w-none">
                         <div
                             class="mt-6 sm:mt-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:items-start"
@@ -43,9 +57,9 @@
                                                         ]
                                                     "
                                                     type="file"
-                                                    multiple
                                                     hidden
                                                     class="hidden"
+                                                    accept=".csv"
                                             /></label>
                                         </p>
                                     </div>
@@ -117,12 +131,12 @@ const props = defineProps({
     clientId: { type: String, required: true },
     user: { type: Object },
     formSubmitOptions: { type: Object },
-    handleCancel: {type: Function},
+    handleCancel: { type: Function },
 });
 
 const defaultHandleCancel = () => {
-    Inertia.visit(route('locations'));
-}
+    Inertia.visit(route("locations"));
+};
 const resolvedHandleCancel = props.handleCancel || defaultHandleCancel;
 
 const emit = defineEmits(["submitted"]);
@@ -197,7 +211,7 @@ const allFiles = computed(() =>
 const formSubmitOptions = props?.formSubmitOptions || {};
 
 const handleSubmit = () => {
-    Inertia.post(route('locations.import'), allFiles.value, {
+    Inertia.post(route("locations.import"), allFiles.value, {
         onSuccess: () => {
             emit("submitted");
             form.reset();
@@ -216,7 +230,6 @@ const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
     }
 });
 defineExpose({ reset: form.reset });
-
 
 onUnmounted(removeRouteGuard);
 </script>
