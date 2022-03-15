@@ -9,7 +9,7 @@
                 <button class="btn btn-sm text-xs" @click="handleClickNewEvent">
                     New Event
                 </button>
-                <div class="flex-grow"/>
+                <div class="flex-grow" />
                 <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
@@ -17,15 +17,28 @@
                     @clear-filters="clearFilters"
                     @clear-search="clearSearch"
                 >
-                    <div class="block py-2 text-xs text-base-content text-opacity-80">Type:</div>
+                    <div
+                        class="block py-2 text-xs text-base-content text-opacity-80"
+                    >
+                        Type:
+                    </div>
                     <select
                         v-model="form.calendar_event_type"
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option v-for="{name, id} in calendar_event_types" :value="id">{{name}}</option>
+                        <option
+                            v-for="{ name, id } in calendar_event_types"
+                            :value="id"
+                        >
+                            {{ name }}
+                        </option>
                     </select>
-                    <div class="block py-2 text-xs text-base-content text-opacity-80">Trashed:</div>
+                    <div
+                        class="block py-2 text-xs text-base-content text-opacity-80"
+                    >
+                        Trashed:
+                    </div>
                     <select
                         v-model="form.trashed"
                         class="mt-1 w-full form-select"
@@ -35,7 +48,6 @@
                         <option value="only">Only Trashed</option>
                     </select>
                 </simple-search-filter>
-
             </div>
 
             <FullCalendar :options="calendarOptions" ref="calendar" />
@@ -88,12 +100,19 @@ export default defineComponent({
         SweetModal,
         FullCalendar,
     },
-    props: ["sessions", "calendar_events","calendar_event_types", "title", "isClientUser", "filters"],
+    props: [
+        "sessions",
+        "calendar_events",
+        "calendar_event_types",
+        "title",
+        "isClientUser",
+        "filters",
+    ],
 
     setup(props) {
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             "calendar",
-            {start: '', end: ''}
+            { start: "", end: "" }
         );
         const calendar = ref(null);
         const createEventModal = ref();
@@ -139,10 +158,10 @@ export default defineComponent({
             editEventModal.value.close();
         };
 
-        const updateStartEnd = (start,end) => {
+        const updateStartEnd = (start, end) => {
             form.value.start = start;
             form.value.end = end;
-        }
+        };
         return {
             Inertia,
             calendarOptions: {
@@ -162,9 +181,13 @@ export default defineComponent({
                     }
                 },*/
                 initialView: "dayGridMonth",
-                events: ({ start, end, startStr, endStr }, successCallback, failureCallback) => {
-                    updateStartEnd(startStr,endStr);
-                    successCallback(props.calendar_events)
+                events: (
+                    { start, end, startStr, endStr },
+                    successCallback,
+                    failureCallback
+                ) => {
+                    updateStartEnd(startStr, endStr);
+                    successCallback(props.calendar_events);
                 },
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
@@ -212,3 +235,18 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.fc .fc-toolbar {
+    @apply flex-col gap-2;
+    @screen lg {
+        @apply flex-row;
+    }
+}
+.fc .fc-daygrid-day-bottom{
+    @apply text-xs;
+}
+.fc-theme-standard .fc-popover{
+    @apply bg-base-300;
+}
+</style>
