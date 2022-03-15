@@ -206,7 +206,12 @@ export default defineComponent({
                 dayMaxEvents: true,
                 weekends: true,
                 select: function (data) {
-                    console.log("select. " + data);
+                    if(['timeGridDay', 'timeGridWeek'].includes(data?.view?.type)){
+                        // console.log({data});
+                        createCalendarForm.value.form.start = data.start;
+                        createCalendarForm.value.form.end = data.end;
+                        createEventModal.value.open();
+                    }
                 },
                 dateClick: function (data) {
                     numClicks.value++;
@@ -214,12 +219,10 @@ export default defineComponent({
                     if (numClicks.value === 1) {
                         singleClickTimer = setTimeout(() => {
                             numClicks.value = 0;
-                            console.log("single click!");
                         }, 400);
                     } else if (numClicks.value === 2) {
                         clearTimeout(singleClickTimer);
                         numClicks.value = 0;
-                        console.log("double click!");
 
                         createCalendarForm.value.form.start = data.date
                         createEventModal.value.open();
