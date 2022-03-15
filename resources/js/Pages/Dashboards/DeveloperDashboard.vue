@@ -70,7 +70,7 @@
             </jet-bar-stats-container>
 
             <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid xl:grid-cols-2 gap-4">
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
                             <h2 class="card-title">Available Teams</h2>

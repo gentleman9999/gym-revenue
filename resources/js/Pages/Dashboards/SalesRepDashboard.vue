@@ -72,6 +72,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats";
+import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader";
 
 library.add(
     faBars,
@@ -97,7 +98,8 @@ export default {
         JetBarIcon,
         AnnounceModal,
         FontAwesomeIcon,
-        DashboardStats
+        DashboardStats,
+        DashboardHeader
     },
     props: [
         'teamName',

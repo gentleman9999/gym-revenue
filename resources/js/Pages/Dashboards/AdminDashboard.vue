@@ -11,7 +11,7 @@
             <dashboard-stats :widgets="widgets" />
 
             <div class="container max-w-7xl mx-auto py-2 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid xl:grid-cols-2 gap-4">
                     <div class="card bg-base-100 shadow-2xl">
                         <div class="card-body">
                             <h2 class="card-title">Available Teams</h2>
@@ -115,6 +115,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats";
+import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader";
 
 library.add(
     faBars,
@@ -140,7 +141,8 @@ export default {
         JetBarIcon,
         AnnounceModal,
         FontAwesomeIcon,
-        DashboardStats
+        DashboardStats,
+        DashboardHeader
     },
     props: [
         'teamName',
