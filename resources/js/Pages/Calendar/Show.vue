@@ -9,7 +9,7 @@
                 <button class="btn btn-sm text-xs" @click="handleClickNewEvent">
                     New Event
                 </button>
-                <div class="flex-grow"/>
+                <div class="flex-grow" />
                 <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
@@ -17,15 +17,28 @@
                     @clear-filters="clearFilters"
                     @clear-search="clearSearch"
                 >
-                    <div class="block py-2 text-xs text-base-content text-opacity-80">Type:</div>
+                    <div
+                        class="block py-2 text-xs text-base-content text-opacity-80"
+                    >
+                        Type:
+                    </div>
                     <select
                         v-model="form.calendar_event_type"
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
-                        <option v-for="{name, id} in calendar_event_types" :value="id">{{name}}</option>
+                        <option
+                            v-for="{ name, id } in calendar_event_types"
+                            :value="id"
+                        >
+                            {{ name }}
+                        </option>
                     </select>
-                    <div class="block py-2 text-xs text-base-content text-opacity-80">Trashed:</div>
+                    <div
+                        class="block py-2 text-xs text-base-content text-opacity-80"
+                    >
+                        Trashed:
+                    </div>
                     <select
                         v-model="form.trashed"
                         class="mt-1 w-full form-select"
@@ -35,13 +48,15 @@
                         <option value="only">Only Trashed</option>
                     </select>
                 </simple-search-filter>
-
             </div>
 
             <FullCalendar :options="calendarOptions" ref="calendar" />
             <daisy-modal ref="createEventModal" id="createEventModal">
                 <h1 class="font-bold mb-4">Create Event</h1>
-                <calendar-event-form @submitted="closeModals" />
+                <calendar-event-form
+                    @submitted="closeModals"
+                    ref="createCalendarForm"
+                />
             </daisy-modal>
             <daisy-modal ref="editEventModal" id="editEventModal">
                 <h1 class="font-bold mb-4">Edit Event</h1>
@@ -88,17 +103,25 @@ export default defineComponent({
         SweetModal,
         FullCalendar,
     },
-    props: ["sessions", "calendar_events","calendar_event_types", "title", "isClientUser", "filters"],
+    props: [
+        "sessions",
+        "calendar_events",
+        "calendar_event_types",
+        "title",
+        "isClientUser",
+        "filters",
+    ],
 
     setup(props) {
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             "calendar",
-            {start: '', end: ''}
+            { start: "", end: "" }
         );
         const calendar = ref(null);
         const createEventModal = ref();
         const editEventModal = ref();
         const selectedCalendarEvent = ref(null);
+        const createCalendarForm = ref(null);
         const handleClickNewEvent = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
@@ -139,10 +162,12 @@ export default defineComponent({
             editEventModal.value.close();
         };
 
-        const updateStartEnd = (start,end) => {
+        const updateStartEnd = (start, end) => {
             form.value.start = start;
             form.value.end = end;
-        }
+        };
+
+        const numClicks = ref(null);
         return {
             Inertia,
             calendarOptions: {
@@ -162,9 +187,13 @@ export default defineComponent({
                     }
                 },*/
                 initialView: "dayGridMonth",
-                events: ({ start, end, startStr, endStr }, successCallback, failureCallback) => {
-                    updateStartEnd(startStr,endStr);
-                    successCallback(props.calendar_events)
+                events: (
+                    { start, end, startStr, endStr },
+                    successCallback,
+                    failureCallback
+                ) => {
+                    updateStartEnd(startStr, endStr);
+                    successCallback(props.calendar_events);
                 },
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
@@ -178,6 +207,25 @@ export default defineComponent({
                 weekends: true,
                 select: function (data) {
                     console.log("select. " + data);
+                },
+                dateClick: function (data) {
+                    numClicks.value++;
+                    let singleClickTimer;
+                    if (numClicks.value === 1) {
+                        singleClickTimer = setTimeout(() => {
+                            numClicks.value = 0;
+                            console.log("single click!");
+                        }, 400);
+                    } else if (numClicks.value === 2) {
+                        clearTimeout(singleClickTimer);
+                        numClicks.value = 0;
+                        console.log("double click!");
+
+                        createCalendarForm.value.form.start = data.date
+                        createEventModal.value.open();
+                    }
+                    console.log("createCalendarForm", createCalendarForm.value.form);
+
                 },
                 eventClick: function (data) {
                     data.jsEvent.preventDefault(); // don't let the browser navigate
@@ -208,6 +256,7 @@ export default defineComponent({
             reset,
             clearSearch,
             clearFilters,
+            createCalendarForm,
         };
     },
 });
