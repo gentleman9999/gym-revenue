@@ -13,5 +13,5 @@ class LocationImported extends ShouldBeStored
         $this->client = $client;
         $this->user = $user;
         $this->key = $key;
-}
+    }
 }
