@@ -1,6 +1,6 @@
 <template>
     <app-layout :title="title">
-        <page-toolbar-nav title="Leads" :links="navLinks"/>
+        <page-toolbar-nav title="Leads" :links="navLinks" />
         <gym-revenue-crud
             :resource="leads"
             :fields="fields"
@@ -22,8 +22,10 @@
             @cancel="confirmTrash = null"
         >
             {{ firstName }} {{ lastName }} Are you sure you want to remove this
-            lead?<br /> Reason for Deleting:<br />
-            <select name="reasonforremoving">
+            lead?<br />
+            Reason for Deleting:<br />
+            <select name="reasonforremoving" v-model="trashReason">
+                <option>Select a reason</option>
                 <option value="duplicate">Is a duplicate</option>
                 <option value="test-lead">Is a test lead</option>
                 <option value="DNC">Lead requested DNC and data removal</option>
@@ -40,8 +42,8 @@
 </template>
 
 <script>
-import {computed, defineComponent, ref} from "vue";
-import {Inertia} from "@inertiajs/inertia";
+import { computed, defineComponent, ref } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
 
@@ -67,8 +69,20 @@ export default defineComponent({
         LeadInteraction,
         LeadPreview,
     },
-    props: ["leads", "routeName", "title", "filters", "lead_types", 'grlocations', 'leadsources', 'user',
-        'opportunities', 'leadsclaimed', 'dob', 'nameSearch'],
+    props: [
+        "leads",
+        "routeName",
+        "title",
+        "filters",
+        "lead_types",
+        "grlocations",
+        "leadsources",
+        "user",
+        "opportunities",
+        "leadsclaimed",
+        "dob",
+        "nameSearch",
+    ],
     setup(props) {
         const comingSoon = () => {
             new Noty({
@@ -106,16 +120,16 @@ export default defineComponent({
             // console.log({lead_type_index, })
         };
         const fields = [
-            {name: "created_at", label: "Created"},
-            {name: "first_name", label: "First Name"},
-            {name: "last_name", label: "Last Name"},
-            {name: "location.name", label: "Location"},
+            { name: "created_at", label: "Created" },
+            { name: "first_name", label: "First Name" },
+            { name: "last_name", label: "Last Name" },
+            { name: "location.name", label: "Location" },
             {
                 name: "lead_type",
                 label: "Type",
                 component: CrudBadge,
                 props: {
-                    getProps: ({data: {lead_type}}) => ({
+                    getProps: ({ data: { lead_type } }) => ({
                         class: badgeClasses(lead_type?.id),
                         text: lead_type?.name,
                     }),
@@ -128,21 +142,21 @@ export default defineComponent({
             },
         ];
 
-        const  actions = {
+        const actions = {
             trash: {
-                handler: ({data}) => handleClickTrash(data.id),
+                handler: ({ data }) => handleClickTrash(data.id),
             },
 
             contact: {
                 label: "Contact Lead",
-                handler: ({data}) => {
+                handler: ({ data }) => {
                     Inertia.visit(route("data.leads.show", data.id));
                 },
-                shouldRender: ({data}) => {
+                shouldRender: ({ data }) => {
                     const claimed = data.details_desc.filter(
                         (detail) => detail.field === "claimed"
                     );
-                    console.log({claimed, props});
+                    console.log({ claimed, props });
                     const yours = claimed.filter(
                         (detail) =>
                             parseInt(detail.value) === parseInt(props.user.id)
@@ -151,6 +165,7 @@ export default defineComponent({
                 },
             },
         };
+        const trashReason = ref(null);
 
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -158,65 +173,60 @@ export default defineComponent({
         };
         handleClickTrash();
         const handleConfirmTrash = () => {
-            /* */
-            axios.delete(route("data.leads.trash", confirmTrash.value)).then(
-                (response) => {
-                    setTimeout(() => response($result, 200), 10000);
-                },
-                Inertia.reload(),
-                location.reload(),
-                (confirmTrash.value = null)
-            );
+            Inertia.delete(route("data.leads.trash", confirmTrash.value), {
+                data: { reason: trashReason.value },
+            });
+            confirmTrash.value = null;
         };
-        const baseRoute = 'data.leads';
+        const baseRoute = "data.leads";
         const navLinks = [
             {
-                label: 'Dashboard',
-                href: '#',
+                label: "Dashboard",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'CalendarEvent',
-                href: '#',
+                label: "CalendarEvent",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Leads',
-                href: '#',
+                label: "Leads",
+                href: "#",
                 onClick: comingSoon,
-                active: true
+                active: true,
             },
             {
-                label: 'Tasks',
-                href: '#',
+                label: "Tasks",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Contacts',
-                href: '#',
+                label: "Contacts",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Consultants',
-                href: '#',
+                label: "Consultants",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Lead Sources',
-                href: route('data.leads.sources'),
+                label: "Lead Sources",
+                href: route("data.leads.sources"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
-                label: 'Lead Statuses',
-                href: route('data.leads.statuses'),
+                label: "Lead Statuses",
+                href: route("data.leads.statuses"),
                 onClick: null,
-                active: false
+                active: false,
             },
         ];
 
@@ -230,7 +240,8 @@ export default defineComponent({
             comingSoon,
             navLinks,
             baseRoute,
-            LeadPreview
+            LeadPreview,
+            trashReason,
         };
     },
 });

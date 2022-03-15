@@ -2,21 +2,22 @@
 
 namespace App\Aggregates\Endusers;
 
-use App\Models\User;
-use App\StorableEvents\Endusers\AgreementNumberCreatedForLead;
+use App\StorableEvents\Endusers\LeadClaimedByRep;
+use App\StorableEvents\Endusers\LeadCreated;
+use App\StorableEvents\Endusers\LeadDeleted;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
-use App\StorableEvents\Endusers\TrialMembershipAdded;
-use App\StorableEvents\Endusers\TrialMembershipUsed;
+use App\StorableEvents\Endusers\LeadRestored;
+use App\StorableEvents\Endusers\LeadServicesSet;
+use App\StorableEvents\Endusers\LeadTrashed;
+use App\StorableEvents\Endusers\LeadUpdated;
 use App\StorableEvents\Endusers\LeadWasCalledByRep;
+use App\StorableEvents\Endusers\LeadWasDeleted;
 use App\StorableEvents\Endusers\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
-use App\StorableEvents\Endusers\ManualLeadMade;
-use App\StorableEvents\Endusers\NewLeadMade;
 use App\StorableEvents\Endusers\SubscribedToAudience;
-use App\StorableEvents\Endusers\LeadServicesSet;
+use App\StorableEvents\Endusers\TrialMembershipAdded;
+use App\StorableEvents\Endusers\TrialMembershipUsed;
 use App\StorableEvents\Endusers\UpdateLead;
-use App\StorableEvents\Endusers\LeadClaimedByRep;
-use App\StorableEvents\Endusers\LeadWasDeleted;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class EndUserActivityAggregate extends AggregateRoot
@@ -57,27 +58,18 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->interaction_text_messaged_count++;
     }
 
-    public function applyNewLeadMade(NewLeadMade $event)
+    public function applyLeadCreated(LeadCreated $event)
     {
-        $this->lead = $event->lead;
+        $this->lead = $event->data;
+    }
+
+    public function applyLeadUpdated(LeadUpdated $event)
+    {
+        $this->lead = $event->data;
     }
 
     public function applyTrialMembershipUsed(TrialMembershipUsed $event){
         $this->trial_dates[] = $event->date;
-    }
-
-    public function createNewLead(array $lead)
-    {
-        $this->recordThat(new NewLeadMade($this->uuid(), $lead));
-
-        return $this;
-    }
-
-    public function createAgreementNumberForLead(string $client_id, string $agreement_number)
-    {
-        $this->recordThat(new AgreementNumberCreatedForLead($this->uuid(),$client_id, $agreement_number));
-
-        return $this;
     }
 
     public function joinAudience(string $slug, string $client_id, $entity)
@@ -85,25 +77,6 @@ class EndUserActivityAggregate extends AggregateRoot
         // @todo - add eval if user is already subscribed and throw an UserActivityException::userAlreadySubscribed Exception
         // @todo - add eval if user belongs to client and throw an UserActivityException::unqualifiedClient Exception
         $this->recordThat(new SubscribedToAudience($this->uuid(), $slug, $client_id, $entity));
-        return $this;
-    }
-
-    public function manualNewLead(array $lead, string $user_id)
-    {
-        $this->recordThat(new ManualLeadMade($this->uuid(), $lead, $user_id));
-
-        return $this;
-    }
-
-    public function updateLead(array $lead, User $updating_user)
-    {
-        $this->recordThat(new UpdateLead($this->uuid(), $lead, $updating_user->id));
-        return $this;
-    }
-
-    public function createOrUpdateDetail(string $key, string $value, string $user_id, string $client_id)
-    {
-        $this->recordThat(new LeadDetailUpdated($this->uuid(), $key, $value, $user_id, $client_id));
         return $this;
     }
 
@@ -131,12 +104,6 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
-    public function deleteLead(array $data, string $updating_user)
-    {
-        $this->recordThat(new LeadWasDeleted($this->uuid(), $data, $updating_user));
-        return $this;
-    }
-
     public function addTrialMembership(string $client_id, string $trial_id, $date_started)
     {
         $this->recordThat(new TrialMembershipAdded($this->uuid(), $client_id, $trial_id, $date_started));
@@ -152,4 +119,35 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->recordThat(new LeadServicesSet($service_ids, $user));
         return $this;
     }
+
+    public function createLead(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadCreated($userId, $data));
+        return $this;
+    }
+
+    public function updateLead($data, $old_data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadUpdated($userId, $data, $old_data));
+        return $this;
+    }
+
+    public function trashLead(string $reason, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadTrashed( $this->uuid(), $userId, $reason));
+        return $this;
+    }
+
+    public function restoreLead(string $userId = 'Auto Generagted')
+    {
+        $this->recordThat(new LeadRestored($userId, $this->uuid()));
+        return $this;
+    }
+
+    public function deleteLead(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadDeleted($userId, $this->uuid(), $data));
+        return $this;
+    }
+
 }

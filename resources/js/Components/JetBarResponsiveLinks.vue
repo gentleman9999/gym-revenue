@@ -45,8 +45,32 @@
         <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95" >
             <div v-if="showingSidebarManageAccountDropdown" class="absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg z-20">
                 <div class="px-2 py-2 bg-base-300 rounded-md shadow ">
-                    <inertia-link :href="route('profile.show')" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">Profile</inertia-link>
-                    <inertia-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">API Tokens</inertia-link>
+                    <inertia-link :href="route('profile.show')" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
+                        Profile
+                    </inertia-link>
+                    <inertia-link :href="route('settings')" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
+                        Settings
+                    </inertia-link>
+                    <!-- @todo - make these dynamic, as some users wont have access -->
+                    <inertia-link :href="route('users')" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
+                        User Management
+                    </inertia-link>
+                    <inertia-link :href="route('profile.show')" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
+                        Invoices
+                    </inertia-link>
+
+                    <a @click.prevent="openImpersonation($page.props.user.abilities)" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
+                        Impersonation
+                    </a>
+                    <inertia-link
+                        :href="route('api-tokens.index')"
+                        v-if="$page.props.jetstream.hasApiFeatures"
+                        :class="route().current('api-tokens.index') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline"
+                    >
+                        API Tokens
+                    </inertia-link>
+<!--                    <inertia-link :href="route('profile.show')" :class="route().current('profile.show') ? 'bg-base-100' : 'bg-transparent'" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">Profile</inertia-link>-->
+<!--                    <inertia-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures" class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">API Tokens</inertia-link>-->
                     <form @submit.prevent="logout">
                         <button class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg  dark-mode:hover:bg-primary dark-mode:focus:bg-primary dark-mode:focus:text-white dark-mode:hover:text-white lg:mt-0 hover:bg-base-100 focus:bg-base-100 focus:outline-none focus:shadow-outline">
                             Log Out
@@ -56,12 +80,25 @@
             </div>
         </transition>
     </div>
-
+    <impersonation-modal
+        title="Impersonation Mode"
+        width="100%"
+        overlayTheme="dark"
+        modal-theme="dark"
+        ref="impModal"
+        @close="impVars.showModal = false"
+    >
+        <list-of-users-to-impersonate v-if="impVars.showModal" @close="impVars.closeModal()"></list-of-users-to-impersonate>
+    </impersonation-modal>
 <!--    <div v-show="showingSidebarManageTeamsDropdown" @click="showingSidebarManageTeamsDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 
 </template>
 
 <script>
+import {ref} from "vue";
+import {Inertia} from "@inertiajs/inertia";
+import ImpersonationModal from "@/Components/SweetModal3/SweetModal";
+import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
 export default {
     name: "JetBarResponsiveLinks",
     data() {
@@ -69,6 +106,10 @@ export default {
             showingSidebarManageAccountDropdown: false,
             showingSidebarManageTeamsDropdown: false,
         }
+    },
+    components:{
+        ListOfUsersToImpersonate,
+        ImpersonationModal
     },
     methods: {
         switchToTeam(team) {
@@ -82,6 +123,37 @@ export default {
             console.log('test');
             this.$inertia.post(route('logout'));
         },
+    },
+    setup(){
+        let impVars = {
+            showModal: false,
+            closeModal() {
+                impModal.value.close();
+            },
+        };
+        const impModal = ref(null);
+        const openImpersonation = (abilities) => {
+            if (abilities.includes('users.impersonate') || abilities.includes('*')) {
+                impVars.showModal = true;
+                impModal.value.open();
+            }
+            else {
+                new Noty({
+                    type: "warning",
+                    theme: "sunset",
+                    text: "You Cant Do That!",
+                    timeout: 7500,
+                }).show();
+            }
+        }
+
+        const leaveImpersonationMode = () => {
+            Inertia.post(route("impersonation.stop", {}));
+        }
+        return {
+            openImpersonation,
+            leaveImpersonationMode, impModal, impVars
+        };
     }
 }
 </script>

@@ -16,7 +16,7 @@ use Prologue\Alerts\Facades\Alert;
 
 class RestoreLocation
 {
-    use PasswordValidationRules, AsAction;
+    use AsAction;
 
     /**
      * Get the validation rules that apply to the action.

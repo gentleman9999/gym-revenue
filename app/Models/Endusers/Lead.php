@@ -214,20 +214,13 @@ class Lead extends Model
 
     }
 
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function booted()
-    {
-        static::created(function ($lead) {
-
-        });
-    }
-
     public static function getDetailsTable()
     {
         return LeadDetails::class;
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->first_name.' '.$this->last_name;
     }
 }
