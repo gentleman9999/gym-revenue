@@ -15,27 +15,6 @@
 
             <div class="form-control">
                 <input
-                    id="admin"
-                    value="admin"
-                    type="checkbox"
-                    v-model="form.permissions"
-                    checked
-                />
-                <jet-label for="admin" value="Admin" />
-            </div>
-
-            <div class="form-control">
-                <input
-                    id="account_owner"
-                    value="account_owner"
-                    type="checkbox"
-                    v-model="form.permissions"
-                />
-                <jet-label for="account_owner" value="Account Owner" />
-            </div>
-
-            <div class="form-control">
-                <input
                     id="regional_admin"
                     value="regional_admin"
                     type="checkbox"

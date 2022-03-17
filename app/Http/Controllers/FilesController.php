@@ -17,7 +17,7 @@ class FilesController extends Controller
         $page_count = 10;
         $roles = request()->user()->getRoles();
 
-        if($roles[0] == 'Admin') {
+        if($roles[0] == 'Admin' || $roles[0] == 'Account Owner') {
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
@@ -27,12 +27,10 @@ class FilesController extends Controller
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
-                ->where('permissions->'.strtolower(str_replace(' ', '_', $roles[0])), 'true')
+                ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
                 ->filter($request->only('search', 'trashed'))
                 ->paginate($page_count);
         }
-
-
 
         return Inertia::render('Files/Show', [
             'files' => $files
