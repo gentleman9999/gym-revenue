@@ -3,6 +3,7 @@
 namespace App\Projectors\Clients;
 
 use App\Imports\LocationsImport;
+use App\Imports\LocationsImportWithHeader;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
 use App\StorableEvents\Clients\Locations\LocationCreated;
@@ -12,8 +13,8 @@ use App\StorableEvents\Clients\Locations\LocationRestored;
 use App\StorableEvents\Clients\Locations\LocationTrashed;
 use App\StorableEvents\Clients\Locations\LocationUpdated;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
-use Bouncer;
 
 class ClientLocationsProjector extends Projector
 {
@@ -32,7 +33,14 @@ class ClientLocationsProjector extends Projector
 
     public function onLocationImported(LocationImported $event)
     {
-        Excel::import(new LocationsImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+
+        $headings = (new HeadingRowImport)->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        if(in_array($headings[0][0][0], (new Location())->getFillable())) {
+            Excel::import(new LocationsImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        } else {
+            Excel::import(new LocationsImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        }
+
     }
 
     public function onLocationUpdated(LocationUpdated $event)
