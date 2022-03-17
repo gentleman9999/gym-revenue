@@ -14,6 +14,11 @@ class FilesController extends Controller
     public function index(Request $request)
     {
         $client_id = request()->user()->currentClientId();
+
+        if(is_null($client_id)) {
+            return Redirect::route('dashboard');
+        }
+
         $page_count = 10;
         $roles = request()->user()->getRoles();
 

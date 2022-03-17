@@ -16,6 +16,10 @@ class CalendarController extends Controller
     {
         $client_id = request()->user()->currentClientId();
 
+        if(is_null($client_id)) {
+            return Redirect::route('dashboard');
+        }
+
         if($request->get('start')) {
             $eventsForTeam = CalendarEvent::whereClient_id($client_id)
                 ->with('type')

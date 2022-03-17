@@ -41,13 +41,17 @@ class LocationsController extends Controller
         'gymrevenue_id' => [],
     ];
 
-    //
+
     public function index(Request $request)
     {
         $user = request()->user();
         $client_id = $user->currentClientId();
         $is_client_user = $user->isClientUser();
         $page_count = 10;
+
+        if(is_null($client_id)) {
+            return Redirect::route('dashboard');
+        }
 
         if($user->cannot('locations.read', Location::class))
         {
