@@ -24,7 +24,7 @@ class CreateFilesTable extends Migration
             $table->text('url')->nullable();
             $table->string('key');
             $table->integer('size');
-//            $table->string('isPublic');
+            $table->json('permissions')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

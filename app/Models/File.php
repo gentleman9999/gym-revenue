@@ -22,7 +22,7 @@ class File extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'isPublic']; //'deleted_at'
+    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions']; //'deleted_at'
 
     public function client()
     {

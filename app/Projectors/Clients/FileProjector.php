@@ -5,6 +5,7 @@ namespace App\Projectors\Clients;
 use App\Models\File;
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
+use App\StorableEvents\Clients\Files\FilePermissionsUpdated;
 use App\StorableEvents\Clients\Files\FileRenamed;
 use App\StorableEvents\Clients\Files\FileRestored;
 use App\StorableEvents\Clients\Files\FileTrashed;
@@ -28,6 +29,11 @@ class FileProjector extends Projector
     public function onFileRenamed(FileRenamed $event)
     {
         File::withTrashed()->findOrFail($event->data['id'])->updateOrFail(['filename' => $event->data['filename']]);
+    }
+
+    public function onFilePermissionsUpdated(FilePermissionsUpdated $event)
+    {
+        File::withTrashed()->findOrFail($event->data['id'])->updateOrFail(['permissions' => $event->data['permissions']]);
     }
 
     public function onFileTrashed(FileTrashed $event)

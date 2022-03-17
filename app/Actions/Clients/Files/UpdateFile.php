@@ -2,24 +2,17 @@
 
 namespace App\Actions\Clients\Files;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Clients\FileAggregate;
-use App\Aggregates\Users\UserAggregate;
-use App\Helpers\Uuid;
-use App\Models\Clients\Location;
 use App\Models\File;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
-use App\Models\Clients\Client;
-use App\Models\Team;
-use App\Models\User;
-use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Console\Command;
 
 
-class CreateFile
+
+class UpdateFile
 {
     use AsAction;
 
@@ -32,22 +25,19 @@ class CreateFile
     {
         return [
             'id' => 'uuid|required',
-            'filename' => 'max:255|required',
-            'original_filename' => 'max:255|required',
-            'extension' => 'required|string|min:3|max:4',
-            'bucket' => 'max:255|required',
-            'key' => 'max:255|required',
-            'permissions' =>'json|nullable|sometimes',
-            'size' => 'integer|min:1|required',//TODO: add max size
-            'client_id' => 'exists:clients,id|required',
-            'user_id' => 'sometimes|nullable|exists:users,id'
+            'admin' => 'boolean|sometimes|nullable',
+            'account_owner' => 'boolean|sometimes|nullable',
+            'regional_admin' => 'boolean|sometimes|nullable',
+            'location_manager' => 'boolean|sometimes|nullable',
+            'employee' => 'boolean|sometimes|nullable',
         ];
     }
 
     public function handle($data, $current_user = null)
     {
-
-        FileAggregate::retrieve($data['id'])->create($current_user->id ?? "Auto Generated", $data)->persist();
+        $data['permissions'] = json_encode(Arr::except($data, ['id']));
+        $data = Arr::except($data, ['admin','account_owner','regional_admin','location_manager','employee']);
+        FileAggregate::retrieve($data['id'])->updatePermissions($current_user->id ?? "Auto Generated", $data)->persist();
         return File::findOrFail($data['id']);
     }
 
@@ -65,9 +55,8 @@ class CreateFile
             $request->user(),
         );
 
-        Alert::success("File '{$file->filename}' was created")->flash();
+        Alert::success("File permissions for '{$file->filename}' updated.")->flash();
 
-//        return Redirect::route('files');
         return Redirect::back();
 
     }

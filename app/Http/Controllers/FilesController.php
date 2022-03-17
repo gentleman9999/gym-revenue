@@ -13,18 +13,26 @@ class FilesController extends Controller
 {
     public function index(Request $request)
     {
-//       $files = GetFilesFromFolder::run($request->user()->currentClientId());
-
         $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
-
         $page_count = 10;
+        $roles = request()->user()->getRoles();
 
-        $files = File::with('client')
-            ->whereClientId($client_id)
-            ->whereUserId(null)
-            ->filter($request->only('search', 'trashed'))
-            ->paginate($page_count);
+        if($roles[0] == 'Admin') {
+            $files = File::with('client')
+                ->whereClientId($client_id)
+                ->whereUserId(null)
+                ->filter($request->only('search', 'trashed'))
+                ->paginate($page_count);
+        } else {
+            $files = File::with('client')
+                ->whereClientId($client_id)
+                ->whereUserId(null)
+                ->where('permissions->'.strtolower($roles[0]), 'true')
+                ->filter($request->only('search', 'trashed'))
+                ->paginate($page_count);
+        }
+
+
 
         return Inertia::render('Files/Show', [
             'files' => $files

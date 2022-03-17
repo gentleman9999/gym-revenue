@@ -89,7 +89,7 @@ export default {
         const form = useForm(file);
 
         let handleSubmit = async () => {
-            await form.put(route("files.update", file.id));
+            await form.put(route("files.rename", file.id));
             emit("success");
         };
 
