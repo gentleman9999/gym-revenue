@@ -51,20 +51,29 @@
             </div>
 
             <FullCalendar :options="calendarOptions" ref="calendar" />
-            <daisy-modal ref="createEventModal" id="createEventModal">
+            <daisy-modal
+                ref="createEventModal"
+                id="createEventModal"
+                @close="resetCreateEventModal"
+            >
                 <h1 class="font-bold mb-4">Create Event</h1>
                 <calendar-event-form
                     @submitted="closeModals"
-                    ref="createCalendarForm"
+                    ref="createCalendarEventForm"
                 />
             </daisy-modal>
-            <daisy-modal ref="editEventModal" id="editEventModal">
+            <daisy-modal
+                ref="editEventModal"
+                id="editEventModal"
+                @close="resetEditEventModal"
+            >
                 <h1 class="font-bold mb-4">Edit Event</h1>
                 <calendar-event-form
                     v-if="selectedCalendarEvent"
                     :calendar_event="selectedCalendarEvent"
                     :key="selectedCalendarEvent"
                     @submitted="closeModals"
+                    ref="editCalendarEventForm"
                 />
             </daisy-modal>
         </div>
@@ -121,7 +130,8 @@ export default defineComponent({
         const createEventModal = ref();
         const editEventModal = ref();
         const selectedCalendarEvent = ref(null);
-        const createCalendarForm = ref(null);
+        const createCalendarEventForm = ref(null);
+        const editCalendarEventForm = ref(null);
         const handleClickNewEvent = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
@@ -168,6 +178,10 @@ export default defineComponent({
         };
 
         const numClicks = ref(null);
+        const resetCreateEventModal = () =>
+            createCalendarEventForm.value?.form?.reset();
+        const resetEditEventModal = () =>
+            createCalendarEventForm.value?.form?.reset();
         return {
             Inertia,
             calendarOptions: {
@@ -206,14 +220,21 @@ export default defineComponent({
                 dayMaxEvents: true,
                 weekends: true,
                 select: function (data) {
-                    if(['timeGridDay', 'timeGridWeek'].includes(data?.view?.type)){
-                        // console.log({data});
-                        createCalendarForm.value.form.start = data.start;
-                        createCalendarForm.value.form.end = data.end;
+                    if (
+                        ["timeGridDay", "timeGridWeek"].includes(
+                            data?.view?.type
+                        )
+                    ) {
+                        createCalendarEventForm.value.form.start = data.start;
+                        createCalendarEventForm.value.form.end = data.end;
                         createEventModal.value.open();
                     }
                 },
                 dateClick: function (data) {
+                    console.log({
+                        data,
+                        createCalendarEventForm: createCalendarEventForm.value,
+                    });
                     numClicks.value++;
                     let singleClickTimer;
                     if (numClicks.value === 1) {
@@ -224,11 +245,9 @@ export default defineComponent({
                         clearTimeout(singleClickTimer);
                         numClicks.value = 0;
 
-                        createCalendarForm.value.form.start = data.date
+                        createCalendarEventForm.value.form.start = data.date;
                         createEventModal.value.open();
                     }
-                    console.log("createCalendarForm", createCalendarForm.value.form);
-
                 },
                 eventClick: function (data) {
                     data.jsEvent.preventDefault(); // don't let the browser navigate
@@ -259,7 +278,10 @@ export default defineComponent({
             reset,
             clearSearch,
             clearFilters,
-            createCalendarForm,
+            createCalendarEventForm,
+            editCalendarEventForm,
+            resetCreateEventModal,
+            resetEditEventModal,
         };
     },
 });
