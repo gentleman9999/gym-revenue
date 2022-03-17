@@ -50,7 +50,7 @@
                 id="start"
                 v-model="form.start"
                 :enable-time-picker="!form.full_day_event"
-                format="MM/dd/yyyy"
+                :format="dateFormat"
                 :month-change-on-scroll="false"
                 :auto-apply="true"
                 :close-on-scroll="true"
@@ -66,7 +66,7 @@
                 id="end"
                 v-model="form.end"
                 :enable-time-picker="!form.full_day_event"
-                format="MM/dd/yyyy"
+                :format="dateFormat"
                 :month-change-on-scroll="false"
                 :auto-apply="true"
                 :close-on-scroll="true"
@@ -106,8 +106,8 @@ label {
 </style>
 
 <script>
-import { useForm, usePage, watchEffect } from "@inertiajs/inertia-vue3";
-
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { computed, watchEffect, watch } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -148,6 +148,35 @@ export default {
 
         const form = useForm(calendarEvent);
 
+        watchEffect(() => {
+            if( form.end){
+                return;
+            }
+            let start = form.start;
+
+            let end = form.end;
+            let tempEnd = false;
+            if(typeof start ==='string'){
+                start = new Date(Date.parse(start));
+            }
+
+            if (form.end) {
+                if(typeof end === 'string'){
+                    end = new Date(Date.parse(form.end));
+                    console.log({end});
+                }
+                console.log({end: form.end, type: typeof end})
+                tempEnd = new Date(form.end).setHours(end.getHours() + 1);
+            }
+
+            if (start || (tempEnd && tempEnd < start)) {
+                const newEnd = new Date(start.getTime());
+                newEnd.setHours(start.getHours() + 1);
+                console.log({ start, newEnd });
+                form.end = newEnd;
+            }
+        });
+
         const transformDate = (date) => {
             if (!date?.toISOString) {
                 return date;
@@ -165,7 +194,10 @@ export default {
                 }))
                 .put(route("calendar.event.update", calendarEvent.id), {
                     preserveScroll: true,
-                    onSuccess: () => emit("submitted"),
+                    onSuccess: () => {
+                        form.reset();
+                        emit("submitted")
+                    },
                 });
 
         if (operation === "Create") {
@@ -178,15 +210,23 @@ export default {
                     }))
                     .post(route("calendar.event.store"), {
                         preserveScroll: true,
-                        onSuccess: () => emit("submitted"),
+                        onSuccess: () => {
+                            form.reset();
+                            emit("submitted")
+                        },
                     });
         }
+
+        const dateFormat = computed(() =>
+            form.full_day_event ?   "MM/dd/yyyy" : "MM/dd/yyyy hh:mm"
+        );
 
         return {
             form,
             buttonText: operation,
             handleSubmit,
             calendarEventTypes,
+            dateFormat,
         };
     },
 };
