@@ -27,7 +27,7 @@ class FilesController extends Controller
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
-                ->where('permissions->'.strtolower($roles[0]), 'true')
+                ->where('permissions->'.strtolower(str_replace(' ', '_', $roles[0])), 'true')
                 ->filter($request->only('search', 'trashed'))
                 ->paginate($page_count);
         }
