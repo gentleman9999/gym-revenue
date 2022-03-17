@@ -187,7 +187,11 @@ export default defineComponent({
                     failureCallback
                 ) => {
                     updateStartEnd(startStr, endStr);
-                    successCallback(props.calendar_events);
+                    //we can use something like this we ever need to swap out color tokens for daisy theme variables
+                    //could also potentially just store var(--tw-blue-500);
+                    successCallback(props.calendar_events.map(calendar_event=> ({...calendar_event, color: `var(--color-${calendar_event.color}-500)`})));
+
+                    // successCallback(props.calendar_events);
                 },
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
@@ -248,5 +252,8 @@ export default defineComponent({
 }
 .fc-theme-standard .fc-popover{
     @apply bg-base-300;
+}
+.fc-v-event .fc-event-title-container{
+    @apply text-xs leading-tight;
 }
 </style>
