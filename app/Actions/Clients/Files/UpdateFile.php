@@ -24,33 +24,29 @@ class UpdateFile
     public function rules()
     {
         return [
-            'id' => 'uuid|required',
-            'admin' => 'boolean|sometimes|nullable',
-            'account_owner' => 'boolean|sometimes|nullable',
-            'regional_admin' => 'boolean|sometimes|nullable',
-            'location_manager' => 'boolean|sometimes|nullable',
-            'employee' => 'boolean|sometimes|nullable',
+            //TODO: why doesn't the line below this work? says permissions must be an array (which it is)
+//            'permissions' => 'required|array:admin,account_owner,regional_admin,location_manager,employee',
+            'permissions' => 'present',
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($id, $data, $current_user = null)
     {
-        $data['permissions'] = json_encode(Arr::except($data, ['id']));
-        $data = Arr::except($data, ['admin','account_owner','regional_admin','location_manager','employee']);
-        FileAggregate::retrieve($data['id'])->updatePermissions($current_user->id ?? "Auto Generated", $data)->persist();
-        return File::findOrFail($data['id']);
+        FileAggregate::retrieve($id)->updatePermissions($current_user->id ?? "Auto Generated", $data)->persist();
+        return File::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('files.create', $current_user->currentTeam()->first());
+        return $current_user->can('files.update', $current_user->currentTeam()->first());
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, $id)
     {
 
         $file = $this->handle(
+            $id,
             $request->validated(),
             $request->user(),
         );

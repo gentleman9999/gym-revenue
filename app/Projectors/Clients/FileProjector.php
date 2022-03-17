@@ -33,7 +33,7 @@ class FileProjector extends Projector
 
     public function onFilePermissionsUpdated(FilePermissionsUpdated $event)
     {
-        File::withTrashed()->findOrFail($event->data['id'])->updateOrFail(['permissions' => $event->data['permissions']]);
+        File::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail(['permissions' => $event->data['permissions']]);
     }
 
     public function onFileTrashed(FileTrashed $event)
