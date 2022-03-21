@@ -153,6 +153,24 @@
                 <jet-nav-link class="jet-nav-link" href="#" @click="comingSoon()">Conversions</jet-nav-link>
             </div>
             -->
+            <!-- File Manager -->
+            <div
+                :class="
+                    route().current('files') ? 'bg-primary' : 'bg-transparent'
+                "
+                class="nav-link-container"
+                v-if="$page.props.user.current_client_id !== null"
+            >
+                <jet-nav-link class="jet-nav-link" :href="route('files')">
+                    <p>
+                        <font-awesome-icon
+                            :icon="['fas', 'file-upload']"
+                            size="lg"
+                        />
+                        File Manager
+                    </p>
+                </jet-nav-link>
+            </div>
 
             <!-- Mass Communicator -->
             <div

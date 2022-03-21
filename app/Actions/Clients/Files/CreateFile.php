@@ -37,7 +37,7 @@ class CreateFile
             'extension' => 'required|string|min:3|max:4',
             'bucket' => 'max:255|required',
             'key' => 'max:255|required',
-//            'is_public' =>'boolean|required',
+            'permissions' =>'json|nullable|sometimes',
             'size' => 'integer|min:1|required',//TODO: add max size
             'client_id' => 'exists:clients,id|required',
             'user_id' => 'sometimes|nullable|exists:users,id'

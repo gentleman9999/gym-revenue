@@ -19,6 +19,12 @@
                         selectedFile = data;
                     },
                 },
+                permissions: {
+                    label: 'Permissions',
+                    handler: ({ data }) => {
+                        selectedFilePermissions = data;
+                    },
+                },
             }"
             :top-actions="{
                 create: {
@@ -36,6 +42,7 @@
             modal-theme="dark"
             enable-mobile-fullscreen
             ref="modal"
+            @close="selectedFile = null"
         >
             <file-form
                 :file="selectedFile"
@@ -43,6 +50,15 @@
                 @success="modal.close"
             />
         </sweet-modal>
+
+        <daisy-modal ref="permissionsModal" id="permissionsModal" @close="selectedFilePermissions = null">
+            <h1 class="font-bold mb-4">Modify File Permissions</h1>
+            <Permissions-Form
+                :file="selectedFilePermissions"
+                v-if="selectedFilePermissions"
+                @success="permissionsModal.close"
+            />
+        </daisy-modal>
     </app-layout>
 </template>
 
@@ -57,10 +73,12 @@ import { defineComponent, watchEffect, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import FileForm from "./Partials/FileForm";
+import PermissionsForm from "./Partials/PermissionsForm";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import FileDataCard from "./Partials/FileDataCard";
 import FilenameField from "./Partials/FilenameField";
 import { Inertia } from "@inertiajs/inertia";
+import DaisyModal from "@/Components/DaisyModal";
 
 export default defineComponent({
     components: {
@@ -68,14 +86,21 @@ export default defineComponent({
         GymRevenueCrud,
         SweetModal,
         FileForm,
+        DaisyModal,
+        PermissionsForm,
     },
     props: ["sessions", "files", "title", "isClientUser", "filters"],
     setup() {
         const selectedFile = ref(null);
+        const selectedFilePermissions = ref(null);
         const modal = ref(null);
+        const permissionsModal = ref(null);
         watchEffect(() => {
             if (selectedFile.value) {
                 modal.value.open();
+            }
+            if (selectedFilePermissions.value) {
+                permissionsModal.value.open();
             }
         });
 
@@ -88,6 +113,8 @@ export default defineComponent({
         return {
             modal,
             selectedFile,
+            permissionsModal,
+            selectedFilePermissions,
             fields,
             FileDataCard,
             Inertia,

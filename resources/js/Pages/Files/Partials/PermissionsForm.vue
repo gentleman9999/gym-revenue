@@ -1,15 +1,8 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <template #form>
             <div class="col-span-6">
-                <jet-label for="filename" value="Current Filename" />
+                <jet-label for="filename" value="Current File Permissions" />
                 <a
                     :href="file.url"
                     :download="file.filename"
@@ -20,35 +13,40 @@
                 <jet-input-error :message="form.errors.file" class="mt-2" />
             </div>
 
-            <div class="col-span-6">
-                <jet-label for="filename" value="New Filename" />
+            <div class="form-control">
                 <input
-                    id="filename"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.filename"
-                    autofocus
+                    id="regional_admin"
+                    value="regional_admin"
+                    type="checkbox"
+                    v-model="form.permissions"
                 />
-                <jet-input-error :message="form.errors.filename" class="mt-2" />
+                <jet-label for="regional_admin" value="Regional Admin" />
             </div>
 
+            <div class="form-control">
+                <input
+                    id="location_manager"
+                    value="location_manager"
+                    type="checkbox"
+                    v-model="form.permissions"
+                />
+                <jet-label for="location_manager" value="Location Manager" />
+            </div>
+
+            <div class="form-control">
+                <input
+                    id="employee"
+                    value="employee"
+                    type="checkbox"
+                    v-model="form.permissions"
+                />
+                <jet-label for="employee" value="Employee" />
+            </div>
+            <jet-input-error :message="form.errors.permissions" class="mt-2" />
             <input id="client_id" type="hidden" v-model="form.client_id" />
-            <jet-input-error :message="form.errors.client_id" class="mt-2" />
         </template>
 
         <template #actions>
-            <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <!--            <Button-->
-            <!--                type="button"-->
-            <!--                @click="$inertia.visit(route('files'))"-->
-            <!--                :class="{ 'opacity-25': form.processing }"-->
-            <!--                error-->
-            <!--                outline-->
-            <!--                :disabled="form.processing"-->
-            <!--            >-->
-            <!--                Cancel-->
-            <!--            </Button>-->
-            <div class="flex-grow" />
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
@@ -70,13 +68,13 @@ import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
         AppLayout,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
     },
@@ -84,16 +82,25 @@ export default {
     emits: ["success"],
     setup(props, { emit }) {
         let urlPrev = usePage().props.value.urlPrev;
-        let file = props.file;
-
-        const form = useForm(file);
+        const form = useForm({ permissions: props?.file?.permissions || [] });
 
         let handleSubmit = async () => {
-            await form.put(route("files.rename", file.id));
+            form.put(route("files.update", props.file.id));
             emit("success");
         };
 
-        return { form, buttonText: "Update", handleSubmit, urlPrev };
+        return {
+            form,
+            buttonText: "Update",
+            handleSubmit,
+            urlPrev,
+        };
     },
 };
 </script>
+
+<style scoped>
+.form-control {
+    @apply col-span-6 flex flex-row gap-4;
+}
+</style>

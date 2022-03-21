@@ -115,7 +115,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::get('/upload', \App\Http\Controllers\FilesController::class . '@upload')->name('files.upload');
     Route::post('/', \App\Actions\Clients\Files\CreateFiles::class)->name('files.store');
     Route::get('/edit/{id}', \App\Http\Controllers\FilesController::class . '@edit')->name('files.edit');
-    Route::put('/{id}', \App\Actions\Clients\Files\RenameFile::class)->name('files.update');
+    Route::put('/{id}/rename', \App\Actions\Clients\Files\RenameFile::class)->name('files.rename');
+    Route::put('/{id}', \App\Actions\Clients\Files\UpdateFile::class)->name('files.update');
     Route::delete('/{id}', \App\Actions\Clients\Files\TrashFile::class)->name('files.trash');
     Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');

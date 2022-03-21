@@ -41,7 +41,6 @@ class CreateCalendarEvent
         $id = Uuid::new();
         $data['id'] = $id;
         $data['color'] = $eventType->first()->color;
-//        dd($data);
         CalendarAggregate::retrieve($data['client_id'])
             ->createCalendarEvent($user->id ?? "Auto Generated", $data)
             ->persist();
@@ -65,7 +64,6 @@ class CreateCalendarEvent
 
         Alert::success("Calendar Event '{$calendar->title}' was created")->flash();
 
-//        return Redirect::route('calendar');
         return Redirect::back();
     }
 

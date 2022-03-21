@@ -4,10 +4,12 @@ namespace App\Aggregates\Clients;
 
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
+use App\StorableEvents\Clients\Files\FilePermissionsUpdated;
 use App\StorableEvents\Clients\Files\FileRenamed;
 use App\StorableEvents\Clients\Files\FileRestored;
 use App\StorableEvents\Clients\Files\FileReplaced;
 use App\StorableEvents\Clients\Files\FileTrashed;
+use App\StorableEvents\Clients\Files\FileUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class FileAggregate extends AggregateRoot
@@ -21,6 +23,12 @@ class FileAggregate extends AggregateRoot
     public function create(string $userId, array $data)
     {
         $this->recordThat(new FileCreated($userId, $data));
+        return $this;
+    }
+
+    public function updatePermissions(string $userId, $data)
+    {
+        $this->recordThat(new FilePermissionsUpdated($userId, $data));
         return $this;
     }
 
