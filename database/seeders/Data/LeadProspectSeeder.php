@@ -87,14 +87,5 @@ class LeadProspectSeeder extends Seeder
                 }
             }
         }
-        /*
-         * STEPS
-         * 1.
-         * 2.
-         * 3.
-         *      -
-         *      -
-         * 4.
-         */
     }
 }

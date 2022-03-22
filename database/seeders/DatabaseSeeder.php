@@ -119,8 +119,8 @@ class DatabaseSeeder extends Seeder
         $this->call(NewClientSeeder::class);
 
         // This seeder generates dummy leads for each client
-        VarDumper::dump('Running Leads Dummy Data Seeder');
-        $this->call(LeadProspectSeeder::class);
+        //VarDumper::dump('Running Leads Dummy Data Seeder');
+        //$this->call(LeadProspectSeeder::class);
 
         // Baby's First Email Templates are Seeded for each client
         VarDumper::dump('Running Email Template  Seeder');
