@@ -459,7 +459,7 @@ export default {
                 profile_picture: null,
                 gender: lead.gender,
             };
-            leadData.notes = "";
+     //       leadData.notes = "";
 
             console.log("Lead Owner", lead);
 
