@@ -138,13 +138,6 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        // Query for the security roles as that's part of the form
-        $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
-        if(!request()->user()->isAccountOwner()){
-            $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
-        }
-        $security_roles = $security_roles->get(['id', 'security_role']);
-
         $locations = null;
         if($client){
             $locations = Location::whereClientId($client->id)->get(['name', 'gymrevenue_id']);
@@ -152,7 +145,7 @@ class UsersController extends Controller
 
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
-            'securityRoles' => $security_roles,
+            'securityRoles' => Role::get(),
             'clientName' => $client_name,
             'locations' => $locations,
         ]);

@@ -69,9 +69,7 @@ class CreateUser implements CreatesNewUsers
             'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
-            'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
-//        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
-//            'password' => $this->passwordRules(),
+            'role' => ['required', 'integer'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,

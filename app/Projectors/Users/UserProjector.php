@@ -92,7 +92,6 @@ class UserProjector extends Projector
 
             }
 
-
             /** Users have:
              * A Role that contain abilities
              * A classification which is a fancy word for title (employee position)
@@ -101,7 +100,7 @@ class UserProjector extends Projector
             $role = null;
             $classification = null; //User's classification (ex: Front Desk Assistant)
             if (array_key_exists('role', $data)) {
-                $role = Role::whereName($data['role'])->get();
+                $role = Role::whereId($data['role'])->get();
             }
             if (array_key_exists('classification', $data) && $data['classification']) {
                 if ($client_id) {
@@ -116,14 +115,12 @@ class UserProjector extends Projector
             }
 
             //let the bouncer know this $user is OG
-
             Bouncer::assign($role)->to($user);
             UserDetails::create([
                 'user_id' => $user->id,
                 'name' => 'classification',
                 'value' => $classification
             ]);
-
 
             //attach the user to their teams
             $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
@@ -137,22 +134,6 @@ class UserProjector extends Projector
 
                 $team = Team::findOrFail($team_id);
                 $team->users()->attach($user);
-                /*
-                if ($client_id) {
-                    //assign security role abilities for client users only (cnb security roles not yet implemented)
-                    $security_role->abilities()->each(function ($ability) use ($user) {
-
-                        if(is_null($ability['entity_id']))
-                        {
-                            Bouncer::allow($user)->to($ability['ability'], $ability['entity']);
-                        }
-                        else
-                        {
-                            $entity = $ability['entity']::find($ability['entity_id']);
-                            Bouncer::allow($user)->to($ability['ability'], $entity);
-                        }
-                    });
-                } */
             }
         });
     }
@@ -163,7 +144,7 @@ class UserProjector extends Projector
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data, $event) {
-            $user = User::with(['teams', 'associated_client', 'security_role'])->findOrFail($data['id']);
+            $user = User::with(['teams', 'associated_client'])->findOrFail($data['id']);
             $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
             $user->updateOrFail($data);
@@ -207,16 +188,11 @@ class UserProjector extends Projector
                 ]);
             }
 
-            //if we were provided a security_role, update the users security_role
-            if ($data['security_role'] ?? false) {
-                $old_security_role = SecurityRole::with('role')->find($user->security_role->value);
-                $old_role = $old_security_role->role->name;
+            if ($data['role'] ?? false) {
 
-                $security_role = SecurityRole::with('role')->find($data['security_role']);
-                UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'security_role'])->updateOrFail(['value' => $security_role->id]);
+                $old_role = $user->getRoles()[0];
 
-                $role = $security_role->role->name;
-
+                $role = Role::whereId($data['role'])->get();
                 //let bouncer know their role has been changed
                 if ($old_role !== $role)
                 {
@@ -224,34 +200,8 @@ class UserProjector extends Projector
                     Bouncer::assign($role)->to($user);
                 }
 
-                if ($old_security_role->id !== $security_role->id)  // THIS TAKES TOO LONG
-                {
-                    //remove all old abilties that were assigned
-                    $old_security_role->abilities()->each(function ($ability) use ($user) {
-                        if($ability){
-                            Bouncer::disallow($user)->to($ability['ability'], $ability['entity']);
-                        }
-                    });
-                    //now add all new abilities
-                    $security_role->abilities()->each(function ($ability) use ($user) {
-                        Bouncer::allow($user)->to($ability['ability'], $ability['entity']);
-                    });
-                }
-
                 //now update their team roles
                 $team_roles_to_sync = [];
-
-                $teams = $user->teams;
-
-
-                foreach ($teams as $team) {
-                    //only update role for teams owned by their associated client
-                    $team_client = $team->client_details[0]->client;
-                    if ($team_client->id === $client_id) {
-                        $team_roles_to_sync[$team->id] = ['role' => $role];
-                    }
-                }
-
 
                 //syncWithoutDetaching so CB user team associations dont get removed
                 $user->teams()->syncWithoutDetaching($team_roles_to_sync);

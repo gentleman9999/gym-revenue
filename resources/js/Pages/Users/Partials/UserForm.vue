@@ -163,10 +163,10 @@
                     v-model="form.role"
                 >
                     <option
-                        v-for="security_role in securityRoles"
-                        :value="security_role.id"
+                        v-for="role in securityRoles"
+                        :value="role.id"
                     >
-                        {{ security_role.name }}
+                        {{ role.name }}
                     </option>
                 </select>
                 <jet-input-error
@@ -404,9 +404,10 @@ export default {
 
         let operation = "Update";
         if (user) {
-            user.security_role =
-                user?.details?.find((detail) => detail.name === "security_role")
-                    ?.value || null;
+            user.role =
+                "role" in user && user["role"] !== null
+                    ? user["role"].value ?? ""
+                    : "";
             user.team_id = team_id;
             user.first_name = user["first_name"];
             user.last_name = user["last_name"];
@@ -457,10 +458,6 @@ export default {
                 "notes" in user && user["notes"] !== null
                     ? user["notes"].value ?? ""
                     : "";
-
-            user.security_role =
-                user?.details?.find((detail) => detail.name === "security_role")
-                    ?.value || null;
             console.log({ user });
         } else {
             user = {
@@ -468,7 +465,7 @@ export default {
                 last_name: "",
                 email: "",
                 altEmail: "",
-                security_role: "",
+                role: "",
                 phone: "",
                 address1: "",
                 address2: "",
