@@ -62,9 +62,9 @@
                             <option></option>
                             <option
                                 v-for="role in potentialRoles"
-                                :value="role"
+                                :value="role.id"
                             >
-                                {{ role }}
+                                {{ role.name }}
                             </option>
                         </select>
                     </div>
@@ -144,6 +144,11 @@ export default defineComponent({
             "email",
             "role",
             {
+                name: "classification",
+                label: "Classification",
+                transform: (data) => data?.value,
+            },
+            {
                 name: "is_manager",
                 label: "Manager",
                 transform: (data) => data?.value,
@@ -159,6 +164,11 @@ export default defineComponent({
                     label: "Home Club",
                 },
                 "role",
+                {
+                    name: "classification",
+                    label: "Classification",
+                    transform: (data) => data?.value,
+                },
                 {
                     name: "is_manager",
                     label: "Manager",

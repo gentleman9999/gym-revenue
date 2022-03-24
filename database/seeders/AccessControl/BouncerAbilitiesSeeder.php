@@ -74,34 +74,6 @@ class BouncerAbilitiesSeeder extends Seeder
         $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Employee');
         $this->allowEditInGroup(['leads', 'todo-list'], 'Employee');
 
-        /** Fitness Trainer */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Fitness Trainer');
-        $this->allowEditInGroup(['leads', 'todo-list'], 'Fitness Trainer');
-
-        /** Personal Trainer */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Personal Trainer');
-        $this->allowEditInGroup(['leads', 'todo-list'], 'Personal Trainer');
-
-        /** Instructor */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Instructor');
-        $this->allowEditInGroup(['leads', 'todo-list'], 'Instructor');
-
-        /** Fitness Manager */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Fitness Manager');
-        $this->allowEditInGroup(['leads', 'todo-list'], 'Fitness Manager');
-
-        /** Sanitation */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Sanitation');
-        $this->allowEditInGroup(['todo-list'], 'Sanitation');
-
-
-        /** Human Resources */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Human Resources');
-        $this->allowEditInGroup(['todo-list'], 'Human Resources');
-
-        /** Day Care Manager */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Day Care Manager');
-        $this->allowEditInGroup(['todo-list'], 'Day Care Manager');
 
 
         $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];

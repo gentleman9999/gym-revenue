@@ -92,45 +92,38 @@ class UserProjector extends Projector
 
             }
 
+
+            /** Users have:
+             * A Role that contain abilities
+             * A classification which is a fancy word for title (employee position)
+             * These two declarations should never EVER be chained together.
+             */
             $role = null;
-            $security_role = null;
+            $classification = null; //User's classification (ex: Front Desk Assistant)
             if (array_key_exists('role', $data)) {
-//                dd($event->payload['role']);
-                $role = Role::whereName($data['role'])->firstOrFail();
+                $role = Role::whereName($data['role'])->get();
+            }
+            if (array_key_exists('classification', $data) && $data['classification']) {
                 if ($client_id) {
-                    $security_role = SecurityRole::whereClientId($client_id)->whereRoleId($role->id)->first();//get default security role for role if exists
+                    $classification = $data['classification'];
                 }
             }
-            else if (array_key_exists('security_role', $data) && $data['security_role']) {
-                $security_role = SecurityRole::with('role')->findOrFail($data['security_role']);
-                $role = $security_role->role;
-            }
-            else if ($data['team_id'] === 1 || $data['team_id'] === 10) {
-                //set role to admin for capeandbay
-                $role = Role::whereName('Admin')->firstOrFail();
+            if (array_key_exists('team_id', $data)){
+                if ($data['team_id'] === 1 || $data['team_id'] === 10) {
+                    //set role to admin for capeandbay
+                    $role = Role::whereName('Admin')->firstOrFail();
+                }
             }
 
             //let the bouncer know this $user is OG
-            Bouncer::assign($role)->to($user);
-            // If the user is not an admin, disallow the full ability,
-            // further down we will add the scoped abilities;
-            if(!Bouncer::is($user)->an('Admin'))
-            {
-                $role_full_abilities = $role->abilities()->get();
-                foreach($role_full_abilities as $full_ability)
-                {
-                    Bouncer::disallow($user)->to($full_ability);
-                }
-            }
 
-            //add user security role to details
-            if ($security_role) {
-                UserDetails::create([
-                    'user_id' => $user->id,
-                    'name' => 'security_role',
-                    'value' => $security_role->id
-                ]);
-            }
+            Bouncer::assign($role)->to($user);
+            UserDetails::create([
+                'user_id' => $user->id,
+                'name' => 'classification',
+                'value' => $classification
+            ]);
+
 
             //attach the user to their teams
             $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
@@ -143,10 +136,8 @@ class UserProjector extends Projector
                 }
 
                 $team = Team::findOrFail($team_id);
-                $team->users()->attach(
-                    $user, ['role' => $role->name]
-                );
-
+                $team->users()->attach($user);
+                /*
                 if ($client_id) {
                     //assign security role abilities for client users only (cnb security roles not yet implemented)
                     $security_role->abilities()->each(function ($ability) use ($user) {
@@ -161,7 +152,7 @@ class UserProjector extends Projector
                             Bouncer::allow($user)->to($ability['ability'], $entity);
                         }
                     });
-                }
+                } */
             }
         });
     }

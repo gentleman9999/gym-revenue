@@ -82,8 +82,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SecondaryTeamsSeeder::class);
 
         // We can add security roles after bouncer is defined as well as the clients
-        VarDumper::dump('Running Security Role Seeder');
-        $this->call(SecurityRolesSeeder::class);
+        //VarDumper::dump('Running Security Role Seeder');
+        //$this->call(SecurityRolesSeeder::class);
 
         // Here Client Account Owners will be Generated for each client
         VarDumper::dump('Running Client User Seeder');

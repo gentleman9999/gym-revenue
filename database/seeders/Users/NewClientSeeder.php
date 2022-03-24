@@ -27,7 +27,21 @@ class NewClientSeeder extends Seeder
             VarDumper::dump("Adding ".$client->name." Users...");
 
             /** Find all teams for client and put the names in an array */
-            $securityRoles = SecurityRole::whereClientId($client->id)->get();
+            $userRoles = [
+                'Account Owner',
+                'Regional Admin',
+                'Location Manager',
+                'Sales Rep',
+                'Employee'
+                ];
+            $classification = [
+                ['name' => 'Club Associate', 'count' => 10],
+                ['name' => 'Floor Manager/Team Lead', 'count' => 2],
+                ['name' => 'Fitness Trainer', 'count' => 5],
+                ['name' => 'Personal Trainer', 'count' => 5],
+                ['name' => 'Instructor', 'count' => 2],
+                ['name' => 'Sanitation', 'count' => 2]
+            ];
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->get();
             $team_names = [];
@@ -36,108 +50,88 @@ class NewClientSeeder extends Seeder
                 $team_names[] = $team['name'];
             }
 
-            foreach ($securityRoles as $role)
+            foreach ($userRoles as $role)
             {
+                if($role !== 'Employee') {
 
-                if ($role->security_role === 'Sales Rep') {
-                    $users = User::factory()
-                        ->count(5)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
+                    if ($role === 'Sales Rep') {
+                        $users = User::factory()
+                            ->count(5)
+                            ->make([
+                                'client' => $client->name,
+                                'role' => $role,
+                                'team_names' => $team_names
+                            ]);
+                    } else {
+                        $users = User::factory()
+                            ->count(1)
+                            ->make([
+                                'client' => $client->name,
+                                'role' => $role,
+                                'team_names' => $team_names
+                            ]);
+                    }
+
+                    foreach($users as $user)
+                    {
+                        $client = Client::whereName($user['client'])->first();
+                        $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
+                        $team_ids = $teams->pluck('id');
+                        $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
+                        if($possible_home_clubs->count() > 0 )
+                            $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
+                        else
+                            $home_club = null;
+                        $senior_managers = ['Regional Manager', 'Account Owner', 'Admin', 'Regional Manager'];
+                        $managers = ['Location Manager'];
+                        $manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
+                        CreateUser::run([
+                            'client_id' => $client->id,
+                            'first_name' => $user['first_name'],
+                            'last_name' => $user['last_name'],
+                            'email' => $user['email'],
+                            'password' => 'Hello123!',
+                            'team_ids' => $team_ids,
+                            'role' => $user['role'],
+                            'home_club' => $home_club,
+                            'is_manager' => $manager
                         ]);
-                } else if ($role->security_role === 'Club Associate') {
-                    $users = User::factory()
-                        ->count(10)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
-                } else if ($role->security_role === 'Floor Manager/Team Lead') {
-                    $users = User::factory()
-                        ->count(2)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
-                } else if ($role->security_role === 'Fitness Trainer') {
-                    $users = User::factory()
-                        ->count(5)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
-                } else if ($role->security_role === 'Personal Trainer') {
-                    $users = User::factory()
-                        ->count(5)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
-                } else if ($role->security_role === 'Instructor') {
-                    $users = User::factory()
-                        ->count(2)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
-                } else if ($role->security_role === 'Sanitation') {
-                    $users = User::factory()
-                        ->count(2)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
+                    }
                 } else {
-                    $users = User::factory()
-                        ->count(1)
-                        ->make([
-                            'client' => $client->name,
-                            'role' => $role->security_role,
-                            'team_names' => $team_names
-                        ]);
+                    foreach ($classification as $class) {
+                        $users = User::factory()
+                            ->count($class['count'])
+                            ->make([
+                                'client' => $client->name,
+                                'role' => 'Employee',
+                                'classification' => $class['name'],
+                                'team_names' => $team_names
+                            ]);
+                        foreach ($users as $user) {
+                            $client = Client::whereName($user['client'])->first();
+                            $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
+                            $team_ids = $teams->pluck('id');
+                            $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
+                            if ($possible_home_clubs->count() > 0)
+                                $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
+                            else
+                                $home_club = null;
+
+                            CreateUser::run([
+                                'client_id' => $client->id,
+                                'first_name' => $user['first_name'],
+                                'last_name' => $user['last_name'],
+                                'email' => $user['email'],
+                                'password' => 'Hello123!',
+                                'team_ids' => $team_ids,
+                                'role' => $user['role'],
+                                'classification' => $user['classification'],
+                                'home_club' => $home_club,
+                                'is_manager' => null,
+                            ]);
+                        }
+                    }
                 }
-
-                foreach($users as $user)
-                {
-
-                    $client = Client::whereName($user['client'])->first();
-
-                    $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
-                    $team_ids = $teams->pluck('id');
-
-                    $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-
-                    if($possible_home_clubs->count() > 0 )
-                        $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
-                    else
-                        $home_club = null;
-
-                    $senior_managers = ['Regional Manager', 'Account Owner', 'Admin', 'Regional Manager'];
-                    $managers = ['Location Manager'];
-
-                    $manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
-
-                    CreateUser::run([
-                        'client_id' => $client->id,
-                        'first_name' => $user['first_name'],
-                        'last_name' => $user['last_name'],
-                        'email' => $user['email'],
-                        'password' => 'Hello123!',
-                        'team_ids' => $team_ids,
-                        'role' => $user['role'],
-                        'home_club' => $home_club,
-                        'is_manager' => $manager
-                    ]);
-                }
-
             }
 
         }

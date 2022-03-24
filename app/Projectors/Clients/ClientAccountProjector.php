@@ -92,9 +92,7 @@ class ClientAccountProjector extends Projector
         $team = Team::find($event->team);
 
         foreach ($users as $newTeamMember) {
-            $team->users()->attach(
-                $newTeamMember, ['role' => 'Admin']
-            );
+            $team->users()->attach($newTeamMember);
             $team_client = Team::getClientFromTeamId($team->id);
             $team_client_id = ($team_client) ? $team_client->id : null;
 

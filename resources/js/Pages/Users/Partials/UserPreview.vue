@@ -19,16 +19,17 @@
                 {{ user.phone }}
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3" v-if="user.security_role">
-            <label>Security Role:</label>
-            <div class="data">
-                {{ user.security_role }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3" v-else>
+
+        <div class="field col-span-6 lg:col-span-3">
             <label>Role:</label>
             <div class="data">
                 {{ user.role }}
+            </div>
+        </div>
+        <div class="field col-span-6 lg:col-span-3" v-if="user.classification.value">
+            <label>Classification:</label>
+            <div class="data">
+                {{ user.classification.value }}
             </div>
         </div>
         <template v-if="user.teams?.length">

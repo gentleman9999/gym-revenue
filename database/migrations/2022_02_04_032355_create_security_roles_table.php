@@ -12,7 +12,7 @@ class CreateSecurityRolesTable extends Migration
      * @return void
      */
     public function up()
-    {
+    { /*
         Schema::create('security_roles', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->uuid('client_id');
@@ -23,7 +23,7 @@ class CreateSecurityRolesTable extends Migration
             $table->longText('misc')->nullable();
             $table->timestamps();
             $table->softDeletes();
-        });
+        }); */
     }
 
     /**
@@ -33,6 +33,6 @@ class CreateSecurityRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('security_roles');
+        //Schema::dropIfExists('security_roles');
     }
 }

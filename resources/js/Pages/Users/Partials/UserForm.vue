@@ -156,21 +156,21 @@
 
             <!-- Security Role -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role" value="Security Role" />
+                <jet-label for="role" value="Role" />
                 <select
                     id="role"
                     class="block w-full mt-1"
-                    v-model="form.security_role"
+                    v-model="form.role"
                 >
                     <option
-                        v-for="{ security_role, id } in securityRoles"
-                        :value="id"
+                        v-for="security_role in securityRoles"
+                        :value="security_role.id"
                     >
-                        {{ security_role }}
+                        {{ security_role.name }}
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors.security_role"
+                    :message="form.errors.role"
                     class="mt-2"
                 />
             </div>

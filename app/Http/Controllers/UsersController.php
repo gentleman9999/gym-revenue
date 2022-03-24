@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+use Silber\Bouncer\Database\Role;
 
 class UsersController extends Controller
 {
@@ -27,11 +28,20 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles'];
 
         //Populating Role Filter
-        $team_users = $request->user()->currentTeam()->first()->team_users()->get();
+        $team_users = User::with(['teams', 'home_club', 'is_manager'])->whereHas('detail', function ($query) use ($client_id) {
+            return $query->whereName('associated_client')->whereValue($client_id);
+        })->get();
         $roles = [];
         foreach($team_users as $team_user)
         {
-            $roles[] = $team_user->role;
+            $role = $team_user->getRoles();
+            if($role->has(0)) {
+                $id = Role::query()->where('name', '=', $role[0])->get();
+                $roles[] = [
+                    'id' => $id[0]->id,
+                    'name' => $role
+                ];
+            }
         }
 
         if ($client_id) {
@@ -47,7 +57,7 @@ class UsersController extends Controller
             // If the active team is a client's-default team get all members
             if($is_default_team)
             {
-                $users = User::with(['teams', 'home_club', 'is_manager'])->whereHas('detail', function ($query) use ($client_id) {
+                $users = User::with(['teams', 'home_club', 'is_manager', 'classification'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only($filterKeys))
                     ->paginate(10);
@@ -62,15 +72,17 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('id', $user_ids)
-                    ->with(['teams', 'home_club', 'is_manager'])
+                    ->with(['teams', 'home_club', 'is_manager', 'classification'])
                     ->filter($request->only($filterKeys))
                     ->paginate(10);
             }
 
             foreach($users as $idx => $user)
             {
-                $role = $user->roles()->first();
-                $users[$idx]->role = $role->name;
+                if($user->getRoles()->has(0)) {
+                    $users[$idx]->role = $user->getRoles()[0];
+                }
+
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
@@ -88,8 +100,7 @@ class UsersController extends Controller
 
             foreach($users as $idx => $user)
             {
-                $role = $user->roles()->first();
-                $users[$idx]->role = $role->name;
+                $users[$idx]->role = $user->getRoles()[0];
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
@@ -102,7 +113,7 @@ class UsersController extends Controller
             'clubs' => $clubs,
             'teams' => $teams,
             'clientName' => $clientName,
-            'potentialRoles' => array_unique($roles),
+            'potentialRoles' => array_map("unserialize", array_unique(array_map("serialize", $roles))),
         ]);
     }
 
@@ -150,7 +161,7 @@ class UsersController extends Controller
     public function edit($id)
     {
         $me = request()->user();
-        $current_team = $me->currentTeam()->first();
+
         if($me->cannot('users.update', User::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -163,16 +174,14 @@ class UsersController extends Controller
                 'files'
             ])->findOrFail($id);
 
+        $user['role'] = $user->getRoles()[0];
+
         if($me->id == $user->id)
         {
             return Redirect::route('profile.show');
         }
 
-        $security_roles = SecurityRole::whereActive(1)->whereClientId(request()->user()->currentClientId());
-        if(!$user->isAccountOwner()) {
-            $security_roles = $security_roles->where('security_role', '!=', 'Account Owner');
-        }
-        $security_roles = $security_roles->get(['id', 'security_role']);
+        $roles = Role::get();
 
         $locations = null;
         if($user->isClientUser()){
@@ -186,36 +195,29 @@ class UsersController extends Controller
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
-            'securityRoles' => $security_roles,
+            'securityRoles' => $roles,
             'locations' => $locations
         ]);
     }
 
     public function view($id)
     {
-        $requesting_user = request()->user();
-        $current_team = $requesting_user->currentTeam()->first();
+        $requesting_user = request()->user(); //Who's driving
         if ($requesting_user->cannot('users.read', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
-        $requesting_user_teams = $requesting_user->teams ?? [];
 
-        $user = User::with('details', 'teams', 'phone_number', 'files')->findOrFail($id);
+        $user = User::with('details', 'teams', 'phone_number', 'files', 'classification')->findOrFail($id); //User we're peeking
         $user_teams = $user->teams ?? [];
-
         $data = $user->toArray();
-        if ($user->security_role) {
-            $security_role = SecurityRole::find($user->security_role->value);
-            $data['security_role'] = $security_role->security_role;
-        }else{
-            $data['role'] = $user->teams->keyBy('id')[$current_team->id]->pivot->role;
-        }
+        $data['role'] = $user->getRoles()[0];
 
-        if ($user->phone_number) {
+        if ($user->phone_number) { //Not totally sure this is necessary atm
             $data['phone'] = $user->phone_number->value;
         }
 
+        $requesting_user_teams = $requesting_user->teams ?? [];
         $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
             //only return teams that the current user also has access to
             return $requesting_user_teams->contains(function ($requesting_user_team) use($user_team) {
