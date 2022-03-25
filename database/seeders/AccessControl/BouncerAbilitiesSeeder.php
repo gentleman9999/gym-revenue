@@ -6,6 +6,7 @@ use App\Models\CalendarEvent;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
+use App\Models\File;
 use App\Models\Team;
 use App\Models\TeamDetail;
 use App\Models\User;
@@ -57,8 +58,8 @@ class BouncerAbilitiesSeeder extends Seeder
         $this->allowImpersonationInGroup(['users'], 'Account Owner');
 
         /** Regional Admin */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Regional Admin');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Regional Admin');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar'], 'Regional Admin');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar'], 'Regional Admin');
         $this->allowImpersonationInGroup(['users'], 'Regional Admin');
 
         /** Location Manager */
@@ -68,7 +69,7 @@ class BouncerAbilitiesSeeder extends Seeder
 
         /** Sales Rep */
         $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Sales Rep');
-        $this->allowEditInGroup(['leads', 'todo-list', 'calendar'], 'Regional Admin');
+        $this->allowEditInGroup(['leads', 'todo-list', 'calendar'], 'Sales Rep');
 
         /** Employee */
         $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Employee');
@@ -143,13 +144,14 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'teams':
                     $entity = Team::class;
                     break;
-
                 case 'files':
-                case 'todo-list':
-                    $entity = null;
+                    $entity = File::class;
                     break;
                 case 'calendar':
                     $entity = CalendarEvent::class;
+                    break;
+                case 'todo-list':
+                    $entity = null;
                     break;
 
             }
@@ -199,14 +201,16 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'teams':
                     $entity = Team::class;
                     break;
-
                 case 'files':
-                case 'todo-list':
-                    $entity = null;
+                    $entity = File::class;
                     break;
                 case 'calendar':
                     $entity = CalendarEvent::class;
                     break;
+                case 'todo-list':
+                    $entity = null;
+                    break;
+
             }
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if($entity)

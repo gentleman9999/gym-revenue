@@ -64,6 +64,10 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Bouncer Abilities');
         $this->call(BouncerAbilitiesSeeder::class);
 
+        // User classifications
+        VarDumper::dump('Running Classifications Seeder');
+        $this->call(ClassificationsSeeder::class);
+
         // Cape & Bay / GymRevenue Users Go Here
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
@@ -80,10 +84,6 @@ class DatabaseSeeder extends Seeder
         // There is a team for each location, along with various sales teams
         VarDumper::dump('Running Client Secondary Teams Seeder');
         $this->call(SecondaryTeamsSeeder::class);
-
-        // We can add security roles after bouncer is defined as well as the clients
-        VarDumper::dump('Running Classifications Seeder');
-        $this->call(ClassificationsSeeder::class);
 
         // Here Client Account Owners will be Generated for each client
         VarDumper::dump('Running Client User Seeder');
