@@ -3,10 +3,12 @@
 namespace Database\Seeders\Users;
 
 use App\Actions\Fortify\CreateUser;
+use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
 
 class NewClientSeeder extends Seeder
@@ -26,21 +28,19 @@ class NewClientSeeder extends Seeder
             VarDumper::dump("Adding ".$client->name." Users...");
 
             /** Find all teams for client and put the names in an array */
-            $userRoles = [
+            /*
+            $roles = [
                 'Account Owner',
                 'Regional Admin',
                 'Location Manager',
                 'Sales Rep',
                 'Employee'
                 ];
-            $classification = [
-                ['name' => 'Club Associate', 'count' => 10],
-                ['name' => 'Floor Manager/Team Lead', 'count' => 2],
-                ['name' => 'Fitness Trainer', 'count' => 5],
-                ['name' => 'Personal Trainer', 'count' => 5],
-                ['name' => 'Instructor', 'count' => 2],
-                ['name' => 'Sanitation', 'count' => 2]
-            ];
+            */
+            $roles = Role::all();
+
+            $classification = Classification::all();
+
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->get();
             $team_names = [];
@@ -49,16 +49,15 @@ class NewClientSeeder extends Seeder
                 $team_names[] = $team['name'];
             }
 
-            foreach ($userRoles as $role)
+            foreach ($roles as $role)
             {
-                if($role !== 'Employee') {
-
-                    if ($role === 'Sales Rep') {
+                if($role['name'] !== 'Employee') {
+                    if ($role['name'] === 'Sales Rep') {
                         $users = User::factory()
                             ->count(5)
                             ->make([
                                 'client' => $client->name,
-                                'role' => $role,
+                                'role' => $role['id'],
                                 'team_names' => $team_names
                             ]);
                     } else {
@@ -66,7 +65,7 @@ class NewClientSeeder extends Seeder
                             ->count(1)
                             ->make([
                                 'client' => $client->name,
-                                'role' => $role,
+                                'role' => $role['id'],
                                 'team_names' => $team_names
                             ]);
                     }
@@ -81,8 +80,8 @@ class NewClientSeeder extends Seeder
                             $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
                         else
                             $home_club = null;
-                        $senior_managers = ['Regional Manager', 'Account Owner', 'Admin', 'Regional Manager'];
-                        $managers = ['Location Manager'];
+                        $senior_managers = [3, 2, 1];
+                        $managers = [4];
                         $manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
                         CreateUser::run([
                             'client_id' => $client->id,
@@ -97,15 +96,37 @@ class NewClientSeeder extends Seeder
                         ]);
                     }
                 } else {
-                    foreach ($classification as $class) {
-                        $users = User::factory()
-                            ->count($class['count'])
-                            ->make([
-                                'client' => $client->name,
-                                'role' => 'Employee',
-                                'classification' => $class['name'],
-                                'team_names' => $team_names
-                            ]);
+                    foreach ($classification as $class)
+                    {
+                        if($class['title'] == 'Club Associate') {
+                            $users = User::factory()
+                                ->count(10)
+                                ->make([
+                                    'client' => $client->name,
+                                    'role' => 6,
+                                    'classification' => $class['title'],
+                                    'team_names' => $team_names
+                                ]);
+                        } else if($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
+                            $users = User::factory()
+                                ->count(5)
+                                ->make([
+                                    'client' => $client->name,
+                                    'role' => 6,
+                                    'classification' => $class['title'],
+                                    'team_names' => $team_names
+                                ]);
+                        } else {
+                            $users = User::factory()
+                                ->count(2)
+                                ->make([
+                                    'client' => $client->name,
+                                    'role' => 6,
+                                    'classification' => $class['title'],
+                                    'team_names' => $team_names
+                                ]);
+                        }
+
                         foreach ($users as $user) {
                             $client = Client::whereName($user['client'])->first();
                             $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
