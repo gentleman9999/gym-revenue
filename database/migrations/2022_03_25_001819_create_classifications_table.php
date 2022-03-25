@@ -15,7 +15,7 @@ class CreateClassificationsTable extends Migration
     {
         Schema::create('classifications', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            //$table->uuid('client_id');
+            $table->uuid('client_id');
             $table->string('title');
             $table->boolean('active')->default(1);
             $table->longText('misc')->nullable();

@@ -64,10 +64,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Bouncer Abilities');
         $this->call(BouncerAbilitiesSeeder::class);
 
-        // User classifications
-        VarDumper::dump('Running Classifications Seeder');
-        $this->call(ClassificationsSeeder::class);
-
         // Cape & Bay / GymRevenue Users Go Here
         VarDumper::dump('Creating Cape & Bay Users');
         $this->call(CapeAndBayUserSeeder::class);
@@ -75,6 +71,10 @@ class DatabaseSeeder extends Seeder
         // This Seeder here will onboard a Client entity including various other tasks like creating the default team
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
+
+        // User classifications
+        VarDumper::dump('Running Classifications Seeder');
+        $this->call(ClassificationsSeeder::class);
 
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');

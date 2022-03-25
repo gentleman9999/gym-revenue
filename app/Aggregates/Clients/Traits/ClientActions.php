@@ -3,6 +3,7 @@
 namespace App\Aggregates\Clients\Traits;
 
 use App\Aggregates\Clients\Traits\Actions\ClientAudienceActions;
+use App\Aggregates\Clients\Traits\Actions\ClientClassificationActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientGatewayActions;
@@ -29,6 +30,7 @@ trait ClientActions
     use ClientServicesActions;
     use ClientTrialMembershipActions;
     use ClientRoleActions;
+    use ClientClassificationActions;
     use ClientUserActions;
     use ClientLocationsActions;
 }

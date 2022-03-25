@@ -2,13 +2,11 @@
 
 namespace App\Projectors\Clients;
 
-use App\Models\Clients\Classification;
 use App\StorableEvents\Clients\Roles\RoleCreated;
 use App\StorableEvents\Clients\Roles\RoleDeleted;
 use App\StorableEvents\Clients\Roles\RoleRestored;
 use App\StorableEvents\Clients\Roles\RoleTrashed;
 use App\StorableEvents\Clients\Roles\RoleUpdated;
-use Bouncer;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 

@@ -27,7 +27,7 @@ class ClassificationsController extends Controller
             return Redirect::route('dashboard');
         }
 
-        $classifications = Classification::paginate(10);
+        $classifications = Classification::whereClientId($client_id)->paginate(10);
 
         return Inertia::render('Classifications/Show', [
             'classifications' => $classifications,

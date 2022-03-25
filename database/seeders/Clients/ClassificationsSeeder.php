@@ -3,14 +3,10 @@
 namespace Database\Seeders\Clients;
 
 use App\Models\Clients\Client;
-use App\Models\Clients\Location;
-use App\Models\Clients\Classification;
-use App\Models\Endusers\Lead;
-use App\Models\Team;
-use App\Models\User;
+use App\Actions\Clients\Classifications\CreateClassification;
 use Illuminate\Database\Seeder;
-use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
+
 
 class ClassificationsSeeder extends Seeder
 {
@@ -31,13 +27,16 @@ class ClassificationsSeeder extends Seeder
             'Sanitation'
         ];
 
-        foreach ($classifications as $classification)
+        foreach ($clients as $client)
         {
-            Classification::create([
-                //'client_id' => $client->id,
-                'title' => $classification,
-            ]);
+            VarDumper::dump('Dumping Classifications for '.$client->name);
+            foreach ($classifications as $classification)
+            {
+                CreateClassification::run([
+                    'client_id' => $client->id,
+                    'title' => $classification,
+                ]);
+            }
         }
-
     }
 }
