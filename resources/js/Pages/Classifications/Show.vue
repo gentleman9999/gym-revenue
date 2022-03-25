@@ -63,7 +63,7 @@ export default defineComponent({
             confirmTrash.value = null;
         };
 
-        const fields = ["name", "created_at", "updated_at"];
+        const fields = ["title", "created_at", "updated_at"];
 
         let navLinks = [
             {

@@ -8,7 +8,7 @@ use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Clients\SecurityRolesSeeder;
+use Database\Seeders\Clients\ClassificationsSeeder;
 use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
@@ -82,8 +82,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SecondaryTeamsSeeder::class);
 
         // We can add security roles after bouncer is defined as well as the clients
-        //VarDumper::dump('Running Security Role Seeder');
-        //$this->call(SecurityRolesSeeder::class);
+        VarDumper::dump('Running Classifications Seeder');
+        $this->call(ClassificationsSeeder::class);
 
         // Here Client Account Owners will be Generated for each client
         VarDumper::dump('Running Client User Seeder');
