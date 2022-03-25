@@ -27,6 +27,12 @@ class RolesController extends Controller
             return Redirect::route('dashboard');
         }
 
+        if($request->user()->cannot('roles.read',Role::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         $roles = Role::paginate(10);
 
         return Inertia::render('Roles/Show', [
@@ -42,6 +48,12 @@ class RolesController extends Controller
             return Redirect::route('dashboard');
         }
 
+        if(request()->user()->cannot('roles.create',Role::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
         return Inertia::render('Roles/Create', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id'])
         ]);
@@ -55,6 +67,11 @@ class RolesController extends Controller
         }
         if (!$id) {
             Alert::error("No Security Role ID provided")->flash();
+            return Redirect::back();
+        }
+        if(request()->user()->cannot('roles.update',Role::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
             return Redirect::back();
         }
 

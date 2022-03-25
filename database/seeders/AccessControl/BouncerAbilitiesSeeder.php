@@ -3,6 +3,7 @@
 namespace Database\Seeders\AccessControl;
 
 use App\Models\CalendarEvent;
+use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
@@ -13,6 +14,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Bouncer;
+use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
 
 class BouncerAbilitiesSeeder extends Seeder
@@ -53,13 +55,13 @@ class BouncerAbilitiesSeeder extends Seeder
         //$this->allowEditInGroup(['users', 'locations', 'files', 'teams'], 'Admin');
 
         /** Account Owner */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Account Owner');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar'], 'Account Owner');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar', 'roles', 'classifications'], 'Account Owner');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar', 'roles', 'classifications'], 'Account Owner');
         $this->allowImpersonationInGroup(['users'], 'Account Owner');
 
         /** Regional Admin */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar'], 'Regional Admin');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar'], 'Regional Admin');
+        $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin');
+        $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin');
         $this->allowImpersonationInGroup(['users'], 'Regional Admin');
 
         /** Location Manager */
@@ -150,6 +152,12 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'calendar':
                     $entity = CalendarEvent::class;
                     break;
+                case 'roles':
+                    $entity = Role::class;
+                    break;
+                case 'classifications':
+                    $entity = Classification::class;
+                    break;
                 case 'todo-list':
                     $entity = null;
                     break;
@@ -206,6 +214,12 @@ class BouncerAbilitiesSeeder extends Seeder
                     break;
                 case 'calendar':
                     $entity = CalendarEvent::class;
+                    break;
+                case 'roles':
+                    $entity = Role::class;
+                    break;
+                case 'classifications':
+                    $entity = Classification::class;
                     break;
                 case 'todo-list':
                     $entity = null;

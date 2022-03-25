@@ -26,6 +26,11 @@ class ClassificationsController extends Controller
         if (!$client_id) {
             return Redirect::route('dashboard');
         }
+        if(request()->user()->cannot('classifications.read', Classification::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
 
         $classifications = Classification::whereClientId($client_id)->paginate(10);
 
@@ -41,7 +46,11 @@ class ClassificationsController extends Controller
         if (!$client_id) {
             return Redirect::route('dashboard');
         }
-
+        if(request()->user()->cannot('classifications.create', Classification::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         return Inertia::render('Classifications/Create', [
         ]);
     }
@@ -56,7 +65,11 @@ class ClassificationsController extends Controller
             Alert::error("No Security Role ID provided")->flash();
             return Redirect::back();
         }
-
+        if(request()->user()->cannot('classifications.update', Classification::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
         return Inertia::render('Classifications/Edit', [
             'role' => Role::findOrFail($id),
         ]);
