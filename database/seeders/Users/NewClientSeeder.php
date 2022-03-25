@@ -4,7 +4,6 @@ namespace Database\Seeders\Users;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
-use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;

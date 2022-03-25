@@ -4,10 +4,9 @@ namespace Database\Seeders\Clients;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
-use App\Models\Clients\Security\SecurityRole;
+use App\Models\Clients\Classification;
 use App\Models\Endusers\Lead;
 use App\Models\Team;
-use App\Models\TeamDetail;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\Database\Role;
@@ -155,7 +154,7 @@ class SecurityRolesSeeder extends Seeder
                 $security_role_id = $roles[$security_role['role']]->name;
 
 
-                SecurityRole::create([
+                Classification::create([
                     'client_id' => $client->id,
                     'role_id' => $roles[$security_role['role']]->id,
                     'security_role' => $security_role_id,

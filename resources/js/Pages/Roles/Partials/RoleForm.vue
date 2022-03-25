@@ -7,32 +7,13 @@
                     id="name"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.security_role"
+                    v-model="form.name"
                     autofocus
                 />
                 <jet-input-error
-                    :message="form.errors.security_role"
+                    :message="form.errors.name"
                     class="mt-2"
                 />
-            </div>
-
-            <div class="col-span-6">
-                <jet-label for="role" value="Role" />
-                <select
-                    id="role"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.role_id"
-                    autofocus
-                >
-                    <option
-                        v-for="availableRole in availableRoles"
-                        :value="availableRole.id"
-                    >
-                        {{ availableRole.name }}
-                    </option>
-                </select>
-                <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
 
             <div class="col-span-6 uppercase font-bold">Abilities</div>
@@ -92,7 +73,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('security-roles'))"
+                @click="$inertia.visit(route('roles'))"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -138,25 +119,21 @@ export default {
             type: String,
             required: true,
         },
-        availableRoles: {
-            type: Array,
-            default: [],
-        },
         availableAbilities: {
             type: Array,
             default: [],
         },
-        securityRole: {
+        role: {
             type: Object,
         },
     },
     setup(props, context) {
-        let securityRole = props.securityRole;
+        let securityRole = props.role;
         let operation = "Update";
         if (!securityRole) {
             securityRole = {
-                security_role: null,
-                role_id: null,
+                name: null,
+                id: null,
                 client_id: props.clientId,
                 ability_ids: [],
             };
@@ -166,9 +143,9 @@ export default {
         const form = useForm(securityRole);
 
         let handleSubmit = () =>
-            form.put(route("security-roles.update", securityRole.id));
+            form.put(route("roles.update", securityRole.id));
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("security-roles.store"));
+            handleSubmit = () => form.post(route("roles.store"));
         }
 
         let groupedAvailableAbilities = computed(() => {

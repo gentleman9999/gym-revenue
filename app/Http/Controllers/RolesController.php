@@ -3,35 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Models\Clients\Security\SecurityRole;
+use App\Models\Clients\Classification;
+use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Laravel\Jetstream\Role;
 use Prologue\Alerts\Facades\Alert;
-use Bouncer;
+use Silber\Bouncer\Database\Role;
 
-class SecurityRolesController extends Controller
+class RolesController extends Controller
 {
     protected $rules = [
-        'security_role' => ['string', 'required'],
-        'role_id' => ['integer', 'required'],
+        'name' => ['string', 'required'],
+        'id' => ['integer', 'sometimes', 'nullable'],
         'ability_ids' => ['array', 'sometimes'],
-        'ability_ids.*' => ['integer', 'required'],
+        'ability_ids.*' => ['array', 'sometimes'],
     ];
 
     public function index(Request $request)
     {
         $client_id = $request->user()->currentClientId();
         if (!$client_id) {
-            //not implemented for CNB users yet
             return Redirect::route('dashboard');
         }
-        $securityRoles = SecurityRole::whereClientId($client_id)->whereActive(1)->filter($request->only('search', 'trashed'))
-            ->paginate(10);
 
-        return Inertia::render('SecurityRoles/Show', [
-            'securityRoles' => $securityRoles,
+        $roles = Role::paginate(10);
+
+        return Inertia::render('Roles/Show', [
+            'roles' => $roles,
             'filters' => $request->all('search', 'trashed', 'state')
         ]);
     }
@@ -40,11 +39,10 @@ class SecurityRolesController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         if (!$client_id) {
-            //not implemented for CNB users yet
             return Redirect::route('dashboard');
         }
-        return Inertia::render('SecurityRoles/Create', [
-            'availableRoles' => Bouncer::role()::whereNotIn('name', ['Account Owner', 'Admin'])->get(['name', 'title', 'id']),
+
+        return Inertia::render('Roles/Create', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id'])
         ]);
     }
@@ -53,7 +51,6 @@ class SecurityRolesController extends Controller
     {
         $client_id = request()->user()->currentClientId();
         if (!$client_id) {
-            //not implemented for CNB users yet
             return Redirect::route('dashboard');
         }
         if (!$id) {
@@ -61,10 +58,9 @@ class SecurityRolesController extends Controller
             return Redirect::back();
         }
 
-        return Inertia::render('SecurityRoles/Edit', [
-            'availableRoles' => Bouncer::role()::where('name', '!=', 'Account Owner')->get(['name', 'title', 'id']),
+        return Inertia::render('Roles/Edit', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
-            'securityRole' => SecurityRole::findOrFail($id),
+            'role' => Role::findOrFail($id),
         ]);
     }
 
@@ -76,18 +72,18 @@ class SecurityRolesController extends Controller
         $client_id = $current_user->currentClientId();
         $data['client_id'] = $client_id;
 
-        ClientAggregate::retrieve($client_id)->createSecurityRole($current_user->id, $data)->persist();
+        ClientAggregate::retrieve($client_id)->createRole($current_user->id, $data)->persist();
 
-        Alert::success("Security Role '{$data['security_role']}' was created")->flash();
+        Alert::success("Security Role '{$data['name']}' was created")->flash();
 
-        return Redirect::route('security-roles');
+        return Redirect::route('roles');
     }
 
     public function update(Request $request, $id)
     {
         if (!$id) {
             Alert::error("No Security Role ID provided")->flash();
-            return Redirect::route('security-roles');
+            return Redirect::route('roles');
         }
 
         $data = $request->validate($this->rules);
@@ -96,11 +92,11 @@ class SecurityRolesController extends Controller
         $current_user = $request->user();
         $client_id = $current_user->currentClientId();
 
-        ClientAggregate::retrieve($client_id)->updateSecurityRole($current_user->id, $data)->persist();
+        ClientAggregate::retrieve($client_id)->updateRole($current_user->id, $data)->persist();
 
-        Alert::success("Security Role '{$data['security_role']}' updated")->flash();
+        Alert::success("Role '{$data['name']}' updated")->flash();
 
-//        return Redirect::route('security-roles');
+
         return Redirect::back();
     }
 
@@ -108,14 +104,14 @@ class SecurityRolesController extends Controller
     {
         if (!$id) {
             Alert::error("No Security Role ID provided")->flash();
-            return Redirect::route('security-roles');
+            return Redirect::route('roles');
         }
 
         $current_user = request()->user();
         $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->trashSecurityRole($current_user->id, $id)->persist();
+        ClientAggregate::retrieve($client_id)->trashRole($current_user->id, $id)->persist();
 
-        Alert::success("Security Role trashed")->flash();
+        Alert::success("Role trashed")->flash();
         return Redirect::back();
     }
 
@@ -128,9 +124,9 @@ class SecurityRolesController extends Controller
 
         $current_user = request()->user();
         $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->restoreSecurityRole($current_user->id, $id)->persist();
+        ClientAggregate::retrieve($client_id)->restoreRole($current_user->id, $id)->persist();
 
-        Alert::success("Security Role restored")->flash();
+        Alert::success("Role restored")->flash();
 
         return Redirect::back();
     }
@@ -139,14 +135,14 @@ class SecurityRolesController extends Controller
     {
         if (!$id) {
             Alert::error("No Security Role ID provided")->flash();
-            return Redirect::route('security-roles');
+            return Redirect::route('roles');
         }
 
         $current_user = request()->user();
         $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->deleteSecurityRole($current_user->id, $id)->persist();
+        ClientAggregate::retrieve($client_id)->deleteRole($current_user->id, $id)->persist();
 
-        Alert::success("Security Role trashed")->flash();
+        Alert::success("Role trashed")->flash();
         return Redirect::back();
     }
 }

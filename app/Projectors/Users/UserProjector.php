@@ -3,7 +3,6 @@
 namespace App\Projectors\Users;
 
 use App\Models\Clients\Client;
-use App\Models\Clients\Security\SecurityRole;
 use App\Models\Note;
 use App\Models\Team;
 use App\Models\User;

@@ -158,15 +158,22 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->prefix('security-roles')->group(function () {
-    Route::get('/', \App\Http\Controllers\SecurityRolesController::class . '@index')->name('security-roles');
-    Route::get('/create', \App\Http\Controllers\SecurityRolesController::class . '@create')->name('security-roles.create');
-    Route::post('/', \App\Http\Controllers\SecurityRolesController::class . '@store')->name('security-roles.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\SecurityRolesController::class . '@edit')->name('security-roles.edit');
-    Route::put('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@update')->name('security-roles.update');
-    Route::delete('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@trash')->name('security-roles.trash');
-    Route::delete('/{id}/force', \App\Http\Controllers\SecurityRolesController::class . '@delete')->name('security-roles.delete');
-    Route::post('/{id}/restore', \App\Http\Controllers\SecurityRolesController::class . '@restore')->name('security-roles.restore');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function () {
+    Route::get('/', \App\Http\Controllers\RolesController::class . '@index')->name('roles');
+    Route::get('/create', \App\Http\Controllers\RolesController::class . '@create')->name('roles.create');
+    Route::post('/', \App\Http\Controllers\RolesController::class . '@store')->name('roles.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\RolesController::class . '@edit')->name('roles.edit');
+    Route::put('/{id}', \App\Http\Controllers\RolesController::class . '@update')->name('roles.update');
+    Route::delete('/{id}', \App\Http\Controllers\RolesController::class . '@trash')->name('roles.trash');
+    Route::delete('/{id}/force', \App\Http\Controllers\RolesController::class . '@delete')->name('roles.delete');
+    Route::post('/{id}/restore', \App\Http\Controllers\RolesController::class . '@restore')->name('roles.restore');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->group(function () {
+    Route::get('/', \App\Http\Controllers\ClassificationsController::class . '@index')->name('classifications');
+    Route::get('/create', \App\Http\Controllers\ClassificationsController::class . '@create')->name('classifications.create');
+    Route::post('/', \App\Http\Controllers\ClassificationsController::class . '@store')->name('classifications.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\ClassificationsController::class . '@edit')->name('classifications.edit');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {

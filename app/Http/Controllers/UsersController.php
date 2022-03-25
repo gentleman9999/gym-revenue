@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
-use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;

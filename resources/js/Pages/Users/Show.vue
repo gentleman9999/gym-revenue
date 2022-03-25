@@ -207,7 +207,7 @@ export default defineComponent({
                 shouldRender: shouldShowEdit,
             },
         };
-        console.log("Jesus H Christ");
+
 
         let navLinks = [
             {
@@ -220,8 +220,16 @@ export default defineComponent({
 
         if (page.props.value.user.current_client_id) {
             navLinks.push({
-                label: "Security Roles",
-                href: route("security-roles"),
+                label: "Roles",
+                href: route("roles"),
+                onClick: null,
+                active: false,
+            });
+        }
+        if (page.props.value.user.current_client_id) {
+            navLinks.push({
+                label: "Classification",
+                href: route("classifications"),
                 onClick: null,
                 active: false,
             });

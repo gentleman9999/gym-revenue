@@ -1,20 +1,16 @@
 <template>
     <app-layout :title="title">
-        <!--
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Security Roles</h2>
-        </template>
-        -->
+
         <page-toolbar-nav
-            title="Security Roles"
+            title="Roles"
             :links="navLinks"
         />
         <gym-revenue-crud
-            base-route="security-roles"
-            model-name="Security Role"
+            base-route="roles"
+            model-name="Role"
             model-key="role"
             :fields="fields"
-            :resource="securityRoles"
+            :resource="roles"
             :actions="{
                 trash: {
                     handler: ({ data }) => handleClickTrash(data),
@@ -28,7 +24,7 @@
             @cancel="confirmTrash = null"
         >
             Are you sure you want to move Security Role '{{
-                confirmTrash.security_role
+                confirmTrash.role
             }}' to the trash?<BR />
         </confirm>
     </app-layout>
@@ -53,9 +49,9 @@ export default defineComponent({
         Button,
         PageToolbarNav
     },
-    props: ["securityRoles", "filters"],
+    props: ["roles", "filters"],
     setup(props) {
-        console.log({securityRoles: props.securityRoles})
+        console.log({roles: props.roles})
 
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -63,11 +59,11 @@ export default defineComponent({
         };
 
         const handleConfirmTrash = () => {
-            Inertia.delete(route("security-roles.trash", confirmTrash.value));
+            Inertia.delete(route("roles.trash", confirmTrash.value));
             confirmTrash.value = null;
         };
 
-        const fields = ["security_role", "created_at", "updated_at"];
+        const fields = ["name", "created_at", "updated_at"];
 
         let navLinks = [
             {
@@ -77,10 +73,16 @@ export default defineComponent({
                 active: false
             },
             {
-                label: "Security Roles",
-                href: route("security-roles"),
+                label: "Roles",
+                href: route("roles"),
                 onClick: null,
                 active: true
+            },
+            {
+                label: "Classification",
+                href: route("classifications"),
+                onClick: null,
+                active: false
             }
         ];
 

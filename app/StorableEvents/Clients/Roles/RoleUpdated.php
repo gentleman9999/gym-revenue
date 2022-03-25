@@ -1,10 +1,10 @@
 <?php
 
-namespace App\StorableEvents\Clients\SecurityRoles;
+namespace App\StorableEvents\Clients\Roles;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class SecurityRoleCreated extends ShouldBeStored
+class RoleUpdated extends ShouldBeStored
 {
     public $client, $user, $payload;
 

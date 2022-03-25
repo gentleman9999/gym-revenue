@@ -1,8 +1,9 @@
 <template>
-    <app-layout title="Create Security Role">
+    <app-layout title="Edit Security Role">
         <template #header>
+            <jet-bar-icon type="g0back" fill />
             <h2 class="font-semibold text-xl leading-tight">
-                Create Security Role
+                Edit Security Role
             </h2>
         </template>
 
@@ -10,8 +11,8 @@
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <security-role-form
                     :client-id="$page.props.user.current_client_id"
-                    :availableRoles="availableRoles"
                     :availableAbilities="availableAbilities"
+                    :role="$page.props.role"
                 />
             </div>
         </div>
@@ -19,15 +20,15 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
+
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
-
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-
-import SecurityRoleForm from "@/Pages/SecurityRoles/Partials/SecurityRoleForm";
+import JetBarIcon from "@/Components/JetBarIcon";
+import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
 
 export default defineComponent({
     components: {
@@ -37,16 +38,21 @@ export default defineComponent({
         JetFormSection,
         JetInputError,
         JetLabel,
+        JetBarIcon,
     },
     props: {
+        securityRole: {
+            type: Object,
+            required: true,
+        },
         availableRoles: {
             type: Array,
-            default: []
+            default: [],
         },
         availableAbilities: {
             type: Array,
-            default: []
-        }
-    }
+            default: [],
+        },
+    },
 });
 </script>

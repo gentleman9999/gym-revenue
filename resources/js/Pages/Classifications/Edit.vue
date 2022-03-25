@@ -11,9 +11,8 @@
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <security-role-form
                     :client-id="$page.props.user.current_client_id"
-                    :availableRoles="availableRoles"
                     :availableAbilities="availableAbilities"
-                    :security-role="$page.props.securityRole"
+                    :role="$page.props.role"
                 />
             </div>
         </div>
@@ -29,7 +28,7 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import JetBarIcon from "@/Components/JetBarIcon";
-import SecurityRoleForm from "@/Pages/SecurityRoles/Partials/SecurityRoleForm";
+import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
 
 export default defineComponent({
     components: {
