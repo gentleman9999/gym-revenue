@@ -72,7 +72,7 @@
             </div>
             <div class="flex flex-col gap-2 collapse-content">
                 <div class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2" >
-                    {{data.lead.note_created}}
+                  
                     {{data.lead}}
                 </div>
             </div>
