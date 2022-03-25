@@ -28,19 +28,10 @@ class NewClientSeeder extends Seeder
             VarDumper::dump("Adding ".$client->name." Users...");
 
             /** Find all teams for client and put the names in an array */
-            /*
-            $roles = [
-                'Account Owner',
-                'Regional Admin',
-                'Location Manager',
-                'Sales Rep',
-                'Employee'
-                ];
-            */
             $roles = Role::all();
+            $classification = Classification::whereClientId($client->id)->get();
 
-            $classification = Classification::all();
-
+            /** Collect all teams into an array that so everyone is on every team */
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->get();
             $team_names = [];
@@ -48,6 +39,7 @@ class NewClientSeeder extends Seeder
             {
                 $team_names[] = $team['name'];
             }
+
 
             foreach ($roles as $role)
             {
