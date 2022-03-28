@@ -1,9 +1,9 @@
 <template>
-    <app-layout title="Edit Security Role">
+    <app-layout title="Edit Classification">
         <template #header>
             <jet-bar-icon type="g0back" fill />
             <h2 class="font-semibold text-xl leading-tight">
-                Edit Security Role
+                Edit Classification
             </h2>
         </template>
 

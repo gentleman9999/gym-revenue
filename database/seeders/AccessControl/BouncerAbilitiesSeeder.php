@@ -29,16 +29,18 @@ class BouncerAbilitiesSeeder extends Seeder
     public function run()
     {
         $this->teams = Team::all();
-        $crud_models = collect(['users', 'locations', 'leads', 'files', 'teams', 'todo-list', 'calendar']);
+        $crud_models = collect(['users', 'locations', 'leads', 'files', 'teams', 'todo-list', 'calendar', 'roles', 'classifications']);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
         // Create the Full Unrestricted Abilities
         $crud_models->each(function ($crud_model) use ($operations) {
             $operations->each(function ($operation) use ($crud_model) {
+                $entity = $this->getEntityFromGroup($crud_model);
                 $title = ucwords("$operation $crud_model");
                 Bouncer::ability()->firstOrCreate([
                     'name' => "$crud_model.$operation",
                     'title' => $title,
+                    'entity_type' => $entity
                 ]);
             });
         });
@@ -47,6 +49,7 @@ class BouncerAbilitiesSeeder extends Seeder
         Bouncer::ability()->firstOrCreate([
             'name' => "users.impersonate",
             'title' => 'Impersonate Users',
+            'entity_type' => User::class
         ]);
 
         /** Admin */
@@ -132,41 +135,11 @@ class BouncerAbilitiesSeeder extends Seeder
         // Collection version of foreach item group and use the role
         $groups->each(function ($group) use ($role) {
             // Create and get the abilities for all the groups
-            switch($group)
-            {
-                case 'users':
-                    $entity = User::class;
-                    break;
-                case 'locations':
-                    $entity = Location::class;
-                    break;
-                case 'leads':
-                    $entity = Lead::class;
-                    break;
-                case 'teams':
-                    $entity = Team::class;
-                    break;
-                case 'files':
-                    $entity = File::class;
-                    break;
-                case 'calendar':
-                    $entity = CalendarEvent::class;
-                    break;
-                case 'roles':
-                    $entity = Role::class;
-                    break;
-                case 'classifications':
-                    $entity = Classification::class;
-                    break;
-                case 'todo-list':
-                    $entity = null;
-                    break;
-
-            }
+            $entity = $this->getEntityFromGroup($group);
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if($entity)
             {
-                VarDumper::dump("Allowing $role to $group.read $group");
+                VarDumper::dump("Allowing $role to read $group");
                 Bouncer::allow($role)->to("$group.read", $entity);
             }
             else
@@ -194,38 +167,10 @@ class BouncerAbilitiesSeeder extends Seeder
     protected function allowEditInGroup($group, $role)
     {
         $groups = collect($group);
-        $groups->each(function ($group) use ($role) {
-            switch($group)
-            {
-                case 'users':
-                    $entity = User::class;
-                    break;
-                case 'locations':
-                    $entity = Location::class;
-                    break;
-                case 'leads':
-                    $entity = Lead::class;
-                    break;
-                case 'teams':
-                    $entity = Team::class;
-                    break;
-                case 'files':
-                    $entity = File::class;
-                    break;
-                case 'calendar':
-                    $entity = CalendarEvent::class;
-                    break;
-                case 'roles':
-                    $entity = Role::class;
-                    break;
-                case 'classifications':
-                    $entity = Classification::class;
-                    break;
-                case 'todo-list':
-                    $entity = null;
-                    break;
 
-            }
+        $groups->each(function ($group) use ($role) {
+            $entity = $this->getEntityFromGroup($group);
+
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if($entity)
             {
@@ -304,6 +249,43 @@ class BouncerAbilitiesSeeder extends Seeder
 
         });
 
+    }
+
+    protected function getEntityFromGroup(string $group)
+    {
+        $entity = null;
+        switch($group)
+        {
+            case 'users':
+                $entity = User::class;
+                break;
+            case 'locations':
+                $entity = Location::class;
+                break;
+            case 'leads':
+                $entity = Lead::class;
+                break;
+            case 'teams':
+                $entity = Team::class;
+                break;
+            case 'files':
+                $entity = File::class;
+                break;
+            case 'calendar':
+                $entity = CalendarEvent::class;
+                break;
+            case 'roles':
+                $entity = Role::class;
+                break;
+            case 'classifications':
+                $entity = Classification::class;
+                break;
+            case 'todo-list':
+                $entity = null;
+                break;
+        }
+
+        return $entity;
     }
 
 }

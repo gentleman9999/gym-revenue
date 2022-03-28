@@ -77,7 +77,7 @@ class RolesController extends Controller
 
         return Inertia::render('Roles/Edit', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
-            'role' => Role::findOrFail($id),
+            'role' => Role::with('abilities')->findOrFail($id),
         ]);
     }
 
