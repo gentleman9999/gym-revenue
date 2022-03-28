@@ -137,12 +137,22 @@ export default {
             operation = "Create";
         }
 
+
         const form = useForm({
             name: role.name,
             id: role.id,
             client_id: props.clientId,
-            ability_names: role.ability_names.map(ability=>ability.name)
+            ability_names: getAbilities()
         });
+
+        function getAbilities () {
+            if(role.abilities) {
+                return role.abilities.map(ability=>ability.name)
+            } else {
+                return role.ability_names.map(ability=>ability.name)
+            }
+        }
+
 
         let handleSubmit = () =>
             form.put(route("roles.update", role.id));
