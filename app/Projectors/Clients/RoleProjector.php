@@ -9,6 +9,7 @@ use App\StorableEvents\Clients\Roles\RoleTrashed;
 use App\StorableEvents\Clients\Roles\RoleUpdated;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class RoleProjector extends Projector
 {
@@ -17,11 +18,19 @@ class RoleProjector extends Projector
         Role::create(
             $event->payload
         );
+        foreach ($event->payload['ability_names'] as $ability)
+        {
+            Bouncer::allow($event->payload['name'])->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
+        }
     }
 
     public function onRoleUpdated(RoleUpdated $event)
     {
-        $test = $event;
+        Bouncer::disallow($event->payload['name'])->everything();
+        foreach ($event->payload['ability_names'] as $ability)
+        {
+            Bouncer::allow($event->payload['name'])->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
+        }
         Role::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }
 
