@@ -25,7 +25,6 @@ class CreateRole
             'name' => ['string', 'required'],
             'id' => ['integer', 'sometimes', 'nullable'],
             'ability_ids' => ['array', 'sometimes'],
-            'ability_ids.*' => ['array', 'sometimes'],
         ];
     }
 

@@ -52,7 +52,7 @@
                         <input
                             :id="`${availableAbility.name}`"
                             type="checkbox"
-                            v-model="form.ability_ids"
+                            v-model="form.ability_names"
                             :value="availableAbility.name"
                             autofocus
                         />
@@ -63,7 +63,7 @@
                     </div>
                 </div>
             </div>
-            <jet-input-error :message="form.errors.ability_ids" class="mt-2" />
+            <jet-input-error :message="form.errors.ability_names" class="mt-2" />
             <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
@@ -132,7 +132,7 @@ export default {
                 name: null,
                 id: null,
                 client_id: props.clientId,
-                ability_ids: [],
+                ability_names: [],
             };
             operation = "Create";
         }
@@ -141,7 +141,7 @@ export default {
             name: securityRole.name,
             id: securityRole.id,
             client_id: props.clientId,
-            ability_ids: securityRole.abilities.map(ability=>ability.name)
+            ability_names: securityRole.abilities.map(ability=>ability.name)
         });
 
         let handleSubmit = () =>
@@ -170,18 +170,18 @@ export default {
             const groupAbilities = groupedAvailableAbilities.value[group].map(
                 (group) => group.id
             );
-            const merged = new Set([...form.ability_ids, ...groupAbilities]);
-            form.ability_ids = [...merged];
+            const merged = new Set([...form.ability_names, ...groupAbilities]);
+            form.ability_names = [...merged];
         };
 
         const clear = (group) => {
             const groupAbilities = groupedAvailableAbilities.value[group].map(
                 (group) => group.id
             );
-            const merged = form.ability_ids.filter(
+            const merged = form.ability_names.filter(
                 (abilityId) => !groupAbilities.includes(abilityId)
             );
-            form.ability_ids = [...merged];
+            form.ability_names = [...merged];
         };
 
         return {

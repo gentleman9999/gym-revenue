@@ -10,6 +10,7 @@ use App\Models\Endusers\Lead;
 use App\Models\File;
 use App\Models\Team;
 use App\Models\TeamDetail;
+use App\Models\TodoList;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
@@ -142,11 +143,7 @@ class BouncerAbilitiesSeeder extends Seeder
                 VarDumper::dump("Allowing $role to read $group");
                 Bouncer::allow($role)->to("$group.read", $entity);
             }
-            else
-            {
-                VarDumper::dump("Allowing $role to $group.read");
-                Bouncer::allow($role)->to("$group.read");
-            }
+
             /*
             // Cycle through each team and add the ability for each team and add it to the role
             $this->teams->each(function ($team) use ($group, $role) {
@@ -183,17 +180,7 @@ class BouncerAbilitiesSeeder extends Seeder
                 VarDumper::dump("Allowing $role to $group.restore");
                 Bouncer::allow($role)->to("$group.restore", $entity);
             }
-            else
-            {
-                VarDumper::dump("Allowing $role to $group.create");
-                Bouncer::allow($role)->to("$group.create");
-                VarDumper::dump("Allowing $role to $group.update");
-                Bouncer::allow($role)->to("$group.update");
-                VarDumper::dump("Allowing $role to $group.trash");
-                Bouncer::allow($role)->to("$group.trash");
-                VarDumper::dump("Allowing $role to $group.restore");
-                Bouncer::allow($role)->to("$group.restore");
-            }
+
             /*
             $this->teams->each(function ($team) use ($group, $role) {
                 $group_abilities = Bouncer::ability()->where('name', 'like', "$group.create%");
@@ -275,13 +262,13 @@ class BouncerAbilitiesSeeder extends Seeder
                 $entity = CalendarEvent::class;
                 break;
             case 'roles':
-                $entity = Role::class;
+                $entity = \App\Models\Role::class;
                 break;
             case 'classifications':
                 $entity = Classification::class;
                 break;
             case 'todo-list':
-                $entity = null;
+                $entity = TodoList::class;
                 break;
         }
 

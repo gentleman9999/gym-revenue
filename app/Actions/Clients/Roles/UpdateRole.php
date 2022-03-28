@@ -23,8 +23,7 @@ class UpdateRole
         return [
             'name' => ['string', 'required'],
             'id' => ['integer', 'required'],
-            'ability_ids' => ['array', 'sometimes'],
-            'ability_ids.*' => ['array', 'sometimes'],
+            'ability_names' => ['array', 'sometimes'],
         ];
     }
 

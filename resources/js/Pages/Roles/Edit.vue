@@ -41,7 +41,7 @@ export default defineComponent({
         JetBarIcon,
     },
     props: {
-        securityRole: {
+        role: {
             type: Object,
             required: true,
         },

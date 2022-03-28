@@ -21,6 +21,7 @@ class RoleProjector extends Projector
 
     public function onRoleUpdated(RoleUpdated $event)
     {
+        $test = $event;
         Role::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }
 
