@@ -125,10 +125,10 @@ export default {
         },
     },
     setup(props, context) {
-        let securityRole = props.role;
+        let role = props.role;
         let operation = "Update";
-        if (!securityRole) {
-            securityRole = {
+        if (!role) {
+            role = {
                 name: null,
                 id: null,
                 client_id: props.clientId,
@@ -138,14 +138,14 @@ export default {
         }
 
         const form = useForm({
-            name: securityRole.name,
-            id: securityRole.id,
+            name: role.name,
+            id: role.id,
             client_id: props.clientId,
-            ability_names: securityRole.abilities.map(ability=>ability.name)
+            ability_names: role.ability_names.map(ability=>ability.name)
         });
 
         let handleSubmit = () =>
-            form.put(route("roles.update", securityRole.id));
+            form.put(route("roles.update", role.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("roles.store"));
         }
