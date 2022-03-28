@@ -71,7 +71,7 @@ class ClassificationsController extends Controller
             return Redirect::back();
         }
         return Inertia::render('Classifications/Edit', [
-            'role' => Role::findOrFail($id),
+            'classification' => Classification::findOrFail($id),
         ]);
     }
 

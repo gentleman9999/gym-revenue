@@ -43,13 +43,10 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
-
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
-
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
@@ -58,7 +55,6 @@ export default {
         AppLayout,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
     },
@@ -67,15 +63,11 @@ export default {
             type: String,
             required: true,
         },
-        availableAbilities: {
-            type: Array,
-            default: [],
-        },
         classification: {
             type: Object,
         },
     },
-    setup(props, context) {
+    setup(props) {
         let classification = props.classification;
         let operation = "Update";
         if (!classification) {
@@ -90,49 +82,15 @@ export default {
         const form = useForm(classification);
 
         let handleSubmit = () =>
-            form.put(route("classifications.update", securityRole.id));
+            form.put(route("classifications.update", classification.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("classifications.store"));
         }
-
-        let groupedAvailableAbilities = computed(() => {
-            let grouped = {};
-            props.availableAbilities.forEach((availableAbility) => {
-                let group = availableAbility.name.split(".")[0];
-                if (grouped[group]) {
-                    grouped[group] = [...grouped[group], availableAbility];
-                } else {
-                    grouped[group] = [availableAbility];
-                }
-            });
-            return grouped;
-        });
-
-        const selectAll = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.id
-            );
-            const merged = new Set([...form.ability_ids, ...groupAbilities]);
-            form.ability_ids = [...merged];
-        };
-
-        const clear = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.id
-            );
-            const merged = form.ability_ids.filter((abilityId) =>
-                !groupAbilities.includes(abilityId)
-            );
-            form.ability_ids = [...merged];
-        };
 
         return {
             form,
             buttonText: operation,
             handleSubmit,
-            groupedAvailableAbilities,
-            selectAll,
-            clear,
         };
     },
 };

@@ -9,10 +9,9 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <security-role-form
+                <classification-form
                     :client-id="$page.props.user.current_client_id"
-                    :availableAbilities="availableAbilities"
-                    :role="$page.props.role"
+                    :classification="$page.props.classification"
                 />
             </div>
         </div>
@@ -28,11 +27,11 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import JetBarIcon from "@/Components/JetBarIcon";
-import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
+import ClassificationForm from "@/Pages/Classifications/Partials/ClassificationForm";
 
 export default defineComponent({
     components: {
-        SecurityRoleForm,
+        ClassificationForm,
         AppLayout,
         Button,
         JetFormSection,
@@ -41,18 +40,10 @@ export default defineComponent({
         JetBarIcon,
     },
     props: {
-        securityRole: {
+        classification: {
             type: Object,
             required: true,
-        },
-        availableRoles: {
-            type: Array,
-            default: [],
-        },
-        availableAbilities: {
-            type: Array,
-            default: [],
-        },
+        }
     },
 });
 </script>
