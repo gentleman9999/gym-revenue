@@ -135,6 +135,8 @@ class UsersController extends Controller
         // IF we got details, we got the client name, otherwise its Cape & Bay
         $client_name = (!is_null($client_detail)) ? $client->name : 'Cape & Bay';
 
+        $client_id = request()->user()->currentClientId();
+
         // The logged in user needs the ability to create users scoped to the current team to continue
         if($user->cannot('users.create', User::class))
         {
@@ -147,9 +149,13 @@ class UsersController extends Controller
             $locations = Location::whereClientId($client->id)->get(['name', 'gymrevenue_id']);
         }
 
+        $roles = Role::whereClientId($client_id)->get();
+        $classifications = Classification::whereClientId($client_id)->get();
+
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
-            'securityRoles' => Role::get(),
+            'roles' => $roles,
+            'classifications' => $classifications,
             'clientName' => $client_name,
             'locations' => $locations,
         ]);

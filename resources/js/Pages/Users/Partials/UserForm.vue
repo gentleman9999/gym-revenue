@@ -155,7 +155,7 @@
             </div>
 
 
-            <!-- Security Role -->
+            <!-- Classifications -->
             <div class="form-control col-span-3" v-if="clientId">
                 <jet-label for="classification" value="Classifications" />
                 <select
@@ -187,10 +187,10 @@
                     v-model="form.role_id"
                 >
                     <option
-                        v-for="role in roles"
-                        :value="role.id"
+                        v-for="role_id in roles"
+                        :value="role_id.id"
                     >
-                        {{ role.name }}
+                        {{ role_id.name }}
                     </option>
                 </select>
                 <jet-input-error
@@ -202,7 +202,7 @@
 
             <!-- Home Club -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role" value="Home Club" />
+                <jet-label for="home_club" value="Home Club" />
                 <select
                     id="home_club"
                     class="block w-full mt-1"
@@ -431,10 +431,7 @@ export default {
 
         let operation = "Update";
         if (user) {
-            user.role =
-                "role" in user && user["role"] !== null
-                    ? user["role"].value ?? ""
-                    : "";
+            user.role_id = user["role_id"]
             user.classification =
                 "classification" in user && user["classification"] !== null
                     ? user["classification"].value ?? ""
@@ -496,7 +493,7 @@ export default {
                 last_name: "",
                 email: "",
                 altEmail: "",
-                role: "",
+                role_id: 0,
                 classification: "",
                 phone: "",
                 address1: "",

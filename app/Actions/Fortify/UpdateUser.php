@@ -42,7 +42,7 @@ class UpdateUser implements UpdatesUserProfileInformation
             'notes' =>  ['sometimes'],
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required','integer', 'exists:teams,id'],
-            'role' => ['required', 'integer'],
+            'role_id' => ['required', 'integer'],
             'classification' => ['required'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
@@ -57,6 +57,8 @@ class UpdateUser implements UpdatesUserProfileInformation
         if(array_key_exists('password', $data)){
             $data['password'] = bcrypt($data['password']);
         }
+
+        $data['role'] = $data['role_id'];
 
         UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         if ($client_id) {

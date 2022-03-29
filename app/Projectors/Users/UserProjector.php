@@ -50,6 +50,7 @@ class UserProjector extends Projector
                 'termination_date' => $data['termination_date'] ?? null,
                 'home_club' => $data['home_club'] ?? null,
                 'is_manager' => $data['is_manager'] ?? null,
+                'classification' => $data['classification'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the

@@ -69,7 +69,8 @@ class CreateUser implements CreatesNewUsers
             'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
-            'role' => ['required', 'integer'],
+            'role_id' => ['required', 'integer'],
+            'classification' => ['required'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
@@ -88,6 +89,8 @@ class CreateUser implements CreatesNewUsers
         if (array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }
+
+        $data['role'] = $data['role_id'];
 
 //        $id = Uuid::new();//we should use uuid here, but then we'd have to change all the bouncer tables to use uuid instead of bigint;
         $id = (User::max('id') ?? 0) + 1;
@@ -129,7 +132,6 @@ class CreateUser implements CreatesNewUsers
 
     public function asController(ActionRequest $request)
     {
-
         $user = $this->handle(
             $request->validated(),
             $request->user(),
