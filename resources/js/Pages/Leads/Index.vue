@@ -119,8 +119,10 @@ export default defineComponent({
             return badges[lead_type_index % badges.length];
             // console.log({lead_type_index, })
         };
+
         const fields = [
             { name: "created_at", label: "Created" },
+            { name: "opportunity.value", label: "Opportunity" },
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
             { name: "location.name", label: "Location" },

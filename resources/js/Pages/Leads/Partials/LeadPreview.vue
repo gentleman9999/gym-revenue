@@ -61,17 +61,19 @@
             <label>Club/Location:</label>
             <div class="data">{{ data.club_location.name }}
          </div>
+
         </div>
         <div
             class="collapse col-span-6"
-            tabindex="0"  >
+            tabindex="0"   v-if="data?.preview_note?.length">
             <div class="collapse-title text-sm font-medium">
                 > Existing Notes
             </div>
             <div class="flex flex-col gap-2 collapse-content">
-                <div class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2" >
-                    {{data.preview_note}}
+                <div v-for="note in data.preview_note" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2" >
+                    {{note['note']}}
                 </div>
+
             </div>
         </div>
         <div class="field col-span-6 lg:col-span-6">
@@ -89,7 +91,7 @@ input {
 
 <script>
 export default {
-    props: ["data","lead","club","note"],
+    props: ["data","lead","club","note","notes"],
 
 };
 </script>

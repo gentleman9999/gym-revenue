@@ -74,12 +74,14 @@ class LeadsController extends Controller
                 ->with('leadSource')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
+                ->with('opportunity')
+                ->with('notes')
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
                                             'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
-
         }
+
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
@@ -205,6 +207,7 @@ class LeadsController extends Controller
              */
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
+
             $default_team_name = $client->default_team_name->value;
 
             $team_locations = [];
@@ -227,6 +230,8 @@ class LeadsController extends Controller
                 $results = Lead::whereClientId($client_id);
             }
         }
+
+
         return $results;
     }
 
