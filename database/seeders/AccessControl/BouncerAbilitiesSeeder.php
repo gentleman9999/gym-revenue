@@ -20,7 +20,6 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class BouncerAbilitiesSeeder extends Seeder
 {
-    protected $teams;
 
     /**
      * Run the database seeds.
@@ -29,7 +28,9 @@ class BouncerAbilitiesSeeder extends Seeder
      */
     public function run()
     {
-        $this->teams = Team::all();
+        /** Admin */
+        Bouncer::allow('Admin')->everything(); // I mean....right?
+
         $crud_models = collect(['users', 'locations', 'leads', 'files', 'teams', 'todo-list', 'calendar', 'roles', 'classifications']);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
@@ -53,98 +54,97 @@ class BouncerAbilitiesSeeder extends Seeder
             'entity_type' => User::class
         ]);
 
-        /** Admin */
-        Bouncer::allow('Admin')->everything(); // I mean....right?
-        //$this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams'], 'Admin');
-        //$this->allowEditInGroup(['users', 'locations', 'files', 'teams'], 'Admin');
+        $clients = Client::all();
+        foreach ($clients as $client) {
+            //$this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams'], 'Admin');
+            //$this->allowEditInGroup(['users', 'locations', 'files', 'teams'], 'Admin');
 
-        /** Account Owner */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar', 'roles', 'classifications'], 'Account Owner');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files','teams', 'calendar', 'roles', 'classifications'], 'Account Owner');
-        $this->allowImpersonationInGroup(['users'], 'Account Owner');
+            /** Account Owner */
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
+            $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
 
-        /** Regional Admin */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin');
-        $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin');
-        $this->allowImpersonationInGroup(['users'], 'Regional Admin');
+            /** Regional Admin */
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin', $client);
+            $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
 
-        /** Location Manager */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager');
-        $this->allowEditInGroup(['users', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager');
-        $this->allowImpersonationInGroup(['users'], 'Location Manager');
+            /** Location Manager */
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager', $client);
+            $this->allowEditInGroup(['users', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager', $client);
+            $this->allowImpersonationInGroup(['users'], 'Location Manager', $client);
 
-        /** Sales Rep */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Sales Rep');
-        $this->allowEditInGroup(['leads', 'todo-list', 'calendar'], 'Sales Rep');
+            /** Sales Rep */
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Sales Rep', $client);
+            $this->allowEditInGroup(['leads', 'todo-list', 'calendar'], 'Sales Rep', $client);
 
-        /** Employee */
-        $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Employee');
-        $this->allowEditInGroup(['leads', 'todo-list'], 'Employee');
+            /** Employee */
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Employee', $client);
+            $this->allowEditInGroup(['leads', 'todo-list'], 'Employee', $client);
 
-        $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];
-        foreach ($roles_allowed_to_contact_leads as $role) {
-            VarDumper::dump("Allowing $role to contact leads for teams");
-            Bouncer::allow($role)->to('leads.contact', Lead::class);
+            $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];
+            foreach ($roles_allowed_to_contact_leads as $role) {
+                VarDumper::dump("Allowing $role to contact leads for teams");
+                Bouncer::allow("$client->id $role")->to('leads.contact', Lead::class);
+            }
         }
     }
 
-    protected function allowReadInGroup($group, $role)
+    protected function allowReadInGroup($group, $role, $client)
     {
         // Convert the $group array into a Collection
         $groups = collect($group);
 
         // Collection version of foreach item group and use the role
-        $groups->each(function ($group) use ($role) {
+        $groups->each(function ($group) use ($role, $client) {
             // Create and get the abilities for all the groups
             $entity = \App\Models\Role::getEntityFromGroup($group);
             // Allow the role to inherit the not Ability in full, but scoped to the team
-            if($entity)
-            {
+            if ($entity) {
                 VarDumper::dump("Allowing $role to read $group");
-                Bouncer::allow($role)->to("$group.read", $entity);
+                Bouncer::allow("$client->id $role")->to("$group.read", $entity);
             }
         });
     }
 
-    protected function allowEditInGroup($group, $role)
+    protected function allowEditInGroup($group, $role, $client)
     {
         // Convert the $group array into a Collection
         $groups = collect($group);
 
         // Collection version of foreach item group and use the role
-        $groups->each(function ($group) use ($role) {
+        $groups->each(function ($group) use ($role, $client) {
             $entity = \App\Models\Role::getEntityFromGroup($group);
 
             // Allow the role to inherit the not Ability in full, but scoped to the team
-            if($entity)
-            {
+            if ($entity) {
                 VarDumper::dump("Allowing $role to $group.create");
-                Bouncer::allow($role)->to("$group.create", $entity);
+                Bouncer::allow("$client->id $role")->to("$group.create", $entity);
                 VarDumper::dump("Allowing $role to $group.update");
-                Bouncer::allow($role)->to("$group.update", $entity);
+                Bouncer::allow("$client->id $role")->to("$group.update", $entity);
                 VarDumper::dump("Allowing $role to $group.trash");
-                Bouncer::allow($role)->to("$group.trash", $entity);
+                Bouncer::allow("$client->id $role")->to("$group.trash", $entity);
                 VarDumper::dump("Allowing $role to $group.restore");
-                Bouncer::allow($role)->to("$group.restore", $entity);
+                Bouncer::allow("$client->id $role")->to("$group.restore", $entity);
             }
 
         });
     }
 
-    protected function allowImpersonationInGroup($group, $role)
+    protected function allowImpersonationInGroup($group, $role, $client)
     {
         $groups = collect($group);
-        $groups->each(function ($group) use ($role) {
+        $groups->each(function ($group) use ($role, $client) {
             switch ($group) {
                 case 'users':
-                    default:
+                default:
                     $entity = User::class;
                     break;
             }
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if ($entity) {
                 VarDumper::dump("Allowing $role to $group.impersonate");
-                Bouncer::allow($role)->to("$group.impersonate", $entity);
+                Bouncer::allow("$client->id $role")->to("$group.impersonate", $entity);
             }
 
         });

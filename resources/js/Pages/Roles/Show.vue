@@ -12,20 +12,23 @@
             :fields="fields"
             :resource="roles"
             :actions="{
-                trash: {
-                    handler: ({ data }) => handleClickTrash(data),
+                trash: false,
+                restore: false,
+                delete: {
+                    label: 'Delete',
+                    handler: ({ data }) => handleClickDelete(data),
                 },
             }"
         />
         <confirm
             title="Really Trash Security Role?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
+            v-if="confirmDelete"
+            @confirm="handleConfirmDelete"
+            @cancel="confirmDelete = null"
         >
-            Are you sure you want to move Security Role '{{
-                confirmTrash.role
-            }}' to the trash?<BR />
+            Are you sure you want to delete Security Role '{{
+                confirmDelete.title
+            }}'
         </confirm>
     </app-layout>
 </template>
@@ -52,17 +55,18 @@ export default defineComponent({
     props: ["roles", "filters"],
     setup(props) {
 
-        const confirmTrash = ref(null);
-        const handleClickTrash = (id) => {
-            confirmTrash.value = id;
+        const confirmDelete = ref(null);
+        const handleClickDelete = (item) => {
+            console.log('click delete', item);
+            confirmDelete.value = item;
         };
 
-        const handleConfirmTrash = () => {
-            Inertia.delete(route("roles.trash", confirmTrash.value));
-            confirmTrash.value = null;
+        const handleConfirmDelete = () => {
+            Inertia.delete(route("roles.delete", confirmDelete.value));
+            confirmDelete.value = null;
         };
 
-        const fields = ["name", "created_at", "updated_at"];
+        const fields = ["title", "created_at", "updated_at"];
 
         let navLinks = [
             {
@@ -85,7 +89,7 @@ export default defineComponent({
             }
         ];
 
-        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
+        return {fields, confirmDelete, handleConfirmDelete, handleClickDelete, Inertia, navLinks};
     },
 });
 </script>

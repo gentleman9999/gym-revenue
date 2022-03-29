@@ -28,9 +28,11 @@ class RestoreRole
 
     public function handle($current_user, $id)
     {
+        $role = Role::findOrFail($id);
+
         $client_id = $current_user->currentClientId();
         ClientAggregate::retrieve($client_id)->restoreRole($current_user->id, $id)->persist();
-
+        return $role;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -41,12 +43,11 @@ class RestoreRole
 
     public function asController(Request $request, $id)
     {
-        $role = Location::findOrFail($id);
-        $this->handle(
+        $role = $this->handle(
             $request->user(),
             $id
         );
-        Alert::success("Location '{$role->name}' restored.")->flash();
+        Alert::success("Location '{$role->title}' restored.")->flash();
 
         return Redirect::route('roles');
     }

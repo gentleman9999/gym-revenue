@@ -15,21 +15,22 @@ class RoleProjector extends Projector
 {
     public function onRoleCreated(RoleCreated $event)
     {
-        Role::create(
-            $event->payload,
+        $role = Role::create(
+            array_merge( $event->payload, ['name' => "$event->client {$event->payload['title']}"])
         );
         foreach ($event->payload['ability_names'] as $ability)
         {
-            Bouncer::allow($event->payload['name'])->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
+            Bouncer::allow($role->name)->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
         }
     }
 
     public function onRoleUpdated(RoleUpdated $event)
     {
-        Bouncer::disallow($event->payload['name'])->everything();
+        $role = Bouncer::role()->findOrFail($event->payload['id']);
+        Bouncer::disallow($role->name)->everything();
         foreach ($event->payload['ability_names'] as $ability)
         {
-            Bouncer::allow($event->payload['name'])->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
+            Bouncer::allow($role->name)->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
         }
         Role::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }
@@ -46,6 +47,6 @@ class RoleProjector extends Projector
 
     public function onRoleDeleted(RoleDeleted $event)
     {
-        Role::withTrashed()->findOrFail($event->id)->forceDelete();
+        Role::findOrFail($event->id)->delete();
     }
 }

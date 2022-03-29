@@ -75,9 +75,13 @@ class RolesController extends Controller
             return Redirect::back();
         }
 
+        $role = Role::findOrFail($id)->toArray();
+        $role['abilities'] = Bouncer::role()->find($id)->getAbilities()->toArray();
+
         return Inertia::render('Roles/Edit', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
-            'role' => Role::with('abilities')->findOrFail($id),
+            'role' => $role,
+            'abilities' => Bouncer::role()->find($id)->getAbilities()
         ]);
     }
 

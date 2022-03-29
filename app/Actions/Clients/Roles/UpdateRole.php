@@ -21,7 +21,7 @@ class UpdateRole
     public function rules()
     {
         return [
-            'name' => ['string', 'required'],
+            'title' => ['string', 'required'],
             'id' => ['integer', 'required'],
             'ability_names' => ['array', 'sometimes'],
         ];
@@ -51,7 +51,7 @@ class UpdateRole
             $request->user(),
         );
 
-        Alert::success("Role '{$role->name}' was updated")->flash();
+        Alert::success("Role '{$role->title}' was updated")->flash();
 
         return Redirect::route('roles');
     }

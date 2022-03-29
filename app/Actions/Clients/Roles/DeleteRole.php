@@ -29,8 +29,10 @@ class DeleteRole
 
     public function handle($current_user, $id)
     {
+        $role = Role::findOrFail($id);
         $client_id = $current_user->currentClientId();
         ClientAggregate::retrieve($client_id)->deleteRole($current_user->id, $id)->persist();
+        return $role;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -41,13 +43,12 @@ class DeleteRole
 
     public function asController(Request $request, $id)
     {
-        $role = Location::findOrFail($id);
-        $this->handle(
+        $role = $this->handle(
             $request->user(),
             $id
         );
 
-        Alert::success("Role '{$role->name}' was deleted")->flash();
+        Alert::success("Role '{$role->title}' was deleted")->flash();
 
         return Redirect::route('roles');
 

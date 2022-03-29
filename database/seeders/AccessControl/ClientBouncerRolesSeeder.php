@@ -9,7 +9,7 @@ use Laravel\Jetstream\Jetstream;
 use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
 
-class BouncerRolesSeeder extends Seeder
+class ClientBouncerRolesSeeder extends Seeder
 {
     protected $teams;
 
@@ -22,9 +22,10 @@ class BouncerRolesSeeder extends Seeder
     {
         $clients = Client::all();
         foreach ($clients as $client) {
-            collect(Jetstream::$roles)->each(function ($role) use ($client){
+            collect(Jetstream::$roles)->except(['Admin'])->each(function ($role) use ($client){
                 Role::create([
-                    'name' => $role->key,
+//                    'name' => $role->key,
+                    'name' => "$client->id $role->key",
                     'client_id' => $client->id ?? null,
                 ])->update(['title' => $role->name]);
             });

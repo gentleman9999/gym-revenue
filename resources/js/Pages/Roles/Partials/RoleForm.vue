@@ -2,15 +2,15 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6">
-                <jet-label for="name" value="Name" />
+                <jet-label for="title" value="Title" />
                 <input
                     id="name"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.name"
+                    v-model="form.title"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
+                <jet-input-error :message="form.errors.title" class="mt-2" />
             </div>
 
             <div class="col-span-6 uppercase font-bold">Abilities</div>
@@ -129,7 +129,7 @@ export default {
         let operation = "Update";
         if (!role) {
             role = {
-                name: null,
+                title: null,
                 id: null,
                 client_id: props.clientId,
                 ability_names: [],
@@ -139,7 +139,7 @@ export default {
 
 
         const form = useForm({
-            name: role.name,
+            title: role.title,
             id: role.id,
             client_id: props.clientId,
             ability_names: getAbilities()

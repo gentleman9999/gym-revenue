@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
-use Database\Seeders\AccessControl\BouncerRolesSeeder;
+use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
+use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
@@ -56,9 +57,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Gateway Provider Details');
         $this->call(GatewayProviderDetailsSeeder::class);
 
-        // This is where the abilities linked to the roles go
-        VarDumper::dump('Adding Bouncer Abilities');
-        $this->call(BouncerAbilitiesSeeder::class);
+        // This is where the admin role goes
+        VarDumper::dump('Adding Bouncer Roles');
+        $this->call(CapeAndBayBouncerRolesSeeder::class);
 
         // Cape & Bay / GymRevenue Users Go Here
         VarDumper::dump('Creating Cape & Bay Users');
@@ -68,9 +69,13 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
 
-        // This is where the generic roles go
+        // This is where the client roles go
         VarDumper::dump('Adding Bouncer Roles');
-        $this->call(BouncerRolesSeeder::class);
+        $this->call(ClientBouncerRolesSeeder::class);
+
+        // This is where the abilities linked to the roles go
+        VarDumper::dump('Adding Bouncer Abilities');
+        $this->call(BouncerAbilitiesSeeder::class);
 
 
         // User classifications

@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Role;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Bouncer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Bouncer::useRoleModel(Role::class);
     }
 }

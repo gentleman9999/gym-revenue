@@ -22,7 +22,7 @@ class CreateRole
     public function rules()
     {
         return [
-            'name' => ['string', 'required'],
+            'title' => ['string', 'required'],
             'id' => ['integer', 'sometimes', 'nullable'],
             'ability_names' => ['array', 'sometimes'],
         ];
@@ -52,7 +52,7 @@ class CreateRole
             $request->user(),
         );
 
-        Alert::success("Role '{$role->name}' was created")->flash();
+        Alert::success("Role '{$role->title}' was created")->flash();
 
         return Redirect::route('roles');
     }
