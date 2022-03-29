@@ -56,10 +56,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Gateway Provider Details');
         $this->call(GatewayProviderDetailsSeeder::class);
 
-        // This is where the generic roles go
-        VarDumper::dump('Adding Bouncer Roles');
-        $this->call(BouncerRolesSeeder::class);
-
         // This is where the abilities linked to the roles go
         VarDumper::dump('Adding Bouncer Abilities');
         $this->call(BouncerAbilitiesSeeder::class);
@@ -71,6 +67,11 @@ class DatabaseSeeder extends Seeder
         // This Seeder here will onboard a Client entity including various other tasks like creating the default team
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
+
+        // This is where the generic roles go
+        VarDumper::dump('Adding Bouncer Roles');
+        $this->call(BouncerRolesSeeder::class);
+
 
         // User classifications
         VarDumper::dump('Running Classifications Seeder');

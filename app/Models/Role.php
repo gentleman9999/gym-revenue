@@ -6,12 +6,12 @@ use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Role extends \Silber\Bouncer\Database\Role
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'title', 'client_id'];
 
     public static function getEntityFromGroup(string $group)
     {

@@ -7,7 +7,7 @@ use App\StorableEvents\Clients\Roles\RoleDeleted;
 use App\StorableEvents\Clients\Roles\RoleRestored;
 use App\StorableEvents\Clients\Roles\RoleTrashed;
 use App\StorableEvents\Clients\Roles\RoleUpdated;
-use Silber\Bouncer\Database\Role;
+use App\Models\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -16,7 +16,7 @@ class RoleProjector extends Projector
     public function onRoleCreated(RoleCreated $event)
     {
         Role::create(
-            $event->payload
+            $event->payload,
         );
         foreach ($event->payload['ability_names'] as $ability)
         {

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\AccessControl;
 
+use App\Models\Clients\Client;
 use Illuminate\Database\Seeder;
 use Bouncer;
 use Laravel\Jetstream\Jetstream;
@@ -19,14 +20,14 @@ class BouncerRolesSeeder extends Seeder
      */
     public function run()
     {
-        collect(Jetstream::$roles)->each(function ($role) {
-//            dd(Bouncer::role()->keyIsUuid());
-//            Bouncer::role()::firstOrCreate([
-//                'name' => $role->key,
-//            ])->update(['title' => $role->name]);
-            Bouncer::role()::create([
-                'name' => $role->key,
-            ])->update(['title' => $role->name]);
-        });
+        $clients = Client::all();
+        foreach ($clients as $client) {
+            collect(Jetstream::$roles)->each(function ($role) use ($client){
+                Role::create([
+                    'name' => $role->key,
+                    'client_id' => $client->id ?? null,
+                ])->update(['title' => $role->name]);
+            });
+        }
     }
 }
