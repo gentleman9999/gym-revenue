@@ -21,7 +21,7 @@
         </div>
 
         <div class="field col-span-6 lg:col-span-3">
-            <label>Role:</label>
+            <label>Security Role:</label>
             <div class="data">
                 {{ user.role }}
             </div>

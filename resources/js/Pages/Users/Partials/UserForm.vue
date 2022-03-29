@@ -180,7 +180,7 @@
 
             <!-- Security Role -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role_id" value="Role" />
+                <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
                     class="block w-full mt-1"

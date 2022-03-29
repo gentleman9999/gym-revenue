@@ -24,7 +24,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Role</th>
+                        <th>Security Role</th>
                     </tr>
                 </thead>
                 <tbody>

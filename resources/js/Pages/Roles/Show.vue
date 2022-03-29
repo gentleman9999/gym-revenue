@@ -2,7 +2,7 @@
     <app-layout :title="title">
 
         <page-toolbar-nav
-            title="Roles"
+            title="Security Roles"
             :links="navLinks"
         />
         <gym-revenue-crud
@@ -76,7 +76,7 @@ export default defineComponent({
                 active: false
             },
             {
-                label: "Roles",
+                label: "Security Roles",
                 href: route("roles"),
                 onClick: null,
                 active: true

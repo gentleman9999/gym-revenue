@@ -56,7 +56,7 @@
                             for="roles"
                             class="label label-text py-1 text-xs text-gray-400"
                         >
-                            Role:
+                            Security Role:
                         </label>
                         <select id="roles" class="mt-1 w-full form-select" v-model="form.roles">
                             <option></option>
@@ -142,7 +142,10 @@ export default defineComponent({
         let fields = [
             "name",
             "email",
-            "role",
+            {
+                name: "role",
+                label: "Security Role",
+            },
             {
                 name: "classification",
                 label: "Classification",
