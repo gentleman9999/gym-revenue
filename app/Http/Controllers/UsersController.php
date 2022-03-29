@@ -80,7 +80,7 @@ class UsersController extends Controller
             foreach($users as $idx => $user)
             {
                 if($user->getRoles()->has(0)) {
-                    $users[$idx]->role = $user->getRoles()[0];
+                    $users[$idx]->role = Role::whereName($user->getRoles()[0])->first()->title;
                 }
 
                 $default_team_detail = $user->default_team()->first();
@@ -104,7 +104,7 @@ class UsersController extends Controller
 
             foreach($users as $idx => $user)
             {
-                $users[$idx]->role = $user->getRoles()[0];
+                $users[$idx]->role = Role::whereName($user->getRoles()[0])->first()->title;
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
@@ -196,7 +196,7 @@ class UsersController extends Controller
         //so we set all_notes
         $userData = $user->toArray();
         $userData['all_notes'] = $user->notes->pluck('note')->toArray();
-        $userData['role_id'] = Role::whereClientId($client_id)->whereTitle($user->getRoles()[0])->first()->id;
+        $userData['role_id'] = Role::whereClientId($client_id)->whereName($user->getRoles()[0])->first()->id;
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
@@ -217,7 +217,7 @@ class UsersController extends Controller
         $user = User::with('details', 'teams', 'phone_number', 'files', 'classification')->findOrFail($id); //User we're peeking
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
-        $data['role'] = $user->getRoles()[0];
+        $data['role'] = Role::whereName($user->getRoles()[0])->first()->title;
 
         if(!is_null($user->classification->value))
             $data['classification']['value'] = Classification::whereId($data['classification']['value'])->first()->title;

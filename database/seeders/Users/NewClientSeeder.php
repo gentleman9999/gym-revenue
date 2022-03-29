@@ -43,8 +43,8 @@ class NewClientSeeder extends Seeder
 
             foreach ($roles as $role)
             {
-                if($role['name'] !== 'Employee') {
-                    if ($role['name'] === 'Sales Rep') {
+                if($role['title'] !== 'Employee') {
+                    if ($role['title'] === 'Sales Rep') {
                         $users = User::factory()
                             ->count(5)
                             ->make([

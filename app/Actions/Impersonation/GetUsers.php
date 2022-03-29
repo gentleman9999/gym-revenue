@@ -2,6 +2,7 @@
 
 namespace App\Actions\Impersonation;
 
+use App\Models\Role;
 use App\Models\UserDetails;
 use Bouncer;
 use App\Models\User;
@@ -23,20 +24,24 @@ class GetUsers
         $results = [];
 
         $user = auth()->user();
-        $user_role = $user->getRoles()[0];
+        $user_role = Role::whereName($user->getRoles()[0])->first()->title;
 
         switch($user_role)
         {
             case 'Admin':
-                $allowed_roles = ['Admin', 'Account Owner', 'Regional Manager', 'Location Manager', 'Sales Rep', 'Employee'];
+                $allowed_roles = ['Admin', 'Account Owner', 'Regional Admin', 'Location Manager', 'Sales Rep', 'Employee'];
+                break;
+
+            case 'Administrator':
+                $allowed_roles = ['Administrator', 'Account Owner', 'Regional Admin', 'Location Manager', 'Sales Rep', 'Employee'];
                 break;
 
             case 'Account Owner':
-                $allowed_roles = ['Account Owner', 'Regional Manager', 'Location Manager', 'Sales Rep', 'Employee'];
+                $allowed_roles = ['Account Owner', 'Regional Admin', 'Location Manager', 'Sales Rep', 'Employee'];
                 break;
 
-            case 'Regional Manager':
-                $allowed_roles = ['Regional Manager', 'Location Manager', 'Sales Rep', 'Employee'];
+            case 'Regional Admin':
+                $allowed_roles = ['Regional Admin', 'Location Manager', 'Sales Rep', 'Employee'];
                 break;
 
             case 'Location Manager':
@@ -116,13 +121,13 @@ class GetUsers
                         //filter out team_users in roles above the user
                         foreach ($allowed_roles as $allowed_role)
                         {
-                            if(Bouncer::is($potential_imp_user)->an($allowed_role))
+                            if(Bouncer::is($potential_imp_user)->an($potential_imp_user->currentClientId().' '.$allowed_role))
                             {
 
                                 $results[] = [
                                     'userId' => $potential_imp_user->id,
                                     'name' => $potential_imp_user->name,
-                                    'role' => $potential_imp_user->getRoles()[0]
+                                    'role' => Role::whereName($potential_imp_user->getRoles()[0])->first()->title
                                 ];
                                 break;
                             }
