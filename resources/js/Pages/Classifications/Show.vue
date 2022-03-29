@@ -18,7 +18,7 @@
             }"
         />
         <confirm
-            title="Really Trash Security Role?"
+            title="Really Trash Classification?"
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
