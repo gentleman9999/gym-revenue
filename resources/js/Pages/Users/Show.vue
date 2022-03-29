@@ -64,7 +64,7 @@
                                 v-for="role in potentialRoles"
                                 :value="role.id"
                             >
-                                {{ role.name }}
+                                {{ role.title }}
                             </option>
                         </select>
                     </div>
