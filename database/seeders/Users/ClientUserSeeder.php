@@ -78,7 +78,7 @@ class ClientUserSeeder extends UserSeeder
             'password' => 'Hello123!',
             'team_id' => $home_office_team->value,
 //            'team_ids' => $team_ids,
-            'role' => 2, // account owner ID
+            'role_id' => 2, // account owner ID
             'home_club' => $home_club,
             'is_manager' => $is_manager
         ]);

@@ -82,7 +82,7 @@ class NewClientSeeder extends Seeder
                             'email' => $user['email'],
                             'password' => 'Hello123!',
                             'team_ids' => $team_ids,
-                            'role' => $user['role'],
+                            'role_id' => $user['role'],
                             'home_club' => $home_club,
                             'is_manager' => $manager
                         ]);
@@ -95,7 +95,7 @@ class NewClientSeeder extends Seeder
                                 ->count(10)
                                 ->make([
                                     'client' => $client->name,
-                                    'role' => 6,
+                                    'role' => $role['id'],
                                     'classification' => $class['id'],
                                     'team_names' => $team_names
                                 ]);
@@ -104,7 +104,7 @@ class NewClientSeeder extends Seeder
                                 ->count(5)
                                 ->make([
                                     'client' => $client->name,
-                                    'role' => 6,
+                                    'role' => $role['id'],
                                     'classification' => $class['id'],
                                     'team_names' => $team_names
                                 ]);
@@ -113,7 +113,7 @@ class NewClientSeeder extends Seeder
                                 ->count(2)
                                 ->make([
                                     'client' => $client->name,
-                                    'role' => 6,
+                                    'role' => $role['id'],
                                     'classification' => $class['id'],
                                     'team_names' => $team_names
                                 ]);
@@ -136,7 +136,7 @@ class NewClientSeeder extends Seeder
                                 'email' => $user['email'],
                                 'password' => 'Hello123!',
                                 'team_ids' => $team_ids,
-                                'role' => $user['role'],
+                                'role_id' => $user['role'],
                                 'classification' => $user['classification'],
                                 'home_club' => $home_club,
                                 'is_manager' => null,

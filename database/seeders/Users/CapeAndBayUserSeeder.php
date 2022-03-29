@@ -97,7 +97,7 @@ class CapeAndBayUserSeeder extends UserSeeder
             'email' => $user['email'],
             'password' => 'Hello123!',
             'team_id' => 1,
-            'role' => 'admin',
+            'role_id' => 1,
 //            'home_club' => $home_club,
             'is_manager' => 'Senior Manager'
         ]);
