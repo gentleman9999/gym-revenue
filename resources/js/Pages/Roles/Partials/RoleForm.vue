@@ -178,7 +178,7 @@ export default {
 
         const selectAll = (group) => {
             const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.id
+                (group) => group.name
             );
             const merged = new Set([...form.ability_names, ...groupAbilities]);
             form.ability_names = [...merged];
@@ -186,7 +186,7 @@ export default {
 
         const clear = (group) => {
             const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.id
+                (group) => group.name
             );
             const merged = form.ability_names.filter(
                 (abilityId) => !groupAbilities.includes(abilityId)
