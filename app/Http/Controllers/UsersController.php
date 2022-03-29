@@ -170,10 +170,8 @@ class UsersController extends Controller
         $user = $me->with([
                 'details', 'phone_number', 'altEmail', 'address1', 'address2',
                 'city', 'state', 'zip', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date',
-                'files'
+                'files', 'classification',
             ])->findOrFail($id);
-
-        $user['role'] = $user->getRoles()[0];
 
         if($me->id == $user->id)
         {
@@ -192,10 +190,11 @@ class UsersController extends Controller
         //so we set all_notes
         $userData = $user->toArray();
         $userData['all_notes'] = $user->notes->pluck('note')->toArray();
+        $userData['role_id'] = Role::whereClientId($client_id)->whereTitle($user->getRoles()[0])->first()->id;
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
-            'securityRoles' => $roles,
+            'roles' => $roles,
             'classifications' => $classifications,
             'locations' => $locations
         ]);

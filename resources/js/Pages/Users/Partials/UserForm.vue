@@ -180,21 +180,21 @@
 
             <!-- Security Role -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role" value="Role" />
+                <jet-label for="role_id" value="Role" />
                 <select
-                    id="role"
+                    id="role_id"
                     class="block w-full mt-1"
-                    v-model="form.role"
+                    v-model="form.role_id"
                 >
                     <option
-                        v-for="role in securityRoles"
+                        v-for="role in roles"
                         :value="role.id"
                     >
                         {{ role.name }}
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors.role"
+                    :message="form.errors.role_id"
                     class="mt-2"
                 />
             </div>
@@ -416,7 +416,7 @@ export default {
         const wantsToDeleteFile = ref(null);
         const page = usePage();
         let user = props.user;
-        const securityRoles = page.props.value.securityRoles;
+        const roles = page.props.value.roles;
         const classifications = page.props.value.classifications;
         const locations = page.props.value.locations;
 
@@ -568,7 +568,7 @@ export default {
             buttonText: operation,
             operation,
             handleSubmit,
-            securityRoles,
+            roles,
             classifications,
             upperCaseF,
             locations,
