@@ -157,7 +157,7 @@
 
             <!-- Classifications -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="classification" value="Classifications" />
+                <jet-label for="classification" value="Classification" />
                 <select
                     id="classification"
                     class="block w-full mt-1"
@@ -190,7 +190,7 @@
                         v-for="role_id in roles"
                         :value="role_id.id"
                     >
-                        {{ role_id.name }}
+                        {{ role_id.title }}
                     </option>
                 </select>
                 <jet-input-error
