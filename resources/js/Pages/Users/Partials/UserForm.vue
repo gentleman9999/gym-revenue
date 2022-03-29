@@ -154,6 +154,30 @@
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
+
+            <!-- Security Role -->
+            <div class="form-control col-span-3" v-if="clientId">
+                <jet-label for="classification" value="Classifications" />
+                <select
+                    id="classification"
+                    class="block w-full mt-1"
+                    v-model="form.classification"
+                >
+                    <option
+                        v-for="classy in classifications"
+                        :value="classy.id"
+                    >
+                        {{ classy.title }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.classification"
+                    class="mt-2"
+                />
+            </div>
+
+
+
             <!-- Security Role -->
             <div class="form-control col-span-3" v-if="clientId">
                 <jet-label for="role" value="Role" />
@@ -174,6 +198,8 @@
                     class="mt-2"
                 />
             </div>
+
+
             <!-- Home Club -->
             <div class="form-control col-span-3" v-if="clientId">
                 <jet-label for="role" value="Home Club" />
@@ -391,6 +417,7 @@ export default {
         const page = usePage();
         let user = props.user;
         const securityRoles = page.props.value.securityRoles;
+        const classifications = page.props.value.classifications;
         const locations = page.props.value.locations;
 
         const team_id = page.props.value.user.current_team_id;
@@ -407,6 +434,10 @@ export default {
             user.role =
                 "role" in user && user["role"] !== null
                     ? user["role"].value ?? ""
+                    : "";
+            user.classification =
+                "classification" in user && user["classification"] !== null
+                    ? user["classification"].value ?? ""
                     : "";
             user.team_id = team_id;
             user.first_name = user["first_name"];
@@ -466,6 +497,7 @@ export default {
                 email: "",
                 altEmail: "",
                 role: "",
+                classification: "",
                 phone: "",
                 address1: "",
                 address2: "",
@@ -537,6 +569,7 @@ export default {
             operation,
             handleSubmit,
             securityRoles,
+            classifications,
             upperCaseF,
             locations,
 	        optionStates: optionsStates,

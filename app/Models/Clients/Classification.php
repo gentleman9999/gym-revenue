@@ -6,7 +6,6 @@ use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Silber\Bouncer\Database\Role;
 
 class Classification extends Model
 {
@@ -16,16 +15,11 @@ class Classification extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['client_id', 'title', 'active', 'misc'];
+    protected $fillable = ['id', 'client_id', 'title', 'active', 'misc'];
 
     protected $casts = [
         'misc' => 'array'
     ];
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
 
     public function scopeFilter($query, array $filters)
     {

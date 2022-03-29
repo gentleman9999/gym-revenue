@@ -28,7 +28,7 @@ class NewClientSeeder extends Seeder
             VarDumper::dump("Adding ".$client->name." Users...");
 
             /** Find all teams for client and put the names in an array */
-            $roles = Role::all();
+            $roles = Role::whereClientId($client->id)->get();
             $classification = Classification::whereClientId($client->id)->get();
 
             /** Collect all teams into an array that so everyone is on every team */
@@ -96,7 +96,7 @@ class NewClientSeeder extends Seeder
                                 ->make([
                                     'client' => $client->name,
                                     'role' => 6,
-                                    'classification' => $class['title'],
+                                    'classification' => $class['id'],
                                     'team_names' => $team_names
                                 ]);
                         } else if($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
@@ -105,7 +105,7 @@ class NewClientSeeder extends Seeder
                                 ->make([
                                     'client' => $client->name,
                                     'role' => 6,
-                                    'classification' => $class['title'],
+                                    'classification' => $class['id'],
                                     'team_names' => $team_names
                                 ]);
                         } else {
@@ -114,7 +114,7 @@ class NewClientSeeder extends Seeder
                                 ->make([
                                     'client' => $client->name,
                                     'role' => 6,
-                                    'classification' => $class['title'],
+                                    'classification' => $class['id'],
                                     'team_names' => $team_names
                                 ]);
                         }

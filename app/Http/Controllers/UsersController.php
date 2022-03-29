@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
@@ -86,6 +87,10 @@ class UsersController extends Controller
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
 
+                //redneck join to find out classification name based on ID, will probably refactor this
+                if(!is_null($users[$idx]->classification->value))
+                    $users[$idx]->classification->value = Classification::whereId($users[$idx]->classification->value)->first()->title;
+
                 //This is phil's fault
                 if(!is_null($users[$idx]->home_club->value))
                     $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
@@ -154,6 +159,8 @@ class UsersController extends Controller
     {
         $me = request()->user();
 
+        $client_id = request()->user()->currentClientId();
+
         if($me->cannot('users.update', User::class))
         {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -173,13 +180,14 @@ class UsersController extends Controller
             return Redirect::route('profile.show');
         }
 
-        $roles = Role::get();
+        $roles = Role::whereClientId($client_id)->get();
+        $classifications = Classification::whereClientId($client_id)->get();
 
         $locations = null;
         if($user->isClientUser()){
             $locations = Location::whereClientId($user->client()->first()->id)->get(['name', 'gymrevenue_id']);
         }
-
+;
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $userData = $user->toArray();
@@ -188,6 +196,7 @@ class UsersController extends Controller
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
             'securityRoles' => $roles,
+            'classifications' => $classifications,
             'locations' => $locations
         ]);
     }
@@ -204,6 +213,9 @@ class UsersController extends Controller
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRoles()[0];
+
+        if(!is_null($user->classification->value))
+            $data['classification']['value'] = Classification::whereId($data['classification']['value'])->first()->title;
 
         if ($user->phone_number) { //Not totally sure this is necessary atm
             $data['phone'] = $user->phone_number->value;
