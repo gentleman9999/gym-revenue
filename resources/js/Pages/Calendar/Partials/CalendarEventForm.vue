@@ -74,25 +74,30 @@
             <jet-input-error :message="form.errors.end" class="mt-2" />
         </div>
 
-        <div class="col-span-6">
-            <jet-label for="attendees" value="Attendees" />
-            <table class="table table-compact w-full">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="attendee in form.attendees"
-                    :key="attendee.id">
-                    <th>{{ attendee.id }}</th>
-                    <td>{{ attendee.name }}</td>
-                    <td>{{ attendee.email }}</td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="col-span-3">
+            <jet-label for="attendees" value="Attendees Select" />
+            <multiselect
+                v-model="form.attendees"
+                class="py-2"
+                id="attendees"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.client_users.map((user) => ({
+                            label: user.name,
+                            value: user.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="col-span-3">
+            <jet-label for="attendees" value="View All Attendees" />
+            <button @click.prevent="showAttendeesModal.open()" class="btn btn-sm btn-info hover:text-white">
+                Open List
+            </button>
         </div>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
@@ -110,6 +115,22 @@
                 {{ buttonText }}
             </Button>
         </div>
+
+
+        <daisy-modal
+            ref="showAttendeesModal"
+            id="showAttendeesModal"
+            @close=""
+        >
+            <h1 class="font-bold mb-4">Attendees</h1>
+            <attendees-form
+                @submitted="closeModals"
+                :calendar_event="calendar_event"
+                ref="attendeesModal"
+            />
+        </daisy-modal>
+
+
     </form>
 </template>
 <style>
@@ -128,7 +149,7 @@ label {
 
 <script>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch } from "vue";
+import { computed, watchEffect, watch, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -136,6 +157,10 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
+import DaisyModal from "@/Components/DaisyModal";
+import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 
 export default {
     components: {
@@ -145,13 +170,25 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
+        DaisyModal,
+        AttendeesForm,
+        Multiselect,
     },
-    props: ["clientId", "calendar_event"],
+    props: ["clientId", "calendar_event", "client_users"],
     setup(props, { emit }) {
         const page = usePage();
 
+        const calendar_event = props.calendar_event;
+
         let calendarEvent = props.calendar_event;
         const calendarEventTypes = page.props.value.calendar_event_types;
+
+        const showAttendeesModal = ref();
+        const attendeesModal = ref(null);
+
+        const closeModals = () => {
+            showAttendeesModal.value.close();
+        };
 
         let operation = "Update";
         if (!calendarEvent) {
@@ -248,6 +285,11 @@ export default {
             handleSubmit,
             calendarEventTypes,
             dateFormat,
+            attendeesModal,
+            calendar_event,
+            closeModals,
+            showAttendeesModal,
+            multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },
 };

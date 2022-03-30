@@ -72,6 +72,7 @@
                     v-if="selectedCalendarEvent"
                     :calendar_event="selectedCalendarEvent"
                     :key="selectedCalendarEvent"
+                    :client_users="client_users"
                     @submitted="closeModals"
                     ref="editCalendarEventForm"
                 />
@@ -119,6 +120,7 @@ export default defineComponent({
         "title",
         "isClientUser",
         "filters",
+        "client_users",
     ],
 
     setup(props) {

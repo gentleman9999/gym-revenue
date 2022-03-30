@@ -5,6 +5,7 @@ namespace App\Actions\Clients\Calendar;
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
 use App\Models\CalendarEventType;
+use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
@@ -28,7 +29,8 @@ class UpdateCalendarEvent
             'start' => ['required'],
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
-            'client_id' => ['required', 'exists:clients,id']
+            'client_id' => ['required', 'exists:clients,id'],
+            'attendees' => ['sometimes', 'array'],
         ];
     }
 
@@ -36,6 +38,16 @@ class UpdateCalendarEvent
     {
         $eventType = CalendarEventType::whereId($data['event_type_id'])->get();
         $data['color'] = $eventType->first()->color;
+
+        $attendees = [];
+        if(!is_null($data['attendees'])) {
+            foreach($data['attendees'] as $user) {
+                $attendees[] = User::whereId($user)->select('id', 'name', 'email')->first();
+            }
+            $data['attendees'] = json_encode($attendees);
+        }
+
+
         CalendarAggregate::retrieve($data['client_id'])
             ->updateCalendarEvent($user->id ?? "Auto Generated" , $data)
             ->persist();
