@@ -74,6 +74,27 @@
             <jet-input-error :message="form.errors.end" class="mt-2" />
         </div>
 
+        <div class="col-span-6">
+            <jet-label for="attendees" value="Attendees" />
+            <table class="table table-compact w-full">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="attendee in form.attendees"
+                    :key="attendee.id">
+                    <th>{{ attendee.id }}</th>
+                    <td>{{ attendee.name }}</td>
+                    <td>{{ attendee.email }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
         <div class="flex flex-row col-span-6 mt-8">

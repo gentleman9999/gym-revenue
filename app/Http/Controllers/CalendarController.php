@@ -30,6 +30,10 @@ class CalendarController extends Controller
             $eventsForTeam = [];
         }
 
+        foreach ($eventsForTeam as $key => $event)
+        {
+            $eventsForTeam[$key]->attendees = json_decode($event->attendees);
+        }
 
         return Inertia::render('Calendar/Show', [
             'calendar_events' => $eventsForTeam,
