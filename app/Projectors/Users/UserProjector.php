@@ -191,7 +191,7 @@ class UserProjector extends Projector
 
             if ($data['role'] ?? false) {
 
-                $old_role = $user->getRoles()[0];
+                $old_role = $user->getRole();
 
                 $role = Role::whereId($data['role'])->get();
                 //let bouncer know their role has been changed

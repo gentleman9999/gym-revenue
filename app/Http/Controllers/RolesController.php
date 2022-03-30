@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Classification;
+use App\Models\Role;
 use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\Database\Role;
 
 class RolesController extends Controller
 {
@@ -33,7 +34,7 @@ class RolesController extends Controller
             return Redirect::back();
         }
 
-        $roles = Role::whereClientId($client_id)->paginate(10);
+        $roles = Role::whereScope($client_id)->paginate(10);
 
         return Inertia::render('Roles/Show', [
             'roles' => $roles,
@@ -55,7 +56,8 @@ class RolesController extends Controller
         }
 
         return Inertia::render('Roles/Create', [
-            'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id'])
+            'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
+            'securityGroups' => collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function($s){return ['value' => $s->value, 'name' => $s->name];})
         ]);
     }
 
@@ -81,7 +83,8 @@ class RolesController extends Controller
         return Inertia::render('Roles/Edit', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
             'role' => $role,
-            'abilities' => Bouncer::role()->find($id)->getAbilities()
+            'abilities' => Bouncer::role()->find($id)->getAbilities(),
+            'securityGroups' => collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function($s){return ['value' => $s->value, 'name' => $s->name];})
         ]);
     }
 

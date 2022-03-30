@@ -28,7 +28,7 @@ class NewClientSeeder extends Seeder
             VarDumper::dump("Adding ".$client->name." Users...");
 
             /** Find all teams for client and put the names in an array */
-            $roles = Role::whereClientId($client->id)->get();
+            $roles = Role::whereScope($client->id)->get();
             $classification = Classification::whereClientId($client->id)->get();
 
             /** Collect all teams into an array that so everyone is on every team */

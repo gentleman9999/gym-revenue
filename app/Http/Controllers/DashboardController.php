@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SecurityGroupEnum;
 use Bouncer;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
@@ -34,11 +35,11 @@ class DashboardController extends Controller
             $clients = collect([$client_detail->client->toArray()]);
             $account = $client_detail->client->name;
             $widgets = $this->service->getDashboardWidgets();
-            if(Bouncer::is($user)->an('Admin', 'Account Owner', 'Regional Admin'))
+            if($user->inSecurityGroup(SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN))
             {
                 $vue = 'Dashboards/AccountAdminDashboard';
             }
-            else if(Bouncer::is($user)->a('Location Manager'))
+            else if($user->inSecurityGroup(SecurityGroupEnum::LOCATION_MANAGER))
             {
                 $vue = 'Dashboards/LocationManagerDashboard';
             }

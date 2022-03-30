@@ -23,7 +23,7 @@ class UpdateClassification
     {
         return [
             'title' => ['string', 'required'],
-            'id' => ['integer', 'required'],
+            'id' => ['string', 'required'],
         ];
     }
 
@@ -53,7 +53,7 @@ class UpdateClassification
 
         Alert::success("Classification '{$Classification->title}' was updated")->flash();
 
-        return Redirect::route('Classifications');
+        return Redirect::route('classifications');
     }
 
 }

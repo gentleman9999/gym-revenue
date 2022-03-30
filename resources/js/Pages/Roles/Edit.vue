@@ -13,6 +13,7 @@
                     :client-id="$page.props.user.current_client_id"
                     :availableAbilities="availableAbilities"
                     :role="$page.props.role"
+                    :security-groups="securityGroups"
                 />
             </div>
         </div>
@@ -53,6 +54,10 @@ export default defineComponent({
             type: Array,
             default: [],
         },
+        securityGroups: {
+            type: Array,
+            default: []
+        }
     },
 });
 </script>

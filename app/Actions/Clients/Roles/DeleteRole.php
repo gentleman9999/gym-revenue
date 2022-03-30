@@ -48,7 +48,7 @@ class DeleteRole
             $id
         );
 
-        Alert::success("Role '{$role->title}' was deleted")->flash();
+        Alert::success("Role '{$role->name}' was deleted")->flash();
 
         return Redirect::route('roles');
 

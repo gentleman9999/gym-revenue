@@ -71,7 +71,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('users.update', $current_user->currentTeam()->first());
+        return $current_user->can('users.update', User::class);
     }
 
     public function asController(ActionRequest $request)

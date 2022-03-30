@@ -47,7 +47,7 @@ class RestoreRole
             $request->user(),
             $id
         );
-        Alert::success("Location '{$role->title}' restored.")->flash();
+        Alert::success("Location '{$role->name}' restored.")->flash();
 
         return Redirect::route('roles');
     }

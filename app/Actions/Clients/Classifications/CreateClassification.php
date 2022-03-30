@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Classifications;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Helpers\Uuid;
 use App\Models\Clients\Classification;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -23,7 +24,6 @@ class CreateClassification
     {
         return [
             'title' => ['string', 'required'],
-            'id' => ['integer', 'sometimes', 'nullable'],
         ];
     }
 
@@ -35,9 +35,12 @@ class CreateClassification
             $data['client_id'] = $client_id;
         }
 
+        $id = Uuid::new();
+        $data['id'] = $id;
+
         ClientAggregate::retrieve($client_id ?? $data['client_id'])->createClassification($current_user->id ?? "Auto Generated", $data)->persist();
 
-        return true; //Classification::findOrFail($id);
+        return Classification::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -48,14 +51,14 @@ class CreateClassification
 
     public function asController(ActionRequest $request)
     {
-        $Classification = $this->handle(
+        $classification = $this->handle(
             $request->validated(),
             $request->user(),
         );
 
-        Alert::success("Classification '{$Classification->title}' was created")->flash();
+        Alert::success("Classification '{$classification->title}' was created")->flash();
 
-        return Redirect::route('Classifications');
+        return Redirect::route('classifications');
     }
 
 }

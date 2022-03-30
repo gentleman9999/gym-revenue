@@ -28,18 +28,18 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles'];
 
         //Populating Role Filter
-        $team_users = User::with(['teams', 'home_club', 'is_manager'])->whereHas('detail', function ($query) use ($client_id) {
+        $team_users = User::with(['teams', 'home_club', 'is_manager', 'roles'])->whereHas('detail', function ($query) use ($client_id) {
             return $query->whereName('associated_client')->whereValue($client_id);
         })->get();
         $roles = [];
         foreach($team_users as $team_user)
         {
-            $role = $team_user->getRoles();
-            if($role->has(0)) {
-                $id = Role::query()->where('name', '=', $role[0])->get();
+            $user_roles = $team_user->roles;
+            if($user_roles->has(0)) {
                 $roles[] = [
-                    'id' => $id[0]->id,
-                    'name' => $role
+                    'id' => $user_roles[0]->id,
+                    'name' => $user_roles[0]->name,
+                    'title' => $user_roles[0]->title
                 ];
             }
         }
@@ -79,8 +79,8 @@ class UsersController extends Controller
 
             foreach($users as $idx => $user)
             {
-                if($user->getRoles()->has(0)) {
-                    $users[$idx]->role = Role::whereName($user->getRoles()[0])->first()->title;
+                if($user->getRole()){
+                    $users[$idx]->role = $user->getRole();
                 }
 
                 $default_team_detail = $user->default_team()->first();
@@ -104,7 +104,7 @@ class UsersController extends Controller
 
             foreach($users as $idx => $user)
             {
-                $users[$idx]->role = Role::whereName($user->getRoles()[0])->first()->title;
+                $users[$idx]->role = $user->getRole();
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
@@ -149,7 +149,7 @@ class UsersController extends Controller
             $locations = Location::whereClientId($client->id)->get(['name', 'gymrevenue_id']);
         }
 
-        $roles = Role::whereClientId($client_id)->get();
+        $roles = Role::whereScope($client_id)->get();
         $classifications = Classification::whereClientId($client_id)->get();
 
         // Take the data and pass it to the view.
@@ -184,7 +184,7 @@ class UsersController extends Controller
             return Redirect::route('profile.show');
         }
 
-        $roles = Role::whereClientId($client_id)->get();
+        $roles = Role::whereScope($client_id)->get();
         $classifications = Classification::whereClientId($client_id)->get();
 
         $locations = null;
@@ -196,7 +196,7 @@ class UsersController extends Controller
         //so we set all_notes
         $userData = $user->toArray();
         $userData['all_notes'] = $user->notes->pluck('note')->toArray();
-        $userData['role_id'] = Role::whereClientId($client_id)->whereName($user->getRoles()[0])->first()->id;
+        $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
@@ -217,7 +217,7 @@ class UsersController extends Controller
         $user = User::with('details', 'teams', 'phone_number', 'files', 'classification')->findOrFail($id); //User we're peeking
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
-        $data['role'] = Role::whereName($user->getRoles()[0])->first()->title;
+        $data['role'] = $user->getRole();
 
         if(!is_null($user->classification->value))
             $data['classification']['value'] = Classification::whereId($data['classification']['value'])->first()->title;

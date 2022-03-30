@@ -2,15 +2,22 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6">
-                <jet-label for="title" value="Title" />
+                <jet-label for="title" value="Name" />
                 <input
                     id="name"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.title"
+                    v-model="form.name"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.title" class="mt-2" />
+                <jet-input-error :message="form.errors.name" class="mt-2" />
+            </div>
+            <div class="col-span-6">
+                <jet-label for="group" value="Security Group" />
+                <select class="block w-full mt-1" id="group" v-model="form.group">
+                    <option v-for="{name, value} in securityGroups" :value="value">{{name}}</option>
+                </select>
+                <jet-input-error :message="form.errors.group" class="mt-2" />
             </div>
 
             <div class="col-span-6 uppercase font-bold">Abilities</div>
@@ -123,26 +130,32 @@ export default {
         role: {
             type: Object,
         },
+        securityGroups:{
+            type: Array,
+            default: []
+        }
     },
     setup(props, context) {
         let role = props.role;
         let operation = "Update";
         if (!role) {
             role = {
-                title: null,
+                name: null,
                 id: null,
                 client_id: props.clientId,
                 ability_names: [],
+                group: null,
             };
             operation = "Create";
         }
 
 
         const form = useForm({
-            title: role.title,
+            name: role.name,
             id: role.id,
             client_id: props.clientId,
-            ability_names: getAbilities()
+            ability_names: getAbilities(),
+            group: role.group
         });
 
         function getAbilities () {

@@ -8,6 +8,7 @@ use App\StorableEvents\Clients\Roles\RoleRestored;
 use App\StorableEvents\Clients\Roles\RoleTrashed;
 use App\StorableEvents\Clients\Roles\RoleUpdated;
 use App\Models\Role;
+use Illuminate\Support\Facades\Log;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -16,7 +17,13 @@ class RoleProjector extends Projector
     public function onRoleCreated(RoleCreated $event)
     {
         $role = Role::create(
-            array_merge( $event->payload, ['name' => "$event->client {$event->payload['title']}"])
+            [
+                'id' => $event->payload['id'],
+                'name' => $event->payload['name'],
+                'title' => $event->payload['name'],
+                'scope' => $event->payload['client_id'],
+                'group' => $event->payload['group'],
+            ]
         );
         foreach ($event->payload['ability_names'] as $ability)
         {
@@ -27,12 +34,12 @@ class RoleProjector extends Projector
     public function onRoleUpdated(RoleUpdated $event)
     {
         $role = Bouncer::role()->findOrFail($event->payload['id']);
-        Bouncer::disallow($role->name)->everything();
+        Bouncer::sync($role)->abilities([]);
         foreach ($event->payload['ability_names'] as $ability)
         {
             Bouncer::allow($role->name)->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
         }
-        Role::findOrFail($event->payload['id'])->updateOrFail($event->payload);
+        Role::findOrFail($event->payload['id'])->updateOrFail(array_merge($event->payload, ['title' => $event->payload['name']]));
     }
 
     public function onRoleTrashed(RoleTrashed $event)

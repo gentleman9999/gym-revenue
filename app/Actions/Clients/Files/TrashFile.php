@@ -33,7 +33,7 @@ class TrashFile
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('files.trash', $current_user->currentTeam()->first());
+        return $current_user->can('files.trash', File::class);
     }
 
     public function asController(ActionRequest $request, $id)

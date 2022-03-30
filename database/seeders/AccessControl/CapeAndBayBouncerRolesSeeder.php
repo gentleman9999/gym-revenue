@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\AccessControl;
 
+use App\Enums\SecurityGroupEnum;
 use Illuminate\Database\Seeder;
 use Bouncer;
 use Laravel\Jetstream\Jetstream;
@@ -19,11 +20,11 @@ class CapeAndBayBouncerRolesSeeder extends Seeder
      */
     public function run()
     {
-        collect(Jetstream::$roles)->only(['Admin'])->each(function ($role) {
+        collect(SecurityGroupEnum::cases())->keyBy('name')->only(['ADMIN'])->each(function ($enum) {
             Role::create([
-                'name' => $role->key,
-                'client_id' => null,
-            ])->update(['title' => $role->name]);
+                'name' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE),
+                'group' => $enum->value
+            ])->update(['title' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE)]);
         });
     }
 

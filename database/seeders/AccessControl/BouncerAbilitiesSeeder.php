@@ -56,8 +56,7 @@ class BouncerAbilitiesSeeder extends Seeder
 
         $clients = Client::all();
         foreach ($clients as $client) {
-            //$this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams'], 'Admin');
-            //$this->allowEditInGroup(['users', 'locations', 'files', 'teams'], 'Admin');
+            Bouncer::scope()->to($client->id);
 
             /** Account Owner */
             $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
@@ -85,9 +84,10 @@ class BouncerAbilitiesSeeder extends Seeder
             $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];
             foreach ($roles_allowed_to_contact_leads as $role) {
                 VarDumper::dump("Allowing $role to contact leads for teams");
-                Bouncer::allow("$client->id $role")->to('leads.contact', Lead::class);
+                Bouncer::allow($role)->to('leads.contact', Lead::class);
             }
         }
+        Bouncer::scope()->to(null);
     }
 
     protected function allowReadInGroup($group, $role, $client)
@@ -102,7 +102,7 @@ class BouncerAbilitiesSeeder extends Seeder
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if ($entity) {
                 VarDumper::dump("Allowing $role to read $group");
-                Bouncer::allow("$client->id $role")->to("$group.read", $entity);
+                Bouncer::allow($role)->to("$group.read", $entity);
             }
         });
     }
@@ -119,13 +119,13 @@ class BouncerAbilitiesSeeder extends Seeder
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if ($entity) {
                 VarDumper::dump("Allowing $role to $group.create");
-                Bouncer::allow("$client->id $role")->to("$group.create", $entity);
+                Bouncer::allow($role)->to("$group.create", $entity);
                 VarDumper::dump("Allowing $role to $group.update");
-                Bouncer::allow("$client->id $role")->to("$group.update", $entity);
+                Bouncer::allow($role)->to("$group.update", $entity);
                 VarDumper::dump("Allowing $role to $group.trash");
-                Bouncer::allow("$client->id $role")->to("$group.trash", $entity);
+                Bouncer::allow($role)->to("$group.trash", $entity);
                 VarDumper::dump("Allowing $role to $group.restore");
-                Bouncer::allow("$client->id $role")->to("$group.restore", $entity);
+                Bouncer::allow($role)->to("$group.restore", $entity);
             }
 
         });
@@ -144,7 +144,7 @@ class BouncerAbilitiesSeeder extends Seeder
             // Allow the role to inherit the not Ability in full, but scoped to the team
             if ($entity) {
                 VarDumper::dump("Allowing $role to $group.impersonate");
-                Bouncer::allow("$client->id $role")->to("$group.impersonate", $entity);
+                Bouncer::allow($role)->to("$group.impersonate", $entity);
             }
 
         });

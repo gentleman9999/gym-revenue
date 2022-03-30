@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -16,6 +18,8 @@ use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Role;
 
 class User extends Authenticatable
 {
@@ -261,5 +265,39 @@ class User extends Authenticatable
                     ->where('assigned_roles.role_id', '=', $role);
             })->get();
         });
+    }
+
+    public function role()
+    {
+        return $this->roles[0] ?? null;
+    }
+
+    public function getRole()
+    {
+        return $this->getRoles()[0] ?? null;
+//        if(!$roles || !count($roles)){
+//            return null;
+//        }
+//        return $roles[0];
+    }
+
+    public function securityGroup()
+    {
+        $role = $this->role();
+        if(!$role){
+            return null;
+        }
+//        Log::debug($role->toArray());
+        return SecurityGroupEnum::from($role->group);
+    }
+
+    public function inSecurityGroup(SecurityGroupEnum ...$groups)
+    {
+        return in_array($this->securityGroup(), $groups);
+    }
+
+    public function isAtLeastSecurityGroup(SecurityGroupEnum $group)
+    {
+        return $this->securityGroup()->value <= $group->value;
     }
 }

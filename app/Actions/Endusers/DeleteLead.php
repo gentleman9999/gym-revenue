@@ -38,7 +38,7 @@ class DeleteLead
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('leads.delete', $current_user->currentTeam()->first());
+        return $current_user->can('leads.delete', Lead::class);
     }
 
     public function asController(Request $request, $id)

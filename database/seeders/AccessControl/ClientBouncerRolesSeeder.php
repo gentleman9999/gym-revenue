@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\AccessControl;
 
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
 use Illuminate\Database\Seeder;
 use Bouncer;
@@ -22,13 +23,16 @@ class ClientBouncerRolesSeeder extends Seeder
     {
         $clients = Client::all();
         foreach ($clients as $client) {
-            collect(Jetstream::$roles)->except(['Admin'])->each(function ($role) use ($client){
-                Role::create([
-//                    'name' => $role->key,
-                    'name' => "$client->id $role->key",
-                    'client_id' => $client->id ?? null,
-                ])->update(['title' => $role->name]);
-            });
+            Bouncer::scope()->to($client->id);
+            collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')
+                ->each(function ($enum) use ($client) {
+                    Role::create([
+                        'name' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE),
+                        'scope' => $client->id ?? null,
+                        'group' => $enum->value
+                ])->update(['title' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE)]);
+                });
         }
+        Bouncer::scope()->to(null);
     }
 }

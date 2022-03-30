@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Location;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -127,7 +128,7 @@ class CreateUser implements CreatesNewUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('users.create', $current_user->currentTeam()->first());
+        return $current_user->can('users.create', User::class);
     }
 
     public function asController(ActionRequest $request)
@@ -167,7 +168,7 @@ class CreateUser implements CreatesNewUsers
             [
                 'email' => $email,
                 'client_id' => $client,
-                'role' => $role,
+                'role_id' => $role,
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'password' => 'Hello123!',
@@ -255,21 +256,13 @@ class CreateUser implements CreatesNewUsers
         $selected_role = $this->command->option('role');
 
         if (is_null($selected_role)) {
-            $roles = [];
-            if ($client_choice) {
-                $roles[] = 'Account Owner';
-                $roles[] = 'Regional Admin';
-                $roles[] = 'Location Manager';
-                $roles[] = 'Sales Rep';
-            } else {
-                $roles[] = 'Admin';
-            }
+            $roles = Role::whereScope($client_choice)->get()->pluck('name')->toArray();
 
             foreach ($roles as $idx => $role) {
                 $this->command->warn("[{$idx}] {$role}");
             }
             $role_choice = $this->command->ask("Which Role should {$user_name} be assigned?");
-            $selected_role = $roles[$role_choice];
+            $selected_role = Role::whereScope($client_choice)->whereName($roles[$role_choice])->first()->id;
         }
 
         return $selected_role;
