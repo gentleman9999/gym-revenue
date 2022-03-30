@@ -498,12 +498,13 @@ export default {
 
         let handleSubmit = () =>
             form.put(`/data/leads/${lead.id}`, {
-                onSuccess: () => (form.notes = ""),
+                onSuccess: () => Inertia.reload(),
             });
         if (operation === "Create") {
             handleSubmit = () =>
                 form.post("/data/leads/create", {
                     onSuccess: () => (form.notes = ""),
+
                 });
         }
 
