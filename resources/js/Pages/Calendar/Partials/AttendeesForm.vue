@@ -1,7 +1,7 @@
 <template>
     <form @submit="handleSubmit" class="w-full grid grid-cols-6 gap-4">
 
-        <div class="col-span-6">
+        <div class="col-span-6" v-if="form.attendees?.length">
             <jet-label for="attendees" value="Client Attendees" />
             <table class="table table-compact w-full">
                 <thead>
@@ -26,7 +26,7 @@
             </table>
         </div>
 
-        <div class="col-span-6">
+        <div class="col-span-6" v-if="form.lead_attendees?.length">
             <jet-label for="attendees" value="Lead Attendees" />
             <table class="table table-compact w-full">
                 <thead>

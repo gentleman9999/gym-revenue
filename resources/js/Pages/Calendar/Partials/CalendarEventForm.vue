@@ -112,9 +112,9 @@
             />
         </div>
 
-        <div class="col-span-3" v-if="form.attendees">
+        <div class="col-span-3" v-if="form.attendees?.length || form.lead_attendees?.length ">
             <jet-label for="attendeesModal" value="View All Attendees" />
-            <button @click.prevent="showAttendeesModal.open()" class="btn btn-sm btn-info hover:text-white">
+            <button @click.prevent="showAttendeesModal.open" class="btn btn-sm btn-info hover:text-white">
                 Open List
             </button>
         </div>
@@ -209,9 +209,10 @@ export default {
             showAttendeesModal.value.close();
         };
 
+        let calendarEventForm = null;
         let operation = "Update";
         if (!calendarEvent) {
-            calendarEvent = {
+            calendarEventForm = {
                 title: null,
                 description: null,
                 full_day_event: false,
@@ -223,9 +224,21 @@ export default {
                 lead_attendees: null,
             };
             operation = "Create";
+        }else{
+            calendarEventForm = {
+                title: calendarEvent.title,
+                description: calendarEvent.description,
+                full_day_event: calendarEvent.full_day_event,
+                start: calendarEvent.start,
+                end: calendarEvent.end,
+                event_type_id: calendarEvent.event_type_id,
+                client_id: page.props.value.user?.current_client_id,
+                attendees: calendarEvent.attendees?.map(attendee=>attendee.id) || [],
+                lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
+            }
         }
 
-        const form = useForm(calendarEvent);
+        const form = useForm(calendarEventForm);
 
         watchEffect(() => {
             if( form.end){

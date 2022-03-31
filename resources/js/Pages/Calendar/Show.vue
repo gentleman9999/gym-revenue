@@ -66,6 +66,7 @@
                 ref="editEventModal"
                 id="editEventModal"
                 @close="resetEditEventModal"
+                class="max-w-screen lg:max-w-[800px]"
             >
                 <h1 class="font-bold mb-4">Edit Event</h1>
                 <calendar-event-form
