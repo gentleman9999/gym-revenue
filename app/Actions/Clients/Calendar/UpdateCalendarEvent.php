@@ -39,19 +39,6 @@ class UpdateCalendarEvent
     public function handle($data, $user=null)
     {
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;; //Pulling eventType color for this table because that's how fullCalender.IO wants it
-        $currentEvent = CalendarEvent::whereId($data['id'])->first(); //Grabbing current info b4 we morph it
-
-        /** ATTENDEE's -- Find Current
-         * Lookup what client users were already assigned to this event
-         * Then we morph the data into what we want while
-         * adding it to the existing data in the ['attendees'] var
-         */
-        $currentUsers = json_decode($currentEvent->attendees);
-        if(!is_null($currentUsers)) {
-            foreach ($currentUsers as $u) {
-                $data['attendees'][] = $u->id;
-            }
-        }
 
         /** ATTENDEE's -- Prep for DB
          * Creating attendees bucket to hold info that we're prepping for a json_encode
@@ -60,32 +47,14 @@ class UpdateCalendarEvent
          */
         $attendees = [];
         if(!empty($data['attendees'])) {
-            foreach ($data['attendees'] as $key => $value)
-            {
-                if(isset($value['id'])) {
-                    $data['attendees'][] = $value['id'];
-                    unset($data['attendees'][$key]);
-                }
-            }
             $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
             foreach($data['attendees'] as $user)
             {
-                $attendees[] = User::whereId($user)->select('id', 'name', 'email')->first();
+                $user = User::whereId($user)->select('id', 'name', 'email')->first();
+                if($user)
+                    $attendees[] = $user;
             }
             $data['attendees'] = json_encode($attendees);
-        }
-
-        /** LEAD ATTENDEE's -- Find Current
-         * Lookup what lead users were already assigned to this event
-         * Then we morph the data into what we want while
-         * adding it to the existing data in the ['lead_attendees'] var
-         */
-        $currentLeadUsers = json_decode($currentEvent->lead_attendees);
-        if(!is_null($currentLeadUsers)) {
-            foreach ($currentLeadUsers as $u)
-            {
-                $data['lead_attendees'][] = $u->id;
-            }
         }
 
         /** LEAD ATTENDEE's -- Prep for DB
@@ -95,17 +64,12 @@ class UpdateCalendarEvent
          */
         $leadAttendees = [];
         if(!empty($data['lead_attendees'])) {
-            foreach ($data['lead_attendees'] as $key => $value)
-            {
-                if(isset($value['id'])) {
-                    $data['lead_attendees'][] = $value['id'];
-                    unset($data['lead_attendees'][$key]);
-                }
-            }
             $data['lead_attendees'] = array_values(array_unique($data['lead_attendees'])); //This will dupe check and then re-index the array.
             foreach($data['lead_attendees'] as $user)
             {
-                $leadAttendees[] = Lead::whereId($user)->select('id', 'first_name', 'last_name', 'email')->first();
+                $lead = Lead::whereId($user)->select('id', 'first_name', 'last_name', 'email')->first();
+                if($user)
+                    $leadAttendees[] = $lead;
             }
             $data['lead_attendees'] = json_encode($leadAttendees);
         }
