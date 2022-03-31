@@ -41,7 +41,7 @@ class UpdateCalendarEvent
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;; //Pulling eventType color for this table because that's how fullCalender.IO wants it
 
         /** ATTENDEE's -- Prep for DB
-         * Creating attendees bucket to hold info that we're prepping for a json_encode
+         * Creating attendees bucket to hold info that we're prepping
          * Dupe check then reindex array of ID's
          * Add Users to Bucket then encode the var
          */
@@ -54,11 +54,11 @@ class UpdateCalendarEvent
                 if($user)
                     $attendees[] = $user;
             }
-            $data['attendees'] = json_encode($attendees);
+            $data['attendees'] = $attendees;
         }
 
         /** LEAD ATTENDEE's -- Prep for DB
-         * Creating leadAttendees bucket to hold info that we're prepping for a json_encode
+         * Creating leadAttendees bucket to hold info that we're prepping
          * Dupe check then reindex array of ID's
          * Add Lead Users to Bucket then encode the var
          */
@@ -71,7 +71,7 @@ class UpdateCalendarEvent
                 if($user)
                     $leadAttendees[] = $lead;
             }
-            $data['lead_attendees'] = json_encode($leadAttendees);
+            $data['lead_attendees'] = $leadAttendees;
         }
 
         CalendarAggregate::retrieve($data['client_id'])

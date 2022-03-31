@@ -55,7 +55,7 @@ class CreateCalendarEvent
                 if($user)
                     $attendees[] = $user;
             }
-            $data['attendees'] = json_encode($attendees);
+            $data['attendees'] = $attendees;
         }else {
             unset($data['attendees']);
         }
@@ -69,7 +69,7 @@ class CreateCalendarEvent
                 if($user)
                     $leadAttendees[] = $lead;
             }
-            $data['lead_attendees'] = json_encode($leadAttendees);
+            $data['lead_attendees'] = $leadAttendees;
         } else {
             unset($data['lead_attendees']);
         }

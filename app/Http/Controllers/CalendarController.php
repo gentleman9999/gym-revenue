@@ -38,8 +38,8 @@ class CalendarController extends Controller
 
         foreach ($eventsForTeam as $key => $event)
         {
-            $eventsForTeam[$key]->attendees = json_decode($event->attendees);
-            $eventsForTeam[$key]->lead_attendees = json_decode($event->lead_attendees);
+            $eventsForTeam[$key]->attendees = $event->attendees;
+            $eventsForTeam[$key]->lead_attendees = $event->lead_attendees;
         }
 
         if ($client_id) {
