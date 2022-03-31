@@ -5,6 +5,7 @@ namespace Database\Seeders\Data;
 use App\Actions\Clients\Calendar\CreateCalendarEvent;
 use App\Models\CalendarEventType;
 use App\Models\Clients\Client;
+use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -33,6 +34,18 @@ class CalendarSeeder extends Seeder
 
                 $typesOfEvents = CalendarEventType::whereClientId($client->id)->get();
 
+                $users = User::whereHas('detail', function ($query) use ($client) {
+                    return $query->whereName('associated_client')->whereValue($client->id);
+                })->get();
+
+                $randomUsers = [];
+                foreach($users as $user)
+                {
+                    $randomUsers[] = $user->id;
+                }
+
+                $randomUsers = array_values(array_unique($randomUsers));
+
                 foreach ($typesOfEvents as $eventType) {
                     for ($i = 1; $i <= 5; $i++) {
                         $datebetween = abs(($dateend - $datestart) / $daystep);
@@ -45,7 +58,7 @@ class CalendarSeeder extends Seeder
 
                         $attendees = [];
                         for ($d = 1; $d <= 5; $d++) {
-                            $attendees[] = rand(1,50);
+                            $attendees[] = $randomUsers[rand(0,count($randomUsers))];
                         }
 
                         /* no leads bc leads seeder is in different project
