@@ -66,10 +66,10 @@ class UpdateCalendarEvent
                     $data['attendees'][] = $value['id'];
                     unset($data['attendees'][$key]);
                 }
-
             }
             $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['attendees'] as $user) {
+            foreach($data['attendees'] as $user)
+            {
                 $attendees[] = User::whereId($user)->select('id', 'name', 'email')->first();
             }
             $data['attendees'] = json_encode($attendees);
@@ -101,10 +101,10 @@ class UpdateCalendarEvent
                     $data['lead_attendees'][] = $value['id'];
                     unset($data['lead_attendees'][$key]);
                 }
-
             }
             $data['lead_attendees'] = array_values(array_unique($data['lead_attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['lead_attendees'] as $user) {
+            foreach($data['lead_attendees'] as $user)
+            {
                 $leadAttendees[] = Lead::whereId($user)->select('id', 'first_name', 'last_name', 'email')->first();
             }
             $data['lead_attendees'] = json_encode($leadAttendees);
