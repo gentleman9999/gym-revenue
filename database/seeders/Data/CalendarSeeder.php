@@ -58,7 +58,7 @@ class CalendarSeeder extends Seeder
 
                         $attendees = [];
                         for ($d = 1; $d <= 5; $d++) {
-                            $attendees[] = $randomUsers[rand(0,count($randomUsers))];
+                            $attendees[] = $randomUsers[rand(0,count($randomUsers)-1)];
                         }
 
                         /* no leads bc leads seeder is in different project
