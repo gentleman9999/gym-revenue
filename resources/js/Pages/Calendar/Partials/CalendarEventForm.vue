@@ -112,7 +112,7 @@
             />
         </div>
 
-        <div class="col-span-3" v-if="calendar_event.attendees?.length || calendar_event.lead_attendees?.length ">
+        <div class="col-span-3" v-if="calendar_event?.attendees?.length || calendar_event?.lead_attendees?.length ">
             <jet-label for="attendeesModal" value="View All Attendees" />
             <button @click.prevent="showAttendeesModal.open" class="btn btn-sm btn-info hover:text-white">
                 Open List
