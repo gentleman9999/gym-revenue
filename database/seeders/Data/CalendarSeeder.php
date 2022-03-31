@@ -45,8 +45,14 @@ class CalendarSeeder extends Seeder
 
                         $attendees = [];
                         for ($d = 1; $d <= 5; $d++) {
-                            $attendees[] = User::whereId(rand(1,50))->select('id', 'name', 'email')->first();
+                            $attendees[] = rand(1,50);
                         }
+
+                        /* no leads bc leads seeder is in different project
+                        $leadAttendees = [];
+                        for ($d = 1; $d <= 10; $d++) {
+                            $leadAttendees[] = rand(1,50);
+                        }*/
                         $payload = [
                             'client_id' => $client->id,
                             'title' => $title,
@@ -55,7 +61,8 @@ class CalendarSeeder extends Seeder
                             'color' => $eventType->color,
                             'full_day_event' => 0,//todo:randomize,
                             'event_type_id' => $eventType->id,
-                            'attendees' => json_encode($attendees)
+                            'attendees' => $attendees,
+                            //'lead_attendees' => $leadAttendees
                         ];
 
                         CreateCalendarEvent::run($payload);

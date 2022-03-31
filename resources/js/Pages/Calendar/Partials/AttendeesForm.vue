@@ -2,7 +2,7 @@
     <form @submit="handleSubmit" class="w-full grid grid-cols-6 gap-4">
 
         <div class="col-span-6">
-            <jet-label for="attendees" value="Attendees" />
+            <jet-label for="attendees" value="Client Attendees" />
             <table class="table table-compact w-full">
                 <thead>
                 <tr>
@@ -22,6 +22,30 @@
                         <td>{{ attendee.name }}</td>
                         <td>{{ attendee.email }}</td>
                     </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-span-6">
+            <jet-label for="attendees" value="Lead Attendees" />
+            <table class="table table-compact w-full">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="lead_attendee in form.lead_attendees"
+                    :key="lead_attendee.id"
+                >
+                    <th>
+
+                    </th>
+                    <td>{{ lead_attendee.first_name }} {{ lead_attendee.last_name }}</td>
+                    <td>{{ lead_attendee.email }}</td>
+                </tr>
                 </tbody>
             </table>
         </div>

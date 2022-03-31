@@ -75,7 +75,7 @@
         </div>
 
         <div class="col-span-3">
-            <jet-label for="attendees" value="Attendees Select" />
+            <jet-label for="attendees" value="Select User Attendees" />
             <multiselect
                 v-model="form.attendees"
                 class="py-2"
@@ -94,7 +94,26 @@
         </div>
 
         <div class="col-span-3">
-            <jet-label for="attendees" value="View All Attendees" />
+            <jet-label for="lead_attendees" value="Select Lead Attendees" />
+            <multiselect
+                v-model="form.lead_attendees"
+                class="py-2"
+                id="lead_attendees"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.lead_users.map((user) => ({
+                            label: user.first_name+' '+user.last_name,
+                            value: user.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="col-span-3" v-if="form.attendees">
+            <jet-label for="attendeesModal" value="View All Attendees" />
             <button @click.prevent="showAttendeesModal.open()" class="btn btn-sm btn-info hover:text-white">
                 Open List
             </button>
@@ -174,7 +193,7 @@ export default {
         AttendeesForm,
         Multiselect,
     },
-    props: ["clientId", "calendar_event", "client_users"],
+    props: ["clientId", "calendar_event", "client_users", "lead_users"],
     setup(props, { emit }) {
         const page = usePage();
 
@@ -200,6 +219,8 @@ export default {
                 end: null,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
+                attendees: [],
+                lead_attendees: null,
             };
             operation = "Create";
         }

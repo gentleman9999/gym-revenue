@@ -24,6 +24,7 @@ class CreateCalendarEventsTable extends Migration
             $table->string('color')->nullable();
             $table->json('options')->nullable();
             $table->json('attendees')->nullable();
+            $table->json('lead_attendees')->nullable();
             $table->foreignUuid('event_type_id');
             $table->softDeletes();
             $table->timestamps();

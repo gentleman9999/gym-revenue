@@ -7,6 +7,7 @@ use App\Models\CalendarEvent;
 use App\Models\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
+use App\Models\Endusers\Lead;
 use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
@@ -38,6 +39,7 @@ class CalendarController extends Controller
         foreach ($eventsForTeam as $key => $event)
         {
             $eventsForTeam[$key]->attendees = json_decode($event->attendees);
+            $eventsForTeam[$key]->lead_attendees = json_decode($event->lead_attendees);
         }
 
         if ($client_id) {
@@ -68,6 +70,7 @@ class CalendarController extends Controller
             'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'client_id' => $client_id,
             'client_users' => $users,
+            'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get()
         ]);
     }
 
