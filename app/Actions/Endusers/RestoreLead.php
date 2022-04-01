@@ -37,7 +37,7 @@ class RestoreLead
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('leads.restore', $current_user->currentTeam()->first());
+        return $current_user->can('leads.restore', Lead::class);
     }
 
     public function asController(Request $request, $id)

@@ -38,7 +38,7 @@ class TrashLocation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('locations.trash', $current_user->currentTeam()->first());
+        return $current_user->can('locations.trash', Location::class);
     }
 
     public function asController(Request $request, $id)

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Impersonation;
 
+use App\Enums\SecurityGroupEnum;
+use App\Models\Role;
 use App\Models\UserDetails;
 use Bouncer;
 use App\Models\User;
@@ -23,24 +25,25 @@ class GetUsers
         $results = [];
 
         $user = auth()->user();
-        $user_role = $user->getRoles()[0];
+        $user_role = $user->getRole();
+
 
         switch($user_role)
         {
             case 'Admin':
-                $allowed_roles = ['Admin', 'Account Owner', 'Regional Manager', 'Location Manager', 'Sales Rep', 'Employee'];
+                $allowed_roles = [SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
                 break;
 
             case 'Account Owner':
-                $allowed_roles = ['Account Owner', 'Regional Manager', 'Location Manager', 'Sales Rep', 'Employee'];
+                $allowed_roles = [SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
                 break;
 
-            case 'Regional Manager':
-                $allowed_roles = ['Regional Manager', 'Location Manager', 'Sales Rep', 'Employee'];
+            case 'Regional Admin':
+                $allowed_roles = [SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
                 break;
 
             case 'Location Manager':
-                $allowed_roles = ['Sales Rep', 'Employee'];
+                $allowed_roles = [SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
                 break;
 
             case 'Sales Rep':
@@ -61,7 +64,7 @@ class GetUsers
                 $imp_users = User::all();
                 foreach($imp_users as $imp_user)
                 {
-                    if(Bouncer::is($imp_user)->an('Admin'))
+                    if($imp_user->inSecurityGroup(SecurityGroupEnum::ADMIN))
                     {
                         $results[] = $imp_user;
                     }
@@ -116,13 +119,13 @@ class GetUsers
                         //filter out team_users in roles above the user
                         foreach ($allowed_roles as $allowed_role)
                         {
-                            if(Bouncer::is($potential_imp_user)->an($allowed_role))
+                                if($potential_imp_user->inSecurityGroup($allowed_role))
                             {
 
                                 $results[] = [
                                     'userId' => $potential_imp_user->id,
                                     'name' => $potential_imp_user->name,
-                                    'role' => $potential_imp_user->getRoles()[0]
+                                    'role' => $potential_imp_user->getRole()
                                 ];
                                 break;
                             }

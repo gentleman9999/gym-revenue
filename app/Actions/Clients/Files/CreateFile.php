@@ -54,7 +54,7 @@ class CreateFile
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('files.create', $current_user->currentTeam()->first());
+        return $current_user->can('files.create', File::class);
     }
 
     public function asController(ActionRequest $request)

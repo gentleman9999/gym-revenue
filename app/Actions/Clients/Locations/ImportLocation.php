@@ -31,7 +31,7 @@ class ImportLocation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('locations.create', $current_user->currentTeam()->first());
+        return $current_user->can('locations.create', Location::class);
     }
 
     public function asController(ActionRequest $request)

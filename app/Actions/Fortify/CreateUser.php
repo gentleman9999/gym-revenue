@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Location;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -69,9 +70,8 @@ class CreateUser implements CreatesNewUsers
             'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
-            'security_role' => ['nullable', 'string', 'max:255', 'exists:security_roles,id'],
-//        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
-//            'password' => $this->passwordRules(),
+            'role_id' => ['required', 'integer'],
+            'classification' => ['required'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
@@ -90,6 +90,8 @@ class CreateUser implements CreatesNewUsers
         if (array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }
+
+        $data['role'] = $data['role_id'];
 
 //        $id = Uuid::new();//we should use uuid here, but then we'd have to change all the bouncer tables to use uuid instead of bigint;
         $id = (User::max('id') ?? 0) + 1;
@@ -126,12 +128,11 @@ class CreateUser implements CreatesNewUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('users.create', $current_user->currentTeam()->first());
+        return $current_user->can('users.create', User::class);
     }
 
     public function asController(ActionRequest $request)
     {
-
         $user = $this->handle(
             $request->validated(),
             $request->user(),
@@ -167,7 +168,7 @@ class CreateUser implements CreatesNewUsers
             [
                 'email' => $email,
                 'client_id' => $client,
-                'role' => $role,
+                'role_id' => $role,
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'password' => 'Hello123!',
@@ -255,21 +256,13 @@ class CreateUser implements CreatesNewUsers
         $selected_role = $this->command->option('role');
 
         if (is_null($selected_role)) {
-            $roles = [];
-            if ($client_choice) {
-                $roles[] = 'Account Owner';
-                $roles[] = 'Regional Admin';
-                $roles[] = 'Location Manager';
-                $roles[] = 'Sales Rep';
-            } else {
-                $roles[] = 'Admin';
-            }
+            $roles = Role::whereScope($client_choice)->get()->pluck('name')->toArray();
 
             foreach ($roles as $idx => $role) {
                 $this->command->warn("[{$idx}] {$role}");
             }
             $role_choice = $this->command->ask("Which Role should {$user_name} be assigned?");
-            $selected_role = $roles[$role_choice];
+            $selected_role = Role::whereScope($client_choice)->whereName($roles[$role_choice])->first()->id;
         }
 
         return $selected_role;

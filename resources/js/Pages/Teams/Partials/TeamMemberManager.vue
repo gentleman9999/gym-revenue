@@ -222,7 +222,7 @@
                                                 role.key,
                                         }"
                                     >
-                                        {{ role.name }}
+                                        {{ role.title }}
                                     </div>
 
                                     <svg
