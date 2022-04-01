@@ -50,9 +50,7 @@ class SecondaryTeamsSeeder extends Seeder
                 foreach($members as $idx => $email)
                 {
                     $user = User::whereEmail($email)->first();
-                    $new_team->users()->attach(
-                        $user, ['role' => ($idx == 0) ? 'Admin' : 'Member']
-                    );
+                    $new_team->users()->attach($user);
                     UserAggregate::retrieve($user->id)
                         ->addUserToTeam($new_team->id, $new_team->name, null)
                         ->persist();

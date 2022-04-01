@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
@@ -215,7 +216,7 @@ class TeamController extends Controller
         $non_admin_users = [];
         foreach ($team_users as $team_user)
         {
-            if($team_user->role !== 'Admin') $non_admin_users[] = $team_user;
+            if($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN) $non_admin_users[] = $team_user;
         }
 
         if(count($non_admin_users) > 0) {

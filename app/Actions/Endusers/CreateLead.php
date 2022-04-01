@@ -66,7 +66,7 @@ class CreateLead
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('leads.create', $current_user->currentTeam()->first());
+        return $current_user->can('leads.create', Lead::class);
     }
 
     public function asController(ActionRequest $request)

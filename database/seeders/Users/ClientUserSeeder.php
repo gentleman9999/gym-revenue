@@ -15,54 +15,48 @@ class ClientUserSeeder extends UserSeeder
 
     protected function getUsersToAdd() : array
     {
+        //Adding location owners
         return [
             [
                 'first_name' => 'Mr',
                 'last_name' => 'Giraffe',
                 'email' => 'giraffe@kalamazoo.com',
-                'role' => 'Account Owner',
                 'client' => 'The Kalamazoo'
             ],
             [
                 'first_name' => 'Malaki',
                 'last_name' => 'Haualaki',
                 'email' => 'malaki@thezclubs.com',
-                'role' => 'Account Owner',
                 'client' => 'The Z',
             ],
             [
                 'first_name' => 'Bobby',
                 'last_name' => 'Monyahan',
                 'email' => 'monyahanb@clubtruth.com',
-                'role' => 'Account Owner',
                 'client' => 'FitnessTruth',
             ],
             [
                 'first_name' => 'Sheri',
                 'last_name' => 'Oteri',
                 'email' => 'sherri@ifit.com',
-                'role' => 'Account Owner',
                 'client' => 'iFit',
             ],
             [
                 'first_name' => 'Brett',
                 'last_name' => 'Milam',
                 'email' => 'brett+bbb@capeandbay.com',
-                'role' => 'Account Owner',
                 'client' => 'Bodies By Brett',
             ],
             [
                 'first_name' => 'Arga',
                 'last_name' => 'Barkbark',
                 'email' => 'agabla@scifipurplegyms.com',
-                'role' => 'Account Owner',
                 'client' => 'Sci-Fi Purple Gyms',
             ],
             [
                 'first_name' => 'Beth',
                 'last_name' => 'Smith',
                 'email' => 'bsmith@stencils.net',
-                'role' => 'Account Owner',
                 'client' => 'Stencils',
             ],
         ];
@@ -74,10 +68,7 @@ class ClientUserSeeder extends UserSeeder
         $home_office_team = $client->default_team_name()->first();
         $home_club = Location::whereClientId($client->id)->first()->gymrevenue_id;
 
-        $senior_managers = ['Regional Manager', 'Account Owner', 'Admin', 'Regional Manager'];
-        $managers = ['Location Manager'];
-
-        $is_manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
+        $is_manager = 'Senior Manager';
 
         CreateUser::run([
             'client_id' => $client->id,
@@ -87,7 +78,7 @@ class ClientUserSeeder extends UserSeeder
             'password' => 'Hello123!',
             'team_id' => $home_office_team->value,
 //            'team_ids' => $team_ids,
-            'role' => $user['role'],
+            'role_id' => 2, // account owner ID
             'home_club' => $home_club,
             'is_manager' => $is_manager
         ]);

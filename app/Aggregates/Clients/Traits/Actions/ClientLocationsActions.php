@@ -3,6 +3,7 @@
 namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\StorableEvents\Clients\Locations\LocationCreated;
+use App\StorableEvents\Clients\Locations\LocationImported;
 use App\StorableEvents\Clients\Locations\LocationDeleted;
 use App\StorableEvents\Clients\Locations\LocationRestored;
 use App\StorableEvents\Clients\Locations\LocationTrashed;
@@ -15,6 +16,13 @@ trait ClientLocationsActions
         $this->recordThat(new LocationCreated($this->uuid(), $created_by_user_id, $payload));
         return $this;
     }
+
+    public function importLocation(string $created_by_user_id, $key)
+    {
+        $this->recordThat(new LocationImported($this->uuid(), $created_by_user_id, $key));
+        return $this;
+    }
+
 
     public function updateLocation(string $updated_by_user_id, array $payload)
     {

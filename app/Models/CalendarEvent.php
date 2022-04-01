@@ -25,7 +25,9 @@ class CalendarEvent extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id'];
+    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'attendees', 'lead_attendees'];
+
+    protected $casts = ['attendees' => 'array', 'lead_attendees' => 'array'];
 
     public function client()
     {

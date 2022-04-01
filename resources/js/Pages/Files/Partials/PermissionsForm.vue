@@ -1,0 +1,106 @@
+<template>
+    <jet-form-section @submitted="handleSubmit">
+        <template #form>
+            <div class="col-span-6">
+                <jet-label for="filename" value="Current File Permissions" />
+                <a
+                    :href="file.url"
+                    :download="file.filename"
+                    target="_blank"
+                    class="link link-hover"
+                    >{{ file.filename }}</a
+                >
+                <jet-input-error :message="form.errors.file" class="mt-2" />
+            </div>
+
+            <div class="form-control">
+                <input
+                    id="regional_admin"
+                    value="regional_admin"
+                    type="checkbox"
+                    v-model="form.permissions"
+                />
+                <jet-label for="regional_admin" value="Regional Admin" />
+            </div>
+
+            <div class="form-control">
+                <input
+                    id="location_manager"
+                    value="location_manager"
+                    type="checkbox"
+                    v-model="form.permissions"
+                />
+                <jet-label for="location_manager" value="Location Manager" />
+            </div>
+
+            <div class="form-control">
+                <input
+                    id="employee"
+                    value="employee"
+                    type="checkbox"
+                    v-model="form.permissions"
+                />
+                <jet-label for="employee" value="Employee" />
+            </div>
+            <jet-input-error :message="form.errors.permissions" class="mt-2" />
+            <input id="client_id" type="hidden" v-model="form.client_id" />
+        </template>
+
+        <template #actions>
+            <Button
+                class="btn-secondary"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+                :loading="form.processing"
+            >
+                {{ buttonText }}
+            </Button>
+        </template>
+    </jet-form-section>
+</template>
+
+<script>
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
+
+import AppLayout from "@/Layouts/AppLayout";
+import Button from "@/Components/Button";
+import JetFormSection from "@/Jetstream/FormSection";
+
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
+import { Inertia } from "@inertiajs/inertia";
+
+export default {
+    components: {
+        AppLayout,
+        Button,
+        JetFormSection,
+        JetInputError,
+        JetLabel,
+    },
+    props: ["clientId", "file"],
+    emits: ["success"],
+    setup(props, { emit }) {
+        let urlPrev = usePage().props.value.urlPrev;
+        const form = useForm({ permissions: props?.file?.permissions || [] });
+
+        let handleSubmit = async () => {
+            form.put(route("files.update", props.file.id));
+            emit("success");
+        };
+
+        return {
+            form,
+            buttonText: "Update",
+            handleSubmit,
+            urlPrev,
+        };
+    },
+};
+</script>
+
+<style scoped>
+.form-control {
+    @apply col-span-6 flex flex-row gap-4;
+}
+</style>

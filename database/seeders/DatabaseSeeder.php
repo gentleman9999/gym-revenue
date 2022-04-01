@@ -3,12 +3,13 @@
 namespace Database\Seeders;
 
 use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
-use Database\Seeders\AccessControl\BouncerRolesSeeder;
+use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
+use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Clients\SecurityRolesSeeder;
+use Database\Seeders\Clients\ClassificationsSeeder;
 use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
@@ -56,13 +57,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Gateway Provider Details');
         $this->call(GatewayProviderDetailsSeeder::class);
 
-        // This is where the generic roles go
+        // This is where the admin role goes
         VarDumper::dump('Adding Bouncer Roles');
-        $this->call(BouncerRolesSeeder::class);
-
-        // This is where the abilities linked to the roles go
-        VarDumper::dump('Adding Bouncer Abilities');
-        $this->call(BouncerAbilitiesSeeder::class);
+        $this->call(CapeAndBayBouncerRolesSeeder::class);
 
         // Cape & Bay / GymRevenue Users Go Here
         VarDumper::dump('Creating Cape & Bay Users');
@@ -72,6 +69,19 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Seeder');
         $this->call(ClientSeeder::class);
 
+        // This is where the client roles go
+        VarDumper::dump('Adding Bouncer Roles');
+        $this->call(ClientBouncerRolesSeeder::class);
+
+        // This is where the abilities linked to the roles go
+        VarDumper::dump('Adding Bouncer Abilities');
+        $this->call(BouncerAbilitiesSeeder::class);
+
+
+        // User classifications
+        VarDumper::dump('Running Classifications Seeder');
+        $this->call(ClassificationsSeeder::class);
+
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
@@ -80,10 +90,6 @@ class DatabaseSeeder extends Seeder
         // There is a team for each location, along with various sales teams
         VarDumper::dump('Running Client Secondary Teams Seeder');
         $this->call(SecondaryTeamsSeeder::class);
-
-        // We can add security roles after bouncer is defined as well as the clients
-        VarDumper::dump('Running Security Role Seeder');
-        $this->call(SecurityRolesSeeder::class);
 
         // Here Client Account Owners will be Generated for each client
         VarDumper::dump('Running Client User Seeder');
@@ -119,8 +125,8 @@ class DatabaseSeeder extends Seeder
         $this->call(NewClientSeeder::class);
 
         // This seeder generates dummy leads for each client
-        VarDumper::dump('Running Leads Dummy Data Seeder');
-        $this->call(LeadProspectSeeder::class);
+        //VarDumper::dump('Running Leads Dummy Data Seeder');
+//        $this->call(LeadProspectSeeder::class);
 
         // Baby's First Email Templates are Seeded for each client
         VarDumper::dump('Running Email Template  Seeder');

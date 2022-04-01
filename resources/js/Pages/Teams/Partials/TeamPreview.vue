@@ -24,7 +24,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Role</th>
+                        <th>Security Role</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,19 +34,19 @@
                         <td>{{ user.user.email }}</td>
                         <td>
                             <div
-                                v-if="user.role == 'Admin'"
+                                v-if="user.user.roles[0]?.name == 'Admin'"
                                 class="badge badge-outline"
                             >
-                                {{ user.role }}
+                                {{ user.user.roles[0]?.name }}
                             </div>
                             <div
-                                v-else-if="user.role == 'Account Owner'"
+                                v-else-if="user.user.roles[0]?.name == 'Account Owner'"
                                 class="badge badge-success badge-outline"
                             >
-                                {{ user.role }}
+                                {{ user.user.roles[0]?.name }}
                             </div>
                             <div v-else class="badge badge-info badge-outline">
-                                {{ user.role }}
+                                {{ user.user.roles[0]?.name }}
                             </div>
                         </td>
                     </tr>

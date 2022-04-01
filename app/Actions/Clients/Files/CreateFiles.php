@@ -6,6 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Clients\FileAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Location;
+use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
@@ -55,7 +56,7 @@ class CreateFiles
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('files.create', $current_user->currentTeam()->first());
+        return $current_user->can('files.create', File::class);
     }
 
     public function asController(ActionRequest $request)

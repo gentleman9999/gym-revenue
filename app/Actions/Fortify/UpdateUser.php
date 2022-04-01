@@ -42,9 +42,8 @@ class UpdateUser implements UpdatesUserProfileInformation
             'notes' =>  ['sometimes'],
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required','integer', 'exists:teams,id'],
-            'security_role' => ['nullable','string', 'max:255', 'exists:security_roles,id'],
-//        'security_role' => ['required_with,client_id', 'exists:security_roles,id']
-//            'password' => $this->passwordRules(),
+            'role_id' => ['required', 'integer'],
+            'classification' => ['required'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_club' => ['nullable', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
@@ -59,6 +58,8 @@ class UpdateUser implements UpdatesUserProfileInformation
             $data['password'] = bcrypt($data['password']);
         }
 
+        $data['role'] = $data['role_id'];
+
         UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         if ($client_id) {
             ClientAggregate::retrieve($client_id)->updateUser($current_user->id, $data)->persist();
@@ -70,7 +71,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('users.update', $current_user->currentTeam()->first());
+        return $current_user->can('users.update', User::class);
     }
 
     public function asController(ActionRequest $request)

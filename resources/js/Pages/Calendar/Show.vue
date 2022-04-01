@@ -51,17 +51,31 @@
             </div>
 
             <FullCalendar :options="calendarOptions" ref="calendar" />
-            <daisy-modal ref="createEventModal" id="createEventModal">
+            <daisy-modal
+                ref="createEventModal"
+                id="createEventModal"
+                @close="resetCreateEventModal"
+            >
                 <h1 class="font-bold mb-4">Create Event</h1>
-                <calendar-event-form @submitted="closeModals" />
+                <calendar-event-form
+                    @submitted="closeModals"
+                    ref="createCalendarEventForm"
+                />
             </daisy-modal>
-            <daisy-modal ref="editEventModal" id="editEventModal">
+            <daisy-modal
+                ref="editEventModal"
+                id="editEventModal"
+                @close="resetEditEventModal"
+                class="max-w-screen lg:max-w-[800px]"
+            >
                 <h1 class="font-bold mb-4">Edit Event</h1>
                 <calendar-event-form
                     v-if="selectedCalendarEvent"
                     :calendar_event="selectedCalendarEvent"
                     :key="selectedCalendarEvent"
+                    :client_users="client_users"
                     @submitted="closeModals"
+                    ref="editCalendarEventForm"
                 />
             </daisy-modal>
         </div>
@@ -107,6 +121,7 @@ export default defineComponent({
         "title",
         "isClientUser",
         "filters",
+        "client_users",
     ],
 
     setup(props) {
@@ -118,6 +133,8 @@ export default defineComponent({
         const createEventModal = ref();
         const editEventModal = ref();
         const selectedCalendarEvent = ref(null);
+        const createCalendarEventForm = ref(null);
+        const editCalendarEventForm = ref(null);
         const handleClickNewEvent = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
@@ -162,6 +179,12 @@ export default defineComponent({
             form.value.start = start;
             form.value.end = end;
         };
+
+        const numClicks = ref(null);
+        const resetCreateEventModal = () =>
+            createCalendarEventForm.value?.form?.reset();
+        const resetEditEventModal = () =>
+            createCalendarEventForm.value?.form?.reset();
         return {
             Inertia,
             calendarOptions: {
@@ -187,11 +210,7 @@ export default defineComponent({
                     failureCallback
                 ) => {
                     updateStartEnd(startStr, endStr);
-                    //we can use something like this we ever need to swap out color tokens for daisy theme variables
-                    //could also potentially just store var(--tw-blue-500);
-                    successCallback(props.calendar_events.map(calendar_event=> ({...calendar_event, color: `var(--color-${calendar_event.color}-500)`})));
-
-                    // successCallback(props.calendar_events);
+                    successCallback(props.calendar_events);
                 },
                 headerToolbar: {
                     left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
@@ -204,7 +223,34 @@ export default defineComponent({
                 dayMaxEvents: true,
                 weekends: true,
                 select: function (data) {
-                    console.log("select. " + data);
+                    if (
+                        ["timeGridDay", "timeGridWeek"].includes(
+                            data?.view?.type
+                        )
+                    ) {
+                        createCalendarEventForm.value.form.start = data.start;
+                        createCalendarEventForm.value.form.end = data.end;
+                        createEventModal.value.open();
+                    }
+                },
+                dateClick: function (data) {
+                    console.log({
+                        data,
+                        createCalendarEventForm: createCalendarEventForm.value,
+                    });
+                    numClicks.value++;
+                    let singleClickTimer;
+                    if (numClicks.value === 1) {
+                        singleClickTimer = setTimeout(() => {
+                            numClicks.value = 0;
+                        }, 400);
+                    } else if (numClicks.value === 2) {
+                        clearTimeout(singleClickTimer);
+                        numClicks.value = 0;
+
+                        createCalendarEventForm.value.form.start = data.date;
+                        createEventModal.value.open();
+                    }
                 },
                 eventClick: function (data) {
                     data.jsEvent.preventDefault(); // don't let the browser navigate
@@ -235,6 +281,10 @@ export default defineComponent({
             reset,
             clearSearch,
             clearFilters,
+            createCalendarEventForm,
+            editCalendarEventForm,
+            resetCreateEventModal,
+            resetEditEventModal,
         };
     },
 });
