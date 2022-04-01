@@ -287,6 +287,7 @@ class User extends Authenticatable
         if(!$role){
             return null;
         }
+//        dd($role->toArray());
 //        Log::debug($role->toArray());
         return SecurityGroupEnum::from($role->group);
     }

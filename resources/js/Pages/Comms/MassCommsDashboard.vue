@@ -62,6 +62,7 @@
             <gym-revenue-crud
                 :resource="historyFeed"
                 :fields="fields"
+                model-key="comms-feed"
                 :top-actions="topActions"
                 :actions="false"
                 :base-route="baseRoute"

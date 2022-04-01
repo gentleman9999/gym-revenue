@@ -51,10 +51,8 @@ export default {
                 return "Assigning...";
             }
 
-            const claimed = props.value.filter(
-                (detail) => detail.field === "claimed"
-            );
-            const yours = claimed.filter(
+            const claimed = props.value;
+            const yours = props.value.filter(
                 (detail) =>
                     parseInt(detail.value) ===
                     parseInt(page.props.value.user.id)
