@@ -3,10 +3,14 @@
 namespace App\Aggregates\Clients;
 
 
-use App\StorableEvents\Clients\Calendar\CalendarEventCreated;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypeCreated;
-use App\StorableEvents\Clients\Calendar\CalendarEventDeleted;
-use App\StorableEvents\Clients\Calendar\CalendarEventUpdated;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventCreated;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventDeleted;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeCreated;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeDeleted;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeRestored;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeTrashed;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeUpdated;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class CalendarAggregate extends AggregateRoot
@@ -48,4 +52,27 @@ class CalendarAggregate extends AggregateRoot
         return $this;
     }
 
+    public function updateCalendarEventType(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarEventTypeUpdated($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function trashCalendarEventType(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new CalendarEventTypeTrashed($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function restoreCalendarEventType(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new CalendarEventTypeRestored($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function deleteCalendarEventType(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new CalendarEventTypeDeleted($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
 }

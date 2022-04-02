@@ -1,10 +1,10 @@
 <?php
 
-namespace App\StorableEvents\Clients\Calendar;
+namespace App\StorableEvents\Clients\Calendar\CalendarEventTypes;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class CalendarEventTypeCreated extends ShouldBeStored
+class CalendarEventTypeUpdated extends ShouldBeStored
 {
     public $user, $data, $client;
 

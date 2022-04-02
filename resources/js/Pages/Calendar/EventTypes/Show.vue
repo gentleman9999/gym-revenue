@@ -1,16 +1,16 @@
 <template>
-    <app-layout :title="Classifications">
+    <app-layout title="Event Types">
 
         <page-toolbar-nav
-            title="Classifications"
+            title="Event Types"
             :links="navLinks"
         />
         <gym-revenue-crud
-            base-route="classifications"
-            model-name="Classification"
-            model-key="classification"
+            base-route="calendar.event_types"
+            model-name="Event Type"
+            model-key="calendar-event-types"
             :fields="fields"
-            :resource="classifications"
+            :resource="calendarEventTypes"
             :actions="{
                 trash: {
                     handler: ({ data }) => handleClickTrash(data),
@@ -18,13 +18,13 @@
             }"
         />
         <confirm
-            title="Really Trash Classification?"
+            title="Really Trash Event Type?"
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to move Classification '{{
-                confirmTrash.title
+            Are you sure you want to move Event Type '{{
+                confirmTrash.name
             }}' to the trash?<BR />
         </confirm>
     </app-layout>
@@ -49,9 +49,8 @@ export default defineComponent({
         Button,
         PageToolbarNav
     },
-    props: ["classifications", "filters"],
+    props: ["calendarEventTypes", "filters"],
     setup(props) {
-        console.log({classifications: props.classifications})
 
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -59,31 +58,25 @@ export default defineComponent({
         };
 
         const handleConfirmTrash = () => {
-            Inertia.delete(route("classifications.trash", confirmTrash.value.id));
+            Inertia.delete(route("calendar.event_types.trash", confirmTrash.value));
             confirmTrash.value = null;
         };
 
-        const fields = ["title", "created_at", "updated_at"];
+        const fields = ["name", "description", "type", "created_at", "updated_at"];
 
         let navLinks = [
             {
-                label: "Users",
-                href: route("users"),
+                label: "Calendar",
+                href: route("calendar"),
                 onClick: null,
                 active: false
             },
             {
-                label: "Security Roles",
-                href: route("roles"),
-                onClick: null,
-                active: false
-            },
-            {
-                label: "Classification",
-                href: route("classifications"),
+                label: "Event Types",
+                href: route("calendar.event_types"),
                 onClick: null,
                 active: true
-            }
+            },
         ];
 
         return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
