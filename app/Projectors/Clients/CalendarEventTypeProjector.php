@@ -13,27 +13,27 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 class CalendarEventTypeProjector extends Projector
 {
 
-    public function onCalenderEventTypeCreated(CalendarEventTypeCreated $event)
+    public function onCalendarEventTypeCreated(CalendarEventTypeCreated $event)
     {
         CalendarEventType::create($event->data);
     }
 
-    public function onCalenderEventTypeUpdated(CalendarEventTypeUpdated $event)
+    public function onCalendarEventTypeUpdated(CalendarEventTypeUpdated $event)
     {
         CalendarEventType::findOrFail($event->data['id'])->updateOrFail($event->data);
     }
 
-    public function onCalenderEventTypeTrashed(CalendarEventTypeTrashed $event)
+    public function onCalendarEventTypeTrashed(CalendarEventTypeTrashed $event)
     {
         CalendarEventType::findOrFail($event->id)->deleteOrFail();
     }
 
-    public function onCalenderEventTypeRestored(CalendarEventTypeRestored $event)
+    public function onCalendarEventTypeRestored(CalendarEventTypeRestored $event)
     {
         CalendarEventType::withTrashed()->findOrFail($event->id)->restore();
     }
 
-    public function onCalenderEventTypeDeleted(CalendarEventTypeDeleted $event)
+    public function onCalendarEventTypeDeleted(CalendarEventTypeDeleted $event)
     {
         CalendarEventType::withTrashed()->findOrFail($event->id)->forceDelete();
     }
