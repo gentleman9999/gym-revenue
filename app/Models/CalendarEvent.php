@@ -58,6 +58,10 @@ class CalendarEvent extends Model
             });
         })->when($filters['start'] ?? null, function ($query) use ($filters) {
             $query->whereBetween('start', $this->fixDate([$filters['start'],$filters['end']]));
+        })->when($filters['viewUser'] ?? null, function ($query) use ($filters) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('attendees', 'like', '%"id": ' . $filters['viewUser'] . ',%');
+            });
         });
 
     }
