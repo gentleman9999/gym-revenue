@@ -188,3 +188,8 @@ Route::prefix('impersonation')->group(function () {
     Route::post('/off', \App\Actions\Impersonation\StopImpersonatingUser::class)->name('impersonation.stop');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('note')->group(function () {
+    Route::post('/', \App\Actions\Fortify\MarkNoteAsRead::class)->name('note.seen');
+});
+
+
