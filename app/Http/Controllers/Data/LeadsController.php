@@ -75,12 +75,14 @@ class LeadsController extends Controller
                 ->with('leadsclaimed')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
+                ->with('opportunity')
+                ->with('notes')
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
                                             'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count);
-
         }
+
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
@@ -206,6 +208,7 @@ class LeadsController extends Controller
              */
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
+
             $default_team_name = $client->default_team_name->value;
 
             $team_locations = [];
@@ -228,6 +231,8 @@ class LeadsController extends Controller
                 $results = Lead::whereClientId($client_id);
             }
         }
+
+
         return $results;
     }
 
@@ -361,10 +366,13 @@ class LeadsController extends Controller
         $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field','middle_name')->get();
         foreach($middle_names as $middle_name){
         }
+        $preview_note = Note::select('note')->whereEntityId($lead_id)->get();
+
 
         return Inertia::render('Leads/Show', [
             'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
             'middle_name' => $middle_name,
+            'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
         ]);
@@ -613,6 +621,7 @@ class LeadsController extends Controller
         $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
         $data = Lead::whereId($lead_id)->with('detailsDesc')->first();
         $locid = Location::where('gymrevenue_id',$data->gr_location_id)->first();
+        $preview_note = Note::select('note')->whereEntityId($lead_id)->get();
         $data = [
             'lead' => Lead::whereId($lead_id)->with(
                 'detailsDesc', 'profile_picture', 'trialMemberships',
@@ -622,6 +631,7 @@ class LeadsController extends Controller
             'user_id' => $user->id,
             'club_location' => $locid,
             'interactionCount' => $lead_aggy->getInteractionCount(),
+            'preview_note' => $preview_note,
         ];
         return $data;
     }
