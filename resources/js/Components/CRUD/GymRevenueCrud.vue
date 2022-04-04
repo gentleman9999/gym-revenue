@@ -3,16 +3,18 @@
         <div class="grid grid-cols-3 items-center flex-wrap mb-4 gap-x-4 gap-y-6">
             <slot name="top-actions">
                 <div class="flex flex-row col-span-3  lg:col-span-2 gap-2">
-                    <button
-                        v-for="action in Object.values(topActions)"
-                        class="btn btn-sm text-xs"
-                        :class="action.class"
-                        @click.prevent="
+                    <template v-for="action in Object.values(topActions)">
+                        <button
+                            v-if="action?.shouldRender ? action?.shouldRender() : true"
+                            class="btn btn-sm text-xs"
+                            :class="action.class"
+                            @click.prevent="
                             () => action.handler({ data, baseRoute })
                         "
-                    >
-                        {{ action.label }}
-                    </button>
+                        >
+                            {{ action.label }}
+                        </button>
+                    </template>
                 </div>
             </slot>
             <slot name="filter">
@@ -28,7 +30,7 @@
                         v-model="form.trashed"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null" />
+                        <option :value="null"/>
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
@@ -38,18 +40,18 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props" />
+                <component :is="tableComponent" v-bind="$props"/>
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props" />
+                <component :is="cardsComponent" v-bind="$props"/>
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props" />
+            <component :is="tableComponent || cardsComponent" v-bind="$props"/>
         </template>
 
         <slot name="pagination">
-            <pagination class="mt-4" :links="resource.links" />
+            <pagination class="mt-4" :links="resource.links"/>
         </slot>
     </jet-bar-container>
     <preview-modal
@@ -61,9 +63,9 @@
 </template>
 
 <script>
-import { ref, defineComponent, watch } from "vue";
-import { Inertia } from "@inertiajs/inertia";
-import { merge } from "lodash";
+import {defineComponent} from "vue";
+import {Inertia} from "@inertiajs/inertia";
+import {merge} from "lodash";
 import Pagination from "@/Components/Pagination";
 import GymRevenueDataCards from "./GymRevenueDataCards";
 import GymRevenueDataTable from "./GymRevenueDataTable";
@@ -71,7 +73,7 @@ import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import JetBarContainer from "@/Components/JetBarContainer";
 import PreviewModal from "@/Components/CRUD/PreviewModal";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm";
-import { useSearchFilter } from "./helpers/useSearchFilter";
+import {useSearchFilter} from "./helpers/useSearchFilter";
 
 export default defineComponent({
     components: {
@@ -136,7 +138,7 @@ export default defineComponent({
     },
 
     setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(props.baseRoute);
+        const {form, reset, clearFilters, clearSearch} = useSearchFilter(props.baseRoute);
 
         const defaultTopActions = {
             create: {
@@ -144,27 +146,75 @@ export default defineComponent({
                 // handler: () =>
                 //     Inertia.visit(route(`${props.baseRoute}.create`)),
                 handler: () => {
-                    console.log(
-                        "handler",
-                        `${props.baseRoute}.create`,
-                        route(`${props.baseRoute}.create`)
-                    );
                     Inertia.visit(route(`${props.baseRoute}.create`));
                 },
                 class: ["btn-primary"],
             },
+            export: {
+                label: "Export",
+                handler: () => {
+                    console.log(props.resource.data, props.fields,
+                        "export current page!"
+                    );
+                    //strip out fields we dont need bc they aren't shown on current page
+                    const exportable_fields = props.fields.filter(field => field?.export !== false);
+                    //get flat fields
+                    const fields = exportable_fields.map(field => field?.name || field);
+                    const field_labels = exportable_fields.map(field => field?.label || field);
+
+                    const filtered = props.resource.data.map(row => {
+                        //put in same order as headers
+                        //convert to Map based on fields order. Map guarantees iteration order based on insertion order
+                        const ordered = new Map();
+                        fields.forEach(field => ordered.set(field, row[field]));
+                        return ordered;
+                    });
+                    //now apply export function, fall back to transforms on fields that declare them
+                    const transformed = filtered.map(map => {
+                        const row = [];
+                        map.forEach((value, key) => {
+                            const field = exportable_fields.find(field => field?.name === key)
+                            row.push(field?.export ? field.export(value) : field?.transform ? field.transform(value) : value);
+                        });
+                        return row;
+                    });
+                    console.log({fields, transformed, filtered});
+                    const csvContent = transformed.map(row => Object.values(row)
+                        .map(String)  // convert every value to String
+                        .map(v=>v==='null' || v==='undefined' ? '' : v)  // make null and undefineds empty string
+                        .map(v => v.replaceAll('"', '""'))  // escape double colons
+                        .map(v => `"${v}"`)  // quote it
+                        .join(',')// comma-separated);
+                    ).join('\r\n');  // rows starting on new lines)
+                    const csv = `data:text/csv;charset=utf-8,${field_labels.join(',')}\r\n${csvContent}`
+                    console.log({csv})
+                    //create uri for download
+                    const encodedUri = encodeURI(csv);
+                    //create a hidden link for downloading
+                    const link = document.createElement("a");
+                    link.style.display = "none";
+                    link.setAttribute("href", encodedUri);
+                    const date = new Date().toISOString().replace("T", " ").substring(0, 19);
+                    //set filename
+                    link.setAttribute("download", `${props.modelKey}s-${date}.csv`);
+                    document.body.appendChild(link); // Required for FF
+                    //start the download
+                    link.click();
+                },
+                shouldRender: () => !!props.resource.total
+            }
         };
         let topActions = [];
         if (props.topActions) {
             topActions = Object.values(
-                merge({ ...defaultTopActions }, props.topActions)
+                merge({...defaultTopActions}, props.topActions)
             )
                 .filter((action) => action)
                 .filter((action) =>
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return { form, topActions, reset, clearFilters, clearSearch };
+        return {form, topActions, reset, clearFilters, clearSearch};
     },
 });
 </script>

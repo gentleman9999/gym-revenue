@@ -3,6 +3,7 @@
         <page-toolbar-nav title="Leads" :links="navLinks" />
         <gym-revenue-crud
             :resource="leads"
+            model-key="lead"
             :fields="fields"
             :base-route="baseRoute"
             :top-actions="{
@@ -125,7 +126,7 @@ export default defineComponent({
             { name: "last_name", label: "Last Name" },
             { name: "location.name", label: "Location" },
             {
-                name: "lead_type",
+                name: "lead_type.name",
                 label: "Type",
                 component: CrudBadge,
                 props: {
@@ -134,11 +135,13 @@ export default defineComponent({
                         text: lead_type?.name,
                     }),
                 },
+                // transform: data=>data?.lead_type
             },
             {
-                name: "details_desc",
+                name: "leadsclaimed",
                 label: "Status",
                 component: LeadAvailabilityBadge,
+                export: data => data?.length ? data[0].misc.user_id : 'Available',
             },
         ];
 
