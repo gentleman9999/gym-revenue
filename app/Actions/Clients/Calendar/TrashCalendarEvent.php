@@ -5,7 +5,6 @@ namespace App\Actions\Clients\Calendar;
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
 use Bouncer;
-use App\Actions\Fortify\PasswordValidationRules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -14,7 +13,7 @@ use Prologue\Alerts\Facades\Alert;
 
 class TrashCalendarEvent
 {
-    use PasswordValidationRules, AsAction;
+    use AsAction;
 
     /**
      * Get the validation rules that apply to the action.

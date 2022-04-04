@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Actions\Clients\Calendar;
+namespace App\Actions\Clients\Calendar\CalendarEventTypes;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
+use App\Models\CalendarEventType;
 use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -11,7 +12,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class RestoreCalendarEvent
+class RestoreCalendarEventType
 {
     use AsAction;
 
@@ -23,13 +24,14 @@ class RestoreCalendarEvent
     public function rules()
     {
         return [
-            //no rules since we only accept an id route param, which is validated in the route definition
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($id, $user=null)
     {
-        CalendarAggregate::retrieve($user->id ?? "Auto Generated", $data['client_id'])->restoreLocation()->persist();
+        $client_id = CalendarEventType::withTrashed()->findOrFail($id)->client->id;
+        CalendarAggregate::retrieve( $client_id)->restoreCalendarEventType($user->id ?? "Auto Generated", $id)->persist();
+        return CalendarEventType::withTrashed()->findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -38,16 +40,15 @@ class RestoreCalendarEvent
         return $current_user->can('calendar.restore', CalendarEvent::class);
     }
 
-    public function asController(Request $request, $id)
+    public function asController(ActionRequest $request, $id)
     {
-        $calendar = CalendarEvent::withTrashed()->findOrFail($id);
 
-        $this->handle(
-            $calendar->toArray(),
-            $request->user()
+        $data = $request->validated();
+        $calendar_event_type = $this->handle(
+            $id
         );
 
-        Alert::success("Calendar Event '{$calendar->title}' restored.")->flash();
+        Alert::success("Calendar Event Type '{$calendar_event_type->name}' restored.")->flash();
 
         return Redirect::back();
     }

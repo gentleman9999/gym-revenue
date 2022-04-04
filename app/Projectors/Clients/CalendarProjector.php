@@ -3,10 +3,10 @@
 namespace App\Projectors\Clients;
 
 use App\Models\CalendarEvent;
-use App\Models\CalendarEventType;
 use App\StorableEvents\Clients\Calendar\CalendarEventCreated;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypeCreated;
 use App\StorableEvents\Clients\Calendar\CalendarEventDeleted;
+use App\StorableEvents\Clients\Calendar\CalendarEventRestored;
+use App\StorableEvents\Clients\Calendar\CalendarEventTrashed;
 use App\StorableEvents\Clients\Calendar\CalendarEventUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -22,12 +22,12 @@ class CalendarProjector extends Projector
         CalendarEvent::findOrFail($event->data['id'])->updateOrFail($event->data);
     }
 
-    public function onCalenderEventTrashed(CalendarEventDeleted $event)
+    public function onCalenderEventTrashed(CalendarEventTrashed $event)
     {
         CalendarEvent::findOrFail($event->id)->deleteOrFail();
     }
 
-    public function onCalenderEventRestored(CalendarEventDeleted $event)
+    public function onCalenderEventRestored(CalendarEventRestored $event)
     {
         CalendarEvent::withTrashed()->findOrFail($event->id)->restore();
     }
@@ -37,9 +37,5 @@ class CalendarProjector extends Projector
         CalendarEvent::withTrashed()->findOrFail($event->id)->forceDelete();
     }
 
-    public function onCalenderEventTypeCreated(CalendarEventTypeCreated $event)
-    {
-        CalendarEventType::create($event->data);
-    }
 }
 
