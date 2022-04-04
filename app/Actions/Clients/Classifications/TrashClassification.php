@@ -3,7 +3,6 @@
 namespace App\Actions\Clients\Classifications;
 
 use App\Models\Clients\Classification;
-use App\Models\Clients\Location;
 use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -41,7 +40,7 @@ class TrashClassification
 
     public function asController(Request $request, $id)
     {
-        $Classification = Location::findOrFail($id);
+        $Classification = Classification::findOrFail($id);
         $this->handle(
             $request->user(),
             $id
@@ -49,6 +48,6 @@ class TrashClassification
 
         Alert::success("Classification '{$Classification->title}' was trashed")->flash();
 
-        return Redirect::route('Classifications');
+        return Redirect::route('classifications');
     }
 }

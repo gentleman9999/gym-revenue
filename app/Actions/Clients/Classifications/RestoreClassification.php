@@ -3,7 +3,6 @@
 namespace App\Actions\Clients\Classifications;
 
 use App\Models\Clients\Classification;
-use App\Models\Clients\Location;
 use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -37,18 +36,18 @@ class RestoreClassification
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('classification.restore', Classification::class);
+        return $current_user->can('classifications.restore', Classification::class);
     }
 
     public function asController(Request $request, $id)
     {
-        $Classification = Location::findOrFail($id);
+        $Classification = Classification::withTrashed()->findOrFail($id);
         $this->handle(
             $request->user(),
             $id
         );
-        Alert::success("Location '{$Classification->title}' restored.")->flash();
+        Alert::success("Classification '{$Classification->title}' restored.")->flash();
 
-        return Redirect::route('Classifications');
+        return Redirect::route('classifications');
     }
 }

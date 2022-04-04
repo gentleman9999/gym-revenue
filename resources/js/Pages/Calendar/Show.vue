@@ -3,6 +3,10 @@
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Calendar</h2>
         </template>
+        <page-toolbar-nav
+            title="Event Types"
+            :links="navLinks"
+        />
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-row col-span-3 lg:col-span-2 gap-2 mb-4">
@@ -103,6 +107,7 @@ import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
@@ -113,6 +118,7 @@ export default defineComponent({
         GymRevenueCrud,
         SweetModal,
         FullCalendar,
+        PageToolbarNav
     },
     props: [
         "sessions",
@@ -185,6 +191,22 @@ export default defineComponent({
             createCalendarEventForm.value?.form?.reset();
         const resetEditEventModal = () =>
             createCalendarEventForm.value?.form?.reset();
+
+        let navLinks = [
+            {
+                label: "Calendar",
+                href: route("calendar"),
+                onClick: null,
+                active: true
+            },
+            {
+                label: "Event Types",
+                href: route("calendar.event_types"),
+                onClick: null,
+                active: false
+            },
+        ];
+
         return {
             Inertia,
             calendarOptions: {
@@ -285,6 +307,7 @@ export default defineComponent({
             editCalendarEventForm,
             resetCreateEventModal,
             resetEditEventModal,
+            navLinks
         };
     },
 });

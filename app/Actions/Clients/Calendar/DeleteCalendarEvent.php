@@ -4,10 +4,7 @@ namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
-use App\Models\Clients\Location;
 use Bouncer;
-use App\Actions\Fortify\PasswordValidationRules;
-use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -16,7 +13,7 @@ use Prologue\Alerts\Facades\Alert;
 
 class DeleteCalendarEvent
 {
-    use PasswordValidationRules, AsAction;
+    use AsAction;
 
     /**
      * Get the validation rules that apply to the action.
