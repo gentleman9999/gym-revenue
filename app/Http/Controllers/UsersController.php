@@ -236,4 +236,79 @@ class UsersController extends Controller
 
         return $data;
     }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        // Check the client ID to determine if we are in Client or Cape & Bay space
+        $client_id = $request->user()->currentClientId();
+
+        //Default Render VARs
+        $filterKeys = ['search', 'club', 'team', 'roles'];
+
+
+        if ($client_id) {
+            $current_team = $request->user()->currentTeam()->first();
+            $client = Client::whereId($client_id)->with('default_team_name')->first();
+
+            $is_default_team = $client->default_team_name->value == $current_team->id;
+            // If the active team is a client's-default team get all members
+            if($is_default_team)
+            {
+                $users = User::with(['teams', 'home_club', 'is_manager', 'classification'])->whereHas('detail', function ($query) use ($client_id) {
+                    return $query->whereName('associated_client')->whereValue($client_id);
+                })->filter($request->only($filterKeys))
+                    ->get();
+            }
+            else
+            {
+                // else - get the members of that team
+                $team_users = TeamUser::whereTeamId($current_team->id)->get();
+                $user_ids = [];
+                foreach($team_users as $team_user)
+                {
+                    $user_ids[] = $team_user->user_id;
+                }
+                $users = User::whereIn('id', $user_ids)
+                    ->with(['teams', 'home_club', 'is_manager', 'classification'])
+                    ->filter($request->only($filterKeys))
+                    ->get();
+            }
+
+            foreach($users as $idx => $user)
+            {
+                if($user->getRole()){
+                    $users[$idx]->role = $user->getRole();
+                }
+
+                $default_team_detail = $user->default_team()->first();
+                $default_team = Team::find($default_team_detail->value);
+                $users[$idx]->home_team = $default_team->name;
+
+                //redneck join to find out classification name based on ID, will probably refactor this
+                if(!is_null($users[$idx]->classification->value))
+                    $users[$idx]->classification->value = Classification::whereId($users[$idx]->classification->value)->first()->title;
+
+                //This is phil's fault
+                if(!is_null($users[$idx]->home_club->value))
+                    $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
+            }
+        } else {
+            //cb team selected
+            $users = User::with( 'is_manager')->whereHas('teams', function ($query) use ($request) {
+                return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
+            })->filter($request->only($filterKeys))
+                ->get();
+
+            foreach($users as $idx => $user)
+            {
+                $users[$idx]->role = $user->getRole();
+                $default_team_detail = $user->default_team()->first();
+                $default_team = Team::find($default_team_detail->value);
+                $users[$idx]->home_team = $default_team->name;
+            }
+        }
+
+        return $users;
+    }
 }

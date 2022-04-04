@@ -26,30 +26,6 @@ use Prologue\Alerts\Facades\Alert;
 
 class LeadsController extends Controller
 {
-    protected $rules = [
-        'first_name'                => ['required', 'max:50'],
-        'middle_name'               => [],
-        'last_name'                 => ['required', 'max:30'],
-        'email'                     => ['required', 'email:rfc,dns'],
-        'primary_phone'             => ['sometimes'],
-        'alternate_phone'           => ['sometimes'],
-        'gr_location_id'            => ['required', 'exists:locations,gymrevenue_id'],
-        'lead_source_id'            => ['required', 'exists:lead_sources,id'],
-        'lead_type_id'              => ['required', 'exists:lead_types,id'],
-        'client_id'                 => 'required',
-        'profile_picture'           => 'sometimes',
-        'profile_picture.uuid'      => 'sometimes|required',
-        'profile_picture.key'       => 'sometimes|required',
-        'profile_picture.extension' => 'sometimes|required',
-        'profile_picture.bucket'    => 'sometimes|required',
-        'gender'                    => 'sometimes|required',
-        'dob'                       => 'sometimes|required',
-        'opportunity'               => 'sometimes|required',
-        'lead_owner'                => 'sometimes|required|exists:users,id',
-        'lead_status'               => 'sometimes|required|exists:lead_statuses,id',
-        'notes'                     => 'required|nullable|string'
-    ];
-
     public function index(Request $request)
     {
         $user = request()->user();
@@ -625,4 +601,38 @@ class LeadsController extends Controller
         ];
         return $data;
     }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $user = request()->user();
+        if($user->cannot('leads.read', Lead::class))
+        {
+            abort(403);
+        }
+
+        $client_id = request()->user()->currentClientId();
+        $is_client_user = request()->user()->isClientUser();
+        $prospects = [];
+        $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
+
+        if (!empty($prospects_model)) {
+            $prospects = $prospects_model
+                ->with('location')
+                ->with('leadType')
+                ->with('membershipType')
+                ->with('leadSource')
+                ->with('leadsclaimed')
+                ->with('detailsDesc')
+                //  ->with('leadsclaimed')
+                ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
+                    'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+        }
+
+        return $prospects;
+    }
+
 }

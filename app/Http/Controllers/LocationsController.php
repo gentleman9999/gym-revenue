@@ -22,25 +22,6 @@ use Silber\Bouncer\Bouncer;
 
 class LocationsController extends Controller
 {
-    protected $rules = [
-
-        'poc_last' =>['sometimes'],
-        'name' => ['required', 'max:50'],
-        'city' => ['required', 'max:30'],
-        'state' => ['required', 'size:2'],
-        'client_id' => ['required'],
-        'address1' => ['required','max:200'],
-        'address2' => [],
-        'zip' => ['required', 'size:5'],
-        'phone' => [],
-        'poc_first' => [],
-        'poc_phone' => [],
-        'opendate' => [],
-        'closedate' => [],
-        'location_no' => ['required', 'max:50'],
-        'gymrevenue_id' => [],
-    ];
-
 
     public function index(Request $request)
     {
@@ -277,5 +258,33 @@ class LocationsController extends Controller
 
         return $data;
     }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $user = request()->user();
+        $client_id = $user->currentClientId();
+        $is_client_user = $user->isClientUser();
+
+        if(is_null($client_id)) {
+            return Redirect::route('dashboard');
+        }
+
+        if($user->cannot('locations.read', Location::class))
+        {
+            abort(403);
+        }
+
+        if(!empty($locations = $this->setUpLocationsObject($is_client_user, $client_id)))
+        {
+            $locations = $locations->with('client')
+                ->filter($request->only('search', 'trashed'))
+                ->get();
+        }
+
+        return $locations;
+
+    }
+
 
 }
