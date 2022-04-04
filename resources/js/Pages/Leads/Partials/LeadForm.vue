@@ -458,8 +458,9 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: null,
                 gender: lead.gender,
+                notes: null,
             };
-     //       leadData.notes = "";
+   //         leadData.notes = "";
 
             console.log("Lead Owner", lead);
 
