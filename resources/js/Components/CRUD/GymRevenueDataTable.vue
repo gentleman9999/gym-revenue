@@ -160,7 +160,7 @@ export default {
         const data = getData(props);
 
         const handleClickHeader = (header) => {
-            emit('orderBy', header.name);
+            emit('sort', header.name);
         }
 
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";

@@ -40,14 +40,14 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props" @order-by="handleOrderBy"/>
+                <component :is="tableComponent" v-bind="$props" @sort="handleSort"/>
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props" @order-by="handleOrderBy"/>
+                <component :is="cardsComponent" v-bind="$props" @sort="handleSort"/>
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props" @order-by="handleOrderBy"/>
+            <component :is="tableComponent || cardsComponent" v-bind="$props" @sort="handleSort"/>
         </template>
 
         <slot name="pagination">
@@ -141,28 +141,24 @@ export default defineComponent({
 
         const {form, reset, clearFilters, clearSearch} = useSearchFilter(props.baseRoute);
 
-        const handleOrderBy = (column) => {
-            console.log('order by', {column});
-            if(form.value?.orderBy?.includes(column)){
+        const handleSort = (column) => {
+            console.log('sort', {column});
+            if(form.value?.sort?.includes(column)){
                 // if(form.value.dir==='asc'){
                 //     form.value.dir='desc';
                 // }else if (form.value.dir==='desc'){
                 //     form.value.dir='asc';
                 // }
-                if(form.value?.orderBy?.includes('+')){
-                    // form.value.orderBy = `-${column}`
-                    form.value = {...form.value, orderBy: `-${column}`}
+                if(form.value?.sort?.includes('+')){
+                    form.value.sort = `-${column}`
                 }else{
-                    // form.value.orderBy = `+${column}`
-                    form.value = {...form.value, orderBy: `+${column}`}
-
+                    form.value.sort = `+${column}`
                 }
                 return;
             }
             // form.value.orderBy= column;
             // form.value.dir='asc';
-            // form.value.orderBy= `+${column}`;
-            form.value = {...form.value, orderBy: `+${column}`}
+            form.value.sort= `+${column}`;
 
 
         }
@@ -241,7 +237,7 @@ export default defineComponent({
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return {form, topActions, reset, clearFilters, clearSearch, handleOrderBy};
+        return {form, topActions, reset, clearFilters, clearSearch, handleSort};
     },
 });
 </script>

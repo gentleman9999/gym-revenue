@@ -28,7 +28,7 @@ export const getFields = (props) => {
                 _field.label = _field.name;
             }
             //set sortable to true if not set
-            if(!_field.label){
+            if(!_field.sortable){
                 _field.sortable = true;
             }
             //add data type if missing

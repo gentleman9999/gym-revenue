@@ -6,7 +6,10 @@ import mapValues from "lodash/mapValues";
 
 export const useSearchFilter = (
     baseRoute,
-    initialState = {},
+    initialState = {
+        sort: null,
+        search: null,
+    },
     options = {
         preserveState: true,
         preserveScroll: true,
@@ -22,6 +25,7 @@ export const useSearchFilter = (
     const form = ref({ ...initialState, ...search });
 
     const formHandler = throttle(function () {
+        console.log('formchange', {form: form.value, pickBy: pickBy(form.value)})
         Inertia.get(route(baseRoute), pickBy(form.value), options);
     }, 150);
 
