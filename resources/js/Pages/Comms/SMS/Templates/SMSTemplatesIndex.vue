@@ -113,6 +113,7 @@ export default defineComponent({
                                 ? { text: "Active", class: "badge-success" }
                                 : { text: "Draft", class: "badge-warning" },
                     },
+                    export: (active) => active ? "Active" : "Draft",
                 },
                 { name: "type", transform: () => "Regular" },
                 { name: "updated_at", label: "date updated" },

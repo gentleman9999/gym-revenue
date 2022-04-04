@@ -268,12 +268,12 @@
                 <jet-input-error :message="form.errors.notes" class="mt-2" />
             </div>
             <div class="collapse col-span-9" tabindex="0" v-if="user?.all_notes?.length">
-                <div class="collapse-title text-sm font-medium">
+                <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded()">
                     > Existing Notes
                 </div>
                 <div class="flex flex-col  gap-2 collapse-content">
                     <div v-for="note in user.all_notes" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2">
-                        {{note}}
+                        {{note.note}}
                     </div>
                 </div>
             </div>
@@ -413,6 +413,16 @@ export default {
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
     setup(props, { emit }) {
+
+        function notesExpanded() {
+            console.error(props.user.all_notes);
+            axios.post(route('note.seen'), {
+                client_id: props.user.clientId,
+                all_notes: props.user.all_notes
+            })
+
+        }
+
         const wantsToDeleteFile = ref(null);
         const page = usePage();
         let user = props.user;
@@ -576,6 +586,7 @@ export default {
             fileManagerModal,
             fileManager,
             closeFileManagerModal,
+            notesExpanded,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()
