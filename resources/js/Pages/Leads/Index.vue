@@ -120,9 +120,50 @@ export default defineComponent({
             // console.log({lead_type_index, })
         };
 
+
+
+        const badgeClassesOpportunity = (opportunity) => {
+            if (!opportunity) {
+                console.log("no lead type id!");
+                return "";
+            }
+            const badges = [
+                "badge-primary",
+                "badge-secondary",
+                "badge-info",
+                "badge-accent",
+                "badge-success",
+                "badge-outline",
+                "badge-ghost",
+                "badge-error",
+                "badge-warning",
+            ];
+            if(opportunity === "High"){
+                return badges[0];    //primary
+            }
+            if(opportunity === "Medium"){
+                return badges[2];     // info
+            }
+            if(opportunity === "Low"){
+                return badges[8];  //warning
+            }
+        };
+
+
+
+
+
         const fields = [
             { name: "created_at", label: "Created" },
-            { name: "opportunity.value", label: "Opportunity" },
+            { name: "opportunity.value", label: "Opportunity",
+                component: CrudBadge,
+                props: {
+                    getProps: ({ data: { opportunity } }) => ({
+                        class: badgeClassesOpportunity(opportunity?.value),
+                        text: opportunity?.value,
+                    }),
+                },
+            },
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
             { name: "location.name", label: "Location" },

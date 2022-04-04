@@ -34,7 +34,7 @@
                 {{ data.lead.gender }}
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3" v-if="data.lead.dob.value">
+        <div class="field col-span-6 lg:col-span-3" v-if="data.lead?.dob?.value">
             <label>Birthdate:</label>
             <div class="data" v-if="data.lead.dob">
              {{ new Date(data.lead.dob.value).toLocaleDateString("en-US") }}
