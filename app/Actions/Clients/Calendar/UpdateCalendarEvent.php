@@ -5,6 +5,8 @@ namespace App\Actions\Clients\Calendar;
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
 use App\Models\CalendarEventType;
+use App\Models\Endusers\Lead;
+use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
@@ -28,14 +30,50 @@ class UpdateCalendarEvent
             'start' => ['required'],
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
-            'client_id' => ['required', 'exists:clients,id']
+            'client_id' => ['required', 'exists:clients,id'],
+            'attendees' => ['sometimes', 'array'],
+            'lead_attendees' => ['sometimes', 'array'],
         ];
     }
 
     public function handle($data, $user=null)
     {
-        $eventType = CalendarEventType::whereId($data['event_type_id'])->get();
-        $data['color'] = $eventType->first()->color;
+        $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;; //Pulling eventType color for this table because that's how fullCalender.IO wants it
+
+        /** ATTENDEE's -- Prep for DB
+         * Creating attendees bucket to hold info that we're prepping
+         * Dupe check then reindex array of ID's
+         * Add Users to Bucket then encode the var
+         */
+        $attendees = [];
+        if(!empty($data['attendees'])) {
+            $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
+            foreach($data['attendees'] as $user)
+            {
+                $user = User::whereId($user)->select('id', 'name', 'email')->first();
+                if($user)
+                    $attendees[] = $user;
+            }
+            $data['attendees'] = $attendees;
+        }
+
+        /** LEAD ATTENDEE's -- Prep for DB
+         * Creating leadAttendees bucket to hold info that we're prepping
+         * Dupe check then reindex array of ID's
+         * Add Lead Users to Bucket then encode the var
+         */
+        $leadAttendees = [];
+        if(!empty($data['lead_attendees'])) {
+            $data['lead_attendees'] = array_values(array_unique($data['lead_attendees'])); //This will dupe check and then re-index the array.
+            foreach($data['lead_attendees'] as $user)
+            {
+                $lead = Lead::whereId($user)->select('id', 'first_name', 'last_name', 'email')->first();
+                if($user)
+                    $leadAttendees[] = $lead;
+            }
+            $data['lead_attendees'] = $leadAttendees;
+        }
+
         CalendarAggregate::retrieve($data['client_id'])
             ->updateCalendarEvent($user->id ?? "Auto Generated" , $data)
             ->persist();

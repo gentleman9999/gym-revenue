@@ -3,6 +3,10 @@
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Calendar</h2>
         </template>
+        <page-toolbar-nav
+            title="Event Types"
+            :links="navLinks"
+        />
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-row col-span-3 lg:col-span-2 gap-2 mb-4">
@@ -17,6 +21,22 @@
                     @clear-filters="clearFilters"
                     @clear-search="clearSearch"
                 >
+                    <div class="block py-2 text-xs text-base-content text-opacity-80">
+                        View User Calendar:
+                    </div>
+                    <select
+                        v-model="form.viewUser"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option
+                            v-for="{ name, id } in client_users"
+                            :value="id"
+                        >
+                            {{ name }}
+                        </option>
+                    </select>
+
                     <div
                         class="block py-2 text-xs text-base-content text-opacity-80"
                     >
@@ -66,12 +86,14 @@
                 ref="editEventModal"
                 id="editEventModal"
                 @close="resetEditEventModal"
+                class="max-w-screen lg:max-w-[800px]"
             >
                 <h1 class="font-bold mb-4">Edit Event</h1>
                 <calendar-event-form
                     v-if="selectedCalendarEvent"
                     :calendar_event="selectedCalendarEvent"
                     :key="selectedCalendarEvent"
+                    :client_users="client_users"
                     @submitted="closeModals"
                     ref="editCalendarEventForm"
                 />
@@ -101,6 +123,7 @@ import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
@@ -111,6 +134,7 @@ export default defineComponent({
         GymRevenueCrud,
         SweetModal,
         FullCalendar,
+        PageToolbarNav
     },
     props: [
         "sessions",
@@ -119,6 +143,7 @@ export default defineComponent({
         "title",
         "isClientUser",
         "filters",
+        "client_users",
     ],
 
     setup(props) {
@@ -182,6 +207,22 @@ export default defineComponent({
             createCalendarEventForm.value?.form?.reset();
         const resetEditEventModal = () =>
             createCalendarEventForm.value?.form?.reset();
+
+        let navLinks = [
+            {
+                label: "Calendar",
+                href: route("calendar"),
+                onClick: null,
+                active: true
+            },
+            {
+                label: "Event Types",
+                href: route("calendar.event_types"),
+                onClick: null,
+                active: false
+            },
+        ];
+
         return {
             Inertia,
             calendarOptions: {
@@ -282,7 +323,26 @@ export default defineComponent({
             editCalendarEventForm,
             resetCreateEventModal,
             resetEditEventModal,
+            navLinks
         };
     },
 });
 </script>
+
+<style>
+.fc .fc-toolbar {
+    @apply flex-col gap-2;
+    @screen lg {
+        @apply flex-row;
+    }
+}
+.fc .fc-daygrid-day-bottom{
+    @apply text-xs;
+}
+.fc-theme-standard .fc-popover{
+    @apply bg-base-300;
+}
+.fc-v-event .fc-event-title-container{
+    @apply text-xs leading-tight;
+}
+</style>

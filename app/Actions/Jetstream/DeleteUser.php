@@ -2,6 +2,7 @@
 
 namespace App\Actions\Jetstream;
 
+use App\Enums\SecurityGroupEnum;
 use Bouncer;
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
@@ -48,7 +49,7 @@ class DeleteUser implements DeletesUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('users.delete', $current_user->currentTeam()->first());
+        return $current_user->can('users.delete', User::class);
     }
 
     public function asController(ActionRequest $request, $id)
@@ -64,8 +65,9 @@ class DeleteUser implements DeletesUsers
 
         foreach ($team_users as $team_user)
         {
-            if(!Bouncer::is($team_user->user)->an('Admin'))
+            if(!$team_user->user->inSecurityGroup(SecurityGroupEnum::ADMIN)){
                 $non_admins[] = $team_user->id;
+            }
         }
 
         if(count($non_admins) < 1 ) {

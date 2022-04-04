@@ -74,6 +74,51 @@
             <jet-input-error :message="form.errors.end" class="mt-2" />
         </div>
 
+        <div class="col-span-3">
+            <jet-label for="attendees" value="Select User Attendees" />
+            <multiselect
+                v-model="form.attendees"
+                class="py-2"
+                id="attendees"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.client_users.map((user) => ({
+                            label: user.name,
+                            value: user.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="col-span-3">
+            <jet-label for="lead_attendees" value="Select Lead Attendees" />
+            <multiselect
+                v-model="form.lead_attendees"
+                class="py-2"
+                id="lead_attendees"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                         this.$page.props.lead_users.map((user) => ({
+                            label: user.first_name+' '+user.last_name,
+                            value: user.id,
+                        }))
+                    "
+                :classes="multiselectClasses"
+            />
+        </div>
+
+        <div class="col-span-3" v-if="calendar_event?.attendees?.length || calendar_event?.lead_attendees?.length ">
+            <jet-label for="attendeesModal" value="View All Attendees" />
+            <button @click.prevent="showAttendeesModal.open" class="btn btn-sm btn-info hover:text-white">
+                Open List
+            </button>
+        </div>
+
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
         <div class="flex flex-row col-span-6 mt-8">
@@ -89,6 +134,22 @@
                 {{ buttonText }}
             </Button>
         </div>
+
+
+        <daisy-modal
+            ref="showAttendeesModal"
+            id="showAttendeesModal"
+            @close=""
+        >
+            <h1 class="font-bold mb-4">Attendees</h1>
+            <attendees-form
+                @submitted="closeModals"
+                :calendar_event="calendar_event"
+                ref="attendeesModal"
+            />
+        </daisy-modal>
+
+
     </form>
 </template>
 <style>
@@ -107,7 +168,7 @@ label {
 
 <script>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch } from "vue";
+import { computed, watchEffect, watch, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -115,6 +176,10 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
+import DaisyModal from "@/Components/DaisyModal";
+import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
+import Multiselect from "@vueform/multiselect";
+import {getDefaultMultiselectTWClasses} from "@/utils";
 
 export default {
     components: {
@@ -124,17 +189,30 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
+        DaisyModal,
+        AttendeesForm,
+        Multiselect,
     },
-    props: ["clientId", "calendar_event"],
+    props: ["clientId", "calendar_event", "client_users", "lead_users"],
     setup(props, { emit }) {
         const page = usePage();
+
+        const calendar_event = props.calendar_event;
 
         let calendarEvent = props.calendar_event;
         const calendarEventTypes = page.props.value.calendar_event_types;
 
+        const showAttendeesModal = ref();
+        const attendeesModal = ref(null);
+
+        const closeModals = () => {
+            showAttendeesModal.value.close();
+        };
+
+        let calendarEventForm = null;
         let operation = "Update";
         if (!calendarEvent) {
-            calendarEvent = {
+            calendarEventForm = {
                 title: null,
                 description: null,
                 full_day_event: false,
@@ -142,11 +220,25 @@ export default {
                 end: null,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
+                attendees: [],
+                lead_attendees: null,
             };
             operation = "Create";
+        }else{
+            calendarEventForm = {
+                title: calendarEvent.title,
+                description: calendarEvent.description,
+                full_day_event: calendarEvent.full_day_event,
+                start: calendarEvent.start,
+                end: calendarEvent.end,
+                event_type_id: calendarEvent.event_type_id,
+                client_id: page.props.value.user?.current_client_id,
+                attendees: calendarEvent.attendees?.map(attendee=>attendee.id) || [],
+                lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
+            }
         }
 
-        const form = useForm(calendarEvent);
+        const form = useForm(calendarEventForm);
 
         watchEffect(() => {
             if( form.end){
@@ -227,6 +319,11 @@ export default {
             handleSubmit,
             calendarEventTypes,
             dateFormat,
+            attendeesModal,
+            calendar_event,
+            closeModals,
+            showAttendeesModal,
+            multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },
 };

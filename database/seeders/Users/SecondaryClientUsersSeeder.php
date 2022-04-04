@@ -4,16 +4,7 @@ namespace Database\Seeders\Users;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
-use App\Models\Clients\Security\SecurityRole;
 use App\Models\Team;
-use App\Models\User;
-use App\Models\UserDetails;
-use Database\Seeders\Users\UserSeeder;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
-use Silber\Bouncer\BouncerFacade as Bouncer;
-use Silber\Bouncer\Database\Role;
-use Symfony\Component\VarDumper\VarDumper;
 
 class SecondaryClientUsersSeeder extends UserSeeder
 {

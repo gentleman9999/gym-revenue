@@ -154,29 +154,55 @@
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
-            <!-- Security Role -->
+
+            <!-- Classifications -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role" value="Security Role" />
+                <jet-label for="classification" value="Classification" />
                 <select
-                    id="role"
+                    id="classification"
                     class="block w-full mt-1"
-                    v-model="form.security_role"
+                    v-model="form.classification"
                 >
                     <option
-                        v-for="{ security_role, id } in securityRoles"
-                        :value="id"
+                        v-for="classy in classifications"
+                        :value="classy.id"
                     >
-                        {{ security_role }}
+                        {{ classy.title }}
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors.security_role"
+                    :message="form.errors.classification"
                     class="mt-2"
                 />
             </div>
+
+
+
+            <!-- Security Role -->
+            <div class="form-control col-span-3" v-if="clientId">
+                <jet-label for="role_id" value="Security Role" />
+                <select
+                    id="role_id"
+                    class="block w-full mt-1"
+                    v-model="form.role_id"
+                >
+                    <option
+                        v-for="role_id in roles"
+                        :value="role_id.id"
+                    >
+                        {{ role_id.title }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.role_id"
+                    class="mt-2"
+                />
+            </div>
+
+
             <!-- Home Club -->
             <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role" value="Home Club" />
+                <jet-label for="home_club" value="Home Club" />
                 <select
                     id="home_club"
                     class="block w-full mt-1"
@@ -242,12 +268,12 @@
                 <jet-input-error :message="form.errors.notes" class="mt-2" />
             </div>
             <div class="collapse col-span-9" tabindex="0" v-if="user?.all_notes?.length">
-                <div class="collapse-title text-sm font-medium">
+                <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded()">
                     > Existing Notes
                 </div>
                 <div class="flex flex-col  gap-2 collapse-content">
                     <div v-for="note in user.all_notes" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2">
-                        {{note}}
+                        {{note.note}}
                     </div>
                 </div>
             </div>
@@ -387,10 +413,21 @@ export default {
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
     setup(props, { emit }) {
+
+        function notesExpanded() {
+            console.error(props.user.all_notes);
+            axios.post(route('note.seen'), {
+                client_id: props.user.clientId,
+                all_notes: props.user.all_notes
+            })
+
+        }
+
         const wantsToDeleteFile = ref(null);
         const page = usePage();
         let user = props.user;
-        const securityRoles = page.props.value.securityRoles;
+        const roles = page.props.value.roles;
+        const classifications = page.props.value.classifications;
         const locations = page.props.value.locations;
 
         const team_id = page.props.value.user.current_team_id;
@@ -404,9 +441,11 @@ export default {
 
         let operation = "Update";
         if (user) {
-            user.security_role =
-                user?.details?.find((detail) => detail.name === "security_role")
-                    ?.value || null;
+            user.role_id = user["role_id"]
+            user.classification =
+                "classification" in user && user["classification"] !== null
+                    ? user["classification"].value ?? ""
+                    : "";
             user.team_id = team_id;
             user.first_name = user["first_name"];
             user.last_name = user["last_name"];
@@ -457,10 +496,6 @@ export default {
                 "notes" in user && user["notes"] !== null
                     ? user["notes"].value ?? ""
                     : "";
-
-            user.security_role =
-                user?.details?.find((detail) => detail.name === "security_role")
-                    ?.value || null;
             console.log({ user });
         } else {
             user = {
@@ -468,7 +503,8 @@ export default {
                 last_name: "",
                 email: "",
                 altEmail: "",
-                security_role: "",
+                role_id: 0,
+                classification: "",
                 phone: "",
                 address1: "",
                 address2: "",
@@ -539,7 +575,8 @@ export default {
             buttonText: operation,
             operation,
             handleSubmit,
-            securityRoles,
+            roles,
+            classifications,
             upperCaseF,
             locations,
 	        optionStates: optionsStates,
@@ -549,6 +586,7 @@ export default {
             fileManagerModal,
             fileManager,
             closeFileManagerModal,
+            notesExpanded,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()

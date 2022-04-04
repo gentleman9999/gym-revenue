@@ -91,32 +91,5 @@ class JetstreamServiceProvider extends ServiceProvider
             'read',
         ])->description('Employees have the ability to read.');
 
-        Jetstream::role('Fitness Trainer', 'Fitness Trainer', [
-            'read',
-        ])->description('Employees have the ability to read.');
-
-        Jetstream::role('Personal Trainer', 'Personal Trainer', [
-            'read',
-        ])->description('Employees have the ability to read.');
-
-        Jetstream::role('Instructor', 'Instructor', [
-            'read',
-        ])->description('Employees have the ability to read.');
-
-        Jetstream::role('Fitness Manager', 'Fitness Manager', [
-            'read',
-        ])->description('Employees have the ability to read.');
-
-        Jetstream::role('Sanitation', 'Sanitation', [
-            'read',
-        ])->description('Employees have the ability to read.');
-
-        Jetstream::role('Human Resources', 'Human Resources', [
-            'read',
-        ])->description('Employees have the ability to read.');
-
-        Jetstream::role('Day Care Manager', 'Day Care Manager', [
-            'read',
-        ])->description('Employees have the ability to read.');
     }
 }

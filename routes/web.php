@@ -126,6 +126,16 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
+    Route::prefix('event_types')->group(function () {
+        Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
+        Route::get('/create', \App\Http\Controllers\CalendarController::class . '@createEventType')->name('calendar.event_types.create');
+        Route::post('/', \App\Actions\Clients\Calendar\CalendarEventTypes\CreateCalendarEventType::class)->name('calendar.event_types.store');
+        Route::get('/edit/{id}', \App\Http\Controllers\CalendarController::class . '@editEventType')->name('calendar.event_types.edit');
+        Route::put('/{id}', \App\Actions\Clients\Calendar\CalendarEventTypes\UpdateCalendarEventType::class)->name('calendar.event_types.update');
+        Route::delete('/{id}', \App\Actions\Clients\Calendar\CalendarEventTypes\TrashCalendarEventType::class)->name('calendar.event_types.trash');
+        Route::delete('/{id}/force', \App\Actions\Clients\Calendar\CalendarEventTypes\DeleteCalendarEventType::class)->name('calendar.event_types.delete');
+        Route::post('/{id}/restore', \App\Actions\Clients\Calendar\CalendarEventTypes\RestoreCalendarEventType::class)->name('calendar.event_types.restore');
+    });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
@@ -158,15 +168,26 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->prefix('security-roles')->group(function () {
-    Route::get('/', \App\Http\Controllers\SecurityRolesController::class . '@index')->name('security-roles');
-    Route::get('/create', \App\Http\Controllers\SecurityRolesController::class . '@create')->name('security-roles.create');
-    Route::post('/', \App\Http\Controllers\SecurityRolesController::class . '@store')->name('security-roles.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\SecurityRolesController::class . '@edit')->name('security-roles.edit');
-    Route::put('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@update')->name('security-roles.update');
-    Route::delete('/{id}', \App\Http\Controllers\SecurityRolesController::class . '@trash')->name('security-roles.trash');
-    Route::delete('/{id}/force', \App\Http\Controllers\SecurityRolesController::class . '@delete')->name('security-roles.delete');
-    Route::post('/{id}/restore', \App\Http\Controllers\SecurityRolesController::class . '@restore')->name('security-roles.restore');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function () {
+    Route::get('/', \App\Http\Controllers\RolesController::class . '@index')->name('roles');
+    Route::get('/create', \App\Http\Controllers\RolesController::class . '@create')->name('roles.create');
+    Route::post('/', \App\Actions\Clients\Roles\CreateRole::class)->name('roles.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\RolesController::class . '@edit')->name('roles.edit');
+    Route::put('/{id}', \App\Actions\Clients\Roles\UpdateRole::class)->name('roles.update');
+    Route::delete('/{id}', \App\Actions\Clients\Roles\TrashRole::class)->name('roles.trash');
+    Route::delete('/{id}/force', \App\Actions\Clients\Roles\DeleteRole::class)->name('roles.delete');
+    Route::post('/{id}/restore', \App\Actions\Clients\Roles\RestoreRole::class)->name('roles.restore');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->group(function () {
+    Route::get('/', \App\Http\Controllers\ClassificationsController::class . '@index')->name('classifications');
+    Route::get('/create', \App\Http\Controllers\ClassificationsController::class . '@create')->name('classifications.create');
+    Route::post('/', \App\Actions\Clients\Classifications\CreateClassification::class)->name('classifications.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\ClassificationsController::class . '@edit')->name('classifications.edit');
+    Route::put('/{id}', \App\Actions\Clients\Classifications\UpdateClassification::class)->name('classifications.update');
+    Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('classifications.trash');
+    Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('classifications.delete');
+    Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('classifications.restore');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
@@ -176,4 +197,9 @@ Route::prefix('impersonation')->group(function () {
     Route::post('/on', \App\Actions\Impersonation\ImpersonateUser::class)->name('impersonation.start');
     Route::post('/off', \App\Actions\Impersonation\StopImpersonatingUser::class)->name('impersonation.stop');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('note')->group(function () {
+    Route::post('/', \App\Actions\Fortify\MarkNoteAsRead::class)->name('note.seen');
+});
+
 

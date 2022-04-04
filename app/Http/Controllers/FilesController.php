@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -21,8 +22,9 @@ class FilesController extends Controller
 
         $page_count = 10;
         $roles = request()->user()->getRoles();
+        $security_group = request()->user()->securityGroup();
 
-        if($roles[0] == 'Admin' || $roles[0] == 'Account Owner') {
+        if($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)

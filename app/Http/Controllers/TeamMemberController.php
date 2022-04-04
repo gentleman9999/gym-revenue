@@ -41,12 +41,11 @@ class TeamMemberController extends Controller
                 $email_user = User::whereEmail($email)->first();
 
                 if(!is_null($email_user)) {
-                    $role = $email_user->getRoles();
                     app(AddsTeamMembers::class)->add(
                         $request->user(),
                         $team,
                         $email ?: '',
-                        $role[0]
+                        $email_user->role(),
                     );
                 }
             }

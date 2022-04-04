@@ -56,15 +56,15 @@
                             for="roles"
                             class="label label-text py-1 text-xs text-gray-400"
                         >
-                            Role:
+                            Security Role:
                         </label>
                         <select id="roles" class="mt-1 w-full form-select" v-model="form.roles">
                             <option></option>
                             <option
                                 v-for="role in potentialRoles"
-                                :value="role"
+                                :value="role.id"
                             >
-                                {{ role }}
+                                {{ role.title }}
                             </option>
                         </select>
                     </div>
@@ -142,7 +142,15 @@ export default defineComponent({
         let fields = [
             "name",
             "email",
-            "role",
+            {
+                name: "role",
+                label: "Security Role",
+            },
+            {
+                name: "classification",
+                label: "Classification",
+                transform: (data) => data?.value,
+            },
             {
                 name: "is_manager",
                 label: "Manager",
@@ -159,6 +167,11 @@ export default defineComponent({
                     label: "Home Club",
                 },
                 "role",
+                {
+                    name: "classification",
+                    label: "Classification",
+                    transform: (data) => data?.value,
+                },
                 {
                     name: "is_manager",
                     label: "Manager",
@@ -197,7 +210,7 @@ export default defineComponent({
                 shouldRender: shouldShowEdit,
             },
         };
-        console.log("Jesus H Christ");
+
 
         let navLinks = [
             {
@@ -210,8 +223,16 @@ export default defineComponent({
 
         if (page.props.value.user.current_client_id) {
             navLinks.push({
-                label: "Security Roles",
-                href: route("security-roles"),
+                label: "Roles",
+                href: route("roles"),
+                onClick: null,
+                active: false,
+            });
+        }
+        if (page.props.value.user.current_client_id) {
+            navLinks.push({
+                label: "Classification",
+                href: route("classifications"),
                 onClick: null,
                 active: false,
             });

@@ -25,7 +25,9 @@ class CalendarEvent extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id'];
+    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'attendees', 'lead_attendees'];
+
+    protected $casts = ['attendees' => 'array', 'lead_attendees' => 'array'];
 
     public function client()
     {
@@ -56,6 +58,10 @@ class CalendarEvent extends Model
             });
         })->when($filters['start'] ?? null, function ($query) use ($filters) {
             $query->whereBetween('start', $this->fixDate([$filters['start'],$filters['end']]));
+        })->when($filters['viewUser'] ?? null, function ($query) use ($filters) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('attendees', 'like', '%"id": ' . $filters['viewUser'] . ',%');
+            });
         });
 
     }

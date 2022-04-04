@@ -2,20 +2,24 @@
 
 namespace App\Models;
 
-use App\Aggregates\Clients\ClientAggregate;
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
+use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Role;
 
 class User extends Authenticatable
 {
@@ -172,6 +176,7 @@ class User extends Authenticatable
     {
         return $this->detail()->where('name', '=', 'city');
     }
+
     public function state()
     {
         return $this->detail()->where('name', '=', 'state');
@@ -204,11 +209,7 @@ class User extends Authenticatable
     }
     public function teams()
     {
-        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
-    }
-    public function potentialRoles()
-    {
-        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id')->withPivot('role');
+        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
     }
     public function default_team()
     {
@@ -225,9 +226,9 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'associated_client');
     }
 
-    public function security_role()
+    public function classification()
     {
-        return $this->detail()->where('name', '=', 'security_role');
+        return $this->detail()->where('name', '=', 'classification');
     }
 
     public function is_manager()
@@ -259,11 +260,43 @@ class User extends Authenticatable
                 return $query->whereTeamId($team_id);
             });
         })->when($filters['roles'] ?? null, function ($query, $role) {
-             $query->whereHas('potentialRoles', function ($query) use ($role) {
-                $query->where('role', '=', $role );
+            $query->join('assigned_roles', function($join) use ($role) {
+                $join->on('users.id', '=', 'assigned_roles.entity_id')
+                    ->where('assigned_roles.role_id', '=', $role);
+            })->get();
+        });
+    }
 
-            });
-        })
-        ;
+    public function role()
+    {
+        return $this->roles[0] ?? null;
+    }
+
+    public function getRole()
+    {
+        return $this->getRoles()[0] ?? null;
+//        if(!$roles || !count($roles)){
+//            return null;
+//        }
+//        return $roles[0];
+    }
+
+    public function securityGroup()
+    {
+        $role = $this->role();
+        if(!$role){
+            return null;
+        }
+        return SecurityGroupEnum::from($role->group);
+    }
+
+    public function inSecurityGroup(SecurityGroupEnum ...$groups)
+    {
+        return in_array($this->securityGroup(), $groups);
+    }
+
+    public function isAtLeastSecurityGroup(SecurityGroupEnum $group)
+    {
+        return $this->securityGroup()->value <= $group->value;
     }
 }

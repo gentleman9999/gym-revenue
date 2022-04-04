@@ -72,6 +72,7 @@ class LeadsController extends Controller
                 ->with('leadType')
                 ->with('membershipType')
                 ->with('leadSource')
+                ->with('leadsclaimed')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
                 ->with('opportunity')
