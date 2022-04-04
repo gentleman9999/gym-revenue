@@ -1,5 +1,5 @@
 <template>
-    <tr class="hover" @click="handleClick" @dblclick="handleDoubleClick">
+    <tr class="hover" @click.prevent.stop="handleClick" @dblclick.prevent.stop="handleDoubleClick">
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
             <render-field
                 :field="field"
