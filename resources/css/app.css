@@ -78,7 +78,13 @@
 
 
 *{
-    /*--fc-list-event-hover-bg-color: var(--b3);*/
-    --fc-list-event-hover-bg-color: hsla(var(--p) / var(--tw-bg-opacity, 1));
     --fc-neutral-bg-color: hsla(var(--n) / var(--tw-bg-opacity, 1));
+    --fc-list-event-dot-width: 10px;
+    --fc-list-event-hover-bg-color: theme('colors.primary.500');
+    --fc-neutral-bg-color: hsla(var(--s) / var(--tw-bg-opacity, 0.5));
+    --fc-page-bg-color: theme('colors.base-200');
+    --fc-list-event-hover-bg-color: theme('colors.primary.500');
+    --fc-event-border-color: theme('colors.neutral.500');
+    --fc-border-color: hsla(var(--bc) / var(--tw-bg-opacity, 0.3));
 }
+

@@ -32,7 +32,9 @@ class ClassificationsController extends Controller
             return Redirect::back();
         }
 
-        $classifications = Classification::whereClientId($client_id)->paginate(10);
+        $classifications = Classification::whereClientId($client_id)
+            ->filter($request->only('search', 'trashed'))
+            ->paginate(10);
 
         return Inertia::render('Classifications/Show', [
             'classifications' => $classifications,

@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\CalendarEvent;
 use App\Models\CalendarEventType;
 use App\Models\Clients\Client;
-use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
-use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Prologue\Alerts\Facades\Alert;
 
 class CalendarController extends Controller
 {
@@ -22,11 +18,11 @@ class CalendarController extends Controller
     {
         $client_id = request()->user()->currentClientId();
 
-        if(is_null($client_id)) {
+        if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
 
-        if($request->get('start')) {
+        if ($request->get('start')) {
             $eventsForTeam = CalendarEvent::whereClient_id($client_id)
                 ->with('type')
                 ->filter($request->only('search', 'start', 'end', 'viewUser'))
@@ -36,8 +32,7 @@ class CalendarController extends Controller
             $eventsForTeam = [];
         }
 
-        foreach ($eventsForTeam as $key => $event)
-        {
+        foreach ($eventsForTeam as $key => $event) {
             $eventsForTeam[$key]->attendees = $event->attendees;
             $eventsForTeam[$key]->lead_attendees = $event->lead_attendees;
         }
@@ -71,6 +66,36 @@ class CalendarController extends Controller
             'client_id' => $client_id,
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get()
+        ]);
+    }
+
+    public function eventTypes(Request $request)
+    {
+        $client_id = request()->user()->currentClientId();
+
+        $event_types = CalendarEventType::whereClient_id($client_id)
+            ->filter($request->only('search', 'trashed', 'type'))
+            ->paginate(10);
+
+        return Inertia::render('Calendar/EventTypes/Show', [
+            'calendarEventTypes' => $event_types,
+        ]);
+    }
+
+    public function createEventType(Request $request)
+    {
+        $client_id = request()->user()->currentClientId();
+        return Inertia::render('Calendar/EventTypes/Create', [
+        ]);
+    }
+
+    public function editEventType(Request $request, $id)
+    {
+//        $client_id = request()->user()->currentClientId();
+        $calendarEventType = CalendarEventType::findOrFail($id);
+
+        return Inertia::render('Calendar/EventTypes/Edit', [
+            'calendarEventType' => $calendarEventType
         ]);
     }
 
