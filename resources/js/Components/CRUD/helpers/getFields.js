@@ -17,7 +17,7 @@ export const getFields = (props) => {
             let _field = field;
             //convert to object if just string provided
             if(!isObject(_field)){
-                _field =  {name: _field, label: _field}
+                _field =  {name: _field, label: _field, sortable: true}
             }
             if(!_field.name){
                 console.error("object field definitions require a name property", field);
@@ -26,6 +26,10 @@ export const getFields = (props) => {
             //set label to name if not set
             if(!_field.label){
                 _field.label = _field.name;
+            }
+            //set sortable to true if not set
+            if(!_field.label){
+                _field.sortable = true;
             }
             //add data type if missing
             if(!_field.type ){

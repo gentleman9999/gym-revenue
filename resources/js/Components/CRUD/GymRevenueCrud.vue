@@ -40,14 +40,14 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props"/>
+                <component :is="tableComponent" v-bind="$props" @order-by="handleOrderBy"/>
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props"/>
+                <component :is="cardsComponent" v-bind="$props" @order-by="handleOrderBy"/>
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props"/>
+            <component :is="tableComponent || cardsComponent" v-bind="$props" @order-by="handleOrderBy"/>
         </template>
 
         <slot name="pagination">
@@ -138,7 +138,34 @@ export default defineComponent({
     },
 
     setup(props) {
+
         const {form, reset, clearFilters, clearSearch} = useSearchFilter(props.baseRoute);
+
+        const handleOrderBy = (column) => {
+            console.log('order by', {column});
+            if(form.value?.orderBy?.includes(column)){
+                // if(form.value.dir==='asc'){
+                //     form.value.dir='desc';
+                // }else if (form.value.dir==='desc'){
+                //     form.value.dir='asc';
+                // }
+                if(form.value?.orderBy?.includes('+')){
+                    // form.value.orderBy = `-${column}`
+                    form.value = {...form.value, orderBy: `-${column}`}
+                }else{
+                    // form.value.orderBy = `+${column}`
+                    form.value = {...form.value, orderBy: `+${column}`}
+
+                }
+                return;
+            }
+            // form.value.orderBy= column;
+            // form.value.dir='asc';
+            // form.value.orderBy= `+${column}`;
+            form.value = {...form.value, orderBy: `+${column}`}
+
+
+        }
 
         const defaultTopActions = {
             create: {
@@ -214,7 +241,7 @@ export default defineComponent({
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return {form, topActions, reset, clearFilters, clearSearch};
+        return {form, topActions, reset, clearFilters, clearSearch, handleOrderBy};
     },
 });
 </script>

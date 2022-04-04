@@ -1,67 +1,72 @@
 <template>
     <div class="wrapper">
-        <slot name="pre" />
+        <slot name="pre"/>
         <table class="table table-compact w-full" :class="{ 'table-zebra': zebra }">
             <thead>
-                <slot name="thead">
-                    <tr>
-                        <th
-                            v-for="(header, index) in fields"
-                            :key="index"
-                            scope="col"
-                            :class="{
+            <slot name="thead">
+                <tr>
+                    <th
+                        v-for="(header, index) in fields"
+                        :key="index"
+                        scope="col"
+                        :class="{
                                 'position-unset':
                                     index === 0 && !stickyFirstCol,
                             }"
-                        >
+                    >
+                        <a v-if="header?.sortable" href="#" @click.prevent.stop="handleClickHeader(header)">
                             {{ header.label }}
-                        </th>
-                        <th
-                            v-if="
+                        </a>
+                        <template v-else>
+                            {{ header.label }}
+                        </template>
+                    </th>
+                    <th
+                        v-if="
                                 actions &&
                                 (Object.values(actions).length === 0 ||
                                     Object.values(actions).filter(
                                         (action) => action
                                     ).length)
                             "
-                        >
-                            <font-awesome-icon
-                                :icon="['fas', 'align-left']"
-                                size="lg"
-                            />
-                        </th>
-                    </tr>
-                </slot>
+                    >
+                        <font-awesome-icon
+                            :icon="['fas', 'align-left']"
+                            size="lg"
+                        />
+                    </th>
+                </tr>
+            </slot>
             </thead>
             <tbody>
-                <component
-                    v-for="row in data"
-                    :key="row.id"
-                    :is="rowComponent"
-                    v-bind="{ [modelKey]: row }"
-                    :data="row"
-                    :fields="fields"
-                    :titleField="titleField"
-                    :actions="actions"
-                    :model-name="modelName"
-                    :model-key="modelKey"
-                    :model-name-plural="modelNamePlural"
-                    :base-route="baseRoute"
-                    :has-preview-component="!!previewComponent"
-                />
+            <component
+                v-for="row in data"
+                :key="row.id"
+                :is="rowComponent"
+                v-bind="{ [modelKey]: row }"
+                :data="row"
+                :fields="fields"
+                :titleField="titleField"
+                :actions="actions"
+                :model-name="modelName"
+                :model-key="modelKey"
+                :model-name-plural="modelNamePlural"
+                :base-route="baseRoute"
+                :has-preview-component="!!previewComponent"
+            />
 
-                <tr v-if="!data?.length">
-                    <td
-                        :colspan="
+            <tr v-if="!data?.length">
+                <td
+                    :colspan="
                             fields.length +
                             (Object.values(actions).length ? 1 : 0)
                         "
-                    >
-                        No
-                        {{ __modelNamePlural || "Records" }}
-                        found.
-                    </td>
-                </tr>
+                >
+                    No
+                    {{ __modelNamePlural || "Records" }}
+                    found.
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -73,26 +78,30 @@
     @apply flex flex-col -my-2 sm:-mx-6 lg:-mx-8 sm:px-6 lg:px-8 min-w-full;
     max-width: 100vw;
 }
-table{
+
+table {
     @apply shadow shadow-lg;
-    th {
-        @apply text-white bg-base-300;
-    }
-    tr {
-        @apply hover;
-    }
+
+th {
+    @apply text-white bg-base-300;
+}
+
+tr {
+    @apply hover;
+}
+
 }
 
 </style>
 
 <script>
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { isObject } from "lodash";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faAlignLeft} from "@fortawesome/pro-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {isObject} from "lodash";
 import AutoDataRow from "@/Components/CRUD/AutoDataRow";
-import { getFields } from "./helpers/getFields";
-import { getData } from "./helpers/getData";
+import {getFields} from "./helpers/getFields";
+import {getData} from "./helpers/getData";
 
 library.add(faAlignLeft);
 
@@ -120,7 +129,7 @@ export default {
             type: String,
         },
         modelKey: {
-            type:String,
+            type: String,
             required: true,
         },
         titleField: {
@@ -146,12 +155,16 @@ export default {
             type: Object
         }
     },
-    setup(props) {
+    setup(props, {emit}) {
         const fields = getFields(props);
         const data = getData(props);
 
+        const handleClickHeader = (header) => {
+            emit('orderBy', header.name);
+        }
+
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
-        return { modelNamePlural: __modelNamePlural, fields, isObject, data };
+        return {modelNamePlural: __modelNamePlural, fields, isObject, data, handleClickHeader};
     },
 };
 </script>
