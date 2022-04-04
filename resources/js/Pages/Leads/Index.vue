@@ -140,13 +140,13 @@ export default defineComponent({
                 "badge-warning",
             ];
             if(opportunity === "High"){
-                return badges[0];    //primary
+                return badges[4];    //success
             }
             if(opportunity === "Medium"){
-                return badges[2];     // info
+                return badges[8];     // info
             }
             if(opportunity === "Low"){
-                return badges[8];  //warning
+                return badges[7];  //warning
             }
         };
 
