@@ -1,5 +1,5 @@
 <template>
-    <tr class="hover">
+    <tr class="hover" @click.prevent.stop="handleClick" @dblclick.prevent.stop="handleDoubleClick">
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
             <render-field
                 :field="field"
@@ -35,6 +35,8 @@ import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
 import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField";
+import {Inertia} from "@inertiajs/inertia";
+import {preview} from "@/Components/CRUD/helpers/previewData";
 import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
@@ -81,14 +83,53 @@ export default defineComponent({
         },
         hasPreviewComponent: {
             type: Boolean
+        },
+        onClick: {
+            type: Function
+        },
+        onDoubleClick: {
+            type: Function
         }
     },
     setup(props) {
         const fields = getFields(props);
         const customizedFields = getCustomizedFields(fields, props.modelKey);
 
+        let timer = 0;
+        let prevent = false;
+        const delay = 200;
 
-        return { fields: customizedFields };
+        const handleClick = () => {
+            timer = setTimeout(() => {
+                if (!prevent) {
+                    if (props.onClick) {
+                        props.onClick();
+                    }else{
+                        openPreview();
+                    }
+                }
+                prevent = false;
+            }, delay);
+        }
+
+        const openPreview = () => {
+            if(!props.hasPreviewComponent){
+                return;
+            }
+            preview(props.baseRoute, props.data.id);
+        }
+        const handleDoubleClick = () => {
+            clearTimeout(timer);
+            prevent = true;
+            if(props.onDoubleClick){
+                props.onDoubleClick();
+                return;
+            }
+            Inertia.visit(route(`${props.baseRoute}.edit`, props.data.id));
+        }
+
+
+        return {fields: customizedFields, handleClick, handleDoubleClick};
     },
 });
 </script>

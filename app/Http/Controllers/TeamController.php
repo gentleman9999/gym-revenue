@@ -232,4 +232,25 @@ class TeamController extends Controller
 
         return $data;
     }
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $current_user = $request->user();
+        $client_id = $current_user->currentClientId();
+        $current_team = request()->user()->currentTeam()->first();
+
+        if ($client_id)
+        {
+            $client = Client::with('teams')->find($client_id);
+            $team_ids = $client->teams()->pluck('value');
+            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->get();
+        }
+        else if ($current_user->isCapeAndBayUser())
+        {
+            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->get();
+        }
+
+        return $teams;
+    }
+
 }

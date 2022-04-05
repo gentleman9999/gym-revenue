@@ -77,5 +77,24 @@ class ClassificationsController extends Controller
         ]);
     }
 
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $client_id = $request->user()->currentClientId();
+        if (!$client_id) {
+            abort(403);
+        }
+        if(request()->user()->cannot('classifications.read', Classification::class))
+        {
+            abort(403);
+        }
+
+        $classifications = Classification::whereClientId($client_id)->get();
+
+        return $classifications;
+
+    }
+
+
 
 }
