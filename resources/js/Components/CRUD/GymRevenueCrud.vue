@@ -250,6 +250,7 @@ export default defineComponent({
                 label: "Export",
                 handler: () => exportToCsv(props.resource.data),
                 shouldRender: () => !!props.resource.total,
+                class: ["btn-secondary"],
             },
             exportAll: {
                 label: "Export All",
@@ -259,6 +260,7 @@ export default defineComponent({
                     const data = merge(response.data, response.data?.map(flattenObj))
                     exportToCsv(data);
                 },
+                class: ["btn-secondary"],
                 shouldRender: () => !!props.resource.total
             }
         };
