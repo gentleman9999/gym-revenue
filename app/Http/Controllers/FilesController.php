@@ -30,7 +30,8 @@ class FilesController extends Controller
                 ->whereUserId(null)
                 ->filter($request->only('search', 'trashed'))
                 ->sort()
-                ->paginate($page_count);
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
         } else {
             $files = File::with('client')
                 ->whereClientId($client_id)
@@ -38,7 +39,8 @@ class FilesController extends Controller
                 ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
                 ->filter($request->only('search', 'trashed'))
                 ->sort()
-                ->paginate($page_count);
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
         }
 
         return Inertia::render('Files/Show', [

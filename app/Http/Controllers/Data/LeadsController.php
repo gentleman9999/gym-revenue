@@ -57,7 +57,8 @@ class LeadsController extends Controller
                                             'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
                 ->orderBy('created_at', 'desc')
                 ->sort()
-                ->paginate($page_count);
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
         }
 
 
@@ -102,7 +103,8 @@ class LeadsController extends Controller
                 //  ->with('leadsclaimed')
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'))
                 ->orderBy('created_at', 'desc')
-                ->paginate($page_count);
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
         }
 
         return Inertia::render('Leads/Index', [

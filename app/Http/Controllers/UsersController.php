@@ -49,7 +49,8 @@ class UsersController extends Controller
                 $users = User::with(['teams', 'home_club', 'is_manager', 'classification'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
                 })->filter($request->only($filterKeys))->sort()
-                    ->paginate(10);
+                    ->paginate(10)
+                    ->appends(request()->except('page'));
             }
             else
             {
@@ -64,7 +65,8 @@ class UsersController extends Controller
                     ->with(['teams', 'home_club', 'is_manager', 'classification'])
                     ->filter($request->only($filterKeys))
                     ->sort()
-                    ->paginate(10);
+                    ->paginate(10)
+                    ->appends(request()->except('page'));
             }
 
             foreach($users as $idx => $user)
@@ -90,7 +92,7 @@ class UsersController extends Controller
             $users = User::with( 'is_manager')->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
             })->filter($request->only($filterKeys))->sort()
-                ->paginate(10);
+                ->paginate(10)->appends(request()->except('page'));
 
             foreach($users as $idx => $user)
             {

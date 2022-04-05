@@ -75,7 +75,8 @@ class EmailCampaignsController extends Controller
                 ->with('schedule_date')
             ->filter(request()->only('search', 'trashed'))
                 ->sort()
-                ->paginate($page_count);
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
         }
 
         return Inertia::render('Comms/Emails/Campaigns/EmailCampaignsIndex', [

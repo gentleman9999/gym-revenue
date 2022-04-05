@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Clients\Client;
+use App\Models\Traits\Sortable;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class CalendarEventType extends Model
 {
-    use Notifiable, SoftDeletes, Uuid, HasFactory;
+    use Notifiable, SoftDeletes, Uuid, HasFactory, Sortable;
 
     protected $primaryKey = 'id';
 

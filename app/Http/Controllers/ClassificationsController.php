@@ -35,7 +35,8 @@ class ClassificationsController extends Controller
         $classifications = Classification::whereClientId($client_id)
             ->filter($request->only('search', 'trashed'))
             ->sort()
-            ->paginate(10);
+            ->paginate(10)
+            ->appends(request()->except('page'));
 
         return Inertia::render('Classifications/Show', [
             'classifications' => $classifications,

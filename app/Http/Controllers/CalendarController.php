@@ -75,7 +75,9 @@ class CalendarController extends Controller
 
         $event_types = CalendarEventType::whereClient_id($client_id)
             ->filter($request->only('search', 'trashed', 'type'))
-            ->paginate(10);
+            ->sort()
+            ->paginate(10)
+            ->appends(request()->except('page'));
 
         return Inertia::render('Calendar/EventTypes/Show', [
             'calendarEventTypes' => $event_types,
