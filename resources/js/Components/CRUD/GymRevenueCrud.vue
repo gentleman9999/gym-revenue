@@ -94,6 +94,8 @@ import LeadForm from "@/Pages/Leads/Partials/LeadForm";
 import { useSearchFilter } from "./helpers/useSearchFilter";
 import {flattenObj} from "@/Components/CRUD/helpers/getData";
 import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal";
+import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
+import {getFields} from "@/Components/CRUD/helpers/getFields";
 
 export default defineComponent({
     components: {
@@ -163,9 +165,12 @@ export default defineComponent({
             props.baseRoute
         );
 
+        const fields = getFields(props);
+        const customizedFields = getCustomizedFields(fields, props.modelKey);
+
         const exportToCsv = (data) => {
             //strip out fields we dont need bc they aren't shown on current page
-            const exportable_fields = props.fields.filter(
+            const exportable_fields = customizedFields.value.filter(
                 (field) => field?.export !== false
             );
             //get flat fields
