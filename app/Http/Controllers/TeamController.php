@@ -56,6 +56,7 @@ class TeamController extends Controller
 
         return Inertia::render('Teams/List', [
             'teams' => Team::filter($request->only('search', 'club', 'team', 'users'))
+                ->sort()
                 ->paginate(10),
             'filters' => $request->all('search', 'club', 'team', 'users'),
             'clubs' => $clubs ?? null,

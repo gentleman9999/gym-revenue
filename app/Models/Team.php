@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Clients\ClientDetail;
+use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
@@ -13,6 +14,7 @@ use Laravel\Jetstream\Team as JetstreamTeam;
 class Team extends JetstreamTeam
 {
     use HasFactory;
+    use Sortable;
 
     /**
      * The attributes that should be cast.
