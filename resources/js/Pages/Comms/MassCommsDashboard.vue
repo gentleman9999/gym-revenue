@@ -180,10 +180,10 @@ export default defineComponent({
             audience: props.activeAudience,
         });
         const fields = [
-            { name: "type", label: "action" },
-            { name: "recordName", label: "template" },
-            "date",
-            "by",
+            { name: "type", label: "action", sortable: false },
+            { name: "recordName", label: "template", sortable: false },
+            {name: "date", sortable: false},
+            {name: "by", sortable: false},
         ];
 
         const comingSoon = () => {
