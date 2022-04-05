@@ -43,6 +43,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::put('/{id}', \App\Actions\Clients\Locations\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
     Route::delete('/{id}', \App\Actions\Clients\Locations\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
     Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
+    Route::get('/export', \App\Http\Controllers\Data\LocationsController::class . '@export')->name('locations.export');
+
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -50,40 +52,52 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
-    Route::get('/email-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_index')->name('comms.email-templates');
-    Route::get('/email-templates/create', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_create')->name('comms.email-templates.create');
-    Route::get('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_edit')->name('comms.email-templates.edit');
-    Route::post('/email-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_store')->name('comms.email-templates.store');
-    Route::put('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_update')->name('comms.email-templates.update');
-    Route::delete('/email-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_trash')->name('comms.email-templates.trash');
-    Route::post('/email-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@et_restore')->name('comms.email-templates.restore');
-    Route::post('/email-templates/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
+    Route::get('/export', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@export')->name('comms.export');
 
-    Route::get('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_index')->name('comms.email-campaigns');
-    Route::get('/email-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_create')->name('comms.email-campaigns.create');
-    Route::get('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_edit')->name('comms.email-campaigns.edit');
-    Route::post('/email-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_store')->name('comms.email-campaigns.store');
-    Route::put('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_update')->name('comms.email-campaigns.update');
-    Route::delete('/email-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_trash')->name('comms.email-campaigns.trash');
-    Route::post('/email-campaigns/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@ec_restore')->name('email.sms-campaigns.restore');
+    Route::middleware(['auth:sanctum', 'verified'])->prefix('email-campaigns')->group(function () {
+        Route::get('', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@index')->name('comms.email-campaigns');
+        Route::get('/create', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@create')->name('comms.email-campaigns.create');
+        Route::get('/export', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@export')->name('comms.email-campaigns.export');
+        Route::get('/{id}', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@edit')->name('comms.email-campaigns.edit');
+        Route::post('/', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@store')->name('comms.email-campaigns.store');
+        Route::put('/{id}', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@update')->name('comms.email-campaigns.update');
+        Route::delete('/{id}', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@trash')->name('comms.email-campaigns.trash');
+        Route::post('/{id}/restore', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@restore')->name('email.email-campaigns.restore');
+    });
 
-    Route::get('/sms-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_index')->name('comms.sms-campaigns');
-    Route::get('/sms-campaigns/create', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_create')->name('comms.sms-campaigns.create');
-    Route::get('/sms-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_edit')->name('comms.sms-campaigns.edit');
-    Route::post('/sms-campaigns', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_store')->name('comms.sms-campaigns.store');
-    Route::put('/sms-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_update')->name('comms.sms-campaigns.update');
-    Route::delete('/sms-campaigns/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_trash')->name('comms.sms-campaigns.trash');
-    Route::post('/sms-campaigns/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@sc_restore')->name('comms.sms-campaigns.restore');
+    Route::middleware(['auth:sanctum', 'verified'])->prefix('sms-campaigns')->group(function () {
+        Route::get('', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@index')->name('comms.sms-campaigns');
+        Route::get('/create', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@create')->name('comms.sms-campaigns.create');
+        Route::get('/export', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@export')->name('comms.sms-campaigns.export');
+        Route::get('/{id}', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@edit')->name('comms.sms-campaigns.edit');
+        Route::post('/', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@store')->name('comms.sms-campaigns.store');
+        Route::put('/{id}', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@update')->name('comms.sms-campaigns.update');
+        Route::delete('/{id}', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@trash')->name('comms.sms-campaigns.trash');
+        Route::post('/{id}/restore', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@restore')->name('comms.sms-campaigns.restore');
+    });
 
-    Route::get('/sms-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_index')->name('comms.sms-templates');
-    Route::get('/sms-templates/create', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_create')->name('comms.sms-templates.create');
-    Route::get('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_edit')->name('comms.sms-templates.edit');
-    Route::post('/sms-templates', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_store')->name('comms.sms-templates.store');
-    Route::put('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_update')->name('comms.sms-templates.update');
-    Route::delete('/sms-templates/{id}', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_trash')->name('comms.sms-templates.trash');
-    Route::post('/sms-templates/{id}/restore', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@st_restore')->name('comms.sms-templates.restore');
-    Route::post('/sms-templates/test', \App\Actions\Sms\SendATestText::class)->name('comms.sms-templates.test-msg');
-
+    Route::middleware(['auth:sanctum', 'verified'])->prefix('sms-templates')->group(function () {
+        Route::get('', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@index')->name('comms.sms-templates');
+        Route::get('/create', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@create')->name('comms.sms-templates.create');
+        Route::get('/export', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@export')->name('comms.sms-templates.export');
+        Route::get('/{id}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@edit')->name('comms.sms-templates.edit');
+        Route::post('/', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@store')->name('comms.sms-templates.store');
+        Route::put('/{id}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@update')->name('comms.sms-templates.update');
+        Route::delete('/{id}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@trash')->name('comms.sms-templates.trash');
+        Route::post('/{id}/restore', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@restore')->name('comms.sms-templates.restore');
+        Route::post('/test', \App\Actions\Sms\SendATestText::class)->name('comms.sms-templates.test-msg');
+    });
+    Route::middleware(['auth:sanctum', 'verified'])->prefix('email-templates')->group(function () {
+        Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('comms.email-templates');
+        Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('comms.email-templates.create');
+        Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('comms.email-templates.export');
+        Route::get('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('comms.email-templates.edit');
+        Route::post('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@store')->name('comms.email-templates.store');
+        Route::put('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@update')->name('comms.email-templates.update');
+        Route::delete('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@trash')->name('comms.email-templates.trash');
+        Route::post('/{id}/restore', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@restore')->name('comms.email-templates.restore');
+        Route::post('/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
+    });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function () {
@@ -104,7 +118,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::delete('/delete/{id}', \App\Actions\Endusers\TrashLead::class)->name('data.leads.trash');
         Route::post('/delete/{id}/restore', \App\Actions\Endusers\RestoreLead::class)->name('data.leads.restore');
         Route::get('/view/{id}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
-
+        Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
@@ -120,6 +134,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::delete('/{id}', \App\Actions\Clients\Files\TrashFile::class)->name('files.trash');
     Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');
+    Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
@@ -147,6 +162,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update')->where(['id' => '[0-9]+']);
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
     Route::post('/{id}/documents', \App\Actions\Jetstream\UploadDocForUser::class . '@upload')->name('users.documents.create')->where(['id' => '[0-9]+']);
+    Route::get('/export', \App\Http\Controllers\UsersController::class . '@export')->name('users.export');
 
 });
 
@@ -161,6 +177,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
     Route::put('/update/{id}', \App\Http\Controllers\TeamController::class . '@update')->name('team.update');
     Route::delete('/{id}', \App\Http\Controllers\TeamController::class . '@delete')->name('teams.delete');
+    Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
@@ -177,6 +194,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function
     Route::delete('/{id}', \App\Actions\Clients\Roles\TrashRole::class)->name('roles.trash');
     Route::delete('/{id}/force', \App\Actions\Clients\Roles\DeleteRole::class)->name('roles.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Roles\RestoreRole::class)->name('roles.restore');
+    Route::get('/export', \App\Http\Controllers\RolesController::class . '@export')->name('roles.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->group(function () {
@@ -188,6 +206,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->grou
     Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('classifications.trash');
     Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('classifications.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('classifications.restore');
+    Route::get('/export', \App\Http\Controllers\ClassificationsController::class . '@export')->name('classifications.export');
+
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {

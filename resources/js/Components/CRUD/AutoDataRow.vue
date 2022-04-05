@@ -1,5 +1,5 @@
 <template>
-    <tr class="hover">
+    <tr class="hover" @click.prevent.stop="handleClick" @dblclick.prevent.stop="handleDoubleClick">
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
             <render-field
                 :field="field"
@@ -30,11 +30,14 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import {defineComponent} from "vue";
 import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
-import { getFields } from "./helpers/getFields";
+import {getFields} from "./helpers/getFields";
 import RenderField from "./RenderField";
+import {Inertia} from "@inertiajs/inertia";
+import {preview} from "@/Components/CRUD/helpers/previewData";
+
 
 export default defineComponent({
     inheritAttrs: false,
@@ -80,12 +83,54 @@ export default defineComponent({
         },
         hasPreviewComponent: {
             type: Boolean
+        },
+        onClick: {
+            type: Function
+        },
+        onDoubleClick: {
+            type: Function
         }
     },
     setup(props) {
         const fields = getFields(props);
 
-        return { fields };
+        let timer = 0;
+        let prevent = false;
+        const delay = 200;
+
+        const handleClick = () => {
+            timer = setTimeout(() => {
+                if (!prevent) {
+                    if (props.onClick) {
+                        props.onClick();
+                    }else{
+                        openPreview();
+                    }
+                }
+                prevent = false;
+            }, delay);
+        }
+
+        const openPreview = () => {
+            console.log('onClick');
+            if(!props.hasPreviewComponent){
+                return;
+            }
+            preview(props.baseRoute, props.data.id);
+        }
+        const handleDoubleClick = () => {
+            clearTimeout(timer);
+            prevent = true;
+            if(props.onDoubleClick){
+                props.onDoubleClick();
+                return;
+            }
+            Inertia.visit(route(`${props.baseRoute}.edit`, props.data.id));
+            console.log('default onDoubleClick');
+        }
+
+
+        return {fields, handleClick, handleDoubleClick};
     },
 });
 </script>

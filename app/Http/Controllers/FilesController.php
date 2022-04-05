@@ -63,4 +63,34 @@ class FilesController extends Controller
         return Inertia::render('Files/Upload', [
         ]);
     }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $client_id = request()->user()->currentClientId();
+
+        if(is_null($client_id)) {
+            abort(403);
+        }
+        $roles = request()->user()->getRoles();
+        $security_group = request()->user()->securityGroup();
+
+        if($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
+            $files = File::with('client')
+                ->whereClientId($client_id)
+                ->whereUserId(null)
+                ->filter($request->only('search', 'trashed'))
+                ->get();
+        } else {
+            $files = File::with('client')
+                ->whereClientId($client_id)
+                ->whereUserId(null)
+                ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
+                ->filter($request->only('search', 'trashed'))
+                ->get();
+        }
+
+        return $files;
+    }
+
 }

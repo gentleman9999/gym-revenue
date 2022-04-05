@@ -88,5 +88,24 @@ class RolesController extends Controller
         ]);
     }
 
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $client_id = $request->user()->currentClientId();
+        if (!$client_id) {
+            return Redirect::route('dashboard');
+        }
+
+        if($request->user()->cannot('roles.read',Role::class))
+        {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+            return Redirect::back();
+        }
+
+        $roles = Role::whereScope($client_id)->get();
+
+        return $roles;
+    }
+
 
 }

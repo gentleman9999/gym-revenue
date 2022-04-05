@@ -34,7 +34,7 @@
                 {{ data.lead.gender }}
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3" v-if="data.lead.dob.value">
+        <div class="field col-span-6 lg:col-span-3" v-if="data.lead?.dob?.value">
             <label>Birthdate:</label>
             <div class="data" v-if="data.lead.dob">
              {{ new Date(data.lead.dob.value).toLocaleDateString("en-US") }}
@@ -61,6 +61,20 @@
             <label>Club/Location:</label>
             <div class="data">{{ data.club_location.name }}
          </div>
+
+        </div>
+        <div
+            class="collapse col-span-6"
+            tabindex="0"   v-if="data?.preview_note?.length">
+            <div class="collapse-title text-sm font-medium">
+                > Existing Notes
+            </div>
+            <div class="flex flex-col gap-2 collapse-content">
+                <div v-for="note in data.preview_note" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2" >
+                    {{note['note']}}
+                </div>
+
+            </div>
         </div>
         <div class="field col-span-6 lg:col-span-6">
         </div>
@@ -77,7 +91,7 @@ input {
 
 <script>
 export default {
-    props: ["data","lead","club"],
+    props: ["data","lead","club","note","notes"],
 
 };
 </script>

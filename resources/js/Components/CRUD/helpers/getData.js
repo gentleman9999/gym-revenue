@@ -1,7 +1,7 @@
 import {merge} from "lodash";
 import {computed} from "vue";
 
-const flattenObj = (ob) => {
+export const flattenObj = (ob) => {
 
     // The object which contains the
     // final result
