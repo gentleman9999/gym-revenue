@@ -21,6 +21,22 @@
                     @clear-filters="clearFilters"
                     @clear-search="clearSearch"
                 >
+                    <div class="block py-2 text-xs text-base-content text-opacity-80">
+                        View User Calendar:
+                    </div>
+                    <select
+                        v-model="form.viewUser"
+                        class="mt-1 w-full form-select"
+                    >
+                        <option :value="null" />
+                        <option
+                            v-for="{ name, id } in client_users"
+                            :value="id"
+                        >
+                            {{ name }}
+                        </option>
+                    </select>
+
                     <div
                         class="block py-2 text-xs text-base-content text-opacity-80"
                     >
@@ -312,3 +328,21 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+.fc .fc-toolbar {
+    @apply flex-col gap-2;
+    @screen lg {
+        @apply flex-row;
+    }
+}
+.fc .fc-daygrid-day-bottom{
+    @apply text-xs;
+}
+.fc-theme-standard .fc-popover{
+    @apply bg-base-300;
+}
+.fc-v-event .fc-event-title-container{
+    @apply text-xs leading-tight;
+}
+</style>

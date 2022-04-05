@@ -26,10 +26,10 @@
                     />
                 </div>
                 <label
-                    ><p class="text-white">
-                        {{ form["first_name"] }} {{ form["middle_name"] }}
-                        {{ form["last_name"] }}
-                    </p></label
+                ><p class="text-white">
+                    {{ form["first_name"] }} {{ form["middle_name"] }}
+                    {{ form["last_name"] }}
+                </p></label
                 >
 
                 <label class="btn btn-primary">
@@ -47,7 +47,7 @@
                 class="form-control col-span-3"
                 v-if="form['agreement_number']"
             >
-                <jet-label for="first_name" value="Agreement Number" />
+                <jet-label for="first_name" value="Agreement Number"/>
                 <input
                     disabled
                     type="text"
@@ -56,9 +56,9 @@
                     class="opacity-70"
                 />
             </div>
-            <div class="form-divider" />
+            <div class="form-divider"/>
             <div class="form-control col-span-2">
-                <jet-label for="first_name" value="First Name" />
+                <jet-label for="first_name" value="First Name"/>
                 <input
                     id="first_name"
                     type="text"
@@ -71,7 +71,7 @@
                 />
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="middle_name" value="Middle Name" />
+                <jet-label for="middle_name" value="Middle Name"/>
                 <input
                     id="middle_name"
                     type="text"
@@ -84,7 +84,7 @@
                 />
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="last_name" value="Last Name" />
+                <jet-label for="last_name" value="Last Name"/>
                 <input
                     id="last_name"
                     type="text"
@@ -97,12 +97,12 @@
                 />
             </div>
             <div class="form-control col-span-6">
-                <jet-label for="email" value="Email" />
-                <input id="email" type="email" v-model="form.email" autofocus />
-                <jet-input-error :message="form.errors.email" class="mt-2" />
+                <jet-label for="email" value="Email"/>
+                <input id="email" type="email" v-model="form.email" autofocus/>
+                <jet-input-error :message="form.errors.email" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="primary_phone" value="Primary Phone" />
+                <jet-label for="primary_phone" value="Primary Phone"/>
                 <input
                     id="primary_phone"
                     type="tel"
@@ -115,7 +115,7 @@
                 />
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="alternate_phone" value="Alternate Phone" />
+                <jet-label for="alternate_phone" value="Alternate Phone"/>
                 <input
                     id="alternate_phone"
                     type="tel"
@@ -128,7 +128,7 @@
                 />
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="opportunity" value="Select Opportunity" />
+                <jet-label for="opportunity" value="Select Opportunity"/>
                 <select
                     class=""
                     v-model="form['opportunity']"
@@ -147,16 +147,16 @@
             </div>
 
             <div class="form-control col-span-3">
-                <jet-label for="gender" value="Gender" />
+                <jet-label for="gender" value="Gender"/>
                 <select class="" v-model="form['gender']" required id="gender">
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
-                <jet-input-error :message="form.errors.gender" class="mt-2" />
+                <jet-input-error :message="form.errors.gender" class="mt-2"/>
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="dob" value="Date of Birth" />
+                <jet-label for="dob" value="Date of Birth"/>
                 <date-picker
                     v-model="form['dob']"
                     dark
@@ -164,12 +164,12 @@
                     :auto-apply="true"
                     :close-on-scroll="true"
                 />
-                <jet-input-error :message="form.errors.dob" class="mt-2" />
+                <jet-input-error :message="form.errors.dob" class="mt-2"/>
             </div>
 
-            <div class="form-divider" />
+            <div class="form-divider"/>
             <div class="form-control col-span-3">
-                <jet-label for="club_id" value="Club" />
+                <jet-label for="club_id" value="Club"/>
                 <select
                     class=""
                     v-model="form['gr_location_id']"
@@ -187,7 +187,7 @@
                 />
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="lead_source_id" value="Source" />
+                <jet-label for="lead_source_id" value="Source"/>
                 <select
                     class=""
                     v-model="form['lead_source_id']"
@@ -208,7 +208,7 @@
                 />
             </div>
             <div class="form-control col-span-3">
-                <jet-label for="lead_type_id" value="Lead Type" />
+                <jet-label for="lead_type_id" value="Lead Type"/>
                 <select
                     class=""
                     v-model="form['lead_type_id']"
@@ -227,7 +227,7 @@
             </div>
 
             <div class="form-control col-span-3">
-                <jet-label for="lead_owner" value="Lead Owner" />
+                <jet-label for="lead_owner" value="Lead Owner"/>
                 <select
                     class=""
                     v-model="form['lead_owner']"
@@ -246,7 +246,7 @@
             </div>
 
             <div class="form-control col-span-3">
-                <jet-label for="lead_owner" value="Lead Status" />
+                <jet-label for="lead_owner" value="Lead Status"/>
                 <select
                     class=""
                     v-model="form['lead_status']"
@@ -266,11 +266,11 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-divider" />
+            <div class="form-divider"/>
             <div class="form-control col-span-6">
-                <jet-label for="notes" value="Notes" />
-                <textarea v-model="form['notes']" id="notes" />
-                <jet-input-error :message="form.errors['notes']" class="mt-2" />
+                <jet-label for="notes" value="Notes"/>
+                <textarea v-model="form['notes']" id="notes"/>
+                <jet-input-error :message="form.errors['notes']" class="mt-2"/>
             </div>
 
             <div
@@ -323,10 +323,10 @@
                 </span>
             </div>
 
-            <div class="form-divider" />
+            <div class="form-divider"/>
             <div class="col-span-6">
-                <label v-if="'last_updated' in form">
-                    {{ form["last_updated"] }}
+                <label v-if="operation==='Update'">
+                    {{ lastUpdated }}
                 </label>
             </div>
         </template>
@@ -342,7 +342,7 @@
             >
                 Cancel
             </Button>
-            <div class="flex-grow" />
+            <div class="flex-grow"/>
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
@@ -356,22 +356,23 @@
 </template>
 
 <script>
-import { watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
+import {watchEffect, computed} from "vue";
+import {useForm} from "@inertiajs/inertia-vue3";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faUserCircle} from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-
+import {Inertia} from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import { useGoBack } from "@/utils";
-import { usePage } from "@inertiajs/inertia-vue3";
+import {useGoBack} from "@/utils";
+import {usePage} from "@inertiajs/inertia-vue3";
 import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
+
 library.add(faUserCircle);
 
 export default {
@@ -458,8 +459,9 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: null,
                 gender: lead.gender,
+                notes: null,
             };
-            leadData.notes = "";
+            //         leadData.notes = "";
 
             console.log("Lead Owner", lead);
 
@@ -476,12 +478,13 @@ export default {
                 "opportunity" in lead && lead.opportunity !== null
                     ? lead.opportunity.value
                     : null;
-            leadData["last_updated"] =
-                "last_updated" in lead && lead.last_updated
-                    ? `Last Updated by ${lead.last_updated.value} at ${new Date(
-                          lead.last_updated.updated_at
-                      ).toLocaleDateString("en-US")}`
-                    : "This lead has never been updated";
+
+            // leadData["last_updated"] =
+            //     "last_updated" in lead && lead.last_updated
+            //         ? `Last Updated by ${lead.last_updated.value} at ${new Date(
+            //               lead.last_updated.updated_at
+            //           ).toLocaleDateString("en-US")}`
+            //         : "This lead has never been updated";
 
             leadData["lead_owner"] =
                 "lead_owner" in lead && lead.lead_owner !== null
@@ -492,18 +495,23 @@ export default {
                     ? lead.lead_status.value
                     : "";
         }
-
+        const lastUpdated = computed(() => "last_updated" in lead && lead.last_updated
+            ? `Last Updated by ${lead.last_updated.value} at ${new Date(
+                lead.last_updated.updated_at
+            ).toLocaleDateString("en-US")}`
+            : "This lead has never been updated");
         const form = useForm(leadData);
-        const fileForm = useForm({ file: null });
+        const fileForm = useForm({file: null});
 
         let handleSubmit = () =>
             form.put(`/data/leads/${lead.id}`, {
-                onSuccess: () => (form.notes = ""),
+                preserveState: false,
             });
         if (operation === "Create") {
             handleSubmit = () =>
                 form.post("/data/leads/create", {
                     onSuccess: () => (form.notes = ""),
+
                 });
         }
 
@@ -536,7 +544,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         });
-        return { form, fileForm, buttonText: operation, handleSubmit, goBack };
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack, lastUpdated, operation };
     },
 };
 </script>

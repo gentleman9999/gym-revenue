@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown dropdown-end">
         <slot name="trigger">
-            <div class="btn btn-ghost btn-sm" tabindex="0">
+            <div class="btn btn-ghost btn-sm" tabindex="0" @click.prevent.stop>
                 <font-awesome-icon icon="ellipsis-h" size="lg" />
             </div>
         </slot>
@@ -13,7 +13,7 @@
             >
                 <li v-for="[key, action] in Object.entries(actions)" :key="key">
                     <a
-                        @click.prevent="
+                        @click.prevent.stop="
                             () => action.handler({ data, baseRoute })
                         "
                         href="#"

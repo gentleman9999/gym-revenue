@@ -195,7 +195,7 @@ class UsersController extends Controller
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $userData = $user->toArray();
-        $userData['all_notes'] = $user->notes->pluck('note')->toArray();
+        $userData['all_notes'] = $user->notes->toArray();
         $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [

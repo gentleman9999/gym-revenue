@@ -25,7 +25,7 @@ class CalendarController extends Controller
         if ($request->get('start')) {
             $eventsForTeam = CalendarEvent::whereClient_id($client_id)
                 ->with('type')
-                ->filter($request->only('search', 'start', 'end'))
+                ->filter($request->only('search', 'start', 'end', 'viewUser'))
                 ->get();
 
         } else {
