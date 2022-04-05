@@ -4,9 +4,11 @@ namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Locations\CreateLocation;
 use App\Actions\Clients\Locations\GenerateGymRevenueId;
+use App\Actions\Clients\Locations\ImportLocation;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
 
 class LocationSeeder extends Seeder
@@ -21,7 +23,7 @@ class LocationSeeder extends Seeder
         $locations = [
             // The Kalamazoo
             [
-                'client_id' => 'The Kalamazoo',
+                'client' => 'The Kalamazoo',
                 'name' => 'The Kalamazoo 1',
                 'state' => 'LA',
                 'city' => 'Shreveport',
@@ -31,7 +33,7 @@ class LocationSeeder extends Seeder
             ],
             // Bodies By Brett
             [
-                'client_id' => 'Bodies By Brett',
+                'client' => 'Bodies By Brett',
                 'name' => 'Tampa 1',
                 'state' => 'FL',
                 'city' => 'Tampa',
@@ -40,7 +42,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'BB23'
             ],
             [
-                'client_id' => 'Bodies By Brett',
+                'client' => 'Bodies By Brett',
                 'name' => 'Tampa 2',
                 'state' => 'FL',
                 'city' => 'Tampa',
@@ -49,7 +51,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'BB24'
             ],
             [
-                'client_id' => 'Bodies By Brett',
+                'client' => 'Bodies By Brett',
                 'name' => 'Tampa 3',
                 'state' => 'FL',
                 'city' => 'Tampa',
@@ -59,7 +61,7 @@ class LocationSeeder extends Seeder
             ],
             // FitnessTruth
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 1',
                 'state' => 'TX',
                 'city' => 'Abbott',
@@ -68,7 +70,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT13'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 2',
                 'state' => 'TX',
                 'city' => 'Abernathy',
@@ -77,7 +79,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT14'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 3',
                 'state' => 'TX',
                 'city' => 'Abram',
@@ -86,7 +88,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT15'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 4',
                 'state' => 'TX',
                 'city' => 'Abbott',
@@ -95,7 +97,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT16'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 5',
                 'state' => 'TX',
                 'city' => 'Abernathy',
@@ -104,7 +106,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT17'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 6',
                 'state' => 'TX',
                 'city' => 'Abbott',
@@ -113,7 +115,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT18'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 7',
                 'state' => 'TX',
                 'city' => 'Abbott',
@@ -122,7 +124,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT19'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 8',
                 'state' => 'TX',
                 'city' => 'Abernathy',
@@ -131,7 +133,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT20'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 9',
                 'state' => 'TX',
                 'city' => 'Abbott',
@@ -140,7 +142,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'FT21'
             ],
             [
-                'client_id' => 'FitnessTruth',
+                'client' => 'FitnessTruth',
                 'name' => 'FitnessTruth 10',
                 'state' => 'TN',
                 'city' => 'Adams',
@@ -150,7 +152,7 @@ class LocationSeeder extends Seeder
             ],
             // The Z
             [
-                'client_id' => 'The Z',
+                'client' => 'The Z',
                 'name' => 'Zoo 1',
                 'state' => 'HI',
                 'city' => 'Honolulu',
@@ -159,7 +161,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'TZ01'
             ],
             [
-                'client_id' => 'The Z',
+                'client' => 'The Z',
                 'name' => 'Zoo 2',
                 'state' => 'HI',
                 'city' => 'Honolulu',
@@ -168,7 +170,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'TZ02'
             ],
             [
-                'client_id' => 'The Z',
+                'client' => 'The Z',
                 'name' => 'Zoo 3',
                 'state' => 'HI',
                 'city' => 'Honolulu',
@@ -177,16 +179,16 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'TZ03'
             ],
             [
-                'client_id' => 'The Z',
+                'client' => 'The Z',
                 'name' => 'Zoo 4',
                 'state' => 'HI',
                 'city' => 'Honolulu',
                 'zip' => '96797',
                 'location_no' => 'TZ04',
-               // 'gymrevenue_id' => 'TZ04'
+                // 'gymrevenue_id' => 'TZ04'
             ],
             [
-                'client_id' => 'The Z',
+                'client' => 'The Z',
                 'name' => 'Zoo 5',
                 'state' => 'HI',
                 'city' => 'Honolulu',
@@ -195,7 +197,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'TZ05'
             ],
             [
-                'client_id' => 'The Z',
+                'client' => 'The Z',
                 'name' => 'Zoo 6',
                 'state' => 'HI',
                 'city' => 'Waimanalo',
@@ -205,7 +207,7 @@ class LocationSeeder extends Seeder
             ],
             // TruFit Athletic Clubs
             [
-                'client_id' => 'TruFit Athletic Clubs',
+                'client' => 'TruFit Athletic Clubs',
                 'name' => 'TruFit 1',
                 'state' => 'TX',
                 'city' => 'Amarillo',
@@ -214,7 +216,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'ST07'
             ],
             [
-                'client_id' => 'TruFit Athletic Clubs',
+                'client' => 'TruFit Athletic Clubs',
                 'name' => 'TruFit 2',
                 'state' => 'TN',
                 'city' => 'Antioch',
@@ -225,7 +227,7 @@ class LocationSeeder extends Seeder
 
             // Stencils
             [
-                'client_id' => 'Stencils',
+                'client' => 'Stencils',
                 'name' => 'Stencils 1',
                 'state' => 'CA',
                 'city' => 'Los Angeles',
@@ -234,7 +236,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'ST07'
             ],
             [
-                'client_id' => 'Stencils',
+                'client' => 'Stencils',
                 'name' => 'Stencils 2',
                 'state' => 'CA',
                 'city' => 'San Diego',
@@ -243,7 +245,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'ST08'
             ],
             [
-                'client_id' => 'Stencils',
+                'client' => 'Stencils',
                 'name' => 'Stencils 3',
                 'state' => 'CA',
                 'city' => 'San Jose',
@@ -252,7 +254,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'ST09'
             ],
             [
-                'client_id' => 'Stencils',
+                'client' => 'Stencils',
                 'name' => 'Stencils 4',
                 'state' => 'OR',
                 'city' => 'Portland',
@@ -261,7 +263,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'ST10'
             ],
             [
-                'client_id' => 'Stencils',
+                'client' => 'Stencils',
                 'name' => 'Stencils @ Microsoft',
                 'state' => 'Wa',
                 'city' => 'Redmond',
@@ -270,7 +272,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'ST11'
             ],
             [
-                'client_id' => 'Stencils',
+                'client' => 'Stencils',
                 'name' => 'Stencils 5',
                 'state' => 'OR',
                 'city' => 'Portland',
@@ -280,7 +282,7 @@ class LocationSeeder extends Seeder
             ],
             // SciFi Purple Gyms
             [
-                'client_id' => 'Sci-Fi Purple Gyms',
+                'client' => 'Sci-Fi Purple Gyms',
                 'state' => 'NC',
                 'city' => 'Advance',
                 'zip' => '27006',
@@ -288,7 +290,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'PF26'
             ],
             [
-                'client_id' => 'Sci-Fi Purple Gyms',
+                'client' => 'Sci-Fi Purple Gyms',
                 'state' => 'NC',
                 'city' => 'Advance',
                 'zip' => '27006',
@@ -296,7 +298,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'PF27'
             ],
             [
-                'client_id' => 'Sci-Fi Purple Gyms',
+                'client' => 'Sci-Fi Purple Gyms',
                 'state' => 'FL',
                 'city' => 'Ponte Vedra Beach',
                 'zip' => '32004',
@@ -304,7 +306,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'PF28'
             ],
             [
-                'client_id' => 'Sci-Fi Purple Gyms',
+                'client' => 'Sci-Fi Purple Gyms',
                 'state' => 'FL',
                 'city' => 'Callahan',
                 'zip' => '32011',
@@ -313,7 +315,7 @@ class LocationSeeder extends Seeder
             ],
             // iFit
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'FL',
                 'city' => 'Tampa',
                 'zip' => '33605',
@@ -321,7 +323,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF30'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'FL',
                 'city' => 'Lake City',
                 'zip' => '32025',
@@ -329,7 +331,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF31'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'FL',
                 'city' => 'Hilliard',
                 'zip' => '32046',
@@ -337,7 +339,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF32'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'FL',
                 'city' => 'Orange Park',
                 'zip' => '32065',
@@ -345,7 +347,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF33'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'FL',
                 'city' => 'Tampa',
                 'zip' => '33601',
@@ -353,7 +355,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF34'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'GA',
                 'city' => 'Atlanta',
                 'zip' => '30301',
@@ -361,7 +363,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF35'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'GA',
                 'city' => 'Atlanta',
                 'zip' => '30302',
@@ -369,7 +371,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF36'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'GA',
                 'city' => 'Atlanta',
                 'zip' => '30303',
@@ -377,7 +379,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF37'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'VA',
                 'city' => 'Virginia Beach',
                 'zip' => '23450',
@@ -385,7 +387,7 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF38'
             ],
             [
-                'client_id' => 'iFit',
+                'client' => 'iFit',
                 'state' => 'VA',
                 'city' => 'Virginia Beach',
                 'zip' => '23451',
@@ -394,23 +396,32 @@ class LocationSeeder extends Seeder
             ],
         ];
 
-        foreach($locations as $idx => $location)
-        {
-            $client = Client::whereName($location['client_id'])->first();
-            $location['name'] = $location['name'] ?? $location['client_id']." ".($idx + 1);
+        foreach ($locations as $idx => $location) {
+            $client = Client::whereName($location['client'])->first();
+            $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
+            unset($location['client']);
             $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
             $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
 
-            if(is_null($loc_record))
-            {
+            if (is_null($loc_record)) {
                 VarDumper::dump("Adding {$location['name']}");
                 CreateLocation::run($location);
-            }
-            else
-            {
+            } else {
                 VarDumper::dump("Skipping {$location['name']}!");
             }
         }
+
+        ///now do trufit csv import
+        $key = 'tmp/trufit-clubs';
+        $csv = file_get_contents('database/data/trufit-clubs.csv');
+        Storage::disk('s3')->put($key, $csv);
+        ImportLocation::run([
+            [
+                'key' => $key,
+                'extension' => 'csv',
+                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id
+            ]
+        ]);
     }
 }

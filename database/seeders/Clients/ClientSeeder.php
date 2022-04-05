@@ -20,7 +20,7 @@ class ClientSeeder extends Seeder
             'The Kalamazoo' => 1,
             'Bodies By Brett' => 1,
             'iFit' => 1,
-            'TruFit Athletic Clubs' => 0,
+            'TruFit Athletic Clubs' => 1,
             'Stencils' => 1,
             'The Z' => 1,
             'Sci-Fi Purple Gyms' => 1,

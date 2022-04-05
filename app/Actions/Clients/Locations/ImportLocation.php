@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Locations;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Location;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
