@@ -26,7 +26,7 @@
                 />
             </slot>
         </template>
-        <div v-for="(field, index) in fields" class="col-span-3 truncate">
+        <div v-for="(field, index) in customizedFields" class="col-span-3 truncate">
             <div class="text-xs text-gray-500">
                 {{ field.label }}
             </div>
@@ -41,6 +41,7 @@ import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
 import RenderField from "./RenderField";
 import {getFields} from "./helpers/getFields";
+import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
     inheritAttrs: false,
@@ -100,20 +101,14 @@ export default defineComponent({
         }
 
         const fields = getFields(props);
+        const customizedFields = getCustomizedFields(fields, props.modelKey);
 
         let titleKey = props.titleField;
         if (!titleKey) {
             titleKey = props.data.name ? "name" : "id";
         }
 
-        const __fields = computed(() => {
-            return fields.value.filter(({name}) => {
-                return name !== titleKey;
-            })
-        })
-
-
-        return {fields: __fields, title: __title};
+        return {fields, title: __title, customizedFields};
     },
 });
 </script>

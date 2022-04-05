@@ -40,14 +40,15 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props"/>
+                <component :is="tableComponent" v-bind="$props" @open-customizer="openCustomizationModal"/>
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props"/>
+                <component :is="cardsComponent" v-bind="$props" @open-customizer="openCustomizationModal"/>
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props"/>
+            <component :is="tableComponent || cardsComponent" v-bind="$props"
+                       @open-customizer="openCustomizationModal"/>
         </template>
 
         <slot name="pagination">
@@ -60,10 +61,17 @@
         :model-name="modelName"
         :model-key="modelKey"
     />
+    <crud-column-customization-modal
+        :fields="fields"
+        :model-key="modelKey"
+        ref="customizationModal"
+        :model-name="modelName"
+    >
+    </crud-column-customization-modal>
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import {merge} from "lodash";
 import Pagination from "@/Components/Pagination";
@@ -74,9 +82,11 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import PreviewModal from "@/Components/CRUD/PreviewModal";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm";
 import {useSearchFilter} from "./helpers/useSearchFilter";
+import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal";
 
 export default defineComponent({
     components: {
+        CrudColumnCustomizationModal,
         GymRevenueDataCards,
         GymRevenueDataTable,
         Pagination,
@@ -181,7 +191,7 @@ export default defineComponent({
                     console.log({fields, transformed, filtered});
                     const csvContent = transformed.map(row => Object.values(row)
                         .map(String)  // convert every value to String
-                        .map(v=>v==='null' || v==='undefined' ? '' : v)  // make null and undefineds empty string
+                        .map(v => v === 'null' || v === 'undefined' ? '' : v)  // make null and undefineds empty string
                         .map(v => v.replaceAll('"', '""'))  // escape double colons
                         .map(v => `"${v}"`)  // quote it
                         .join(',')// comma-separated);
@@ -214,7 +224,9 @@ export default defineComponent({
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return {form, topActions, reset, clearFilters, clearSearch};
+        const customizationModal = ref(null);
+        const openCustomizationModal = () => customizationModal.value.open();
+        return {form, topActions, reset, clearFilters, clearSearch, customizationModal, openCustomizationModal};
     },
 });
 </script>

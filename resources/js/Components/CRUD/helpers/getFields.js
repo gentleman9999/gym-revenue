@@ -67,7 +67,7 @@ export const getFields = (props) => {
                 }
             }
             return _field;
-        })
+        });
         return fields;
     });
 

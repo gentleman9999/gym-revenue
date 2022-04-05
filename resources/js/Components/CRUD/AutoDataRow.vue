@@ -35,6 +35,7 @@ import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
 import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField";
+import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
     inheritAttrs: false,
@@ -84,8 +85,10 @@ export default defineComponent({
     },
     setup(props) {
         const fields = getFields(props);
+        const customizedFields = getCustomizedFields(fields, props.modelKey);
 
-        return { fields };
+
+        return { fields: customizedFields };
     },
 });
 </script>

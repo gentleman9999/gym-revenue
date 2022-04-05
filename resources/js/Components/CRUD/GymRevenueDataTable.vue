@@ -6,7 +6,7 @@
                 <slot name="thead">
                     <tr>
                         <th
-                            v-for="(header, index) in fields"
+                            v-for="(header, index) in customizedFields"
                             :key="index"
                             scope="col"
                             :class="{
@@ -25,10 +25,12 @@
                                     ).length)
                             "
                         >
-                            <font-awesome-icon
-                                :icon="['fas', 'align-left']"
-                                size="lg"
-                            />
+                            <button @click="$emit('open-customizer')">
+                                <font-awesome-icon
+                                    :icon="['fas', 'align-left']"
+                                    size="lg"
+                                />
+                            </button>
                         </th>
                     </tr>
                 </slot>
@@ -40,7 +42,7 @@
                     :is="rowComponent"
                     v-bind="{ [modelKey]: row }"
                     :data="row"
-                    :fields="fields"
+                    :fields="customizedFields"
                     :titleField="titleField"
                     :actions="actions"
                     :model-name="modelName"
@@ -93,6 +95,7 @@ import { isObject } from "lodash";
 import AutoDataRow from "@/Components/CRUD/AutoDataRow";
 import { getFields } from "./helpers/getFields";
 import { getData } from "./helpers/getData";
+import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
 
 library.add(faAlignLeft);
 
@@ -148,10 +151,11 @@ export default {
     },
     setup(props) {
         const fields = getFields(props);
+        const customizedFields = getCustomizedFields(fields, props.modelKey);
         const data = getData(props);
 
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
-        return { modelNamePlural: __modelNamePlural, fields, isObject, data };
+        return { modelNamePlural: __modelNamePlural, fields, customizedFields, isObject, data };
     },
 };
 </script>
