@@ -38,7 +38,7 @@ class LocationsImportWithHeader implements ToCollection, WithHeadingRow
             {
                 LocationDetails::create([
                     'location_id' => $test->id,
-                    'client' => $this->client_id,
+                    'client_id' => $this->client_id,
                     'field' => 'phone',
                     'value' => $row['phone']
                 ]);
