@@ -6,6 +6,7 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
+use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -31,6 +32,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
+    use Sortable;
 
     /**
      * The attributes that are mass assignable.

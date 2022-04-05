@@ -31,18 +31,7 @@ class UsersController extends Controller
         $team_users = User::with(['teams', 'home_club', 'is_manager', 'roles'])->whereHas('detail', function ($query) use ($client_id) {
             return $query->whereName('associated_client')->whereValue($client_id);
         })->get();
-        $roles = [];
-        foreach($team_users as $team_user)
-        {
-            $user_roles = $team_user->roles;
-            if($user_roles->has(0)) {
-                $roles[] = [
-                    'id' => $user_roles[0]->id,
-                    'name' => $user_roles[0]->name,
-                    'title' => $user_roles[0]->title
-                ];
-            }
-        }
+        $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
@@ -59,7 +48,7 @@ class UsersController extends Controller
             {
                 $users = User::with(['teams', 'home_club', 'is_manager', 'classification'])->whereHas('detail', function ($query) use ($client_id) {
                     return $query->whereName('associated_client')->whereValue($client_id);
-                })->filter($request->only($filterKeys))
+                })->filter($request->only($filterKeys))->sort()
                     ->paginate(10);
             }
             else
@@ -74,6 +63,7 @@ class UsersController extends Controller
                 $users = User::whereIn('id', $user_ids)
                     ->with(['teams', 'home_club', 'is_manager', 'classification'])
                     ->filter($request->only($filterKeys))
+                    ->sort()
                     ->paginate(10);
             }
 
@@ -99,7 +89,7 @@ class UsersController extends Controller
             //cb team selected
             $users = User::with( 'is_manager')->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
-            })->filter($request->only($filterKeys))
+            })->filter($request->only($filterKeys))->sort()
                 ->paginate(10);
 
             foreach($users as $idx => $user)
@@ -117,7 +107,7 @@ class UsersController extends Controller
             'clubs' => $clubs,
             'teams' => $teams,
             'clientName' => $clientName,
-            'potentialRoles' => array_map("unserialize", array_unique(array_map("serialize", $roles))),
+            'potentialRoles' => $roles,
         ]);
     }
 

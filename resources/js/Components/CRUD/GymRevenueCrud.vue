@@ -40,14 +40,14 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props" @sort="handleSort"/>
+                <component :is="tableComponent" v-bind="$props" :form="form"/>
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props" @sort="handleSort"/>
+                <component :is="cardsComponent" v-bind="$props" :form="form"/>
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props" @sort="handleSort"/>
+            <component :is="tableComponent || cardsComponent" v-bind="$props" :form="form"/>
         </template>
 
         <slot name="pagination">
@@ -141,28 +141,6 @@ export default defineComponent({
 
         const {form, reset, clearFilters, clearSearch} = useSearchFilter(props.baseRoute);
 
-        const handleSort = (column) => {
-            console.log('sort', {column});
-            if(form.value?.sort?.includes(column)){
-                // if(form.value.dir==='asc'){
-                //     form.value.dir='desc';
-                // }else if (form.value.dir==='desc'){
-                //     form.value.dir='asc';
-                // }
-                if(form.value?.sort?.includes('+')){
-                    form.value.sort = `-${column}`
-                }else{
-                    form.value.sort = `+${column}`
-                }
-                return;
-            }
-            // form.value.orderBy= column;
-            // form.value.dir='asc';
-            form.value.sort= `+${column}`;
-
-
-        }
-
         const defaultTopActions = {
             create: {
                 label: `Create ${props.modelName}`,
@@ -237,7 +215,7 @@ export default defineComponent({
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return {form, topActions, reset, clearFilters, clearSearch, handleSort};
+        return {form, topActions, reset, clearFilters, clearSearch};
     },
 });
 </script>
