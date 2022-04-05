@@ -30,14 +30,14 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
-import {getFields} from "./helpers/getFields";
+import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField";
 import {Inertia} from "@inertiajs/inertia";
 import {preview} from "@/Components/CRUD/helpers/previewData";
-
+import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
     inheritAttrs: false,
@@ -93,6 +93,7 @@ export default defineComponent({
     },
     setup(props) {
         const fields = getFields(props);
+        const customizedFields = getCustomizedFields(fields, props.modelKey);
 
         let timer = 0;
         let prevent = false;
@@ -112,7 +113,6 @@ export default defineComponent({
         }
 
         const openPreview = () => {
-            console.log('onClick');
             if(!props.hasPreviewComponent){
                 return;
             }
@@ -126,11 +126,10 @@ export default defineComponent({
                 return;
             }
             Inertia.visit(route(`${props.baseRoute}.edit`, props.data.id));
-            console.log('default onDoubleClick');
         }
 
 
-        return {fields, handleClick, handleDoubleClick};
+        return {fields: customizedFields, handleClick, handleDoubleClick};
     },
 });
 </script>

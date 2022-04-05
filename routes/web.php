@@ -221,5 +221,9 @@ Route::prefix('impersonation')->group(function () {
 Route::middleware(['auth:sanctum', 'verified'])->prefix('note')->group(function () {
     Route::post('/', \App\Actions\Fortify\MarkNoteAsRead::class)->name('note.seen');
 });
+Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function () {
+    Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');
+});
+
 
 

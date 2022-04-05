@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserDetails;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
+use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
@@ -55,18 +56,17 @@ class UserProjector extends Projector
 
             // Go through the details and create them in the user_details via the
             // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
-            foreach($details as $detail => $value)
-            {
+            foreach ($details as $detail => $value) {
                 UserDetails::createOrUpdateRecord($user->id, $detail, $value);
             }
 
             $client_id = $data['client_id'] ?? null;
 
             $notes = $data['notes'] ?? false;
-            if($notes){
+            if ($notes) {
                 Note::create([
-                    'entity_id'=> $data['id'],
-                    'entity_type'=> User::class,
+                    'entity_id' => $data['id'],
+                    'entity_type' => User::class,
                     'note' => $notes,
                     'created_by_user_id' => $event->user
                 ]);
@@ -107,7 +107,7 @@ class UserProjector extends Projector
                     $classification = $data['classification'];
                 }
             }
-            if (array_key_exists('team_id', $data)){
+            if (array_key_exists('team_id', $data)) {
                 if ($data['team_id'] === 1 || $data['team_id'] === 10) {
                     //set role to admin for capeandbay
                     $role = Role::whereName('Admin')->firstOrFail();
@@ -172,18 +172,17 @@ class UserProjector extends Projector
 
             // Go through the details and create them in the user_details via the
             // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
-            foreach($details as $detail => $value)
-            {
+            foreach ($details as $detail => $value) {
                 UserDetails::createOrUpdateRecord($user->id, $detail, $value);
             }
 
             $client_id = $user->associated_client ? $user->associated_client->value : null;
 
             $notes = $data['notes'] ?? false;
-            if($notes){
+            if ($notes) {
                 Note::create([
-                    'entity_id'=> $data['id'],
-                    'entity_type'=> User::class,
+                    'entity_id' => $data['id'],
+                    'entity_type' => User::class,
                     'note' => $notes,
                     'created_by_user_id' => $event->user
                 ]);
@@ -195,8 +194,7 @@ class UserProjector extends Projector
 
                 $role = Role::whereId($data['role'])->get();
                 //let bouncer know their role has been changed
-                if ($old_role !== $role)
-                {
+                if ($old_role !== $role) {
                     Bouncer::retract($old_role)->from($user);
                     Bouncer::assign($role)->to($user);
                 }
@@ -228,11 +226,19 @@ class UserProjector extends Projector
 
         // starting with unassigning users from teams.
         $teams = $bad_user->teams()->get();
-        foreach($teams as $team)
-        {
+        foreach ($teams as $team) {
             $team->removeUser($bad_user);
         }
 
         $bad_user->forceDelete();
+    }
+
+    public function onUserSetCustomCrudColumns(UserSetCustomCrudColumns $event)
+    {
+        UserDetails::firstOrCreate([
+            'user_id' => $event->user,
+            'name' => "column-config",
+            'value' => $event->table,
+        ])->update(['misc' => $event->fields]);
     }
 }

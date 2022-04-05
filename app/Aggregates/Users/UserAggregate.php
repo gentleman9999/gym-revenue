@@ -12,6 +12,7 @@ use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
+use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use App\StorableEvents\Users\WelcomeEmailSent;
 use Illuminate\Database\Eloquent\Model;
@@ -189,6 +190,12 @@ class UserAggregate extends AggregateRoot
 
         $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name, $client_id));
 
+        return $this;
+    }
+
+    public function setCustomCrudColumns(string $table, array $field_ids)
+    {
+        $this->recordThat(new UserSetCustomCrudColumns($this->uuid(),$table, $field_ids));
         return $this;
     }
 

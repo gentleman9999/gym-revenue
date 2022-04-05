@@ -8,7 +8,6 @@ import {
 import { computed } from "vue";
 
 export const getFields = (props) => {
-    console.log({ props });
     return computed(() => {
         let fields = props.fields;
         if (!fields) {
@@ -35,10 +34,7 @@ export const getFields = (props) => {
             }
             //set sortable to true if not set
             if ("sortable" in _field === false) {
-                console.log("!sortable in _field", _field);
                 _field.sortable = true;
-            }else{
-                console.log("sortable in field", _field);
             }
             //add data type if missing
             if (!_field.type) {

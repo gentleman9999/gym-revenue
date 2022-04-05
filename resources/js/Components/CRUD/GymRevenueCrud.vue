@@ -50,14 +50,15 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props" :form="form"/>
+                <component :is="tableComponent" v-bind="$props" :form="form" @open-customizer="openCustomizationModal"/>
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props" :form="form"/>
+                <component :is="cardsComponent" v-bind="$props" :form="form" @open-customizer="openCustomizationModal"/>
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props" :form="form"/>
+            <component :is="tableComponent || cardsComponent" v-bind="$props"
+                       @open-customizer="openCustomizationModal" :form="form"/>
         </template>
 
         <slot name="pagination">
@@ -70,10 +71,17 @@
         :model-name="modelName"
         :model-key="modelKey"
     />
+    <crud-column-customization-modal
+        :fields="fields"
+        :model-key="modelKey"
+        ref="customizationModal"
+        :model-name="modelName"
+    >
+    </crud-column-customization-modal>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import {defineComponent, ref} from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import Pagination from "@/Components/Pagination";
@@ -85,9 +93,13 @@ import PreviewModal from "@/Components/CRUD/PreviewModal";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm";
 import { useSearchFilter } from "./helpers/useSearchFilter";
 import {flattenObj} from "@/Components/CRUD/helpers/getData";
+import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal";
+import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
+import {getFields} from "@/Components/CRUD/helpers/getFields";
 
 export default defineComponent({
     components: {
+        CrudColumnCustomizationModal,
         GymRevenueDataCards,
         GymRevenueDataTable,
         Pagination,
@@ -153,9 +165,12 @@ export default defineComponent({
             props.baseRoute
         );
 
+        const fields = getFields(props);
+        const customizedFields = getCustomizedFields(fields, props.modelKey);
+
         const exportToCsv = (data) => {
             //strip out fields we dont need bc they aren't shown on current page
-            const exportable_fields = props.fields.filter(
+            const exportable_fields = customizedFields.value.filter(
                 (field) => field?.export !== false
             );
             //get flat fields
@@ -242,22 +257,24 @@ export default defineComponent({
                     const response = await axios.get(route(`${props.baseRoute}.export`));
                     //TODO:some error handling stuff
                     const data = merge(response.data, response.data?.map(flattenObj))
-                    exportToCsv(data)
+                    exportToCsv(data);
                 },
-                shouldRender: () => !!props.resource.total,
-            },
+                shouldRender: () => !!props.resource.total
+            }
         };
         let topActions = [];
         if (props.topActions) {
             topActions = Object.values(
-                merge({ ...defaultTopActions }, props.topActions)
+                merge({...defaultTopActions}, props.topActions)
             )
                 .filter((action) => action)
                 .filter((action) =>
                     action?.shouldRender ? action.shouldRender(props) : true
                 );
         }
-        return { form, topActions, reset, clearFilters, clearSearch };
+        const customizationModal = ref(null);
+        const openCustomizationModal = () => customizationModal.value.open();
+        return {form, topActions, reset, clearFilters, clearSearch, customizationModal, openCustomizationModal};
     },
 });
 </script>
