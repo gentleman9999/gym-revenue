@@ -78,6 +78,7 @@ class LeadsController extends Controller
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource',
                                             'leadsclaimed', 'opportunity', 'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
                 ->orderBy('created_at', 'desc')
+                ->sort()
                 ->paginate($page_count);
 
         }

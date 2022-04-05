@@ -3,6 +3,7 @@
 namespace App\Models\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Traits\Sortable;
 use App\Models\User;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 
 class EmailTemplates extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable, SoftDeletes, Uuid, Sortable;
 
     protected $primaryKey = 'id';
 

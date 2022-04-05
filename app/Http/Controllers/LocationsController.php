@@ -63,6 +63,7 @@ class LocationsController extends Controller
         {
             $locations = $locations->with('client')
                 ->filter($request->only('search', 'trashed'))
+                ->sort()
                 ->paginate($page_count);
         }
 

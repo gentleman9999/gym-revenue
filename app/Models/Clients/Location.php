@@ -2,6 +2,7 @@
 
 namespace App\Models\Clients;
 
+use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Location extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Sortable;
 
     protected $fillable = ['client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip', 'active', 'location_no', 'gymrevenue_id', 'deleted_at'];
 

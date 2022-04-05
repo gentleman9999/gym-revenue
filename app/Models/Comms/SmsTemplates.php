@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 class SmsTemplates extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable, SoftDeletes, Uuid, Sortable;
 
     protected $primaryKey = 'id';
 

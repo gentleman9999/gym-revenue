@@ -4,6 +4,7 @@ namespace App\Models\Endusers;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Note;
+use App\Models\Traits\Sortable;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Lead extends Model
 {
-    use Notifiable, SoftDeletes, Uuid, HasFactory;
+    use Notifiable, SoftDeletes, Uuid, HasFactory, Sortable;
 
     protected $primaryKey = 'id';
 

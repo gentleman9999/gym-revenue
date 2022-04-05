@@ -3,6 +3,7 @@
 namespace App\Models\Clients\Features;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Traits\Sortable;
 use App\Models\User;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use phpDocumentor\Reflection\Types\Boolean;
 
 class EmailCampaigns extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable, SoftDeletes, Uuid, Sortable;
 
     protected $primaryKey = 'id';
 

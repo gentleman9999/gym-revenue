@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\Clients\Client;
+use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class File extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Sortable;
 
     protected $keyType = 'string';
 
