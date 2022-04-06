@@ -255,5 +255,31 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 04-06-2022',
+            'value' => '2022-04-06',
+            'misc' => [
+                'buildno' => '20220406',
+                'version' => '0.15.35',
+                'notes' => [
+                    'All List Views - Click to Preview, Double Click to Edit',
+                    'All List Views - Customizable columns. No new columns at this time, but they are not able to be shown/hidden on a per user basis.',
+                    'All List Views - Sortable Columns.  This does not work on all columns yet.',
+                    'All List Views - Export and Export All buttons added that adapt to your column customization',
+                    'Calendar - Attendees can now be added to an event. Invitations to come later.',
+                    'Calendar - Sort by "My Events" or by a certain User\'s events. To be refined later.',
+                    'Calendar - Theming / Color palettes hooked up.',
+                    'Leads - List View - Opportunity Indicator added',
+                    'Leads - Preview - Notes added',
+                    'Edit Lead - Last Updated now correctly updates after an edit.',
+                    'TruFit Clubs now added to seeder',
+                    'Security Roles - Huge Refactor. Super solid and scalable now.',
+
+                ]
+            ]
+        ]);
     }
 }
