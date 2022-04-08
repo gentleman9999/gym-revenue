@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CalendarEvent;
-use App\Models\CalendarEventType;
+use App\Models\Calendar\CalendarEvent;
+use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\TeamUser;

@@ -3,7 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Clients\Calendar\CreateCalendarEvent;
-use App\Models\CalendarEventType;
+use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\User;
 use Illuminate\Database\Seeder;

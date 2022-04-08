@@ -3,12 +3,8 @@
 namespace App\Actions\Clients\Calendar\CalendarEventTypes;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Models\CalendarEvent;
-use App\Models\Clients\Location;
+use App\Models\Calendar\CalendarEvent;
 use Bouncer;
-use App\Actions\Fortify\PasswordValidationRules;
-use App\Aggregates\Clients\ClientAggregate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

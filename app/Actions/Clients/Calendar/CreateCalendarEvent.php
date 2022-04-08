@@ -4,14 +4,14 @@ namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Helpers\Uuid;
-use App\Models\CalendarEvent;
-use App\Models\CalendarEventType;
+use App\Models\Calendar\CalendarEvent;
+use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 
 class CreateCalendarEvent

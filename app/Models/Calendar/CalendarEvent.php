@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Calendar;
 
 use App\Models\Clients\Client;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -36,7 +36,7 @@ class CalendarEvent extends Model
 
     public function type()
     {
-        return $this->hasOne('App\Models\CalendarEventType', 'id', 'event_type_id');
+        return $this->hasOne('App\Models\Calendar\CalendarEventType', 'id', 'event_type_id');
     }
 
     public function fixDate($data): array
