@@ -32,6 +32,26 @@ class CalendarController extends Controller
             $eventsForTeam = [];
         }
 
+        foreach ($eventsForTeam as $key => $event) {
+            $user_attendees = [];
+            $lead_attendees = [];
+            if($event->attendees) {
+                foreach($event->attendees as $attendee)
+                {
+                    if($attendee->entity_type == User::class)
+                    {
+                        $user_attendees[]['id'] = (int)$attendee->entity_id;
+                    }
+                    if($attendee->entity_type == Lead::class)
+                    {
+                        $lead_attendees[]['id'] = (int)$attendee->entity_id;
+                    }
+                }
+            }
+            $eventsForTeam[$key]->user_attendees = $user_attendees;
+            $eventsForTeam[$key]->lead_attendees = $lead_attendees;
+        }
+
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();

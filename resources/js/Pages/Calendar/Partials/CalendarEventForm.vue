@@ -75,11 +75,11 @@
         </div>
 
         <div class="col-span-3">
-            <jet-label for="attendees" value="Select User Attendees" />
+            <jet-label for="user_attendees" value="Select User Attendees" />
             <multiselect
-                v-model="form.attendees"
+                v-model="form.user_attendees"
                 class="py-2"
-                id="attendees"
+                id="user_attendees"
                 mode="tags"
                 :close-on-select="false"
                 :create-option="true"
