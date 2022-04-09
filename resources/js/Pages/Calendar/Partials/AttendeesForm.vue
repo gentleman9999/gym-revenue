@@ -16,11 +16,11 @@
                         :key="attendee.id"
                     >
                         <th>
-                            <img class="object-cover w-6 h-6 rounded-full" :src="attendee.profile_photo_url"
-                                     :alt="attendee.name">
+                            <img class="object-cover w-6 h-6 rounded-full" :src="attendee.entity_data.profile_photo_url"
+                                     :alt="attendee.entity_data.name">
                         </th>
-                        <td>{{ attendee.name }}</td>
-                        <td>{{ attendee.email }}</td>
+                        <td>{{ attendee.entity_data.name }}</td>
+                        <td>{{ attendee.entity_data.email }}</td>
                     </tr>
                 </tbody>
             </table>

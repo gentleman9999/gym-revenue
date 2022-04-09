@@ -15,6 +15,11 @@ class CreateCalendarAttendeesTable extends Migration
     {
         Schema::create('calendar_attendees', function (Blueprint $table) {
             $table->id();
+            $table->string('entity_type');
+            $table->string('entity_id');
+            $table->json('entity_data');
+            $table->uuid('calendar_event_id');
+            $table->string('invitation_status');
             $table->timestamps();
         });
     }

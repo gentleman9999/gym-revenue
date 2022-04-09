@@ -3,6 +3,8 @@
 namespace App\Aggregates\Clients;
 
 
+use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
+use App\StorableEvents\Clients\Calendar\CalendarAttendeeDeleted;
 use App\StorableEvents\Clients\Calendar\CalendarEventCreated;
 use App\StorableEvents\Clients\Calendar\CalendarEventDeleted;
 use App\StorableEvents\Clients\Calendar\CalendarEventRestored;
@@ -76,6 +78,18 @@ class CalendarAggregate extends AggregateRoot
     public function deleteCalendarEventType(string $trashed_by_user_id, string $id)
     {
         $this->recordThat(new CalendarEventTypeDeleted($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function addCalendarAttendee(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarAttendeeAdded($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function deleteCalendarAttendee(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarAttendeeDeleted($this->uuid(), $updated_by_user_id, $payload));
         return $this;
     }
 }

@@ -47,32 +47,45 @@ class CreateCalendarEvent
         if(isset($user->id))
             $data['attendees'][] = $user->id; //If you make the event, you're automatically an attendee.
 
-        $attendees = [];
         if(!is_null($data['attendees'])) {
             $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
             foreach($data['attendees'] as $user) {
                 $user = User::whereId($user)->select('id', 'name', 'email')->first();
-                if($user)
-                    $attendees[] = $user;
+                if($user) {
+                    CalendarAggregate::retrieve($data['client_id'])
+                        ->addCalendarAttendee($user->id ?? "Auto Generated",
+                            [
+                        'entity_type' => User::class,
+                        'entity_id' => $user->id,
+                        'entity_data' => $user,
+                        'calendar_event_id' => $id,
+                        'invitation_status' => 'sent'
+                        ])->persist();
+                }
             }
-            $data['attendees'] = $attendees;
-        }else {
-            unset($data['attendees']);
         }
 
-
-        $leadAttendees = [];
         if(!empty($data['lead_attendees'])) {
             $data['lead_attendees'] = array_values(array_unique($data['lead_attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['lead_attendees'] as $user) {
-                $lead = Lead::whereId($user)->select('id', 'first_name', 'last_name', 'email')->first();
-                if($user)
-                    $leadAttendees[] = $lead;
+            foreach($data['lead_attendees'] as $lead) {
+                $lead = Lead::whereId($lead)->select('id', 'first_name', 'last_name', 'email')->first();
+                if($lead) {
+                    CalendarAggregate::retrieve($data['client_id'])
+                        ->addCalendarAttendee($user->id ?? "Auto Generated",
+                            [
+                                'entity_type' => Lead::class,
+                                'entity_id' => $lead->id,
+                                'entity_data' => $lead,
+                                'calendar_event_id' => $data['id'],
+                                'invitation_status' => 'sent' // TODO add send notification function here and the result is the status
+                            ])->persist();
+                }
             }
-            $data['lead_attendees'] = $leadAttendees;
-        } else {
-            unset($data['lead_attendees']);
         }
+
+        unset($data['attendees']);
+        unset($data['lead_attendees']);
+
 
         CalendarAggregate::retrieve($data['client_id'])
             ->createCalendarEvent($user->id ?? "Auto Generated", $data)

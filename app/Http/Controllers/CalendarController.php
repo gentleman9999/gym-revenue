@@ -24,17 +24,12 @@ class CalendarController extends Controller
 
         if ($request->get('start')) {
             $eventsForTeam = CalendarEvent::whereClient_id($client_id)
-                ->with('type')
+                ->with('type', 'attendees')
                 ->filter($request->only('search', 'start', 'end', 'viewUser'))
                 ->get();
 
         } else {
             $eventsForTeam = [];
-        }
-
-        foreach ($eventsForTeam as $key => $event) {
-            $eventsForTeam[$key]->attendees = $event->attendees;
-            $eventsForTeam[$key]->lead_attendees = $event->lead_attendees;
         }
 
         if ($client_id) {

@@ -25,9 +25,8 @@ class CalendarEvent extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'attendees', 'lead_attendees'];
+    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id'];
 
-    protected $casts = ['attendees' => 'array', 'lead_attendees' => 'array'];
 
     public function client()
     {
@@ -37,6 +36,11 @@ class CalendarEvent extends Model
     public function type()
     {
         return $this->hasOne('App\Models\Calendar\CalendarEventType', 'id', 'event_type_id');
+    }
+
+    public function attendees()
+    {
+        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id');
     }
 
     public function fixDate($data): array

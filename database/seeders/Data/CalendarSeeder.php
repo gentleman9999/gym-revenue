@@ -56,7 +56,7 @@ class CalendarSeeder extends Seeder
                         $end = date("Y-m-d", $datestart + ($randomday * $daystep)) . ' ' . $hour2 . ':00:00';
 
                         $attendees = [];
-                        for ($d = 1; $d <= 5; $d++) {
+                        for ($d = 1; $d <= 2; $d++) {
                             $attendees[] = $randomUsers[rand(0,count($randomUsers)-1)];
                         }
 
