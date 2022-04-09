@@ -41,6 +41,7 @@ class CalendarController extends Controller
                     if($attendee->entity_type == User::class)
                     {
                         $user_attendees[]['id'] = (int)$attendee->entity_id;
+
                     }
                     if($attendee->entity_type == Lead::class)
                     {

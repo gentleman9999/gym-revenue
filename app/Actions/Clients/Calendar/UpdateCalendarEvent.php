@@ -32,7 +32,7 @@ class UpdateCalendarEvent
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
             'client_id' => ['required', 'exists:clients,id'],
-            'attendees' => ['sometimes', 'array'],
+            'user_attendees' => ['sometimes', 'array'],
             'lead_attendees' => ['sometimes', 'array'],
         ];
     }
@@ -56,10 +56,10 @@ class UpdateCalendarEvent
             }
         }
 
-        if(!empty($data['attendees'])) {
-            $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
+        if(!empty($data['user_attendees'])) {
+            $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
             //Delete Users
-            $delete = array_merge(array_diff($data['attendees'], $userAttendeeIDs), array_diff($userAttendeeIDs, $data['attendees']));
+            $delete = array_merge(array_diff($data['user_attendees'], $userAttendeeIDs), array_diff($userAttendeeIDs, $data['user_attendees']));
             foreach($delete as $user)
             {
                 CalendarAggregate::retrieve($data['client_id'])
@@ -67,7 +67,7 @@ class UpdateCalendarEvent
                     ->persist();
             }
             //Add Users
-            foreach($data['attendees'] as $user)
+            foreach($data['user_attendees'] as $user)
             {
                 if(!in_array($user, $userAttendeeIDs)) {
                     $user = User::whereId($user)->select('id', 'name', 'email')->first();

@@ -33,7 +33,7 @@ class CreateCalendarEvent
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
             'client_id' => ['required', 'exists:clients,id'],
-            'attendees' => ['sometimes'],
+            'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
         ];
     }
@@ -45,11 +45,11 @@ class CreateCalendarEvent
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;; //Pulling eventType color for this table because that's how fullCalender.IO wants it
 
         if(isset($user->id))
-            $data['attendees'][] = $user->id; //If you make the event, you're automatically an attendee.
+            $data['user_attendees'][] = $user->id; //If you make the event, you're automatically an attendee.
 
-        if(!is_null($data['attendees'])) {
-            $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['attendees'] as $user) {
+        if(!is_null($data['user_attendees'])) {
+            $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
+            foreach($data['user_attendees'] as $user) {
                 $user = User::whereId($user)->select('id', 'name', 'email')->first();
                 if($user) {
                     CalendarAggregate::retrieve($data['client_id'])
@@ -83,7 +83,7 @@ class CreateCalendarEvent
             }
         }
 
-        unset($data['attendees']);
+        unset($data['user_attendees']);
         unset($data['lead_attendees']);
 
 
