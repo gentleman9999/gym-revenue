@@ -7,8 +7,8 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Name</th>
-                    <th>Email</th>
+                    <th>Attendee</th>
+                    <th>Data</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -19,33 +19,20 @@
                             <img class="object-cover w-6 h-6 rounded-full" :src="attendee.entity_data.profile_photo_url"
                                      :alt="attendee.entity_data.name">
                         </th>
-                        <td>{{ attendee.entity_data.name }}</td>
-                        <td>{{ attendee.entity_data.email }}</td>
+
+                        <td>
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="font-bold">{{ attendee.entity_data.name }}</div>
+                                    <div class="text-sm opacity-50">{{ attendee.entity_type }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-xs">{{ attendee.entity_data.email }}</div>
+                            <span class="badge badge-ghost badge-sm">{{ attendee.invitation_status }}</span>
+                        </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-span-6" v-if="form.lead_attendees?.length">
-            <jet-label for="attendees" value="Lead Attendees" />
-            <table class="table table-compact w-full">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="lead_attendee in form.lead_attendees"
-                    :key="lead_attendee.id"
-                >
-                    <th>
-
-                    </th>
-                    <td>{{ lead_attendee.first_name }} {{ lead_attendee.last_name }}</td>
-                    <td>{{ lead_attendee.email }}</td>
-                </tr>
                 </tbody>
             </table>
         </div>

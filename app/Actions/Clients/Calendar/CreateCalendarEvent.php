@@ -59,7 +59,7 @@ class CreateCalendarEvent
                         'entity_id' => $user->id,
                         'entity_data' => $user,
                         'calendar_event_id' => $id,
-                        'invitation_status' => 'sent'
+                        'invitation_status' => 'Invitation Pending'
                         ])->persist();
                 }
             }
@@ -77,7 +77,7 @@ class CreateCalendarEvent
                                 'entity_id' => $lead->id,
                                 'entity_data' => $lead,
                                 'calendar_event_id' => $data['id'],
-                                'invitation_status' => 'sent' // TODO add send notification function here and the result is the status
+                                'invitation_status' => 'Invitation Pending'
                             ])->persist();
                 }
             }
