@@ -14,7 +14,7 @@ class CreateCalendarAttendeesTable extends Migration
     public function up()
     {
         Schema::create('calendar_attendees', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->unique()->primary();
             $table->string('entity_type');
             $table->string('entity_id');
             $table->json('entity_data');

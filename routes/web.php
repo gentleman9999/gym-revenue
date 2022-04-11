@@ -226,6 +226,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function 
 });
 
 Route::prefix('invite')->group(function () {
-    Route::get('/', \App\Http\Controllers\InviteController::class . '@index')->name('invite');
+    Route::get('/{id}', \App\Http\Controllers\InviteController::class . '@index')->name('invite');
+    Route::post('/accept', \App\Actions\Clients\Calendar\AcceptInvite::class)->name('invite.accept');
+    Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
 });
 

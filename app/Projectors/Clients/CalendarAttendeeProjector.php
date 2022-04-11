@@ -6,6 +6,8 @@ use App\Models\Calendar\CalendarAttendee;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeDeleted;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeInvited;
+use App\StorableEvents\Clients\Calendar\CalendarInviteAccepted;
+use App\StorableEvents\Clients\Calendar\CalendarInviteDeclined;
 use Mailgun\Mailgun;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -33,6 +35,16 @@ class CalendarAttendeeProjector extends Projector
         ]);
     }
 
+
+    public function onCalendarInviteAccepted(CalendarInviteAccepted $event)
+    {
+        CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(array('invitation_status' => 'Accepted'));
+    }
+
+    public function onCalendarInviteDeclined(CalendarInviteDeclined $event)
+    {
+        CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(array('invitation_status' => 'Declined'));
+    }
 
 
 }

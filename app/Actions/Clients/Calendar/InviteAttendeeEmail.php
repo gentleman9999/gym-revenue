@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
+use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -30,8 +31,14 @@ class InviteAttendeeEmail
         $client_id = $data->client;
         $data = $data->data;
         $eventData = CalendarEvent::whereId($data['calendar_event_id'])->first();
+
+        $attendee = CalendarAttendee::whereEntityType($data['entity_type'])
+            ->whereEntityId($data['entity_id'])
+            ->whereCalendarEventId($data['calendar_event_id'])
+            ->first();
+
         $data['subject'] = 'GR-CRM Event Invite for '.$eventData->title;
-        $data['body'] = '<h1>'.$eventData->title.'</h1> <p>You have been invited! </p>';
+        $data['body'] = '<h1>'.$eventData->title.'</h1> <p>You have been invited!</p> <a href="'.env('APP_URL').'/invite/'.$attendee->id.'">Click here to accept or decline.</a>';
 
 
         CalendarAggregate::retrieve($client_id)

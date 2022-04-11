@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Calendar\CalendarEvent;
-use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Client;
-use App\Models\Endusers\Lead;
-use App\Models\TeamUser;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Calendar\CalendarAttendee;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class InviteController extends Controller
 {
-    public function index(Request $request)
+    public function index($id)
     {
         $client_id = request()->user()->currentClientId();
 
+        $attendeeData = CalendarAttendee::whereId($id)->with('event')->first();
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
 
         return Inertia::render('Invite/Show', [
+            'attendeeData' => $attendeeData,
         ]);
     }
 }

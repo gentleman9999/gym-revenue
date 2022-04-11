@@ -23,21 +23,15 @@ class AcceptInvite
     public function rules()
     {
         return [
+            'attendeeData' => ['required'],
         ];
     }
 
-    public function handle($data)
+    public function handle($data, $current_user)
     {
-
-        $client_id = $data->client;
-        $data = $data->data;
-        $eventData = CalendarEvent::whereId($data['calendar_event_id'])->first();
-        //$attendeeData = CalendarAttendee::
-
-        CalendarAggregate::retrieve($client_id)
-            ->acceptCalendarEvent("Auto Generated", $data)
+        CalendarAggregate::retrieve($current_user->currentClientId())
+            ->acceptCalendarEvent($current_user->id, $data)
             ->persist();
-
 
         return true;
     }
@@ -50,10 +44,11 @@ class AcceptInvite
     public function asController(ActionRequest $request)
     {
         $attendee = $this->handle(
-            $request->validated()
+            $request->validated(),
+            $request->user(),
         );
 
-        Alert::success("Invitation '{$attendee->title}' Accepted!")->flash();
+        Alert::success("Invitation Accepted!")->flash();
 
         return Redirect::back();
     }

@@ -22,21 +22,16 @@ class DeclineInvite
     public function rules()
     {
         return [
+            'attendeeData' => ['required'],
         ];
     }
 
-    public function handle($data)
+    public function handle($data, $current_user)
     {
 
-        $client_id = $data->client;
-        $data = $data->data;
-        $eventData = CalendarEvent::whereId($data['calendar_event_id'])->first();
-        //$attendeeData = CalendarAttendee::
-
-        CalendarAggregate::retrieve($client_id)
-            ->declineCalendarEvent("Auto Generated", $data)
+        CalendarAggregate::retrieve($current_user->currentClientId())
+            ->declineCalendarEvent($current_user->id, $data)
             ->persist();
-
 
         return true;
     }
@@ -49,10 +44,11 @@ class DeclineInvite
     public function asController(ActionRequest $request)
     {
         $attendee = $this->handle(
-            $request->validated()
+            $request->validated(),
+            $request->user(),
         );
 
-        Alert::success("Invitation '{$attendee->title}' Declined!")->flash();
+        Alert::success("Invitation Declined!")->flash();
 
         return Redirect::back();
     }

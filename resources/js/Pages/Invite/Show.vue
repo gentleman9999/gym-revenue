@@ -4,7 +4,19 @@
             <h2 class="font-semibold text-xl leading-tight">Invite</h2>
         </template>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            test
+            <div class="card lg:card-side bg-base-100 shadow-xl">
+                <figure><img src="https://st.depositphotos.com/1056393/4630/i/600/depositphotos_46302587-stock-photo-speaker-at-business-conference-and.jpg" alt="Album"></figure>
+                <div class="card-body">
+                    <h2 class="card-title">{{ attendeeData.event.title }} Invitation</h2>
+                    <p><b>{{ attendeeData.entity_data.name }}</b>, would you like to join us for {{ attendeeData.event.description }}?</p>
+                    <p>Event Start: {{ attendeeData.event.start }}</p>
+                    <div><div class="badge badge-lg">{{ attendeeData.invitation_status }}</div></div>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-success" @click="accept()">Accept</button>
+                        <button class="btn btn-error" @click="decline()">Decline</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </app-layout>
@@ -22,13 +34,26 @@ export default defineComponent({
         SweetModal,
     },
     props: [
-
+        'attendeeData'
     ],
 
     setup(props) {
 
+        function accept() {
+            Inertia.post(route('invite.accept', {
+                attendeeData: props.attendeeData
+            }))
+        }
+
+        function decline() {
+            Inertia.post(route('invite.decline', {
+                attendeeData: props.attendeeData
+            }))
+        }
         return {
             Inertia,
+            accept,
+            decline,
         };
     },
 });
