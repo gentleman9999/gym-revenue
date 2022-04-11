@@ -2,14 +2,16 @@
 
 namespace App\Actions\Clients\Calendar;
 
-
+use App\Aggregates\Clients\CalendarAggregate;
+use App\Models\Calendar\CalendarAttendee;
+use App\Models\Calendar\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
 
-class InviteAttendeeSMS
+class AcceptInvite
 {
     use AsAction;
 
@@ -26,12 +28,17 @@ class InviteAttendeeSMS
 
     public function handle($data)
     {
-        $test = $data;
-/*
-        CalendarAggregate::retrieve($data['client_id'])
-            ->inviteCalendarAttendee($user->id ?? "Auto Generated", $data)
+
+        $client_id = $data->client;
+        $data = $data->data;
+        $eventData = CalendarEvent::whereId($data['calendar_event_id'])->first();
+        //$attendeeData = CalendarAttendee::
+
+        CalendarAggregate::retrieve($client_id)
+            ->acceptCalendarEvent("Auto Generated", $data)
             ->persist();
-*/
+
+
         return true;
     }
 
@@ -46,7 +53,7 @@ class InviteAttendeeSMS
             $request->validated()
         );
 
-        Alert::success("Attendee '{$attendee->name}' was invited to the scheduled event.")->flash();
+        Alert::success("Invitation '{$attendee->title}' Accepted!")->flash();
 
         return Redirect::back();
     }

@@ -73,7 +73,7 @@ class CalendarSeeder extends Seeder
                             'color' => $eventType->color,
                             'full_day_event' => 0,//todo:randomize,
                             'event_type_id' => $eventType->id,
-                            'attendees' => $attendees,
+                            'user_attendees' => $attendees,
                             //'lead_attendees' => $leadAttendees
                         ];
 

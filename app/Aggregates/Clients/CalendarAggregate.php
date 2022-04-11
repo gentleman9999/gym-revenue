@@ -17,6 +17,8 @@ use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeRest
 use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeTrashed;
 use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeUpdated;
 
+use App\StorableEvents\Clients\Calendar\CalendarInviteAccepted;
+use App\StorableEvents\Clients\Calendar\CalendarInviteDeclined;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class CalendarAggregate extends AggregateRoot
@@ -97,6 +99,18 @@ class CalendarAggregate extends AggregateRoot
     public function inviteCalendarAttendee(string $updated_by_user_id, array $payload)
     {
         $this->recordThat(new CalendarAttendeeInvited($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function acceptCalendarEvent(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarInviteAccepted($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function declineCalendarEvent(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarInviteDeclined($this->uuid(), $updated_by_user_id, $payload));
         return $this;
     }
 }

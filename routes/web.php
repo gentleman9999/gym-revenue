@@ -225,5 +225,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function 
     Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');
 });
 
-
+Route::prefix('invite')->group(function () {
+    Route::get('/', \App\Http\Controllers\InviteController::class . '@index')->name('invite');
+});
 
