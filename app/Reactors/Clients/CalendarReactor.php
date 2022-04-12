@@ -13,7 +13,7 @@ class CalendarReactor extends Reactor implements ShouldQueue
 
     public function onCalendarAttendeeAdded(CalendarAttendeeAdded $event){
         //TODO develop logic to determine user preference for being contacted
-        InviteAttendeeEmail::run($event);
+        //InviteAttendeeEmail::run($event);
 
         //InviteAttendeeSMS::run($event);
 

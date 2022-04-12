@@ -8,7 +8,8 @@
                 <figure><img src="https://st.depositphotos.com/1056393/4630/i/600/depositphotos_46302587-stock-photo-speaker-at-business-conference-and.jpg" alt="Album"></figure>
                 <div class="card-body">
                     <h2 class="card-title">{{ attendeeData.event.title }} Invitation</h2>
-                    <p><b>{{ attendeeData.entity_data.name }}</b>, would you like to join us for {{ attendeeData.event.description }}?</p>
+                    <p v-if="attendeeData.entity_type == 'App\\Models\\Endusers\\Lead'"><b>{{ attendeeData.entity_data.first_name }} {{ attendeeData.entity_data.last_name}}</b>, would you like to join us for {{ attendeeData.event.description }}?</p>
+                    <p v-else> <b>{{ attendeeData.entity_data.name }}</b>, would you like to join us for {{ attendeeData.event.description }}?</p>
                     <p>Event Start: {{ attendeeData.event.start }}</p>
                     <div><div class="badge badge-lg">{{ attendeeData.invitation_status }}</div></div>
                     <div class="card-actions justify-end">

@@ -15,19 +15,31 @@
                     <tr v-for="attendee in form.attendees"
                         :key="attendee.id"
                     >
-                        <th>
+                        <th v-if="attendee.entity_type == 'App\\Models\\User'">
                             <img class="object-cover w-6 h-6 rounded-full" :src="attendee.entity_data.profile_photo_url"
                                      :alt="attendee.entity_data.name">
                         </th>
+                        <th v-else>
 
-                        <td>
+                        </th>
+
+                        <td v-if="attendee.entity_type == 'App\\Models\\Endusers\\Lead'">
                             <div class="flex items-center space-x-3">
                                 <div>
-                                    <div class="font-bold">{{ attendee.entity_data.name }}</div>
-                                    <div class="text-sm opacity-50">{{ attendee.entity_type }}</div>
+                                    <div class="font-bold">{{ attendee.entity_data.first_name }} {{attendee.entity_data.last_name}}</div>
+                                    <div class="text-sm opacity-50">Lead</div>
                                 </div>
                             </div>
                         </td>
+                        <td v-else>
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="font-bold">{{ attendee.entity_data.name }}</div>
+                                    <div class="text-sm opacity-50">Client User</div>
+                                </div>
+                            </div>
+                        </td>
+
                         <td>
                             <div class="text-xs">{{ attendee.entity_data.email }}</div>
                             <span class="badge badge-ghost badge-sm">{{ attendee.invitation_status }}</span>
