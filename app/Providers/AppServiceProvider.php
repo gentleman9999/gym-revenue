@@ -6,6 +6,7 @@ use App\Models\Role;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Bouncer;
+use Lorisleiva\Actions\Facades\Actions;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        //registers any App/Actions/* that have well-defined command signatures
+        Actions::registerCommands();
     }
 
     /**

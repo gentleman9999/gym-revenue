@@ -18,11 +18,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        FireOffEmailCampaign::class,
-        FireOffSmsCampaign::class,
-        CheckQueuedEmailCampaigns::class,
-        CheckQueuedSmsCampaigns::class,
-        CreateUser::class
+        //Any Actions defined in App/Actions/**/* with well defined
+        //signatures will get auto registered. Don't add them here.
     ];
 
     /**

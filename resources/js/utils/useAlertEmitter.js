@@ -1,5 +1,7 @@
 import {useFlash} from "./useFlash";
-import { watchEffect, computed, ref} from "vue";
+import {watchEffect, computed, ref, watch} from "vue";
+import {usePage} from "@inertiajs/inertia-vue3";
+import {useUser} from "@/utils/useUser";
 
 export const useAlertEmitter = () => {
     const flash = useFlash();
@@ -36,4 +38,46 @@ export const useAlertEmitter = () => {
     }, {
         flush: 'sync' // needed so updates are immediate.
     });
+}
+
+export const useNotificationAlertEmitter = () => {
+    const user = useUser();
+    // console.log({page});
+    const channel = ref();
+    // watch([page], () => {
+    //     console.log(`page changed now`, {page})
+    //
+    // });
+    // watch([user_id], () => {
+    //     console.log(`user_id now .${user_id.value}`)
+    //
+    // });
+    // watchEffect(()=>{
+    //     console.log(`Listening to users.${user_id.value}`)
+    //     channel.value = Echo.channel(`users.${user_id.value}`);
+    // });
+    watchEffect(()=>{
+        console.log(`user watcheffect`, {user: user.value});
+        if(user.value?.id){
+            channel.value = Echo.channel(`users.${user?.value?.id}`);
+            channel.value.listen('NotificationCreated', () => window.alert('HADEEEEM'));
+            console.log({channel: channel.value})
+            console.log(`listening to ${channel.value.name}. NotificationCreated`);
+
+        }
+    });
+    watch([user, channel], ()=>{
+        if(channel.value?.name !== `users.${user?.value?.id}`){
+            //since this method only fires when
+            console.log('*******user changed, cleaning up old subscriptions');
+            // console
+            console.log(`leaving ${channel.value.name}`)
+            Echo.leave(`users.${user?.value?.id}`);
+        }
+    });
+    // Echo.channel(`users.${this.order.id}`)
+    //     .listen('OrderShipmentStatusUpdated', (e) => {
+    //         console.log(e.order.name);
+    //     });
+    // alert('hello!');
 }
