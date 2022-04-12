@@ -10,15 +10,9 @@ class InviteController extends Controller
 {
     public function index($id)
     {
-        $client_id = request()->user()->currentClientId();
-
-        $attendeeData = CalendarAttendee::whereId($id)->with('event')->first();
-        if (is_null($client_id)) {
-            return Redirect::route('dashboard');
-        }
-
+        //decrypt ID when we decide to obfuscate it in the future
         return Inertia::render('Invite/Show', [
-            'attendeeData' => $attendeeData,
+            'attendeeData' => CalendarAttendee::whereId($id)->with('event')->first(),
         ]);
     }
 }
