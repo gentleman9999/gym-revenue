@@ -100,7 +100,7 @@ class UpdateCalendarEvent
             //Add Users
             foreach($data['lead_attendees'] as $lead)
             {
-                if(!in_array($user, $leadAttendeeIDs)) {
+                if(!in_array($lead, $leadAttendeeIDs)) {
                     $lead = Lead::whereId($lead)->select('id', 'first_name', 'last_name', 'email')->first();
                     if($lead) {
                         CalendarAggregate::retrieve($data['client_id'])
