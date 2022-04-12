@@ -231,3 +231,7 @@ Route::prefix('invite')->group(function () {
     Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
 });
 
+Route::prefix('s')->group(function () {
+    Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
+});
+

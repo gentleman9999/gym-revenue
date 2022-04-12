@@ -2,9 +2,11 @@
 
 namespace App\Actions\Clients\Calendar;
 
+use App\Actions\Clients\Files\CreateShortUrl;
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
+use App\Models\ShortUrl;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -37,8 +39,18 @@ class InviteAttendeeEmail
             ->whereCalendarEventId($data['calendar_event_id'])
             ->first();
 
+        $route = 'invite/'.$attendee->id;
+
+        $shortUrl = ShortUrl::whereRoute($route)->first();
+
+        if(is_null($shortUrl))
+        {
+            CreateShortUrl::run(['route' => 'invite/'.$attendee->id], $client_id);
+            $shortUrl = ShortUrl::whereRoute($route)->first();
+        }
+
         $data['subject'] = 'GR-CRM Event Invite for '.$eventData->title;
-        $data['body'] = '<h1>'.$eventData->title.'</h1> <p>You have been invited!</p> <a href="'.env('APP_URL').'/invite/'.$attendee->id.'">Click here to accept or decline.</a>';
+        $data['body'] = '<h1>'.$eventData->title.'</h1> <p>You have been invited!</p> <a href="'.env('APP_URL').'/s/'.$shortUrl->external_url.'">Click here to accept or decline.</a>';
 
 
         CalendarAggregate::retrieve($client_id)
