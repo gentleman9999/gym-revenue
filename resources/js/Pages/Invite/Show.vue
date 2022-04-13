@@ -1,5 +1,5 @@
 <template>
-    <app-layout :title="title">
+<!--    <app-layout :title="title">-->
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Invite</h2>
         </template>
@@ -19,8 +19,7 @@
                 </div>
             </div>
         </div>
-
-    </app-layout>
+<!--    </app-layout>-->
 </template>
 
 <script>
