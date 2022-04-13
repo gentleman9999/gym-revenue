@@ -1,5 +1,5 @@
 <template>
-<!--    <app-layout :title="title">-->
+    <maybe-auth-layout :title="title">
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">Invite</h2>
         </template>
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-<!--    </app-layout>-->
+    </maybe-auth-layout>
 </template>
 
 <script>
@@ -27,9 +27,11 @@ import { defineComponent, watch, watchEffect, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import { Inertia } from "@inertiajs/inertia";
+import MaybeAuthLayout from "@/Layouts/MaybeAuthLayout";
 
 export default defineComponent({
     components: {
+        MaybeAuthLayout,
         AppLayout,
         SweetModal,
     },
