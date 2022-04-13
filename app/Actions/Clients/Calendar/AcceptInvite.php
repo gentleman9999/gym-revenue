@@ -27,10 +27,10 @@ class AcceptInvite
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle($data)
     {
-        CalendarAggregate::retrieve($current_user->currentClientId())
-            ->acceptCalendarEvent($current_user->id, $data)
+        CalendarAggregate::retrieve($data['attendeeData']['event']['client_id'])
+            ->acceptCalendarEvent($data['attendeeData']['entity_id'], $data)
             ->persist();
 
         return true;
@@ -45,7 +45,6 @@ class AcceptInvite
     {
         $attendee = $this->handle(
             $request->validated(),
-            $request->user(),
         );
 
         Alert::success("Invitation Accepted!")->flash();
