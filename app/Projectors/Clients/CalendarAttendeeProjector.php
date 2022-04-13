@@ -24,18 +24,6 @@ class CalendarAttendeeProjector extends Projector
         CalendarAttendee::whereEntityType($event->data['entity_type'])->whereEntityId($event->data['entity_id'])->forceDelete();
     }
 
-    public function onCalendarAttendeeInvited(CalendarAttendeeInvited $event)
-    {
-        $mg = Mailgun::create(env('MAILGUN_SECRET'));
-        $mg->messages()->send(env('MAILGUN_DOMAIN'), [
-            'from'    => env('MAIL_FROM_ADDRESS'),
-            'to'      => 'blair@capeandbay.com',//$event->data['entity_data']['email'],
-            'subject' => $event->data['subject'],
-            'html'    => $event->data['body'],
-        ]);
-    }
-
-
     public function onCalendarInviteAccepted(CalendarInviteAccepted $event)
     {
         CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(array('invitation_status' => 'Accepted'));
