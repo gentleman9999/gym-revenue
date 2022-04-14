@@ -7,12 +7,9 @@ use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Mail\EndUser\EmailFromRep;
 use App\Models\Endusers\Lead;
 use App\Models\Utility\AppState;
-use App\StorableEvents\Endusers\LeadProfilePictureMoved;
-use App\StorableEvents\Endusers\LeadUpdated;
-use App\StorableEvents\Endusers\LeadWasEmailedByRep;
-use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
-use App\StorableEvents\Endusers\OldLeadProfilePictureDeleted;
-use App\StorableEvents\Endusers\SubscribedToAudience;
+use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
+use App\StorableEvents\Endusers\Leads\LeadUpdated;
+use App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +26,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onLeadWasTextMessagedByRep(LeadWasTextMessagedByRep $event)
+    public function onLeadWasTextMessagedByRep(\App\StorableEvents\Endusers\Leads\LeadWasTextMessagedByRep $event)
     {
         $lead = Lead::find($event->lead);
         $msg = $event->data['message'];
@@ -39,7 +36,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onSubscribedToAudience(SubscribedToAudience $event)
+    public function onSubscribedToAudience(\App\StorableEvents\Endusers\Leads\SubscribedToAudience $event)
     {
         // @todo - check the Campaigns the audience is attached to
         // @todo - if so, then trigger it here and its aggregate will deal
@@ -56,15 +53,15 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $this->maybeMoveProfilePicture($event->aggregateRootUuid(), $event->data);
     }
 
-    public function onLeadProfilePictureMoved(LeadProfilePictureMoved $event)
+    public function onLeadProfilePictureMoved(\App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved $event)
     {
         if(!$event->oldFile){
             return;
         }
-        EndUserActivityAggregate::retrieve($event->aggregateRootUuid())->recordThat(new OldLeadProfilePictureDeleted($event->oldFile))->persist();
+        EndUserActivityAggregate::retrieve($event->aggregateRootUuid())->recordThat(new \App\StorableEvents\Endusers\Leads\OldLeadProfilePictureDeleted($event->oldFile))->persist();
     }
 
-    public function onOldLeadProfilePictureDeleted(OldLeadProfilePictureDeleted $event)
+    public function onOldLeadProfilePictureDeleted(\App\StorableEvents\Endusers\Leads\OldLeadProfilePictureDeleted $event)
     {
         Storage::disk('s3')->delete($event->file['key']);
     }
@@ -82,7 +79,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $file['url'] = Storage::disk('s3')->url($file['key']);
         $aggy = EndUserActivityAggregate::retrieve($lead_id);
         if ($oldData['profile_picture']['misc'] ?? false) {
-            $aggy->recordThat(new LeadProfilePictureMoved($file, $oldData['profile_picture']['misc']));
+            $aggy->recordThat(new \App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved($file, $oldData['profile_picture']['misc']));
         } else {
             $aggy->recordThat(new LeadProfilePictureMoved($file));
         }

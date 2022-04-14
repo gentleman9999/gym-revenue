@@ -22,7 +22,7 @@ class BouncerAbilitiesSeeder extends Seeder
         /** Admin */
         Bouncer::allow('Admin')->everything(); // I mean....right?
 
-        $crud_models = collect(['users', 'locations', 'leads', 'files', 'teams', 'todo-list', 'calendar', 'roles', 'classifications']);
+        $crud_models = collect(['users', 'locations', 'leads', 'members', 'files', 'teams', 'todo-list', 'calendar', 'roles', 'classifications']);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
         // Create the Full Unrestricted Abilities
@@ -50,26 +50,26 @@ class BouncerAbilitiesSeeder extends Seeder
             Bouncer::scope()->to($client->id);
 
             /** Account Owner */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Account Owner', $client);
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
 
             /** Regional Admin */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications'], 'Regional Admin', $client);
             $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
 
             /** Location Manager */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'todo-list', 'calendar'], 'Location Manager', $client);
             $this->allowEditInGroup(['users', 'leads', 'teams', 'todo-list', 'calendar'], 'Location Manager', $client);
             $this->allowImpersonationInGroup(['users'], 'Location Manager', $client);
 
             /** Sales Rep */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Sales Rep', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'todo-list', 'calendar'], 'Sales Rep', $client);
             $this->allowEditInGroup(['leads', 'todo-list', 'calendar'], 'Sales Rep', $client);
 
             /** Employee */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'teams', 'todo-list', 'calendar'], 'Employee', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'todo-list', 'calendar'], 'Employee', $client);
             $this->allowEditInGroup(['leads', 'todo-list'], 'Employee', $client);
 
             $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];

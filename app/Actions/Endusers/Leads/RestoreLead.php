@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Actions\Endusers;
+namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
-use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use Bouncer;
 use Illuminate\Http\Request;

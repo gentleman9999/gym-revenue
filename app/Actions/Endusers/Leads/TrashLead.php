@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Actions\Endusers;
+namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
-use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use Bouncer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class DeleteLead
+class TrashLead
 {
     use AsAction;
 
@@ -24,32 +22,34 @@ class DeleteLead
     public function rules()
     {
         return [
-            //no rules since we only accept an id route param, which is validated in the route definition
+            'reason' => ['required','string']
         ];
     }
 
-    public function handle($id, $current_user)
+    public function handle($id, $current_user, $reason)
     {
-        $deleted = Lead::withTrashed()->findOrFail($id);
-        EndUserActivityAggregate::retrieve($id)->deleteLead($current_user->id ?? "Auto Generated", $id)->persist();
-        return $deleted;
+        EndUserActivityAggregate::retrieve($id)->trashLead($reason, $current_user->id ?? "Auto Generated")->persist();
+
+        return Lead::withTrashed()->findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('leads.delete', Lead::class);
+        return $current_user->can('leads.trash', Lead::class);
     }
 
-    public function asController(Request $request, $id)
+    public function asController(ActionRequest $request, $id)
     {
+        $lead = Lead::findOrFail($id);
 
-        $lead = $this->handle(
+        $this->handle(
             $id,
             $request->user(),
+            $request->validated()['reason']
         );
 
-        Alert::success("Lead '{$lead->name}' was deleted")->flash();
+        Alert::success("Location '{$lead->name}' sent to trash")->flash();
 
 //        return Redirect::route('data.leads');
         return Redirect::back();
