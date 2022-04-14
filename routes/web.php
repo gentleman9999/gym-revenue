@@ -225,5 +225,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function 
     Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');
 });
 
+Route::prefix('invite')->group(function () {
+    Route::get('/{id}', \App\Http\Controllers\InviteController::class . '@index')->name('invite');
+    Route::post('/accept', \App\Actions\Clients\Calendar\AcceptInvite::class)->name('invite.accept');
+    Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
+});
 
+Route::prefix('s')->group(function () {
+    Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
+});
 

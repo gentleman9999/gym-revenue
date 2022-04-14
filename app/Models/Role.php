@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Traits\Sortable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Bouncer;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Role extends \Silber\Bouncer\Database\Role
 {

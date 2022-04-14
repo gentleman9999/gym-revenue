@@ -3,7 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Clients\Calendar\CreateCalendarEvent;
-use App\Models\CalendarEventType;
+use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -56,7 +56,7 @@ class CalendarSeeder extends Seeder
                         $end = date("Y-m-d", $datestart + ($randomday * $daystep)) . ' ' . $hour2 . ':00:00';
 
                         $attendees = [];
-                        for ($d = 1; $d <= 5; $d++) {
+                        for ($d = 1; $d <= 2; $d++) {
                             $attendees[] = $randomUsers[rand(0,count($randomUsers)-1)];
                         }
 
@@ -73,7 +73,7 @@ class CalendarSeeder extends Seeder
                             'color' => $eventType->color,
                             'full_day_event' => 0,//todo:randomize,
                             'event_type_id' => $eventType->id,
-                            'attendees' => $attendees,
+                            'user_attendees' => $attendees,
                             //'lead_attendees' => $leadAttendees
                         ];
 

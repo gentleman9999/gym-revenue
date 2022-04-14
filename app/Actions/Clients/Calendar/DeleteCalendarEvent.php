@@ -3,7 +3,7 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Models\CalendarEvent;
+use App\Models\Calendar\CalendarEvent;
 use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;

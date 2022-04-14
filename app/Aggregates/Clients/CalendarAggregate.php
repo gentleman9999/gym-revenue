@@ -3,6 +3,9 @@
 namespace App\Aggregates\Clients;
 
 
+use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
+use App\StorableEvents\Clients\Calendar\CalendarAttendeeDeleted;
+use App\StorableEvents\Clients\Calendar\CalendarAttendeeInvited;
 use App\StorableEvents\Clients\Calendar\CalendarEventCreated;
 use App\StorableEvents\Clients\Calendar\CalendarEventDeleted;
 use App\StorableEvents\Clients\Calendar\CalendarEventRestored;
@@ -14,6 +17,8 @@ use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeRest
 use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeTrashed;
 use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeUpdated;
 
+use App\StorableEvents\Clients\Calendar\CalendarInviteAccepted;
+use App\StorableEvents\Clients\Calendar\CalendarInviteDeclined;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class CalendarAggregate extends AggregateRoot
@@ -76,6 +81,36 @@ class CalendarAggregate extends AggregateRoot
     public function deleteCalendarEventType(string $trashed_by_user_id, string $id)
     {
         $this->recordThat(new CalendarEventTypeDeleted($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function addCalendarAttendee(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarAttendeeAdded($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function deleteCalendarAttendee(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarAttendeeDeleted($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function inviteCalendarAttendee(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarAttendeeInvited($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function acceptCalendarEvent(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarInviteAccepted($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function declineCalendarEvent(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new CalendarInviteDeclined($this->uuid(), $updated_by_user_id, $payload));
         return $this;
     }
 }

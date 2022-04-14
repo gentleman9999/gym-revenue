@@ -75,11 +75,11 @@
         </div>
 
         <div class="col-span-3">
-            <jet-label for="attendees" value="Select User Attendees" />
+            <jet-label for="user_attendees" value="Select User Attendees" />
             <multiselect
-                v-model="form.attendees"
+                v-model="form.user_attendees"
                 class="py-2"
-                id="attendees"
+                id="user_attendees"
                 mode="tags"
                 :close-on-select="false"
                 :create-option="true"
@@ -220,7 +220,7 @@ export default {
                 end: null,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
-                attendees: [],
+                user_attendees: [],
                 lead_attendees: null,
             };
             operation = "Create";
@@ -233,7 +233,7 @@ export default {
                 end: calendarEvent.end,
                 event_type_id: calendarEvent.event_type_id,
                 client_id: page.props.value.user?.current_client_id,
-                attendees: calendarEvent.attendees?.map(attendee=>attendee.id) || [],
+                user_attendees: calendarEvent.user_attendees?.map(user_attendee=>user_attendee.id) || [],
                 lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
             }
         }
