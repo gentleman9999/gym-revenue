@@ -4,7 +4,9 @@
     </app-layout>
     <template v-else>
         <Head :title="title"/>
-        <slot/>
+        <div class="lg:flex flex-col lg:flex-row lg:min-h-screen w-full items-center">
+            <slot/>
+        </div>
     </template>
 </template>
 

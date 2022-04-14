@@ -4,6 +4,8 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Calendar\InviteAttendeeEmail;
 use App\Actions\Clients\Calendar\InviteAttendeeSMS;
+use App\Actions\Mail\MailgunBatchSend;
+use App\Models\Utility\AppState;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeInvited;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,16 +17,9 @@ class CalendarReactor extends Reactor implements ShouldQueue
 
     public function onCalendarAttendeeAdded(CalendarAttendeeAdded $event){
         //TODO develop logic to determine user preference for being contacted
-        $sendInvites = env('SEND_INVITES');
-
-        if($sendInvites) {
+        if (!AppState::isSimuationMode()) {
             InviteAttendeeEmail::run($event);
-
-            //InviteAttendeeSMS::run($event);
-        } else {
-
         }
-
     }
 
 
@@ -33,7 +28,7 @@ class CalendarReactor extends Reactor implements ShouldQueue
         $mg = Mailgun::create(env('MAILGUN_SECRET'));
         $mg->messages()->send(env('MAILGUN_DOMAIN'), [
             'from'    => env('MAIL_FROM_ADDRESS'),
-            'to'      => 'blair@capeandbay.com',//$event->data['entity_data']['email'],
+            'to'      => $event->data['entity_data']['email'],
             'subject' => $event->data['subject'],
             'html'    => $event->data['body'],
         ]);
