@@ -95,6 +95,7 @@
                     :key="selectedCalendarEvent"
                     :client_users="client_users"
                     :lead_users="lead_users"
+                    :client_id="client_id"
                     @submitted="closeModals"
                     ref="editCalendarEventForm"
                 />
@@ -145,7 +146,8 @@ export default defineComponent({
         "isClientUser",
         "filters",
         "client_users",
-        "lead_users"
+        "lead_users",
+        "client_id"
     ],
 
     setup(props) {
