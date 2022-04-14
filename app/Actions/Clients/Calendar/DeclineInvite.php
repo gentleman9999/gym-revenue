@@ -26,11 +26,11 @@ class DeclineInvite
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle($data)
     {
 
-        CalendarAggregate::retrieve($current_user->currentClientId())
-            ->declineCalendarEvent($current_user->id, $data)
+        CalendarAggregate::retrieve($data['attendeeData']['event']['client_id'])
+            ->declineCalendarEvent($data['attendeeData']['entity_id'], $data)
             ->persist();
 
         return true;
@@ -45,7 +45,6 @@ class DeclineInvite
     {
         $attendee = $this->handle(
             $request->validated(),
-            $request->user(),
         );
 
         Alert::success("Invitation Declined!")->flash();
