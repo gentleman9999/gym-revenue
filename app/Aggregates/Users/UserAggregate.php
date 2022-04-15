@@ -130,7 +130,6 @@ class UserAggregate extends AggregateRoot
             'date' => $event->date,
         ];
     }
-
     public function applyUserReceivedTextMsg(UserReceivedTextMsg $event)
     {
         $this->activity_history[] = [
@@ -145,7 +144,6 @@ class UserAggregate extends AggregateRoot
             ],
         ];
     }
-
     public function applyUserReceivedEmail(UserReceivedEmail $event)
     {
         $this->activity_history[] = [
@@ -170,8 +168,25 @@ class UserAggregate extends AggregateRoot
     }
     public function applyTaskDeleted(TaskDeleted $event)
     {
+        $this->recordThat(new TaskDeleted($this->uuid(), $deleted_by_user_id, $event));
+        return $this;
+    }
+    public function applyTaskRestored(TaskRestored $event)
+    {
 
     }
+    public function applyTaskTrashed(TaskTrashed $event)
+    {
+        $this->recordThat(new TaskTrashed($this->uuid(), $deleted_by_user_id, $event));
+        return $this;
+    }
+    public function applyTaskUpdated(TaskUpdated $event)
+    {
+        $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
+    $return $this;
+    }
+
+
     public function applyTaskMarkedCompleted(TaskMarkedCompleted $event)
     {
 
@@ -180,18 +195,7 @@ class UserAggregate extends AggregateRoot
     {
 
     }
-    public function applyTaskRestored(TaskRestored $event)
-    {
 
-    }
-    public function applyTaskTrashed(TaskTrashed $event)
-    {
-
-    }
-    public function applyTaskUpdated(TaskUpdated $event)
-    {
-
-    }
 
 
 

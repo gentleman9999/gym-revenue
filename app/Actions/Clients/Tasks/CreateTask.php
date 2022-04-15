@@ -48,9 +48,8 @@ class CreateTask
                 $user = User::whereId($user)->select('id', 'name', 'email')->first();
                 if($user) {
                     UserAggregate::retrieve($data['client_id'])
-                        ->addTaskCreated($user->id ?? "Auto Generated",
+                        ->applyTaskCreated($user->id ?? "Auto Generated",
                             [
-                        'entity_type' => User::class,
                         'user_id' => $user->id,
                         'due_at' => $user,
                         'title' => $id,
