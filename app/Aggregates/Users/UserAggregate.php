@@ -185,15 +185,15 @@ class UserAggregate extends AggregateRoot
         $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
     $return $this;
     }
-
-
     public function applyTaskMarkedCompleted(TaskMarkedCompleted $event)
     {
-
+        $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
+        $return $this;
     }
     public function applyTaskMarkedIncomplete(TaskMarkedIncomplete $event)
     {
-
+        $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
+        $return $this;
     }
 
 
