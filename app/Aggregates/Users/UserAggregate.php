@@ -3,6 +3,13 @@
 namespace App\Aggregates\Users;
 
 use App\Models\Clients\Client;
+use App\StorableEvents\Clients\Tasks\TaskCreated;
+use App\StorableEvents\Clients\Tasks\TaskDeleted;
+use App\StorableEvents\Clients\Tasks\TaskMarkedCompleted;
+use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
+use App\StorableEvents\Clients\Tasks\TaskRestored;
+use App\StorableEvents\Clients\Tasks\TaskTrashed;
+use App\StorableEvents\Clients\Tasks\TaskUpdated;
 use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
@@ -154,6 +161,38 @@ class UserAggregate extends AggregateRoot
             ],
         ];
     }
+
+
+    public function applyTaskCreated(string $created_by_user_id, array $payload)
+    {
+        $this->recordThat(new TaskCreated($this->uuid(), $created_by_user_id, $payload));
+        return $this;
+    }
+    public function applyTaskDeleted(TaskDeleted $event)
+    {
+
+    }
+    public function applyTaskMarkedCompleted(TaskMarkedCompleted $event)
+    {
+
+    }
+    public function applyTaskMarkedIncomplete(TaskMarkedIncomplete $event)
+    {
+
+    }
+    public function applyTaskRestored(TaskRestored $event)
+    {
+
+    }
+    public function applyTaskTrashed(TaskTrashed $event)
+    {
+
+    }
+    public function applyTaskUpdated(TaskUpdated $event)
+    {
+
+    }
+
 
 
     public function createUser(string $created_by_user_id, array $payload)
