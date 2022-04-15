@@ -58,7 +58,7 @@ class UploadFile
         $fileCount = count($files);
         Alert::success("{$fileCount} Files Added to event")->flash();
 
-        return Redirect::route('calendar');
+        return Redirect::back();
     }
 
 }
