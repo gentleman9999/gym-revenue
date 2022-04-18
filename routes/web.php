@@ -121,6 +121,20 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
 
+    Route::prefix('members')->group(function () {
+        Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
+        Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
+        Route::post('/', \App\Actions\Endusers\Members\CreateMember::class)->name('data.members.store');
+        Route::get('/show/{id}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
+        Route::get('/edit/{id}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
+        Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
+        Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\MEmbers\RestoreMember::class)->name('data.members.restore');
+        Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
+        Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
+    });
+
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
 });
 

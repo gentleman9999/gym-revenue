@@ -147,6 +147,27 @@
                 </jet-nav-link>
             </div>
 
+            <!-- MEMBERS -->
+            <div
+                :class="
+                    route().current('data.members')
+                        ? 'bg-primary'
+                        : 'bg-transparent'
+                "
+                class="nav-link-container"
+                v-if="$page.props.user.current_client_id !== null"
+            >
+                <jet-nav-link class="jet-nav-link" :href="route('data.members')">
+                    <p>
+                        <font-awesome-icon
+                            :icon="['fas', 'ticket']"
+                            size="lg"
+                        />
+                        Members
+                    </p>
+                </jet-nav-link>
+            </div>
+
             <!--
             <div :class="route().current('data.conversions') ? 'bg-primary' : 'bg-transparent'" class="nav-link-container" v-if="$page.props.user.current_client_id !== null">
 
@@ -287,7 +308,7 @@ import JetNavLink from "@/Jetstream/NavLink";
 import { useLockScroll } from "vue-composable";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faBars, faCog, faFileUpload } from "@fortawesome/pro-solid-svg-icons";
+import { faBars, faCog, faFileUpload, faTicket } from "@fortawesome/pro-solid-svg-icons";
 import {
     faCalendarAlt,
     faChartLine,
@@ -314,7 +335,8 @@ library.add(
     faCog,
     faFileUpload,
     faUsers,
-    faUser
+    faUser,
+    faTicket
 );
 
 export default defineComponent({

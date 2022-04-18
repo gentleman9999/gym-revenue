@@ -13,7 +13,7 @@
             :preview-component="MemberPreview"
         >
             <template #filter>
-                <leads-filters :base-route="baseRoute" />
+                <member-filters :base-route="baseRoute" />
             </template>
         </gym-revenue-crud>
         <confirm
@@ -101,12 +101,12 @@ export default defineComponent({
                 handler: ({ data }) => handleClickTrash(data.id),
             },
 
-            contact: {
-                label: "Contact Member",
-                handler: ({ data }) => {
-                    Inertia.visit(route("data.members.show", data.id));
-                },
-            },
+            // contact: {
+            //     label: "Contact Member",
+            //     handler: ({ data }) => {
+            //         Inertia.visit(route("data.members.show", data.id));
+            //     },
+            // },
         };
         const trashReason = ref(null);
 

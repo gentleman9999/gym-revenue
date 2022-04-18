@@ -22,14 +22,14 @@ class TrashMember
     public function rules()
     {
         return [
-            'client_id' => ['required', 'exists:clients,id'],
+//            'client_id' => ['required', 'exists:clients,id'],
         ];
     }
 
-    public function handle($client_id, $id, $user=null)
+    public function handle( $id, $user=null)
     {
         $member = Member::findOrFail($id);
-        EndUserActivityAggregate::retrieve($client_id)->trashMember($user->id ?? "Auto Generated", $id)->persist();
+        EndUserActivityAggregate::retrieve($member->client_id)->trashMember($user->id ?? "Auto Generated", $id)->persist();
         return $member;
     }
 
@@ -43,8 +43,8 @@ class TrashMember
     {
         $data = $request->validated();
         $member = $this->handle(
-            $data['client_id'],
-            $id
+            $id,
+            $request->user()
         );
 
         Alert::success("Member '{$member->name}' sent to trash")->flash();

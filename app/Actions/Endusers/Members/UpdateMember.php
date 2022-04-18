@@ -36,14 +36,13 @@ class UpdateMember
             'profile_picture.bucket'    => 'sometimes|required|string',
             'gender'                    => 'string|required',
             'date_of_birth'             => 'required',
-            'agreement_number'          => ['required', 'string'],
+//            'agreement_number'          => ['required', 'string'],
             'notes'                     => 'nullable|string',
         ];
     }
 
     public function handle($data, $user=null)
     {
-
         EndUserActivityAggregate::retrieve($data['client_id'])
             ->updateMember($user->id ?? "Auto Generated" , $data)
             ->persist();

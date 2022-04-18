@@ -22,6 +22,8 @@ class Member extends Model
 
     protected $fillable = ['id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'profile_picture', 'agreement_number', 'gender', 'date_of_birth'];
 
+    protected $casts = ['profile_picture' => 'array'];
+
 //    public function details()
 //    {
 //        return $this->hasMany('App\Models\Endusers\MemberDetails', 'member_id', 'id');
@@ -72,11 +74,9 @@ class Member extends Model
                     ->orWhere('first_name', 'like', '%' . $search . '%')
                     ->orWhere('last_name', 'like', '%' . $search . '%')
                     ->orWhere('gr_location_id', 'like', '%' . $search . '%')
+                    ->orWhere('agreement_number', 'like', '%' . $search . '%')
                     ->orWhereHas('location', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('agreementNumber', function ($query) use ($search) {
-                        $query->where('value', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('client', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');

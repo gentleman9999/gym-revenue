@@ -331,6 +331,12 @@ class EndUserActivityProjector extends Projector
         $member_table_data = array_filter($event->data, function ($key) {
             return in_array($key, (new Member)->getFillable());
         }, ARRAY_FILTER_USE_KEY);
+        $member_table_data['agreement_number'] = floor(time() - 99999999);
+        if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
+            $file = $event->data['profile_picture'];
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+            $member_table_data['profile_picture'] = $file;
+        }
         $member = Member::create($member_table_data);
 
 //        $user = User::find($event->user);
@@ -361,6 +367,11 @@ class EndUserActivityProjector extends Projector
     public function onMemberUpdated(MemberUpdated $event)
     {
         $member = Member::withTrashed()->findOrFail($event->data['id']);
+        if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
+            $file = $event->data['profile_picture'];
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+            $event->data['profile_picture'] = $file;
+        }
         $member->updateOrFail($event->data);
 
 //        $user = User::find($event->user);

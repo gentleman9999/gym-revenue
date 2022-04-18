@@ -38,7 +38,7 @@ class CreateMember
             'profile_picture.bucket'    => 'sometimes|required|string',
             'gender'                    => 'string|required',
             'date_of_birth'             => 'required',
-            'agreement_number'          => ['required', 'string'],
+//            'agreement_number'          => ['required', 'string'],
             'notes'                     => 'nullable|string',
         ];
     }
@@ -71,7 +71,7 @@ class CreateMember
 
         Alert::success("Member'{$member->name}' was created")->flash();
 
-        return Redirect::route('members.edit', $member->id );
+        return Redirect::route('data.members.edit', $member->id );
     }
 
 }
