@@ -161,6 +161,8 @@ class UserAggregate extends AggregateRoot
     }
 
 
+
+
     public function applyTaskCreated(string $created_by_user_id, array $payload)
     {
         $this->recordThat(new TaskCreated($this->uuid(), $created_by_user_id, $payload));
@@ -172,7 +174,8 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
     public function applyTaskRestored(TaskRestored $event)
-    {
+    {$this->recordThat(new TaskRestored($this->uuid(), $restored_by_user_id, $event));
+        return $this;
 
     }
     public function applyTaskTrashed(TaskTrashed $event)
