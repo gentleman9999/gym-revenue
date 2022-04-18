@@ -16,10 +16,10 @@
 
         <!-- Notifications links -->
         <div v-show="showingNotificationDropdown"
-             class="absolute right-0 mt-2 w-80 bg-base-300 rounded-lg shadow-xl border border-base-100 overflow-hidden z-10"
+             class="absolute right-0 mt-2 w-80 bg-base-300 rounded-lg shadow-xl border border-base-100 overflow-hidden z-10 max-h-[600px] overflow-y-auto"
              style="width: 20rem; display: none;">
             <a href="#" class="flex items-center px-4 py-3  hover:bg-base-100 -mx-2"
-               v-for="notification in notifications">
+               v-for="notification in notifications" @click="()=>dismissNotification(notification.id)">
                 <figure class="w-1/6" v-if="notification.img">
                     <img class="h-8 w-8 rounded-full object-cover mx-1"
                          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80"
@@ -72,10 +72,11 @@ export default {
         }
     },
     setup() {
-        const {notifications, unreadCount} = useNotifications();
+        const {notifications, unreadCount, dismissNotification} = useNotifications();
         return {
             notifications,
-            unreadCount
+            unreadCount,
+            dismissNotification
         };
     }
 }

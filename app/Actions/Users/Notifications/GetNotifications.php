@@ -25,7 +25,7 @@ class GetNotifications
 
     public function handle($user)
     {
-        return Notification::whereUserId($user->id)->orderByDesc('created_at')->paginate(10);
+        return Notification::whereUserId($user->id)->orderByDesc('created_at')->paginate(50);
     }
 
 //    public function authorize(ActionRequest $request): bool
