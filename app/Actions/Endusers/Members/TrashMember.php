@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Actions\Endusers;
+namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
-use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use Bouncer;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class TrashLead
+class TrashMember
 {
     use AsAction;
 
@@ -22,36 +22,33 @@ class TrashLead
     public function rules()
     {
         return [
-            'reason' => ['required','string']
+//            'client_id' => ['required', 'exists:clients,id'],
         ];
     }
 
-    public function handle($id, $current_user, $reason)
+    public function handle( $id, $user=null)
     {
-        EndUserActivityAggregate::retrieve($id)->trashLead($reason, $current_user->id ?? "Auto Generated")->persist();
-
-        return Lead::withTrashed()->findOrFail($id);
+        $member = Member::findOrFail($id);
+        EndUserActivityAggregate::retrieve($member->client_id)->trashMember($user->id ?? "Auto Generated", $id)->persist();
+        return $member;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        return $current_user->can('leads.trash', Lead::class);
+        return $current_user->can('members.trash', Member::class);
     }
 
     public function asController(ActionRequest $request, $id)
     {
-        $lead = Lead::findOrFail($id);
-
-        $this->handle(
+        $data = $request->validated();
+        $member = $this->handle(
             $id,
-            $request->user(),
-            $request->validated()['reason']
+            $request->user()
         );
 
-        Alert::success("Location '{$lead->name}' sent to trash")->flash();
+        Alert::success("Member '{$member->name}' sent to trash")->flash();
 
-//        return Redirect::route('data.leads');
         return Redirect::back();
     }
 }

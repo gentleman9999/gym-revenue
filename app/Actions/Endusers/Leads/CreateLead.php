@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Endusers;
+namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Helpers\Uuid;

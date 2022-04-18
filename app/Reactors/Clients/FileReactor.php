@@ -2,17 +2,11 @@
 
 namespace App\Reactors\Clients;
 
-use App\Actions\Sms\Twilio\FireTwilioMsg;
-use App\Mail\EndUser\EmailFromRep;
-use App\Models\Endusers\Lead;
 use App\Models\File;
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
 use App\StorableEvents\Clients\Files\FileReplaced;
-use App\StorableEvents\Endusers\LeadWasEmailedByRep;
-use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
