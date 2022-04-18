@@ -15,7 +15,9 @@ use App\StorableEvents\Users\UserDeleted;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use Bouncer;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -247,9 +249,8 @@ class UserProjector extends Projector
 
     public function onNotificationCreated(NotificationCreated $event)
     {
-        $notification = Notification::make($event->data);
-        $notification->user_id = $event->user;
-        $notification->save();
+        Log::debug($event->data);
+        Notification::create(array_merge($event->data, ['user_id' => $event->user]));
     }
     public function onNotificationDismissed(NotificationDismissed $event)
     {

@@ -15,9 +15,13 @@ class Uuid
         return new self($uuid);
     }
 
-    public static function new(): self
+//    public static function new(): self
+//    {
+//        return new self(\Ramsey\Uuid\Uuid::uuid4()->toString());
+//    }
+    public static function new(): string
     {
-        return new self(\Ramsey\Uuid\Uuid::uuid4()->toString());
+        return \Ramsey\Uuid\Uuid::uuid4()->toString();
     }
 
     public function __toString(): string

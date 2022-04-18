@@ -2,22 +2,13 @@
 
 namespace App\Actions\Users\Notifications;
 
-use App\Aggregates\Clients\CalendarAggregate;
 use App\Aggregates\Users\UserAggregate;
-use App\Models\CalendarEvent;
-use App\Models\Clients\Location;
 use App\Models\Notification;
 use App\Models\User;
 use Bouncer;
-use App\Actions\Fortify\PasswordValidationRules;
-use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Console\Command;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Mockery\Matcher\Not;
-use Prologue\Alerts\Facades\Alert;
 
 class DismissNotification
 {
@@ -34,13 +25,14 @@ class DismissNotification
     public function rules()
     {
         return [
-            'client_id' => ['required', 'exists:clients,id'],
+//            'client_id' => ['required', 'exists:clients,id'],
         ];
     }
 
     public function handle($id, $user)
     {
         UserAggregate::retrieve($user->id)->dismissNotification($id)->persist();
+        return GetUnreadNotificationCount::run($user);
     }
 
 //    public function authorize(ActionRequest $request): bool
@@ -51,11 +43,10 @@ class DismissNotification
     public function asController(ActionRequest $request, $id)
     {
 //        $data = $request->validated();
-        $notification = $this->handle(
+        return $this->handle(
             $id,
             $request->user()
         );
-//        return Redirect::back();
     }
 
     //command for ez development testing

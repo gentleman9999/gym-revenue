@@ -47,12 +47,11 @@ class CreateNotification
 //        return Notification::findOrFail($id);
     }
 
-    public function authorize(ActionRequest $request): bool
-    {
-        dd('test');
-        $current_user = $request->user();
-        return $current_user->can('calendar.create', CalendarEvent::class);
-    }
+//    public function authorize(ActionRequest $request): bool
+//    {
+//        $current_user = $request->user();
+//        return $current_user->can('calendar.create', CalendarEvent::class);
+//    }
 
     //command for ez development testing
     public function asCommand(Command $command): void

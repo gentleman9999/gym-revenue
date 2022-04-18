@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notification extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory, SoftDeletes;
 
     protected $primaryKey = 'id';
 
@@ -17,7 +17,7 @@ class Notification extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['user_id', 'state', 'text', 'dismissed_at'];
+    protected $fillable = ['id', 'user_id', 'state', 'text', 'dismissed_at'];
 
     protected function user()
     {

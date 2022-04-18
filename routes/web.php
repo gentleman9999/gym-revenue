@@ -225,5 +225,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function 
     Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(function () {
+    Route::get('/', \App\Actions\Users\Notifications\GetNotifications::class)->name('notifications');
+    Route::get('/unread', \App\Actions\Users\Notifications\GetUnreadNotificationCount::class)->name('notifications.unread');
+    Route::post('/{id}', \App\Actions\Users\Notifications\DismissNotification::class)->name('notifications.dismiss');
+});
+
 
 
