@@ -3,10 +3,9 @@
 namespace App\Actions\Clients\Calendar\CalendarEventTypes;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Models\CalendarEvent;
-use App\Models\CalendarEventType;
+use App\Models\Calendar\CalendarEvent;
+use App\Models\Calendar\CalendarEventType;
 use Bouncer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

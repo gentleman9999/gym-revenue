@@ -2,7 +2,7 @@
 
 namespace App\Projectors\Clients;
 
-use App\Models\CalendarEvent;
+use App\Models\Calendar\CalendarEvent;
 use App\StorableEvents\Clients\Calendar\CalendarEventCreated;
 use App\StorableEvents\Clients\Calendar\CalendarEventDeleted;
 use App\StorableEvents\Clients\Calendar\CalendarEventRestored;

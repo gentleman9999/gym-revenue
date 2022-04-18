@@ -3,14 +3,15 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Models\CalendarEvent;
-use App\Models\CalendarEventType;
+use App\Models\Calendar\CalendarAttendee;
+use App\Models\Calendar\CalendarEvent;
+use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class UpdateCalendarEvent
 {
@@ -31,47 +32,89 @@ class UpdateCalendarEvent
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
             'client_id' => ['required', 'exists:clients,id'],
-            'attendees' => ['sometimes', 'array'],
+            'user_attendees' => ['sometimes', 'array'],
             'lead_attendees' => ['sometimes', 'array'],
         ];
     }
 
     public function handle($data, $user=null)
     {
-        $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;; //Pulling eventType color for this table because that's how fullCalender.IO wants it
+        //Pulling eventType color for this table because that's how fullCalender.IO wants it
+        $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
 
-        /** ATTENDEE's -- Prep for DB
-         * Creating attendees bucket to hold info that we're prepping
-         * Dupe check then reindex array of ID's
-         * Add Users to Bucket then encode the var
-         */
-        $attendees = [];
-        if(!empty($data['attendees'])) {
-            $data['attendees'] = array_values(array_unique($data['attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['attendees'] as $user)
+        $userAttendeeIDs = [];
+        $leadAttendeeIDs = [];
+        $currentAttendees = CalendarAttendee::whereCalendarEventId($data['id'])->get()->toArray();
+        foreach($currentAttendees as $item) {
+            if($item['entity_type'] == User::class)
             {
-                $user = User::whereId($user)->select('id', 'name', 'email')->first();
-                if($user)
-                    $attendees[] = $user;
+                $userAttendeeIDs[] = $item['entity_id'];
             }
-            $data['attendees'] = $attendees;
+            if($item['entity_type'] == Lead::class)
+            {
+                $leadAttendeeIDs[] = $item['entity_id'];
+            }
         }
 
-        /** LEAD ATTENDEE's -- Prep for DB
-         * Creating leadAttendees bucket to hold info that we're prepping
-         * Dupe check then reindex array of ID's
-         * Add Lead Users to Bucket then encode the var
-         */
-        $leadAttendees = [];
-        if(!empty($data['lead_attendees'])) {
-            $data['lead_attendees'] = array_values(array_unique($data['lead_attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['lead_attendees'] as $user)
+        if(!empty($data['user_attendees'])) {
+            $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
+            //Delete Users
+            $delete = array_merge(array_diff($data['user_attendees'], $userAttendeeIDs), array_diff($userAttendeeIDs, $data['user_attendees']));
+            foreach($delete as $user)
             {
-                $lead = Lead::whereId($user)->select('id', 'first_name', 'last_name', 'email')->first();
-                if($user)
-                    $leadAttendees[] = $lead;
+                CalendarAggregate::retrieve($data['client_id'])
+                    ->deleteCalendarAttendee($user, ['entity_type' => User::class, 'entity_id' => $user])
+                    ->persist();
             }
-            $data['lead_attendees'] = $leadAttendees;
+            //Add Users
+            foreach($data['user_attendees'] as $user)
+            {
+                if(!in_array($user, $userAttendeeIDs)) {
+                    $user = User::whereId($user)->select('id', 'name', 'email')->first();
+                    if($user) {
+                        CalendarAggregate::retrieve($data['client_id'])
+                            ->addCalendarAttendee($user->id ?? "Auto Generated",
+                                [
+                                    'entity_type' => User::class,
+                                    'entity_id' => $user->id,
+                                    'entity_data' => $user,
+                                    'calendar_event_id' => $data['id'],
+                                    'invitation_status' => 'Invitation Pending'
+                                ])->persist();
+                    }
+                }
+            }
+        }
+
+        if(!empty($data['lead_attendees'])) {
+            //This will dupe check and then re-index the array.
+            $data['lead_attendees'] = array_values(array_unique($data['lead_attendees']));
+            //Delete Users
+            $delete = array_merge(array_diff($data['lead_attendees'], $leadAttendeeIDs), array_diff($leadAttendeeIDs, $data['lead_attendees']));
+            foreach($delete as $lead)
+            {
+                CalendarAggregate::retrieve($data['client_id'])
+                    ->deleteCalendarAttendee($lead, ['entity_type' => Lead::class, 'entity_id' => $lead])
+                    ->persist();
+            }
+            //Add Users
+            foreach($data['lead_attendees'] as $lead)
+            {
+                if(!in_array($lead, $leadAttendeeIDs)) {
+                    $lead = Lead::whereId($lead)->select('id', 'first_name', 'last_name', 'email')->first();
+                    if($lead) {
+                        CalendarAggregate::retrieve($data['client_id'])
+                            ->addCalendarAttendee($user->id ?? "Auto Generated",
+                                [
+                                    'entity_type' => Lead::class,
+                                    'entity_id' => $lead->id,
+                                    'entity_data' => $lead,
+                                    'calendar_event_id' => $data['id'],
+                                    'invitation_status' => 'Invitation Pending'
+                                ])->persist();
+                    }
+                }
+            }
         }
 
         CalendarAggregate::retrieve($data['client_id'])

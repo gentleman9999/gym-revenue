@@ -75,11 +75,11 @@
         </div>
 
         <div class="col-span-3">
-            <jet-label for="attendees" value="Select User Attendees" />
+            <jet-label for="user_attendees" value="Select User Attendees" />
             <multiselect
-                v-model="form.attendees"
+                v-model="form.user_attendees"
                 class="py-2"
-                id="attendees"
+                id="user_attendees"
                 mode="tags"
                 :close-on-select="false"
                 :create-option="true"
@@ -112,10 +112,20 @@
             />
         </div>
 
-        <div class="col-span-3" v-if="calendar_event?.attendees?.length || calendar_event?.lead_attendees?.length ">
+        <div class="col-span-3" v-if="calendar_event?.attendees?.length">
             <jet-label for="attendeesModal" value="View All Attendees" />
             <button @click.prevent="showAttendeesModal.open" class="btn btn-sm btn-info hover:text-white">
                 Open List
+            </button>
+        </div>
+
+        <div class="col-span-3 space-x-2" >
+            <jet-label for="attendeesModal" value="Calendar File Attachments" />
+            <button @click.prevent="handleClickUpload" class="btn btn-sm btn-info hover:text-white">
+                Upload
+            </button>
+            <button @click.prevent="showFilesModal.open" class="btn btn-sm btn-info hover:text-white">
+                View
             </button>
         </div>
 
@@ -149,6 +159,22 @@
             />
         </daisy-modal>
 
+        <daisy-modal
+            ref="showFilesModal"
+            id="showFilesModal"
+            @close=""
+        >
+            <h1 class="font-bold mb-4">File Attachments</h1>
+            <files-form
+                @submitted="closeModals"
+                :calendar_event="calendar_event"
+                ref="filesModal"
+            />
+        </daisy-modal>
+
+        <daisy-modal ref="uploadFiles" id="uploadFiles" class="lg:max-w-5xl bg-base-300">
+            <file-manager @submitted="closeModals" :client_id="$page.props.client_id" :entity_id="calendar_event?.id"/>
+        </daisy-modal>
 
     </form>
 </template>
@@ -178,8 +204,10 @@ import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
+import FilesForm from "@/Pages/Calendar/Partials/FilesForm";
 import Multiselect from "@vueform/multiselect";
 import {getDefaultMultiselectTWClasses} from "@/utils";
+import FileManager from "./FileManager";
 
 export default {
     components: {
@@ -191,9 +219,11 @@ export default {
         DatePicker,
         DaisyModal,
         AttendeesForm,
+        FilesForm,
         Multiselect,
+        FileManager,
     },
-    props: ["clientId", "calendar_event", "client_users", "lead_users"],
+    props: ["client_id", "calendar_event", "client_users", "lead_users"],
     setup(props, { emit }) {
         const page = usePage();
 
@@ -205,8 +235,17 @@ export default {
         const showAttendeesModal = ref();
         const attendeesModal = ref(null);
 
+        const showFilesModal = ref();
+        const filesModal = ref(null);
+
         const closeModals = () => {
             showAttendeesModal.value.close();
+        };
+
+
+        const uploadFiles = ref();
+        const handleClickUpload = () => {
+            uploadFiles.value.open();
         };
 
         let calendarEventForm = null;
@@ -220,7 +259,7 @@ export default {
                 end: null,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
-                attendees: [],
+                user_attendees: [],
                 lead_attendees: null,
             };
             operation = "Create";
@@ -233,7 +272,7 @@ export default {
                 end: calendarEvent.end,
                 event_type_id: calendarEvent.event_type_id,
                 client_id: page.props.value.user?.current_client_id,
-                attendees: calendarEvent.attendees?.map(attendee=>attendee.id) || [],
+                user_attendees: calendarEvent.user_attendees?.map(user_attendee=>user_attendee.id) || [],
                 lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
             }
         }
@@ -319,10 +358,14 @@ export default {
             handleSubmit,
             calendarEventTypes,
             dateFormat,
-            attendeesModal,
             calendar_event,
             closeModals,
+            attendeesModal,
+            filesModal,
             showAttendeesModal,
+            showFilesModal,
+            uploadFiles,
+            handleClickUpload,
             multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },

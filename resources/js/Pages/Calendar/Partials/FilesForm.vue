@@ -2,47 +2,42 @@
     <form @submit="handleSubmit" class="w-full grid grid-cols-6 gap-4">
 
         <div class="col-span-6" v-if="form.attendees?.length">
-            <jet-label for="attendees" value="Client Attendees" />
             <table class="table table-compact w-full">
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Attendee</th>
-                    <th>Data</th>
+                    <th>File</th>
+                    <th>Size</th>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="attendee in form.attendees"
-                        :key="attendee.id"
+                    <tr v-for="file in form.files"
+                        :key="file.id"
                     >
-                        <th v-if="attendee.entity_type == 'App\\Models\\User'">
-                            <img class="object-cover w-6 h-6 rounded-full" :src="attendee.entity_data.profile_photo_url"
-                                     :alt="attendee.entity_data.name">
-                        </th>
-                        <th v-else>
-
-                        </th>
-
-                        <td v-if="attendee.entity_type == 'App\\Models\\Endusers\\Lead'">
-                            <div class="flex items-center space-x-3">
-                                <div>
-                                    <div class="font-bold">{{ attendee.entity_data.first_name }} {{attendee.entity_data.last_name}}</div>
-                                    <div class="text-sm opacity-50">Lead</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td v-else>
-                            <div class="flex items-center space-x-3">
-                                <div>
-                                    <div class="font-bold">{{ attendee.entity_data.name }}</div>
-                                    <div class="text-sm opacity-50">Client User</div>
-                                </div>
-                            </div>
-                        </td>
-
                         <td>
-                            <div class="text-xs">{{ attendee.entity_data.email }}</div>
-                            <span class="badge badge-ghost badge-sm">{{ attendee.invitation_status }}</span>
+                            <file-extension-icon
+                                :extension="file.extension"
+                                v-if="!['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(file.extension)"
+                                class="h-16 w-16"
+                            />
+                        </td>
+                        <td>
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="font-bold">
+                                        <a
+                                        :href="file.url"
+                                        :download="file.filename"
+                                        target="_blank"
+                                        class="link link-hover"
+                                        >{{ file.filename }}</a>
+                                    </div>
+                                    <div class="text-sm opacity-50">{{ file.extension }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-xs">Size:<span class="badge badge-ghost badge-sm">{{file.size}}</span></div>
                         </td>
                     </tr>
                 </tbody>
@@ -77,10 +72,9 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
-import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
+import FileExtensionIcon from '@/Pages/Files/Partials/FileExtensionIcon'
 
 export default {
     components: {
@@ -90,6 +84,7 @@ export default {
         JetInputError,
         JetLabel,
         DaisyModal,
+        FileExtensionIcon,
     },
     props: ["calendar_event"],
     setup(props, { emit }) {

@@ -94,6 +94,8 @@
                     :calendar_event="selectedCalendarEvent"
                     :key="selectedCalendarEvent"
                     :client_users="client_users"
+                    :lead_users="lead_users"
+                    :client_id="client_id"
                     @submitted="closeModals"
                     ref="editCalendarEventForm"
                 />
@@ -144,6 +146,8 @@ export default defineComponent({
         "isClientUser",
         "filters",
         "client_users",
+        "lead_users",
+        "client_id"
     ],
 
     setup(props) {
@@ -181,14 +185,12 @@ export default defineComponent({
 
         const clearSelectedEvent = () => (selectedCalendarEvent.value = null);
         watchEffect(() => {
-            console.log("events changed!");
             if (!props.calendar_events) {
                 return;
             }
             const fullCalendarApi = calendar.value?.getApi();
             if (fullCalendarApi) {
                 fullCalendarApi.refetchEvents();
-                console.log("refetched events", props.calendar_events);
             }
         });
 
@@ -272,10 +274,6 @@ export default defineComponent({
                     }
                 },
                 dateClick: function (data) {
-                    console.log({
-                        data,
-                        createCalendarEventForm: createCalendarEventForm.value,
-                    });
                     numClicks.value++;
                     let singleClickTimer;
                     if (numClicks.value === 1) {
@@ -302,7 +300,6 @@ export default defineComponent({
                         (event) => event.id === id
                     );
                     editEventModal.value.open();
-                    console.log("event clicked: ", selectedCalendarEvent.value);
                 },
                 eventDrop: function (data) {
                     handleDroppedEvent(data);

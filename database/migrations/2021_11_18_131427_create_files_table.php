@@ -25,6 +25,8 @@ class CreateFilesTable extends Migration
             $table->string('key');
             $table->integer('size');
             $table->string('permissions')->default('[]');
+            $table->string('entity_type')->nullable();
+            $table->string('entity_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

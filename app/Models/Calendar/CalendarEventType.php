@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Calendar;
 
 use App\Models\Clients\Client;
 use App\Models\Traits\Sortable;

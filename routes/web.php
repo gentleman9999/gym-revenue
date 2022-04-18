@@ -141,6 +141,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
+    Route::post('/', \App\Actions\Clients\Calendar\UploadFile::class)->name('calendar.upload');
     Route::prefix('event_types')->group(function () {
         Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
         Route::get('/create', \App\Http\Controllers\CalendarController::class . '@createEventType')->name('calendar.event_types.create');
@@ -225,6 +226,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function 
     Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');
 });
 
+Route::prefix('invite')->group(function () {
+    Route::get('/{id}', \App\Http\Controllers\InviteController::class . '@index')->name('invite');
+    Route::post('/accept', \App\Actions\Clients\Calendar\AcceptInvite::class)->name('invite.accept');
+    Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
+});
 Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(function () {
     Route::get('/', \App\Actions\Users\Notifications\GetNotifications::class)->name('notifications');
     Route::get('/unread', \App\Actions\Users\Notifications\GetUnreadNotificationCount::class)->name('notifications.unread');
@@ -232,4 +238,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(
 });
 
 
+Route::prefix('s')->group(function () {
+    Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
+});
 

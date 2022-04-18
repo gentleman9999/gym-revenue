@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Calendar;
 
 use App\Models\Clients\Client;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -25,9 +25,8 @@ class CalendarEvent extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'attendees', 'lead_attendees'];
+    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id'];
 
-    protected $casts = ['attendees' => 'array', 'lead_attendees' => 'array'];
 
     public function client()
     {
@@ -36,7 +35,17 @@ class CalendarEvent extends Model
 
     public function type()
     {
-        return $this->hasOne('App\Models\CalendarEventType', 'id', 'event_type_id');
+        return $this->hasOne('App\Models\Calendar\CalendarEventType', 'id', 'event_type_id');
+    }
+
+    public function attendees()
+    {
+        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id' );
+    }
+
+    public function files()
+    {
+        return $this->hasMany('App\Models\File', 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
     }
 
     public function fixDate($data): array
