@@ -243,7 +243,7 @@ export default defineComponent({
                        console.log('Event Type '+arg.event.extendedProps.type.type )
                     }
                 },*/
-                initialView: "dayGridMonth",
+                initialView: "timeGridWeek",
                 events: (
                     { start, end, startStr, endStr },
                     successCallback,
