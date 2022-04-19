@@ -27,10 +27,10 @@ class TrashTask
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($id, User $user)
     {
-        userAggregate::retrieve($data['client_id'])
-            ->applyTaskTrashed($user->id ?? "Auto Generated", $data['id'])
+        UserAggregate::retrieve($user->id)
+            ->trashTask($user->id ?? "Auto Generated", $id)
             ->persist();
     }
 

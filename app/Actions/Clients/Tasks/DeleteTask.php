@@ -27,10 +27,10 @@ class DeleteTask
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($id, User $user)
     {
-        UserAggregate::retrieve($data['client_id'])
-            ->applyTaskDeleted($user->id ?? "Auto Generated", $data['id'])
+        UserAggregate::retrieve($user->id)
+            ->deleteTask($user->id ?? "Auto Generated", $id)
             ->persist();
     }
 
@@ -42,10 +42,8 @@ class DeleteTask
 
     public function asController(Request $request, $id)
     {
-        $task = Tasks::findOrFail($id);
-
-        $this->handle(
-            $task->toArray(),
+        $task = $this->handle(
+            $id,
             $request->user()
         );
 

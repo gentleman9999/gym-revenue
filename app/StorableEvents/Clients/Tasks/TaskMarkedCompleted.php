@@ -6,11 +6,11 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class TaskMarkedCompleted extends ShouldBeStored
 {
-    public $user, $data, $client;
-    public function __construct(string $client, string $user, array $data)
+    public $user, $id, $client;
+    public function __construct(string $client, string $user, string $id)
     {
         $this->client = $client;
         $this->user = $user;
-        $this->data = $data;
+        $this->id = $id;
     }
 }

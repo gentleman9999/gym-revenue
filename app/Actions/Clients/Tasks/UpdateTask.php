@@ -23,25 +23,22 @@ class UpdateTask
     public function rules()
     {
         return [
-            'title' =>['required', 'string','max:50'],
+            'title' => ['required', 'string', 'max:50'],
             'description' => ['string', 'nullable'],
             'user_id' => ['sometimes'],
             'due_at' => ['sometimes'],
             'completed_at' => ['sometimes'],
-            ];
+        ];
     }
 
 
-
-    public function handle($data, $user=null)
+    public function handle($data, User $user)
     {
-
-
-        UserAggregate::retrieve($data['client_id'])
-            ->applyTaskUpdated($user->id ?? "Auto Generated" , $data)
+        UserAggregate::retrieve($user->id)
+            ->updateTask($user->id ?? "Auto Generated", $data)
             ->persist();
 
-        return Task::find($data['id']);
+        return Task::findOrFail($data['id']);
     }
 
     public function authorize(ActionRequest $request): bool

@@ -11,7 +11,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 use Twilio\TwiML\Voice\Task;
 
-class MarkedIncompletedTask
+class MarkedTaskComplete
 {
     use AsAction;
 
@@ -33,15 +33,13 @@ class MarkedIncompletedTask
 
 
 
-    public function handle($data, $user=null)
+    public function handle($id, $user)
     {
-
-
-        UserAggregate::retrieve($data['client_id'])
-            ->applyTaskMarkedIncomplete($user->id ?? "Auto Generated" , $data)
+        UserAggregate::retrieve($user->id)
+            ->markTaskAsComplete($user->id ?? "Auto Generated" , $id)
             ->persist();
 
-        return Task::find($data['id']);
+        return Task::find($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -52,10 +50,9 @@ class MarkedIncompletedTask
 
     public function asController(ActionRequest $request, $id)
     {
-        $data = $request->validated();
-        $data['id'] = $id;
         $task = $this->handle(
-            $data
+            $id,
+            $request->user()
         );
 
         Alert::success("Task '{$task->title}' was updated")->flash();

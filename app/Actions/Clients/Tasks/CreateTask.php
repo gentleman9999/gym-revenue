@@ -2,9 +2,7 @@
 
 namespace App\Actions\Clients\Tasks;
 
-//use App\Aggregates\Clients\CalendarAggregate;
 use App\Aggregates\Users\UserAggregate;
-
 use App\Helpers\Uuid;
 use App\Models\User;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
@@ -26,7 +24,7 @@ class CreateTask
     public function rules()
     {
         return [
-            'title' =>['required', 'string','max:50'],
+            'title' => ['required', 'string', 'max:50'],
             'description' => ['string', 'nullable'],
             'user_id' => ['sometimes'],
             'due_at' => ['sometimes'],
@@ -34,42 +32,16 @@ class CreateTask
         ];
     }
 
-    public function handle($data, $user = null)
+    public function handle($data, User $user)
     {
         $id = Uuid::new();
         $data['id'] = $id;
 
-
-
-        if(isset($user->id))
-//            $data['user_attendees'][] = $user->id; //If you make the event, you're automatically an attendee.
-
-        if(!is_null($data['title'])) {
-                $user = User::whereId($user)->select('id', 'name', 'email')->first();
-                if($user) {
-                    UserAggregate::retrieve($data['client_id'])
-                        ->applyTaskCreated($user->id ?? "Auto Generated",
-                            [
-                        'user_id' => $user->id,
-                        'due_at' => $user,
-                        'title' => $id,
-                        'description' => 'Invitation Pending'
-                        ])->persist();
-                }
-            }
-        }
-
-
-
- //       unset($data['user_attendees']);
- //       unset($data['lead_attendees']);
-
-
-        UserAggregate::retrieve($data['client_id'])
+        UserAggregate::retrieve($user->id)
             ->createTask($user->id ?? "Auto Generated", $data)
             ->persist();
 
-        return UserAggregate::findOrFail($id);
+        return Task::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -81,12 +53,12 @@ class CreateTask
     public function asController(ActionRequest $request)
     {
 
-        $calendar = $this->handle(
+        $task = $this->handle(
             $request->validated(),
             $request->user()
         );
 
-        Alert::success("Calendar Event '{$calendar->title}' was created")->flash();
+        Alert::success("Task'{$task->title}' was created")->flash();
 
         return Redirect::back();
     }

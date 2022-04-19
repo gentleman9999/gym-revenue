@@ -27,11 +27,12 @@ class RestoreTask
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($id, User $user)
     {
-        UserAggregate::retrieve($user->id ?? "Auto Generated", $data['client_id'])
-            ->applyTaskRestored()
+        UserAggregate::retrieve($user->id ?? "Auto Generated", $id)
+            ->restoreTask()
             ->persist();
+        return Tasks::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -42,10 +43,9 @@ class RestoreTask
 
     public function asController(Request $request, $id)
     {
-        $task = Tasks::withTrashed()->findOrFail($id);
 
-        $this->handle(
-            $task->toArray(),
+        $task = $this->handle(
+            $id,
             $request->user()
         );
 
