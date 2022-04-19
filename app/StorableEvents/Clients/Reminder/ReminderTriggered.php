@@ -4,13 +4,13 @@ namespace App\StorableEvents\Clients\Reminder;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class ReminderDeleted extends ShouldBeStored
+class ReminderTriggered extends ShouldBeStored
 {
-    public $user, $id;
+    public $id, $user;
 
     public function __construct(string $user, string $id)
     {
-        $this->user = $user;
         $this->id = $id;
+        $this->user = $user;
     }
 }

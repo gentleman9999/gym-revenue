@@ -4,7 +4,7 @@ namespace App\StorableEvents\Clients\Reminder;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class ReminderCreated extends ShouldBeStored
+class ReminderUpdated extends ShouldBeStored
 {
     public $user, $payload;
 

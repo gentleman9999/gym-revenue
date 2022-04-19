@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Actions\Clients\Reminders;
+namespace App\Actions\Users\Reminders;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Helpers\Uuid;
 use App\Models\Reminder;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 
 class CreateReminder
