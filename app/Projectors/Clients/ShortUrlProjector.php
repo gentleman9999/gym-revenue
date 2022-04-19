@@ -3,7 +3,7 @@
 namespace App\Projectors\Clients;
 
 use App\Models\ShortUrl;
-use App\StorableEvents\Clients\Note\ShortUrlCreated;
+use App\StorableEvents\Clients\ShortUrl\ShortUrlCreated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ShortUrlProjector extends Projector
