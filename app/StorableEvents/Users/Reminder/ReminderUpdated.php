@@ -1,10 +1,10 @@
 <?php
 
-namespace App\StorableEvents\Clients\Reminder;
+namespace App\StorableEvents\Users\Reminder;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class ReminderCreated extends ShouldBeStored
+class ReminderUpdated extends ShouldBeStored
 {
     public $user, $payload;
 

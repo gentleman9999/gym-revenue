@@ -18,7 +18,7 @@ class CreateRemindersTable extends Migration
             $table->string('entity_type');
             $table->string('entity_id');
             $table->integer('user_id');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('description')->nullable();
             //minutes before an event this should fire.
             //this is so an event time can change, but we don't have to go update all the reminders

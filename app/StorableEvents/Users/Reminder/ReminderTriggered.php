@@ -1,6 +1,6 @@
 <?php
 
-namespace App\StorableEvents\Clients\Reminder;
+namespace App\StorableEvents\Users\Reminder;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 

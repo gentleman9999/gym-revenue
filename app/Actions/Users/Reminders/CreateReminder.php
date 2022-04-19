@@ -3,6 +3,7 @@
 namespace App\Actions\Users\Reminders;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use App\Helpers\Uuid;
 use App\Models\Reminder;
 use Illuminate\Support\Facades\Redirect;
@@ -27,7 +28,7 @@ class CreateReminder
             'entity_id' => ['string', 'required'],
             'user_id' => ['int', 'required'],
             'name' => ['string', 'required'],
-            'remind_time' => ['datetime', 'required']
+            'remind_time' => ['int', 'required']
         ];
     }
 
@@ -41,7 +42,7 @@ class CreateReminder
         $id = Uuid::new();
         $data['id'] = $id;
 
-        ClientAggregate::retrieve($client_id ?? $data['client_id'])->createReminder($current_user->id ?? "Auto Generated", $data)->persist();
+        UserAggregate::retrieve($data['user_id'])->createReminder($current_user->id ?? "Auto Generated", $data)->persist();
 
         return Reminder::findOrFail($id);
     }

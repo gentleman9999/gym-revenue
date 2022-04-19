@@ -4,9 +4,9 @@ namespace App\Projectors\Clients;
 
 
 use App\Models\Reminder;
-use App\StorableEvents\Clients\Reminder\ReminderCreated;
-use App\StorableEvents\Clients\Reminder\ReminderDeleted;
-use App\StorableEvents\Clients\Reminder\ReminderTriggered;
+use App\StorableEvents\Users\Reminder\ReminderCreated;
+use App\StorableEvents\Users\Reminder\ReminderDeleted;
+use App\StorableEvents\Users\Reminder\ReminderTriggered;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ReminderProjector extends Projector

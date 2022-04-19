@@ -8,7 +8,6 @@ use App\Aggregates\Clients\Traits\Actions\ClientEmailCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientGatewayActions;
 use App\Aggregates\Clients\Traits\Actions\ClientLeadActions;
-use App\Aggregates\Clients\Traits\Actions\ClientReminderActions;
 use App\Aggregates\Clients\Traits\Actions\ClientServicesActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientTeamActions;
@@ -34,5 +33,4 @@ trait ClientActions
     use ClientClassificationActions;
     use ClientUserActions;
     use ClientLocationsActions;
-    use ClientReminderActions;
 }

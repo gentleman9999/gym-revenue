@@ -3,21 +3,21 @@
 namespace App\Aggregates\Users;
 
 use App\Models\Clients\Client;
+use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
-use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\Notifications\NotificationCreated;
 use App\StorableEvents\Users\Notifications\NotificationDismissed;
+use App\StorableEvents\Users\Reminder\ReminderCreated;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use App\StorableEvents\Users\WelcomeEmailSent;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class UserAggregate extends AggregateRoot
@@ -293,6 +293,12 @@ class UserAggregate extends AggregateRoot
     public function dismissNotification(string $id)
     {
         $this->recordThat(new NotificationDismissed($this->uuid(), $id));
+        return $this;
+    }
+
+    public function createReminder(string $user_id, array $payload)
+    {
+        $this->recordThat(new ReminderCreated($user_id, $payload));
         return $this;
     }
 }
