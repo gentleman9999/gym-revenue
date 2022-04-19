@@ -9,6 +9,8 @@ use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnoth
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
 use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
+use App\StorableEvents\Users\Notifications\NotificationCreated;
+use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
@@ -280,5 +282,17 @@ class UserAggregate extends AggregateRoot
             default:
                 return false;
         }
+    }
+
+    public function createNotification(array $data)
+    {
+        $this->recordThat(new NotificationCreated($this->uuid(), $data));
+        return $this;
+    }
+
+    public function dismissNotification(string $id)
+    {
+        $this->recordThat(new NotificationDismissed($this->uuid(), $id));
+        return $this;
     }
 }

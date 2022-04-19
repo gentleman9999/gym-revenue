@@ -125,7 +125,7 @@
 <!--                            />-->
 <!--                        </button>-->
 <!--                    </div>-->
-<!--                    <noty-bell></noty-bell>-->
+                    <noty-bell></noty-bell>
 <!--                    <div class="ml-3 relative">-->
 <!--                        <button @click="comingSoon()">-->
 <!--                            <font-awesome-icon-->

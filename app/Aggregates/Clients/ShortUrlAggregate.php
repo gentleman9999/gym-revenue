@@ -3,7 +3,7 @@
 namespace App\Aggregates\Clients;
 
 
-use App\StorableEvents\Clients\Note\ShortUrlCreated;
+use App\StorableEvents\Clients\ShortUrl\ShortUrlCreated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class ShortUrlAggregate extends AggregateRoot

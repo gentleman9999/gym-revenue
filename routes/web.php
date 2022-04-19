@@ -105,20 +105,34 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Actions\Endusers\CreateLead::class)->name('data.leads.store');
+        Route::post('/create', \App\Actions\Endusers\Leads\CreateLead::class)->name('data.leads.store');
         Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{id}', \App\Actions\Endusers\UpdateLead::class)->name('data.leads.update');
+        Route::put('/{id}', \App\Actions\Endusers\Leads\UpdateLead::class)->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
-        Route::delete('/delete/{id}', \App\Actions\Endusers\TrashLead::class)->name('data.leads.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\RestoreLead::class)->name('data.leads.restore');
+        Route::delete('/delete/{id}', \App\Actions\Endusers\Leads\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Leads\RestoreLead::class)->name('data.leads.restore');
         Route::get('/view/{id}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
+    });
+
+    Route::prefix('members')->group(function () {
+        Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
+        Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
+        Route::post('/', \App\Actions\Endusers\Members\CreateMember::class)->name('data.members.store');
+        Route::get('/show/{id}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
+        Route::get('/edit/{id}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
+        Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
+        Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\MEmbers\RestoreMember::class)->name('data.members.restore');
+        Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
+        Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
@@ -231,6 +245,12 @@ Route::prefix('invite')->group(function () {
     Route::post('/accept', \App\Actions\Clients\Calendar\AcceptInvite::class)->name('invite.accept');
     Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
 });
+Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(function () {
+    Route::get('/', \App\Actions\Users\Notifications\GetNotifications::class)->name('notifications');
+    Route::get('/unread', \App\Actions\Users\Notifications\GetUnreadNotificationCount::class)->name('notifications.unread');
+    Route::post('/{id}', \App\Actions\Users\Notifications\DismissNotification::class)->name('notifications.dismiss');
+});
+
 
 Route::prefix('s')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');

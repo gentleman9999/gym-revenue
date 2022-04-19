@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Actions\Clients\Files;
+namespace App\Actions\ShortUrl;
 
 use App\Aggregates\Clients\ShortUrlAggregate;
-use App\Models\ShortUrl;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

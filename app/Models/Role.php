@@ -6,6 +6,7 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use App\Models\Traits\Sortable;
 use Bouncer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,9 @@ class Role extends \Silber\Bouncer\Database\Role
                 break;
             case 'leads':
                 $entity = Lead::class;
+                break;
+            case 'members':
+                $entity = Member::class;
                 break;
             case 'teams':
                 $entity = Team::class;

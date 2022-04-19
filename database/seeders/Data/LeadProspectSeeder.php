@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Data;
 
-use App\Actions\Endusers\CreateLead;
+use App\Actions\Endusers\Leads\CreateLead;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;

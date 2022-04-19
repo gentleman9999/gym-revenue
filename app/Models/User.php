@@ -306,4 +306,9 @@ class User extends Authenticatable
     {
         return $this->securityGroup()->value <= $group->value;
     }
+
+    public function notifications()
+    {
+        return $this->hasMany('notifications');
+    }
 }

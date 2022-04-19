@@ -1,5 +1,5 @@
 <template>
-    <app-layout v-if="isAuthenticated">
+    <app-layout v-if="user">
         <slot/>
     </app-layout>
     <template v-else>
@@ -34,13 +34,13 @@ import TopNav from "@/Components/Navigation/TopNav";
 import SideNav from "@/Components/Navigation/SideNav";
 import {Head, Link, usePage} from '@inertiajs/inertia-vue3';
 import NotyBell from "@/Components/NotyBell";
-import {useAlertEmitter} from "@/utils";
-import tailwindConfig from '../../../tailwind.config.js'
-import {
-    setBreakpointTailwindCSS,
-    useBreakpointTailwindCSS
-} from "vue-composable";
+// import tailwindConfig from '../../../tailwind.config.js'
+// import {
+//     setBreakpointTailwindCSS,
+//     useBreakpointTailwindCSS
+// } from "vue-composable";
 import AppLayout from "@/Layouts/AppLayout";
+import {useUser} from "@/utils/useUser";
 
 export default defineComponent({
     components: {
@@ -60,11 +60,8 @@ export default defineComponent({
         title: String,
     },
     setup() {
-        // useAlertEmitter();
-        //TODO: swap this out with useUser once merged with my branch
-        const page = usePage();
-        const isAuthenticated = computed(() => page.props.value.user != null);
-        return {isAuthenticated};
+        const user = useUser();
+        return {user};
     },
 })
 </script>
