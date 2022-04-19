@@ -11,7 +11,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 use Twilio\TwiML\Voice\Task;
 
-class MarkedTaskComplete
+class MarkTaskComplete
 {
     use AsAction;
 
