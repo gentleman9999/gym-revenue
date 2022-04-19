@@ -35,12 +35,12 @@ class CreateNotification
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($data, $user)
     {
         $id = Uuid::new();
         $data['id'] = $id;
 
-        UserAggregate::retrieve($data['user_id'])
+        UserAggregate::retrieve($user->id)
             ->createNotification($data)
             ->persist();
 

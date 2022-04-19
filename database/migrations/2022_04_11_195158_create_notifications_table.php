@@ -17,7 +17,10 @@ class CreateNotificationsTable extends Migration
             $table->uuid('id')->unique()->primary();
             $table->integer('user_id')->index();
             $table->string('state')->default('info');
-            $table->string('text');
+            $table->string('text')->nullable();
+            $table->string('entity_type')->nullable();
+            $table->string('entity_id')->nullable();
+            $table->json('entity')->nullable();
             $table->json('misc')->nullable();
             $table->timestamp('dismissed_at')->nullable();
             $table->timestamps();

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,7 +16,12 @@ class Notification extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'user_id', 'state', 'text', 'dismissed_at'];
+    protected $fillable = ['id', 'user_id', 'state', 'entity_type', 'text', 'dismissed_at', 'misc', 'entity_id', 'entity_type', 'entity'];
+
+    protected $casts = [
+        'misc' => 'array',
+        'entity' => 'array',
+    ];
 
     protected function user()
     {

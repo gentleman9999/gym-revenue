@@ -48,16 +48,14 @@ export const getDefaultMultiselectTWClasses = () => ({
     groupLabelSelected: "bg-green-600 text-base-content",
     groupLabelDisabled:
         "bg-base-200 text-base-content text-opacity-50 cursor-not-allowed",
-    groupLabelSelectedPointed:
-        "bg-green-600 text-base-content opacity-90",
+    groupLabelSelectedPointed: "bg-green-600 text-base-content opacity-90",
     groupLabelSelectedDisabled:
         "text-green-100 bg-green-600 bg-opacity-50 cursor-not-allowed",
     groupOptions: "p-0 m-0",
     option: "flex items-center justify-start box-border text-left cursor-pointer text-base leading-snug py-2 px-3",
     optionPointed: "bg-primary",
     optionSelected: "text-base-content bg-green-500",
-    optionDisabled:
-        "text-base-content text-opacity-50 cursor-not-allowed",
+    optionDisabled: "text-base-content text-opacity-50 cursor-not-allowed",
     optionSelectedPointed: "text-base-content bg-green-500 opacity-90",
     optionSelectedDisabled:
         "text-green-100 bg-green-500 bg-opacity-50 cursor-not-allowed",

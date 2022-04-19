@@ -1,7 +1,7 @@
 import { usePage } from "@inertiajs/inertia-vue3";
-import {computed, ref, watchEffect} from "vue";
+import { computed, ref, watchEffect } from "vue";
 
-export const useUser = () =>{
+export const useUser = () => {
     const page = usePage();
     // const flash = ref(page.props?.value?.flash);
     // //we compare json here to prevent double display of the alert
@@ -14,5 +14,5 @@ export const useUser = () =>{
     //     }
     // })
     // return flash;
-    return computed(()=>page?.props?.value?.user);
-}
+    return computed(() => page?.props?.value?.user);
+};

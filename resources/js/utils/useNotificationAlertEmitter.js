@@ -1,45 +1,64 @@
-import {useFlash} from "./useFlash";
-import {ref, watch, watchEffect, onBeforeUnmount} from "vue";
-import {useUser} from "@/utils/useUser";
-import {useNotifications} from "@/utils/useNotifications";
+import { useFlash } from "./useFlash";
+import { ref, watch, watchEffect, onBeforeUnmount } from "vue";
+import { useUser } from "@/utils/useUser";
+import { useNotifications } from "@/utils/useNotifications";
+import {parseNotificationResponse} from "@/utils";
+
 
 export const useNotificationAlertEmitter = () => {
     const user = useUser();
     const channel = ref();
-    const { notifications, unreadCount, dismissNotification, incrementUnreadCount } = useNotifications();
+    const {
+        notifications,
+        unreadCount,
+        dismissNotification,
+        incrementUnreadCount,
+    } = useNotifications();
 
     const handleIncomingNotification = (e) => {
-        console.log({e});
+        console.log({ e });
         incrementUnreadCount();
+        const { text, state, timeout } = parseNotificationResponse(e);
         let alert = {
-            type: e?.state || 'info',
+            type: state || "info",
             theme: "sunset",
-            text: e?.text,
-            timeout: e?.timeout || false,
+            text,
+            timeout: timeout || false,
             callbacks: {
-                onClose: async() => {
-                    console.log('we can figure out how to route based on event type here!');
+                onClose: async () => {
+                    console.log(
+                        "we can figure out how to route based on event type here!"
+                    );
                     // axios.post(route('notifications.dismiss', e.notification_id));
                     await dismissNotification(e.notification_id);
-                }
-            }
+                },
+            },
         };
         new Noty(alert).show();
-    }
-    onBeforeUnmount(()=>{
+    };
+    onBeforeUnmount(() => {
         //cleanup old listeners
         Echo.leave(channel.value.name);
-    })
+    });
     watchEffect(() => {
-        if (channel.value?.name && channel.value?.name !== `users.${user?.value?.id}`) {
-            console.log('leaving channel:', channel.value?.name)
+        if (
+            channel.value?.name &&
+            channel.value?.name !== `users.${user?.value?.id}`
+        ) {
+            console.log("leaving channel:", channel.value?.name);
             //leave channel when we log out
             Echo.leave(channel.value.name);
         }
 
-        if (user.value?.id && !channel.value && !window.Echo.connector.channels[`App.Models.User.${user?.value?.id}`]) {
+        if (
+            user.value?.id &&
+            !channel.value &&
+            !window.Echo.connector.channels[
+                `App.Models.User.${user?.value?.id}`
+            ]
+        ) {
             channel.value = Echo.private(`App.Models.User.${user?.value?.id}`);
             channel.value.notification(handleIncomingNotification);
         }
     });
-}
+};

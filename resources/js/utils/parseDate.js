@@ -5,5 +5,5 @@ export const parseDate = (date) => {
         return parsed;
     }
 
-    return Date.parse(date.replace(/-/g, '/').replace(/[a-z]+/gi, ' '));
-}
+    return Date.parse(date.replace(/-/g, "/").replace(/[a-z]+/gi, " "));
+};
