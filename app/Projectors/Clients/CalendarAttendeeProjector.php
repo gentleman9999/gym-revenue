@@ -3,6 +3,7 @@
 namespace App\Projectors\Clients;
 
 use App\Actions\Users\Reminders\CreateReminder;
+use App\Actions\Users\Reminders\DeleteReminder;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
@@ -30,6 +31,7 @@ class CalendarAttendeeProjector extends Projector
     public function onCalendarAttendeeDeleted(CalendarAttendeeDeleted $event)
     {
         CalendarAttendee::whereEntityType($event->data['entity_type'])->whereEntityId($event->data['entity_id'])->forceDelete();
+        //DeleteReminder::run([]);
     }
 
     public function onCalendarInviteAccepted(CalendarInviteAccepted $event)

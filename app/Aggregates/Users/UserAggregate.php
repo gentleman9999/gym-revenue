@@ -12,6 +12,7 @@ use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\Notifications\NotificationCreated;
 use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Users\Reminder\ReminderCreated;
+use App\StorableEvents\Users\Reminder\ReminderDeleted;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
@@ -299,6 +300,12 @@ class UserAggregate extends AggregateRoot
     public function createReminder(string $user_id, array $payload)
     {
         $this->recordThat(new ReminderCreated($user_id, $payload));
+        return $this;
+    }
+
+    public function deleteReminder(string $user_id, array $id)
+    {
+        $this->recordThat(new ReminderDeleted($user_id, $id));
         return $this;
     }
 }

@@ -18,6 +18,6 @@ class Reminder extends Model
 
     public function events()
     {
-        return $this->hasMany('App\Models\CalendarEvent', 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
+        return $this->hasMany('App\Models\Calendar\CalendarEvent', 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
     }
 }
