@@ -1,4 +1,4 @@
-import {ref} from "vue";
+import { ref } from "vue";
 
 const notifications = ref([]);
 const unreadCount = ref(0);
@@ -9,16 +9,21 @@ notifications.value = notificationResponse.data.data;
 unreadCount.value = unreadCountResponse.data;
 
 const dismissNotification = async (id) => {
-    const response = await axios.post(route('notifications.dismiss', id));
+    const response = await axios.post(route("notifications.dismiss", id));
     const newUnreadCount = response.data;
-    console.log({response, newUnreadCount});
+    console.log({ response, newUnreadCount });
     unreadCount.value = newUnreadCount;
-}
+};
 
 const incrementUnreadCount = () => {
     unreadCount.value = unreadCount.value + 1;
-}
+};
 
 export const useNotifications = () => {
-    return {notifications, unreadCount, dismissNotification, incrementUnreadCount};
+    return {
+        notifications,
+        unreadCount,
+        dismissNotification,
+        incrementUnreadCount,
+    };
 };
