@@ -2,7 +2,7 @@
 
 namespace App\Actions\Clients\Calendar;
 
-use App\Actions\Clients\Files\CreateShortUrl;
+use App\Actions\ShortUrl\CreateShortUrl;
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;

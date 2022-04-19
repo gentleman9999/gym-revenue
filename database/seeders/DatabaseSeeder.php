@@ -20,6 +20,7 @@ use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
+use Database\Seeders\Data\MemberSeeder;
 use Database\Seeders\Data\MembershipTypeSeeder;
 use Database\Seeders\Data\TrialMembershipTypeSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
@@ -127,6 +128,10 @@ class DatabaseSeeder extends Seeder
         // This seeder generates dummy leads for each client
         //VarDumper::dump('Running Leads Dummy Data Seeder');
 //        $this->call(LeadProspectSeeder::class);
+
+        // This seeder generates dummy members for each client
+        VarDumper::dump('Running Members Dummy Data Seeder');
+        $this->call(MemberSeeder::class);
 
         // Baby's First Email Templates are Seeded for each client
         VarDumper::dump('Running Email Template  Seeder');

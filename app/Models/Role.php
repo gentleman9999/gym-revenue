@@ -6,9 +6,11 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use App\Models\Traits\Sortable;
 use Bouncer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Twilio\TwiML\Voice\Task;
 
 class Role extends \Silber\Bouncer\Database\Role
 {
@@ -31,6 +33,9 @@ class Role extends \Silber\Bouncer\Database\Role
             case 'leads':
                 $entity = Lead::class;
                 break;
+            case 'members':
+                $entity = Member::class;
+                break;
             case 'teams':
                 $entity = Team::class;
                 break;
@@ -46,8 +51,8 @@ class Role extends \Silber\Bouncer\Database\Role
             case 'classifications':
                 $entity = Classification::class;
                 break;
-            case 'todo-list':
-                $entity = TodoList::class;
+            case 'task':
+                $entity = Task::class;
                 break;
         }
 

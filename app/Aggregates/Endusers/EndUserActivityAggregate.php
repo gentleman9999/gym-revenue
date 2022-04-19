@@ -2,21 +2,26 @@
 
 namespace App\Aggregates\Endusers;
 
-use App\StorableEvents\Endusers\LeadClaimedByRep;
-use App\StorableEvents\Endusers\LeadCreated;
-use App\StorableEvents\Endusers\LeadDeleted;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeCreated;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeDeleted;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeRestored;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeTrashed;
+use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeUpdated;
 use App\StorableEvents\Endusers\LeadDetailUpdated;
-use App\StorableEvents\Endusers\LeadRestored;
+use App\StorableEvents\Endusers\Leads\LeadCreated;
+use App\StorableEvents\Endusers\Leads\LeadRestored;
+use App\StorableEvents\Endusers\Leads\LeadTrashed;
+use App\StorableEvents\Endusers\Leads\LeadUpdated;
+use App\StorableEvents\Endusers\Leads\LeadWasCalledByRep;
+use App\StorableEvents\Endusers\Leads\LeadWasTextMessagedByRep;
+use App\StorableEvents\Endusers\Leads\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadServicesSet;
-use App\StorableEvents\Endusers\LeadTrashed;
-use App\StorableEvents\Endusers\LeadUpdated;
-use App\StorableEvents\Endusers\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\LeadWasDeleted;
-use App\StorableEvents\Endusers\LeadWasEmailedByRep;
-use App\StorableEvents\Endusers\LeadWasTextMessagedByRep;
-use App\StorableEvents\Endusers\SubscribedToAudience;
-use App\StorableEvents\Endusers\TrialMembershipAdded;
-use App\StorableEvents\Endusers\TrialMembershipUsed;
+use App\StorableEvents\Endusers\Members\MemberCreated;
+use App\StorableEvents\Endusers\Members\MemberDeleted;
+use App\StorableEvents\Endusers\Members\MemberRestored;
+use App\StorableEvents\Endusers\Members\MemberTrashed;
+use App\StorableEvents\Endusers\Members\MemberUpdated;
 use App\StorableEvents\Endusers\UpdateLead;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
@@ -46,7 +51,7 @@ class EndUserActivityAggregate extends AggregateRoot
         $this->interaction_called_count++;
     }
 
-    public function applyLeadWasEmailedByRep(LeadWasEmailedByRep $event)
+    public function applyLeadWasEmailedByRep(\App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep $event)
     {
         $this->interaction_count += ($event->data['interaction_count'] ?? 1);
         $this->interaction_emailed_count++;
@@ -76,19 +81,19 @@ class EndUserActivityAggregate extends AggregateRoot
     {
         // @todo - add eval if user is already subscribed and throw an UserActivityException::userAlreadySubscribed Exception
         // @todo - add eval if user belongs to client and throw an UserActivityException::unqualifiedClient Exception
-        $this->recordThat(new SubscribedToAudience($this->uuid(), $slug, $client_id, $entity));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\SubscribedToAudience($this->uuid(), $slug, $client_id, $entity));
         return $this;
     }
 
     public function claimLead(string $user_id, string $client_id)
     {
-        $this->recordThat(new LeadClaimedByRep($this->uuid(), $user_id, $client_id));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadClaimedByRep($this->uuid(), $user_id, $client_id));
         return $this;
     }
 
     public function emailLead(array $data, string $user)
     {
-        $this->recordThat(new LeadWasEmailedByRep($this->uuid(), $data, $user));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep($this->uuid(), $data, $user));
         return $this;
     }
 
@@ -106,12 +111,12 @@ class EndUserActivityAggregate extends AggregateRoot
 
     public function addTrialMembership(string $client_id, string $trial_id, $date_started)
     {
-        $this->recordThat(new TrialMembershipAdded($this->uuid(), $client_id, $trial_id, $date_started));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\TrialMembershipAdded($this->uuid(), $client_id, $trial_id, $date_started));
     }
 
     public function useTrialMembership(string $client_id, string $trial_id, $date_used)
     {
-        $this->recordThat(new TrialMembershipUsed($this->uuid(),$client_id, $trial_id, $date_used));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\TrialMembershipUsed($this->uuid(),$client_id, $trial_id, $date_used));
     }
 
     public function setServices(array $service_ids, string $user)
@@ -146,7 +151,37 @@ class EndUserActivityAggregate extends AggregateRoot
 
     public function deleteLead(array $data, string $userId = 'Auto Generated')
     {
-        $this->recordThat(new LeadDeleted($userId, $this->uuid(), $data));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadDeleted($userId, $this->uuid(), $data));
+        return $this;
+    }
+
+    public function createMember(string $created_by_user_id, array $payload)
+    {
+        $this->recordThat(new MemberCreated($this->uuid(), $created_by_user_id, $payload));
+        return $this;
+    }
+
+    public function updateMember(string $updated_by_user_id, array $payload)
+    {
+        $this->recordThat(new MemberUpdated($this->uuid(), $updated_by_user_id, $payload));
+        return $this;
+    }
+
+    public function trashMember(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new MemberTrashed($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function restoreMember(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new MemberRestored($this->uuid(), $trashed_by_user_id, $id));
+        return $this;
+    }
+
+    public function deleteMember(string $trashed_by_user_id, string $id)
+    {
+        $this->recordThat(new MemberDeleted($this->uuid(), $trashed_by_user_id, $id));
         return $this;
     }
 

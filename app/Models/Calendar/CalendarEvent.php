@@ -40,7 +40,12 @@ class CalendarEvent extends Model
 
     public function attendees()
     {
-        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id');
+        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id' );
+    }
+
+    public function files()
+    {
+        return $this->hasMany('App\Models\File', 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
     }
 
     public function fixDate($data): array

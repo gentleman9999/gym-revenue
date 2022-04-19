@@ -1,6 +1,6 @@
 <?php
 
-namespace App\StorableEvents\Clients\Note;
+namespace App\StorableEvents\Clients\ShortUrl;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 

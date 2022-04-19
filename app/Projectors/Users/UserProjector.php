@@ -5,9 +5,12 @@ namespace App\Projectors\Users;
 use App\Models\Clients\Client;
 use App\Models\Note;
 use App\Models\Tasks;
+use App\Models\Notification;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
+use App\StorableEvents\Users\Notifications\NotificationCreated;
+use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
@@ -18,6 +21,7 @@ use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -246,6 +250,19 @@ class UserProjector extends Projector
             'value' => $event->table,
         ])->update(['misc' => $event->fields]);
     }
+
+    public function onNotificationCreated(NotificationCreated $event)
+    {
+        Log::debug($event->data);
+        Notification::create(array_merge($event->data, ['user_id' => $event->user]));
+    }
+    public function onNotificationDismissed(NotificationDismissed $event)
+    {
+        //TODO:check if event->createdAt is preserved after replays.  If not,
+        //we just need to track "dismissed_at" in the NotificationDismissed event itself
+        Notification::findOrFail($event->id)->updateOrFail(['dismissed_at' => $event->createdAt()]);
+    }
+
 
     public function onTaskCreated(TaskCreated $event)
     {
