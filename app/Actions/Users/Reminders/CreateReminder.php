@@ -29,8 +29,6 @@ class CreateReminder
             'user_id' => ['int', 'required'],
             'name' => ['string', 'required'],
             'remind_time' => ['int', 'required'],
-            'entity_type' => ['string', 'nullable'],
-            'entity_id' => ['string', 'nullable'],
         ];
     }
 

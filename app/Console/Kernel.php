@@ -7,6 +7,7 @@ use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\CheckQueuedEmailCampaigns;
 use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
 use App\Actions\Fortify\CreateUser;
+use App\Actions\Users\Reminders\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
         //TODO: should be jobs, not commands
         $schedule->job(new CheckQueuedEmailCampaigns)->everyMinute();
         $schedule->job(new CheckQueuedSmsCampaigns)->everyMinute();
+        $schedule->job(new CheckReminders)->everyMinute();
     }
 
     /**

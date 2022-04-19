@@ -22,14 +22,8 @@ class CheckReminders
 
         $reminders->each(function($reminder){
             if($reminder->entity_type == CalendarEvent::class) {
-                echo "reminder name: ".$reminder->name. "\n";
-                echo "reminder event attached: ".$reminder->event->title. "\n";
-                echo "reminder minutes: ".$reminder->remind_time. "\n";
-                echo "calendar event date : ".$reminder->event->start. "\n";
                 $time = date('Y-m-d H:i:s',strtotime($reminder->event->start. '-'.$reminder->remind_time.' minutes'));
-                echo "time ".$time. "\n";
                 if($time < date('Y-m-d H:i:s')){
-                    echo " IT WORKED BOY\n";
                     TriggerReminder::run($reminder->id);
                 }
             }
