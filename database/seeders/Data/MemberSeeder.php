@@ -29,22 +29,15 @@ class MemberSeeder extends Seeder
                 // For each client, get all the locations
                 if (count($client->locations) > 0) {
                     foreach ($client->locations as $idx => $location) {
-                        // For each location, MAKE 25 users, don't create
-                        $members = Member::factory()->count(25)
+                        $members = Member::factory()->count(3)
                             // over ride the client id and gr id from the factory
                             ->client_id($client->id)
                             ->gr_location_id($location->gymrevenue_id ?? '')
                             ->make();
 
-                        VarDumper::dump('Generating Members!');
+                        VarDumper::dump('Generating Members for '.$client->name);
                         foreach ($members as $member) {
-//                            $member->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
-                            // @todo - if the lead_source_id is connected to custom, redo it.
-                            // @todo - no custom status in the seeder allowed...yet.
-
-                            // For each fake user, run them through the EnduserActivityAggregate
                             $member_data = $member->toArray();
-
                             CreateMember::run($member_data);
 
                         }
