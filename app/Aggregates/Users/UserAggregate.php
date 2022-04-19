@@ -303,7 +303,7 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function deleteReminder(string $user_id, array $id)
+    public function deleteReminder(string $user_id, string $id)
     {
         $this->recordThat(new ReminderDeleted($user_id, $id));
         return $this;

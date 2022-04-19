@@ -22,10 +22,9 @@ class DeleteReminder
     public function rules()
     {
         return [
+            'event_id' => ['string', 'required'],
             'entity_type' => ['string', 'required'],
-            'entity_id' => ['string', 'required'],
             'user_id' => ['int', 'required'],
-            'remind_time' => ['int', 'required']
         ];
     }
 
@@ -36,11 +35,16 @@ class DeleteReminder
             $data['client_id'] = $client_id;
         }
 
-        $id = $data['id'];
+        $reminder = Reminder::whereEntityType($data['entity_type'])->whereEntityId($data['entity_id'])->whereUserId($data['user_id'])->first();
+        if(is_null($reminder)) {
+            return true;
+        } else {
+            $id = $reminder->id;
 
-        UserAggregate::retrieve($data['user_id'])->deleteReminder($current_user->id ?? "Auto Generated", $id)->persist();
+            UserAggregate::retrieve($data['user_id'])->deleteReminder($current_user->id ?? "Auto Generated", $id)->persist();
 
-        return Reminder::findOrFail($id);
+            return true;
+        }
     }
 
     public function authorize(ActionRequest $request): bool
@@ -55,7 +59,7 @@ class DeleteReminder
             $request->user(),
         );
 
-        Alert::success("Reminder '{$reminder->name}' was created")->flash();
+        Alert::success("Reminder '{$reminder->name}' was deleted")->flash();
 
         return Redirect::back();
     }

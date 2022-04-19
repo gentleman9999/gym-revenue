@@ -56,14 +56,14 @@ class UpdateCalendarEvent
             }
         }
 
-        if(!empty($data['user_attendees'])) {
+        if(!empty($data['user_attendees']) || !empty($userAttendeeIDs)) {
             $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
             //Delete Users
             $delete = array_merge(array_diff($data['user_attendees'], $userAttendeeIDs), array_diff($userAttendeeIDs, $data['user_attendees']));
             foreach($delete as $user)
             {
                 CalendarAggregate::retrieve($data['client_id'])
-                    ->deleteCalendarAttendee($user, ['entity_type' => User::class, 'entity_id' => $user])
+                    ->deleteCalendarAttendee($user, ['entity_type' => User::class, 'entity_id' => $user, 'event_id' => $data['id']])
                     ->persist();
             }
             //Add Users
@@ -86,7 +86,7 @@ class UpdateCalendarEvent
             }
         }
 
-        if(!empty($data['lead_attendees'])) {
+        if(!empty($data['lead_attendees']) || !empty($leadAttendeeIDs)) {
             //This will dupe check and then re-index the array.
             $data['lead_attendees'] = array_values(array_unique($data['lead_attendees']));
             //Delete Users
@@ -94,7 +94,7 @@ class UpdateCalendarEvent
             foreach($delete as $lead)
             {
                 CalendarAggregate::retrieve($data['client_id'])
-                    ->deleteCalendarAttendee($lead, ['entity_type' => Lead::class, 'entity_id' => $lead])
+                    ->deleteCalendarAttendee($lead, ['entity_type' => Lead::class, 'entity_id' => $lead, 'event_id' => $data['id']])
                     ->persist();
             }
             //Add Users
