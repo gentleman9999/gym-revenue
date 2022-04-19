@@ -5,7 +5,7 @@ namespace App\Aggregates\Users;
 use App\Models\Clients\Client;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\StorableEvents\Clients\Tasks\TaskDeleted;
-use App\StorableEvents\Clients\Tasks\TaskMarkedCompleted;
+use App\StorableEvents\Clients\Tasks\TaskMarkedComplete;
 use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskRestored;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
@@ -190,9 +190,9 @@ class UserAggregate extends AggregateRoot
         $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
         return $this;
     }
-    public function markTaskAsComplete($updated_by_user_id, TaskMarkedCompleted $event)
+    public function markTaskAsComplete($updated_by_user_id, TaskMarkedComplete $event)
     {
-        $this->recordThat(new TaskMarkedCompleted($this->uuid()), $updated_by_user_id, $event);
+        $this->recordThat(new TaskMarkedComplete($this->uuid()), $updated_by_user_id, $event);
         return $this;
     }
     public function markTaskAsIncomplete($updated_by_user_id, TaskMarkedIncomplete $event)

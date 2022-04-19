@@ -4,7 +4,7 @@ namespace App\StorableEvents\Clients\Tasks;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class TaskMarkedCompleted extends ShouldBeStored
+class TaskMarkedComplete extends ShouldBeStored
 {
     public $user, $id, $client;
     public function __construct(string $client, string $user, string $id)
