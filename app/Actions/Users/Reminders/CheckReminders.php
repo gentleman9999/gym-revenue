@@ -2,6 +2,7 @@
 
 namespace App\Actions\Users\Reminders;
 
+use App\Models\Calendar\CalendarEvent;
 use App\Models\Reminder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -17,13 +18,21 @@ class CheckReminders
     public function handle()
     {
         Log::debug("checking for reminders");
-        $reminders = Reminder::whereNull('triggered_at')->get();
-        //TODO:^^ need to figure out which ones are "ready" to be fired off.
-        //could maybe do as a custom SQL where or just loop over and check for now.
+        $reminders = Reminder::whereNull('triggered_at')->with('event')->get();
+
         $reminders->each(function($reminder){
-            //check if now <= NOW() - remind_time or something
-            echo "Firing off reminders for $reminder->id";
-            TriggerReminder::run($reminder->id);
+            if($reminder->entity_type == CalendarEvent::class) {
+                echo "reminder name: ".$reminder->name. "\n";
+                echo "reminder event attached: ".$reminder->event->title. "\n";
+                echo "reminder minutes: ".$reminder->remind_time. "\n";
+                echo "calendar event date : ".$reminder->event->start. "\n";
+                $time = date('Y-m-d H:i:s',strtotime($reminder->event->start. '-'.$reminder->remind_time.' minutes'));
+                echo "time ".$time. "\n";
+                if($time < date('Y-m-d H:i:s')){
+                    echo " IT WORKED BOY\n";
+                    TriggerReminder::run($reminder->id);
+                }
+            }
         });
     }
 
