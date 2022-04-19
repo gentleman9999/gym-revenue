@@ -14,10 +14,15 @@ class Reminder extends Model
 
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'entity_type', 'entity_id', 'user_id', 'name', 'description', 'remind_time'];
+    protected $fillable = ['id', 'entity_type', 'entity_id', 'user_id', 'name', 'description', 'remind_time', 'triggered_at'];
 
     public function events()
     {
-        return $this->hasMany('App\Models\Calendar\CalendarEvent', 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
+        return $this->hasMany('App\Models\Calendar\CalendarEvent', 'id', 'entity_id')->where('entity_type', CalendarEvent::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

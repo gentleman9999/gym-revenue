@@ -5,13 +5,17 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Users\Notifications\CreateNotification;
 use App\Models\Reminder;
+use App\StorableEvents\Users\Reminder\ReminderTriggered;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Log\Logger;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ReminderReactor extends Reactor implements ShouldQueue
 {
     public function onReminderTriggered(ReminderTriggered $event)
     {
+//        dd($event);
+//        Logger::debug($event);
         $reminder = Reminder::findOrFail($event->id);
         $entity = null;
         if ($reminder->entity) {
@@ -25,7 +29,7 @@ class ReminderReactor extends Reactor implements ShouldQueue
             // the the view based on entity_type and the entity's data
             'misc' => [
                 'remind_time' => $reminder->remind_time,
-                'entity' => $entity->toArray(),
+                'entity' => $entity ?? [],
             ]
         ]);
     }

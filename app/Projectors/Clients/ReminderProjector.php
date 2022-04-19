@@ -7,6 +7,7 @@ use App\Models\Reminder;
 use App\StorableEvents\Users\Reminder\ReminderCreated;
 use App\StorableEvents\Users\Reminder\ReminderDeleted;
 use App\StorableEvents\Users\Reminder\ReminderTriggered;
+use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ReminderProjector extends Projector
@@ -23,7 +24,7 @@ class ReminderProjector extends Projector
 
     public function onReminderTriggered(ReminderTriggered $event)
     {
-        Reminder::findOrFail($event->id)->update(['triggered_at' => $event->created_at]);
+//        Reminder::findOrFail($event->id)->update(['triggered_at' => $event->metaData()['created-at']]);
     }
 
 }
