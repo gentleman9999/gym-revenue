@@ -41,11 +41,12 @@ export const useNotificationAlertEmitter = () => {
         Echo.leave(channel.value.name);
     });
     watchEffect(() => {
+        const privateUserChannel = `private-App.Models.User.${user?.value?.id}`;
         if (
             channel.value?.name &&
-            channel.value?.name !== `users.${user?.value?.id}`
+            channel.value?.name !== privateUserChannel
         ) {
-            console.log("leaving channel:", channel.value?.name);
+            console.log("leaving channel:", privateUserChannel);
             //leave channel when we log out
             Echo.leave(channel.value.name);
         }
@@ -53,11 +54,11 @@ export const useNotificationAlertEmitter = () => {
         if (
             user.value?.id &&
             !channel.value &&
-            !window.Echo.connector.channels[
-                `App.Models.User.${user?.value?.id}`
+            !window.Echo?.connector?.channels[
+                privateUserChannel
             ]
         ) {
-            channel.value = Echo.private(`App.Models.User.${user?.value?.id}`);
+            channel.value = window.Echo.private(`App.Models.User.${user?.value?.id}`);
             channel.value.notification(handleIncomingNotification);
         }
     });
