@@ -281,5 +281,27 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 04-20-2022',
+            'value' => '2022-04-20',
+            'misc' => [
+                'buildno' => '20220420',
+                'version' => '0.16.01',
+                'notes' => [
+                    'Calendar - Week View is now default instead of Month',
+                    'Calendar - Files can now be attached to events',
+                    'Calendar - Attendees are send an invitation on being added to an event.',
+                    'Calendar - Event Event UI shows whether or not an attendee has accepted/declined or not',
+                    'Calendar - All attendees get a default 30 minute reminder for the meeting.  UI to manage reminders not yet implemented.',
+                    'Internal (Reminder System) - Currently only in use for Calendar events, built generically to support other systems. Currently in-app notifications only, but will be expanded for email/SMS based on user preferences. ',
+                    'Internal (Notification System - Backbone for notifications setup. Currently only supports in-app notifications, but in future will email/SMS based on user preferences.  UI will match designs at later time.',
+                    'Internal (Authenticated URL Shortener) - currently being used in calendar invite emails, but built to support systems in the future.',
+                    'Internal (Tasks/ToDo Scaffolding) - basic back-end work to support tasks. UI and Calendar integration forthcoming'
+                ]
+            ]
+        ]);
     }
 }
