@@ -273,7 +273,7 @@
                 </div>
                 <div class="flex flex-col  gap-2 collapse-content">
                     <div v-for="note in user.all_notes" class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2">
-                        {{note.note}}
+                        {{note.note}} <div v-if="note.read == false" class="badge badge-secondary">unread</div>
                     </div>
                 </div>
             </div>

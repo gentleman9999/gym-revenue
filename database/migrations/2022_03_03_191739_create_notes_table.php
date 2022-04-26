@@ -17,6 +17,7 @@ class CreateNotesTable extends Migration
             $table->uuid('id')->unique()->primary();
             $table->uuid('entity_id');
             $table->string('entity_type');
+            $table->mediumText('title')->nullable();
             $table->mediumText('note');
             $table->foreignUuid('created_by_user_id');
             $table->boolean('active')->default(true);
