@@ -33,7 +33,7 @@ trait ClientSMSCampaignActions
         return $this;
     }
 
-    public function logSmsSent(string $campaign_id, array $sent_to, DateTime $sent_at)
+    public function smsSent(string $campaign_id, array $sent_to, DateTime $sent_at)
     {
         $this->recordThat(new SmsSent($this->uuid(), $campaign_id, $sent_to, $sent_at));
         return $this;

@@ -609,7 +609,7 @@ class ClientAccountProjector extends Projector
         }
         ClientBillableActivity::create([
             'client_id' => $event->client,
-            'desc' => 'SMS sent from SMS Campaign',
+            'desc' => 'SMS sent',
             'entity_type' => 'SmsCampaign',
             'entity_id' => $event->campaign,
             'units' => count($event->sentTo),
@@ -636,7 +636,7 @@ class ClientAccountProjector extends Projector
         }
         ClientBillableActivity::create([
             'client_id' => $event->client,
-            'desc' => 'Email sent from Email Campaign',
+            'desc' => 'Email sent',
             'entity_type' => 'EmailCampaign',
             'entity_id' => $event->campaign,
             'units' => count($event->sentTo),

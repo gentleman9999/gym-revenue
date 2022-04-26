@@ -27,7 +27,9 @@ class FireOffEmailCampaign
 
     public function handle(string $email_campaign_id)
     {
-        $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($email_campaign_id);
+        $gateway = null;
+        $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
+            ->findOrFail($email_campaign_id);
         foreach ($campaign->assigned_template as $assigned_template)
         {
             $templates[] = EmailTemplates::with('gateway')->findOrFail($assigned_template->value);
@@ -50,8 +52,6 @@ class FireOffEmailCampaign
             $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
         }
 
-
-        $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         $recipients = [];
         $sent_to = [];
@@ -64,20 +64,18 @@ class FireOffEmailCampaign
                     case 'user':
                         $member = User::find($audience_member->entity_id);
                         break;
-                    case 'prospect':
-//                        $member = Prospects::findOrFail($audience_member->entity_id);
-                        break;
-                    case 'conversion':
-//                        $member = Conversions::findOrFail($audience_member->entity_id);
-                        break;
                     default:
                         //todo:report error - unknown entity_Type
                         break;
                 }
                 if ($member) {
-                    //TODO: probably don't just serialize the $member object. we need to pluck what we want, and merge with other variables
                     $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
-                    $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'email' => $member->email];
+                    $sent_to[] = [
+                        'entity_type' => $audience_member->entity_type,
+                        'entity_id' => $audience_member->entity_id,
+                        'email' => $member->email,
+                        'gateway' => $gateway
+                    ];
                 }
             }
         }
@@ -85,13 +83,10 @@ class FireOffEmailCampaign
         $idx = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
             if (!AppState::isSimuationMode()) {
-                MailgunBatchSend::dispatch($chunk, $template->subject, $template->markup);
+                $client_aggy->emailSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now())->persist();
             }
-            $client_aggy->logEmailsSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now())->persist();
             $idx++;
         }
-
-
         $client_aggy->completeEmailCampaign($email_campaign_id, Carbon::now())->persist();
     }
 

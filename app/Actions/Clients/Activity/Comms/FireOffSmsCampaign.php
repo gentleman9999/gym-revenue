@@ -28,8 +28,9 @@ class FireOffSmsCampaign
 
     public function handle(string $sms_campaign_id)
     {
-        $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])->findOrFail($sms_campaign_id);
-
+        $gateway = null;
+        $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
+            ->findOrFail($sms_campaign_id);
         foreach ($campaign->assigned_template as $assigned_template)
         {
             $templates[] = SmsTemplates::with('gateway')->findOrFail($assigned_template->value);
@@ -43,7 +44,6 @@ class FireOffSmsCampaign
         {
             $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         }
-
         foreach ($campaign->assigned_audience as $assigned_audience)
         {
             $audiences[] = CommAudience::findOrFail($assigned_audience->value);
@@ -64,12 +64,6 @@ class FireOffSmsCampaign
                     case 'user':
                         $member = User::with('phone')->find($audience_member->entity_id);
                         break;
-                    case 'prospect':
-//                        $member = Prospects::findOrFail($audience_member->entity_id);
-                        break;
-                    case 'conversion':
-//                        $member = Conversions::findOrFail($audience_member->entity_id);
-                        break;
                     default:
                         //todo:report error - unknown entity_Type
                         break;
@@ -80,13 +74,17 @@ class FireOffSmsCampaign
                         if (!AppState::isSimuationMode()) {
                             foreach ($markups as $markup)
                             {
-                                FireTwilioMsg::dispatch($member->phone->value, $this->transform($markup, $member->toArray()));
+                                $sent_to[] = [
+                                    'entity_type' => $audience_member->entity_type,
+                                    'entity_id' => $audience_member->entity_id,
+                                    'phone' => $member->phone->value,
+                                    'gateway' => $gateway,
+                                ];
+                                $client_aggy->smsSent($sms_campaign_id, $sent_to, Carbon::now())->persist();
                             }
                         }
                     }
-                    $sent_to[] = ['entity_type' => $audience_member->entity_type, 'entity_id' => $audience_member->entity_id, 'phone' => $member->phone->value];
                 }
-                $client_aggy->logSmsSent($sms_campaign_id, $sent_to, Carbon::now())->persist();
             }
         }
         $client_aggy->completeSmsCampaign($sms_campaign_id, Carbon::now())->persist();
