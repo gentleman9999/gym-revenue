@@ -154,6 +154,19 @@
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
+            <!-- Contact Preference -->
+            <div class="form-control col-span-3">
+                <jet-label for="contact_preference" value="Contact Preference" />
+                <select
+                    id="contact_preference"
+                    class="block w-full mt-1"
+                    v-model="form.contact_preference"
+                >
+                    <option value="email">Email</option>
+                    <option value="sms" >Text Message</option>
+                </select>
+                <jet-input-error :message="form.errors.contact_preference" class="mt-2" />
+            </div>
 
             <!-- Classifications -->
             <div class="form-control col-span-3" v-if="clientId">
@@ -175,8 +188,6 @@
                     class="mt-2"
                 />
             </div>
-
-
 
             <!-- Security Role -->
             <div class="form-control col-span-3" v-if="clientId">
@@ -446,6 +457,7 @@ export default {
                 "classification" in user && user["classification"] !== null
                     ? user["classification"].value ?? ""
                     : "";
+            user.contact_preference = user['contact_preference'].value;
             user.team_id = team_id;
             user.first_name = user["first_name"];
             user.last_name = user["last_name"];
@@ -496,7 +508,6 @@ export default {
                 "notes" in user && user["notes"] !== null
                     ? user["notes"].value ?? ""
                     : "";
-            console.log({ user });
         } else {
             user = {
                 first_name: "",
@@ -505,6 +516,7 @@ export default {
                 altEmail: "",
                 role_id: 0,
                 classification: "",
+                contact_preference: null,
                 phone: "",
                 address1: "",
                 address2: "",

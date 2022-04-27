@@ -24,9 +24,14 @@ class UserReactor extends Reactor implements ShouldQueue
     public function onNotificationCreated(NotificationCreated $event)
     {
 //        \App\Events\NotificationCreated::dispatch($event->user, $event->data);
-        Log::debug($event->data);
-        User::findOrFail($event->user)->notify(new GymRevNotification($event->user, $event->data));
-//        User::findOrFail($event->user)->notify(new NotificationCreated($event->user, $event->data));
+        $user = User::findOrFail($event->user)->with('contact_preference');
+        $user->notify(new GymRevNotification($event->user, $event->data));
+
+        if($user->contact_preference->value == 'sms') {
+
+        } else {
+
+        }
 
     }
 }

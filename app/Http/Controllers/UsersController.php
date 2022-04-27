@@ -168,7 +168,7 @@ class UsersController extends Controller
         $user = $me->with([
                 'details', 'phone_number', 'altEmail', 'address1', 'address2',
                 'city', 'state', 'zip', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date',
-                'files', 'classification',
+                'files', 'classification', 'contact_preference'
             ])->findOrFail($id);
 
         if($me->id == $user->id)

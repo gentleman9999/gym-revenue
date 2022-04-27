@@ -193,6 +193,12 @@ class User extends Authenticatable
     {
         return $this->detail()->where('name', '=', 'jobTitle');
     }
+
+    public function contact_preference()
+    {
+        return $this->detail()->where('name', '=', 'contact_preference');
+    }
+
     public function notes()
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
