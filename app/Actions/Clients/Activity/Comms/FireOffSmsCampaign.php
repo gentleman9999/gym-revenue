@@ -2,11 +2,9 @@
 
 namespace App\Actions\Clients\Activity\Comms;
 
-use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\SmsCampaigns;
-use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
@@ -80,7 +78,7 @@ class FireOffSmsCampaign
                                     'phone' => $member->phone->value,
                                     'gateway' => $gateway,
                                 ];
-                                $client_aggy->smsSent($sms_campaign_id, $sent_to, Carbon::now())->persist();
+                                $client_aggy->smsSent($sms_campaign_id, $sent_to, Carbon::now(), true)->persist();
                             }
                         }
                     }

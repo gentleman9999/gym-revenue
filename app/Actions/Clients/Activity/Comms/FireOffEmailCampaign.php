@@ -2,7 +2,6 @@
 
 namespace App\Actions\Clients\Activity\Comms;
 
-use App\Actions\Mail\MailgunBatchSend;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
@@ -83,7 +82,7 @@ class FireOffEmailCampaign
         $idx = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
             if (!AppState::isSimuationMode()) {
-                $client_aggy->emailSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now())->persist();
+                $client_aggy->emailSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now(), true)->persist();
             }
             $idx++;
         }
