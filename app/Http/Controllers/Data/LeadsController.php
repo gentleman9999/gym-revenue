@@ -317,7 +317,7 @@ class LeadsController extends Controller
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $leadData = $lead->toArray();
-        $leadData['all_notes'] = $lead->notes->pluck('note')->toArray();
+        $leadData['all_notes'] = $lead->notes->toArray();
 
 
         return Inertia::render('Leads/Edit', [

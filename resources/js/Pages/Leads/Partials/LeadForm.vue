@@ -267,29 +267,40 @@
                 />
             </div>
             <div class="form-divider"/>
+            <jet-label for="notes" value="Notes"/>
             <div class="form-control col-span-6">
-                <jet-label for="notes" value="Notes"/>
-                <textarea v-model="form['notes']" id="notes"/>
-                <jet-input-error :message="form.errors['notes']" class="mt-2"/>
+                <jet-label for="notes.title" value="Title"/>
+                <input type="text" v-model="form['notes'].title" id="notes.title"/>
+                <jet-input-error :message="form.errors['notes']?.title" class="mt-2"/>
             </div>
-
-            <div
-                class="collapse col-span-6"
-                tabindex="0"
-                v-if="lead?.all_notes?.length"
+            <div class="form-control col-span-6">
+                <jet-label for="notes" value="Body"/>
+                <textarea v-model="form['notes'].note" id="notes"/>
+                <jet-input-error :message="form.errors['notes']?.note" class="mt-2"/>
+            </div>
+            <template v-if="lead?.all_notes?.length"
             >
-                <div class="collapse-title text-sm font-medium">
-                    > Existing Notes
+                <div class="text-sm font-medium col-span-6">
+                    Existing Notes
                 </div>
-                <div class="flex flex-col gap-2 collapse-content">
-                    <div
-                        v-for="note in lead.all_notes"
-                        class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
-                    >
-                        {{ note }}
+                <div
+                    class="collapse col-span-6"
+                    tabindex="0"
+                    v-for="note in lead.all_notes"
+                >
+                    <div class="collapse-title text-sm font-medium">
+                        > {{ note.title }}
+                    </div>
+                    <div class="flex flex-col gap-2 collapse-content">
+                        <div
+                            class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
+                        >
+                            {{ note.note }}
+                        </div>
                     </div>
                 </div>
-            </div>
+
+            </template>
 
             <div
                 v-if="typeof interactionCount !== 'undefined'"
@@ -356,20 +367,18 @@
 </template>
 
 <script>
-import {watchEffect, computed} from "vue";
+import {computed, watchEffect} from "vue";
 import {useForm} from "@inertiajs/inertia-vue3";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faUserCircle} from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-import {Inertia} from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import {useGoBack} from "@/utils";
-import {usePage} from "@inertiajs/inertia-vue3";
 import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
 
@@ -441,7 +450,7 @@ export default {
                 opportunity: "",
                 lead_owner: props.userId,
                 lead_status: "",
-                notes: "",
+                notes: {title: "", note: ""},
             };
             operation = "Create";
         } else {
@@ -459,7 +468,7 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: null,
                 gender: lead.gender,
-                notes: null,
+                notes: {title: "", note: ""},
             };
             //         leadData.notes = "";
 
@@ -510,7 +519,7 @@ export default {
         if (operation === "Create") {
             handleSubmit = () =>
                 form.post("/data/leads/create", {
-                    onSuccess: () => (form.notes = ""),
+                    onSuccess: () => (form.notes = {title: "", note: ""}),
 
                 });
         }
@@ -544,7 +553,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         });
-        return {form, fileForm, buttonText: operation, handleSubmit, goBack, lastUpdated, operation };
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack, lastUpdated, operation};
     },
 };
 </script>
