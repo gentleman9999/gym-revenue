@@ -288,8 +288,8 @@
                     tabindex="0"
                     v-for="note in lead.all_notes"
                 >
-                    <div class="collapse-title text-sm font-medium">
-                        > {{ note.title }}
+                    <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded(note)">
+                        > {{ note.title }} <div v-if="note.read == false" class="badge badge-secondary">unread</div>
                     </div>
                     <div class="flex flex-col gap-2 collapse-content">
                         <div
@@ -428,6 +428,14 @@ export default {
         },
     },
     setup(props, context) {
+
+        function notesExpanded(note) {
+            axios.post(route('note.seen'), {
+                client_id: props.clientId,
+                note: note
+            })
+        }
+
         let lead = props.lead;
         let operation = "Update";
         let leadData = null;
@@ -553,7 +561,7 @@ export default {
                 // uploadProgress.value = -1;
             }
         });
-        return {form, fileForm, buttonText: operation, handleSubmit, goBack, lastUpdated, operation};
+        return {form, fileForm, buttonText: operation, handleSubmit, goBack, lastUpdated, operation, notesExpanded};
     },
 };
 </script>

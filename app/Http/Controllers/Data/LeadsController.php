@@ -16,6 +16,7 @@ use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
 use App\Models\Note;
+use App\Models\ReadReceipt;
 use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -319,6 +320,13 @@ class LeadsController extends Controller
         $leadData = $lead->toArray();
         $leadData['all_notes'] = $lead->notes->toArray();
 
+        foreach($leadData['all_notes'] as $key => $value)
+        {
+            if(ReadReceipt::whereNoteId($leadData['all_notes'][$key]['id'])->first())
+                $leadData['all_notes'][$key]['read'] = true;
+            else
+                $leadData['all_notes'][$key]['read'] = false;
+        }
 
         return Inertia::render('Leads/Edit', [
             'lead' => $leadData,

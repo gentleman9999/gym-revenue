@@ -183,7 +183,7 @@
                 <textarea v-model="form['notes'].note" id="notes"/>
                 <jet-input-error :message="form.errors['notes']?.note" class="mt-2"/>
             </div>
-            <template v-if="lead?.all_notes?.length"
+            <template v-if="member?.all_notes?.length"
             >
                 <div class="text-sm font-medium col-span-6">
                     Existing Notes
@@ -191,10 +191,10 @@
                 <div
                     class="collapse col-span-6"
                     tabindex="0"
-                    v-for="note in lead.all_notes"
+                    v-for="note in member.all_notes"
                 >
-                    <div class="collapse-title text-sm font-medium">
-                        > {{ note.title }}
+                    <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded(note)">
+                        > {{ note.title }} <div v-if="note.read == false" class="badge badge-secondary">unread</div>
                     </div>
                     <div class="flex flex-col gap-2 collapse-content">
                         <div
@@ -309,6 +309,13 @@ export default {
             return date.toISOString().slice(0, 19).replace("T", " ");
         };
 
+        function notesExpanded(note) {
+            axios.post(route('note.seen'), {
+                client_id: props.clientId,
+                note: note
+            })
+        }
+
         let member = props.member;
         let operation = "Update";
         let memberData = null;
@@ -414,6 +421,7 @@ export default {
             goBack,
             lastUpdated,
             operation,
+            notesExpanded,
         };
     },
 };

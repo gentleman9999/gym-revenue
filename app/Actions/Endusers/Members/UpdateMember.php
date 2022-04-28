@@ -37,7 +37,7 @@ class UpdateMember
             'gender'                    => 'string|required',
             'date_of_birth'             => 'required',
 //            'agreement_number'          => ['required', 'string'],
-            'notes'                     => 'nullable|string',
+            'notes'                     => 'nullable|array',
         ];
     }
 

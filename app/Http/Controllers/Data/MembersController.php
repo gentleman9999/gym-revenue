@@ -10,6 +10,7 @@ use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Member;
 use App\Models\Note;
+use App\Models\ReadReceipt;
 use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -207,8 +208,15 @@ class MembersController extends Controller
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $memberData = $member->toArray();
-        $memberData['all_notes'] = $member->notes->pluck('note')->toArray();
+        $memberData['all_notes'] = $member->notes->toArray();
 
+        foreach($memberData['all_notes'] as $key => $value)
+        {
+            if(ReadReceipt::whereNoteId($memberData['all_notes'][$key]['id'])->first())
+                $memberData['all_notes'][$key]['read'] = true;
+            else
+                $memberData['all_notes'][$key]['read'] = false;
+        }
 
         return Inertia::render('Members/Edit', [
             'member' => $memberData,

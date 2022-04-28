@@ -282,8 +282,8 @@
                     tabindex="0"
                     v-for="note in user.all_notes"
                 >
-                    <div class="collapse-title text-sm font-medium">
-                        > {{ note.title }}
+                    <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded(note)">
+                        > {{ note.title }} <div v-if="note.read == false" class="badge badge-secondary">unread</div>
                     </div>
                     <div class="flex flex-col gap-2 collapse-content">
                         <div
@@ -432,13 +432,12 @@ export default {
     emits: ["success"],
     setup(props, {emit}) {
 
-        function notesExpanded() {
+        function notesExpanded(note) {
             console.error(props.user.all_notes);
             axios.post(route('note.seen'), {
                 client_id: props.user.clientId,
-                all_notes: props.user.all_notes
+                note: note
             })
-
         }
 
         const wantsToDeleteFile = ref(null);

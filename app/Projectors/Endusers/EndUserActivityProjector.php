@@ -302,14 +302,15 @@ class EndUserActivityProjector extends Projector
             Note::create([
                 'entity_id' => $lead->id,
                 'entity_type' => Lead::class,
-                'note' => $notes,
+                'title' => $notes['title'],
+                'note' => $notes['note'],
                 'created_by_user_id' => $event->user
             ]);
             LeadDetails::create([
                 'lead_id' => $lead->id,
                 'client_id' => $lead->client_id,
                 'field' => 'note_created',
-                'value' => $notes,
+                'value' => $notes['note'],
             ]);
         }
 
@@ -427,7 +428,8 @@ class EndUserActivityProjector extends Projector
             Note::create([
                 'entity_id' => $member->id,
                 'entity_type' => Member::class,
-                'note' => $notes,
+                'title' => $notes['title'],
+                'note' => $notes['note'],
                 'created_by_user_id' => $event->user
             ]);
 //            MemberDetails::create([
