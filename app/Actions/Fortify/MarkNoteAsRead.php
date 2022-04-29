@@ -22,21 +22,19 @@ class MarkNoteAsRead
     {
         return [
             'client_id' =>['string', 'sometimes'],
-            'all_notes' => ['array', 'nullable'],
+            'note' => ['array', 'nullable'],
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data, $current_user)
     {
-        foreach($data['all_notes'] as $item)
-        {
             NoteAggregate::retrieve($current_user->currentClientId())
-                ->createReadReciept($current_user['id'], [
-                'note_id' => $item['id'],
-                'read_by_user_id' => $current_user['id'],
+                ->createReadReciept($current_user->id, [
+                'note_id' => $data['note']['id'],
+                'read_by_user_id' => $current_user->id,
             ])
                 ->persist();
-        }
+
         return true;
     }
 
