@@ -129,6 +129,17 @@
             </button>
         </div>
 
+
+        <div class="col-span-3 space-x-2" v-if="calendar_event?.my_reminder">
+            <jet-label for="my_reminder" value="Set my reminder (in minutes)." />
+            <input
+                id="my_reminder"
+                type="text"
+                class=""
+                v-model="form.my_reminder"
+            />
+            <jet-input-error :message="form.errors.start" class="mt-2" />
+        </div>
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
         <div class="flex flex-row col-span-6 mt-8">
@@ -261,6 +272,7 @@ export default {
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
                 lead_attendees: null,
+                my_reminder: null,
             };
             operation = "Create";
         }else{
@@ -274,6 +286,7 @@ export default {
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: calendarEvent.user_attendees?.map(user_attendee=>user_attendee.id) || [],
                 lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
+                my_reminder: calendar_event?.my_reminder.remind_time,
             }
         }
 
