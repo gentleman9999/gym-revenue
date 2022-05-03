@@ -130,16 +130,38 @@
         </div>
 
 
-        <div class="col-span-3 space-x-2" v-if="calendar_event?.my_reminder">
-            <jet-label for="my_reminder" value="Set my reminder (in minutes)." />
+        <div class="col-span-6 space-x-2">
+            <div class="divider divider-horizontal">My Meeting Settings</div>
+        </div>
+
+
+        <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
+            <jet-label for="my_reminder" value="Minutes Before Event to Notify Me" />
             <input
                 id="my_reminder"
                 type="text"
                 class=""
                 v-model="form.my_reminder"
             />
-            <jet-input-error :message="form.errors.start" class="mt-2" />
+            <jet-input-error :message="form.errors.my_reminder" class="mt-2" />
         </div>
+
+
+        <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
+            <jet-label for="reminder_option" value="Delete Reminder" />
+            <button @click.prevent="handleReminderDelete(calendar_event.my_reminder.id)" class="btn btn-sm btn-info hover:text-white">
+                Delete
+            </button>
+            <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
+        </div>
+        <div class="col-span-2 space-x-2" v-else>
+            <jet-label for="reminder_option" value="Create Reminder" />
+            <button @click.prevent="showFilesModal.open" class="btn btn-sm btn-info hover:text-white">
+                Create
+            </button>
+            <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
+        </div>
+
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
         <div class="flex flex-row col-span-6 mt-8">
@@ -219,6 +241,7 @@ import FilesForm from "@/Pages/Calendar/Partials/FilesForm";
 import Multiselect from "@vueform/multiselect";
 import {getDefaultMultiselectTWClasses} from "@/utils";
 import FileManager from "./FileManager";
+import {Inertia} from '@inertiajs/inertia';
 
 export default {
     components: {
@@ -237,6 +260,10 @@ export default {
     props: ["client_id", "calendar_event", "client_users", "lead_users"],
     setup(props, { emit }) {
         const page = usePage();
+
+        const handleReminderDelete = (id) => {
+            Inertia.put(route("calendar.reminder.delete", id));
+        };
 
         const calendar_event = props.calendar_event;
 
@@ -286,7 +313,7 @@ export default {
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: calendarEvent.user_attendees?.map(user_attendee=>user_attendee.id) || [],
                 lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
-                my_reminder: calendar_event?.my_reminder.remind_time,
+                my_reminder: calendar_event?.my_reminder?.remind_time,
             }
         }
 
@@ -379,6 +406,7 @@ export default {
             showFilesModal,
             uploadFiles,
             handleClickUpload,
+            handleReminderDelete,
             multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },

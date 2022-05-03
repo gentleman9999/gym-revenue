@@ -10,7 +10,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
 
-class DeleteReminder
+class DeleteReminderWithoutID
 {
     use AsAction;
 
@@ -22,19 +22,29 @@ class DeleteReminder
     public function rules()
     {
         return [
-            'id' => ['string', 'sometimes'],
+            'event_id' => ['string', 'required'],
+            'entity_type' => ['string', 'required'],
+            'user_id' => ['int', 'required'],
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle($data, $current_user = null)
     {
         if(!is_null($current_user)) {
             $client_id = $current_user->currentClientId();
             $data['client_id'] = $client_id;
         }
 
-        UserAggregate::retrieve($current_user->id)->deleteReminder($current_user->id ?? "Auto Generated", $data['id'])->persist();
+        $reminder = Reminder::whereEntityType($data['entity_type'])->whereEntityId($data['entity_id'])->whereUserId($data['user_id'])->first();
+        if(is_null($reminder)) {
+            return true;
+        } else {
+            $id = $reminder->id;
 
+            UserAggregate::retrieve($data['user_id'])->deleteReminder($current_user->id ?? "Auto Generated", $id)->persist();
+
+            return true;
+        }
     }
 
     public function authorize(ActionRequest $request): bool
@@ -42,12 +52,10 @@ class DeleteReminder
         return true;
     }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request)
     {
-        $data = $request->validated();
-        $data['id'] = $id;
         $reminder = $this->handle(
-            $data,
+            $request->validated(),
             $request->user(),
         );
 

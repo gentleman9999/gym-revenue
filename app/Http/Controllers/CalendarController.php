@@ -53,7 +53,7 @@ class CalendarController extends Controller
                             'reminder' => Reminder::whereEntityType(CalendarEvent::class)
                                 ->whereEntityId($event['id'])
                                 ->whereUserId($attendee->entity_id)
-                                ->first()
+                                ->first() ?? null
                         ];
 
                     }

@@ -3,7 +3,7 @@
 namespace App\Projectors\Clients;
 
 use App\Actions\Users\Reminders\CreateReminder;
-use App\Actions\Users\Reminders\DeleteReminder;
+use App\Actions\Users\Reminders\DeleteReminderWithoutID;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\User;
@@ -34,7 +34,7 @@ class CalendarAttendeeProjector extends Projector
     {
         CalendarAttendee::whereEntityType($event->data['entity_type'])->whereEntityId($event->data['entity_id'])->forceDelete();
         if($event->data['entity_type'] == User::class) {
-            DeleteReminder::run([
+            DeleteReminderWithoutID::run([
                 'entity_type' => CalendarEvent::class,
                 'user_id' => $event->data['entity_id'],
                 'entity_id' => $event->data['event_id']
