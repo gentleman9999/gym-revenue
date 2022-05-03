@@ -2,7 +2,10 @@
 
 namespace App\Actions\Users\Reminders;
 
+use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
+use App\Helpers\Uuid;
+use App\Models\Calendar\CalendarEvent;
 use App\Models\Reminder;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -10,7 +13,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
 
-class DeleteReminder
+class CreateReminderFromCalendarEvent
 {
     use AsAction;
 
@@ -33,8 +36,16 @@ class DeleteReminder
             $data['client_id'] = $client_id;
         }
 
-        UserAggregate::retrieve($current_user->id)->deleteReminder($current_user->id ?? "Auto Generated", $data['id'])->persist();
+        $id = Uuid::new();
+        $data['id'] = $id;
+        $data['entity_type'] = CalendarEvent::class;
+        $data['user_id'] = $current_user->id;
+        $data['name'] = 'User Generated Reminder';
+        $data['remind_time'] = 30;
 
+        UserAggregate::retrieve($data['user_id'])->createReminder($current_user->id, $data)->persist();
+
+        return Reminder::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -45,13 +56,13 @@ class DeleteReminder
     public function asController(ActionRequest $request, $id)
     {
         $data = $request->validated();
-        $data['id'] = $id;
-        $this->handle(
+        $data['entity_id'] = $id;
+        $reminder = $this->handle(
             $data,
             $request->user(),
         );
 
-        Alert::success("Reminder deleted")->flash();
+        Alert::success("Reminder '{$reminder->name}' was created")->flash();
 
         return Redirect::back();
     }

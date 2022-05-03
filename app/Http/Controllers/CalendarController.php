@@ -47,6 +47,8 @@ class CalendarController extends Controller
                                 ->whereEntityId($event['id'])
                                 ->whereUserId($attendee->entity_id)
                                 ->first();
+
+                            $eventsForTeam[$key]['im_attending'] = true;
                         }
                         $user_attendees[] = [
                             'id' => (int)$attendee->entity_id,

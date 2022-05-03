@@ -129,6 +129,7 @@
             </button>
         </div>
 
+<template v-if="calendar_event?.im_attending">
 
         <div class="col-span-6 space-x-2">
             <div class="divider divider-horizontal">My Meeting Settings</div>
@@ -156,11 +157,12 @@
         </div>
         <div class="col-span-2 space-x-2" v-else>
             <jet-label for="reminder_option" value="Create Reminder" />
-            <button @click.prevent="showFilesModal.open" class="btn btn-sm btn-info hover:text-white">
+            <button @click.prevent="handleReminderCreate(calendar_event.id)" class="btn btn-sm btn-info hover:text-white">
                 Create
             </button>
             <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
         </div>
+</template>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
@@ -263,6 +265,9 @@ export default {
 
         const handleReminderDelete = (id) => {
             Inertia.put(route("calendar.reminder.delete", id));
+        };
+        const handleReminderCreate = (id) => {
+            Inertia.put(route("calendar.reminder.create", id));
         };
 
         const calendar_event = props.calendar_event;
@@ -407,6 +412,7 @@ export default {
             uploadFiles,
             handleClickUpload,
             handleReminderDelete,
+            handleReminderCreate,
             multiselectClasses: getDefaultMultiselectTWClasses()
         };
     },
