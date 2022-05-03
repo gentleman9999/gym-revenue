@@ -129,40 +129,38 @@
             </button>
         </div>
 
-<template v-if="calendar_event?.im_attending">
+        <template v-if="calendar_event?.im_attending">
+            <div class="col-span-6 space-x-2">
+                <div class="divider divider-horizontal">My Meeting Settings</div>
+            </div>
 
-        <div class="col-span-6 space-x-2">
-            <div class="divider divider-horizontal">My Meeting Settings</div>
-        </div>
+            <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
+                <jet-label for="my_reminder" value="Minutes Before Event to Notify Me" />
+                <input
+                    id="my_reminder"
+                    type="text"
+                    class=""
+                    v-model="form.my_reminder"
+                />
+                <jet-input-error :message="form.errors.my_reminder" class="mt-2" />
+            </div>
 
+            <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
+                <jet-label for="reminder_option" value="Delete Reminder" />
+                <button @click.prevent="handleReminderDelete(calendar_event.my_reminder.id)" class="btn btn-sm btn-info hover:text-white">
+                    Delete
+                </button>
+                <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
+            </div>
+            <div class="col-span-2 space-x-2" v-else>
+                <jet-label for="reminder_option" value="Create Reminder" />
+                <button @click.prevent="handleReminderCreate(calendar_event.id)" class="btn btn-sm btn-info hover:text-white">
+                    Create
+                </button>
+                <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
+            </div>
 
-        <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
-            <jet-label for="my_reminder" value="Minutes Before Event to Notify Me" />
-            <input
-                id="my_reminder"
-                type="text"
-                class=""
-                v-model="form.my_reminder"
-            />
-            <jet-input-error :message="form.errors.my_reminder" class="mt-2" />
-        </div>
-
-
-        <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
-            <jet-label for="reminder_option" value="Delete Reminder" />
-            <button @click.prevent="handleReminderDelete(calendar_event.my_reminder.id)" class="btn btn-sm btn-info hover:text-white">
-                Delete
-            </button>
-            <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
-        </div>
-        <div class="col-span-2 space-x-2" v-else>
-            <jet-label for="reminder_option" value="Create Reminder" />
-            <button @click.prevent="handleReminderCreate(calendar_event.id)" class="btn btn-sm btn-info hover:text-white">
-                Create
-            </button>
-            <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
-        </div>
-</template>
+        </template>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
