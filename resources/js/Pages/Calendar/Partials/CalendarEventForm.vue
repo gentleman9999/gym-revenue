@@ -262,7 +262,7 @@ export default {
         const page = usePage();
 
         const handleReminderDelete = (id) => {
-            Inertia.put(route("calendar.reminder.delete", id));
+            Inertia.delete(route("calendar.reminder.delete", id));
         };
         const handleReminderCreate = (id) => {
             Inertia.put(route("calendar.reminder.create", id));
