@@ -263,9 +263,11 @@ export default {
 
         const handleReminderDelete = (id) => {
             Inertia.delete(route("calendar.reminder.delete", id));
+            emit('submitted');
         };
         const handleReminderCreate = (id) => {
             Inertia.put(route("calendar.reminder.create", id));
+            emit('submitted');
         };
 
         const calendar_event = props.calendar_event;
