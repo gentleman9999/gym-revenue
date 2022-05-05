@@ -41,14 +41,6 @@
             </div>
         </form>
     </jet-authentication-card>
-    
-    <div class="justify-center flex items-center sm:max-w-md pb-6 border-b border-secondary border-1" style="margin:0 auto;"><inertia-link v-on:click="comingSoon()" v-if="canResetPassword" class=" text-sm  hover:">
-        Email me a login link
-    </inertia-link></div>
-    <div class="justify-center flex items-center sm:max-w-md pb-4 border-b border-secondary border-1" style="margin:0 auto;"><inertia-link v-if="canResetPassword" :href="route('password.request')" class="mt-4 text-sm  hover:">
-        Lost your password?
-    </inertia-link></div>
-
 
 </template>
 
