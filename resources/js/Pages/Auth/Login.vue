@@ -14,12 +14,12 @@
 
         <form @submit.prevent="submit">
             <div>
-                <jet-label for="email" value="Email" />
+                <jet-label for="email" value="Email Address or Username" />
                 <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
             </div>
 
             <div class="mt-4">
-                <jet-label for="password" value="Password" />
+                <jet-label for="password" value="Password*" />
                 <input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
             </div>
 
@@ -30,17 +30,35 @@
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
-                    Forgot your password?
-                </inertia-link>
+            <!--<div class="flex items-center justify-end mt-4">
+            <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
+                Forgot your password?
+            </inertia-link>
 
-                <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                Log in
+            </Button>
+        </div> -->
+
+            <div class="flex items-center justify-center mt-4">
+                <!--<inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
+                    Forgot your password?
+                </inertia-link>-->
+
+                <Button class="ml-4 bg-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </Button>
             </div>
         </form>
     </jet-authentication-card>
+
+    <div class="justify-center flex items-center sm:max-w-md pb-6 border-b border-secondary border-1" style="margin:0 auto;"><inertia-link v-on:click="comingSoon()" v-if="canResetPassword" class=" text-sm  hover:">
+        Email me a login link
+    </inertia-link></div>
+    <div class="justify-center flex items-center sm:max-w-md pb-6 border-b border-secondary border-1" style="margin:0 auto;"><inertia-link v-if="canResetPassword" :href="route('password.request')" class="mt-4 text-sm  hover:">
+        Lost your password?
+    </inertia-link></div>
+
 </template>
 
 <script>
@@ -89,6 +107,14 @@
                     .post(this.route('login'), {
                         onFinish: () => this.form.reset('password'),
                     })
+            },
+            comingSoon() {
+                new Noty({
+                    type: 'warning',
+                    theme: 'sunset',
+                    text: 'Feature Coming Soon!',
+                    timeout: 7500
+                }).show();
             }
         }
     })
