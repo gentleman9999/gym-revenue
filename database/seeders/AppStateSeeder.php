@@ -310,7 +310,7 @@ class AppStateSeeder extends Seeder
             'desc' => 'This is a record of code deployed on 05-05-2022',
             'value' => '2022-05-05',
             'misc' => [
-                'buildno' => '20220420',
+                'buildno' => '20220505',
                 'version' => '0.17.01',
                 'notes' => [
                     'Notes - Read/Unread indicators added to notes fields.',
