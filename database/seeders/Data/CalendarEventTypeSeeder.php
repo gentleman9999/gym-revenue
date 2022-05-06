@@ -28,7 +28,8 @@ class CalendarEventTypeSeeder extends Seeder
                 'Training and Development' => ['name' => 'Training and Development', 'color' => 'white'],
                 'Prospecting' => ['name' => 'Prospecting', 'color' => 'grey'],
                 'External Event' => ['name' => 'External Event', 'color' => 'blue'],
-                'Task Follow-Up' => ['name' => 'Task Follow-Up', 'color' => 'green']
+                'Task Follow-Up' => ['name' => 'Task Follow-Up', 'color' => 'green'],
+                'Task' => ['name' => 'Task', 'color' => 'green']
             ];
 
             if (count($clients) > 0) {

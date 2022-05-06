@@ -7,6 +7,20 @@
         <!--        <template #description>-->
         <!--            {{ buttonText }} a location.-->
         <!--        </template>-->
+
+        <div class="col-span-6" v-if="calendar_event?.owner_id">
+            <div class="avatar">
+                <div class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                    <img :src="calendar_event?.event_owner.profile_photo_url" />
+                </div>
+            </div>
+            <div>
+                <h1>
+                    {{calendar_event?.event_owner.name}}
+                </h1>
+            </div>
+        </div>
+
         <div class="col-span-6">
             <jet-label for="title" value="Title" />
             <input
@@ -39,11 +53,13 @@
                 type="checkbox"
                 class=""
                 v-model="form.full_day_event"
+                :disabled="calendar_event?.type.type == 'Task'"
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
         <div class="col-span-3">
-            <jet-label for="start" value="Start" />
+            <jet-label for="start" value="Due Date" v-if="calendar_event?.type.type == 'Task'"/>
+            <jet-label for="start" value="Start" v-else/>
             <date-picker
                 required
                 dark
@@ -58,6 +74,7 @@
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
 
+        <template v-if="calendar_event?.type.type !== 'Task'">
         <div class="col-span-3">
             <jet-label for="end" value="End" />
             <date-picker
@@ -70,6 +87,7 @@
                 :month-change-on-scroll="false"
                 :auto-apply="true"
                 :close-on-scroll="true"
+                :disabled="calendar_event?.type.type === 'Task'"
             />
             <jet-input-error :message="form.errors.end" class="mt-2" />
         </div>
@@ -90,6 +108,7 @@
                         }))
                     "
                 :classes="multiselectClasses"
+                :disabled="calendar_event?.type.type === 'Task'"
             />
         </div>
 
@@ -109,6 +128,7 @@
                         }))
                     "
                 :classes="multiselectClasses"
+                :disabled="calendar_event?.type.type === 'Task'"
             />
         </div>
 
@@ -119,8 +139,9 @@
             </button>
         </div>
 
+        </template>
         <div class="col-span-3 space-x-2" >
-            <jet-label for="attendeesModal" value="Calendar File Attachments" />
+            <jet-label for="attendeesModal" value="Event File Attachments" />
             <button @click.prevent="handleClickUpload" class="btn btn-sm btn-info hover:text-white">
                 Upload
             </button>
