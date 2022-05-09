@@ -52,7 +52,7 @@
         "html2canvas": "^1.4.0",
         "jspdf": "^2.5.0",
         "mini-svg-data-uri": "^1.4.3",
-        "noty": "^3.2.0-beta",
+        "noty": "^3.2.0-beta-deprecated",
         "prettier": "^2.5.0",
         "pretty-bytes": "^5.6.0",
         "sweet-modal-vue": "^2.0.0",
