@@ -1,19 +1,28 @@
 <template>
     <app-layout :title="title">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Calendar</h2>
-        </template>
+<!--        <template #header>-->
+<!--            <h2 class="font-semibold text-xl leading-tight">Calendar</h2>-->
+<!--        </template>-->
         <page-toolbar-nav
             title="Event Types"
             :links="navLinks"
         />
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="flex flex-row col-span-3 lg:col-span-2 gap-2 mb-4">
-                <button class="btn btn-sm text-xs" @click="handleClickNewEvent">
-                    New Event
-                </button>
+            <div class="flex flex-row items-center gap-4 mb-4">
+                <h1 class="text text-xl mr-8">Calendar</h1>
+                <h2 class="text text-xl font-bold">{{title}}</h2>
                 <div class="flex-grow" />
+<!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
+<!--                    New Event-->
+<!--                </button>-->
+                <div class="form-control">
+                    <select v-model="currentView" @change="handleChangeView">
+                        <option value="dayGridMonth">Month</option>
+                        <option value="timeGridWeek">Week</option>
+                        <option value="timeGridDay">Day</option>
+                    </select>
+                </div>
                 <simple-search-filter
                     v-model:modelValue="form.search"
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
@@ -105,7 +114,7 @@
 </template>
 
 <script>
-import { defineComponent, watch, watchEffect, ref } from "vue";
+import { defineComponent, watch, watchEffect, ref, computed } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
@@ -161,10 +170,28 @@ export default defineComponent({
         const selectedCalendarEvent = ref(null);
         const createCalendarEventForm = ref(null);
         const editCalendarEventForm = ref(null);
+        const currentView = ref('timeGridWeek');
+        const start = ref(null);
+        const end = ref(null);
+
+        const title = computed(()=>start.value?.toLocaleString('default', { month: 'long', year: 'numeric' }));
+
         const handleClickNewEvent = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
         };
+
+        const handleChangeView = () =>{
+            calendar.value.getApi().changeView(currentView.value);
+            onViewChanged();
+        }
+
+        const onViewChanged = () => {
+            start.value = calendar.value.getApi().view.activeStart;
+            start.end = calendar.value.getApi().view.activeEnd;
+            console.log({start,end,calendarView: calendar.value.getApi().view})
+
+        }
 
         const handleDroppedEvent = (data) => {
             let calendarEvent = {
@@ -210,6 +237,25 @@ export default defineComponent({
         const resetEditEventModal = () =>
             createCalendarEventForm.value?.form?.reset();
 
+        const dowIntToString = (dow) => {
+            switch(dow){
+                case 0:
+                    return 'Sunday';
+               case 1:
+                   return 'Monday';
+               case 2:
+                   return "Tuesday";
+                case 3:
+                    return "Wednesday";
+                case 4:
+                    return "Thursday";
+                case 5:
+                    return "Friday";
+                case 6:
+                    return "Saturday";
+            }
+        }
+
         let navLinks = [
             {
                 label: "Calendar",
@@ -234,15 +280,6 @@ export default defineComponent({
                     interactionPlugin,
                     listPlugin,
                 ],
-                /*
-                eventContent: function(arg) {
-                    console.error(arg)
-                    if (arg.event.extendedProps.type.type === "External Event") {
-                       console.log('yes')
-                    } else {
-                       console.log('Event Type '+arg.event.extendedProps.type.type )
-                    }
-                },*/
                 initialView: "timeGridWeek",
                 events: (
                     { start, end, startStr, endStr },
@@ -253,9 +290,31 @@ export default defineComponent({
                     successCallback(props.calendar_events);
                 },
                 headerToolbar: {
-                    left: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
-                    center: "title",
-                    right: "prev,next today",
+                    left: "",
+                    center: "",
+                    right: "",
+                    // center: "title",
+                    // right: "prev,next today",
+                },
+                views: {
+                    timeGridWeek: {
+                        eventTimeFormat: {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            meridiem: 'short'
+                        }
+                    },
+                    dayGridMonth: {
+                        dayHeaderFormat: {
+                            weekday: 'long'
+                        }
+                    },
+                    timeGridDay:{
+                        dayHeaderFormat: {
+                            weekday: 'long',
+                            day: 'numeric'
+                        }
+                    }
                 },
                 editable: true,
                 selectable: true,
@@ -273,6 +332,7 @@ export default defineComponent({
                         createEventModal.value.open();
                     }
                 },
+                viewDidMount: onViewChanged,
                 dateClick: function (data) {
                     numClicks.value++;
                     let singleClickTimer;
@@ -304,6 +364,24 @@ export default defineComponent({
                 eventDrop: function (data) {
                     handleDroppedEvent(data);
                 },
+                dayHeaderDidMount: function({date, dow, el, view, ...rest}){
+                    console.log('dayHeaderDidMount', {view});
+
+                    const dow_str = dowIntToString(dow);
+                    let date_str = String(date.getDate());
+                    if(date_str.length === 1){
+                        date_str = "0"+date_str;
+                    }
+                    if(view.type === "timeGridWeek"){
+                        console.log('dayHeaderDidMount replacing header');
+                        el.innerHTML = `<div class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`;
+                    } else if (view.type === 'timeGridDay'){
+                        console.log('dayHeaderDidMount could replace header here');
+                    }
+                },
+                eventDidMount: function({date, dow, el, view, ...rest}) {
+                    console.log({date, dow, el, view, ...rest});
+                },
             },
             createEventModal,
             editEventModal,
@@ -320,7 +398,10 @@ export default defineComponent({
             editCalendarEventForm,
             resetCreateEventModal,
             resetEditEventModal,
-            navLinks
+            navLinks,
+            currentView,
+            handleChangeView,
+            title
         };
     },
 });
@@ -341,5 +422,50 @@ export default defineComponent({
 }
 .fc-v-event .fc-event-title-container{
     @apply text-xs leading-tight;
+}
+.fc-v-event .fc-event-main-frame{
+    @apply flex-col-reverse;
+}
+.fc-event-title{
+    @apply text-base;
+}
+.fc-timegrid-event .fc-event-main{
+    @apply p-1;
+}
+.fc .fc-timegrid-slot-minor{
+    @apply border-0;
+}
+.fc .fc-timegrid-slot{
+    @apply h-8;
+}
+.fc .fc-timegrid-slot-label-cushion {
+    @apply transform -translate-y-full py-1 uppercase;
+}
+.fc-theme-standard .fc-scrollgrid{
+    @apply border-0;
+}
+th:last-child{
+    @apply border-r-0;
+}
+.fc .fc-scrollgrid-section-liquid > td{
+    @apply border-0;
+}
+.fc-col-header-cell-cushion {
+   @apply text-sm font-medium;
+}
+/*this breaks first line in month grid view*/
+.fc-daygrid-day-top{
+    @apply absolute bottom-0 right-0 text-2xl p-2 font-bold;
+}
+.fc-day-today > div > div > a {
+    @apply rounded-full p-4 relative;
+/*@apply bg-secondary;*/
+    &:before{
+        content: '';
+        @apply absolute bg-secondary rounded-full h-full w-full z-[-1] inset-0;
+    }
+}
+.fc .fc-daygrid-day-number {
+    @apply p-2;
 }
 </style>
