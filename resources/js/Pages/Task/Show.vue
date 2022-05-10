@@ -1,31 +1,34 @@
 <template>
-    <app-layout title="Event Types">
+    <app-layout :title="title">
 
         <page-toolbar-nav
-            title="Event Types"
+            title="Tasks"
             :links="navLinks"
         />
         <gym-revenue-crud
-            base-route="calendar.event_types"
-            model-name="Event Type"
-            model-key="calendar-event-types"
+            base-route="tasks"
+            model-name="Task"
+            model-key="task"
             :fields="fields"
-            :resource="calendarEventTypes"
+            :resource="tasks"
             :actions="{
-                trash: {
-                    handler: ({ data }) => handleClickTrash(data),
+                trash: false,
+                restore: false,
+                delete: {
+                    label: 'Delete',
+                    handler: ({ data }) => handleClickDelete(data),
                 },
             }"
         />
         <confirm
-            title="Really Trash Event Type?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
+            title="Really Trash Task?"
+            v-if="confirmDelete"
+            @confirm="handleConfirmDelete"
+            @cancel="confirmDelete = null"
         >
-            Are you sure you want to move Event Type '{{
-                confirmTrash.name
-            }}' to the trash?<BR />
+            Are you sure you want to delete task'{{
+                confirmDelete.title
+            }}'
         </confirm>
     </app-layout>
 </template>
@@ -49,20 +52,29 @@ export default defineComponent({
         Button,
         PageToolbarNav
     },
-    props: ["calendarEventTypes", "filters"],
+    props: ["tasks", "filters"],
     setup(props) {
 
-        const confirmTrash = ref(null);
-        const handleClickTrash = (id) => {
-            confirmTrash.value = id;
+        const confirmDelete = ref(null);
+        const handleClickDelete = (item) => {
+            console.log('click delete', item);
+            confirmDelete.value = item;
         };
 
-        const handleConfirmTrash = () => {
-            Inertia.delete(route("calendar.event_types.trash", confirmTrash.value));
-            confirmTrash.value = null;
+        const handleConfirmDelete = () => {
+            Inertia.delete(route("tasks.delete", confirmDelete.value));
+            confirmDelete.value = null;
         };
 
-        const fields = ["name", "description", "type", "created_at", "updated_at"];
+        const fields = [
+            "title",
+            "created_at",
+            "updated_at",
+            {
+                name: 'event_completion',
+                label: "Completed At"
+            }
+        ];
 
         let navLinks = [
             {
@@ -75,17 +87,17 @@ export default defineComponent({
                 label: "Event Types",
                 href: route("calendar.event_types"),
                 onClick: null,
-                active: true
+                active: false
             },
             {
                 label: "Tasks",
                 href: route("tasks"),
                 onClick: null,
-                active: false
+                active: true
             },
         ];
 
-        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
+        return {fields, confirmDelete, handleConfirmDelete, handleClickDelete, Inertia, navLinks};
     },
 });
 </script>
