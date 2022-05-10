@@ -1,11 +1,11 @@
 <template>
-    <div class="md:grid md:grid-cols-3 md:gap-6">
+    <div class="col-span-2 sm:col-span-2">
         <jet-section-title>
             <template #title><slot name="title"></slot></template>
             <template #description><slot name="description"></slot></template>
         </jet-section-title>
 
-        <div class="mt-5 md:mt-0 md:col-span-2">
+        <div class="">
             <div class="px-4 py-5 sm:p-6 bg-base-300 border border-secondary border-1">
                 <slot name="content"></slot>
             </div>

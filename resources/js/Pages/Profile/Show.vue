@@ -34,7 +34,7 @@
                     <jet-section-border />
                 </div>
 
-                <div v-if="$page.props.jetstream.canUpdatePassword">
+                <div v-if="$page.props.jetstream.canUpdatePassword" class="w-1/2" style="margin:0 auto;">
                     <update-password-form class="mt-10 sm:mt-0" v-if="(!('is_being_impersonated' in $page.props.user))"/>
                     <jet-form-section v-else>
                         <template #title>
@@ -53,7 +53,8 @@
                     <jet-section-border />
                 </div>
 
-                <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
+                <div class="w-full grid grid-cols-6 gap-6">
+                    <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication" class="col-span-2 sm:col-span-2">
                     <two-factor-authentication-form class="mt-10 sm:mt-0" v-if="(!('is_being_impersonated' in $page.props.user))"/>
                     <jet-form-section v-else>
                         <template #title>
@@ -71,13 +72,16 @@
                     <jet-section-border />
                 </div>
 
-                <logout-other-browser-sessions-form :sessions="sessions" class="mt-10 sm:mt-0" v-if="(!('is_being_impersonated' in $page.props.user))"/>
+                    <logout-other-browser-sessions-form :sessions="sessions" class="mt-10 sm:mt-0" v-if="(!('is_being_impersonated' in $page.props.user))"/>
 
-                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures && (!('is_being_impersonated' in $page.props.user)) ">
-                    <jet-section-border />
+                    <template v-if="$page.props.jetstream.hasAccountDeletionFeatures && (!('is_being_impersonated' in $page.props.user)) ">
 
-                    <delete-user-form class="mt-10 sm:mt-0" />
-                </template>
+
+                        <delete-user-form class="mt-10 sm:mt-0" />
+                    </template>
+                </div>
+
+
             </div>
         </div>
     </app-layout>
