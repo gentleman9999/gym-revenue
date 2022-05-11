@@ -23,6 +23,7 @@
                     handler: ({ data }) => handleClickDelete(data),
                 },
             }"
+            :top-actions="topActions"
         />
         <confirm
             title="Really Trash Task?"
@@ -97,10 +98,7 @@ export default defineComponent({
         const selectedCalendarEvent = ref(null);
         const createCalendarEventForm = ref(null);
         const editCalendarEventForm = ref(null);
-        const handleClickNewEvent = () => {
-            selectedCalendarEvent.value = null;
-            createEventModal.value.open();
-        };
+
         const resetCreateEventModal = () =>
             createCalendarEventForm.value?.form?.reset();
         const resetEditEventModal = () =>
@@ -108,13 +106,6 @@ export default defineComponent({
         const closeModals = () => {
             createEventModal.value.close();
             editEventModal.value.close();
-        };
-
-
-        const confirmDelete = ref(null);
-        const handleClickDelete = (item) => {
-            console.log('click delete', item);
-            confirmDelete.value = item;
         };
 
         const editTask = (item) => {
@@ -125,11 +116,21 @@ export default defineComponent({
             );
             editEventModal.value.open();
         };
+        const handleClickNewTask = () => {
+            selectedCalendarEvent.value = null;
+            createEventModal.value.open();
+        }
 
         const handleConfirmDelete = () => {
             Inertia.delete(route("tasks.delete", confirmDelete.value));
             confirmDelete.value = null;
         };
+        const confirmDelete = ref(null);
+        const handleClickDelete = (item) => {
+            console.log('click delete', item);
+            confirmDelete.value = item;
+        };
+
 
         const fields = [
             "title",
@@ -162,12 +163,21 @@ export default defineComponent({
             },
         ];
 
+        const topActions = {
+            create: {
+                label: "New Task",
+                handler: handleClickNewTask,
+                class: 'btn-primary'
+            },
+        };
+
         return {
             fields,
             confirmDelete,
             handleConfirmDelete,
             handleClickDelete,
             editTask,
+            handleClickNewTask,
             Inertia,
             navLinks,
             createCalendarEventForm,
@@ -177,7 +187,8 @@ export default defineComponent({
             createEventModal,
             editEventModal,
             selectedCalendarEvent,
-            closeModals
+            closeModals,
+            topActions
         };
     },
 });
