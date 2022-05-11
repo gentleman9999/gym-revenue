@@ -182,6 +182,7 @@ export default defineComponent({
         };
 
         const handleChangeView = () =>{
+            console.log('handleChangeView Called');
             calendar.value.getApi().changeView(currentView.value);
             onViewChanged();
         }
@@ -190,7 +191,6 @@ export default defineComponent({
             start.value = calendar.value.getApi().view.activeStart;
             start.end = calendar.value.getApi().view.activeEnd;
             console.log({start,end,calendarView: calendar.value.getApi().view})
-
         }
 
         const handleDroppedEvent = (data) => {
