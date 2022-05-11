@@ -229,6 +229,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->grou
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {
     Route::get('/', \App\Http\Controllers\TaskController::class . '@index')->name('tasks');
+    Route::delete('/{id}', \App\Actions\Clients\Calendar\DeleteCalendarEvent::class)->name('tasks.delete');
+
 
 });
 

@@ -47,7 +47,7 @@ class DeleteCalendarEvent
             $request->user()
         );
 
-        Alert::success("Calendar Event '{$calendar->title}' was deleted")->flash();
+        Alert::success("Event '{$calendar->title}' was deleted")->flash();
 
         return Redirect::back();
     }
