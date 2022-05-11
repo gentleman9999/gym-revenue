@@ -313,7 +313,8 @@ export default defineComponent({
                         dayHeaderFormat: {
                             weekday: 'long',
                             day: 'numeric'
-                        }
+                        },
+                        nowIndicator: true
                     }
                 },
                 editable: true,
@@ -364,19 +365,23 @@ export default defineComponent({
                 eventDrop: function (data) {
                     handleDroppedEvent(data);
                 },
-                dayHeaderDidMount: function({date, dow, el, view, ...rest}){
+                dayHeaderDidMount: function({date, dow, el, view, isToday, ...rest}){
                     console.log('dayHeaderDidMount', {view});
 
                     const dow_str = dowIntToString(dow);
-                    let date_str = String(date.getDate());
-                    if(date_str.length === 1){
-                        date_str = "0"+date_str;
-                    }
+
                     if(view.type === "timeGridWeek"){
                         console.log('dayHeaderDidMount replacing header');
+                        let date_str = String(date.getDate());
+                        if(date_str.length === 1){
+                            date_str = "0"+date_str;
+                        }
                         el.innerHTML = `<div class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`;
                     } else if (view.type === 'timeGridDay'){
                         console.log('dayHeaderDidMount could replace header here');
+                        const dow_or_today = isToday ? 'Today' : dow_str;
+                        const date_str = date.toLocaleString();
+                        el.innerHTML = `<div class="flex flex-col p-2 text-2xl font-medium"><span class="text text-sm">${dow_or_today}</span> <span class="text-xl font-bold">${date_str}</span></div>`;
                     }
                 },
                 eventDidMount: function({date, dow, el, view, ...rest}) {
@@ -467,5 +472,11 @@ th:last-child{
 }
 .fc .fc-daygrid-day-number {
     @apply p-2;
+}
+.fc-daygrid-day.fc-day-today, .fc-timegrid-col.fc-day-today{
+    @apply !bg-transparent;
+}
+.fc .fc-timegrid-now-indicator-line{
+    @apply border-2;
 }
 </style>
