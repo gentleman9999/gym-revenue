@@ -182,9 +182,27 @@ export default defineComponent({
         };
 
         const handleChangeView = () =>{
-            console.log('handleChangeView Called');
+            console.log('handleChangeView Called', currentView.value);
             calendar.value.getApi().changeView(currentView.value);
+            imSorryItWasTheOnlyWay();
             onViewChanged();
+
+        }
+
+        /**
+         * https://fullcalendar.io/docs/day-header-render-hooks
+         *
+         * For some reason timeGridDay dayHeader render hook lifecycle methods are not
+         * working correctly.  timeGridDay view renders the header from timeGridWeek.
+         * I could have chosen to dive into their source code,and figure out what is
+         * really happening here, but I instead chose to do this hacky way and just
+         * try to remove manually if necessary on mount. For that, I am sorry.
+         */
+            const imSorryItWasTheOnlyWay = () => {
+            if(currentView.value === 'timeGridDay'){
+                console.log('we can do some hacky stuff here maybe');
+                document.querySelector('#timeGridWeek__dayHeader')?.remove();
+            }
         }
 
         const onViewChanged = () => {
@@ -274,6 +292,7 @@ export default defineComponent({
         return {
             Inertia,
             calendarOptions: {
+                schedulerLicenseKey: '0157232768-fcs-1652392378',
                 plugins: [
                     dayGridPlugin,
                     timeGridPlugin,
@@ -311,8 +330,9 @@ export default defineComponent({
                     },
                     timeGridDay:{
                         dayHeaderFormat: {
-                            weekday: 'long',
-                            day: 'numeric'
+                            month: 'long',
+                            day: 'numeric',
+                            omitCommas: 'false'
                         },
                         nowIndicator: true
                     }
@@ -370,19 +390,28 @@ export default defineComponent({
 
                     const dow_str = dowIntToString(dow);
 
-                    if(view.type === "timeGridWeek"){
-                        console.log('dayHeaderDidMount replacing header');
+                    if(view.type === "timeGridWeek" && currentView.value==='timeGridWeek'){
+                        console.log('dayHeaderDidMount replacing timeGridWeek header');
                         let date_str = String(date.getDate());
                         if(date_str.length === 1){
                             date_str = "0"+date_str;
                         }
-                        el.innerHTML = `<div class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`;
+                        el.innerHTML = `<div id="timeGridWeek__dayHeader" class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`;
                     } else if (view.type === 'timeGridDay'){
-                        console.log('dayHeaderDidMount could replace header here');
+                        console.log('**dayHeaderDidMount replacing timeGridDay header');
                         const dow_or_today = isToday ? 'Today' : dow_str;
-                        const date_str = date.toLocaleString();
-                        el.innerHTML = `<div class="flex flex-col p-2 text-2xl font-medium"><span class="text text-sm">${dow_or_today}</span> <span class="text-xl font-bold">${date_str}</span></div>`;
+                        const date_str = date.toLocaleString("en", {
+                            month: "long",
+                            day: "numeric"
+                        });
+                        el.innerHTML = `<div id="timeGridDay__dayHeader" class="flex flex-col items-start p-2 text-2xl font-medium"><span class="text text-3xl">${dow_or_today}</span> <span class="text-2xl font-bold">${date_str}</span></div>`;
+                    }else{
+                        console.log("didn't replace any content bc view.type =", view.type);
                     }
+                },
+                dayHeaderWillUnmount: function ({el, ...rest}){
+                    el.innerHTML = ``;
+                    console.log('dayHeaderWillUnmount', el, rest)
                 },
                 eventDidMount: function({date, dow, el, view, ...rest}) {
                     console.log({date, dow, el, view, ...rest});
