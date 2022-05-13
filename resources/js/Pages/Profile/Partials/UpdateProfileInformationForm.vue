@@ -42,41 +42,41 @@
             </div>
 
             <!-- First Name -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="first_name" value="First Name" />
                 <input id="first_name" type="text" class="mt-1 block w-full" v-model="form['first_name']" autocomplete="name" />
                 <jet-input-error :message="form.errors['first_name']" class="mt-2" />
             </div>
 
             <!-- Last Name -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="last_name" value="Last Name" />
                 <input id="last_name" type="text" class="mt-1 block w-full" v-model="form['last_name']" autocomplete="name" />
                 <jet-input-error :message="form.errors['last_name']" class="mt-2" />
             </div>
             <!-- Name -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="name" value="Name" />
                 <input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
 
             <!-- Phone # -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="phone" value="Phone #" />
                 <input id="phone" type="number" class="mt-1 block w-full" v-model="form.phone" />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
             <!-- Email -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="email" value="Email" />
                 <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
 
             <!-- AltEmail -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="altEmail" value="Personal Email" />
                 <input id="altEmail" type="email" class="mt-1 block w-full" v-model="form.altEmail" />
                 <jet-input-error :message="form.errors.altEmail" class="mt-2" />
@@ -98,14 +98,14 @@
             </div>
 
             <!-- City -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="city" value="City" />
                 <input id="city" type="text" class="mt-1 block w-full" v-model="form.city" />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
 
             <!-- State -->
-            <div class="col-span-3 sm:col-span-3">
+            <div class="col-span-2 sm:col-span-2">
                 <jet-label for="state" value="State" />
                     <multiselect
                         id="state"
