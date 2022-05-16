@@ -1,21 +1,18 @@
 <template>
     <app-layout :title="title">
-<!--        <template #header>-->
-<!--            <h2 class="font-semibold text-xl leading-tight">Calendar</h2>-->
-<!--        </template>-->
-        <page-toolbar-nav
-            title="Event Types"
-            :links="navLinks"
-        />
+        <!--        <template #header>-->
+        <!--            <h2 class="font-semibold text-xl leading-tight">Calendar</h2>-->
+        <!--        </template>-->
+        <page-toolbar-nav title="Event Types" :links="navLinks"/>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-row items-center gap-4 mb-4">
                 <h1 class="text text-xl mr-8">Calendar</h1>
-                <h2 class="text text-xl font-bold">{{title}}</h2>
-                <div class="flex-grow" />
-<!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
-<!--                    New Event-->
-<!--                </button>-->
+                <h2 class="text text-xl font-bold">{{ title }}</h2>
+                <div class="flex-grow"/>
+                <!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
+                <!--                    New Event-->
+                <!--                </button>-->
                 <div class="form-control">
                     <select v-model="currentView" @change="handleChangeView">
                         <option value="dayGridMonth">Month</option>
@@ -30,14 +27,16 @@
                     @clear-filters="clearFilters"
                     @clear-search="clearSearch"
                 >
-                    <div class="block py-2 text-xs text-base-content text-opacity-80">
+                    <div
+                        class="block py-2 text-xs text-base-content text-opacity-80"
+                    >
                         View User Calendar:
                     </div>
                     <select
                         v-model="form.viewUser"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null" />
+                        <option :value="null"/>
                         <option
                             v-for="{ name, id } in client_users"
                             :value="id"
@@ -55,7 +54,7 @@
                         v-model="form.calendar_event_type"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null" />
+                        <option :value="null"/>
                         <option
                             v-for="{ name, id } in calendar_event_types"
                             :value="id"
@@ -72,14 +71,14 @@
                         v-model="form.trashed"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null" />
+                        <option :value="null"/>
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
                 </simple-search-filter>
             </div>
 
-            <FullCalendar :options="calendarOptions" ref="calendar" />
+            <FullCalendar :options="calendarOptions" ref="calendar"/>
             <daisy-modal
                 ref="createEventModal"
                 id="createEventModal"
@@ -114,18 +113,13 @@
 </template>
 
 <script>
-import { defineComponent, watch, watchEffect, ref, computed } from "vue";
+import {computed, defineComponent, ref, watchEffect} from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
-import { Inertia } from "@inertiajs/inertia";
+import {Inertia} from "@inertiajs/inertia";
 import "@fullcalendar/core/vdom"; // solves problem with Vite
-import FullCalendar, {
-    CalendarOptions,
-    EventApi,
-    DateSelectArg,
-    EventClickArg,
-} from "@fullcalendar/vue3";
+import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -133,7 +127,7 @@ import listPlugin from "@fullcalendar/list";
 import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
@@ -160,9 +154,9 @@ export default defineComponent({
     ],
 
     setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+        const {form, reset, clearFilters, clearSearch} = useSearchFilter(
             "calendar",
-            { start: "", end: "" }
+            {start: "", end: ""}
         );
         const calendar = ref(null);
         const createEventModal = ref();
@@ -174,41 +168,23 @@ export default defineComponent({
         const start = ref(null);
         const end = ref(null);
 
-        const title = computed(()=>start.value?.toLocaleString('default', { month: 'long', year: 'numeric' }));
+        const title = computed(() => start.value?.toLocaleString('default', {month: 'long', year: 'numeric'}));
 
         const handleClickNewEvent = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
         };
 
-        const handleChangeView = () =>{
+        const handleChangeView = () => {
             console.log('handleChangeView Called', currentView.value);
             calendar.value.getApi().changeView(currentView.value);
-            imSorryItWasTheOnlyWay();
             onViewChanged();
-
-        }
-
-        /**
-         * https://fullcalendar.io/docs/day-header-render-hooks
-         *
-         * For some reason timeGridDay dayHeader render hook lifecycle methods are not
-         * working correctly.  timeGridDay view renders the header from timeGridWeek.
-         * I could have chosen to dive into their source code,and figure out what is
-         * really happening here, but I instead chose to do this hacky way and just
-         * try to remove manually if necessary on mount. For that, I am sorry.
-         */
-            const imSorryItWasTheOnlyWay = () => {
-            if(currentView.value === 'timeGridDay'){
-                console.log('we can do some hacky stuff here maybe');
-                document.querySelector('#timeGridWeek__dayHeader')?.remove();
-            }
         }
 
         const onViewChanged = () => {
             start.value = calendar.value.getApi().view.activeStart;
             start.end = calendar.value.getApi().view.activeEnd;
-            console.log({start,end,calendarView: calendar.value.getApi().view})
+            console.log({start, end, calendarView: calendar.value.getApi().view})
         }
 
         const handleDroppedEvent = (data) => {
@@ -256,13 +232,13 @@ export default defineComponent({
             createCalendarEventForm.value?.form?.reset();
 
         const dowIntToString = (dow) => {
-            switch(dow){
+            switch (dow) {
                 case 0:
                     return 'Sunday';
-               case 1:
-                   return 'Monday';
-               case 2:
-                   return "Tuesday";
+                case 1:
+                    return 'Monday';
+                case 2:
+                    return "Tuesday";
                 case 3:
                     return "Wednesday";
                 case 4:
@@ -301,7 +277,7 @@ export default defineComponent({
                 ],
                 initialView: "timeGridWeek",
                 events: (
-                    { start, end, startStr, endStr },
+                    {start, end, startStr, endStr},
                     successCallback,
                     failureCallback
                 ) => {
@@ -328,7 +304,7 @@ export default defineComponent({
                             weekday: 'long'
                         }
                     },
-                    timeGridDay:{
+                    timeGridDay: {
                         dayHeaderFormat: {
                             month: 'long',
                             day: 'numeric',
@@ -385,35 +361,42 @@ export default defineComponent({
                 eventDrop: function (data) {
                     handleDroppedEvent(data);
                 },
-                dayHeaderDidMount: function({date, dow, el, view, isToday, ...rest}){
-                    console.log('dayHeaderDidMount', {view});
+                dayHeaderContent: function ({date, dow, view, isToday, ...rest}) {
+                    console.log('dayHeaderContent', {view});
 
                     const dow_str = dowIntToString(dow);
 
-                    if(view.type === "timeGridWeek" && currentView.value==='timeGridWeek'){
+                    if (view.type === "timeGridWeek" && currentView.value === 'timeGridWeek') {
                         console.log('dayHeaderDidMount replacing timeGridWeek header');
                         let date_str = String(date.getDate());
-                        if(date_str.length === 1){
-                            date_str = "0"+date_str;
+                        if (date_str.length === 1) {
+                            date_str = "0" + date_str;
                         }
-                        el.innerHTML = `<div id="timeGridWeek__dayHeader" class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`;
-                    } else if (view.type === 'timeGridDay'){
+                        return {
+                            html: `<div id="timeGridWeek__dayHeader" class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`
+                        };
+                    } else if (view.type === 'timeGridDay') {
                         console.log('**dayHeaderDidMount replacing timeGridDay header');
                         const dow_or_today = isToday ? 'Today' : dow_str;
                         const date_str = date.toLocaleString("en", {
                             month: "long",
                             day: "numeric"
                         });
-                        el.innerHTML = `<div id="timeGridDay__dayHeader" class="flex flex-col items-start p-2 text-2xl font-medium"><span class="text text-3xl">${dow_or_today}</span> <span class="text-2xl font-bold">${date_str}</span></div>`;
-                    }else{
-                        console.log("didn't replace any content bc view.type =", view.type);
+                        return {
+                            html: `<div id="timeGridDay__dayHeader" class="flex flex-col items-start p-2 text-2xl font-medium"><span class="text text-3xl">${dow_or_today}</span> <span class="text-2xl font-bold">${date_str}</span></div>`
+                        };
                     }
                 },
-                dayHeaderWillUnmount: function ({el, ...rest}){
-                    el.innerHTML = ``;
-                    console.log('dayHeaderWillUnmount', el, rest)
+                nowIndicatorContent: function ({date, dow, view, isToday,isAxis, ...rest}) {
+                    if (view.type === 'timeGridDay' && !isAxis) {
+                        console.log('**nowIndicatorContent replacing timeGridDay nowIndicatorContent');
+                        const date_str = date.toLocaleTimeString("en", {hour: '2-digit', minute: '2-digit'}).replace("AM", "").replace("PM", "");
+                        return {
+                            html: `<div class="absolute bg-red-500 inset-y-0 flex items-center p-2 rounded transform -translate-y-1/2">${date_str}</div>`
+                        };
+                    }
                 },
-                eventDidMount: function({date, dow, el, view, ...rest}) {
+                eventDidMount: function ({date, dow, el, view, ...rest}) {
                     console.log({date, dow, el, view, ...rest});
                 },
             },
@@ -444,68 +427,93 @@ export default defineComponent({
 <style>
 .fc .fc-toolbar {
     @apply flex-col gap-2;
-    @screen lg {
-        @apply flex-row;
-    }
+
+@screen lg {
+    @apply flex-row;
 }
-.fc .fc-daygrid-day-bottom{
+}
+.fc .fc-daygrid-day-bottom {
     @apply text-xs;
 }
-.fc-theme-standard .fc-popover{
+
+.fc-theme-standard .fc-popover {
     @apply bg-base-300;
 }
-.fc-v-event .fc-event-title-container{
+
+.fc-v-event .fc-event-title-container {
     @apply text-xs leading-tight;
 }
-.fc-v-event .fc-event-main-frame{
+
+.fc-v-event .fc-event-main-frame {
     @apply flex-col-reverse;
 }
-.fc-event-title{
+
+.fc-event-title {
     @apply text-base;
 }
-.fc-timegrid-event .fc-event-main{
+
+.fc-timegrid-event .fc-event-main {
     @apply p-1;
 }
-.fc .fc-timegrid-slot-minor{
+
+.fc .fc-timegrid-slot-minor {
     @apply border-0;
 }
-.fc .fc-timegrid-slot{
+
+.fc .fc-timegrid-slot {
     @apply h-8;
 }
+
 .fc .fc-timegrid-slot-label-cushion {
     @apply transform -translate-y-full py-1 uppercase;
 }
-.fc-theme-standard .fc-scrollgrid{
+
+.fc-theme-standard .fc-scrollgrid {
     @apply border-0;
 }
-th:last-child{
+
+th:last-child {
     @apply border-r-0;
 }
-.fc .fc-scrollgrid-section-liquid > td{
+
+.fc .fc-scrollgrid-section-liquid > td {
     @apply border-0;
 }
+
 .fc-col-header-cell-cushion {
-   @apply text-sm font-medium;
+    @apply text-sm font-medium;
 }
+
 /*this breaks first line in month grid view*/
-.fc-daygrid-day-top{
+.fc-daygrid-day-top {
     @apply absolute bottom-0 right-0 text-2xl p-2 font-bold;
 }
+
 .fc-day-today > div > div > a {
     @apply rounded-full p-4 relative;
+
 /*@apply bg-secondary;*/
-    &:before{
-        content: '';
-        @apply absolute bg-secondary rounded-full h-full w-full z-[-1] inset-0;
-    }
+&
+:before {
+    content: "";
+    @apply absolute bg-secondary rounded-full h-full w-full z-[-1] inset-0;
+}
+
 }
 .fc .fc-daygrid-day-number {
     @apply p-2;
 }
-.fc-daygrid-day.fc-day-today, .fc-timegrid-col.fc-day-today{
+
+.fc-daygrid-day.fc-day-today,
+.fc-timegrid-col.fc-day-today {
     @apply !bg-transparent;
 }
-.fc .fc-timegrid-now-indicator-line{
+
+.fc .fc-timegrid-now-indicator-line {
     @apply border-2;
+}
+
+.fc-col-header-cell-cushion {
+    @apply w-full;
 }
 </style>
