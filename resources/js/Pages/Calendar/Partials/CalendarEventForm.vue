@@ -111,6 +111,7 @@
                 :disabled="calendar_event?.type.type === 'Task'"
             />
         </div>
+        </template>
 
         <div class="col-span-3">
             <jet-label for="lead_attendees" value="Select Lead Attendees" />
@@ -139,7 +140,7 @@
             </button>
         </div>
 
-        </template>
+
         <div class="col-span-3 space-x-2" >
             <jet-label for="attendeesModal" value="Event File Attachments" />
             <button @click.prevent="handleClickUpload" class="btn btn-sm btn-info hover:text-white">
