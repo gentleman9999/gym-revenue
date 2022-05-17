@@ -22,8 +22,13 @@ class ClientSettingsController extends Controller
         }
         $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($client_id);
 
+        $test = [
+            ['name' => 'SMS', 'value' => 'SMS'],
+            ['name' => 'EMAIL', 'value' => 'EMAIL'],
+        ];
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => ClientService::whereClientId($client_id)->get(['feature_name', 'slug', 'id']) ?? [],
+            'commPreferences' => $test,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? []
