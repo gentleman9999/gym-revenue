@@ -227,6 +227,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->grou
 
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {
+    Route::get('/', \App\Http\Controllers\TaskController::class . '@index')->name('tasks');
+    Route::delete('/{id}', \App\Actions\Clients\Calendar\DeleteCalendarEvent::class)->name('tasks.delete');
+
+
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
     Route::post('/users', \App\Actions\Impersonation\GetUsers::class)->name('impersonation.users');
 });

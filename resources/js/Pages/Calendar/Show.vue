@@ -263,6 +263,12 @@ export default defineComponent({
                 onClick: null,
                 active: false
             },
+            {
+                label: "Tasks",
+                href: route("tasks"),
+                onClick: null,
+                active: false
+            },
         ];
 
         return {
