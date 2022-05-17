@@ -20,6 +20,7 @@
                     <comm-pref-form
                         :user="$page.props.user"
                         :comm-preferences="commPreferences"
+                        :available-comm-preferences="availableCommPreferences"
                     />
 
                     <jet-section-border />
@@ -68,6 +69,9 @@ export default defineComponent({
             type: Array,
         },
         commPreferences: {
+            type: Array,
+        },
+        availableCommPreferences: {
             type: Array,
         },
         trialMembershipTypes: {

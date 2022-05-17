@@ -1,12 +1,12 @@
 <template>
     <jet-form-section @submitted="handleSubmit" collapsable>
-        <template #title>Services</template>
+        <template #title>Client Communication Preferences</template>
 
-        <template #description> Enable to disable Client Services.</template>
+        <template #description> Client default communication preferences.</template>
 
         <template #form>
             <div class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
-                 v-for="commpref in commPreferences">
+                 v-for="commpref in availableCommPreferences">
                 <input
                     :id="commpref.value"
                     type="checkbox"
@@ -53,6 +53,10 @@ export default defineComponent({
     },
     props: {
         commPreferences: {
+            type: Array,
+            default: [],
+        },
+        availableCommPreferences: {
             type: Array,
             default: [],
         },

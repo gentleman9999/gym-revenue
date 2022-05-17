@@ -59,7 +59,10 @@ class UpdateUser implements UpdatesUserProfileInformation
             $data['password'] = bcrypt($data['password']);
         }
 
-        $data['role'] = $data['role_id'];
+        if(array_key_exists('role_id', $data)){
+            $data['role'] = $data['role_id'];
+        }
+
 
         UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         if ($client_id) {

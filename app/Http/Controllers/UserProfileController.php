@@ -29,6 +29,7 @@ class UserProfileController extends Controller
             'jobTitle' => '',
             'altEmail' => '',
             'start_date' => '',
+            'communication_preference' => '',
         ];
         $user = auth()->user();
         $phone = $user->phone_number()->first();
@@ -97,6 +98,12 @@ class UserProfileController extends Controller
         if(!is_null($notes))
         {
             $addl_data['notes'] = $notes->value;
+        }
+
+        $contact_preference = $user->contact_preference()->first();
+        if(!is_null($contact_preference))
+        {
+            $addl_data['contact_preference'] = $contact_preference->value;
         }
 
         $api_token = $user->api_token()->first();
