@@ -303,5 +303,22 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 05-05-2022',
+            'value' => '2022-05-05',
+            'misc' => [
+                'buildno' => '20220505',
+                'version' => '0.17.01',
+                'notes' => [
+                    'Notes - Read/Unread indicators added to notes fields.',
+                    'Notes - Notes now have titles!',
+                    'Calendar - Reminder Management: You can now manage your calendar reminder settings when your an attendee of the event your editing.',
+                    'Internal (Mass Communications) Mass Communications Controller refactor to work with billing/logging.',
+                ]
+            ]
+        ]);
     }
 }

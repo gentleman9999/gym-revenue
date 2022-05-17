@@ -14,12 +14,12 @@
 
         <form @submit.prevent="submit">
             <div>
-                <jet-label for="email" value="Email" />
+                <jet-label for="email" value="Email Address or Username" />
                 <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
             </div>
 
             <div class="mt-4">
-                <jet-label for="password" value="Password" />
+                <jet-label for="password" value="Password*" />
                 <input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
             </div>
 
@@ -30,17 +30,18 @@
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
+            <div class="flex items-center justify-center mt-4">
+                <!--<inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm  hover:">
                     Forgot your password?
-                </inertia-link>
+                </inertia-link>-->
 
-                <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
+                <Button class="pl-8 pr-8 ml-4 bg-secondary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Login
                 </Button>
             </div>
         </form>
     </jet-authentication-card>
+
 </template>
 
 <script>
@@ -89,6 +90,14 @@
                     .post(this.route('login'), {
                         onFinish: () => this.form.reset('password'),
                     })
+            },
+            comingSoon() {
+                new Noty({
+                    type: 'warning',
+                    theme: 'sunset',
+                    text: 'Feature Coming Soon!',
+                    timeout: 7500
+                }).show();
             }
         }
     })

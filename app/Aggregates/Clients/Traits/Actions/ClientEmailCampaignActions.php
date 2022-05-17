@@ -33,9 +33,9 @@ trait ClientEmailCampaignActions
         return $this;
     }
 
-    public function logEmailsSent(string $campaign_id, array $sent_to, DateTime $sent_at)
+    public function emailSent(string $campaign_id, array $sent_to, DateTime $sent_at, bool $isCampaign = false)
     {
-        $this->recordThat(new EmailSent($this->uuid(), $campaign_id, $sent_to, $sent_at));
+        $this->recordThat(new EmailSent($this->uuid(), $campaign_id, $sent_to, $sent_at, $isCampaign));
         return $this;
     }
 

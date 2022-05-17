@@ -45,37 +45,7 @@ class SMSGatewayProviderService extends GatewayProviderService
             switch($provider)
             {
                 case 'default_cnb':
-                    /*
-                    $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
-                        ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('twilio')->first();
 
-                    if(!is_null($client_integration_record))
-                    {
-                        $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
-                            ->with('details')->first();
-
-                        if(!is_null($gateway_provider_record))
-                        {
-                            // @todo - get the credentials
-                            $deets = [];
-                            foreach ($gateway_provider_record->details as $detail)
-                            {
-                                if($detail->detail == 'access_credential')
-                                {
-                                    if($detail->value == 'twilio_no')
-                                        $deets['twilio_no'] = $detail->misc['value'];
-
-                                    if($detail->value == 'twilio_sid')
-                                        $deets['twilio_sid'] = $detail->misc['value'];
-
-                                    if($detail->value == 'twilio_token')
-                                        $deets['twilio_token'] = $detail->misc['value'];
-
-                                }
-                            }
-                        }
-                    }
-                    */
                     $deets = [
                         'twilio_no' => env('TWILIO_NO'),
                         'twilio_sid' => env('TWILIO_SID'),

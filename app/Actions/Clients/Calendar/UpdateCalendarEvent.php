@@ -3,10 +3,12 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
+use App\Models\Reminder;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -34,14 +36,23 @@ class UpdateCalendarEvent
             'client_id' => ['required', 'exists:clients,id'],
             'user_attendees' => ['sometimes', 'array'],
             'lead_attendees' => ['sometimes', 'array'],
+            'my_reminder' => ['sometimes', 'int']
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($data, $user)
     {
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
 
+        if(!is_null($data['my_reminder'])) {
+            $reminderData = Reminder::whereEntityType(CalendarEvent::class)
+                ->whereEntityId($data['id'])
+                ->whereUserId($user->id)
+                ->first();
+            $reminderData->remind_time = $data['my_reminder'];
+            UserAggregate::retrieve($user->id)->updateReminder($user->id, $reminderData->toArray())->persist();
+        }
         $userAttendeeIDs = [];
         $leadAttendeeIDs = [];
         $currentAttendees = CalendarAttendee::whereCalendarEventId($data['id'])->get()->toArray();
@@ -135,7 +146,8 @@ class UpdateCalendarEvent
         $data = $request->validated();
         $data['id'] = $id;
         $calendar = $this->handle(
-            $data
+            $data,
+            $request->user()
         );
 
         Alert::success("Calendar Event '{$calendar->title}' was updated")->flash();

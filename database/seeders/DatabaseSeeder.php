@@ -92,10 +92,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Secondary Teams Seeder');
         $this->call(SecondaryTeamsSeeder::class);
 
-        // Here Client Account Owners will be Generated for each client
-        VarDumper::dump('Running Client User Seeder');
-        $this->call(ClientUserSeeder::class);
-
         // Default Lead Types for each client are seeded here.
         VarDumper::dump('Running Lead Type Seeder');
         $this->call(LeadTypeSeeder::class);

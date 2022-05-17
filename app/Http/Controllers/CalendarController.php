@@ -6,6 +6,7 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
+use App\Models\Reminder;
 use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class CalendarController extends Controller
     public function index(Request $request)
     {
         $client_id = request()->user()->currentClientId();
-
+        $reminder = null;
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
@@ -40,7 +41,22 @@ class CalendarController extends Controller
                 {
                     if($attendee->entity_type == User::class)
                     {
-                        $user_attendees[]['id'] = (int)$attendee->entity_id;
+                        if(request()->user()->id == $attendee->entity_id)
+                        {
+                            $eventsForTeam[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
+                                ->whereEntityId($event['id'])
+                                ->whereUserId($attendee->entity_id)
+                                ->first();
+
+                            $eventsForTeam[$key]['im_attending'] = true;
+                        }
+                        $user_attendees[] = [
+                            'id' => (int)$attendee->entity_id,
+                            'reminder' => Reminder::whereEntityType(CalendarEvent::class)
+                                ->whereEntityId($event['id'])
+                                ->whereUserId($attendee->entity_id)
+                                ->first() ?? null
+                        ];
 
                     }
                     if($attendee->entity_type == Lead::class)
@@ -51,6 +67,7 @@ class CalendarController extends Controller
             }
             $eventsForTeam[$key]->user_attendees = $user_attendees;
             $eventsForTeam[$key]->lead_attendees = $lead_attendees;
+
         }
 
         if ($client_id) {
@@ -75,6 +92,7 @@ class CalendarController extends Controller
                     ->get();
             }
         }
+
 
         return Inertia::render('Calendar/Show', [
             'calendar_events' => $eventsForTeam,

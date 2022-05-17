@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
+use App\Models\ReadReceipt;
 use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
@@ -188,6 +189,13 @@ class UsersController extends Controller
         //so we set all_notes
         $userData = $user->toArray();
         $userData['all_notes'] = $user->notes->toArray();
+        foreach($userData['all_notes'] as $key => $value)
+        {
+            if(ReadReceipt::whereNoteId($userData['all_notes'][$key]['id'])->first())
+                $userData['all_notes'][$key]['read'] = true;
+            else
+                $userData['all_notes'][$key]['read'] = false;
+        }
         $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [

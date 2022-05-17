@@ -91,7 +91,7 @@
 
 <script>
 import {defineComponent} from 'vue'
-import JetActionSection from '@/Jetstream/ActionSection'
+import JetActionSection from '@/Jetstream/ProfileActionSection'
 import Button from '@/Components/Button'
 import JetConfirmsPassword from '@/Jetstream/ConfirmsPassword'
 

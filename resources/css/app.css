@@ -86,5 +86,6 @@
     --fc-list-event-hover-bg-color: theme('colors.primary.500');
     --fc-event-border-color: theme('colors.neutral.500');
     --fc-border-color: hsla(var(--bc) / var(--tw-bg-opacity, 0.3));
+    --fc-today-bg-color: hsla(var(--p) / var(--tw-bg-opacity, 0.3));
 }
 

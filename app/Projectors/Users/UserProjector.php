@@ -76,7 +76,8 @@ class UserProjector extends Projector
                 Note::create([
                     'entity_id' => $data['id'],
                     'entity_type' => User::class,
-                    'note' => $notes,
+                    'title' => $notes['title'],
+                    'note' => $notes['note'],
                     'created_by_user_id' => $event->user
                 ]);
             }
@@ -193,7 +194,8 @@ class UserProjector extends Projector
                 Note::create([
                     'entity_id' => $data['id'],
                     'entity_type' => User::class,
-                    'note' => $notes,
+                    'title' => $notes['title'],
+                    'note' => $notes['note'],
                     'created_by_user_id' => $event->user
                 ]);
             }

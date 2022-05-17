@@ -41,7 +41,7 @@ class UpdateLead
             'opportunity' => 'sometimes|required',
             'lead_owner' => 'sometimes|required|exists:users,id',
             'lead_status' => 'sometimes|required|exists:lead_statuses,id',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|array'
         ];
     }
 
