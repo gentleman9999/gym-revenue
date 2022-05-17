@@ -1,64 +1,50 @@
 <template>
+    <div class="col-span-6 flex flex-col items-center gap-4 mb-4">
+        <div
+            class="w-32 h-32 rounded-full overflow-hidden border"
+            :style="borderStyle"
+        >
+            <img
+                v-if="fileForm.url"
+                :src="fileForm.url"
+                alt="member profile picture"
+                class="w-full h-full object-cover"
+            />
+            <img
+                v-else-if="member?.profile_picture?.url"
+                :src="member.profile_picture.url"
+                alt="member profile picture"
+                class="w-full h-full object-cover"
+            />
+            <font-awesome-icon
+                v-else
+                icon="user-circle"
+                size="6x"
+                class="opacity-10 !h-full !w-full"
+            />
+        </div>
+        <!--        <label>-->
+        <!--            <p class="text-white">-->
+        <!--                {{ form["first_name"] }} {{ form["middle_name"] }}-->
+        <!--                {{ form["last_name"] }}-->
+        <!--            </p>-->
+        <!--        </label>-->
+
+        <label class="btn btn-secondary btn-sm btn-outline">
+            <span>Upload Image</span>
+            <input
+                @input="fileForm.file = $event.target.files[0]"
+                type="file"
+                accept="image/*"
+                hidden
+                class="hidden"
+            />
+        </label>
+    </div>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="col-span-6 flex flex-col items-start gap-8">
-                <div
-                    class="w-32 h-32 rounded-full overflow-hidden border"
-                    :style="borderStyle"
-                >
-                    <img
-                        v-if="fileForm.url"
-                        :src="fileForm.url"
-                        alt="member profile picture"
-                        class="w-full h-full object-cover"
-                    />
-                    <img
-                        v-else-if="member?.profile_picture?.url"
-                        :src="member.profile_picture.url"
-                        alt="member profile picture"
-                        class="w-full h-full object-cover"
-                    />
-                    <font-awesome-icon
-                        v-else
-                        icon="user-circle"
-                        size="6x"
-                        class="opacity-10 !h-full !w-full"
-                    />
-                </div>
-                <label
-                ><p class="text-white">
-                    {{ form["first_name"] }} {{ form["middle_name"] }}
-                    {{ form["last_name"] }}
-                </p></label
-                >
-
-                <label class="btn btn-primary">
-                    <span>Upload Image</span>
-                    <input
-                        @input="fileForm.file = $event.target.files[0]"
-                        type="file"
-                        accept="image/*"
-                        hidden
-                        class="hidden"
-                    />
-                </label>
-            </div>
-            <div
-                class="form-control col-span-3"
-                v-if="form['agreement_number']"
-            >
-                <jet-label for="first_name" value="Agreement Number"/>
-                <input
-                    disabled
-                    type="text"
-                    v-model="form['agreement_number']"
-                    autofocus
-                    class="opacity-70"
-                />
-            </div>
-            <div class="form-divider"/>
             <div class="form-control col-span-2">
-                <jet-label for="first_name" value="First Name"/>
+                <jet-label for="first_name" value="First Name" />
                 <input
                     id="first_name"
                     type="text"
@@ -71,7 +57,7 @@
                 />
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="middle_name" value="Middle Name"/>
+                <jet-label for="middle_name" value="Middle Name" />
                 <input
                     id="middle_name"
                     type="text"
@@ -84,7 +70,7 @@
                 />
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="last_name" value="Last Name"/>
+                <jet-label for="last_name" value="Last Name" />
                 <input
                     id="last_name"
                     type="text"
@@ -96,13 +82,13 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-6">
-                <jet-label for="email" value="Email"/>
-                <input id="email" type="email" v-model="form.email" autofocus/>
-                <jet-input-error :message="form.errors.email" class="mt-2"/>
+            <div class="form-control col-span-2">
+                <jet-label for="email" value="Email" />
+                <input id="email" type="email" v-model="form.email" autofocus />
+                <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
-            <div class="form-control col-span-3">
-                <jet-label for="primary_phone" value="Primary Phone"/>
+            <div class="form-control col-span-2">
+                <jet-label for="primary_phone" value="Primary Phone" />
                 <input
                     id="primary_phone"
                     type="tel"
@@ -114,8 +100,8 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-3">
-                <jet-label for="alternate_phone" value="Alternate Phone"/>
+            <div class="form-control col-span-2">
+                <jet-label for="alternate_phone" value="Alternate Phone" />
                 <input
                     id="alternate_phone"
                     type="tel"
@@ -127,17 +113,17 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-3">
-                <jet-label for="gender" value="Gender"/>
+            <div class="form-control col-span-2">
+                <jet-label for="gender" value="Gender" />
                 <select class="" v-model="form['gender']" required id="gender">
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
-                <jet-input-error :message="form.errors.gender" class="mt-2"/>
+                <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
-            <div class="form-control col-span-3">
-                <jet-label for="date_of_birth" value="Date of Birth"/>
+            <div class="form-control col-span-2">
+                <jet-label for="date_of_birth" value="Date of Birth" />
                 <date-picker
                     v-model="form['date_of_birth']"
                     dark
@@ -150,10 +136,23 @@
                     class="mt-2"
                 />
             </div>
+            <div
+                class="form-control col-span-2"
+                v-if="form['agreement_number']"
+            >
+                <jet-label for="first_name" value="Agreement Number" />
+                <input
+                    disabled
+                    type="text"
+                    v-model="form['agreement_number']"
+                    autofocus
+                    class="opacity-70"
+                />
+            </div>
 
-            <div class="form-divider"/>
-            <div class="form-control col-span-3">
-                <jet-label for="club_id" value="Club"/>
+            <div class="form-divider" />
+            <div class="form-control col-span-2">
+                <jet-label for="club_id" value="Club" />
                 <select
                     class=""
                     v-model="form['gr_location_id']"
@@ -171,30 +170,46 @@
                 />
             </div>
 
-            <div class="form-divider"/>
-            <jet-label for="notes" value="Notes"/>
+            <div class="form-divider" />
+            <jet-label for="notes" value="Notes" />
             <div class="form-control col-span-6">
-                <jet-label for="notes.title" value="Title"/>
-                <input type="text" v-model="form['notes'].title" id="notes.title"/>
-                <jet-input-error :message="form.errors['notes']?.title" class="mt-2"/>
+                <jet-label for="notes.title" value="Title" />
+                <input
+                    type="text"
+                    v-model="form['notes'].title"
+                    id="notes.title"
+                />
+                <jet-input-error
+                    :message="form.errors['notes']?.title"
+                    class="mt-2"
+                />
             </div>
             <div class="form-control col-span-6">
-                <jet-label for="notes" value="Body"/>
-                <textarea v-model="form['notes'].note" id="notes"/>
-                <jet-input-error :message="form.errors['notes']?.note" class="mt-2"/>
+                <jet-label for="notes" value="Body" />
+                <textarea v-model="form['notes'].note" id="notes" />
+                <jet-input-error
+                    :message="form.errors['notes']?.note"
+                    class="mt-2"
+                />
             </div>
-            <template v-if="member?.all_notes?.length"
-            >
-                <div class="text-sm font-medium col-span-6">
-                    Existing Notes
-                </div>
+            <template v-if="member?.all_notes?.length">
+                <div class="text-sm font-medium col-span-6">Existing Notes</div>
                 <div
                     class="collapse col-span-6"
                     tabindex="0"
                     v-for="note in member.all_notes"
                 >
-                    <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded(note)">
-                        > {{ note.title }} <div v-if="note.read == false" class="badge badge-secondary">unread</div>
+                    <div
+                        class="collapse-title text-sm font-medium"
+                        v-on:click="notesExpanded(note)"
+                    >
+                        > {{ note.title }}
+                        <div
+                            v-if="note.read == false"
+                            class="badge badge-secondary"
+                        >
+                            unread
+                        </div>
                     </div>
                     <div class="flex flex-col gap-2 collapse-content">
                         <div
@@ -204,7 +219,6 @@
                         </div>
                     </div>
                 </div>
-
             </template>
 
             <!--            <div-->
@@ -213,7 +227,7 @@
             <!--            />-->
             <!--            <div-->
             <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-3"-->
+            <!--                class="col-span-2"-->
             <!--            >-->
             <!--                Times Emailed:-->
             <!--                <span class="badge badge-success badge-outline">-->
@@ -222,7 +236,7 @@
             <!--            </div>-->
             <!--            <div-->
             <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-3"-->
+            <!--                class="col-span-2"-->
             <!--            >-->
             <!--                Times Called:-->
             <!--                <span class="badge badge-error badge-outline">-->
@@ -231,7 +245,7 @@
             <!--            </div>-->
             <!--            <div-->
             <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-3"-->
+            <!--                class="col-span-2"-->
             <!--            >-->
             <!--                Times Text Messaged:-->
             <!--                <span class="badge badge-info badge-outline">-->
@@ -258,7 +272,6 @@
             >
                 Cancel
             </Button>
-            <div class="flex-grow"/>
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
@@ -272,18 +285,18 @@
 </template>
 
 <script>
-import {computed, watchEffect} from "vue";
-import {useForm} from "@inertiajs/inertia-vue3";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {library} from "@fortawesome/fontawesome-svg-core";
-import {faUserCircle} from "@fortawesome/pro-solid-svg-icons";
+import { computed, watchEffect } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import {useGoBack} from "@/utils";
+import { useGoBack } from "@/utils";
 import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
 
@@ -310,10 +323,10 @@ export default {
         };
 
         function notesExpanded(note) {
-            axios.post(route('note.seen'), {
+            axios.post(route("note.seen"), {
                 client_id: props.clientId,
-                note: note
-            })
+                note: note,
+            });
         }
 
         let member = props.member;
@@ -333,7 +346,7 @@ export default {
                 profile_picture: null,
                 gender: "",
                 date_of_birth: "",
-                notes: {title: "", note: ""},
+                notes: { title: "", note: "" },
             };
             operation = "Create";
         } else {
@@ -349,19 +362,39 @@ export default {
                 gr_location_id: member.gr_location_id,
                 profile_picture: null,
                 gender: member.gender,
-                notes: {title: "", note: ""},
+                notes: { title: "", note: "" },
                 date_of_birth: member.date_of_birth,
             };
         }
+        const borderStyle = computed(() => {
+            let color = "transparent";
+            switch (form["opportunity"]) {
+                case "High":
+                    color = "green";
+                    break;
+
+                case "Medium":
+                    color = "yellow";
+                    break;
+
+                case "Low":
+                    color = "red";
+                    break;
+            }
+            return {
+                "border-color": color,
+                "border-width": "5px",
+            };
+        });
         const lastUpdated = computed(() =>
             "last_updated" in member && member.last_updated
                 ? `Last Updated by ${member.last_updated.value} at ${new Date(
-                    member.last_updated.updated_at
-                ).toLocaleDateString("en-US")}`
+                      member.last_updated.updated_at
+                  ).toLocaleDateString("en-US")}`
                 : "This member has never been updated"
         );
         const form = useForm(memberData);
-        const fileForm = useForm({file: null});
+        const fileForm = useForm({ file: null });
 
         let handleSubmit = () =>
             form
@@ -380,7 +413,7 @@ export default {
                         date_of_birth: transformDate(data.date_of_birth),
                     }))
                     .post(route("data.members.store"), {
-                        onSuccess: () => (form.notes = {title: "", note: ""}),
+                        onSuccess: () => (form.notes = { title: "", note: "" }),
                     });
         }
 
@@ -422,6 +455,7 @@ export default {
             lastUpdated,
             operation,
             notesExpanded,
+            borderStyle,
         };
     },
 };
@@ -439,7 +473,7 @@ select {
 }
 
 .form-divider {
-    @apply col-span-6 border-t-2 border-base-content border-opacity-10 relative;
+    @apply col-span-6 border-t-2 border-secondary relative;
 }
 
 .form-divider > span {

@@ -31,7 +31,7 @@
         <div class="mt-5 md:mt-0 md:col-span-2" v-if="!isCollapsed">
             <form @submit.prevent="$emit('submitted')">
                 <div
-                    class="px-4 py-5 bg-base-300 sm:p-6 shadow border border-secondary border-1"
+                    class="px-4 py-5 bg-base-300 sm:p-6 shadow border border-secondary border-1 rounded"
                     :class="
                         hasActions
                             ? ''
@@ -44,7 +44,7 @@
                 </div>
 
                 <div
-                    class="flex items-center justify-end px-4 py-3 bg-base-200 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md gap-2"
+                    class="flex items-center justify-center px-4 py-3 bg-base-200 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md gap-4"
                     v-if="hasActions"
                 >
                     <slot name="actions"></slot>
