@@ -68,6 +68,7 @@ class CalendarController extends Controller
             $eventsForTeam[$key]->user_attendees = $user_attendees;
             $eventsForTeam[$key]->lead_attendees = $lead_attendees;
 
+            $eventsForTeam[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
         }
 
         if ($client_id) {

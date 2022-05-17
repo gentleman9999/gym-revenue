@@ -227,6 +227,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->grou
 
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {
+    Route::get('/', \App\Http\Controllers\TaskController::class . '@index')->name('tasks');
+    Route::delete('/{id}', \App\Actions\Clients\Calendar\DeleteCalendarEvent::class)->name('tasks.delete');
+
+
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
     Route::post('/users', \App\Actions\Impersonation\GetUsers::class)->name('impersonation.users');
 });
@@ -252,7 +259,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(
     Route::get('/unread', \App\Actions\Users\Notifications\GetUnreadNotificationCount::class)->name('notifications.unread');
     Route::post('/{id}', \App\Actions\Users\Notifications\DismissNotification::class)->name('notifications.dismiss');
 });
-
+Route::middleware(['auth:sanctum', 'verified'])->prefix('reports')->group(function () {
+    Route::get('/', \App\Http\Controllers\ReportsDashboardController::class . '@index')->name('reports.dashboard');
+    Route::get('/{type}', \App\Http\Controllers\ReportsDashboardController::class . '@page')->name('reports.page');
+});
 
 Route::prefix('s')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');

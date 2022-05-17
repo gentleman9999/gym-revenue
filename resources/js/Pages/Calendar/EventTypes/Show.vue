@@ -77,6 +77,12 @@ export default defineComponent({
                 onClick: null,
                 active: true
             },
+            {
+                label: "Tasks",
+                href: route("tasks"),
+                onClick: null,
+                active: false
+            },
         ];
 
         return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
