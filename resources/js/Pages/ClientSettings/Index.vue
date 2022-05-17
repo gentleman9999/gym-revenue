@@ -19,8 +19,7 @@
                 <div>
                     <comm-pref-form
                         :user="$page.props.user"
-                        :commprefs="commPreferences"
-                        :available-services="availableServices"
+                        :comm-preferences="commPreferences"
                     />
 
                     <jet-section-border />
