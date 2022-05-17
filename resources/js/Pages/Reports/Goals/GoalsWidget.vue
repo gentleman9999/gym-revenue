@@ -2,7 +2,18 @@
     <dashboard-widget
         title="Goals"
         :modal-component="GoalsModal"
-    ></dashboard-widget>
+        :amount="18000"
+    >
+        <div class="flex flex-col gap-2">
+            <div v-for="goal in goalsData">
+                <h2 class="text text-secondary">{{ goal }}</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Proin quis scelerisque lectus.
+                </p>
+            </div>
+        </div>
+    </dashboard-widget>
 </template>
 
 <script>
@@ -15,7 +26,8 @@ export default defineComponent({
         DashboardWidget,
     },
     setup() {
-        return { GoalsModal };
+        const goalsData = ["Goal One", "Goal Two", "Goal Three"];
+        return { GoalsModal, goalsData };
     },
 });
 </script>

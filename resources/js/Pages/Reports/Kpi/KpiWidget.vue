@@ -1,8 +1,11 @@
 <template>
-    <dashboard-widget
-        title="KPI"
-        :modal-component="KpiModal"
-    ></dashboard-widget>
+    <dashboard-widget title="KPI" :modal-component="KpiModal" :amount="18000">
+        <div class="text-secondary">Most Recent Location</div>
+        <div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis
+            scelerisque lectus.
+        </div>
+    </dashboard-widget>
 </template>
 
 <script>

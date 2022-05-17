@@ -2,6 +2,7 @@
     <dashboard-widget
         title="Attrition"
         :modal-component="AttritionModal"
+        :amount="18000"
     ></dashboard-widget>
 </template>
 
