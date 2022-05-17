@@ -476,7 +476,7 @@ export default {
                 "classification" in user && user["classification"] !== null
                     ? user["classification"].value ?? ""
                     : "";
-            user.contact_preference = user['contact_preference'].value;
+            user.contact_preference = user['contact_preference']?.value;
             user.team_id = team_id;
             user.first_name = user["first_name"];
             user.last_name = user["last_name"];
@@ -524,11 +524,6 @@ export default {
                     ? user["termination_date"].value ?? ""
                     : "";
             user.notes = {title: "", note: ""};
-            // user.notes =
-            //     "notes" in user && user["notes"] !== null
-            //         ? user["notes"].value ?? ""
-            //         : {title: "", note: ""};
-            console.log({user});
         } else {
             user = {
                 first_name: "",
