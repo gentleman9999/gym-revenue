@@ -259,7 +259,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(
     Route::get('/unread', \App\Actions\Users\Notifications\GetUnreadNotificationCount::class)->name('notifications.unread');
     Route::post('/{id}', \App\Actions\Users\Notifications\DismissNotification::class)->name('notifications.dismiss');
 });
-
+Route::middleware(['auth:sanctum', 'verified'])->prefix('reports')->group(function () {
+    Route::get('/', \App\Http\Controllers\ReportsDashboardController::class . '@index')->name('reports.dashboard');
+    Route::get('/{type}', \App\Http\Controllers\ReportsDashboardController::class . '@page')->name('reports.page');
+});
 
 Route::prefix('s')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
