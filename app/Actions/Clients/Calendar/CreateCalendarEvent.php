@@ -86,6 +86,8 @@ class CreateCalendarEvent
         unset($data['user_attendees']);
         unset($data['lead_attendees']);
 
+        if($user)
+            $data['owner_id'] = $user->id;
 
         CalendarAggregate::retrieve($data['client_id'])
             ->createCalendarEvent($user->id ?? "Auto Generated", $data)
