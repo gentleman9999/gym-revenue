@@ -42,18 +42,10 @@ class UserProjector extends Projector
             //create the entry in users table
             $user = User::create($user_table_data);
 
-            $phone = $data['phone'] ?? null;
-            if ($phone) {
-                UserDetails::create(['user_id' => $user->id, 'name' => 'phone', 'value' => $phone]);
-            }
+
 
             $details = [
                 'altEmail' => $data['altEmail'] ?? null,
-                'address1' => $data['address1'] ?? null,
-                'address2' => $data['address2'] ?? null,
-                'city' => $data['city'] ?? null,
-                'state' => $data['state'] ?? null,
-                'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
                 'start_date' => $data['start_date'] ?? null,
                 'end_date' => $data['end_date'] ?? null,
@@ -159,18 +151,8 @@ class UserProjector extends Projector
 
             $user->updateOrFail($data);
 
-            $phone = $data['phone'] ?? null;
-            if ($phone) {
-                UserDetails::firstOrCreate(['user_id' => $user->id, 'name' => 'phone'])->updateOrFail(['value' => $phone]);
-            }
-
             $details = [
                 'altEmail' => $data['altEmail'] ?? null,
-                'address1' => $data['address1'] ?? null,
-                'address2' => $data['address2'] ?? null,
-                'city' => $data['city'] ?? null,
-                'state' => $data['state'] ?? null,
-                'zip' => $data['zip'] ?? null,
                 'jobTitle' => $data['jobTitle'] ?? null,
                 'home_club' => $data['home_club'] ?? null,
                 'start_date' => $data['start_date'] ?? null,

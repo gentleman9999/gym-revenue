@@ -104,6 +104,18 @@ class UsersController extends Controller
             }
         }
 
+        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
+        //MUST FIX BY DEMO 6/15/22
+        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
+        if($request->get('sort') != '') {
+            if ($request->get('dir') == 'DESC') {
+                $sortedResult = $users->getCollection()->sortByDesc($request->get('sort'))->values();
+            } else {
+                $sortedResult = $users->getCollection()->sortBy($request->get('sort'))->values();
+            }
+            $users->setCollection($sortedResult);
+        }
+
         return Inertia::render('Users/Show', [
             'users' => $users,
             'filters' => $request->all($filterKeys),
@@ -167,8 +179,7 @@ class UsersController extends Controller
         }
 
         $user = $me->with([
-                'details', 'phone_number', 'altEmail', 'address1', 'address2',
-                'city', 'state', 'zip', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date',
+                'details', 'altEmail', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date',
                 'files', 'classification',
             ])->findOrFail($id);
 
