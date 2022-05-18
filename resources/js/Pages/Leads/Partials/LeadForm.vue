@@ -534,15 +534,27 @@ export default {
         const form = useForm(leadData);
         const fileForm = useForm({ file: null });
 
+        const transformFormSubmission = (data) => {
+            if (!data.notes?.title) {
+                delete data.notes;
+            }
+            return data;
+        };
+
         let handleSubmit = () =>
-            form.put(`/data/leads/${lead.id}`, {
-                preserveState: false,
-            });
+            form
+                .transform(transformFormSubmission)
+                .put(`/data/leads/${lead.id}`, {
+                    preserveState: false,
+                });
+
         if (operation === "Create") {
             handleSubmit = () =>
-                form.post("/data/leads/create", {
-                    onSuccess: () => (form.notes = { title: "", note: "" }),
-                });
+                form
+                    .transform(transformFormSubmission)
+                    .post("/data/leads/create", {
+                        onSuccess: () => (form.notes = { title: "", note: "" }),
+                    });
         }
 
         const goBack = useGoBack(route("data.leads"));

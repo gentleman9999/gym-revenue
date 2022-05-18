@@ -1,16 +1,12 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <template #title>
-            User Profile
-        </template>
+        <template #title> User Profile </template>
 
-        <template #description>
-            Information about the user.
-        </template>
+        <template #description> Information about the user. </template>
         <template #form>
             <!-- First Name -->
-            <div class="form-control col-span-4">
-                <jet-label for="fname" value="First Name"/>
+            <div class="form-control col-span-2">
+                <jet-label for="fname" value="First Name" />
                 <input
                     id="first_name"
                     type="text"
@@ -24,8 +20,8 @@
                 />
             </div>
             <!-- Last Name -->
-            <div class="form-control col-span-4">
-                <jet-label for="name" value="Last Name"/>
+            <div class="form-control col-span-2">
+                <jet-label for="name" value="Last Name" />
                 <input
                     id="last_name"
                     type="text"
@@ -39,8 +35,8 @@
                 />
             </div>
             <!-- (Work) Email -->
-            <div class="form-control col-span-4">
-                <jet-label for="email" value="Work Email"/>
+            <div class="form-control col-span-2">
+                <jet-label for="email" value="Work Email" />
                 <input
                     id="email"
                     type="email"
@@ -48,12 +44,12 @@
                     v-model="form.email"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.email" class="mt-2"/>
+                <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
 
             <!-- Personal Email -->
-            <div class="form-control col-span-4">
-                <jet-label for="email" value="Personal Email"/>
+            <div class="form-control col-span-2">
+                <jet-label for="email" value="Personal Email" />
                 <input
                     id="altEmail"
                     type="email"
@@ -61,12 +57,25 @@
                     v-model="form.altEmail"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.altEmail" class="mt-2"/>
+                <jet-input-error :message="form.errors.altEmail" class="mt-2" />
+            </div>
+
+            <!-- Contact Phone # -->
+            <div class="form-control col-span-2">
+                <jet-label for="phone" value="Contact Phone" />
+                <input
+                    id="phone"
+                    type="tel"
+                    class="block w-full mt-1"
+                    v-model="form.phone"
+                    autofocus
+                />
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
             <!-- Address 1 -->
-            <div class="form-control col-span-9">
-                <jet-label for="address1" value="Home Address"/>
+            <div class="form-control col-span-6">
+                <jet-label for="address1" value="Home Address" />
                 <input
                     id="address1"
                     type="text"
@@ -74,11 +83,11 @@
                     v-model="form.address1"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.address1" class="mt-2"/>
+                <jet-input-error :message="form.errors.address1" class="mt-2" />
             </div>
             <!-- Address 2 -->
-            <div class="form-control col-span-9">
-                <jet-label for="address2" value="Home Address (cont)"/>
+            <div class="form-control col-span-6">
+                <jet-label for="address2" value="Home Address (cont)" />
                 <input
                     id="address2"
                     type="text"
@@ -86,11 +95,11 @@
                     v-model="form.address2"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.address2" class="mt-2"/>
+                <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
             <!-- City -->
-            <div class="form-control col-span-3">
-                <jet-label for="city" value="City"/>
+            <div class="form-control col-span-2">
+                <jet-label for="city" value="City" />
                 <input
                     id="city"
                     type="text"
@@ -98,11 +107,11 @@
                     v-model="form.city"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.city" class="mt-2"/>
+                <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
             <!-- State -->
-            <div class="form-control col-span-3">
-                <jet-label for="state" value="State"/>
+            <div class="form-control col-span-2">
+                <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
                     class="mt-1 multiselect-search"
@@ -112,12 +121,12 @@
                     :options="optionStates"
                     :classes="multiselectClasses"
                 />
-                <jet-input-error :message="form.errors.state" class="mt-2"/>
+                <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
 
             <!-- Zip -->
-            <div class="form-control col-span-3">
-                <jet-label for="zip" value="Zip Code"/>
+            <div class="form-control col-span-2">
+                <jet-label for="zip" value="Zip Code" />
                 <input
                     id="zip"
                     type="number"
@@ -125,12 +134,14 @@
                     v-model="form.zip"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.zip" class="mt-2"/>
+                <jet-input-error :message="form.errors.zip" class="mt-2" />
             </div>
 
+            <div class="form-divider" />
+
             <!-- Official Position -->
-            <div class="form-control col-span-3">
-                <jet-label for="jobTitle" value="Official Position"/>
+            <div class="form-control col-span-2">
+                <jet-label for="jobTitle" value="Official Position" />
                 <input
                     id="jobTitle"
                     type="text"
@@ -138,39 +149,32 @@
                     v-model="form.jobTitle"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.jobTitle" class="mt-2"/>
-            </div>
-
-            <!-- Contact Phone # -->
-            <div class="form-control col-span-3">
-                <jet-label for="phone" value="Contact Phone"/>
-                <input
-                    id="phone"
-                    type="tel"
-                    class="block w-full mt-1"
-                    v-model="form.phone"
-                    autofocus
-                />
-                <jet-input-error :message="form.errors.phone" class="mt-2"/>
+                <jet-input-error :message="form.errors.jobTitle" class="mt-2" />
             </div>
 
             <!-- Contact Preference -->
-            <div class="form-control col-span-3">
-                <jet-label for="contact_preference" value="Contact Preference" />
+            <div class="form-control col-span-2">
+                <jet-label
+                    for="contact_preference"
+                    value="Contact Preference"
+                />
                 <select
                     id="contact_preference"
                     class="block w-full mt-1"
                     v-model="form.contact_preference"
                 >
                     <option value="email">Email</option>
-                    <option value="sms" >Text Message</option>
+                    <option value="sms">Text Message</option>
                 </select>
-                <jet-input-error :message="form.errors.contact_preference" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.contact_preference"
+                    class="mt-2"
+                />
             </div>
 
             <!-- Classifications -->
-            <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="classification" value="Classification"/>
+            <div class="form-control col-span-2" v-if="clientId">
+                <jet-label for="classification" value="Classification" />
                 <select
                     id="classification"
                     class="block w-full mt-1"
@@ -189,32 +193,24 @@
                 />
             </div>
 
-
             <!-- Security Role -->
-            <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="role_id" value="Security Role"/>
+            <div class="form-control col-span-2" v-if="clientId">
+                <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
                     class="block w-full mt-1"
                     v-model="form.role_id"
                 >
-                    <option
-                        v-for="role_id in roles"
-                        :value="role_id.id"
-                    >
+                    <option v-for="role_id in roles" :value="role_id.id">
                         {{ role_id.title }}
                     </option>
                 </select>
-                <jet-input-error
-                    :message="form.errors.role_id"
-                    class="mt-2"
-                />
+                <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
 
-
             <!-- Home Club -->
-            <div class="form-control col-span-3" v-if="clientId">
-                <jet-label for="home_club" value="Home Club"/>
+            <div class="form-control col-span-2" v-if="clientId">
+                <jet-label for="home_club" value="Home Club" />
                 <select
                     id="home_club"
                     class="block w-full mt-1"
@@ -235,8 +231,8 @@
 
             <!-- Start Date -->
 
-            <div class="form-control col-span-3">
-                <jet-label for="start_date" value="Date / Start of Work"/>
+            <div class="form-control col-span-2">
+                <jet-label for="start_date" value="Date / Start of Work" />
                 <DatePicker
                     v-model="form['start_date']"
                     :enableTimePicker="false"
@@ -249,19 +245,19 @@
             </div>
 
             <!-- End Date -->
-            <div class="form-control col-span-3">
-                <jet-label for="end_date" value="Date / End of Work"/>
+            <div class="form-control col-span-2">
+                <jet-label for="end_date" value="Date / End of Work" />
                 <DatePicker
                     v-model="form['end_date']"
                     :enableTimePicker="false"
                     dark
                 />
-                <jet-input-error :message="form.errors.end_date" class="mt-2"/>
+                <jet-input-error :message="form.errors.end_date" class="mt-2" />
             </div>
 
             <!-- Termination Date -->
-            <div class="form-control col-span-3">
-                <jet-label for="termination_date" value="Date of Termination"/>
+            <div class="form-control col-span-2">
+                <jet-label for="termination_date" value="Date of Termination" />
                 <DatePicker
                     v-model="form['termination_date']"
                     :enableTimePicker="false"
@@ -273,30 +269,47 @@
                 />
             </div>
 
+            <div class="form-divider" />
             <!-- Notes -->
-            <jet-label for="notes" value="Notes"/>
+            <jet-label for="notes" value="Notes" />
             <div class="form-control col-span-6">
-                <jet-label for="notes.title" value="Title"/>
-                <input type="text" v-model="form['notes'].title" id="notes.title"/>
-                <jet-input-error :message="form.errors['notes']?.title" class="mt-2"/>
+                <jet-label for="notes.title" value="Title" />
+                <input
+                    type="text"
+                    v-model="form['notes'].title"
+                    id="notes.title"
+                />
+                <jet-input-error
+                    :message="form.errors['notes']?.title"
+                    class="mt-2"
+                />
             </div>
             <div class="form-control col-span-6">
-                <jet-label for="notes" value="Body"/>
-                <textarea v-model="form['notes'].note" id="notes"/>
-                <jet-input-error :message="form.errors['notes']?.note" class="mt-2"/>
+                <jet-label for="notes" value="Body" />
+                <textarea v-model="form['notes'].note" id="notes" />
+                <jet-input-error
+                    :message="form.errors['notes']?.note"
+                    class="mt-2"
+                />
             </div>
-            <template v-if="user?.all_notes?.length"
-            >
-                <div class="text-sm font-medium col-span-6">
-                    Existing Notes
-                </div>
+            <template v-if="user?.all_notes?.length">
+                <div class="text-sm font-medium col-span-6">Existing Notes</div>
                 <div
                     class="collapse col-span-6"
                     tabindex="0"
                     v-for="note in user.all_notes"
                 >
-                    <div class="collapse-title text-sm font-medium" v-on:click="notesExpanded(note)">
-                        > {{ note.title }} <div v-if="note.read == false" class="badge badge-secondary">unread</div>
+                    <div
+                        class="collapse-title text-sm font-medium"
+                        v-on:click="notesExpanded(note)"
+                    >
+                        > {{ note.title }}
+                        <div
+                            v-if="note.read == false"
+                            class="badge badge-secondary"
+                        >
+                            unread
+                        </div>
                     </div>
                     <div class="flex flex-col gap-2 collapse-content">
                         <div
@@ -306,7 +319,6 @@
                         </div>
                     </div>
                 </div>
-
             </template>
         </template>
 
@@ -321,7 +333,7 @@
             >
                 Cancel
             </Button>
-            <div class="flex-grow"/>
+            <div class="flex-grow" />
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
@@ -333,13 +345,9 @@
         </template>
     </jet-form-section>
     <jet-form-section v-if="clientId && user?.files" class="mt-16">
-        <template #title>
-            Documents
-        </template>
+        <template #title> Documents </template>
 
-        <template #description>
-            Documents attached to the user.
-        </template>
+        <template #description> Documents attached to the user. </template>
         <template #form>
             <!-- Files -->
             <div class="col-span-6">
@@ -354,7 +362,7 @@
                                     :href="file.url"
                                     :download="file.filename"
                                     target="_blank"
-                                >{{ file.filename }}</a
+                                    >{{ file.filename }}</a
                                 >
                             </div>
                             <button
@@ -366,8 +374,7 @@
                             </button>
                         </div>
                     </template>
-                    <div v-else class="opacity-50"> No documents found.</div>
-
+                    <div v-else class="opacity-50">No documents found.</div>
                 </div>
             </div>
             <daisy-modal
@@ -408,8 +415,8 @@
 </template>
 
 <script>
-import {ref} from "vue";
-import {useForm, usePage} from "@inertiajs/inertia-vue3";
+import { ref } from "vue";
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -421,8 +428,8 @@ import DatePicker from "vue3-date-time-picker";
 
 import "vue3-date-time-picker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
-import {Inertia} from "@inertiajs/inertia";
+import { getDefaultMultiselectTWClasses } from "@/utils";
+import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import DaisyModal from "@/Components/DaisyModal";
 import states from "@/Pages/Comms/States/statesOfUnited";
@@ -443,14 +450,13 @@ export default {
     },
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
-    setup(props, {emit}) {
-
+    setup(props, { emit }) {
         function notesExpanded(note) {
             console.error(props.user.all_notes);
-            axios.post(route('note.seen'), {
+            axios.post(route("note.seen"), {
                 client_id: props.user.clientId,
-                note: note
-            })
+                note: note,
+            });
         }
 
         const wantsToDeleteFile = ref(null);
@@ -471,12 +477,12 @@ export default {
 
         let operation = "Update";
         if (user) {
-            user.role_id = user["role_id"]
+            user.role_id = user["role_id"];
             user.classification =
                 "classification" in user && user["classification"] !== null
                     ? user["classification"].value ?? ""
                     : "";
-            user.contact_preference = user['contact_preference']?.value;
+            user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
             user.first_name = user["first_name"];
             user.last_name = user["last_name"];
@@ -523,7 +529,7 @@ export default {
                 "termination_date" in user && user["termination_date"] !== null
                     ? user["termination_date"].value ?? ""
                     : "";
-            user.notes = {title: "", note: ""};
+            user.notes = { title: "", note: "" };
         } else {
             user = {
                 first_name: "",
@@ -538,7 +544,7 @@ export default {
                 address2: "",
                 city: "",
                 team_id,
-                notes: {title: "", note: ""},
+                notes: { title: "", note: "" },
                 start_date: "",
                 end_date: "",
                 termination_date: "",
@@ -551,7 +557,7 @@ export default {
             if (props.clientId) {
                 user.client_id = props.clientId;
                 user.home_club = null;
-                user.notes = {title: "", note: ""};
+                user.notes = { title: "", note: "" };
                 user.start_date = null;
                 user.end_date = null;
                 user.termination_date = null;
@@ -563,9 +569,26 @@ export default {
             form.state = text.toUpperCase();
         };
 
-        let handleSubmit = () => form.put(route("users.update", user.id), {onSuccess: () => form.notes = {title: "", note: ""}});
+        const transformFormSubmission = (data) => {
+            if (!data.notes?.title) {
+                delete data.notes;
+            }
+            return data;
+        };
+
+        let handleSubmit = () =>
+            form
+                .transform(transformFormSubmission)
+                .put(route("users.update", user.id), {
+                    onSuccess: () => (form.notes = { title: "", note: "" }),
+                });
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("users.store"), {onSuccess: () => form.notes =  {title: "", note: ""}});
+            handleSubmit = () =>
+                form
+                    .transform(transformFormSubmission)
+                    .post(route("users.store"), {
+                        onSuccess: () => (form.notes = { title: "", note: "" }),
+                    });
         }
 
         const handleConfirmDeleteFile = () => {
@@ -586,10 +609,10 @@ export default {
         // })
 
         const closeFileManagerModal = () => {
-            console.log({fileManager: fileManager.value});
+            console.log({ fileManager: fileManager.value });
             const reset =
                 fileManager.value?.reset || fileManager?.reset || false;
-            console.log({reset});
+            console.log({ reset });
             return fileManager.value?.reset;
         };
 
@@ -622,3 +645,23 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+    @apply w-full mt-1;
+}
+
+select {
+    @apply w-full;
+}
+
+.form-divider {
+    @apply col-span-6 border-t-2 border-secondary relative;
+}
+
+.form-divider > span {
+    @apply absolute inset-0  transform -translate-y-1/2 text-xs text-opacity-30 bg-base-300 block;
+}
+</style>

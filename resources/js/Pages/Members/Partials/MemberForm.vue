@@ -396,22 +396,24 @@ export default {
         const form = useForm(memberData);
         const fileForm = useForm({ file: null });
 
+        const transformFormSubmission = (data) => {
+            if (!data.notes?.title) {
+                delete data.notes;
+            }
+            data.date_of_birth = transformDate(data.date_of_birth);
+            return data;
+        };
+
         let handleSubmit = () =>
             form
-                .transform((data) => ({
-                    ...data,
-                    date_of_birth: transformDate(data.date_of_birth),
-                }))
+                .transform(transformFormSubmission)
                 .put(route("data.members.update", member.id), {
                     preserveState: false,
                 });
         if (operation === "Create") {
             handleSubmit = () =>
                 form
-                    .transform((data) => ({
-                        ...data,
-                        date_of_birth: transformDate(data.date_of_birth),
-                    }))
+                    .transform(transformFormSubmission)
                     .post(route("data.members.store"), {
                         onSuccess: () => (form.notes = { title: "", note: "" }),
                     });
