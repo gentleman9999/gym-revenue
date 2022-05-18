@@ -22,8 +22,15 @@ class ClientSettingsController extends Controller
         }
         $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($client_id);
 
+        $test = [
+            ['name' => 'SMS', 'value' => 'SMS'],
+            ['name' => 'EMAIL', 'value' => 'EMAIL'],
+        ]; //TODO: make this actually pull available communication preferences
+
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => ClientService::whereClientId($client_id)->get(['feature_name', 'slug', 'id']) ?? [],
+            'commPreferences' => [],
+            'availableCommPreferences' => $test,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? []
@@ -32,7 +39,11 @@ class ClientSettingsController extends Controller
 
     public function updateClientServices()
     {
-        $data = request()->validate(['services' => ['sometimes', 'array']]);
+        $data = request()->validate([
+            'services' => ['sometimes', 'array'],
+            'commPreferences' => ['sometimes', 'array']
+
+        ]);
         $client_id = request()->user()->currentClientId();
         if (array_key_exists('services', $data) && is_array($data['services'])) {
             ClientAggregate::retrieve($client_id)->setClientServices($data['services'], request()->user()->id)->persist();

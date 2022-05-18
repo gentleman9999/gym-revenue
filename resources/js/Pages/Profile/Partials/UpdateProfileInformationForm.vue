@@ -126,6 +126,20 @@
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
             </div>
 
+            <!-- Contact Preference -->
+            <div class="col-span-2 sm:col-span-2">
+                <jet-label for="contact_preference" value="Contact Preference" />
+                <select
+                    id="contact_preference"
+                    class="block w-full mt-1"
+                    v-model="form.contact_preference"
+                >
+                    <option value="email">Email</option>
+                    <option value="sms" >Text Message</option>
+                </select>
+                <jet-input-error :message="form.errors.contact_preference" class="mt-2" />
+            </div>
+
         </template>
 
         <template #actions>
@@ -184,6 +198,7 @@
                     email: this.user.email,
                     phone: (this.addlData) ? this.addlData.phone : '',
                     photo: null,
+                    contact_preference: (this.addlData) ? this.addlData.contact_preference : '',
                 }),
                 photoPreview: null,
                 multiselectClasses: getDefaultMultiselectTWClasses()

@@ -44,6 +44,7 @@ class UpdateUser implements UpdatesUserProfileInformation
             'team_id' => ['required','integer', 'exists:teams,id'],
             'role_id' => ['required', 'integer'],
             'classification' => ['required'],
+            'contact_preference' => ['nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_club' => ['nullable', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
@@ -58,7 +59,10 @@ class UpdateUser implements UpdatesUserProfileInformation
             $data['password'] = bcrypt($data['password']);
         }
 
-        $data['role'] = $data['role_id'];
+        if(array_key_exists('role_id', $data)){
+            $data['role'] = $data['role_id'];
+        }
+
 
         UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         if ($client_id) {

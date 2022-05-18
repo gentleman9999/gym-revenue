@@ -17,6 +17,16 @@
                 </div>
 
                 <div>
+                    <comm-pref-form
+                        :user="$page.props.user"
+                        :comm-preferences="commPreferences"
+                        :available-comm-preferences="availableCommPreferences"
+                    />
+
+                    <jet-section-border />
+                </div>
+
+                <div>
                     <trial-membership-form
                         :user="$page.props.user"
                         :trial-membership-types="trialMembershipTypes"
@@ -40,6 +50,7 @@ import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import ClientServicesForm from "./Partials/ClientServicesForm";
+import CommPrefForm from "./Partials/CommPrefForm";
 import TrialMembershipForm from "./Partials/TrialMembershipForm";
 
 export default defineComponent({
@@ -48,12 +59,19 @@ export default defineComponent({
         JetSectionBorder,
         ClientServicesForm,
         TrialMembershipForm,
+        CommPrefForm,
     },
     props: {
         services: {
             type: Array,
         },
         availableServices: {
+            type: Array,
+        },
+        commPreferences: {
+            type: Array,
+        },
+        availableCommPreferences: {
             type: Array,
         },
         trialMembershipTypes: {
