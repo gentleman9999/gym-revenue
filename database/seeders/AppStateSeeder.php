@@ -320,5 +320,25 @@ class AppStateSeeder extends Seeder
                 ]
             ]
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 05-19-2022',
+            'value' => '2022-05-19',
+            'misc' => [
+                'buildno' => '20220519',
+                'version' => '0.18.01',
+                'notes' => [
+                    'UI - User Login User Interface modified to match art designs.',
+                    'UI - User Management User Interface modified to match art designs.',
+                    'UI - Lead/Member User Interface modified to clean up white spacing - modeling from user profiles designs as reference.',
+                    'Calendar - Design modification to the FullCalendar Package to match art designs.',
+                    'Tasks (ToDo List) - Basic Task CRUD created.',
+                    'Calendar/Tasks - Association Logic between tasks and calendar events established.',
+                    'BUG - Calendar drag & drop was breaking when update event was moved.'
+                ]
+            ]
+        ]);
     }
 }
