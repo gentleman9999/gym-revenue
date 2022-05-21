@@ -16,9 +16,11 @@
         "@vue/compiler-sfc": "^3.2.26",
         "autoprefixer": "^10.4.2",
         "axios": "^0.24.0",
+        "husky": "^8.0.1",
         "laravel-echo": "^1.11.4",
         "laravel-mix": "^6.0.6",
         "laravel-vapor": "^0.5.1",
+        "lint-staged": "^12.4.1",
         "lodash": "^4.17.21",
         "postcss": "^8.4.5",
         "postcss-import": "^14.0.2",
@@ -61,5 +63,10 @@
         "vue-slide-up-down": "^2.0.1",
         "vue3-date-time-picker": "^2.4.4",
         "vue3-slide-up-down": "^1.2.3"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
     }
 }
