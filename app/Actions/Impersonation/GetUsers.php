@@ -3,10 +3,8 @@
 namespace App\Actions\Impersonation;
 
 use App\Enums\SecurityGroupEnum;
-use App\Models\Role;
-use App\Models\UserDetails;
-use Bouncer;
 use App\Models\User;
+use App\Models\UserDetails;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetUsers
@@ -28,22 +26,25 @@ class GetUsers
         $user_role = $user->getRole();
 
 
-        switch($user_role)
-        {
+        switch ($user_role) {
             case 'Admin':
                 $allowed_roles = [SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
+
                 break;
 
             case 'Account Owner':
                 $allowed_roles = [SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
+
                 break;
 
             case 'Regional Admin':
                 $allowed_roles = [SecurityGroupEnum::REGIONAL_ADMIN, SecurityGroupEnum::LOCATION_MANAGER, SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
+
                 break;
 
             case 'Location Manager':
                 $allowed_roles = [SecurityGroupEnum::SALES_REP, SecurityGroupEnum::EMPLOYEE];
+
                 break;
 
             case 'Sales Rep':
@@ -55,78 +56,59 @@ class GetUsers
         $current_team = $user->currentTeam()->first();
 
         // If the team is a default_team, then get all users for that client
-        if($current_team->default_team)
-        {
+        if ($current_team->default_team) {
             $client_detail = $current_team->client_details()->first();
-            if(is_null($client_detail))
-            {
+            if (is_null($client_detail)) {
                 // This is a CnB Team
                 $imp_users = User::all();
-                foreach($imp_users as $imp_user)
-                {
-                    if($imp_user->inSecurityGroup(SecurityGroupEnum::ADMIN))
-                    {
+                foreach ($imp_users as $imp_user) {
+                    if ($imp_user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
                         $results[] = $imp_user;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 // This is a client team
                 $client = $client_detail->client;
                 $user_details = UserDetails::where('name', '=', 'associated_client')
                     ->whereValue($client->id)->with('user')->whereActive(1)
                     ->get();
 
-                if(count($user_details) > 0)
-                {
-                    foreach ($user_details as $user_detail)
-                    {
-                        if(!is_null($user_detail->user))
-                        {
+                if (count($user_details) > 0) {
+                    foreach ($user_details as $user_detail) {
+                        if (! is_null($user_detail->user)) {
                             $results[] = $user_detail->user;
                         }
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             // get the users for that team
             $imp_users = $current_team->team_users()->get();
 
-            foreach($imp_users as $imp_user)
-            {
-                if(!is_null($imp_user->user))
-                {
+            foreach ($imp_users as $imp_user) {
+                if (! is_null($imp_user->user)) {
                     $results[] = $imp_user->user;
                 }
             }
         }
 
-        if(count($results) > 0)
-        {
+        if (count($results) > 0) {
             $potential_imp_users = $results;
             $results = [];
 
-            if(count($allowed_roles) > 0)
-            {
-                foreach ($potential_imp_users as $potential_imp_user)
-                {
+            if (count($allowed_roles) > 0) {
+                foreach ($potential_imp_users as $potential_imp_user) {
                     // Filter out the the logged in user from the results
-                    if($potential_imp_user->id != $user->id)
-                    {
+                    if ($potential_imp_user->id != $user->id) {
                         //filter out team_users in roles above the user
-                        foreach ($allowed_roles as $allowed_role)
-                        {
-                                if($potential_imp_user->inSecurityGroup($allowed_role))
-                            {
-
+                        foreach ($allowed_roles as $allowed_role) {
+                            if ($potential_imp_user->inSecurityGroup($allowed_role)) {
                                 $results[] = [
                                     'userId' => $potential_imp_user->id,
                                     'name' => $potential_imp_user->name,
-                                    'role' => $potential_imp_user->getRole()
+                                    'role' => $potential_imp_user->getRole(),
                                 ];
+
                                 break;
                             }
                         }
@@ -143,10 +125,8 @@ class GetUsers
         $results = false;
         $code = 500;
 
-        if(count($result) > 0)
-        {
-            if(request()->user()->can('users.impersonate', User::class))
-            {
+        if (count($result) > 0) {
+            if (request()->user()->can('users.impersonate', User::class)) {
                 $code = 200;
                 $results = $result;
             }

@@ -1,5 +1,10 @@
 <template>
-    <dashboard-widget-modal title="Sales" v-bind="$attrs" ref="modal" page-route="Sales">
+    <dashboard-widget-modal
+        title="Sales"
+        v-bind="$attrs"
+        ref="modal"
+        page-route="Sales"
+    >
     </dashboard-widget-modal>
 </template>
 <script>

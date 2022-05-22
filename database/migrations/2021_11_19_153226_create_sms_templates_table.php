@@ -20,7 +20,8 @@ class CreateSmsTemplatesTable extends Migration
             $table->boolean('active')->default(1);
 
             $table->uuid('client_id')->nullable();
-            $table->uuid('team_id')->nullable();;
+            $table->uuid('team_id')->nullable();
+            ;
             $table->string('created_by_user_id');
             $table->timestamps();
             $table->softDeletes();

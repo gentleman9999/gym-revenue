@@ -9,7 +9,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-
 class DeleteReminderWithoutID
 {
     use AsAction;
@@ -30,13 +29,13 @@ class DeleteReminderWithoutID
 
     public function handle($data, $current_user = null)
     {
-        if(!is_null($current_user)) {
+        if (! is_null($current_user)) {
             $client_id = $current_user->currentClientId();
             $data['client_id'] = $client_id;
         }
 
         $reminder = Reminder::whereEntityType($data['entity_type'])->whereEntityId($data['entity_id'])->whereUserId($data['user_id'])->first();
-        if(is_null($reminder)) {
+        if (is_null($reminder)) {
             return true;
         } else {
             $id = $reminder->id;
@@ -63,5 +62,4 @@ class DeleteReminderWithoutID
 
         return Redirect::back();
     }
-
 }

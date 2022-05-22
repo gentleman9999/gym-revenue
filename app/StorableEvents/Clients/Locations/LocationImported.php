@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class LocationImported extends ShouldBeStored
 {
-    public $client, $user, $key;
+    public $client;
+    public $user;
+    public $key;
 
     public function __construct(string $client, string $user, string $key)
     {

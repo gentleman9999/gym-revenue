@@ -8,7 +8,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-
 class SetCustomUserCrudColumns
 {
     use AsAction;
@@ -21,8 +20,8 @@ class SetCustomUserCrudColumns
     public function rules()
     {
         return [
-            'table' =>['required', 'string','max:50'],
-            'columns' => ['required', 'array', 'min:1', 'max:7']
+            'table' => ['required', 'string','max:50'],
+            'columns' => ['required', 'array', 'min:1', 'max:7'],
         ];
     }
 
@@ -39,11 +38,10 @@ class SetCustomUserCrudColumns
 
     public function asController(ActionRequest $request)
     {
-
-        $data =  $request->validated();
+        $data = $request->validated();
 
         $this->handle(
-           $data,
+            $data,
             $request->user()
         );
 
@@ -51,5 +49,4 @@ class SetCustomUserCrudColumns
 
         return Redirect::back();
     }
-
 }

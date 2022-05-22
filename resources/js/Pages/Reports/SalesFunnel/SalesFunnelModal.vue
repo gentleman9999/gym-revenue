@@ -1,5 +1,10 @@
 <template>
-    <dashboard-widget-modal title="Sales Funnel" v-bind="$attrs" ref="modal" page-route="SalesFunnel">
+    <dashboard-widget-modal
+        title="Sales Funnel"
+        v-bind="$attrs"
+        ref="modal"
+        page-route="SalesFunnel"
+    >
     </dashboard-widget-modal>
 </template>
 <script>

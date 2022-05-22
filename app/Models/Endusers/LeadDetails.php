@@ -6,11 +6,12 @@ use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
 
 class LeadDetails extends Model
 {
-    use hasFactory, SoftDeletes, Uuid;
+    use hasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -42,11 +43,10 @@ class LeadDetails extends Model
         $model = self::firstOrCreate([
             'lead_id' => $lead_id,
             'client_id' => $client_id,
-            'field' => $field
+            'field' => $field,
         ]);
 
         $model->value = $value;
         $model->save();
     }
-
 }

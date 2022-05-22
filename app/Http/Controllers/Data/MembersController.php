@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
@@ -25,6 +24,7 @@ class MembersController extends Controller
         $user = request()->user();
         if ($user->cannot('members.read', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
 
@@ -34,14 +34,24 @@ class MembersController extends Controller
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
 
-        if (!empty($members_model)) {
+        if (! empty($members_model)) {
             $members = $members_model
                 ->with('location')
 //                ->with('membershipType')
 //                ->with('detailsDesc')
                 ->with('notes')
-                ->filter($request->only('search', 'trashed', 'createdat', 'grlocation',
-                  'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
+                ->filter($request->only(
+                    'search',
+                    'trashed',
+                    'createdat',
+                    'grlocation',
+                    'dob',
+                    'nameSearch',
+                    'phoneSearch',
+                    'emailSearch',
+                    'agreementSearch',
+                    'lastupdated'
+                ))
                 ->orderBy('created_at', 'desc')
                 ->sort()
                 ->paginate($page_count)
@@ -51,7 +61,7 @@ class MembersController extends Controller
         //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
         //MUST FIX BY DEMO 6/15/22
         //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
-        if($request->get('sort') != '') {
+        if ($request->get('sort') != '') {
             if ($request->get('dir') == 'DESC') {
                 $sortedResult = $members->getCollection()->sortByDesc($request->get('sort'))->values();
             } else {
@@ -67,8 +77,19 @@ class MembersController extends Controller
             'routeName' => request()->route()->getName(),
             'title' => 'Members',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed', 'createdat', 'grlocation',
-               'claimed', 'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'),
+            'filters' => $request->all(
+                'search',
+                'trashed',
+                'createdat',
+                'grlocation',
+                'claimed',
+                'dob',
+                'nameSearch',
+                'phoneSearch',
+                'emailSearch',
+                'agreementSearch',
+                'lastupdated'
+            ),
             'grlocations' => Location::whereClientId($client_id)->get(),
 
         ]);
@@ -86,7 +107,7 @@ class MembersController extends Controller
 
         //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
 
-        if (!empty($prospects_model)) {
+        if (! empty($prospects_model)) {
             $prospects = $prospects_model
                 ->with('location')
 //                ->with('membershipType')
@@ -102,11 +123,10 @@ class MembersController extends Controller
             'leads' => $prospects,
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed','createdat', 'grlocation'),
+            'filters' => $request->all('search', 'trashed', 'createdat', 'grlocation'),
             'grlocations' => $locations,
         ]);
     }
-
 
     public function create()
     {
@@ -125,6 +145,7 @@ class MembersController extends Controller
 
         if ($user->cannot('members.create', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
 
@@ -142,10 +163,9 @@ class MembersController extends Controller
 
     private function setUpMembersObject(bool $is_client_user, string $client_id = null)
     {
-
         $results = [];
 
-        if ((!is_null($client_id))) {
+        if ((! is_null($client_id))) {
             /**
              * BUSINESS RULES
              * 1. There must be an active client and an active team.
@@ -188,10 +208,12 @@ class MembersController extends Controller
         $user = request()->user();
         if ($user->cannot('members.update', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
-        if (!$member_id) {
+        if (! $member_id) {
             Alert::error("Access Denied or Member does not exist")->flash();
+
             return Redirect::route('data.members');
         }
         //@TODO: we may want to embed the currentClientId in the form as a field
@@ -223,27 +245,28 @@ class MembersController extends Controller
         $memberData = $member->toArray();
         $memberData['all_notes'] = $member->notes->toArray();
 
-        foreach($memberData['all_notes'] as $key => $value)
-        {
-            if(ReadReceipt::whereNoteId($memberData['all_notes'][$key]['id'])->first())
+        foreach ($memberData['all_notes'] as $key => $value) {
+            if (ReadReceipt::whereNoteId($memberData['all_notes'][$key]['id'])->first()) {
                 $memberData['all_notes'][$key]['read'] = true;
-            else
+            } else {
                 $memberData['all_notes'][$key]['read'] = false;
+            }
         }
 
         return Inertia::render('Members/Edit', [
             'member' => $memberData,
             'user_id' => $user->id,
             'locations' => $locations,
-            'interactionCount' => $member_aggy->getInteractionCount()
+            'interactionCount' => $member_aggy->getInteractionCount(),
         ]);
     }
 
     public function show($member_id)
     {
         // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
-        if (!$member_id) {
+        if (! $member_id) {
             Alert::error("Access Denied or Member does not exist")->flash();
+
             return Redirect::route('data.members');
         }
         $aggy = EndUserActivityAggregate::retrieve($member_id);
@@ -255,7 +278,7 @@ class MembersController extends Controller
             'middle_name' => $middle_name,
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get()
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
         ]);
     }
 
@@ -265,6 +288,7 @@ class MembersController extends Controller
         $user = request()->user();
         if ($user->cannot('members.contact', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
 
@@ -296,7 +320,7 @@ class MembersController extends Controller
             : new Location();
         */
 
-        if ((!is_null($client_id))) {
+        if ((! is_null($client_id))) {
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
             $default_team_name = $client->default_team_name->value;
@@ -323,7 +347,7 @@ class MembersController extends Controller
             }
         } else {
             // Cape & Bay user
-            if (!$is_client_user) {
+            if (! $is_client_user) {
                 $results = new Location();
             }
         }
@@ -336,6 +360,7 @@ class MembersController extends Controller
         $user = request()->user();
         if ($user->cannot('members.contact', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back()->with('selectedMemberDetailIndex', 0);
         }
 
@@ -349,23 +374,28 @@ class MembersController extends Controller
                 $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
                 foreach ($aggy->getAppliedEvents() as $value) {
                     $contains = Str::contains(get_class($value), ['LeadWasCalled', 'LeadWasTextMessaged', 'LeadWasEmailed']);
-                    if ($contains) $data['interaction_count']++;
+                    if ($contains) {
+                        $data['interaction_count']++;
+                    }
                 }
 
                 switch (request()->get('method')) {
                     case 'email':
                         $aggy->emailLead($data, auth()->user()->id)->persist();
                         Alert::success("Email sent to member")->flash();
+
                         break;
 
                     case 'phone':
                         $aggy->logPhoneCallWithLead($data, auth()->user()->id)->persist();
                         Alert::success("Call Log Updated")->flash();
+
                         break;
 
                     case 'sms':
                         $aggy->textMessageLead($data, auth()->user()->id)->persist();
                         Alert::success("SMS Sent")->flash();
+
                         break;
 
                     default:
@@ -379,16 +409,17 @@ class MembersController extends Controller
         return Redirect::back()->with('selectedMemberDetailIndex', 0);
     }
 
-
     public function view($member_id)
     {
         $user = request()->user();
         if ($user->cannot('members.read', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
-        if (!$member_id) {
+        if (! $member_id) {
             Alert::error("Access Denied or Member does not exist")->flash();
+
             return Redirect::route('data.members');
         }
         $user = request()->user();
@@ -406,6 +437,7 @@ class MembersController extends Controller
             'interactionCount' => $member_aggy->getInteractionCount(),
             'preview_note' => $preview_note,
         ];
+
         return $data;
     }
 
@@ -422,19 +454,27 @@ class MembersController extends Controller
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
 
-        if (!empty($members_model)) {
+        if (! empty($members_model)) {
             $members = $members_model
                 ->with('location')
 //                ->with('detailsDesc')
                 //  ->with('leadsclaimed')
-                ->filter($request->only('search', 'trashed', 'createdat', 'grlocation',
-                     'dob', 'nameSearch', 'phoneSearch', 'emailSearch', 'agreementSearch', 'lastupdated'))
+                ->filter($request->only(
+                    'search',
+                    'trashed',
+                    'createdat',
+                    'grlocation',
+                    'dob',
+                    'nameSearch',
+                    'phoneSearch',
+                    'emailSearch',
+                    'agreementSearch',
+                    'lastupdated'
+                ))
                 ->orderBy('created_at', 'desc')
                 ->get();
-
         }
 
         return $members;
     }
-
 }

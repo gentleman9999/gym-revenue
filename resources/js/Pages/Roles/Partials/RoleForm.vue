@@ -14,8 +14,17 @@
             </div>
             <div class="col-span-6">
                 <jet-label for="group" value="Security Group" />
-                <select class="block w-full mt-1" id="group" v-model="form.group">
-                    <option v-for="{name, value} in securityGroups" :value="value">{{name}}</option>
+                <select
+                    class="block w-full mt-1"
+                    id="group"
+                    v-model="form.group"
+                >
+                    <option
+                        v-for="{ name, value } in securityGroups"
+                        :value="value"
+                    >
+                        {{ name }}
+                    </option>
                 </select>
                 <jet-input-error :message="form.errors.group" class="mt-2" />
             </div>
@@ -70,7 +79,10 @@
                     </div>
                 </div>
             </div>
-            <jet-input-error :message="form.errors.ability_names" class="mt-2" />
+            <jet-input-error
+                :message="form.errors.ability_names"
+                class="mt-2"
+            />
             <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
@@ -130,10 +142,10 @@ export default {
         role: {
             type: Object,
         },
-        securityGroups:{
+        securityGroups: {
             type: Array,
-            default: []
-        }
+            default: [],
+        },
     },
     setup(props, context) {
         let role = props.role;
@@ -149,26 +161,23 @@ export default {
             operation = "Create";
         }
 
-
         const form = useForm({
             name: role.name,
             id: role.id,
             client_id: props.clientId,
             ability_names: getAbilities(),
-            group: role.group
+            group: role.group,
         });
 
-        function getAbilities () {
-            if(role.abilities) {
-                return role.abilities.map(ability=>ability.name)
+        function getAbilities() {
+            if (role.abilities) {
+                return role.abilities.map((ability) => ability.name);
             } else {
-                return role.ability_names.map(ability=>ability.name)
+                return role.ability_names.map((ability) => ability.name);
             }
         }
 
-
-        let handleSubmit = () =>
-            form.put(route("roles.update", role.id));
+        let handleSubmit = () => form.put(route("roles.update", role.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("roles.store"));
         }

@@ -4,11 +4,9 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
 class GymRevNotification extends Notification implements ShouldBroadcast
 {
@@ -45,7 +43,7 @@ class GymRevNotification extends Notification implements ShouldBroadcast
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
                     ->line("You've got a generic notification!")
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using Gym Revenue!');

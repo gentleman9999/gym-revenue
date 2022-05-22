@@ -22,7 +22,7 @@ class UpdateCalendarEventType
     public function rules()
     {
         return [
-            'name' =>['required', 'string','max:50'],
+            'name' => ['required', 'string','max:50'],
             'description' => ['string', 'nullable'],
             'type' => ['required', 'string', 'nullable'],
             'color' => ['required', 'string'],
@@ -30,11 +30,10 @@ class UpdateCalendarEventType
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($data, $user = null)
     {
-
         CalendarAggregate::retrieve($data['client_id'])
-            ->updateCalendarEventType($user->id ?? "Auto Generated" , $data)
+            ->updateCalendarEventType($user->id ?? "Auto Generated", $data)
             ->persist();
 
         return CalendarEventType::find($data['id']);
@@ -43,6 +42,7 @@ class UpdateCalendarEventType
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.update', CalendarEvent::class);
     }
 
@@ -58,5 +58,4 @@ class UpdateCalendarEventType
 
         return Redirect::back();
     }
-
 }

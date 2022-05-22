@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class CalendarEventTrashed extends ShouldBeStored
 {
-    public $user, $id, $client;
+    public $user;
+    public $id;
+    public $client;
+
     public function __construct(string $client, string $user, $id)
     {
         $this->client = $client;

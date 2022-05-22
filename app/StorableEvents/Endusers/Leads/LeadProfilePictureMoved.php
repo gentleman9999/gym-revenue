@@ -6,9 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class LeadProfilePictureMoved extends ShouldBeStored
 {
-    public $file, $oldFile;
+    public $file;
+    public $oldFile;
 
-    public function __construct( array $file, array $oldFile = null)
+    public function __construct(array $file, array $oldFile = null)
     {
         $this->file = $file;
         $this->oldFile = $oldFile;

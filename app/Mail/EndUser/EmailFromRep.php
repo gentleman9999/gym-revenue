@@ -5,15 +5,18 @@ namespace App\Mail\EndUser;
 use App\Models\Endusers\Lead;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 class EmailFromRep extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    protected $data, $lead, $user;
+    protected $data;
+    protected $lead;
+    protected $user;
+
     /**
      * Create a new message instance.
      *
@@ -35,6 +38,6 @@ class EmailFromRep extends Mailable
     {
         return $this->from($this->user->email)
             ->subject($this->data['subject'])
-            ->markdown('emails.endusers.email-from-rep', ['data' => $this->data, 'user'=> $this->user->toArray()]);
+            ->markdown('emails.endusers.email-from-rep', ['data' => $this->data, 'user' => $this->user->toArray()]);
     }
 }

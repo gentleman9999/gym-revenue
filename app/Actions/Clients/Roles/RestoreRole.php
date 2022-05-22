@@ -2,7 +2,6 @@
 
 namespace App\Actions\Clients\Roles;
 
-use App\Models\Clients\Location;
 use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -32,12 +31,14 @@ class RestoreRole
 
         $client_id = $current_user->currentClientId();
         ClientAggregate::retrieve($client_id)->restoreRole($current_user->id, $id)->persist();
+
         return $role;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('role.restore', Role::class);
     }
 

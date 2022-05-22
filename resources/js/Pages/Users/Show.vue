@@ -25,8 +25,12 @@
                             class="label label-text py-1 text-xs text-gray-400"
                         >
                             Club
-                            </label>
-                        <select id="club" class="mt-1 w-full form-select" v-model="form.club">
+                        </label>
+                        <select
+                            id="club"
+                            class="mt-1 w-full form-select"
+                            v-model="form.club"
+                        >
                             <option></option>
                             <option
                                 v-for="club in clubs"
@@ -43,7 +47,11 @@
                         >
                             Team
                         </label>
-                        <select id="team" class="mt-1 w-full form-select" v-model="form.team">
+                        <select
+                            id="team"
+                            class="mt-1 w-full form-select"
+                            v-model="form.team"
+                        >
                             <option></option>
                             <option v-for="team in teams" :value="team.id">
                                 {{ team.name }}
@@ -58,7 +66,11 @@
                         >
                             Security Role:
                         </label>
-                        <select id="roles" class="mt-1 w-full form-select" v-model="form.roles">
+                        <select
+                            id="roles"
+                            class="mt-1 w-full form-select"
+                            v-model="form.roles"
+                        >
                             <option></option>
                             <option
                                 v-for="role in potentialRoles"
@@ -68,9 +80,6 @@
                             </option>
                         </select>
                     </div>
-
-
-
                 </beefy-search-filter>
             </template>
         </gym-revenue-crud>
@@ -100,7 +109,7 @@ import PageToolbarNav from "@/Components/PageToolbarNav";
 import UserPreview from "@/Pages/Users/Partials/UserPreview";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 export default defineComponent({
     components: {
@@ -112,9 +121,16 @@ export default defineComponent({
         SimpleSearchFilter,
         PageToolbarNav,
         UserPreview,
-        Multiselect
+        Multiselect,
     },
-    props: ["users", "filters", "clubs", "teams", 'clientName', 'potentialRoles'],
+    props: [
+        "users",
+        "filters",
+        "clubs",
+        "teams",
+        "clientName",
+        "potentialRoles",
+    ],
     setup(props) {
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
@@ -211,7 +227,6 @@ export default defineComponent({
             },
         };
 
-
         let navLinks = [
             {
                 label: "Users",
@@ -250,7 +265,7 @@ export default defineComponent({
             clearSearch,
             navLinks,
             UserPreview,
-            multiselectClasses: getDefaultMultiselectTWClasses()
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 });

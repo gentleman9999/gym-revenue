@@ -121,8 +121,6 @@ export default defineComponent({
             // console.log({lead_type_index, })
         };
 
-
-
         const badgeClassesOpportunity = (opportunity) => {
             if (!opportunity) {
                 console.log("no lead type id!");
@@ -139,24 +137,22 @@ export default defineComponent({
                 "badge-error",
                 "badge-warning",
             ];
-            if(opportunity === "High"){
-                return badges[4];    //success
+            if (opportunity === "High") {
+                return badges[4]; //success
             }
-            if(opportunity === "Medium"){
-                return badges[8];     // info
+            if (opportunity === "Medium") {
+                return badges[8]; // info
             }
-            if(opportunity === "Low"){
-                return badges[7];  //warning
+            if (opportunity === "Low") {
+                return badges[7]; //warning
             }
         };
 
-
-
-
-
         const fields = [
             { name: "created_at", label: "Created" },
-            { name: "opportunity.value", label: "Opportunity",
+            {
+                name: "opportunity.value",
+                label: "Opportunity",
                 component: CrudBadge,
                 props: {
                     getProps: ({ data: { opportunity } }) => ({
@@ -184,7 +180,8 @@ export default defineComponent({
                 name: "leadsclaimed",
                 label: "Status",
                 component: LeadAvailabilityBadge,
-                export: data => data?.length ? data[0].misc.user_id : 'Available',
+                export: (data) =>
+                    data?.length ? data[0].misc.user_id : "Available",
             },
         ];
 

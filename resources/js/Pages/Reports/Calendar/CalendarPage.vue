@@ -2,10 +2,7 @@
     <app-layout>
         <template #header> Calendar </template>
 
-        <jet-bar-container>
-
-
-        </jet-bar-container>
+        <jet-bar-container> </jet-bar-container>
     </app-layout>
 </template>
 

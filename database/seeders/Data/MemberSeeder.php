@@ -39,9 +39,7 @@ class MemberSeeder extends Seeder
                         foreach ($members as $member) {
                             $member_data = $member->toArray();
                             CreateMember::run($member_data);
-
                         }
-
                     }
                 }
             }

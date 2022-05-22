@@ -6,7 +6,12 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class AudienceCreated extends ShouldBeStored
 {
-    public $client, $name, $slug, $email, $from, $user;
+    public $client;
+    public $name;
+    public $slug;
+    public $email;
+    public $from;
+    public $user;
 
     public function __construct($client, $name, $slug, /*$email, $from,*/ $user)
     {

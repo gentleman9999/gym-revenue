@@ -6,7 +6,12 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class GatewayIntegrationCreated extends ShouldBeStored
 {
-    public $client, $slug, $type, $nickname, $user;
+    public $client;
+    public $slug;
+    public $type;
+    public $nickname;
+    public $user;
+
     public function __construct(string $client, string $type, $slug, $nickname, $user)
     {
         $this->client = $client;

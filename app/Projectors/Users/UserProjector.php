@@ -4,17 +4,17 @@ namespace App\Projectors\Users;
 
 use App\Models\Clients\Client;
 use App\Models\Note;
-use App\Models\Tasks;
 use App\Models\Notification;
+use App\Models\Tasks;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\StorableEvents\Users\Notifications\NotificationCreated;
-use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
 use App\StorableEvents\Clients\Tasks\TaskUpdated;
+use App\StorableEvents\Users\Notifications\NotificationCreated;
+use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
@@ -34,7 +34,7 @@ class UserProjector extends Projector
         DB::transaction(function () use ($data, $event) {
             //get only the keys we care about (the ones marked as fillable)
             $user_table_data = array_filter($data, function ($key) {
-                return in_array($key, (new User)->getFillable());
+                return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
 
             $user_table_data['name'] = "{$user_table_data['first_name']} {$user_table_data['last_name']}";
@@ -70,7 +70,7 @@ class UserProjector extends Projector
                     'entity_type' => User::class,
                     'title' => $notes['title'],
                     'note' => $notes['note'],
-                    'created_by_user_id' => $event->user
+                    'created_by_user_id' => $event->user,
                 ]);
             }
 
@@ -89,9 +89,8 @@ class UserProjector extends Projector
                     'user_id' => $user->id,
                     'name' => 'default_team',
                     'value' => $team->id,
-                    'active' => 1
+                    'active' => 1,
                 ]);
-
             }
 
             /** Users have:
@@ -121,7 +120,7 @@ class UserProjector extends Projector
             UserDetails::create([
                 'user_id' => $user->id,
                 'name' => 'classification',
-                'value' => $classification
+                'value' => $classification,
             ]);
 
             //attach the user to their teams
@@ -160,6 +159,7 @@ class UserProjector extends Projector
                 'termination_date' => $data['termination_date'] ?? null,
                 'is_manager' => $data['is_manager'] ?? null,
                 'classification' => $data['classification'] ?? null,
+                'contact_preference' => $data['contact_preference'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the
@@ -177,12 +177,11 @@ class UserProjector extends Projector
                     'entity_type' => User::class,
                     'title' => $notes['title'],
                     'note' => $notes['note'],
-                    'created_by_user_id' => $event->user
+                    'created_by_user_id' => $event->user,
                 ]);
             }
 
             if ($data['role'] ?? false) {
-
                 $old_role = $user->getRole();
 
                 $role = Role::whereId($data['role'])->get();
@@ -240,13 +239,13 @@ class UserProjector extends Projector
         Log::debug($event->data);
         Notification::create(array_merge($event->data, ['user_id' => $event->user]));
     }
+
     public function onNotificationDismissed(NotificationDismissed $event)
     {
         //TODO:check if event->createdAt is preserved after replays.  If not,
         //we just need to track "dismissed_at" in the NotificationDismissed event itself
         Notification::findOrFail($event->id)->updateOrFail(['dismissed_at' => $event->createdAt()]);
     }
-
 
     public function onTaskCreated(TaskCreated $event)
     {
@@ -272,12 +271,14 @@ class UserProjector extends Projector
     {
         Tasks::findOrFail($event->data['id'])->delete();
     }
+
     public function onTaskMarkedComplete(TaskMarkedComplete $event)
     {
-        Tasks::findOrFail($event->data['id'])->update(['completed_at'=> $event->created_at]);
+        Tasks::findOrFail($event->data['id'])->update(['completed_at' => $event->created_at]);
     }
+
     public function onTaskMarkedIncomplete(TaskMarkedIncomplete $event)
     {
-        Tasks::findOrFail($event->data['id'])->update(['completed_at'=> null]);
+        Tasks::findOrFail($event->data['id'])->update(['completed_at' => null]);
     }
 }

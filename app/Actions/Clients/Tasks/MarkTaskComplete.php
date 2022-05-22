@@ -4,7 +4,6 @@ namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Tasks;
-use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,7 +22,7 @@ class MarkTaskComplete
     public function rules()
     {
         return [
-            'title' =>['required', 'string','max:50'],
+            'title' => ['required', 'string','max:50'],
             'description' => ['string', 'nullable'],
             'user_id' => ['sometimes'],
             'due_at' => ['sometimes'],
@@ -31,12 +30,10 @@ class MarkTaskComplete
             ];
     }
 
-
-
     public function handle($id, $user)
     {
         UserAggregate::retrieve($user->id)
-            ->markTaskAsComplete($user->id ?? "Auto Generated" , $id)
+            ->markTaskAsComplete($user->id ?? "Auto Generated", $id)
             ->persist();
 
         return Task::find($id);
@@ -45,6 +42,7 @@ class MarkTaskComplete
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('task.update', Tasks::class);
     }
 
@@ -59,5 +57,4 @@ class MarkTaskComplete
 
         return Redirect::back();
     }
-
 }

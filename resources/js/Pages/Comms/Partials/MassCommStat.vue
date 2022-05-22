@@ -11,7 +11,7 @@
             <template v-if="value">
                 <span v-if="delta > 0">↗︎</span>
                 <span v-if="delta < 0">↘︎︎</span>
-                {{ parseInt(delta * value )}} ({{ parseInt(delta*100) }}%)
+                {{ parseInt(delta * value) }} ({{ parseInt(delta * 100) }}%)
             </template>
             <span v-else class="opacity-0">placeholder</span>
         </div>
@@ -31,7 +31,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        let delta = Math.random()*0.3;
+        let delta = Math.random() * 0.3;
         if (!props.title.includes("Conversion")) {
             delta *= Math.random() > 0.8 ? -1 : 1;
         }

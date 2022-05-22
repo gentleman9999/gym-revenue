@@ -2,15 +2,24 @@
     <app-layout :title="title">
         <template #header>
             <div class="text-center">
-                <h2 class="font-semibold text-xl  leading-tight">
+                <h2 class="font-semibold text-xl leading-tight">
                     SMS Campaigns Management
                 </h2>
             </div>
-            <div class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start">
+            <div
+                class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
+            >
                 <inertia-link
                     class="btn justify-self-end"
-                    :href="route('comms.dashboard')">
-                    <span><font-awesome-icon :icon="['far', 'chevron-double-left']" size="sm"/> Back</span>
+                    :href="route('comms.dashboard')"
+                >
+                    <span
+                        ><font-awesome-icon
+                            :icon="['far', 'chevron-double-left']"
+                            size="sm"
+                        />
+                        Back</span
+                    >
                 </inertia-link>
             </div>
         </template>
@@ -29,23 +38,27 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to remove this campaign?  It will unassign all audiences and/or templates.
+            Are you sure you want to remove this campaign? It will unassign all
+            audiences and/or templates.
         </confirm>
     </app-layout>
 </template>
 
 <script>
-import {computed, defineComponent, ref} from "vue";
-import AppLayout from '@/Layouts/AppLayout'
+import { computed, defineComponent, ref } from "vue";
+import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
 
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faChevronDoubleLeft, faEllipsisH} from '@fortawesome/pro-regular-svg-icons'
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+    faChevronDoubleLeft,
+    faEllipsisH,
+} from "@fortawesome/pro-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import {Inertia} from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 
-library.add(faChevronDoubleLeft, faEllipsisH)
+library.add(faChevronDoubleLeft, faEllipsisH);
 
 export default defineComponent({
     name: "SMSCampaignsIndex",
@@ -53,9 +66,9 @@ export default defineComponent({
         AppLayout,
         FontAwesomeIcon,
         GymRevenueCrud,
-        Confirm
+        Confirm,
     },
-    props: ['title', 'filters', 'campaigns'],
+    props: ["title", "filters", "campaigns"],
     setup(props) {
         const comingSoon = () => {
             new Noty({
@@ -71,7 +84,9 @@ export default defineComponent({
             confirmTrash.value = id;
         };
         const handleConfirmTrash = () => {
-            Inertia.delete(route("comms.sms-campaigns.trash", confirmTrash.value));
+            Inertia.delete(
+                route("comms.sms-campaigns.trash", confirmTrash.value)
+            );
             confirmTrash.value = null;
         };
 
@@ -87,7 +102,7 @@ export default defineComponent({
                                 ? { text: "Active", class: "badge-success" }
                                 : { text: "Draft", class: "badge-warning" },
                     },
-                    export: (active) => active ? "Active" : "Draft",
+                    export: (active) => (active ? "Active" : "Draft"),
                 },
                 { name: "type", transform: () => "Regular" },
                 { name: "updated_at", label: "date updated" },
@@ -102,7 +117,7 @@ export default defineComponent({
         const actions = computed(() => {
             return {
                 edit: {
-                    shouldRender: ({data}) => {
+                    shouldRender: ({ data }) => {
                         if (!data.active) {
                             return true;
                         }
@@ -112,26 +127,37 @@ export default defineComponent({
                         if (!Date.parse(data.schedule_date.value)) {
                             return true;
                         }
-                        return new Date(`${data.schedule_date.value} UTC`) >= new Date();
-
-                    }
+                        return (
+                            new Date(`${data.schedule_date.value} UTC`) >=
+                            new Date()
+                        );
+                    },
                 },
                 results: {
                     label: "Results",
-                    shouldRender: ({data}) => data.active && data.schedule_date && new Date(`${data.schedule_date.value} UTC`) < new Date(),
+                    shouldRender: ({ data }) =>
+                        data.active &&
+                        data.schedule_date &&
+                        new Date(`${data.schedule_date.value} UTC`) <
+                            new Date(),
                     handler: () => comingSoon(),
                 },
                 quickSend: {
                     label: "Quick Send",
                     handler: () => comingSoon(),
                 },
-                trash:{
-                    handler: ({data}) => handleClickTrash(data.id)
-                }
+                trash: {
+                    handler: ({ data }) => handleClickTrash(data.id),
+                },
             };
         });
-        return { handleClickTrash, confirmTrash, handleConfirmTrash, fields, actions };
+        return {
+            handleClickTrash,
+            confirmTrash,
+            handleConfirmTrash,
+            fields,
+            actions,
+        };
     },
 });
 </script>
-

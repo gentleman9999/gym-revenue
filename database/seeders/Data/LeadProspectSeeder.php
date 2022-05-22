@@ -52,9 +52,9 @@ class LeadProspectSeeder extends Seeder
 
                             // For each fake user, run them through the EnduserActivityAggregate
                             $prospect_data = $prospect->toArray();
-                            $date_range = mt_rand(1262055681,1262215681);
+                            $date_range = mt_rand(1262055681, 1262215681);
                             //generate details
-                            $prospect_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0,2)];
+                            $prospect_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0, 2)];
                             $prospect_data['dob'] = date("Y-m-d H:i:s", $date_range);
                             $lead = CreateLead::run($prospect_data);
                             $aggy = EndUserActivityAggregate::retrieve($lead->id);
@@ -82,7 +82,6 @@ class LeadProspectSeeder extends Seeder
                                 LeadDetails::factory()->count(random_int(0, 20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();
                             }
                         }
-
                     }
                 }
             }

@@ -9,15 +9,14 @@ class HomeDashboardService
 {
     public function __construct()
     {
-
     }
 
-    public function getDashboardWidgets() : array
+    public function getDashboardWidgets(): array
     {
         return GetDashboardWidgets::run();
     }
 
-    public function getAppStateAnnouncements() : array
+    public function getAppStateAnnouncements(): array
     {
         $results = [];
 
@@ -29,7 +28,7 @@ class HomeDashboardService
 
         // Calculates the difference between DateTime objects
         $interval = date_diff($datetime1, $datetime2);
-        if(intVal($interval->format('%R%a')) <= 25) {
+        if (intVal($interval->format('%R%a')) <= 25) {
             $misc = $log->misc;
             $misc['type'] = 'deployment-announcement';
             $results = [$misc];

@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Classification extends Model
 {
-    use HasFactory, SoftDeletes, Uuid, Sortable;
+    use HasFactory;
+    use SoftDeletes;
+    use Uuid;
+    use Sortable;
 
     protected $keyType = 'string';
 
@@ -19,7 +22,7 @@ class Classification extends Model
     protected $fillable = ['id', 'client_id', 'title', 'active', 'misc'];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 
     public function scopeFilter($query, array $filters)

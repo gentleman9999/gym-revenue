@@ -2,9 +2,7 @@
     <app-layout title="Calendar Event Types">
         <template #header>
             <jet-bar-icon type="g0back" fill />
-            <h2 class="font-semibold text-xl leading-tight">
-                Edit Event Type
-            </h2>
+            <h2 class="font-semibold text-xl leading-tight">Edit Event Type</h2>
         </template>
 
         <div>
@@ -43,7 +41,7 @@ export default defineComponent({
         calendarEventType: {
             type: Object,
             required: true,
-        }
+        },
     },
 });
 </script>

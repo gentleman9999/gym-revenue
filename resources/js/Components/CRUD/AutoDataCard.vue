@@ -26,22 +26,31 @@
                 />
             </slot>
         </template>
-        <div v-for="(field, index) in customizedFields" class="col-span-3 truncate">
+        <div
+            v-for="(field, index) in customizedFields"
+            class="col-span-3 truncate"
+        >
             <div class="text-xs text-gray-500">
                 {{ field.label }}
             </div>
-            <render-field :field="field" :data="data" :base-route="baseRoute" :model-name="modelName" :model-key="modelKey"/>
+            <render-field
+                :field="field"
+                :data="data"
+                :base-route="baseRoute"
+                :model-name="modelName"
+                :model-key="modelKey"
+            />
         </div>
     </data-card>
 </template>
 
 <script>
-import {defineComponent, computed} from "vue";
+import { defineComponent, computed } from "vue";
 import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
 import RenderField from "./RenderField";
-import {getFields} from "./helpers/getFields";
-import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
+import { getFields } from "./helpers/getFields";
+import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
     inheritAttrs: false,
@@ -72,11 +81,11 @@ export default defineComponent({
         },
         modelName: {
             type: String,
-            default: 'Record'
+            default: "Record",
         },
         modelKey: {
             type: String,
-            required: true
+            required: true,
         },
         modelNamePlural: {
             type: String,
@@ -89,8 +98,8 @@ export default defineComponent({
             default: {},
         },
         hasPreviewComponent: {
-            type: Boolean
-        }
+            type: Boolean,
+        },
     },
     setup(props) {
         let __title;
@@ -108,7 +117,7 @@ export default defineComponent({
             titleKey = props.data.name ? "name" : "id";
         }
 
-        return {fields, title: __title, customizedFields};
+        return { fields, title: __title, customizedFields };
     },
 });
 </script>

@@ -15,11 +15,10 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CalendarAttendeeProjector extends Projector
 {
-
     public function onCalendarAttendeeAdded(CalendarAttendeeAdded $event)
     {
         CalendarAttendee::create($event->data);
-        if($event->data['entity_type'] == User::class) {
+        if ($event->data['entity_type'] == User::class) {
             CreateReminder::run([
                 'entity_type' => CalendarEvent::class,
                 'entity_id' => $event->data['calendar_event_id'],
@@ -33,25 +32,22 @@ class CalendarAttendeeProjector extends Projector
     public function onCalendarAttendeeDeleted(CalendarAttendeeDeleted $event)
     {
         CalendarAttendee::whereEntityType($event->data['entity_type'])->whereEntityId($event->data['entity_id'])->forceDelete();
-        if($event->data['entity_type'] == User::class) {
+        if ($event->data['entity_type'] == User::class) {
             DeleteReminderWithoutID::run([
                 'entity_type' => CalendarEvent::class,
                 'user_id' => $event->data['entity_id'],
-                'entity_id' => $event->data['event_id']
+                'entity_id' => $event->data['event_id'],
             ]);
         }
     }
 
     public function onCalendarInviteAccepted(CalendarInviteAccepted $event)
     {
-        CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(array('invitation_status' => 'Accepted'));
+        CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(['invitation_status' => 'Accepted']);
     }
 
     public function onCalendarInviteDeclined(CalendarInviteDeclined $event)
     {
-        CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(array('invitation_status' => 'Declined'));
+        CalendarAttendee::whereId($event->data['attendeeData']['id'])->update(['invitation_status' => 'Declined']);
     }
-
-
 }
-

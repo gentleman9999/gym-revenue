@@ -6,8 +6,7 @@ class Uuid
 {
     private function __construct(
         private string $uuid,
-    )
-    {
+    ) {
     }
 
     public static function make(string $uuid): self

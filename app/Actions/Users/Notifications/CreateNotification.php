@@ -11,13 +11,11 @@ use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-
 class CreateNotification
 {
     use AsAction;
 
     public string $commandSignature = 'notifications:create {user_id} {text}';
-
 
     /**
      * Get the validation rules that apply to the action.
@@ -56,12 +54,12 @@ class CreateNotification
     //command for ez development testing
     public function asCommand(Command $command): void
     {
-        $this->handle([
-            'text' => $command->argument('text')
+        $this->handle(
+            [
+            'text' => $command->argument('text'),
         ],
             User::findOrFail($command->argument('user_id'))
         );
         $command->info('Notification Created');
     }
-
 }

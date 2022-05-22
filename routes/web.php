@@ -44,7 +44,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::put('/{id}', \App\Actions\Clients\Locations\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
     Route::delete('/{id}', \App\Actions\Clients\Locations\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
     Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
-
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -180,7 +179,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
     Route::post('/{id}/documents', \App\Actions\Jetstream\UploadDocForUser::class . '@upload')->name('users.documents.create')->where(['id' => '[0-9]+']);
     Route::get('/export', \App\Http\Controllers\UsersController::class . '@export')->name('users.export');
-
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
@@ -224,14 +222,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->grou
     Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('classifications.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('classifications.restore');
     Route::get('/export', \App\Http\Controllers\ClassificationsController::class . '@export')->name('classifications.export');
-
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {
     Route::get('/', \App\Http\Controllers\TaskController::class . '@index')->name('tasks');
     Route::delete('/{id}', \App\Actions\Clients\Calendar\DeleteCalendarEvent::class)->name('tasks.delete');
-
-
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
@@ -267,4 +262,3 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reports')->group(functi
 Route::prefix('s')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
 });
-

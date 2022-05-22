@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AudienceMember extends Model
 {
-    use hasFactory, SoftDeletes, Uuid;
+    use hasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -18,10 +20,10 @@ class AudienceMember extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'client_id', 'audience_id', 'entity_id', 'entity_type', 'subscribed', 'misc', 'dnc'
+        'client_id', 'audience_id', 'entity_id', 'entity_type', 'subscribed', 'misc', 'dnc',
     ];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 }

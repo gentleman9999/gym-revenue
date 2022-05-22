@@ -1,5 +1,10 @@
 <template>
-    <dashboard-widget-modal title="KPI" v-bind="$attrs" ref="modal" page-route="Kpi">
+    <dashboard-widget-modal
+        title="KPI"
+        v-bind="$attrs"
+        ref="modal"
+        page-route="Kpi"
+    >
     </dashboard-widget-modal>
 </template>
 <script>

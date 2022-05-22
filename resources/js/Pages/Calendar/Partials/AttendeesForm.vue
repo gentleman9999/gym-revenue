@@ -1,32 +1,38 @@
 <template>
     <form @submit="handleSubmit" class="w-full grid grid-cols-6 gap-4">
-
         <div class="col-span-6" v-if="form.attendees?.length">
             <jet-label for="attendees" value="Client Attendees" />
             <table class="table table-compact w-full">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>Attendee</th>
-                    <th>Data</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>Attendee</th>
+                        <th>Data</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="attendee in form.attendees"
-                        :key="attendee.id"
-                    >
+                    <tr v-for="attendee in form.attendees" :key="attendee.id">
                         <th v-if="attendee.entity_type == 'App\\Models\\User'">
-                            <img class="object-cover w-6 h-6 rounded-full" :src="attendee.entity_data.profile_photo_url"
-                                     :alt="attendee.entity_data.name">
+                            <img
+                                class="object-cover w-6 h-6 rounded-full"
+                                :src="attendee.entity_data.profile_photo_url"
+                                :alt="attendee.entity_data.name"
+                            />
                         </th>
-                        <th v-else>
+                        <th v-else></th>
 
-                        </th>
-
-                        <td v-if="attendee.entity_type == 'App\\Models\\Endusers\\Lead'">
+                        <td
+                            v-if="
+                                attendee.entity_type ==
+                                'App\\Models\\Endusers\\Lead'
+                            "
+                        >
                             <div class="flex items-center space-x-3">
                                 <div>
-                                    <div class="font-bold">{{ attendee.entity_data.first_name }} {{attendee.entity_data.last_name}}</div>
+                                    <div class="font-bold">
+                                        {{ attendee.entity_data.first_name }}
+                                        {{ attendee.entity_data.last_name }}
+                                    </div>
                                     <div class="text-sm opacity-50">Lead</div>
                                 </div>
                             </div>
@@ -34,15 +40,23 @@
                         <td v-else>
                             <div class="flex items-center space-x-3">
                                 <div>
-                                    <div class="font-bold">{{ attendee.entity_data.name }}</div>
-                                    <div class="text-sm opacity-50">Client User</div>
+                                    <div class="font-bold">
+                                        {{ attendee.entity_data.name }}
+                                    </div>
+                                    <div class="text-sm opacity-50">
+                                        Client User
+                                    </div>
                                 </div>
                             </div>
                         </td>
 
                         <td>
-                            <div class="text-xs">{{ attendee.entity_data.email }}</div>
-                            <span class="badge badge-ghost badge-sm">{{ attendee.invitation_status }}</span>
+                            <div class="text-xs">
+                                {{ attendee.entity_data.email }}
+                            </div>
+                            <span class="badge badge-ghost badge-sm">{{
+                                attendee.invitation_status
+                            }}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -50,9 +64,6 @@
         </div>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
-
-
-
     </form>
 </template>
 <style>
@@ -96,8 +107,7 @@ export default {
         let calendarEvent = props.calendar_event;
 
         const form = useForm(calendarEvent);
-        watchEffect(() => {
-        });
+        watchEffect(() => {});
         return {
             form,
         };

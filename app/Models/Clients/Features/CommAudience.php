@@ -2,17 +2,17 @@
 
 namespace App\Models\Clients\Features;
 
-use App\Models\Clients\ClientDetail;
 use App\Models\Endusers\AudienceMember;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class CommAudience extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -21,7 +21,7 @@ class CommAudience extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'name','slug', 'active', 'client_id', 'team_id', 'created_by_user_id'
+        'name','slug', 'active', 'client_id', 'team_id', 'created_by_user_id',
     ];
 
     public function details()

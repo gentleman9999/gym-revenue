@@ -27,7 +27,7 @@ class UpdateCalendarEvent
     public function rules()
     {
         return [
-            'title' =>['required', 'string','max:50'],
+            'title' => ['required', 'string','max:50'],
             'description' => ['string', 'nullable'],
             'full_day_event' => ['required', 'boolean'],
             'start' => ['required'],
@@ -36,7 +36,7 @@ class UpdateCalendarEvent
             'client_id' => ['required', 'exists:clients,id'],
             'user_attendees' => ['sometimes', 'array'],
             'lead_attendees' => ['sometimes', 'array'],
-            'my_reminder' => ['sometimes', 'int']
+            'my_reminder' => ['sometimes', 'int'],
         ];
     }
 
@@ -45,7 +45,7 @@ class UpdateCalendarEvent
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
 
-        if(array_key_exists('my_reminder', $data)) {
+        if (array_key_exists('my_reminder', $data)) {
             $reminderData = Reminder::whereEntityType(CalendarEvent::class)
                 ->whereEntityId($data['id'])
                 ->whereUserId($user->id)
@@ -56,18 +56,16 @@ class UpdateCalendarEvent
         $userAttendeeIDs = [];
         $leadAttendeeIDs = [];
         $currentAttendees = CalendarAttendee::whereCalendarEventId($data['id'])->get()->toArray();
-        foreach($currentAttendees as $item) {
-            if($item['entity_type'] == User::class)
-            {
+        foreach ($currentAttendees as $item) {
+            if ($item['entity_type'] == User::class) {
                 $userAttendeeIDs[] = $item['entity_id'];
             }
-            if($item['entity_type'] == Lead::class)
-            {
+            if ($item['entity_type'] == Lead::class) {
                 $leadAttendeeIDs[] = $item['entity_id'];
             }
         }
 
-        if(CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task') {
+        if (CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task') {
             //Whoever updated this to a task owns it.
             $data['owner_id'] = $user->id;
 
@@ -84,9 +82,8 @@ class UpdateCalendarEvent
                     ->persist();
             }
         } else {
-
-            if(array_key_exists('user_attendees', $data)) {
-                if (!empty($data['user_attendees']) || !empty($userAttendeeIDs)) {
+            if (array_key_exists('user_attendees', $data)) {
+                if (! empty($data['user_attendees']) || ! empty($userAttendeeIDs)) {
                     $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
                     //Delete Users
                     $delete = array_merge(array_diff($data['user_attendees'], $userAttendeeIDs), array_diff($userAttendeeIDs, $data['user_attendees']));
@@ -97,26 +94,28 @@ class UpdateCalendarEvent
                     }
                     //Add Users
                     foreach ($data['user_attendees'] as $user) {
-                        if (!in_array($user, $userAttendeeIDs)) {
+                        if (! in_array($user, $userAttendeeIDs)) {
                             $user = User::whereId($user)->select('id', 'name', 'email')->first();
                             if ($user) {
                                 CalendarAggregate::retrieve($data['client_id'])
-                                    ->addCalendarAttendee($user->id ?? "Auto Generated",
+                                    ->addCalendarAttendee(
+                                        $user->id ?? "Auto Generated",
                                         [
                                             'entity_type' => User::class,
                                             'entity_id' => $user->id,
                                             'entity_data' => $user,
                                             'calendar_event_id' => $data['id'],
-                                            'invitation_status' => 'Invitation Pending'
-                                        ])->persist();
+                                            'invitation_status' => 'Invitation Pending',
+                                        ]
+                                    )->persist();
                             }
                         }
                     }
                 }
             }
 
-            if(array_key_exists('lead_attendees', $data)) {
-                if (!empty($data['lead_attendees']) || !empty($leadAttendeeIDs)) {
+            if (array_key_exists('lead_attendees', $data)) {
+                if (! empty($data['lead_attendees']) || ! empty($leadAttendeeIDs)) {
                     //This will dupe check and then re-index the array.
                     $data['lead_attendees'] = array_values(array_unique($data['lead_attendees']));
                     //Delete Users
@@ -128,18 +127,20 @@ class UpdateCalendarEvent
                     }
                     //Add Users
                     foreach ($data['lead_attendees'] as $lead) {
-                        if (!in_array($lead, $leadAttendeeIDs)) {
+                        if (! in_array($lead, $leadAttendeeIDs)) {
                             $lead = Lead::whereId($lead)->select('id', 'first_name', 'last_name', 'email')->first();
                             if ($lead) {
                                 CalendarAggregate::retrieve($data['client_id'])
-                                    ->addCalendarAttendee($user->id ?? "Auto Generated",
+                                    ->addCalendarAttendee(
+                                        $user->id ?? "Auto Generated",
                                         [
                                             'entity_type' => Lead::class,
                                             'entity_id' => $lead->id,
                                             'entity_data' => $lead,
                                             'calendar_event_id' => $data['id'],
-                                            'invitation_status' => 'Invitation Pending'
-                                        ])->persist();
+                                            'invitation_status' => 'Invitation Pending',
+                                        ]
+                                    )->persist();
                             }
                         }
                     }
@@ -150,7 +151,7 @@ class UpdateCalendarEvent
 
 
         CalendarAggregate::retrieve($data['client_id'])
-            ->updateCalendarEvent($user->id ?? "Auto Generated" , $data)
+            ->updateCalendarEvent($user->id ?? "Auto Generated", $data)
             ->persist();
 
         return CalendarEvent::find($data['id']);
@@ -159,6 +160,7 @@ class UpdateCalendarEvent
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.update', CalendarEvent::class);
     }
 
@@ -175,5 +177,4 @@ class UpdateCalendarEvent
 
         return Redirect::back();
     }
-
 }

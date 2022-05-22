@@ -1,7 +1,10 @@
 <template>
     <app-layout>
         <template #header>
-            <dashboard-header :team-name="teamName" :account-name="accountName"/>
+            <dashboard-header
+                :team-name="teamName"
+                :account-name="accountName"
+            />
         </template>
 
         <jet-bar-container>
@@ -16,12 +19,15 @@
                         <div class="card-body">
                             <h2 class="card-title">Latest Claimable Leads</h2>
                             <div class="divider mt-0"></div>
-                            <p class="text-center">Select a Club that you'd like to Access.</p>
-                            <div id="teamSelectTable" class="h-80 overflow-auto mt-6">
+                            <p class="text-center">
+                                Select a Club that you'd like to Access.
+                            </p>
+                            <div
+                                id="teamSelectTable"
+                                class="h-80 overflow-auto mt-6"
+                            >
                                 <table class="table-compact">
-                                    <tbody>
-
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
@@ -31,33 +37,32 @@
                         <div class="card-body">
                             <h2 class="card-title">ToDo List</h2>
                             <div class="divider mt-0"></div>
-                            <div class="alert alert-info xl:grid-cols-4  flex flex-col">
-                                <div class="flex flex-row">
-
-                                </div>
-                                <div id="announcementsTable" class="h-80 overflow-auto">
-
-                                </div>
+                            <div
+                                class="alert alert-info xl:grid-cols-4 flex flex-col"
+                            >
+                                <div class="flex flex-row"></div>
+                                <div
+                                    id="announcementsTable"
+                                    class="h-80 overflow-auto"
+                                ></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </jet-bar-container>
-
     </app-layout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
+import AppLayout from "@/Layouts/AppLayout";
 import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
 import AnnounceModal from "@/Components/SweetModal3/SweetModal";
-import {Inertia} from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBars, faCog, faFileUpload } from "@fortawesome/pro-solid-svg-icons";
 import {
@@ -68,7 +73,7 @@ import {
     faPaste,
     faSatelliteDish,
     faUsers,
-    faUser
+    faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats";
@@ -99,52 +104,52 @@ export default {
         AnnounceModal,
         FontAwesomeIcon,
         DashboardStats,
-        DashboardHeader
+        DashboardHeader,
     },
     props: [
-        'teamName',
-        'teams',
-        'clients',
-        'accountName',
-        'widgets',
-        'announcements'
+        "teamName",
+        "teams",
+        "clients",
+        "accountName",
+        "widgets",
+        "announcements",
     ],
     watch: {
         announcementModal(flag) {
-            if(flag) {
+            if (flag) {
                 this.$refs.anModal.open();
-            }
-            else {
+            } else {
                 this.$refs.anModal.close();
             }
-        }
+        },
     },
     data() {
         return {
             showAnnouncement: false,
-            announcementModal: false
-        }
+            announcementModal: false,
+        };
     },
     methods: {
         switchToTeam(teamId) {
-            Inertia.put(route('current-team.update'), {
-                'team_id': teamId
-            }, {
-                preserveState: false
-            })
-        }
+            Inertia.put(
+                route("current-team.update"),
+                {
+                    team_id: teamId,
+                },
+                {
+                    preserveState: false,
+                }
+            );
+        },
     },
-    computed: {
-    },
+    computed: {},
     mounted() {
         if (this.announcements.length > 0) {
             this.showAnnouncement = true;
         }
-        console.log('GymRevenue Dashboard');
-    }
-}
+        console.log("GymRevenue Dashboard");
+    },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

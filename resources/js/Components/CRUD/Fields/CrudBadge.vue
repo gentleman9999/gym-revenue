@@ -1,45 +1,47 @@
 <template>
     <div class="badge" :class="class">
-        {{text}}
+        {{ text }}
     </div>
 </template>
 <script>
-import {defineComponent} from 'vue';
+import { defineComponent } from "vue";
 export default defineComponent({
     inheritAttrs: false,
-    props:{
-        value:{
+    props: {
+        value: {
             type: Boolean,
-            required: true
+            required: true,
         },
-        truthy:{
+        truthy: {
             type: String,
-            default: 'true'
+            default: "true",
         },
-        falsy:{
+        falsy: {
             type: String,
-            default: 'false'
+            default: "false",
         },
-        test:{
+        test: {
             type: Function,
         },
         getProps: {
-            type: Function
+            type: Function,
         },
-        data:{
-            type: Object
+        data: {
+            type: Object,
         },
     },
-    setup(props){
-        let renderProps = {}
-        let getProps = ({data, value})=>{
-            return !!value? {text: 'True', class: 'badge-success'} : {text: 'False', class: 'badge-warning'}
+    setup(props) {
+        let renderProps = {};
+        let getProps = ({ data, value }) => {
+            return !!value
+                ? { text: "True", class: "badge-success" }
+                : { text: "False", class: "badge-warning" };
+        };
+        if (props.getProps) {
+            getProps = props.getProps;
         }
-        if(props.getProps){
-            getProps = props.getProps
-        }
-            renderProps = getProps({data:props.data, value: props.value});
-        return { ... renderProps};
-    }
+        renderProps = getProps({ data: props.data, value: props.value });
+        return { ...renderProps };
+    },
 });
 </script>

@@ -2,14 +2,13 @@
 
 namespace App\Actions\Clients\Classifications;
 
-use App\Models\Clients\Classification;
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Classification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-
 
 class DeleteClassification
 {
@@ -36,6 +35,7 @@ class DeleteClassification
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('classifications.delete', Classification::class);
     }
 
@@ -50,6 +50,5 @@ class DeleteClassification
         Alert::success("Classification '{$Classification->title}' was deleted")->flash();
 
         return Redirect::route('classifications');
-
     }
 }

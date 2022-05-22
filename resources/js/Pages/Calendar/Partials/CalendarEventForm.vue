@@ -10,13 +10,15 @@
 
         <div class="col-span-6" v-if="calendar_event?.owner_id">
             <div class="avatar">
-                <div class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <div
+                    class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+                >
                     <img :src="calendar_event?.event_owner.profile_photo_url" />
                 </div>
             </div>
             <div>
                 <h1>
-                    {{calendar_event?.event_owner.name}}
+                    {{ calendar_event?.event_owner.name }}
                 </h1>
             </div>
         </div>
@@ -58,8 +60,12 @@
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
         <div class="col-span-3">
-            <jet-label for="start" value="Due Date" v-if="calendar_event?.type.type == 'Task'"/>
-            <jet-label for="start" value="Start" v-else/>
+            <jet-label
+                for="start"
+                value="Due Date"
+                v-if="calendar_event?.type.type == 'Task'"
+            />
+            <jet-label for="start" value="Start" v-else />
             <date-picker
                 required
                 dark
@@ -75,42 +81,42 @@
         </div>
 
         <template v-if="calendar_event?.type.type !== 'Task'">
-        <div class="col-span-3">
-            <jet-label for="end" value="End" />
-            <date-picker
-                required
-                dark
-                id="end"
-                v-model="form.end"
-                :enable-time-picker="!form.full_day_event"
-                :format="dateFormat"
-                :month-change-on-scroll="false"
-                :auto-apply="true"
-                :close-on-scroll="true"
-                :disabled="calendar_event?.type.type === 'Task'"
-            />
-            <jet-input-error :message="form.errors.end" class="mt-2" />
-        </div>
+            <div class="col-span-3">
+                <jet-label for="end" value="End" />
+                <date-picker
+                    required
+                    dark
+                    id="end"
+                    v-model="form.end"
+                    :enable-time-picker="!form.full_day_event"
+                    :format="dateFormat"
+                    :month-change-on-scroll="false"
+                    :auto-apply="true"
+                    :close-on-scroll="true"
+                    :disabled="calendar_event?.type.type === 'Task'"
+                />
+                <jet-input-error :message="form.errors.end" class="mt-2" />
+            </div>
 
-        <div class="col-span-3">
-            <jet-label for="user_attendees" value="Select User Attendees" />
-            <multiselect
-                v-model="form.user_attendees"
-                class="py-2"
-                id="user_attendees"
-                mode="tags"
-                :close-on-select="false"
-                :create-option="true"
-                :options="
-                         this.$page.props.client_users.map((user) => ({
+            <div class="col-span-3">
+                <jet-label for="user_attendees" value="Select User Attendees" />
+                <multiselect
+                    v-model="form.user_attendees"
+                    class="py-2"
+                    id="user_attendees"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        this.$page.props.client_users.map((user) => ({
                             label: user.name,
                             value: user.id,
                         }))
                     "
-                :classes="multiselectClasses"
-                :disabled="calendar_event?.type.type === 'Task'"
-            />
-        </div>
+                    :classes="multiselectClasses"
+                    :disabled="calendar_event?.type.type === 'Task'"
+                />
+            </div>
         </template>
 
         <div class="col-span-3">
@@ -123,11 +129,11 @@
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                         this.$page.props.lead_users.map((user) => ({
-                            label: user.first_name+' '+user.last_name,
-                            value: user.id,
-                        }))
-                    "
+                    this.$page.props.lead_users.map((user) => ({
+                        label: user.first_name + ' ' + user.last_name,
+                        value: user.id,
+                    }))
+                "
                 :classes="multiselectClasses"
                 :disabled="calendar_event?.type.type === 'Task'"
             />
@@ -135,53 +141,88 @@
 
         <div class="col-span-3" v-if="calendar_event?.attendees?.length">
             <jet-label for="attendeesModal" value="View All Attendees" />
-            <button @click.prevent="showAttendeesModal.open" class="btn btn-sm btn-info hover:text-white">
+            <button
+                @click.prevent="showAttendeesModal.open"
+                class="btn btn-sm btn-info hover:text-white"
+            >
                 Open List
             </button>
         </div>
 
-
-        <div class="col-span-3 space-x-2" >
+        <div class="col-span-3 space-x-2">
             <jet-label for="attendeesModal" value="Event File Attachments" />
-            <button @click.prevent="handleClickUpload" class="btn btn-sm btn-info hover:text-white">
+            <button
+                @click.prevent="handleClickUpload"
+                class="btn btn-sm btn-info hover:text-white"
+            >
                 Upload
             </button>
-            <button @click.prevent="showFilesModal.open" class="btn btn-sm btn-info hover:text-white">
+            <button
+                @click.prevent="showFilesModal.open"
+                class="btn btn-sm btn-info hover:text-white"
+            >
                 View
             </button>
         </div>
 
         <template v-if="calendar_event?.im_attending">
             <div class="col-span-6 space-x-2">
-                <div class="divider divider-horizontal">My Meeting Settings</div>
+                <div class="divider divider-horizontal">
+                    My Meeting Settings
+                </div>
             </div>
 
-            <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
-                <jet-label for="my_reminder" value="Minutes Before Event to Notify Me" />
+            <div
+                class="col-span-2 space-x-2"
+                v-if="calendar_event?.my_reminder"
+            >
+                <jet-label
+                    for="my_reminder"
+                    value="Minutes Before Event to Notify Me"
+                />
                 <input
                     id="my_reminder"
                     type="text"
                     class=""
                     v-model="form.my_reminder"
                 />
-                <jet-input-error :message="form.errors.my_reminder" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.my_reminder"
+                    class="mt-2"
+                />
             </div>
 
-            <div class="col-span-2 space-x-2" v-if="calendar_event?.my_reminder">
+            <div
+                class="col-span-2 space-x-2"
+                v-if="calendar_event?.my_reminder"
+            >
                 <jet-label for="reminder_option" value="Delete Reminder" />
-                <button @click.prevent="handleReminderDelete(calendar_event.my_reminder.id)" class="btn btn-sm btn-info hover:text-white">
+                <button
+                    @click.prevent="
+                        handleReminderDelete(calendar_event.my_reminder.id)
+                    "
+                    class="btn btn-sm btn-info hover:text-white"
+                >
                     Delete
                 </button>
-                <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.reminder_option"
+                    class="mt-2"
+                />
             </div>
             <div class="col-span-2 space-x-2" v-else>
                 <jet-label for="reminder_option" value="Create Reminder" />
-                <button @click.prevent="handleReminderCreate(calendar_event.id)" class="btn btn-sm btn-info hover:text-white">
+                <button
+                    @click.prevent="handleReminderCreate(calendar_event.id)"
+                    class="btn btn-sm btn-info hover:text-white"
+                >
                     Create
                 </button>
-                <jet-input-error :message="form.errors.reminder_option" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.reminder_option"
+                    class="mt-2"
+                />
             </div>
-
         </template>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
@@ -200,12 +241,7 @@
             </Button>
         </div>
 
-
-        <daisy-modal
-            ref="showAttendeesModal"
-            id="showAttendeesModal"
-            @close=""
-        >
+        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal" @close="">
             <h1 class="font-bold mb-4">Attendees</h1>
             <attendees-form
                 @submitted="closeModals"
@@ -214,11 +250,7 @@
             />
         </daisy-modal>
 
-        <daisy-modal
-            ref="showFilesModal"
-            id="showFilesModal"
-            @close=""
-        >
+        <daisy-modal ref="showFilesModal" id="showFilesModal" @close="">
             <h1 class="font-bold mb-4">File Attachments</h1>
             <files-form
                 @submitted="closeModals"
@@ -227,10 +259,17 @@
             />
         </daisy-modal>
 
-        <daisy-modal ref="uploadFiles" id="uploadFiles" class="lg:max-w-5xl bg-base-300">
-            <file-manager @submitted="closeModals" :client_id="$page.props.client_id" :entity_id="calendar_event?.id"/>
+        <daisy-modal
+            ref="uploadFiles"
+            id="uploadFiles"
+            class="lg:max-w-5xl bg-base-300"
+        >
+            <file-manager
+                @submitted="closeModals"
+                :client_id="$page.props.client_id"
+                :entity_id="calendar_event?.id"
+            />
         </daisy-modal>
-
     </form>
 </template>
 <style>
@@ -261,9 +300,9 @@ import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
 import FilesForm from "@/Pages/Calendar/Partials/FilesForm";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 import FileManager from "./FileManager";
-import {Inertia} from '@inertiajs/inertia';
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
@@ -285,11 +324,11 @@ export default {
 
         const handleReminderDelete = (id) => {
             Inertia.delete(route("calendar.reminder.delete", id));
-            emit('submitted');
+            emit("submitted");
         };
         const handleReminderCreate = (id) => {
             Inertia.put(route("calendar.reminder.create", id));
-            emit('submitted');
+            emit("submitted");
         };
 
         const calendar_event = props.calendar_event;
@@ -306,7 +345,6 @@ export default {
         const closeModals = () => {
             showAttendeesModal.value.close();
         };
-
 
         const uploadFiles = ref();
         const handleClickUpload = () => {
@@ -329,7 +367,7 @@ export default {
                 my_reminder: null,
             };
             operation = "Create";
-        }else{
+        } else {
             calendarEventForm = {
                 title: calendarEvent.title,
                 description: calendarEvent.description,
@@ -338,32 +376,38 @@ export default {
                 end: calendarEvent.end,
                 event_type_id: calendarEvent.event_type_id,
                 client_id: page.props.value.user?.current_client_id,
-                user_attendees: calendarEvent.user_attendees?.map(user_attendee=>user_attendee.id) || [],
-                lead_attendees: calendarEvent.lead_attendees?.map(lead_attendee=>lead_attendee.id) || [],
+                user_attendees:
+                    calendarEvent.user_attendees?.map(
+                        (user_attendee) => user_attendee.id
+                    ) || [],
+                lead_attendees:
+                    calendarEvent.lead_attendees?.map(
+                        (lead_attendee) => lead_attendee.id
+                    ) || [],
                 my_reminder: calendar_event?.my_reminder?.remind_time,
-            }
+            };
         }
 
         const form = useForm(calendarEventForm);
 
         watchEffect(() => {
-            if( form.end){
+            if (form.end) {
                 return;
             }
             let start = form.start;
 
             let end = form.end;
             let tempEnd = false;
-            if(typeof start ==='string'){
+            if (typeof start === "string") {
                 start = new Date(Date.parse(start));
             }
 
             if (form.end) {
-                if(typeof end === 'string'){
+                if (typeof end === "string") {
                     end = new Date(Date.parse(form.end));
-                    console.log({end});
+                    console.log({ end });
                 }
-                console.log({end: form.end, type: typeof end})
+                console.log({ end: form.end, type: typeof end });
                 tempEnd = new Date(form.end).setHours(end.getHours() + 1);
             }
 
@@ -394,7 +438,7 @@ export default {
                     preserveScroll: true,
                     onSuccess: () => {
                         form.reset();
-                        emit("submitted")
+                        emit("submitted");
                     },
                 });
 
@@ -410,13 +454,13 @@ export default {
                         preserveScroll: true,
                         onSuccess: () => {
                             form.reset();
-                            emit("submitted")
+                            emit("submitted");
                         },
                     });
         }
 
         const dateFormat = computed(() =>
-            form.full_day_event ?   "MM/dd/yyyy" : "MM/dd/yyyy hh:mm"
+            form.full_day_event ? "MM/dd/yyyy" : "MM/dd/yyyy hh:mm"
         );
 
         return {
@@ -435,7 +479,7 @@ export default {
             handleClickUpload,
             handleReminderDelete,
             handleReminderCreate,
-            multiselectClasses: getDefaultMultiselectTWClasses()
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 };

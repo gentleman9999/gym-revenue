@@ -10,30 +10,30 @@ export default {
     props: {
         text: {
             type: String,
-            required: true
+            required: true,
         },
         type: {
             type: String,
-            default: 'info',
+            default: "info",
             validator: (value) => {
-                return ['info', 'success', 'warning', 'danger'].includes(value);
-            }
-        }
+                return ["info", "success", "warning", "danger"].includes(value);
+            },
+        },
     },
     computed: {
-        badgeColors(){
+        badgeColors() {
             const colors = {
-                "primary":"badge-primary",
-                "secondary":"badge-secondary",
-                "accent":"badge-accent",
-                "info":"badge-info",
-                "success": "badge-success",
-                "warning":"badge-warning",
-                "danger":"badge-error",
-                "error":"badge-error"
-            }
+                primary: "badge-primary",
+                secondary: "badge-secondary",
+                accent: "badge-accent",
+                info: "badge-info",
+                success: "badge-success",
+                warning: "badge-warning",
+                danger: "badge-error",
+                error: "badge-error",
+            };
             return colors[this.type];
-        }
-    }
-}
+        },
+    },
+};
 </script>

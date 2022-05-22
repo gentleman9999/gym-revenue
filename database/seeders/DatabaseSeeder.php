@@ -5,11 +5,11 @@ namespace Database\Seeders;
 use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
 use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
+use Database\Seeders\Clients\ClassificationsSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Clients\ClassificationsSeeder;
 use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
@@ -27,7 +27,6 @@ use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
-use Database\Seeders\Users\ClientUserSeeder;
 use Database\Seeders\Users\NewClientSeeder;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -150,10 +149,9 @@ class DatabaseSeeder extends Seeder
         $this->call(CalendarEventTypeSeeder::class);
 
         // CalendarEvent Seeder
-        if(env('SEED_CALENDAR_EVENTS', false) === true){
+        if (env('SEED_CALENDAR_EVENTS', false) === true) {
             VarDumper::dump('Running Calender Event Seeder');
             $this->call(CalendarSeeder::class);
         }
-
     }
 }

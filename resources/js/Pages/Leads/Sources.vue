@@ -5,7 +5,7 @@
             <h2 class="font-semibold text-xl leading-tight">Lead Sources</h2>
         </template>
         -->
-        <page-toolbar-nav title="Lead Sources" :links="navLinks"/>
+        <page-toolbar-nav title="Lead Sources" :links="navLinks" />
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="max-w-md space-y-2">
@@ -75,7 +75,7 @@ export default defineComponent({
         JetSectionBorder,
         Button,
         FontAwesomeIcon,
-        PageToolbarNav
+        PageToolbarNav,
     },
     setup(props) {
         const comingSoon = () => {
@@ -113,52 +113,52 @@ export default defineComponent({
 
         const navLinks = [
             {
-                label: 'Dashboard',
-                href: '#',
+                label: "Dashboard",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Calendar',
-                href: '#',
+                label: "Calendar",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Leads',
-                href: '#',
+                label: "Leads",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Tasks',
-                href: '#',
+                label: "Tasks",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Contacts',
-                href: '#',
+                label: "Contacts",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Consultants',
-                href: '#',
+                label: "Consultants",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Lead Sources',
-                href: route('data.leads.sources'),
+                label: "Lead Sources",
+                href: route("data.leads.sources"),
                 onClick: null,
-                active: true
+                active: true,
             },
             {
-                label: 'Lead Statuses',
-                href: route('data.leads.statuses'),
+                label: "Lead Statuses",
+                href: route("data.leads.statuses"),
                 onClick: null,
-                active: false
+                active: false,
             },
         ];
 

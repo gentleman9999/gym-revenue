@@ -19,12 +19,15 @@
 
 <script>
 import SweetModal from "@/Components/SweetModal3/SweetModal";
-import {ref, watchEffect, onUnmounted} from "vue";
-import {usePage} from "@inertiajs/inertia-vue3";
-import {clearPreviewData, previewData} from "@/Components/CRUD/helpers/previewData";
+import { ref, watchEffect, onUnmounted } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
+import {
+    clearPreviewData,
+    previewData,
+} from "@/Components/CRUD/helpers/previewData";
 
 export default {
-    components: {SweetModal},
+    components: { SweetModal },
     props: {
         previewComponent: {
             required: true,
@@ -61,7 +64,7 @@ export default {
         onUnmounted(() => {
             clearPreviewData();
         });
-        return {close, modal, previewData};
+        return { close, modal, previewData };
     },
 };
 </script>

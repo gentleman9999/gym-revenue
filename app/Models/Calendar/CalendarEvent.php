@@ -17,7 +17,10 @@ use Illuminate\Notifications\Notifiable;
  */
 class CalendarEvent extends Model
 {
-    use Notifiable, SoftDeletes, Uuid, HasFactory;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
+    use HasFactory;
 
     protected $primaryKey = 'id';
 
@@ -26,7 +29,6 @@ class CalendarEvent extends Model
     public $incrementing = false;
 
     protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'owner_id'];
-
 
     public function client()
     {
@@ -40,7 +42,7 @@ class CalendarEvent extends Model
 
     public function attendees()
     {
-        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id' );
+        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id');
     }
 
     public function files()
@@ -51,10 +53,10 @@ class CalendarEvent extends Model
     public function fixDate($data): array
     {
         $fixedArray = [];
-        foreach ($data as $item)
-        {
+        foreach ($data as $item) {
             $fixedArray[] = substr(str_replace('T', ' ', $item), 0, 19);
         }
+
         return $fixedArray;
     }
 
@@ -72,6 +74,5 @@ class CalendarEvent extends Model
                 $query->where('attendees', 'like', '%"id": ' . $filters['viewUser'] . ',%');
             });
         });
-
     }
 }

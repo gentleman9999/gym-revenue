@@ -56,8 +56,8 @@ export default defineComponent({
         },
         securityGroups: {
             type: Array,
-            default: []
-        }
+            default: [],
+        },
     },
 });
 </script>

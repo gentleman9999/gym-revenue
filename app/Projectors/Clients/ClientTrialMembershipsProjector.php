@@ -3,7 +3,6 @@
 namespace App\Projectors\Clients;
 
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
-use App\StorableEvents\Clients\Activity\Campaigns\ClientServiceEnabled;
 use App\StorableEvents\Clients\ClientServices\TrialMembershipTypeCreated;
 use App\StorableEvents\Clients\ClientServices\TrialMembershipTypeUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;

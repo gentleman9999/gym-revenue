@@ -2,11 +2,10 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Models\Clients\Client;
 use App\Actions\Clients\Classifications\CreateClassification;
+use App\Models\Clients\Client;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
-
 
 class ClassificationsSeeder extends Seeder
 {
@@ -24,14 +23,12 @@ class ClassificationsSeeder extends Seeder
             'Fitness Trainer',
             'Personal Trainer',
             'Instructor',
-            'Sanitation'
+            'Sanitation',
         ];
 
-        foreach ($clients as $client)
-        {
+        foreach ($clients as $client) {
             VarDumper::dump('Dumping Classifications for '.$client->name);
-            foreach ($classifications as $classification)
-            {
+            foreach ($classifications as $classification) {
                 CreateClassification::run([
                     'client_id' => $client->id,
                     'title' => $classification,

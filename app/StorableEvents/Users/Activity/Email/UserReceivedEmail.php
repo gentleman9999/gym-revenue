@@ -6,7 +6,11 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserReceivedEmail extends ShouldBeStored
 {
-    public $user, $subject, $template, $response, $client;
+    public $user;
+    public $subject;
+    public $template;
+    public $response;
+    public $client;
 
     public function __construct($user, $subject, $template, $response, $client = null)
     {

@@ -4,11 +4,11 @@ namespace App\Actions\Mail;
 
 use Lorisleiva\Actions\Action;
 use Mailgun\Mailgun;
-use Twilio\Rest\Client as Twilio;
 
 class MailgunBatchSend extends Action
 {
     protected $getAttributesFromConstructor = ['recipients','markup'];
+
     /**
      * Determine if the user is authorized to make this action.
      *
@@ -44,11 +44,11 @@ class MailgunBatchSend extends Action
 
         $addresses = array_keys($recipients);
         $mg->messages()->send(env('MAILGUN_DOMAIN'), [
-            'from'    => env('MAIL_FROM_ADDRESS'),
-            'to'      => $addresses,
+            'from' => env('MAIL_FROM_ADDRESS'),
+            'to' => $addresses,
             'subject' => $subject,
-            'text'    => $markup,
-            'recipient-variables' => json_encode($recipients)
+            'text' => $markup,
+            'recipient-variables' => json_encode($recipients),
         ]);
     }
 }

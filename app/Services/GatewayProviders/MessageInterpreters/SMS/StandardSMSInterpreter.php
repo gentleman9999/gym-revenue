@@ -2,8 +2,8 @@
 
 namespace App\Services\GatewayProviders\MessageInterpreters\SMS;
 
-use Str;
 use App\Services\GatewayProviders\MessageInterpreters\MessageInterpreterService;
+use Str;
 
 class StandardSMSInterpreter extends MessageInterpreterService
 {
@@ -21,6 +21,7 @@ class StandardSMSInterpreter extends MessageInterpreterService
         '%phone%' => 'phone',
         '%jobTitle%' => 'job_title',
     ];
+
     public function __construct($user_id)
     {
         parent::__construct($user_id);
@@ -31,32 +32,23 @@ class StandardSMSInterpreter extends MessageInterpreterService
         $results = $msg;
         $wordsplosion = explode(' ', $msg);
         $new_msg = '';
-        foreach($wordsplosion as $idx => $word)
-        {
-            if(str_contains($word, '%'))
-            {
+        foreach ($wordsplosion as $idx => $word) {
+            if (str_contains($word, '%')) {
                 $token = Str::between($word, '%', '%');
                 $corrected_token = "%{$token}%";
-                if(array_key_exists($corrected_token, $this->token_library))
-                {
+                if (array_key_exists($corrected_token, $this->token_library)) {
                     $new_word = $this->getTranslatedValue($this->token_library[$corrected_token]);
                     $new_word = str_replace($corrected_token, $new_word, $word);
-                    $new_msg .=  ($idx > 0) ? " {$new_word}" : "{$new_word}";
+                    $new_msg .= ($idx > 0) ? " {$new_word}" : "{$new_word}";
+                } else {
+                    $new_msg .= ($idx > 0) ? " {$word}" : "{$word}";
                 }
-                else
-                {
-                    $new_msg .=  ($idx > 0) ? " {$word}" : "{$word}";
-                }
-
-            }
-            else
-            {
-                $new_msg .=  ($idx > 0) ? " {$word}" : "{$word}";
+            } else {
+                $new_msg .= ($idx > 0) ? " {$word}" : "{$word}";
             }
         }
 
-        if(!empty($new_msg))
-        {
+        if (! empty($new_msg)) {
             $results = $new_msg;
         }
 

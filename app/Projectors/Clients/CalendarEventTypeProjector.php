@@ -12,7 +12,6 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CalendarEventTypeProjector extends Projector
 {
-
     public function onCalendarEventTypeCreated(CalendarEventTypeCreated $event)
     {
         CalendarEventType::create($event->data);
@@ -38,4 +37,3 @@ class CalendarEventTypeProjector extends Projector
         CalendarEventType::withTrashed()->findOrFail($event->id)->forceDelete();
     }
 }
-

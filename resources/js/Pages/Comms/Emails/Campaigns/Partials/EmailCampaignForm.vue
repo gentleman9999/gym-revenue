@@ -3,8 +3,8 @@
         <template #form>
             <div class="form-control col-span-6">
                 <label for="name" class="label">Name</label>
-                <input type="text" v-model="form.name" autofocus id="name"/>
-                <jet-input-error :message="form.errors.name" class="mt-2"/>
+                <input type="text" v-model="form.name" autofocus id="name" />
+                <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
 
             <div
@@ -19,9 +19,13 @@
                     class="mt-2"
                 />
                 <label for="active" class="label ml-4"
-                >Activate (allows assigning to Campaigns)</label
+                    >Activate (allows assigning to Campaigns)</label
                 >
-                <jet-input-error :message="form.errors.active" class="mt-2" v-model="form.active"/>
+                <jet-input-error
+                    :message="form.errors.active"
+                    class="mt-2"
+                    v-model="form.active"
+                />
             </div>
 
             <div
@@ -38,7 +42,7 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                         availableAudiences.map((audience) => ({
+                        availableAudiences.map((audience) => ({
                             label: audience.name,
                             value: audience.id,
                         }))
@@ -65,7 +69,7 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                         availableEmailTemplates.map((email_templates) => ({
+                        availableEmailTemplates.map((email_templates) => ({
                             label: email_templates.name,
                             value: email_templates.id,
                         }))
@@ -83,12 +87,16 @@
                 v-if="form.active"
             >
                 <p>Select a firing schedule</p>
-                <select v-model="form.schedule" class="py-2" :disabled="!canEditActiveInputs">
+                <select
+                    v-model="form.schedule"
+                    class="py-2"
+                    :disabled="!canEditActiveInputs"
+                >
                     <option value="">Available Schedules</option>
                     <option value="drip">As Users are Added (Drip)</option>
                     <option value="bulk">All Subscribed Users (Bulk)</option>
                 </select>
-                <jet-input-error :message="form.errors.schedule" class="mt-2"/>
+                <jet-input-error :message="form.errors.schedule" class="mt-2" />
             </div>
 
             <div
@@ -96,21 +104,42 @@
                 v-if="form.active && form.schedule === 'bulk'"
             >
                 <p>When should we trigger this email?</p>
-                <div class="flex flex-row gap-8 h-16"><label class="label">
-                    <span class="label-text mr-2">Now</span>
-                    <input type="radio" name="scheduleNow" checked="checked" class="radio" v-model="scheduleNow"
-                           :disabled="!canEditActiveInputs">
-                </label>
+                <div class="flex flex-row gap-8 h-16">
+                    <label class="label">
+                        <span class="label-text mr-2">Now</span>
+                        <input
+                            type="radio"
+                            name="scheduleNow"
+                            checked="checked"
+                            class="radio"
+                            v-model="scheduleNow"
+                            :disabled="!canEditActiveInputs"
+                        />
+                    </label>
                     <label class="label">
                         <span class="label-text mr-2">Later</span>
-                        <input type="radio" name="scheduleNow" :value="false" class="radio" v-model="scheduleNow"
-                               :disabled="!canEditActiveInputs">
+                        <input
+                            type="radio"
+                            name="scheduleNow"
+                            :value="false"
+                            class="radio"
+                            v-model="scheduleNow"
+                            :disabled="!canEditActiveInputs"
+                        />
                     </label>
                 </div>
-                <date-picker v-model="form.schedule_date" dark :disabled="!canEditActiveInputs" v-if="!scheduleNow"
-                             :min-date=" new Date((new Date()).valueOf() - 1000*60*60*24)" :month-change-on-scroll="false"
-                             :auto-apply="true"
-                             :close-on-scroll="true"/>
+                <date-picker
+                    v-model="form.schedule_date"
+                    dark
+                    :disabled="!canEditActiveInputs"
+                    v-if="!scheduleNow"
+                    :min-date="
+                        new Date(new Date().valueOf() - 1000 * 60 * 60 * 24)
+                    "
+                    :month-change-on-scroll="false"
+                    :auto-apply="true"
+                    :close-on-scroll="true"
+                />
                 <!--                <select v-model="form.schedule_date" class="py-2">-->
                 <!--                    <option value="">Available Triggers</option>-->
                 <!--                    <option value="now">Now</option>-->
@@ -138,7 +167,7 @@
             >
                 Cancel
             </Button>
-            <div class="flex-grow"/>
+            <div class="flex-grow" />
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
@@ -157,26 +186,29 @@
     <confirm
         v-if="buttonText === 'Update' && showConfirm"
         title="Are you sure?"
-        @confirm="submitForm();showConfirm=false;"
-        @cancel="showConfirm=false;"
+        @confirm="
+            submitForm();
+            showConfirm = false;
+        "
+        @cancel="showConfirm = false"
     >
         {{ modalText }}
     </confirm>
 </template>
 
 <script>
-import {computed, ref} from "vue";
-import {useForm, usePage} from "@inertiajs/inertia-vue3";
+import { computed, ref } from "vue";
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import Confirm from "@/Components/Confirm";
-import DatePicker from 'vue3-date-time-picker';
-import 'vue3-date-time-picker/dist/main.css'
+import DatePicker from "vue3-date-time-picker";
+import "vue3-date-time-picker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 export default {
     name: "EmailCampaignForm",
@@ -188,7 +220,7 @@ export default {
         JetInputError,
         Confirm,
         DatePicker,
-        Multiselect
+        Multiselect,
     },
     props: [
         "clientId",
@@ -201,7 +233,9 @@ export default {
     setup(props, context) {
         const page = usePage();
         const modal = ref(null);
-        const scheduleNow = ref(isNaN(Date.parse(props.campaign?.schedule_date?.value)));
+        const scheduleNow = ref(
+            isNaN(Date.parse(props.campaign?.schedule_date?.value))
+        );
         let campaign = props.campaign;
         let operation = "Update";
         if (!campaign) {
@@ -216,20 +250,24 @@ export default {
             };
             operation = "Create";
         } else {
-            campaign["schedule_date"] = campaign.schedule_date?.value || 'now';
-            campaign["schedule"] = campaign.schedule?.value || '';
+            campaign["schedule_date"] = campaign.schedule_date?.value || "now";
+            campaign["schedule"] = campaign.schedule?.value || "";
 
-            campaign["email_templates"] = page.props.value.emailTemplates.map(template_id => template_id.value);
-            campaign["audiences"] = page.props.value.audiences.map(audience_id => audience_id.value);
+            campaign["email_templates"] = page.props.value.emailTemplates.map(
+                (template_id) => template_id.value
+            );
+            campaign["audiences"] = page.props.value.audiences.map(
+                (audience_id) => audience_id.value
+            );
         }
 
         console.log("campaign Params", campaign);
         const form = useForm(campaign);
 
         let handleSubmit = () => {
-            form.transform(data => ({
+            form.transform((data) => ({
                 ...data,
-                schedule_date: scheduleNow.value ? 'now' : data.schedule_date
+                schedule_date: scheduleNow.value ? "now" : data.schedule_date,
             })).put(route("comms.email-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
@@ -244,9 +282,12 @@ export default {
             if (!props.campaign?.active) {
                 return true;
             }
-            return !props.campaign?.schedule_date || new Date() < new Date(`${props.campaign.schedule_date} UTC`);
+            return (
+                !props.campaign?.schedule_date ||
+                new Date() < new Date(`${props.campaign.schedule_date} UTC`)
+            );
         });
-        console.log({canEditActiveInputs: canEditActiveInputs.value});
+        console.log({ canEditActiveInputs: canEditActiveInputs.value });
 
         return {
             form,
@@ -257,7 +298,7 @@ export default {
             scheduleNow,
             availableAudiences: page.props.value.availableAudiences,
             availableEmailTemplates: page.props.value.availableEmailTemplates,
-            multiselectClasses: getDefaultMultiselectTWClasses()
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
     data() {

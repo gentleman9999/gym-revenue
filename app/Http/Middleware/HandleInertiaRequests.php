@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use App\Models\Utility\AppState;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -42,17 +41,12 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $abilities = $request->user()->getAbilities()->filter(function($ability) use ($request){
-                if(!is_null($ability->entity_id))
-                {
+            $abilities = $request->user()->getAbilities()->filter(function ($ability) use ($request) {
+                if (! is_null($ability->entity_id)) {
                     $r = $ability->entity_id === $request->user()->current_team_id;
-                }
-                else if($ability->title == 'All abilities')
-                {
+                } elseif ($ability->title == 'All abilities') {
                     $r = true;
-                }
-                else
-                {
+                } else {
                     $r = true;
                 }
 
@@ -63,30 +57,30 @@ class HandleInertiaRequests extends Middleware
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
-                'user.has_api_token' => (!is_null($user->api_token()->first())),
+                'user.has_api_token' => (! is_null($user->api_token()->first())),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
                 'user.column_config' => $user->column_config->mapWithKeys(function ($item, $key) {
                     return [$item['value'] => $item['misc']];
-                })
+                }),
 
             ];
 
-            if(session()->has(config('laravel-impersonate.session_key')))
-            {
+            if (session()->has(config('laravel-impersonate.session_key'))) {
                 $shared['user.is_being_impersonated'] = session()->get(config('laravel-impersonate.session_key'));
             }
         }
         $previousUrl = url()->previous();
 
-        if (!empty($previousUrl) && $previousUrl !== route('login') && $previousUrl !== url()->current()) {
+        if (! empty($previousUrl) && $previousUrl !== route('login') && $previousUrl !== url()->current()) {
             $shared['previousUrl'] = $previousUrl;
         }
         $alerts = Alert::getMessages();
+
         return array_merge(parent::share($request), [
             'flash' => function () use ($request, $alerts) {
                 return [
                     'selectedLeadDetailIndex' => $request->session()->get('selectedLeadDetailIndex'),
-                    'alerts' => $alerts
+                    'alerts' => $alerts,
                 ];
             },
         ], $shared);

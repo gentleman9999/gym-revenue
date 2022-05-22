@@ -3,13 +3,11 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Actions\Clients\Files\CreateFile;
-use App\Aggregates\Clients\CalendarAggregate;
-use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Calendar\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class UploadFile
 {
@@ -27,14 +25,14 @@ class UploadFile
             '*.size' => 'integer|min:1|required',//TODO: add max size
             '*.client_id' => 'exists:clients,id|required',
             '*.user_id' => 'nullable|exists:users,id',
-            '*.entity_id' => 'string|required'
+            '*.entity_id' => 'string|required',
         ];
     }
 
     public function handle($data, $current_user = null)
     {
         $files = [];
-        foreach( $data as $file){
+        foreach ($data as $file) {
             $file['entity_type'] = CalendarEvent::class;
             $files[] = CreateFile::run($file);
         }
@@ -45,6 +43,7 @@ class UploadFile
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.update', CalendarEvent::class);
     }
 
@@ -60,5 +59,4 @@ class UploadFile
 
         return Redirect::back();
     }
-
 }

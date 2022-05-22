@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Endusers\Member;
-use Bouncer;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,16 +25,18 @@ class DeleteMember
         ];
     }
 
-    public function handle($client_id, $id, $user=null)
+    public function handle($client_id, $id, $user = null)
     {
         $member = Member::findOrFail($id);
         EndUserActivityAggregate::retrieve($client_id)->deleteMember($user->id ?? "Auto Generated", $id)->persist();
+
         return $member;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('members.update', Member::class);
     }
 

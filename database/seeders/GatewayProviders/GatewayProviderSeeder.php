@@ -31,7 +31,7 @@ class GatewayProviderSeeder extends Seeder
                 'provider_bulk_rate' => 0.03,
                 'gr_commission_rate' => 0.01,
                 'gr_commission_bulk_rate' => 0.01,
-                'active' => 1
+                'active' => 1,
             ],
             'mailgun' => [
                 'name' => 'Mailgun',
@@ -44,13 +44,12 @@ class GatewayProviderSeeder extends Seeder
                 'provider_bulk_rate' => 0.01,
                 'gr_commission_rate' => 0.01,
                 'gr_commission_bulk_rate' => 0.01,
-                'active' => 1
+                'active' => 1,
             ],
         ];
 
 
-        foreach($gateways as $slug => $gateway)
-        {
+        foreach ($gateways as $slug => $gateway) {
             VarDumper::dump("($slug) - {$gateway['desc']}");
             GatewayProvider::firstOrCreate($gateway);
         }

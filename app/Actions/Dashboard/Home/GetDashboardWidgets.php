@@ -13,27 +13,23 @@ class GetDashboardWidgets
 {
     use AsAction;
 
-    public function handle() : array
+    public function handle(): array
     {
         $results = [];
 
         $team = auth()->user()->currentTeam;
         $client_detail = $team->client_details()->first();
 
-        if(!is_null($client_detail))
-        {
+        if (! is_null($client_detail)) {
             $num_locs = 0;
             $num_ecs = 0;
             $num_scs = 0;
             $last_widget_count = 0;
-            if($team->isClientsDefaultTeam())
-            {
+            if ($team->isClientsDefaultTeam()) {
                 $num_locs = Location::whereClientId($client_detail->client_id)->whereActive(1)->count();
                 $num_ecs = EmailCampaigns::whereClientId($client_detail->client_id)->count();
                 $num_scs = SmsCampaigns::whereClientId($client_detail->client_id)->count();
-            }
-            else
-            {
+            } else {
                 // get the locations the active team has access to
                 $num_locs = TeamDetail::whereTeamId($team->id)
                     ->where('name', '=', 'team-location')->whereActive(1)
@@ -41,8 +37,7 @@ class GetDashboardWidgets
 
                 // @todo - these queries need to be adjusted for all "any" campaigns and campaigns scoped to their team
                 // @todo - maybe add a filter() function to the models.
-                if(true) // Check that the user is not a sales rep
-                {
+                if (true) { // Check that the user is not a sales rep
                     $num_ecs = EmailCampaigns::whereClientId($client_detail->client_id)->count();
                     $num_scs = SmsCampaigns::whereClientId($client_detail->client_id)->count();
                 }
@@ -73,30 +68,28 @@ class GetDashboardWidgets
                     'title' => 'Total Locations',
                     'value' => $num_locs,
                     'type' => 'warning',
-                    'icon' => 'users'
+                    'icon' => 'users',
                 ],
                 [
                     'title' => 'Active Email Campaigns',
                     'value' => $num_ecs,
                     'type' => 'success',
-                    'icon' => 'money'
+                    'icon' => 'money',
                 ],
                 [
                     'title' => 'Active SMS Campaigns',
                     'value' => $num_scs,
                     'type' => 'info',
-                    'icon' => 'cart'
+                    'icon' => 'cart',
                 ],
                 [
                     'title' => "Today's Sales",
                     'value' => "$ 0",
                     'type' => 'danger',
-                    'icon' => 'message'
+                    'icon' => 'message',
                 ],
             ];
-        }
-        else
-        {
+        } else {
             $clients = Client::all();
 
             $results = [
@@ -104,25 +97,25 @@ class GetDashboardWidgets
                     'title' => 'Total Clients',
                     'value' => count($clients),
                     'type' => 'warning',
-                    'icon' => 'users'
+                    'icon' => 'users',
                 ],
                 [
                     'title' => 'Total Revenue Funneled',
                     'value' => "$ 0",
                     'type' => 'success',
-                    'icon' => 'money'
+                    'icon' => 'money',
                 ],
                 [
                     'title' => 'Total Profits',
                     'value' => "$ 0",
                     'type' => 'info',
-                    'icon' => 'cart'
+                    'icon' => 'cart',
                 ],
                 [
                     'title' => 'Total MCU Films',
                     'value' => "28",
                     'type' => 'danger',
-                    'icon' => 'message'
+                    'icon' => 'message',
                 ],
 
             ];

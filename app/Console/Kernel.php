@@ -2,11 +2,8 @@
 
 namespace App\Console;
 
-use App\Actions\Clients\Activity\Comms\CheckQueuedSmsCampaigns;
-use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\CheckQueuedEmailCampaigns;
-use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
-use App\Actions\Fortify\CreateUser;
+use App\Actions\Clients\Activity\Comms\CheckQueuedSmsCampaigns;
 use App\Actions\Users\Reminders\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -32,9 +29,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //TODO: should be jobs, not commands
-        $schedule->job(new CheckQueuedEmailCampaigns)->everyMinute();
-        $schedule->job(new CheckQueuedSmsCampaigns)->everyMinute();
-        $schedule->job(new CheckReminders)->everyMinute();
+        $schedule->job(new CheckQueuedEmailCampaigns())->everyMinute();
+        $schedule->job(new CheckQueuedSmsCampaigns())->everyMinute();
+        $schedule->job(new CheckReminders())->everyMinute();
     }
 
     /**

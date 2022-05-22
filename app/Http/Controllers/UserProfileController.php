@@ -29,85 +29,78 @@ class UserProfileController extends Controller
             'jobTitle' => '',
             'altEmail' => '',
             'start_date' => '',
+            'communication_preference' => '',
         ];
         $user = auth()->user();
         $phone = $user->phone;
-        if(!is_null($phone))
-        {
+        if (! is_null($phone)) {
             $addl_data['phone'] = $phone->value;
         }
 
         $altEmail = $user->altEmail()->first();
-        if(!is_null($altEmail))
-        {
+        if (! is_null($altEmail)) {
             $addl_data['altEmail'] = $altEmail->value;
         }
 
         $address1 = $user->address1;
-        if(!is_null($address1))
-        {
+        if (! is_null($address1)) {
             $addl_data['address1'] = $address1->value;
         }
 
         $address2 = $user->address2;
-        if(!is_null($address2))
-        {
+        if (! is_null($address2)) {
             $addl_data['address2'] = $address2->value;
         }
 
         $city = $user->city;
-        if(!is_null($city))
-        {
+        if (! is_null($city)) {
             $addl_data['city'] = $city->value;
         }
 
         $state = $user->state;
-        if(!is_null($state))
-        {
+        if (! is_null($state)) {
             $addl_data['state'] = $state->value;
         }
 
         $zip = $user->zip;
-        if(!is_null($zip))
-        {
+        if (! is_null($zip)) {
             $addl_data['zip'] = $zip->value;
         }
 
         $jobTitle = $user->jobTitle()->first();
-        if(!is_null($jobTitle))
-        {
+        if (! is_null($jobTitle)) {
             $addl_data['jobTitle'] = $jobTitle->value;
         }
         $start_date = $user->start_date()->first();
-        if(!is_null($start_date))
-        {
+        if (! is_null($start_date)) {
             $addl_data['start_date'] = $start_date->value;
         }
         $end_date = $user->end_date()->first();
-        if(!is_null($end_date))
-        {
+        if (! is_null($end_date)) {
             $addl_data['end_date'] = $end_date->value;
         }
         $termination_date = $user->termination_date()->first();
-        if(!is_null($termination_date))
-        {
+        if (! is_null($termination_date)) {
             $addl_data['termination_date'] = $termination_date->value;
         }
         $notes = $user->notes()->first();
-        if(!is_null($notes))
-        {
+        if (! is_null($notes)) {
             $addl_data['notes'] = $notes->value;
         }
 
+        $contact_preference = $user->contact_preference()->first();
+        if (! is_null($contact_preference)) {
+            $addl_data['contact_preference'] = $contact_preference->value;
+        }
+
         $api_token = $user->api_token()->first();
-        if(!is_null($api_token))
-        {
+        if (! is_null($api_token)) {
             $addl_data['token'] = base64_decode($api_token->value);
         }
 
         return Jetstream::inertia()->render($request, 'Profile/Show', [
             'sessions' => $this->sessions($request)->all(),
-            'addlData' => $addl_data
+            'addlData' => $addl_data,
         ]);
     }
 
@@ -152,7 +145,7 @@ class UserProfileController extends Controller
      */
     protected function createAgent($session)
     {
-        return tap(new Agent, function ($agent) use ($session) {
+        return tap(new Agent(), function ($agent) use ($session) {
             $agent->setUserAgent($session->user_agent);
         });
     }

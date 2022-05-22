@@ -4,19 +4,18 @@ namespace Database\Seeders\Users;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Team;
-use Illuminate\Support\Facades\Artisan;
 
 class CapeAndBayUserSeeder extends UserSeeder
 {
     protected $type = 'cnb';
 
-    protected function getUsersToAdd() : array
+    protected function getUsersToAdd(): array
     {
         Team::firstOrCreate([
             'user_id' => 1,
             'name' => 'Cape & Bay Admin Team',
             'personal_team' => 0,
-            'default_team' => 1
+            'default_team' => 1,
         ]);
 
         return [
@@ -70,10 +69,10 @@ class CapeAndBayUserSeeder extends UserSeeder
                 'last_name' => 'Carroll',
                 'email' => 'sami@gymrevenue.com',
             ],
-			[
-                'first_name' => 'Steve',
-                'last_name' => 'Deemer',
-                'email' => 'steve@capeandbay.com',
+            [
+                'first_name' => 'Tommy',
+                'last_name' => 'Lee',
+                'email' => 'tommy@capeandbay.com',
             ],
             [
                 'first_name' => 'Blair',
@@ -99,7 +98,7 @@ class CapeAndBayUserSeeder extends UserSeeder
             'team_id' => 1,
             'role_id' => 1,
 //            'home_club' => $home_club,
-            'is_manager' => 'Senior Manager'
+            'is_manager' => 'Senior Manager',
         ]);
     }
 }

@@ -3,17 +3,11 @@
 namespace App\Actions\Clients\Locations;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Location;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
-use App\Models\Clients\Client;
-use App\Models\Team;
-use App\Models\User;
-use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\Concerns\AsAction;
-
+use Prologue\Alerts\Facades\Alert;
 
 class CreateLocation
 {
@@ -27,7 +21,7 @@ class CreateLocation
     public function rules()
     {
         return [
-            'poc_last' =>['sometimes'],
+            'poc_last' => ['sometimes'],
             'name' => ['required', 'max:50'],
             'city' => ['required', 'max:30'],
             'state' => ['required', 'size:2'],
@@ -60,12 +54,12 @@ class CreateLocation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('locations.create', Location::class);
     }
 
     public function asController(ActionRequest $request)
     {
-
         $location = $this->handle(
             $request->validated(),
             $request->user(),
@@ -75,5 +69,4 @@ class CreateLocation
 
         return Redirect::route('locations');
     }
-
 }

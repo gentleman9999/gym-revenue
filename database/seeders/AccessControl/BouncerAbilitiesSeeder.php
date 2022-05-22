@@ -11,7 +11,6 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class BouncerAbilitiesSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -33,7 +32,7 @@ class BouncerAbilitiesSeeder extends Seeder
                 Bouncer::ability()->firstOrCreate([
                     'name' => "$crud_model.$operation",
                     'title' => $title,
-                    'entity_type' => $entity
+                    'entity_type' => $entity,
                 ]);
             });
         });
@@ -42,7 +41,7 @@ class BouncerAbilitiesSeeder extends Seeder
         Bouncer::ability()->firstOrCreate([
             'name' => "users.impersonate",
             'title' => 'Impersonate Users',
-            'entity_type' => User::class
+            'entity_type' => User::class,
         ]);
 
         $clients = Client::all();
@@ -118,7 +117,6 @@ class BouncerAbilitiesSeeder extends Seeder
                 VarDumper::dump("Allowing $role to $group.restore");
                 Bouncer::allow($role)->to("$group.restore", $entity);
             }
-
         });
     }
 
@@ -130,6 +128,7 @@ class BouncerAbilitiesSeeder extends Seeder
                 case 'users':
                 default:
                     $entity = User::class;
+
                     break;
             }
             // Allow the role to inherit the not Ability in full, but scoped to the team
@@ -137,9 +136,6 @@ class BouncerAbilitiesSeeder extends Seeder
                 VarDumper::dump("Allowing $role to $group.impersonate");
                 Bouncer::allow($role)->to("$group.impersonate", $entity);
             }
-
         });
-
     }
-
 }

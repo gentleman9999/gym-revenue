@@ -41,9 +41,9 @@ class AppStateSeeder extends Seeder
                     'New User Management Filter - Club-level Searching',
                     'New User Management Filter - Team-level Searching',
                     'Added a browser-tab set of day and night icons.',
-                    'Updated the static content of the footer and Copyright Year as well as a copyright c before the year'
-                ]
-            ]
+                    'Updated the static content of the footer and Copyright Year as well as a copyright c before the year',
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -62,9 +62,9 @@ class AppStateSeeder extends Seeder
                     'Agreement #s are generated everytime a lead is created',
                     'Agreement #s can be viewed in the lead editor or Sales Rep view',
                     'Lead Sources Management Page was created and is accessible in the Leads List View in the toolbar',
-                    'Free Trial management is available in the settings menu inside of any client.'
-                ]
-            ]
+                    'Free Trial management is available in the settings menu inside of any client.',
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -97,8 +97,8 @@ class AppStateSeeder extends Seeder
                     'You can now Create new Locations',
                     'You can Update Locations',
                     'New Location fields in Create & Edit - Phone, Open Date, Closed Date, PoC First, Last  Phone, and an Arbitrary Location No',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -135,8 +135,8 @@ class AppStateSeeder extends Seeder
                     'Updated the Navigation on CRUD with a page Nav Tool Bar to highlight the active page.',
                     'Lead Statuses UI is now available from the Leads Dashboard',
                     'Individual First & Last Name in User Management Create and Update',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -190,9 +190,9 @@ class AppStateSeeder extends Seeder
                     '* - You cannot switch teams in this mode.',
                     '* - The toolbar turns red when in impersonation mode',
                     '* - The mode is available in the upper right hand menu dropdown with your name on it.',
-                    'Some backend optimizations in the dummy data seeder'
-                ]
-            ]
+                    'Some backend optimizations in the dummy data seeder',
+                ],
+            ],
         ]);
         AppState::firstOrCreate([
             'name' => 'Deployment Log Record',
@@ -231,8 +231,8 @@ class AppStateSeeder extends Seeder
                     '* -- By DoB',
                     'Misc - Event Tracking Optimizations',
                     'Misc - Switch Team Dropdown is now scrollable',
-                ]
-            ]
+                ],
+            ],
         ]);
         AppState::firstOrCreate([
             'name' => 'Deployment Log Record',
@@ -251,9 +251,9 @@ class AppStateSeeder extends Seeder
                     'Misc - Backend Optimizations enhancing the note functionality',
                     'Misc - Backend pre-requisite code for the Calendar',
                     'Misc - State field in Users,Locations  and Profile Management CRUDs use a Dropdown instead of typing in the stateA',
-                    'Misc - Added Sami’s last name to her account.'
-                ]
-            ]
+                    'Misc - Added Sami’s last name to her account.',
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -278,8 +278,8 @@ class AppStateSeeder extends Seeder
                     'TruFit Clubs now added to seeder',
                     'Security Roles - Huge Refactor. Super solid and scalable now.',
 
-                ]
-            ]
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -299,9 +299,9 @@ class AppStateSeeder extends Seeder
                     'Internal (Reminder System) - Currently only in use for Calendar events, built generically to support other systems. Currently in-app notifications only, but will be expanded for email/SMS based on user preferences. ',
                     'Internal (Notification System - Backbone for notifications setup. Currently only supports in-app notifications, but in future will email/SMS based on user preferences.  UI will match designs at later time.',
                     'Internal (Authenticated URL Shortener) - currently being used in calendar invite emails, but built to support systems in the future.',
-                    'Internal (Tasks/ToDo Scaffolding) - basic back-end work to support tasks. UI and Calendar integration forthcoming'
-                ]
-            ]
+                    'Internal (Tasks/ToDo Scaffolding) - basic back-end work to support tasks. UI and Calendar integration forthcoming',
+                ],
+            ],
         ]);
 
         AppState::firstOrCreate([
@@ -317,8 +317,28 @@ class AppStateSeeder extends Seeder
                     'Notes - Notes now have titles!',
                     'Calendar - Reminder Management: You can now manage your calendar reminder settings when your an attendee of the event your editing.',
                     'Internal (Mass Communications) Mass Communications Controller refactor to work with billing/logging.',
-                ]
-            ]
+                ],
+            ],
+        ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 05-19-2022',
+            'value' => '2022-05-19',
+            'misc' => [
+                'buildno' => '20220519',
+                'version' => '0.18.01',
+                'notes' => [
+                    'UI - User Login User Interface modified to match art designs.',
+                    'UI - User Management User Interface modified to match art designs.',
+                    'UI - Lead/Member User Interface modified to clean up white spacing - modeling from user profiles designs as reference.',
+                    'Calendar - Design modification to the FullCalendar Package to match art designs.',
+                    'Tasks (ToDo List) - Basic Task CRUD created.',
+                    'Calendar/Tasks - Association Logic between tasks and calendar events established.',
+                    'BUG - Calendar drag & drop was breaking when update event was moved.',
+                ],
+            ],
         ]);
     }
 }

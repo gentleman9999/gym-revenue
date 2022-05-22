@@ -48,7 +48,7 @@
                     @dismiss="() => dismissNotification(notification.id)"
                     :notification="notification"
                 >
-                        {{ notification.text }}
+                    {{ notification.text }}
                 </base-notification>
             </template>
 
@@ -92,7 +92,7 @@ export default {
     props: [],
     components: {
         BaseNotification,
-        CalendarEventNotification
+        CalendarEventNotification,
     },
     data() {
         return {

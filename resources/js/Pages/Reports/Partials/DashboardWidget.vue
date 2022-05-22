@@ -36,7 +36,7 @@
                 <div class="text-secondary text-4xl font-bold">
                     {{ amountPretty }}
                 </div>
-                <div class="divider opacity-30"/>
+                <div class="divider opacity-30" />
             </template>
             <div class="flex-grow flex-shrink overflow-auto">
                 <slot />

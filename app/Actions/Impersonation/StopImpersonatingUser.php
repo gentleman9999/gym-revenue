@@ -22,8 +22,7 @@ class StopImpersonatingUser
     {
         $results = false;
 
-        if(session()->has(config('laravel-impersonate.session_key')))
-        {
+        if (session()->has(config('laravel-impersonate.session_key'))) {
             $coward = User::find(session()->get(config('laravel-impersonate.session_key')));
             $coward_id = $coward->id;
             $liberated = auth()->user();
@@ -42,8 +41,7 @@ class StopImpersonatingUser
 
             // rat on this user to the paying customer - the client (aggy)
             $associated_client = $liberated->associated_client()->first();
-            if(!is_null($associated_client))
-            {
+            if (! is_null($associated_client)) {
                 ClientAggregate::retrieve($associated_client->value)
                     ->logImpersonationModeDeactivation($liberated->id, $coward_id)->persist();
             }
@@ -57,8 +55,7 @@ class StopImpersonatingUser
         $results = false;
         $code = 500;
 
-        if($result)
-        {
+        if ($result) {
             $results = true;
             $code = 200;
         }
@@ -68,14 +65,14 @@ class StopImpersonatingUser
 
     public function htmlResponse($result)
     {
-        if($result)
-        {
+        if ($result) {
             \Alert::info('Welcome back to the real world!')->flash();
+
             return redirect()->route('dashboard');
         }
 
         \Alert::error('Error. Impersonation mode not active.')->flash();
-        return redirect()->back();
 
+        return redirect()->back();
     }
 }

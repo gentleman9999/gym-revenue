@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class EmailTemplateAssignedToEmailCampaign extends ShouldBeStored
 {
-    public $client, $template, $campaign, $user;
+    public $client;
+    public $template;
+    public $campaign;
+    public $user;
 
     public function __construct($client, $template, $campaign, $user)
     {

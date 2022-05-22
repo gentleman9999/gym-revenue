@@ -28,7 +28,6 @@ class ClientGatewayActivityAggregate extends AggregateRoot
         ];
     }
 
-
     public function sendATestSMSMessage(string $templateId, $user_id)
     {
         $this->recordThat(new UserSentATestSMS($this->uuid(), $user_id, $templateId));

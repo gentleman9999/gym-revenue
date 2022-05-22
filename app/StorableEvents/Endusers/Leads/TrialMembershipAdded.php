@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class TrialMembershipAdded extends ShouldBeStored
 {
-    public $client, $lead, $trial, $date;
+    public $client;
+    public $lead;
+    public $trial;
+    public $date;
 
     public function __construct($lead, $client, $trial, $date)
     {

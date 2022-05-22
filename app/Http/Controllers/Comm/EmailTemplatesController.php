@@ -18,7 +18,7 @@ class EmailTemplatesController extends Controller
     {
         $results = [];
 
-        if ((!is_null($client_id))) {
+        if ((! is_null($client_id))) {
             // Get the current client or its cape and bay
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -37,7 +37,7 @@ class EmailTemplatesController extends Controller
              */
             $results = $template_model;
         } else {
-            if (!$is_client_user) {
+            if (! $is_client_user) {
                 $template_model = ($type == 'email') ? new EmailTemplates() : new SmsTemplates();
                 $template_model = $template_model->whereNull('client_id');
                 /**
@@ -62,12 +62,12 @@ class EmailTemplatesController extends Controller
 
         $page_count = 10;
         $templates = [
-            'data' => []
+            'data' => [],
         ];
 
         $templates_model = $this->setupTemplatesObject($is_client_user, 'email', $client_id);
 
-        if (!empty($templates_model)) {
+        if (! empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
                     ->with('creator')
                     ->filter(request()->only('search', 'trashed'))
@@ -90,9 +90,9 @@ class EmailTemplatesController extends Controller
 
     public function edit($id)
     {
-
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Template ID provided")->flash();
+
             return Redirect::back();
         }
 
@@ -100,16 +100,17 @@ class EmailTemplatesController extends Controller
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/Emails/Templates/EditEmailTemplate', [
-            'template' => $template
+            'template' => $template,
         ]);
     }
 
     public function store(Request $request)
     {
-        $template = $request->validate([
+        $template = $request->validate(
+            [
                 'name' => 'required',
                 'subject' => 'required',
-                'markup' => 'required'
+                'markup' => 'required',
             ]
         );
 
@@ -122,21 +123,20 @@ class EmailTemplatesController extends Controller
             $template['created_by_user_id'] = $request->user()->id;
             $new_template = EmailTemplates::create($template);
             Alert::info("New Template {$template['name']} was created")->flash();
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             Alert::error("New Template {$template['name']} could not be created")->flash();
+
             return redirect()->back();
         }
 
 //        return Redirect::route('comms.email-templates');
         return Redirect::route('comms.email-templates.edit', ['id' => $new_template->id]);
-
     }
 
     public function update(Request $request)
     {
-        $data = $request->validate([
+        $data = $request->validate(
+            [
                 'id' => 'required|exists:email_templates,id',
                 'name' => 'required',
                 'subject' => 'required',
@@ -165,13 +165,13 @@ class EmailTemplatesController extends Controller
 //        SmsTemplates::create($template);
         return Redirect::route('comms.email-templates');
 //        return Redirect::route('comms.email-templates.edit', $template->id);
-
     }
 
     public function trash($id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Template ID provided")->flash();
+
             return Redirect::back();
         }
 
@@ -185,8 +185,9 @@ class EmailTemplatesController extends Controller
 
     public function restore(Request $request, $id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Template ID provided")->flash();
+
             return Redirect::back();
         }
         $template = EmailTemplates::withTrashed()->findOrFail($id);
@@ -204,12 +205,12 @@ class EmailTemplatesController extends Controller
         $is_client_user = request()->user()->isClientUser();
 
         $templates = [
-            'data' => []
+            'data' => [],
         ];
 
         $templates_model = $this->setupTemplatesObject($is_client_user, 'email', $client_id);
 
-        if (!empty($templates_model)) {
+        if (! empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
             ->with('creator')
                 ->filter(request()->only('search', 'trashed'))
@@ -218,5 +219,4 @@ class EmailTemplatesController extends Controller
 
         return $templates;
     }
-
 }

@@ -4,7 +4,6 @@ namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Tasks;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,18 +31,19 @@ class RestoreTask
         UserAggregate::retrieve($user->id ?? "Auto Generated", $id)
             ->restoreTask()
             ->persist();
+
         return Tasks::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('task.restore', Tasks::class);
     }
 
     public function asController(Request $request, $id)
     {
-
         $task = $this->handle(
             $id,
             $request->user()

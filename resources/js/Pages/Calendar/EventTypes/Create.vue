@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -35,8 +35,6 @@ export default defineComponent({
         JetInputError,
         JetLabel,
     },
-    props: {
-
-    }
+    props: {},
 });
 </script>

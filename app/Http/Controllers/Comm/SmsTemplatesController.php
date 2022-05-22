@@ -5,22 +5,13 @@ namespace App\Http\Controllers\Comm;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
-use App\Models\Clients\Features\CommAudience;
-use App\Models\Clients\Features\EmailCampaigns;
-use App\Models\Clients\Features\SmsCampaigns;
-use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
-use App\Models\Endusers\Lead;
+use function Aws\filter;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
-use function Aws\filter;
 
 class SmsTemplatesController extends Controller
 {
@@ -28,7 +19,7 @@ class SmsTemplatesController extends Controller
     {
         $results = [];
 
-        if ((!is_null($client_id))) {
+        if ((! is_null($client_id))) {
             // Get the current client or its cape and bay
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
@@ -47,7 +38,7 @@ class SmsTemplatesController extends Controller
              */
             $results = $template_model;
         } else {
-            if (!$is_client_user) {
+            if (! $is_client_user) {
                 $template_model = ($type == 'email') ? new EmailTemplates() : new SmsTemplates();
                 $template_model = $template_model->whereNull('client_id');
                 /**
@@ -72,12 +63,12 @@ class SmsTemplatesController extends Controller
 
         $page_count = 10;
         $templates = [
-            'data' => []
+            'data' => [],
         ];
 
         $templates_model = $this->setupTemplatesObject($is_client_user, 'sms', $client_id);
 
-        if (!empty($templates_model)) {
+        if (! empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
             ->with('creator')
             ->filter(request()->only('search', 'trashed'))
@@ -101,9 +92,9 @@ class SmsTemplatesController extends Controller
 
     public function edit($id)
     {
-
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Template ID provided")->flash();
+
             return Redirect::back();
         }
 
@@ -111,15 +102,16 @@ class SmsTemplatesController extends Controller
         // @todo - need to build access validation here.
 
         return Inertia::render('Comms/SMS/Templates/EditSmsTemplate', [
-            'template' => $template
+            'template' => $template,
         ]);
     }
 
     public function store(Request $request)
     {
-        $template = $request->validate([
+        $template = $request->validate(
+            [
                 'name' => 'required',
-                'markup' => 'required|max:130'
+                'markup' => 'required|max:130',
             ]
         );
         $client_id = request()->user()->currentClientId();
@@ -131,10 +123,9 @@ class SmsTemplatesController extends Controller
             $template['created_by_user_id'] = $request->user()->id;
             $new_template = SmsTemplates::create($template);
             Alert::info("New Template {$template['name']} was created")->flash();
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             Alert::error("New Template {$template['name']} could not be created")->flash();
+
             return redirect()->back();
         }
 
@@ -142,12 +133,12 @@ class SmsTemplatesController extends Controller
 //        SmsTemplates::create($template);
 //        return Redirect::route('comms.sms-templates');
         return Redirect::route('comms.sms-templates.edit', ['id' => $new_template->id]);
-
     }
 
     public function update(Request $request)
     {
-        $data = $request->validate([
+        $data = $request->validate(
+            [
                 'id' => 'required|exists:sms_templates,id',
                 'name' => 'required',
                 'markup' => 'required|max:130',
@@ -174,8 +165,9 @@ class SmsTemplatesController extends Controller
 
     public function trash($id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Template ID provided")->flash();
+
             return Redirect::back();
         }
 
@@ -189,8 +181,9 @@ class SmsTemplatesController extends Controller
 
     public function restore(Request $request, $id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Template ID provided")->flash();
+
             return Redirect::back();
         }
         $template = SmsTemplates::withTrashed()->findOrFail($id);
@@ -207,12 +200,12 @@ class SmsTemplatesController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
         $templates = [
-            'data' => []
+            'data' => [],
         ];
 
         $templates_model = $this->setupTemplatesObject($is_client_user, 'sms', $client_id);
 
-        if (!empty($templates_model)) {
+        if (! empty($templates_model)) {
             $templates = $templates_model//->with('location')->with('detailsDesc')
             ->with('creator')
                 ->filter(request()->only('search', 'trashed'))
@@ -221,6 +214,4 @@ class SmsTemplatesController extends Controller
 
         return $templates;
     }
-
-
 }

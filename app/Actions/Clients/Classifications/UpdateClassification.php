@@ -6,9 +6,8 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Classification;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
-
+use Prologue\Alerts\Facades\Alert;
 
 class UpdateClassification
 {
@@ -39,6 +38,7 @@ class UpdateClassification
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('classifications.update', Classification::class);
     }
 
@@ -55,5 +55,4 @@ class UpdateClassification
 
         return Redirect::route('classifications');
     }
-
 }

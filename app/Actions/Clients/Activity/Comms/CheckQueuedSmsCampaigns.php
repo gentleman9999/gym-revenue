@@ -18,8 +18,8 @@ class CheckQueuedSmsCampaigns
     public function handle()
     {
         Log::info("checking for queued sms campaigns");
-        $queued_campaigns = QueuedSmsCampaign::whereNull('started_at')->where('trigger_at', '<=', Carbon::now() )->get();
-        foreach($queued_campaigns as $campaign){
+        $queued_campaigns = QueuedSmsCampaign::whereNull('started_at')->where('trigger_at', '<=', Carbon::now())->get();
+        foreach ($queued_campaigns as $campaign) {
             echo "Firing off SMS for $campaign->id";
             FireOffSmsCampaign::dispatch($campaign->sms_campaign_id);
             $campaign->started_at = Carbon::now();

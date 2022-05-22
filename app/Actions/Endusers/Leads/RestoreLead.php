@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Endusers\Lead;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -30,12 +29,14 @@ class RestoreLead
     public function handle($id, $current_user)
     {
         EndUserActivityAggregate::retrieve($id)->restoreLead($current_user->id ?? "Auto Generated")->persist();
+
         return Lead::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('leads.restore', Lead::class);
     }
 

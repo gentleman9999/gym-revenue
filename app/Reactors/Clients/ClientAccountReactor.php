@@ -45,16 +45,15 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
 
     public function onSmsSent(SmsSent $event)
     {
-        if($event->isCampaign)
-        {
-            if($event->sentTo['entity_type'] == User::class) {
+        if ($event->isCampaign) {
+            if ($event->sentTo['entity_type'] == User::class) {
                 $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
                 $gateway_service = new SMSGatewayProviderService(SmsTemplates::find($event->campaign));
                 $gateway_service->initSMSGateway($event->sentTo['entity_id']);
                 $response = $gateway_service->fire($user_aggy->getPhoneNumber());
             } //@todo finish logic for entity_type != user::class
         } else {
-            if($event->sentTo['entity_type'] == User::class) {
+            if ($event->sentTo['entity_type'] == User::class) {
                 $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
             }
         }
@@ -62,16 +61,15 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
 
     public function onEmailSent(EmailSent $event)
     {
-        if($event->isCampaign)
-        {
-            if($event->sentTo['entity_type'] == User::class) {
+        if ($event->isCampaign) {
+            if ($event->sentTo['entity_type'] == User::class) {
                 $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
                 $gateway_service = new EmailGatewayProviderService(EmailTemplates::find($event->campaign));
                 $gateway_service->initEmailGateway($event->sentTo['entity_id']);
                 $response = $gateway_service->fire($user_aggy->getEmailAddress());
             }//@todo finish logic for entity_type != user::class
         } else {
-            if($event->sentTo['entity_type'] == User::class) {
+            if ($event->sentTo['entity_type'] == User::class) {
                 $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
             }
         }

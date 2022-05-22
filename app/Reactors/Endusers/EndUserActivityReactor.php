@@ -21,7 +21,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     {
         //Mail::to($addy)->send(new NewGrandOpeningLead($payload));
         $lead = Lead::find($event->lead);
-        if (!AppState::isSimuationMode()) {
+        if (! AppState::isSimuationMode()) {
             Mail::to($lead->email)->send(new EmailFromRep($event->data, $event->lead, $event->user));
         }
     }
@@ -31,7 +31,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         $lead = Lead::find($event->lead);
         $msg = $event->data['message'];
 
-        if (!AppState::isSimuationMode()) {
+        if (! AppState::isSimuationMode()) {
             FireTwilioMsg::dispatch($lead->primary_phone, $msg)->onQueue('grp-' . env('APP_ENV') . '-jobs');
         }
     }
@@ -55,7 +55,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
 
     public function onLeadProfilePictureMoved(\App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved $event)
     {
-        if(!$event->oldFile){
+        if (! $event->oldFile) {
             return;
         }
         EndUserActivityAggregate::retrieve($event->aggregateRootUuid())->recordThat(new \App\StorableEvents\Endusers\Leads\OldLeadProfilePictureDeleted($event->oldFile))->persist();
@@ -70,7 +70,7 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     {
         $file = $data['profile_picture'] ?? false;
 
-        if (!$file) {
+        if (! $file) {
             return;
         }
         $destKey = "{$data['client_id']}/{$file['uuid']}";
@@ -84,6 +84,5 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
             $aggy->recordThat(new LeadProfilePictureMoved($file));
         }
         $aggy->persist();
-
     }
 }

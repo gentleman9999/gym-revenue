@@ -1,5 +1,10 @@
 <template>
-    <dashboard-widget-modal title="Index" v-bind="$attrs" ref="modal" page-route="Index">
+    <dashboard-widget-modal
+        title="Index"
+        v-bind="$attrs"
+        ref="modal"
+        page-route="Index"
+    >
     </dashboard-widget-modal>
 </template>
 <script>

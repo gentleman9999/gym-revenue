@@ -3,14 +3,27 @@
         <label>Seeing Who You Can Impersonate...</label>
     </div>
     <div v-else>
-        <p>Scroll through this list to select a user you want to impersonate.</p>
+        <p>
+            Scroll through this list to select a user you want to impersonate.
+        </p>
         <div v-if="users.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
-            <table class="table w-full table-compact" :class="{ 'table-zebra': true }">
+            <table
+                class="table w-full table-compact"
+                :class="{ 'table-zebra': true }"
+            >
                 <tbody>
                     <tr v-for="(user, idx) in users">
                         <td>{{ user.name }}</td>
                         <td>{{ user.role }}</td>
-                        <td> <button type="button" class="btn btn-info" @click="impersonateUser(user.userId)"> Impersonate </button></td>
+                        <td>
+                            <button
+                                type="button"
+                                class="btn btn-info"
+                                @click="impersonateUser(user.userId)"
+                            >
+                                Impersonate
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -32,8 +45,8 @@ export default {
     data() {
         return {
             loading: false,
-            users: []
-        }
+            users: [],
+        };
     },
     computed: {},
     methods: {
@@ -41,27 +54,26 @@ export default {
             let _this = this;
             this.loading = true;
 
-            axios.post('/impersonation/users', {})
+            axios
+                .post("/impersonation/users", {})
                 .then(({ data }) => {
                     _this.loading = false;
                     _this.users = data;
                 })
-                .catch(err => {
+                .catch((err) => {
                     _this.loading = false;
                     _this.users = [];
-                })
+                });
         },
         impersonateUser(userId) {
-            Inertia.post(route("impersonation.start", { victimId: userId}));
-            this.$emit('close');
-        }
+            Inertia.post(route("impersonation.start", { victimId: userId }));
+            this.$emit("close");
+        },
     },
     mounted() {
         this.getList();
-    }
-}
+    },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

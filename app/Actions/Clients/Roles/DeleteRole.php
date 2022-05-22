@@ -2,7 +2,6 @@
 
 namespace App\Actions\Clients\Roles;
 
-use App\Models\Clients\Location;
 use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -32,12 +31,14 @@ class DeleteRole
         $role = Role::findOrFail($id);
         $client_id = $current_user->currentClientId();
         ClientAggregate::retrieve($client_id)->deleteRole($current_user->id, $id)->persist();
+
         return $role;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('roles.delete', Role::class);
     }
 
@@ -51,6 +52,5 @@ class DeleteRole
         Alert::success("Role '{$role->name}' was deleted")->flash();
 
         return Redirect::route('roles');
-
     }
 }

@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserReceivedTextMsg extends ShouldBeStored
 {
-    public $user, $template, $response, $client;
+    public $user;
+    public $template;
+    public $response;
+    public $client;
 
     public function __construct($user, $template, $response, $client = null)
     {

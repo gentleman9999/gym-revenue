@@ -7,8 +7,8 @@ use App\Imports\LocationsImportWithHeader;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
 use App\StorableEvents\Clients\Locations\LocationCreated;
-use App\StorableEvents\Clients\Locations\LocationImported;
 use App\StorableEvents\Clients\Locations\LocationDeleted;
+use App\StorableEvents\Clients\Locations\LocationImported;
 use App\StorableEvents\Clients\Locations\LocationRestored;
 use App\StorableEvents\Clients\Locations\LocationTrashed;
 use App\StorableEvents\Clients\Locations\LocationUpdated;
@@ -33,14 +33,12 @@ class ClientLocationsProjector extends Projector
 
     public function onLocationImported(LocationImported $event)
     {
-
-        $headings = (new HeadingRowImport)->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
-        if(in_array($headings[0][0][0], (new Location())->getFillable())) {
+        $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        if (in_array($headings[0][0][0], (new Location())->getFillable())) {
             Excel::import(new LocationsImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         } else {
             Excel::import(new LocationsImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         }
-
     }
 
     public function onLocationUpdated(LocationUpdated $event)
@@ -48,7 +46,7 @@ class ClientLocationsProjector extends Projector
         Location::findOrFail($event->payload['id'])->updateOrFail($event->payload);
 
         foreach ($this->details as $field) {
-            LocationDetails::createOrUpdateRecord($event->payload['id'],$event->client, $field, $event->payload[$field] ?? null);
+            LocationDetails::createOrUpdateRecord($event->payload['id'], $event->client, $field, $event->payload[$field] ?? null);
         }
     }
 

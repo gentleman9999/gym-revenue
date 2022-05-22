@@ -10,6 +10,6 @@ class ClientBillableActivity extends Model
     use SoftDeletes;
 
     protected $fillable = ['client_id',
-        'desc', 'entity_type', 'entity_id', 'units', 'misc', 'triggered_by_user_id'
+        'desc', 'entity_type', 'entity_id', 'units', 'misc', 'triggered_by_user_id',
     ];
 }

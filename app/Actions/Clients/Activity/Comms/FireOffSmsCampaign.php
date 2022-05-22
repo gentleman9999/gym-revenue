@@ -29,38 +29,32 @@ class FireOffSmsCampaign
         $gateway = null;
         $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
             ->findOrFail($sms_campaign_id);
-        foreach ($campaign->assigned_template as $assigned_template)
-        {
+        foreach ($campaign->assigned_template as $assigned_template) {
             $templates[] = SmsTemplates::with('gateway')->findOrFail($assigned_template->value);
         }
-        foreach ($templates as $template)
-        {
+        foreach ($templates as $template) {
             $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
             $markups[] = $template->markup;
         }
-        foreach ($gatewayIntegrations as $gatewayIntegration)
-        {
+        foreach ($gatewayIntegrations as $gatewayIntegration) {
             $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         }
-        foreach ($campaign->assigned_audience as $assigned_audience)
-        {
+        foreach ($campaign->assigned_audience as $assigned_audience) {
             $audiences[] = CommAudience::findOrFail($assigned_audience->value);
         }
-        foreach ($audiences as $audience)
-        {
+        foreach ($audiences as $audience) {
             $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
         }
 
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
-        foreach ($audience_members as $audience_member_breakdown)
-        {
-            foreach ($audience_member_breakdown as $audience_member)
-            {
+        foreach ($audience_members as $audience_member_breakdown) {
+            foreach ($audience_member_breakdown as $audience_member) {
                 $sent_to = [];
                 $member = null;
                 switch ($audience_member->entity_type) {
                     case 'user':
                         $member = User::with('phone')->find($audience_member->entity_id);
+
                         break;
                     default:
                         //todo:report error - unknown entity_Type
@@ -69,9 +63,8 @@ class FireOffSmsCampaign
                 if ($member) {
                     if ($member->phone) {
                         //TODO: we need to scrutinize phone format here
-                        if (!AppState::isSimuationMode()) {
-                            foreach ($markups as $markup)
-                            {
+                        if (! AppState::isSimuationMode()) {
+                            foreach ($markups as $markup) {
                                 $sent_to[] = [
                                     'entity_type' => $audience_member->entity_type,
                                     'entity_id' => $audience_member->entity_id,
@@ -93,6 +86,7 @@ class FireOffSmsCampaign
         foreach ($this->tokens as $token) {
             $string = str_replace("%{$token}%", $data[$token] ?? 'UNKNOWN_TOKEN', $string);
         }
+
         return $string;
     }
 

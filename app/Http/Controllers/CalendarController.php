@@ -28,7 +28,6 @@ class CalendarController extends Controller
                 ->with('type', 'attendees', 'files')
                 ->filter($request->only('search', 'start', 'end', 'viewUser'))
                 ->get();
-
         } else {
             $eventsForTeam = [];
         }
@@ -36,13 +35,10 @@ class CalendarController extends Controller
         foreach ($eventsForTeam as $key => $event) {
             $user_attendees = [];
             $lead_attendees = [];
-            if($event->attendees) {
-                foreach($event->attendees as $attendee)
-                {
-                    if($attendee->entity_type == User::class)
-                    {
-                        if(request()->user()->id == $attendee->entity_id)
-                        {
+            if ($event->attendees) {
+                foreach ($event->attendees as $attendee) {
+                    if ($attendee->entity_type == User::class) {
+                        if (request()->user()->id == $attendee->entity_id) {
                             $eventsForTeam[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
                                 ->whereEntityId($event['id'])
                                 ->whereUserId($attendee->entity_id)
@@ -55,12 +51,10 @@ class CalendarController extends Controller
                             'reminder' => Reminder::whereEntityType(CalendarEvent::class)
                                 ->whereEntityId($event['id'])
                                 ->whereUserId($attendee->entity_id)
-                                ->first() ?? null
+                                ->first() ?? null,
                         ];
-
                     }
-                    if($attendee->entity_type == Lead::class)
-                    {
+                    if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
                     }
                 }
@@ -100,7 +94,7 @@ class CalendarController extends Controller
             'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'client_id' => $client_id,
             'client_users' => $users,
-            'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get()
+            'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
         ]);
     }
 
@@ -122,6 +116,7 @@ class CalendarController extends Controller
     public function createEventType(Request $request)
     {
         $client_id = request()->user()->currentClientId();
+
         return Inertia::render('Calendar/EventTypes/Create', [
         ]);
     }
@@ -132,8 +127,7 @@ class CalendarController extends Controller
         $calendarEventType = CalendarEventType::findOrFail($id);
 
         return Inertia::render('Calendar/EventTypes/Edit', [
-            'calendarEventType' => $calendarEventType
+            'calendarEventType' => $calendarEventType,
         ]);
     }
-
 }

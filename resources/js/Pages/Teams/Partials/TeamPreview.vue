@@ -40,7 +40,9 @@
                                 {{ user.user.roles[0]?.name }}
                             </div>
                             <div
-                                v-else-if="user.user.roles[0]?.name == 'Account Owner'"
+                                v-else-if="
+                                    user.user.roles[0]?.name == 'Account Owner'
+                                "
                                 class="badge badge-success badge-outline"
                             >
                                 {{ user.user.roles[0]?.name }}

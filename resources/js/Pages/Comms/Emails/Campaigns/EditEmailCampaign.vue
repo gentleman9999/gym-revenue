@@ -60,17 +60,14 @@ export default {
         },
         assignedTemplate: {
             required: false,
-            type: String
+            type: String,
         },
         assignedAudience: {
             required: false,
-            type: String
-        }
-
+            type: String,
+        },
     },
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

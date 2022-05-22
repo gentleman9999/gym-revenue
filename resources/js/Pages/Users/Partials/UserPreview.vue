@@ -26,7 +26,10 @@
                 {{ user.role }}
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3" v-if="user.classification.value">
+        <div
+            class="field col-span-6 lg:col-span-3"
+            v-if="user.classification.value"
+        >
             <label>Classification:</label>
             <div class="data">
                 {{ user.classification.value }}

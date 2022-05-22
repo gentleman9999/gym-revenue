@@ -25,5 +25,4 @@ class MembershipTypeSeeder extends Seeder
             }
         }
     }
-
 }

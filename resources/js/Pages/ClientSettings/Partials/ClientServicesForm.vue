@@ -5,17 +5,19 @@
         <template #description> Enable to disable Client Services.</template>
 
         <template #form>
-            <div class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
-                 v-for="service in availableServices">
+            <div
+                class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
+                v-for="service in availableServices"
+            >
                 <input
                     :id="service.slug"
                     type="checkbox"
                     v-model="form.services"
                     :value="service.slug"
                 />
-                <jet-label :for="service.slug" :value="service.feature_name"/>
+                <jet-label :for="service.slug" :value="service.feature_name" />
             </div>
-            <jet-input-error :message="form.errors.services" class="mt-2"/>
+            <jet-input-error :message="form.errors.services" class="mt-2" />
         </template>
 
         <template #actions>
@@ -34,14 +36,14 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 import JetActionMessage from "@/Jetstream/ActionMessage";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import {useForm} from "@inertiajs/inertia-vue3";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
@@ -62,13 +64,17 @@ export default defineComponent({
         },
     },
     setup(props) {
-        console.log({services: props.services, availableServices: props.availableServices});
-        const form = useForm({
-            services: props.services.map(detail => detail.value),
+        console.log({
+            services: props.services,
+            availableServices: props.availableServices,
         });
-        let handleSubmit = () => form.post(route('settings.client-services.update'));
+        const form = useForm({
+            services: props.services.map((detail) => detail.value),
+        });
+        let handleSubmit = () =>
+            form.post(route("settings.client-services.update"));
 
-        return {form, handleSubmit};
+        return { form, handleSubmit };
     },
 });
 </script>

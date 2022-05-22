@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LeadSource extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -20,7 +22,6 @@ class LeadSource extends Model
     protected $fillable = ['id','client_id','name', 'source', 'ui', 'active', 'misc'];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
-
 }

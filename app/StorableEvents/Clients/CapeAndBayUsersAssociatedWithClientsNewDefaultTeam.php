@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class CapeAndBayUsersAssociatedWithClientsNewDefaultTeam extends ShouldBeStored
 {
-    public $client, $team, $payload;
+    public $client;
+    public $team;
+    public $payload;
 
     public function __construct(string $client, string $team, array $payload)
     {

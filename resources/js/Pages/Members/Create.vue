@@ -1,7 +1,7 @@
 <template>
     <app-layout title="Create New Member">
         <template #header>
-            <h2 class="font-semibold text-xl  leading-tight">
+            <h2 class="font-semibold text-xl leading-tight">
                 Create New Member
             </h2>
         </template>
@@ -16,23 +16,23 @@
                     :lead_statuses="lead_statuses"
                     :lead_sources="lead_sources"
                     :lead_owners="lead_owners"
-                    :available_services="available_services"/>
+                    :available_services="available_services"
+                />
             </div>
         </div>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout'
-import Button from '@/Components/Button'
-import JetFormSection from '@/Jetstream/FormSection'
+import { defineComponent } from "vue";
+import AppLayout from "@/Layouts/AppLayout";
+import Button from "@/Components/Button";
+import JetFormSection from "@/Jetstream/FormSection";
 
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
 
-import MemberForm from '@/Pages/Members/Partials/MemberForm'
-
+import MemberForm from "@/Pages/Members/Partials/MemberForm";
 
 export default defineComponent({
     components: {
@@ -41,12 +41,8 @@ export default defineComponent({
         JetFormSection,
         JetInputError,
         JetLabel,
-        MemberForm
+        MemberForm,
     },
-    props: [
-        'user_id',
-        'locations',
-        'available_services',
-    ],
-})
+    props: ["user_id", "locations", "available_services"],
+});
 </script>

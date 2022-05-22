@@ -1,70 +1,134 @@
 <template>
-    <Head title="Register"/>
+    <Head title="Register" />
 
     <jet-authentication-card>
         <template #logo>
-            <jet-authentication-card-logo/>
+            <jet-authentication-card-logo />
         </template>
 
-        <jet-validation-errors class="mb-4"/>
+        <jet-validation-errors class="mb-4" />
         <form @submit.prevent="submit" v-if="showRegistration">
-            <p class="text-center"> Complete the registration to activate your account for </p>
+            <p class="text-center">
+                Complete the registration to activate your account for
+            </p>
             <div v-if="extraImg !== ''" class="text-center">
-                <br/>
-                <p><img :src="extraImg" style="display:unset"></p>
-                <br/>
+                <br />
+                <p><img :src="extraImg" style="display: unset" /></p>
+                <br />
             </div>
-            <p v-if="extraImg === ''" class="text-center"><b>{{ client }}</b></p>
-            <br/>
-            <p> Role - <b>{{ role }}</b></p>
-            <p> Team - <b>{{ team }}</b></p>
-            <br/>
+            <p v-if="extraImg === ''" class="text-center">
+                <b>{{ client }}</b>
+            </p>
+            <br />
+            <p>
+                Role - <b>{{ role }}</b>
+            </p>
+            <p>
+                Team - <b>{{ team }}</b>
+            </p>
+            <br />
 
             <div>
-                <jet-label for="name" value="Name"/>
-                <input id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus autocomplete="name"
+                <jet-label for="name" value="Name" />
+                <input
+                    id="name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.name"
+                    required
+                    autofocus
+                    autocomplete="name"
                 />
             </div>
 
             <div class="mt-4">
-                <jet-label for="email" value="Email"/>
-                <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required />
+                <jet-label for="email" value="Email" />
+                <input
+                    id="email"
+                    type="email"
+                    class="mt-1 block w-full"
+                    v-model="form.email"
+                    required
+                />
             </div>
 
             <div class="mt-4">
-                <jet-label for="password" value="Password"/>
-                <input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
-                autocomplete="new-password" />
+                <jet-label for="password" value="Password" />
+                <input
+                    id="password"
+                    type="password"
+                    class="mt-1 block w-full"
+                    v-model="form.password"
+                    required
+                    autocomplete="new-password"
+                />
             </div>
 
             <div class="mt-4">
-                <jet-label for="password_confirmation" value="Confirm Password"/>
-                <input id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation"
-                required autocomplete="new-password" />
+                <jet-label
+                    for="password_confirmation"
+                    value="Confirm Password"
+                />
+                <input
+                    id="password_confirmation"
+                    type="password"
+                    class="mt-1 block w-full"
+                    v-model="form.password_confirmation"
+                    required
+                    autocomplete="new-password"
+                />
             </div>
 
-            <div class="mt-4" v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature">
+            <div
+                class="mt-4"
+                v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature"
+            >
                 <jet-label for="terms">
                     <div class="flex items-center">
-                        <input type="checkbox" class="checkbox" name="terms" id="terms" v-model="form.terms"/>
+                        <input
+                            type="checkbox"
+                            class="checkbox"
+                            name="terms"
+                            id="terms"
+                            v-model="form.terms"
+                        />
 
                         <div class="ml-2">
                             Check the box and don't tell people about our shit!
-                            <br/> You can look at the <a target="_blank" :href="route('terms.show')"
-                                                         class="underline text-sm  hover:">Terms of Service</a> and <a
-                            target="_blank" :href="route('policy.show')" class="underline text-sm  hover:">Privacy
-                            Policy</a> too.
+                            <br />
+                            You can look at the
+                            <a
+                                target="_blank"
+                                :href="route('terms.show')"
+                                class="underline text-sm hover:"
+                                >Terms of Service</a
+                            >
+                            and
+                            <a
+                                target="_blank"
+                                :href="route('policy.show')"
+                                class="underline text-sm hover:"
+                                >Privacy Policy</a
+                            >
+                            too.
                         </div>
                     </div>
                 </jet-label>
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <inertia-link :href="route('login')" class="underline text-sm  hover:">
+                <inertia-link
+                    :href="route('login')"
+                    class="underline text-sm hover:"
+                >
                     Already registered?
                 </inertia-link>
 
-                <Button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button
+                    class="ml-4"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
                     Register
                 </Button>
             </div>
@@ -76,14 +140,13 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
-import Button from '@/Components/Button'
+import { defineComponent } from "vue";
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
+import Button from "@/Components/Button";
 
-
-import JetLabel from '@/Jetstream/Label'
-import JetValidationErrors from '@/Jetstream/ValidationErrors'
+import JetLabel from "@/Jetstream/Label";
+import JetValidationErrors from "@/Jetstream/ValidationErrors";
 
 export default defineComponent({
     components: {
@@ -94,32 +157,42 @@ export default defineComponent({
         JetLabel,
         JetValidationErrors,
     },
-    props: ['showRegistration', 'errorMsg', 'role', 'team', 'teamId', 'client', 'clientId', 'extraImg'],
+    props: [
+        "showRegistration",
+        "errorMsg",
+        "role",
+        "team",
+        "teamId",
+        "client",
+        "clientId",
+        "extraImg",
+    ],
     data() {
         return {
             form: this.$inertia.form({
-                name: '',
-                email: '',
-                password: '',
-                password_confirmation: '',
+                name: "",
+                email: "",
+                password: "",
+                password_confirmation: "",
                 role: this.role,
                 team: this.team,
                 client: this.client,
                 terms: false,
-            })
-        }
+            }),
+        };
     },
     methods: {
         submit() {
-            this.form.post(this.route('register'), {
-                onFinish: () => this.form.reset('password', 'password_confirmation'),
-            })
-        }
+            this.form.post(this.route("register"), {
+                onFinish: () =>
+                    this.form.reset("password", "password_confirmation"),
+            });
+        },
     },
     mounted() {
         let urlSearchParams = new URLSearchParams(window.location.search);
         let params = Object.fromEntries(urlSearchParams.entries());
         console.log(this.showRegistration);
-    }
-})
+    },
+});
 </script>

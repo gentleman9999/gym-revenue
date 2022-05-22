@@ -11,13 +11,13 @@
 
         <jet-bar-container class="space-y-8">
             <div class="shadow stats">
-<!--                <div class="stat">-->
-<!--                    <div class="stat-title">Audience</div>-->
-<!--                    <div class="stat-value">-->
-<!--                        {{ stats["total_audience"] }}-->
-<!--                    </div>-->
-<!--                    <div class="stat-desc">Total</div>-->
-<!--                </div>-->
+                <!--                <div class="stat">-->
+                <!--                    <div class="stat-title">Audience</div>-->
+                <!--                    <div class="stat-value">-->
+                <!--                        {{ stats["total_audience"] }}-->
+                <!--                    </div>-->
+                <!--                    <div class="stat-desc">Total</div>-->
+                <!--                </div>-->
                 <mass-comm-stat
                     v-for="(lbl, slug) in audiences"
                     :title="lbl"
@@ -158,7 +158,8 @@ import JetDropdown from "@/Components/Dropdown";
 import JetBarContainer from "@/Components/JetBarContainer";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import MassCommDataButton from "./Partials/MassCommDataButton";
 import MassCommStat from "./Partials/MassCommStat";
 
@@ -176,14 +177,17 @@ export default defineComponent({
     props: ["title", "audiences", "activeAudience", "stats", "historyFeed"],
     setup(props) {
         const baseRoute = "comms.dashboard";
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(baseRoute, {
-            audience: props.activeAudience,
-        });
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+            baseRoute,
+            {
+                audience: props.activeAudience,
+            }
+        );
         const fields = [
             { name: "type", label: "action", sortable: false },
             { name: "recordName", label: "template", sortable: false },
-            {name: "date", sortable: false},
-            {name: "by", sortable: false},
+            { name: "date", sortable: false },
+            { name: "by", sortable: false },
         ];
 
         const comingSoon = () => {
@@ -200,12 +204,12 @@ export default defineComponent({
             email: {
                 label: "+ New Email",
                 handler: comingSoon,
-                class: 'btn-primary'
+                class: "btn-primary",
             },
             sms: {
                 label: "+ New Sms",
                 handler: comingSoon,
-                class: 'btn-primary'
+                class: "btn-primary",
             },
         };
 
@@ -221,7 +225,7 @@ export default defineComponent({
             form,
             reset,
             clearFilters,
-            clearSearch
+            clearSearch,
         };
     },
 });

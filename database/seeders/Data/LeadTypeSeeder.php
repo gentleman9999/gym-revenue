@@ -26,7 +26,7 @@ class LeadTypeSeeder extends Seeder
             'facebook',
             'snapchat',
             'contact_us',
-            'mailing_list'
+            'mailing_list',
         ];
 
         $clients = Client::all();
@@ -37,5 +37,4 @@ class LeadTypeSeeder extends Seeder
             }
         }
     }
-
 }

@@ -48,14 +48,17 @@
                             value="Locations"
                         />
                         <multiselect
-                            v-model="
-                                form.trialMembershipTypes[index].locations
-                            "
+                            v-model="form.trialMembershipTypes[index].locations"
                             :id="`locations${index}`"
                             mode="tags"
                             :close-on-select="false"
                             :create-option="true"
-                            :options="locations.map(location=>({label: location.name, value: location.id}))"
+                            :options="
+                                locations.map((location) => ({
+                                    label: location.name,
+                                    value: location.id,
+                                }))
+                            "
                             :classes="multiselectClasses"
                         />
                     </div>
@@ -101,7 +104,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import "@vueform/multiselect/themes/default.css";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 library.add(faPlus);
 
@@ -122,8 +125,8 @@ export default defineComponent({
         },
         locations: {
             type: Array,
-            default: []
-        }
+            default: [],
+        },
     },
     setup(props) {
         const slugInputs = ref([]);
@@ -210,7 +213,7 @@ export default defineComponent({
             setSlugInputRef,
             setTypeNameInputRef,
             setTrialLengthInputRef,
-            multiselectClasses: getDefaultMultiselectTWClasses()
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 });

@@ -1,6 +1,6 @@
 <template>
     <app-layout title="Lead Statuses">
-        <page-toolbar-nav title="Lead Statuses" :links="navLinks"/>
+        <page-toolbar-nav title="Lead Statuses" :links="navLinks" />
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="max-w-md space-y-2">
@@ -69,7 +69,7 @@ export default defineComponent({
         JetSectionBorder,
         Button,
         FontAwesomeIcon,
-        PageToolbarNav
+        PageToolbarNav,
     },
     setup(props) {
         const comingSoon = () => {
@@ -107,52 +107,52 @@ export default defineComponent({
 
         const navLinks = [
             {
-                label: 'Dashboard',
-                href: '#',
+                label: "Dashboard",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Calendar',
-                href: '#',
+                label: "Calendar",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Leads',
-                href: '#',
+                label: "Leads",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Tasks',
-                href: '#',
+                label: "Tasks",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Contacts',
-                href: '#',
+                label: "Contacts",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Consultants',
-                href: '#',
+                label: "Consultants",
+                href: "#",
                 onClick: comingSoon,
-                active: false
+                active: false,
             },
             {
-                label: 'Lead Sources',
-                href: route('data.leads.sources'),
+                label: "Lead Sources",
+                href: route("data.leads.sources"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
-                label: 'Lead Statuses',
-                href: route('data.leads.statuses'),
+                label: "Lead Statuses",
+                href: route("data.leads.statuses"),
                 onClick: null,
-                active: true
+                active: true,
             },
         ];
 
@@ -161,6 +161,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -33,11 +33,7 @@
             <form @submit.prevent="$emit('submitted')">
                 <div
                     class="px-4 py-5 bg-base-300 sm:p-6 shadow border border-secondary border-1"
-                    :class="
-                        hasActions
-                            ? ''
-                            : 'sm:rounded-md'
-                    "
+                    :class="hasActions ? '' : 'sm:rounded-md'"
                 >
                     <div class="grid grid-cols-6 gap-6">
                         <slot name="form"></slot>

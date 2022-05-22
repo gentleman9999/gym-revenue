@@ -2,8 +2,8 @@
 
 namespace App\Actions\Clients\Roles;
 
-use App\Models\Clients\Location;
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -36,6 +36,7 @@ class TrashRole
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('roles.trash', Role::class);
     }
 

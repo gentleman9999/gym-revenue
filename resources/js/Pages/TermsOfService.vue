@@ -1,31 +1,33 @@
 <template>
     <Head title="Terms of Service" />
 
-    <div class="font-sans  antialiased">
+    <div class="font-sans antialiased">
         <div class="pt-4 bg-base-100">
             <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
                 <div>
                     <jet-authentication-card-logo />
                 </div>
 
-                <div v-html="terms" class="w-full sm:max-w-2xl mt-6 p-6 bg-base-300 shadow-md overflow-hidden sm:rounded-lg prose">
-                </div>
+                <div
+                    v-html="terms"
+                    class="w-full sm:max-w-2xl mt-6 p-6 bg-base-300 shadow-md overflow-hidden sm:rounded-lg prose"
+                ></div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import { Head } from '@inertiajs/inertia-vue3';
-import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
+import { defineComponent } from "vue";
+import { Head } from "@inertiajs/inertia-vue3";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
 
 export default defineComponent({
-    props: ['terms'],
+    props: ["terms"],
 
     components: {
         Head,
         JetAuthenticationCardLogo,
     },
-})
+});
 </script>

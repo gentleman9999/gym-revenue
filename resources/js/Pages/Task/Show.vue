@@ -1,10 +1,6 @@
 <template>
     <app-layout :title="title">
-
-        <page-toolbar-nav
-            title="Tasks"
-            :links="navLinks"
-        />
+        <page-toolbar-nav title="Tasks" :links="navLinks" />
         <gym-revenue-crud
             base-route="tasks"
             model-name="Task"
@@ -31,9 +27,7 @@
             @confirm="handleConfirmDelete"
             @cancel="confirmDelete = null"
         >
-            Are you sure you want to delete task'{{
-                confirmDelete.title
-            }}'
+            Are you sure you want to delete task'{{ confirmDelete.title }}'
         </confirm>
 
         <daisy-modal
@@ -88,11 +82,10 @@ export default defineComponent({
         JetBarContainer,
         Button,
         PageToolbarNav,
-        CalendarEventForm
+        CalendarEventForm,
     },
     props: ["tasks", "filters"],
     setup(props) {
-
         const createEventModal = ref();
         const editEventModal = ref();
         const selectedCalendarEvent = ref(null);
@@ -119,7 +112,7 @@ export default defineComponent({
         const handleClickNewTask = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
-        }
+        };
 
         const handleConfirmDelete = () => {
             Inertia.delete(route("tasks.delete", confirmDelete.value));
@@ -127,19 +120,18 @@ export default defineComponent({
         };
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
-            console.log('click delete', item);
+            console.log("click delete", item);
             confirmDelete.value = item;
         };
-
 
         const fields = [
             "title",
             "created_at",
             "updated_at",
             {
-                name: 'event_completion',
-                label: "Completed At"
-            }
+                name: "event_completion",
+                label: "Completed At",
+            },
         ];
 
         let navLinks = [
@@ -147,19 +139,19 @@ export default defineComponent({
                 label: "Calendar",
                 href: route("calendar"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Event Types",
                 href: route("calendar.event_types"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Tasks",
                 href: route("tasks"),
                 onClick: null,
-                active: true
+                active: true,
             },
         ];
 
@@ -167,7 +159,7 @@ export default defineComponent({
             create: {
                 label: "New Task",
                 handler: handleClickNewTask,
-                class: 'btn-primary'
+                class: "btn-primary",
             },
         };
 
@@ -188,7 +180,7 @@ export default defineComponent({
             editEventModal,
             selectedCalendarEvent,
             closeModals,
-            topActions
+            topActions,
         };
     },
 });

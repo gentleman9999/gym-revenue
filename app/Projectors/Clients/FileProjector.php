@@ -18,7 +18,7 @@ class FileProjector extends Projector
     {
         //get only the keys we care about (the ones marked as fillable)
         $file_table_data = array_filter($event->data, function ($key) {
-            return in_array($key, (new File)->getFillable());
+            return in_array($key, (new File())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
         $file = File::create($file_table_data);
         //TODO: consider moving this to reactor?

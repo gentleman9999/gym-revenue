@@ -25,5 +25,4 @@ class ClientAccountException extends Exception
     {
         return new self('There are no Cape & Bay users to add to this team. Add some before calling this function.');
     }
-
 }

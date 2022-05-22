@@ -14,7 +14,7 @@ import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCalendar } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {parseNotificationResponse} from "@/utils/parseNotificationResponse";
+import { parseNotificationResponse } from "@/utils/parseNotificationResponse";
 library.add(faCalendar);
 
 export default defineComponent({
@@ -26,18 +26,19 @@ export default defineComponent({
     },
     components: {
         BaseNotification,
-        FontAwesomeIcon
+        FontAwesomeIcon,
     },
     setup(props) {
-
-        const text = computed(()=> parseNotificationResponse((props.notification)).text);
+        const text = computed(
+            () => parseNotificationResponse(props.notification).text
+        );
 
         const handleClick = () => {
-            Inertia.visit(route('calendar'));
-        }
+            Inertia.visit(route("calendar"));
+        };
         return {
             handleClick,
-            text
+            text,
         };
     },
 });

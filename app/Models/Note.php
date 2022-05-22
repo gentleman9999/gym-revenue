@@ -9,14 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Note extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $keyType = 'string';
 
     public $incrementing = false;
 
     protected $fillable = ['id', 'entity_id', 'entity_type', 'title', 'note', 'created_by_user_id', 'active'];
-
 
     public function scopeFilter($query, array $filters)
     {

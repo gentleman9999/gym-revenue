@@ -4,9 +4,7 @@ namespace App\Actions\Users\Reminders;
 
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Reminder;
-use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class TriggerReminder

@@ -53,7 +53,7 @@ class GetFilesFromFolder
             return $client->execute($command);
         });
 
-        if (!empty($result_list_objects)) {
+        if (! empty($result_list_objects)) {
             foreach (($result_list_objects['Contents'] ?? []) as $object_file) {
                 $object_path = $object_file['Key'];
                 if ($object_path != "$folder/") {
@@ -68,16 +68,15 @@ class GetFilesFromFolder
                     $file_stack[$object_path] = [
                         'LastModified' => $object_stamp,
                         'Extension' => $extension,
-                        'Thumbnail' => in_array($extension, ['png', 'jpg', 'webp', 'jpeg']) ? "https://" : null
+                        'Thumbnail' => in_array($extension, ['png', 'jpg', 'webp', 'jpeg']) ? "https://" : null,
                     ];
                 }
-
             }
         }
 
         $file_stack = collect($file_stack)->sortByDesc('LastModified');
         dd($file_stack->toArray());
+
         return $file_stack->toArray();
     }
-
 }

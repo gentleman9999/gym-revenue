@@ -3,14 +3,15 @@
 namespace App\Models\GatewayProviders;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class GatewayProvider extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -19,11 +20,11 @@ class GatewayProvider extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'name', 'slug', 'desc', 'vendor', 'provider_type','profile_class', 'provider_rate', 'gr_commission_rate', 'gr_commission_bulk_rate','active', 'misc'
+        'name', 'slug', 'desc', 'vendor', 'provider_type','profile_class', 'provider_rate', 'gr_commission_rate', 'gr_commission_bulk_rate','active', 'misc',
     ];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 
     public static function getAllProvidersAsArray()
@@ -32,8 +33,7 @@ class GatewayProvider extends Model
 
         $records = self::whereActive(1)->get();
 
-        foreach($records as $record)
-        {
+        foreach ($records as $record) {
             $results[$record->slug] = $record->toArray();
         }
 

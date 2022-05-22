@@ -18,7 +18,11 @@ use Illuminate\Notifications\Notifiable;
  */
 class CalendarEventType extends Model
 {
-    use Notifiable, SoftDeletes, Uuid, HasFactory, Sortable;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
+    use HasFactory;
+    use Sortable;
 
     protected $primaryKey = 'id';
 
@@ -52,6 +56,7 @@ class CalendarEventType extends Model
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
-        });;
+        });
+        ;
     }
 }

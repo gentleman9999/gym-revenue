@@ -357,22 +357,22 @@ export default defineComponent({
         JetSectionBorder,
         Multiselect,
     },
-    props:{
-        team:{
-            type: Object
+    props: {
+        team: {
+            type: Object,
         },
         availableRoles: {
             type: Array,
-            default: []
+            default: [],
         },
         userPermissions: {
             type: Array,
-            default: []
+            default: [],
         },
-        users:{
+        users: {
             type: Array,
-            default: []
-        }
+            default: [],
+        },
     },
     data() {
         return {

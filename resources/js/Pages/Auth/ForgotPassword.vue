@@ -6,8 +6,10 @@
             <jet-authentication-card-logo />
         </template>
 
-        <div class="mb-4 text-sm ">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+        <div class="mb-4 text-sm">
+            Forgot your password? No problem. Just let us know your email
+            address and we will email you a password reset link that will allow
+            you to choose a new one.
         </div>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -19,11 +21,21 @@
         <form @submit.prevent="submit">
             <div>
                 <jet-label for="email" value="Email" />
-                <input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
+                <input
+                    id="email"
+                    type="email"
+                    class="mt-1 block w-full"
+                    v-model="form.email"
+                    required
+                    autofocus
+                />
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <Button
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
                     Email Password Reset Link
                 </Button>
             </div>
@@ -32,42 +44,42 @@
 </template>
 
 <script>
-    import { defineComponent } from 'vue'
-    import { Head } from '@inertiajs/inertia-vue3';
-    import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
-    import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
-    import Button from '@/Components/Button'
+import { defineComponent } from "vue";
+import { Head } from "@inertiajs/inertia-vue3";
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
+import Button from "@/Components/Button";
 
-    import JetLabel from '@/Jetstream/Label'
-    import JetValidationErrors from '@/Jetstream/ValidationErrors'
+import JetLabel from "@/Jetstream/Label";
+import JetValidationErrors from "@/Jetstream/ValidationErrors";
 
-    export default defineComponent({
-        components: {
-            Head,
-            JetAuthenticationCard,
-            JetAuthenticationCardLogo,
-            Button,
+export default defineComponent({
+    components: {
+        Head,
+        JetAuthenticationCard,
+        JetAuthenticationCardLogo,
+        Button,
 
-            JetLabel,
-            JetValidationErrors
+        JetLabel,
+        JetValidationErrors,
+    },
+
+    props: {
+        status: String,
+    },
+
+    data() {
+        return {
+            form: this.$inertia.form({
+                email: "",
+            }),
+        };
+    },
+
+    methods: {
+        submit() {
+            this.form.post(this.route("password.email"));
         },
-
-        props: {
-            status: String
-        },
-
-        data() {
-            return {
-                form: this.$inertia.form({
-                    email: ''
-                })
-            }
-        },
-
-        methods: {
-            submit() {
-                this.form.post(this.route('password.email'))
-            }
-        }
-    })
+    },
+});
 </script>

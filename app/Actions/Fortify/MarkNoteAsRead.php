@@ -2,12 +2,9 @@
 
 namespace App\Actions\Fortify;
 
-
 use App\Aggregates\Clients\NoteAggregate;
-use App\Models\ReadReceipt;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-
 
 class MarkNoteAsRead
 {
@@ -21,14 +18,14 @@ class MarkNoteAsRead
     public function rules()
     {
         return [
-            'client_id' =>['string', 'sometimes'],
+            'client_id' => ['string', 'sometimes'],
             'note' => ['array', 'nullable'],
         ];
     }
 
     public function handle($data, $current_user)
     {
-            NoteAggregate::retrieve($current_user->currentClientId())
+        NoteAggregate::retrieve($current_user->currentClientId())
                 ->createReadReciept($current_user->id, [
                 'note_id' => $data['note']['id'],
                 'read_by_user_id' => $current_user->id,
@@ -49,6 +46,5 @@ class MarkNoteAsRead
             $request->validated(),
             $request->user(),
         );
-
     }
 }

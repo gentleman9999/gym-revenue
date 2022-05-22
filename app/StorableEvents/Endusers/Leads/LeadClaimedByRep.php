@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class LeadClaimedByRep extends ShouldBeStored
 {
-    public $lead, $user, $client;
+    public $lead;
+    public $user;
+    public $client;
 
     public function __construct(string $lead, string $user, string $client)
     {

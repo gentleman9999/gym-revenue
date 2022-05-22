@@ -13,7 +13,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-
 class CreateCalendarEvent
 {
     use AsAction;
@@ -26,7 +25,7 @@ class CreateCalendarEvent
     public function rules()
     {
         return [
-            'title' =>['required', 'string','max:50'],
+            'title' => ['required', 'string','max:50'],
             'description' => ['string', 'nullable'],
             'full_day_event' => ['required', 'boolean'],
             'start' => ['required'],
@@ -42,43 +41,49 @@ class CreateCalendarEvent
     {
         $id = Uuid::new();
         $data['id'] = $id;
-        $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;; //Pulling eventType color for this table because that's how fullCalender.IO wants it
+        $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
+        ; //Pulling eventType color for this table because that's how fullCalender.IO wants it
 
-        if(isset($user->id))
-            $data['user_attendees'][] = $user->id; //If you make the event, you're automatically an attendee.
+        if (isset($user->id)) {
+            $data['user_attendees'][] = $user->id;
+        } //If you make the event, you're automatically an attendee.
 
-        if(!is_null($data['user_attendees'])) {
+        if (! is_null($data['user_attendees'])) {
             $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['user_attendees'] as $user) {
+            foreach ($data['user_attendees'] as $user) {
                 $user = User::whereId($user)->select('id', 'name', 'email')->first();
-                if($user) {
+                if ($user) {
                     CalendarAggregate::retrieve($data['client_id'])
-                        ->addCalendarAttendee($user->id ?? "Auto Generated",
+                        ->addCalendarAttendee(
+                            $user->id ?? "Auto Generated",
                             [
                         'entity_type' => User::class,
                         'entity_id' => $user->id,
                         'entity_data' => $user,
                         'calendar_event_id' => $id,
-                        'invitation_status' => 'Invitation Pending'
-                        ])->persist();
+                        'invitation_status' => 'Invitation Pending',
+                        ]
+                        )->persist();
                 }
             }
         }
 
-        if(!empty($data['lead_attendees'])) {
+        if (! empty($data['lead_attendees'])) {
             $data['lead_attendees'] = array_values(array_unique($data['lead_attendees'])); //This will dupe check and then re-index the array.
-            foreach($data['lead_attendees'] as $lead) {
+            foreach ($data['lead_attendees'] as $lead) {
                 $lead = Lead::whereId($lead)->select('id', 'first_name', 'last_name', 'email')->first();
-                if($lead) {
+                if ($lead) {
                     CalendarAggregate::retrieve($data['client_id'])
-                        ->addCalendarAttendee($user->id ?? "Auto Generated",
+                        ->addCalendarAttendee(
+                            $user->id ?? "Auto Generated",
                             [
                                 'entity_type' => Lead::class,
                                 'entity_id' => $lead->id,
                                 'entity_data' => $lead,
                                 'calendar_event_id' => $data['id'],
-                                'invitation_status' => 'Invitation Pending'
-                            ])->persist();
+                                'invitation_status' => 'Invitation Pending',
+                            ]
+                        )->persist();
                 }
             }
         }
@@ -86,8 +91,9 @@ class CreateCalendarEvent
         unset($data['user_attendees']);
         unset($data['lead_attendees']);
 
-        if($user)
+        if ($user) {
             $data['owner_id'] = $user->id;
+        }
 
         CalendarAggregate::retrieve($data['client_id'])
             ->createCalendarEvent($user->id ?? "Auto Generated", $data)
@@ -99,12 +105,12 @@ class CreateCalendarEvent
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.create', CalendarEvent::class);
     }
 
     public function asController(ActionRequest $request)
     {
-
         $calendar = $this->handle(
             $request->validated(),
             $request->user()
@@ -114,5 +120,4 @@ class CreateCalendarEvent
 
         return Redirect::back();
     }
-
 }

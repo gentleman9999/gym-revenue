@@ -2,8 +2,8 @@
 
 namespace App\Actions\Clients\Classifications;
 
-use App\Models\Clients\Classification;
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Classification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -35,6 +35,7 @@ class TrashClassification
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('classifications.trash', Classification::class);
     }
 

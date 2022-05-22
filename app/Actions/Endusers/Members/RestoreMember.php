@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Endusers\Member;
-use Bouncer;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -25,22 +24,23 @@ class RestoreMember
         ];
     }
 
-    public function handle($id, $user=null)
+    public function handle($id, $user = null)
     {
         $client_id = Member::withTrashed()->findOrFail($id)->client->id;
-        EndUserActivityAggregate::retrieve( $client_id)->restoreMember($user->id ?? "Auto Generated", $id)->persist();
+        EndUserActivityAggregate::retrieve($client_id)->restoreMember($user->id ?? "Auto Generated", $id)->persist();
+
         return Member::withTrashed()->findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('members.restore', Member::class);
     }
 
     public function asController(ActionRequest $request, $id)
     {
-
         $data = $request->validated();
         $member = $this->handle(
             $id

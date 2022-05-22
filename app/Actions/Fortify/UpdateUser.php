@@ -4,18 +4,18 @@ namespace App\Actions\Fortify;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
-use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
-use App\Models\User;
 use Laravel\Jetstream\Jetstream;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class UpdateUser implements UpdatesUserProfileInformation
 {
-    use PasswordValidationRules, AsAction;
+    use PasswordValidationRules;
+    use AsAction;
 
     /**
      * Get the validation rules that apply to the action.
@@ -37,16 +37,17 @@ class UpdateUser implements UpdatesUserProfileInformation
             'zip' => ['required'],
             'jobTitle' => ['required'],
             'start_date' => ['sometimes'],
-            'end_date' =>  ['sometimes'],
-            'termination_date' =>  ['sometimes'],
-            'notes' =>  ['sometimes'],
+            'end_date' => ['sometimes'],
+            'termination_date' => ['sometimes'],
+            'notes' => ['sometimes'],
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required','integer', 'exists:teams,id'],
             'role_id' => ['required', 'integer'],
             'classification' => ['required'],
+            'contact_preference' => ['nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
-            'home_club' => ['nullable', 'exists:locations,gymrevenue_id'] //should be required if client_id provided. how to do?
+            'home_club' => ['nullable', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?
         ];
     }
 
@@ -54,11 +55,14 @@ class UpdateUser implements UpdatesUserProfileInformation
     {
         $client_id = $current_user->currentClientId();
 
-        if(array_key_exists('password', $data)){
+        if (array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }
 
-        $data['role'] = $data['role_id'];
+        if (array_key_exists('role_id', $data)) {
+            $data['role'] = $data['role_id'];
+        }
+
 
         UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
         if ($client_id) {
@@ -71,6 +75,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('users.update', User::class);
     }
 
@@ -87,7 +92,6 @@ class UpdateUser implements UpdatesUserProfileInformation
         return Redirect::back();
     }
 
-
     /**
      * Validate and update the given user's profile information.
      *
@@ -97,8 +101,7 @@ class UpdateUser implements UpdatesUserProfileInformation
      */
     public function update($user, array $input)
     {
-        if(!array_key_exists('id', $input))
-        {
+        if (! array_key_exists('id', $input)) {
             $input['id'] = $user->id;
         }
         $this->run($input, $user);

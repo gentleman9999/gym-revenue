@@ -6,15 +6,16 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Traits\Sortable;
 use App\Models\User;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class EmailCampaigns extends Model
 {
-    use Notifiable, SoftDeletes, Uuid, Sortable;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
+    use Sortable;
 
     protected $primaryKey = 'id';
 
@@ -23,10 +24,10 @@ class EmailCampaigns extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'name', 'active', 'client_id', 'team_id', 'created_by_user_id'
+        'name', 'active', 'client_id', 'team_id', 'created_by_user_id',
     ];
 
-    protected $casts = ['active'=> 'boolean'];
+    protected $casts = ['active' => 'boolean'];
 
     public function details()
     {
@@ -70,17 +71,13 @@ class EmailCampaigns extends Model
 
     protected static function booted()
     {
-        static::created(function($campaign) {
-
-            if(!is_null($campaign->client_id))
-            {
+        static::created(function ($campaign) {
+            if (! is_null($campaign->client_id)) {
                 // use the client aggy to do a created details record
                 ClientAggregate::retrieve($campaign->client_id)
-                    ->createNewEmailCampaign($campaign->id,$campaign->created_by_user_id)
+                    ->createNewEmailCampaign($campaign->id, $campaign->created_by_user_id)
                     ->persist();
-            }
-            else
-            {
+            } else {
                 // make cnb created details record
                 $detail = EmailCampaignDetails::create([
                     'email_campaign_id' => $campaign->id,
@@ -88,12 +85,9 @@ class EmailCampaigns extends Model
                     'value' => $campaign->created_by_user_id,
                 ]);
 
-                if($campaign->created_by_user_id == 'auto')
-                {
+                if ($campaign->created_by_user_id == 'auto') {
                     $detail->misc = ['msg' => 'Template was auto-generated'];
-                }
-                else
-                {
+                } else {
                     $user = User::find($campaign->created_by_user_id);
                     $detail->misc = ['msg' => 'Template was created by '.$user->name.' on '.date('Y-m-d')];
                 }
@@ -123,7 +117,8 @@ class EmailCampaigns extends Model
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
 
-    public function launched(){
+    public function launched()
+    {
         return $this->detail()->whereDetail('launched');
     }
 }

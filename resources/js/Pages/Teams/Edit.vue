@@ -6,9 +6,7 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <team-form
-                    :team="team"
-                />
+                <team-form :team="team" />
 
                 <team-member-manager
                     class="mt-10 sm:mt-0"
@@ -19,13 +17,13 @@
                     :availableUsers="availableUsers"
                 />
 
-<!--                <template-->
-<!--                    v-if="permissions.canDeleteTeam && !team.personal_team"-->
-<!--                >-->
-<!--                    <jet-section-border />-->
+                <!--                <template-->
+                <!--                    v-if="permissions.canDeleteTeam && !team.personal_team"-->
+                <!--                >-->
+                <!--                    <jet-section-border />-->
 
-<!--                    <delete-team-form class="mt-10 sm:mt-0" :team="team" />-->
-<!--                </template>-->
+                <!--                    <delete-team-form class="mt-10 sm:mt-0" :team="team" />-->
+                <!--                </template>-->
             </div>
         </div>
     </app-layout>
@@ -47,7 +45,7 @@ export default defineComponent({
         JetSectionBorder,
         TeamMemberManager,
         UpdateTeamNameForm,
-        TeamForm
+        TeamForm,
     },
 });
 </script>

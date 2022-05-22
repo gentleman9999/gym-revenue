@@ -1,10 +1,6 @@
 <template>
     <app-layout title="Event Types">
-
-        <page-toolbar-nav
-            title="Event Types"
-            :links="navLinks"
-        />
+        <page-toolbar-nav title="Event Types" :links="navLinks" />
         <gym-revenue-crud
             base-route="calendar.event_types"
             model-name="Event Type"
@@ -23,9 +19,8 @@
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
         >
-            Are you sure you want to move Event Type '{{
-                confirmTrash.name
-            }}' to the trash?<BR />
+            Are you sure you want to move Event Type '{{ confirmTrash.name }}'
+            to the trash?<BR />
         </confirm>
     </app-layout>
 </template>
@@ -47,45 +42,59 @@ export default defineComponent({
         Confirm,
         JetBarContainer,
         Button,
-        PageToolbarNav
+        PageToolbarNav,
     },
     props: ["calendarEventTypes", "filters"],
     setup(props) {
-
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
 
         const handleConfirmTrash = () => {
-            Inertia.delete(route("calendar.event_types.trash", confirmTrash.value));
+            Inertia.delete(
+                route("calendar.event_types.trash", confirmTrash.value)
+            );
             confirmTrash.value = null;
         };
 
-        const fields = ["name", "description", "type", "created_at", "updated_at"];
+        const fields = [
+            "name",
+            "description",
+            "type",
+            "created_at",
+            "updated_at",
+        ];
 
         let navLinks = [
             {
                 label: "Calendar",
                 href: route("calendar"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Event Types",
                 href: route("calendar.event_types"),
                 onClick: null,
-                active: true
+                active: true,
             },
             {
                 label: "Tasks",
                 href: route("tasks"),
                 onClick: null,
-                active: false
+                active: false,
             },
         ];
 
-        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
+        return {
+            fields,
+            confirmTrash,
+            handleConfirmTrash,
+            handleClickTrash,
+            Inertia,
+            navLinks,
+        };
     },
 });
 </script>

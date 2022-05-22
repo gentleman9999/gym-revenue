@@ -30,13 +30,13 @@
                             />
                         </div>
                         <div class="hidden md:flex items-center gap-2">
-                        <button
-                            v-if="uploadProgress === -1"
-                            class="badge badge-error"
-                            @click="handleClickFailed"
-                        >
-                            Failed
-                        </button>
+                            <button
+                                v-if="uploadProgress === -1"
+                                class="badge badge-error"
+                                @click="handleClickFailed"
+                            >
+                                Failed
+                            </button>
                             <div
                                 v-else
                                 class="badge"
@@ -46,11 +46,10 @@
                                 }"
                             >
                                 {{
-                                        uploadProgress < 100
+                                    uploadProgress < 100
                                         ? `${uploadProgress}%`
                                         : "Uploaded"
                                 }}
-
                             </div>
                             <button
                                 class="btn btn-ghost btn-error btn-circle"
@@ -112,7 +111,7 @@ const form = useForm({
     client_id: props.clientId,
     user_id: props.userId,
     size: props.file.size,
-    entity_id: props.entity_id
+    entity_id: props.entity_id,
     // is_public: true,
 });
 
@@ -126,7 +125,7 @@ const removeFile = (file) => {
 // const handleSubmit = () => form.post(`/files`);
 const handleSubmit = async () => {
     try {
-        uploadProgress.value=0;
+        uploadProgress.value = 0;
         let response = await Vapor.store(props.file, {
             // visibility: form.isPublic ? 'public-read' : null,
             visibility: "public-read",
@@ -149,10 +148,10 @@ const isUploading = computed(() => {
 });
 
 const handleClickFailed = () => {
-    if(uploadProgress.value===-1){
-        handleSubmit()
+    if (uploadProgress.value === -1) {
+        handleSubmit();
     }
-}
+};
 
 onMounted(handleSubmit);
 

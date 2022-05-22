@@ -16,7 +16,6 @@ class LeadDetailsFactory extends Factory
      */
     protected $model = LeadDetails::class;
 
-
     /**
      * Define the model's default state.
      *
@@ -26,6 +25,7 @@ class LeadDetailsFactory extends Factory
     {
         VarDumper::dump('Generating Lead Details');
         $email = $this->faker->email();
+
         return [
             'id' => Uuid::uuid4()->toString(),
             'field' => $this->faker->randomElement(['called_by_rep', 'sms_by_rep', 'emailed_by_rep']),
@@ -42,10 +42,10 @@ class LeadDetailsFactory extends Factory
                     'hung-up',
                     'wrong-number',
                     'appointment',
-                    'sale'
+                    'sale',
                 ]),
-                "user" => ['email' => $email]
-            ]
+                "user" => ['email' => $email],
+            ],
         ];
     }
 
@@ -53,7 +53,7 @@ class LeadDetailsFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($client_id) {
             return [
-                'client_id' => $client_id
+                'client_id' => $client_id,
             ];
         });
     }
@@ -62,7 +62,7 @@ class LeadDetailsFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($lead_id) {
             return [
-                'lead_id' => $lead_id
+                'lead_id' => $lead_id,
             ];
         });
     }

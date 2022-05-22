@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class MemberCreated extends ShouldBeStored
 {
-    public $user, $data, $client;
+    public $user;
+    public $data;
+    public $client;
 
     public function __construct(string $client, string $user, array $data)
     {

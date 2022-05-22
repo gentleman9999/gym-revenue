@@ -6,7 +6,8 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class DefaultClientTeamCreated extends ShouldBeStored
 {
-    public $client, $team;
+    public $client;
+    public $team;
 
     public function __construct(string $client, string $team)
     {

@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use Silber\Bouncer\Bouncer;
-
 use Closure;
+
+use Silber\Bouncer\Bouncer;
 
 class ScopeBouncer
 {
@@ -35,7 +35,7 @@ class ScopeBouncer
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        if($user){
+        if ($user) {
             $clientId = $request->user()->currentClientId();
             $this->bouncer->scope()->to($clientId);
         }

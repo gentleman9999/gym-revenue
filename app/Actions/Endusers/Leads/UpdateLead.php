@@ -41,7 +41,7 @@ class UpdateLead
             'opportunity' => 'sometimes|required',
             'lead_owner' => 'sometimes|required|exists:users,id',
             'lead_status' => 'sometimes|required|exists:lead_statuses,id',
-            'notes' => 'nullable|array'
+            'notes' => 'nullable|array',
         ];
     }
 
@@ -53,7 +53,7 @@ class UpdateLead
             'dob',
             'opportunity',
             'lead_owner',
-            'lead_status'
+            'lead_status',
         ])->findOrFail($data['id'])->toArray();
         $aggy = EndUserActivityAggregate::retrieve($data['id']);
         $aggy->updateLead($data, $old_data, $current_user->id ?? 'Auto Generated');
@@ -61,12 +61,14 @@ class UpdateLead
             $aggy->claimLead($current_user->id, $data['client_id']);
         }
         $aggy->persist();
+
         return Lead::findOrFail($data['id']);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('leads.update', Lead::class);
     }
 
@@ -84,5 +86,4 @@ class UpdateLead
 //        return Redirect::route('data.leads');
         return Redirect::back();
     }
-
 }

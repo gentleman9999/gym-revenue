@@ -2,7 +2,6 @@
 
 namespace Database\Factories\Endusers;
 
-use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Ramsey\Uuid\Uuid;
@@ -15,7 +14,6 @@ class MemberFactory extends Factory
      * @var string
      */
     protected $model = Member::class;
-
 
     /**
      * Define the model's default state.
@@ -30,9 +28,10 @@ class MemberFactory extends Factory
         $username = "{$first_name}.{$last_name}";
         $domain = $this->faker->freeEmailDomain;
         $email = "{$username}@{$domain}";
-        $date_range = mt_rand(1262055681,1262215681);
+        $date_range = mt_rand(1262055681, 1262215681);
 //                            $member_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0,2)];
         $date_of_birth = date("Y-m-d H:i:s", $date_range);
+
         return [
             'id' => Uuid::uuid4()->toString(),
             'client_id' => 0,
@@ -52,7 +51,7 @@ class MemberFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($client_id) {
             return [
-                'client_id' => $client_id
+                'client_id' => $client_id,
             ];
         });
     }
@@ -61,7 +60,7 @@ class MemberFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($lead_type_id) {
             return [
-                'lead_type_id' => $lead_type_id
+                'lead_type_id' => $lead_type_id,
             ];
         });
     }
@@ -70,7 +69,7 @@ class MemberFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($lead_source_id) {
             return [
-                'lead_source_id' => $lead_source_id
+                'lead_source_id' => $lead_source_id,
             ];
         });
     }
@@ -79,7 +78,7 @@ class MemberFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($membership_type_id) {
             return [
-                'membership_type_id' => $membership_type_id
+                'membership_type_id' => $membership_type_id,
             ];
         });
     }
@@ -88,9 +87,8 @@ class MemberFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($gymrevenue_id) {
             return [
-                'gr_location_id' => $gymrevenue_id
+                'gr_location_id' => $gymrevenue_id,
             ];
         });
-
     }
 }

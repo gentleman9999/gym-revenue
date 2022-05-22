@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class MemberRestored extends ShouldBeStored
 {
-    public $user, $id, $client;
+    public $user;
+    public $id;
+    public $client;
 
     public function __construct(string $client, string $user, string $id)
     {

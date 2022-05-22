@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Endusers\Member;
-use Bouncer;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,16 +25,18 @@ class TrashMember
         ];
     }
 
-    public function handle( $id, $user=null)
+    public function handle($id, $user = null)
     {
         $member = Member::findOrFail($id);
         EndUserActivityAggregate::retrieve($member->client_id)->trashMember($user->id ?? "Auto Generated", $id)->persist();
+
         return $member;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('members.trash', Member::class);
     }
 

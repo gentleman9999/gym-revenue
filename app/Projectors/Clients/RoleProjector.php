@@ -2,15 +2,14 @@
 
 namespace App\Projectors\Clients;
 
+use App\Models\Role;
 use App\StorableEvents\Clients\Roles\RoleCreated;
 use App\StorableEvents\Clients\Roles\RoleDeleted;
 use App\StorableEvents\Clients\Roles\RoleRestored;
 use App\StorableEvents\Clients\Roles\RoleTrashed;
 use App\StorableEvents\Clients\Roles\RoleUpdated;
-use App\Models\Role;
-use Illuminate\Support\Facades\Log;
-use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Silber\Bouncer\BouncerFacade as Bouncer;
+use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class RoleProjector extends Projector
 {
@@ -25,8 +24,7 @@ class RoleProjector extends Projector
                 'group' => $event->payload['group'],
             ]
         );
-        foreach ($event->payload['ability_names'] as $ability)
-        {
+        foreach ($event->payload['ability_names'] as $ability) {
             Bouncer::allow($role->name)->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
         }
     }
@@ -35,8 +33,7 @@ class RoleProjector extends Projector
     {
         $role = Bouncer::role()->findOrFail($event->payload['id']);
         Bouncer::sync($role)->abilities([]);
-        foreach ($event->payload['ability_names'] as $ability)
-        {
+        foreach ($event->payload['ability_names'] as $ability) {
             Bouncer::allow($role->name)->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
         }
         Role::findOrFail($event->payload['id'])->updateOrFail(array_merge($event->payload, ['title' => $event->payload['name']]));

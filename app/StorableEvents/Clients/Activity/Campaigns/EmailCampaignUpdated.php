@@ -6,7 +6,12 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class EmailCampaignUpdated extends ShouldBeStored
 {
-    public $client, $campaign, $updated, $field, $new, $old;
+    public $client;
+    public $campaign;
+    public $updated;
+    public $field;
+    public $new;
+    public $old;
 
     public function __construct(string $client, string $campaign, string $updated, string $field, string $new, string $old)
     {

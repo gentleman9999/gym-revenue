@@ -90,6 +90,5 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::role('Employee', 'Employee', [
             'read',
         ])->description('Employees have the ability to read.');
-
     }
 }

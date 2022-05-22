@@ -17,8 +17,8 @@ class UserActivityProjector extends Projector
             'value' => $event->template,
             'misc' => [
                 'response' => $event->response,
-                'client' => $event->client ?? null
-            ]
+                'client' => $event->client ?? null,
+            ],
         ]);
     }
 
@@ -30,8 +30,8 @@ class UserActivityProjector extends Projector
             'value' => $event->template,
             'misc' => [
                 'response' => $event->response,
-                'client' => $event->client ?? null
-            ]
+                'client' => $event->client ?? null,
+            ],
         ]);
     }
 }

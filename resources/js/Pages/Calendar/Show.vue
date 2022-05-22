@@ -3,13 +3,13 @@
         <!--        <template #header>-->
         <!--            <h2 class="font-semibold text-xl leading-tight">Calendar</h2>-->
         <!--        </template>-->
-        <page-toolbar-nav title="Event Types" :links="navLinks"/>
+        <page-toolbar-nav title="Event Types" :links="navLinks" />
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-row items-center gap-4 mb-4">
                 <h1 class="text text-xl mr-8">Calendar</h1>
                 <h2 class="text text-xl font-bold">{{ title }}</h2>
-                <div class="flex-grow"/>
+                <div class="flex-grow" />
                 <!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
                 <!--                    New Event-->
                 <!--                </button>-->
@@ -36,7 +36,7 @@
                         v-model="form.viewUser"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null"/>
+                        <option :value="null" />
                         <option
                             v-for="{ name, id } in client_users"
                             :value="id"
@@ -54,7 +54,7 @@
                         v-model="form.calendar_event_type"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null"/>
+                        <option :value="null" />
                         <option
                             v-for="{ name, id } in calendar_event_types"
                             :value="id"
@@ -71,14 +71,14 @@
                         v-model="form.trashed"
                         class="mt-1 w-full form-select"
                     >
-                        <option :value="null"/>
+                        <option :value="null" />
                         <option value="with">With Trashed</option>
                         <option value="only">Only Trashed</option>
                     </select>
                 </simple-search-filter>
             </div>
 
-            <FullCalendar :options="calendarOptions" ref="calendar"/>
+            <FullCalendar :options="calendarOptions" ref="calendar" />
             <daisy-modal
                 ref="createEventModal"
                 id="createEventModal"
@@ -113,11 +113,11 @@
 </template>
 
 <script>
-import {computed, defineComponent, ref, watchEffect} from "vue";
+import { computed, defineComponent, ref, watchEffect } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
-import {Inertia} from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import "@fullcalendar/core/vdom"; // solves problem with Vite
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -127,7 +127,7 @@ import listPlugin from "@fullcalendar/list";
 import DaisyModal from "@/Components/DaisyModal";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
-import {useSearchFilter} from "@/Components/CRUD/helpers/useSearchFilter";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
@@ -139,7 +139,7 @@ export default defineComponent({
         GymRevenueCrud,
         SweetModal,
         FullCalendar,
-        PageToolbarNav
+        PageToolbarNav,
     },
     props: [
         "sessions",
@@ -150,13 +150,13 @@ export default defineComponent({
         "filters",
         "client_users",
         "lead_users",
-        "client_id"
+        "client_id",
     ],
 
     setup(props) {
-        const {form, reset, clearFilters, clearSearch} = useSearchFilter(
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             "calendar",
-            {start: "", end: ""}
+            { start: "", end: "" }
         );
         const calendar = ref(null);
         const createEventModal = ref();
@@ -164,11 +164,16 @@ export default defineComponent({
         const selectedCalendarEvent = ref(null);
         const createCalendarEventForm = ref(null);
         const editCalendarEventForm = ref(null);
-        const currentView = ref('timeGridWeek');
+        const currentView = ref("timeGridWeek");
         const start = ref(null);
         const end = ref(null);
 
-        const title = computed(() => start.value?.toLocaleString('default', {month: 'long', year: 'numeric'}));
+        const title = computed(() =>
+            start.value?.toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+            })
+        );
 
         const handleClickNewEvent = () => {
             selectedCalendarEvent.value = null;
@@ -176,16 +181,20 @@ export default defineComponent({
         };
 
         const handleChangeView = () => {
-            console.log('handleChangeView Called', currentView.value);
+            console.log("handleChangeView Called", currentView.value);
             calendar.value.getApi().changeView(currentView.value);
             onViewChanged();
-        }
+        };
 
         const onViewChanged = () => {
             start.value = calendar.value.getApi().view.activeStart;
             start.end = calendar.value.getApi().view.activeEnd;
-            console.log({start, end, calendarView: calendar.value.getApi().view})
-        }
+            console.log({
+                start,
+                end,
+                calendarView: calendar.value.getApi().view,
+            });
+        };
 
         const handleDroppedEvent = (data) => {
             let calendarEvent = {
@@ -234,9 +243,9 @@ export default defineComponent({
         const dowIntToString = (dow) => {
             switch (dow) {
                 case 0:
-                    return 'Sunday';
+                    return "Sunday";
                 case 1:
-                    return 'Monday';
+                    return "Monday";
                 case 2:
                     return "Tuesday";
                 case 3:
@@ -248,33 +257,33 @@ export default defineComponent({
                 case 6:
                     return "Saturday";
             }
-        }
+        };
 
         let navLinks = [
             {
                 label: "Calendar",
                 href: route("calendar"),
                 onClick: null,
-                active: true
+                active: true,
             },
             {
                 label: "Event Types",
                 href: route("calendar.event_types"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Tasks",
                 href: route("tasks"),
                 onClick: null,
-                active: false
+                active: false,
             },
         ];
 
         return {
             Inertia,
             calendarOptions: {
-                schedulerLicenseKey: '0157232768-fcs-1652392378',
+                schedulerLicenseKey: "0157232768-fcs-1652392378",
                 plugins: [
                     dayGridPlugin,
                     timeGridPlugin,
@@ -283,7 +292,7 @@ export default defineComponent({
                 ],
                 initialView: "timeGridWeek",
                 events: (
-                    {start, end, startStr, endStr},
+                    { start, end, startStr, endStr },
                     successCallback,
                     failureCallback
                 ) => {
@@ -300,24 +309,24 @@ export default defineComponent({
                 views: {
                     timeGridWeek: {
                         eventTimeFormat: {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            meridiem: 'short'
-                        }
+                            hour: "numeric",
+                            minute: "2-digit",
+                            meridiem: "short",
+                        },
                     },
                     dayGridMonth: {
                         dayHeaderFormat: {
-                            weekday: 'long'
-                        }
+                            weekday: "long",
+                        },
                     },
                     timeGridDay: {
                         dayHeaderFormat: {
-                            month: 'long',
-                            day: 'numeric',
-                            omitCommas: 'false'
+                            month: "long",
+                            day: "numeric",
+                            omitCommas: "false",
                         },
-                        nowIndicator: true
-                    }
+                        nowIndicator: true,
+                    },
                 },
                 editable: true,
                 selectable: true,
@@ -367,43 +376,71 @@ export default defineComponent({
                 eventDrop: function (data) {
                     handleDroppedEvent(data);
                 },
-                dayHeaderContent: function ({date, dow, view, isToday, ...rest}) {
-                    console.log('dayHeaderContent', {view});
+                dayHeaderContent: function ({
+                    date,
+                    dow,
+                    view,
+                    isToday,
+                    ...rest
+                }) {
+                    console.log("dayHeaderContent", { view });
 
                     const dow_str = dowIntToString(dow);
 
-                    if (view.type === "timeGridWeek" && currentView.value === 'timeGridWeek') {
-                        console.log('dayHeaderDidMount replacing timeGridWeek header');
+                    if (
+                        view.type === "timeGridWeek" &&
+                        currentView.value === "timeGridWeek"
+                    ) {
+                        console.log(
+                            "dayHeaderDidMount replacing timeGridWeek header"
+                        );
                         let date_str = String(date.getDate());
                         if (date_str.length === 1) {
                             date_str = "0" + date_str;
                         }
                         return {
-                            html: `<div id="timeGridWeek__dayHeader" class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`
+                            html: `<div id="timeGridWeek__dayHeader" class="flex flex-row items-center w-full p-2 font-medium"><span class="text text-sm">${dow_str}</span> <span class="text-3xl font-bold text-secondary flex-grow flex justify-end">${date_str}</span></div>`,
                         };
-                    } else if (view.type === 'timeGridDay') {
-                        console.log('**dayHeaderDidMount replacing timeGridDay header');
-                        const dow_or_today = isToday ? 'Today' : dow_str;
+                    } else if (view.type === "timeGridDay") {
+                        console.log(
+                            "**dayHeaderDidMount replacing timeGridDay header"
+                        );
+                        const dow_or_today = isToday ? "Today" : dow_str;
                         const date_str = date.toLocaleString("en", {
                             month: "long",
-                            day: "numeric"
+                            day: "numeric",
                         });
                         return {
-                            html: `<div id="timeGridDay__dayHeader" class="flex flex-col items-start p-2 text-2xl font-medium"><span class="text text-3xl">${dow_or_today}</span> <span class="text-2xl font-bold">${date_str}</span></div>`
+                            html: `<div id="timeGridDay__dayHeader" class="flex flex-col items-start p-2 text-2xl font-medium"><span class="text text-3xl">${dow_or_today}</span> <span class="text-2xl font-bold">${date_str}</span></div>`,
                         };
                     }
                 },
-                nowIndicatorContent: function ({date, dow, view, isToday,isAxis, ...rest}) {
-                    if (view.type === 'timeGridDay' && !isAxis) {
-                        console.log('**nowIndicatorContent replacing timeGridDay nowIndicatorContent');
-                        const date_str = date.toLocaleTimeString("en", {hour: '2-digit', minute: '2-digit'}).replace("AM", "").replace("PM", "");
+                nowIndicatorContent: function ({
+                    date,
+                    dow,
+                    view,
+                    isToday,
+                    isAxis,
+                    ...rest
+                }) {
+                    if (view.type === "timeGridDay" && !isAxis) {
+                        console.log(
+                            "**nowIndicatorContent replacing timeGridDay nowIndicatorContent"
+                        );
+                        const date_str = date
+                            .toLocaleTimeString("en", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })
+                            .replace("AM", "")
+                            .replace("PM", "");
                         return {
-                            html: `<div class="absolute bg-red-500 inset-y-0 flex items-center p-2 rounded transform -translate-y-1/2">${date_str}</div>`
+                            html: `<div class="absolute bg-red-500 inset-y-0 flex items-center p-2 rounded transform -translate-y-1/2">${date_str}</div>`,
                         };
                     }
                 },
-                eventDidMount: function ({date, dow, el, view, ...rest}) {
-                    console.log({date, dow, el, view, ...rest});
+                eventDidMount: function ({ date, dow, el, view, ...rest }) {
+                    console.log({ date, dow, el, view, ...rest });
                 },
             },
             createEventModal,
@@ -424,7 +461,7 @@ export default defineComponent({
             navLinks,
             currentView,
             handleChangeView,
-            title
+            title,
         };
     },
 });
@@ -434,9 +471,9 @@ export default defineComponent({
 .fc .fc-toolbar {
     @apply flex-col gap-2;
 
-@screen lg {
-    @apply flex-row;
-}
+    @screen lg {
+        @apply flex-row;
+    }
 }
 .fc .fc-daygrid-day-bottom {
     @apply text-xs;
@@ -498,13 +535,11 @@ th:last-child {
 .fc-day-today > div > div > a {
     @apply rounded-full p-4 relative;
 
-/*@apply bg-secondary;*/
-&
-:before {
-    content: "";
-    @apply absolute bg-secondary rounded-full h-full w-full z-[-1] inset-0;
-}
-
+    /*@apply bg-secondary;*/
+    & :before {
+        content: "";
+        @apply absolute bg-secondary rounded-full h-full w-full z-[-1] inset-0;
+    }
 }
 .fc .fc-daygrid-day-number {
     @apply p-2;

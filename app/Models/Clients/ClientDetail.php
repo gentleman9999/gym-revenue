@@ -3,13 +3,13 @@
 namespace App\Models\Clients;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClientDetail extends Model
 {
-    use SoftDeletes, Uuid;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -20,7 +20,7 @@ class ClientDetail extends Model
     protected $fillable = ['client_id', 'detail', 'value', 'misc', 'active'];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 
     public function client()

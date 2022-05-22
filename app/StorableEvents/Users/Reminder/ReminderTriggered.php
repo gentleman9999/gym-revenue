@@ -6,7 +6,8 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class ReminderTriggered extends ShouldBeStored
 {
-    public $id, $user;
+    public $id;
+    public $user;
 
     public function __construct(string $user, string $id)
     {

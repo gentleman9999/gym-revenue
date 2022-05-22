@@ -6,7 +6,6 @@
         @clear-filters="clearFilters"
         @clear-search="clearSearch"
     >
-
         <div class="form-control">
             <label
                 for="nameSearch"
@@ -14,7 +13,11 @@
             >
                 Name Search:
             </label>
-            <input id="nameSearch" v-model="form.nameSearch" placeholder="John">
+            <input
+                id="nameSearch"
+                v-model="form.nameSearch"
+                placeholder="John"
+            />
         </div>
 
         <div class="form-control">
@@ -24,7 +27,11 @@
             >
                 Phone Search:
             </label>
-            <input id="phoneSearch" v-model="form.phoneSearch" placeholder="5558675309">
+            <input
+                id="phoneSearch"
+                v-model="form.phoneSearch"
+                placeholder="5558675309"
+            />
         </div>
 
         <div class="form-control">
@@ -34,7 +41,11 @@
             >
                 Email Search:
             </label>
-            <input id="emailSearch" v-model="form.emailSearch" placeholder="noreply@notarealaddress.com">
+            <input
+                id="emailSearch"
+                v-model="form.emailSearch"
+                placeholder="noreply@notarealaddress.com"
+            />
         </div>
 
         <div class="form-control">
@@ -44,7 +55,11 @@
             >
                 Agreement Number Search:
             </label>
-            <input id="agreementSearch" v-model="form.agreementSearch" placeholder="1545804477">
+            <input
+                id="agreementSearch"
+                v-model="form.agreementSearch"
+                placeholder="1545804477"
+            />
         </div>
 
         <div class="form-control">
@@ -88,11 +103,11 @@
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                         this.$page.props.leadsclaimed.map((user) => ({
-                            label: user.name,
-                            value: user.id,
-                        }))
-                    "
+                    this.$page.props.leadsclaimed.map((user) => ({
+                        label: user.name,
+                        value: user.id,
+                    }))
+                "
                 :classes="multiselectClasses"
             />
         </div>
@@ -112,11 +127,11 @@
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                         this.$page.props.lead_types.map((type) => ({
-                            label: type.name,
-                            value: type.id,
-                        }))
-                    "
+                    this.$page.props.lead_types.map((type) => ({
+                        label: type.name,
+                        value: type.id,
+                    }))
+                "
                 :classes="multiselectClasses"
             />
         </div>
@@ -136,11 +151,11 @@
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                         this.$page.props.grlocations.map((loc) => ({
-                            label: loc.name,
-                            value: loc.gymrevenue_id,
-                        }))
-                    "
+                    this.$page.props.grlocations.map((loc) => ({
+                        label: loc.name,
+                        value: loc.gymrevenue_id,
+                    }))
+                "
                 :classes="multiselectClasses"
             />
         </div>
@@ -160,11 +175,11 @@
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                         this.$page.props.leadsources.map((leadsource) => ({
-                            label: leadsource.name,
-                            value: leadsource.id,
-                        }))
-                    "
+                    this.$page.props.leadsources.map((leadsource) => ({
+                        label: leadsource.name,
+                        value: leadsource.id,
+                    }))
+                "
                 :classes="multiselectClasses"
             />
         </div>
@@ -184,11 +199,11 @@
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                         this.$page.props.opportunities.map((opportunity) => ({
-                            label: opportunity.value,
-                            value: opportunity.value,
-                        }))
-                    "
+                    this.$page.props.opportunities.map((opportunity) => ({
+                        label: opportunity.value,
+                        value: opportunity.value,
+                    }))
+                "
                 :classes="multiselectClasses"
             />
         </div>
@@ -200,9 +215,14 @@
             >
                 Date of Birth:
             </label>
-            <DatePicker id="dob" v-model="form.dob" :enableTimePicker="false"  range dark />
+            <DatePicker
+                id="dob"
+                v-model="form.dob"
+                :enableTimePicker="false"
+                range
+                dark
+            />
         </div>
-
     </beefy-search-filter>
 </template>
 
@@ -216,7 +236,7 @@ input {
 select {
     @apply select select-sm select-bordered;
 }
-button{
+button {
     @apply btn btn-sm;
 }
 </style>
@@ -226,14 +246,14 @@ import { defineComponent } from "vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 import DatePicker from "vue3-date-time-picker";
 
 export default defineComponent({
     components: {
         BeefySearchFilter,
         Multiselect,
-        DatePicker
+        DatePicker,
     },
     props: {
         baseRoute: {
@@ -245,8 +265,13 @@ export default defineComponent({
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             props.baseRoute
         );
-        return { form, reset, clearFilters, clearSearch,
-            multiselectClasses: getDefaultMultiselectTWClasses() };
+        return {
+            form,
+            reset,
+            clearFilters,
+            clearSearch,
+            multiselectClasses: getDefaultMultiselectTWClasses(),
+        };
     },
 });
 </script>

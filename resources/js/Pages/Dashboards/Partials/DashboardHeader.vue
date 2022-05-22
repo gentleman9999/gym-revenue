@@ -1,5 +1,8 @@
 <template>
-    <div class="flex flex-row flex-wrap justify-center text-center  xl:justify-between xl:text-left" v-bind="$attrs">
+    <div
+        class="flex flex-row flex-wrap justify-center text-center xl:justify-between xl:text-left"
+        v-bind="$attrs"
+    >
         <div>
             <p>Dashboard - {{ teamName }}</p>
         </div>

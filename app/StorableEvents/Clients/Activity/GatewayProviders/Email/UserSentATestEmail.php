@@ -6,7 +6,11 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserSentATestEmail extends ShouldBeStored
 {
-    public $client, $user, $subject, $template;
+    public $client;
+    public $user;
+    public $subject;
+    public $template;
+
     public function __construct($client, $user, $subject, $template)
     {
         $this->client = $client;

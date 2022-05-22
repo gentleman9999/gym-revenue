@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserSentATestSMS extends ShouldBeStored
 {
-    public $client, $user, $template;
+    public $client;
+    public $user;
+    public $template;
+
     public function __construct($client, $user, $template)
     {
         $this->client = $client;

@@ -29,39 +29,33 @@ class FireOffEmailCampaign
         $gateway = null;
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
             ->findOrFail($email_campaign_id);
-        foreach ($campaign->assigned_template as $assigned_template)
-        {
+        foreach ($campaign->assigned_template as $assigned_template) {
             $templates[] = EmailTemplates::with('gateway')->findOrFail($assigned_template->value);
         }
-        foreach ($templates as $template)
-        {
+        foreach ($templates as $template) {
             $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();
         }
-        foreach ($gatewayIntegrations as $gatewayIntegration)
-        {
+        foreach ($gatewayIntegrations as $gatewayIntegration) {
             $gateway = GatewayProvider::findOrFail($gatewayIntegration->gateway_id);
         }
 
-        foreach ($campaign->assigned_audience as $assigned_audience)
-        {
+        foreach ($campaign->assigned_audience as $assigned_audience) {
             $audiences[] = CommAudience::findOrFail($assigned_audience->value);
         }
-        foreach ($audiences as $audience)
-        {
+        foreach ($audiences as $audience) {
             $audience_members[] = AudienceMember::whereAudienceId($audience->id)->get();
         }
 
         $client_aggy = ClientAggregate::retrieve($campaign->client_id);
         $recipients = [];
         $sent_to = [];
-        foreach ($audience_members as $audience_member_breakdown)
-        {
-            foreach ($audience_member_breakdown as $audience_member)
-            {
+        foreach ($audience_members as $audience_member_breakdown) {
+            foreach ($audience_member_breakdown as $audience_member) {
                 $member = null;
                 switch ($audience_member->entity_type) {
                     case 'user':
                         $member = User::find($audience_member->entity_id);
+
                         break;
                     default:
                         //todo:report error - unknown entity_Type
@@ -73,7 +67,7 @@ class FireOffEmailCampaign
                         'entity_type' => $audience_member->entity_type,
                         'entity_id' => $audience_member->entity_id,
                         'email' => $member->email,
-                        'gateway' => $gateway
+                        'gateway' => $gateway,
                     ];
                 }
             }
@@ -81,7 +75,7 @@ class FireOffEmailCampaign
         $sent_to_chunks = array_chunk($sent_to, $this->batchSize);
         $idx = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
-            if (!AppState::isSimuationMode()) {
+            if (! AppState::isSimuationMode()) {
                 $client_aggy->emailSent($email_campaign_id, $sent_to_chunks[$idx], Carbon::now(), true)->persist();
             }
             $idx++;

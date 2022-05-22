@@ -9,7 +9,9 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class ClientAggregate extends AggregateRoot
 {
-    use ClientGetters, ClientApplies, ClientActions;
+    use ClientGetters;
+    use ClientApplies;
+    use ClientActions;
 
     protected string $default_team = '';
     protected string $team_prefix = '';
@@ -17,5 +19,4 @@ class ClientAggregate extends AggregateRoot
     protected array $employee_activity = [];
 
     protected static bool $allowConcurrency = true;
-
 }

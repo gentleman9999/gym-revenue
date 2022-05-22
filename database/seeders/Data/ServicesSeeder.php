@@ -21,5 +21,4 @@ class ServicesSeeder extends Seeder
             VarDumper::dump("Adding service {$service}");
         }
     }
-
 }

@@ -25,6 +25,7 @@ class UserFactory extends Factory
     {
         $firstName = $this->faker->firstName();
         $lastName = $this->faker->lastName();
+
         return [
             'first_name' => $firstName,
             'last_name' => $lastName,
@@ -67,10 +68,12 @@ class UserFactory extends Factory
             'ownedTeams'
         );
     }
+
     public function configure()
     {
         return $this->afterMaking(function (User $user) {
             $user->email = strtolower($user->first_name). '.' .strtolower($user->last_name). '@' . str_replace(' ', '-', strtolower($user->client)) . '.com';
+
             return $user;
         });
     }

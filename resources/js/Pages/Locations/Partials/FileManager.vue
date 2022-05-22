@@ -1,9 +1,14 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #description>
-            <p class="font-bold mt-4">Ensure your document extension is '.CSV'.</p>
+            <p class="font-bold mt-4">
+                Ensure your document extension is '.CSV'.
+            </p>
             <div class="divider"></div>
-            <h1>If your CSV file doesn't contain a header row, please order your data based on the columns listed below.</h1>
+            <h1>
+                If your CSV file doesn't contain a header row, please order your
+                data based on the columns listed below.
+            </h1>
             <p class="font-bold mt-4">Columns In Order</p>
             <ul class="list-decimal ml-4">
                 <li>Location Name</li>

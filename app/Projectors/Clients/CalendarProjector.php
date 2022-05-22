@@ -36,6 +36,4 @@ class CalendarProjector extends Projector
     {
         CalendarEvent::withTrashed()->findOrFail($event->id)->forceDelete();
     }
-
 }
-

@@ -17,7 +17,7 @@
             }"
             :top-actions="topActions"
             :preview-component="LocationPreview"
-            >
+        >
             <template #filter>
                 <simple-search-filter
                     v-model:modelValue="form.search"
@@ -69,10 +69,16 @@
             Are you sure you want to Close this Club?
         </confirm>
 
-        <daisy-modal ref="importLocation" id="importLocation" class="lg:max-w-5xl bg-base-300">
-            <file-manager @submitted="closeModals" :client-id="$page.props.clientId" />
+        <daisy-modal
+            ref="importLocation"
+            id="importLocation"
+            class="lg:max-w-5xl bg-base-300"
+        >
+            <file-manager
+                @submitted="closeModals"
+                :client-id="$page.props.clientId"
+            />
         </daisy-modal>
-
     </app-layout>
 </template>
 <script>
@@ -98,7 +104,7 @@ export default defineComponent({
         Button,
         SimpleSearchFilter,
         DaisyModal,
-        FileManager
+        FileManager,
     },
     props: [
         "sessions",
@@ -108,13 +114,16 @@ export default defineComponent({
         "filters",
         "useSearchFilter",
         "SearchFilter",
-        "clientId"
+        "clientId",
     ],
     setup(props) {
         const baseRoute = "locations";
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(baseRoute, {
-            //  preserveState: false,
-        });
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+            baseRoute,
+            {
+                //  preserveState: false,
+            }
+        );
 
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -139,7 +148,7 @@ export default defineComponent({
             import: {
                 label: "Import",
                 handler: handleClickImport,
-                class: 'btn-primary'
+                class: "btn-primary",
             },
         };
 
@@ -156,7 +165,7 @@ export default defineComponent({
             closeModals,
             handleClickImport,
             importLocation,
-            topActions
+            topActions,
         };
     },
     computed: {

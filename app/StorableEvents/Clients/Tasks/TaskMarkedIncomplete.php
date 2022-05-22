@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class TaskMarkedIncomplete extends ShouldBeStored
 {
-    public $user, $id, $client;
+    public $user;
+    public $id;
+    public $client;
+
     public function __construct(string $client, string $user, string $id)
     {
         $this->client = $client;

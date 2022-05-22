@@ -22,7 +22,6 @@ class CreateTasksTable extends Migration
             $table->string('description');
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
