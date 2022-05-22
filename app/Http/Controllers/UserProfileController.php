@@ -31,7 +31,7 @@ class UserProfileController extends Controller
             'start_date' => '',
         ];
         $user = auth()->user();
-        $phone = $user->phone_number()->first();
+        $phone = $user->phone;
         if(!is_null($phone))
         {
             $addl_data['phone'] = $phone->value;
@@ -43,31 +43,31 @@ class UserProfileController extends Controller
             $addl_data['altEmail'] = $altEmail->value;
         }
 
-        $address1 = $user->address1()->first();
+        $address1 = $user->address1;
         if(!is_null($address1))
         {
             $addl_data['address1'] = $address1->value;
         }
 
-        $address2 = $user->address2()->first();
+        $address2 = $user->address2;
         if(!is_null($address2))
         {
             $addl_data['address2'] = $address2->value;
         }
 
-        $city = $user->city()->first();
+        $city = $user->city;
         if(!is_null($city))
         {
             $addl_data['city'] = $city->value;
         }
 
-        $state = $user->state()->first();
+        $state = $user->state;
         if(!is_null($state))
         {
             $addl_data['state'] = $state->value;
         }
 
-        $zip = $user->zip()->first();
+        $zip = $user->zip;
         if(!is_null($zip))
         {
             $addl_data['zip'] = $zip->value;

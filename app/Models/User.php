@@ -149,44 +149,9 @@ class User extends Authenticatable
         return $this->hasMany(File::class, 'user_id', 'id');
     }
 
-    public function phone()
-    {
-        return $this->detail()->where('name', '=', 'phone');
-    }
-
-    public function phone_number()
-    {
-        return $this->detail()->where('name', '=', 'phone');
-    }
-
     public function altEmail()
     {
         return $this->detail()->where('name', '=', 'altEmail');
-    }
-
-    public function address1()
-    {
-        return $this->detail()->where('name', '=', 'address1');
-    }
-
-    public function address2()
-    {
-        return $this->detail()->where('name', '=', 'address2');
-    }
-
-    public function city()
-    {
-        return $this->detail()->where('name', '=', 'city');
-    }
-
-    public function state()
-    {
-        return $this->detail()->where('name', '=', 'state');
-    }
-
-    public function zip()
-    {
-        return $this->detail()->where('name', '=', 'zip');
     }
 
     public function jobTitle()
