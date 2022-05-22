@@ -6,9 +6,8 @@ use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
-
+use Prologue\Alerts\Facades\Alert;
 
 class UpdateFile
 {
@@ -31,18 +30,19 @@ class UpdateFile
     public function handle($id, $data, $current_user = null)
     {
         FileAggregate::retrieve($id)->updatePermissions($current_user->id ?? "Auto Generated", $data)->persist();
+
         return File::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('files.update', File::class);
     }
 
     public function asController(ActionRequest $request, $id)
     {
-
         $file = $this->handle(
             $id,
             $request->validated(),
@@ -52,6 +52,5 @@ class UpdateFile
         Alert::success("File permissions for '{$file->filename}' updated.")->flash();
 
         return Redirect::back();
-
     }
 }

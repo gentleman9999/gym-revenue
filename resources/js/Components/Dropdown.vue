@@ -14,52 +14,52 @@
 </template>
 
 <script>
-import {defineComponent, onMounted, onUnmounted, ref} from "vue";
+import { defineComponent, onMounted, onUnmounted, ref } from "vue";
 
 export default defineComponent({
     props: {
         align: {
-            default: 'start'
+            default: "start",
         },
         width: {
-            default: '48'
+            default: "48",
         },
         contentClasses: {
-            default: () => ['py-1', 'bg-secondary']
-        }
+            default: () => ["py-1", "bg-secondary"],
+        },
     },
 
     setup() {
-
         const closeOnEscape = (e) => {
             // document.activeElement.blur();
-        }
+        };
 
-        onMounted(() => document.addEventListener('keydown', closeOnEscape))
-        onUnmounted(() => document.removeEventListener('keydown', closeOnEscape))
+        onMounted(() => document.addEventListener("keydown", closeOnEscape));
+        onUnmounted(() =>
+            document.removeEventListener("keydown", closeOnEscape)
+        );
 
-        return {
-        }
+        return {};
     },
 
     computed: {
         widthClass() {
             return {
-                '48': 'w-48',
-            }[this.width.toString()]
+                48: "w-48",
+            }[this.width.toString()];
         },
 
         alignmentClasses() {
-            if (this.align === 'left') {
-                return 'dropdown-left'
-            } else if (this.align === 'right') {
-                return 'dropdown-right'
-            } else if (this.align === 'start') {
-                return 'dropdown-start'
-            } else if (this.align === 'end') {
-                return 'dropdown-end'
+            if (this.align === "left") {
+                return "dropdown-left";
+            } else if (this.align === "right") {
+                return "dropdown-right";
+            } else if (this.align === "start") {
+                return "dropdown-start";
+            } else if (this.align === "end") {
+                return "dropdown-end";
             }
         },
-    }
-})
+    },
+});
 </script>

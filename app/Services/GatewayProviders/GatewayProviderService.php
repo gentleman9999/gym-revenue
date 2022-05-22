@@ -19,17 +19,12 @@ abstract class GatewayProviderService
     {
         $model = Client::find($client_id);
 
-        if(!is_null($model))
-        {
+        if (! is_null($model)) {
             $this->client = $model;
-        }
-        else
-        {
+        } else {
             // @todo - throw a custom exception cuz those are cool
         }
 
         return $this;
     }
-
-
 }

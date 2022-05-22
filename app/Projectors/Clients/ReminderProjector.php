@@ -2,7 +2,6 @@
 
 namespace App\Projectors\Clients;
 
-
 use App\Models\Reminder;
 use App\StorableEvents\Users\Reminder\ReminderCreated;
 use App\StorableEvents\Users\Reminder\ReminderDeleted;
@@ -31,5 +30,4 @@ class ReminderProjector extends Projector
     {
         Reminder::findOrFail($event->id)->update(['triggered_at' => $event->metaData()['created-at']]);
     }
-
 }

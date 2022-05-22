@@ -3,12 +3,10 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Models\Calendar\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-
 
 class DeclineInvite
 {
@@ -28,7 +26,6 @@ class DeclineInvite
 
     public function handle($data)
     {
-
         CalendarAggregate::retrieve($data['attendeeData']['event']['client_id'])
             ->declineCalendarEvent($data['attendeeData']['entity_id'], $data)
             ->persist();
@@ -51,5 +48,4 @@ class DeclineInvite
 
         return Redirect::back();
     }
-
 }

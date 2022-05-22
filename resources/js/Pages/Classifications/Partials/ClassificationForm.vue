@@ -10,12 +10,8 @@
                     v-model="form.title"
                     autofocus
                 />
-                <jet-input-error
-                    :message="form.errors.title"
-                    class="mt-2"
-                />
+                <jet-input-error :message="form.errors.title" class="mt-2" />
             </div>
-
         </template>
 
         <template #actions>

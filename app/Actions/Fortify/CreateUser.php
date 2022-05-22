@@ -4,24 +4,23 @@ namespace App\Actions\Fortify;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
+use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
-use App\Models\Clients\Client;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Console\Command;
-
+use Prologue\Alerts\Facades\Alert;
 
 class CreateUser implements CreatesNewUsers
 {
-    use PasswordValidationRules, AsAction;
+    use PasswordValidationRules;
+    use AsAction;
 
     protected $command;
 
@@ -75,7 +74,7 @@ class CreateUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_club' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
-            'is_manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager']
+            'is_manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager'],
         ];
     }
 
@@ -128,6 +127,7 @@ class CreateUser implements CreatesNewUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('users.create', User::class);
     }
 
@@ -173,7 +173,7 @@ class CreateUser implements CreatesNewUsers
                 'last_name' => $last_name,
                 'password' => 'Hello123!',
                 'team_id' => $team_id,
-                'home_club' => $home_club
+                'home_club' => $home_club,
             ]
         );
     }
@@ -212,12 +212,12 @@ class CreateUser implements CreatesNewUsers
     {
         $client_id = $this->command->option('client');
 
-        if (!is_null($client_id)) {
+        if (! is_null($client_id)) {
             if ($client_id === "0") {
                 return null;
             } else {
                 $client_model = Client::find($client_id);
-                if (!is_null($client_model)) {
+                if (! is_null($client_model)) {
                     return $client_model->id;
                 } else {
                     $this->command->error('Invalid Client. Pick one.');
@@ -283,7 +283,6 @@ class CreateUser implements CreatesNewUsers
         return $selected_home_club;
     }
 
-
     /**
      * Create a newly registered user  (fortify contract).
      *
@@ -294,5 +293,4 @@ class CreateUser implements CreatesNewUsers
     {
         $this->run($input);
     }
-
 }

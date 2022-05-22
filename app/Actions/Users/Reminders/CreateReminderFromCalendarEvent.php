@@ -2,7 +2,6 @@
 
 namespace App\Actions\Users\Reminders;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Helpers\Uuid;
 use App\Models\Calendar\CalendarEvent;
@@ -11,7 +10,6 @@ use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-
 
 class CreateReminderFromCalendarEvent
 {
@@ -31,7 +29,7 @@ class CreateReminderFromCalendarEvent
 
     public function handle($data, $current_user)
     {
-        if(!is_null($current_user)) {
+        if (! is_null($current_user)) {
             $client_id = $current_user->currentClientId();
             $data['client_id'] = $client_id;
         }
@@ -66,5 +64,4 @@ class CreateReminderFromCalendarEvent
 
         return Redirect::back();
     }
-
 }

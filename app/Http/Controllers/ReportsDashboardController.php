@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Bouncer;
 use Inertia\Inertia;
 
 class ReportsDashboardController extends Controller
@@ -14,10 +13,12 @@ class ReportsDashboardController extends Controller
         $client_detail = $team->client_details()->first();
         $team_name = $team->name;
 
-        if (!is_null($client_detail)) {
+        if (! is_null($client_detail)) {
 //            $widgets = $this->service->getDashboardWidgets();
 
-            return Inertia::render('Reports/ReportsDashboard', [
+            return Inertia::render(
+                'Reports/ReportsDashboard',
+                [
                     'teamName' => $team_name,
 //                'widgets' => $widgets,
                 ]
@@ -35,14 +36,16 @@ class ReportsDashboardController extends Controller
         $client_detail = $team->client_details()->first();
         $team_name = $team->name;
 
-        if (!$type) {
+        if (! $type) {
             abort(404);
         }
 
-        if (!is_null($client_detail)) {
+        if (! is_null($client_detail)) {
 //            $widgets = $this->service->getDashboardWidgets();
 
-            return Inertia::render("Reports/{$type}/{$type}Page", [
+            return Inertia::render(
+                "Reports/{$type}/{$type}Page",
+                [
                     'teamName' => $team_name,
 //                'widgets' => $widgets,
                 ]

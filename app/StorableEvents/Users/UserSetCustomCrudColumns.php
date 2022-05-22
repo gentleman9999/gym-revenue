@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserSetCustomCrudColumns extends ShouldBeStored
 {
-    public $user, $table, $fields;
+    public $user;
+    public $table;
+    public $fields;
 
     public function __construct($user, string $table, array $fields)
     {

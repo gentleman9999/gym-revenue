@@ -31,7 +31,6 @@ class UpdateTask
         ];
     }
 
-
     public function handle($data, User $user)
     {
         UserAggregate::retrieve($user->id)
@@ -44,6 +43,7 @@ class UpdateTask
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('task.update', Tasks::class);
     }
 
@@ -59,5 +59,4 @@ class UpdateTask
 
         return Redirect::back();
     }
-
 }

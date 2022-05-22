@@ -17,11 +17,11 @@ class QueuedEmailCampaign extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'email_campaign_id', 'trigger_at',  'started_at', 'completed_at'
+        'id', 'email_campaign_id', 'trigger_at',  'started_at', 'completed_at',
     ];
+
     public function campaign()
     {
         return $this->hasOne(EmailCampaigns::class, 'id', 'email_campaign_id');
     }
-
 }

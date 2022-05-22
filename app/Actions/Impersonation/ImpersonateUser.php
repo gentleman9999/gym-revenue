@@ -4,7 +4,6 @@ namespace App\Actions\Impersonation;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
-use Bouncer;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -19,10 +18,10 @@ class ImpersonateUser
         // ...
     }
 
-    public function rules() : array
+    public function rules(): array
     {
         return [
-            'victimId'  => 'bail|required|exists:users,id',
+            'victimId' => 'bail|required|exists:users,id',
         ];
     }
 
@@ -32,10 +31,9 @@ class ImpersonateUser
         $data = request()->all();
 
         $invader = auth()->user();
-        $victim  = User::find($data['victimId']);
+        $victim = User::find($data['victimId']);
 
-        if($invader->can('users.impersonate', User::class))
-        {
+        if ($invader->can('users.impersonate', User::class)) {
             $victim->current_team_id = $invader->current_team_id;
             $invader->current_team_id = $victim->current_team_id;
             $victim->save();
@@ -51,8 +49,7 @@ class ImpersonateUser
 
         // rat on this user to the paying customer - the client (aggy)
         $associated_client = $victim->associated_client()->first();
-        if(!is_null($associated_client))
-        {
+        if (! is_null($associated_client)) {
             ClientAggregate::retrieve($associated_client->value)
                 ->logImpersonationModeActivity($victim->id, $invader->id)->persist();
         }
@@ -65,8 +62,7 @@ class ImpersonateUser
         $results = false;
         $code = 500;
 
-        if($result)
-        {
+        if ($result) {
             $results = true;
             $code = 200;
         }
@@ -76,14 +72,14 @@ class ImpersonateUser
 
     public function htmlResponse($result)
     {
-        if($result)
-        {
+        if ($result) {
             \Alert::info('You are now in impersonation mode! Disable it in the name dropdown or the bottom of the screen!')->flash();
+
             return redirect()->route('dashboard');
         }
 
         \Alert::error('Error. Impersonation mode not active.')->flash();
-        return redirect()->back();
 
+        return redirect()->back();
     }
 }

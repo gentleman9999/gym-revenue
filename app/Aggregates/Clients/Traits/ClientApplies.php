@@ -200,7 +200,9 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
-    public function applyEmailCampaignLaunched(EmailCampaignLaunched $event){
+
+    public function applyEmailCampaignLaunched(EmailCampaignLaunched $event)
+    {
         $history = [
             'type' => 'Email Campaign Launched',
             'campaign_id' => $event->campaign,
@@ -210,7 +212,9 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
-    public function applyEmailCampaignCompleted(EmailCampaignCompleted $event){
+
+    public function applyEmailCampaignCompleted(EmailCampaignCompleted $event)
+    {
         $history = [
             'type' => 'Email Campaign Completed',
             'campaign_id' => $event->campaign,
@@ -256,6 +260,7 @@ trait ClientApplies
         $history['by'] = ($event->created == 'auto') ? 'Auto Generated' : $event->created;
         $this->comm_history[] = $history;
     }
+
     public function applySmsCampaignUpdated(SmsCampaignUpdated $event)
     {
         $history = [
@@ -270,6 +275,7 @@ trait ClientApplies
         $history['by'] = ($event->updated == 'auto') ? 'Auto Generated' : $event->updated;
         $this->comm_history[] = $history;
     }
+
     public function applySMSTemplateAssignedToSMSCampaign(SMSTemplateAssignedToSMSCampaign $event)
     {
         $history = [
@@ -283,6 +289,7 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
+
     public function applySMSTemplateUnAssignedFromSMSCampaign(SMSTemplateUnAssignedFromSMSCampaign $event)
     {
         $history = [
@@ -297,7 +304,8 @@ trait ClientApplies
         $this->comm_history[] = $history;
     }
 
-    public function applySmsCampaignLaunched(SmsCampaignLaunched $event){
+    public function applySmsCampaignLaunched(SmsCampaignLaunched $event)
+    {
         $history = [
             'type' => 'SMS Campaign Launched',
             'campaign_id' => $event->campaign,
@@ -307,7 +315,9 @@ trait ClientApplies
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
     }
-    public function applySmsCampaignCompleted(SmsCampaignCompleted $event){
+
+    public function applySmsCampaignCompleted(SmsCampaignCompleted $event)
+    {
         $history = [
             'type' => 'SMS Campaign Completed',
             'campaign_id' => $event->campaign,
@@ -336,7 +346,7 @@ trait ClientApplies
             'event' => 'user-was-impersonated',
             'employee' => $event->employee,
             'date' => $event->date,
-            'impersonator' => $event->invader
+            'impersonator' => $event->invader,
         ];
     }
 
@@ -346,8 +356,7 @@ trait ClientApplies
             'event' => 'user-stopped-being-impersonated',
             'employee' => $event->employee,
             'date' => $event->date,
-            'impersonator' => $event->invader
+            'impersonator' => $event->invader,
         ];
     }
-
 }

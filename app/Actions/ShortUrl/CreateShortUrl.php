@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-
 class CreateShortUrl
 {
     use AsAction;
@@ -28,7 +27,7 @@ class CreateShortUrl
     {
         $data['external_url'] = Str::random(10);
         ShortUrlAggregate::retrieve($client_id)
-            ->createShortUrl( "Auto Generated", $data)
+            ->createShortUrl("Auto Generated", $data)
             ->persist();
 
         return true;
@@ -45,6 +44,5 @@ class CreateShortUrl
             $request->validated(),
             $request->user(),
         );
-
     }
 }

@@ -4,7 +4,6 @@ namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\Calendar\CalendarEvent;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,7 +26,7 @@ class TrashCalendarEvent
         ];
     }
 
-    public function handle($data, $user=null)
+    public function handle($data, $user = null)
     {
         CalendarAggregate::retrieve($data['client_id'])->deleteCalendarEvent($user->id ?? "Auto Generated", $data['id'])->persist();
     }
@@ -35,6 +34,7 @@ class TrashCalendarEvent
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.trash', CalendarEvent::class);
     }
 

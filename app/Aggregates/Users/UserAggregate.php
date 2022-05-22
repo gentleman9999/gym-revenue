@@ -54,18 +54,15 @@ class UserAggregate extends AggregateRoot
 
     public function applyNewUser(UserCreated $event)
     {
-        if(array_key_exists('name', $event->payload))
-        {
+        if (array_key_exists('name', $event->payload)) {
             $this->name = $event->payload['name'];
         }
 
-        if(array_key_exists('phone', $event->payload))
-        {
+        if (array_key_exists('phone', $event->payload)) {
             $this->phone_number = $event->payload['phone'];
         }
 
-        if(array_key_exists('email', $event->payload))
-        {
+        if (array_key_exists('email', $event->payload)) {
             $this->email = $event->payload['email'];
         }
 
@@ -75,18 +72,15 @@ class UserAggregate extends AggregateRoot
 
     public function applyUserUpdated(UserUpdated $event)
     {
-        if(array_key_exists('name', $event->payload))
-        {
+        if (array_key_exists('name', $event->payload)) {
             $this->name = $event->payload['name'];
         }
 
-        if(array_key_exists('phone', $event->payload))
-        {
+        if (array_key_exists('phone', $event->payload)) {
             $this->phone_number = $event->payload['phone'];
         }
 
-        if(array_key_exists('email', $event->payload))
-        {
+        if (array_key_exists('email', $event->payload)) {
             $this->email = $event->payload['email'];
         }
 
@@ -98,7 +92,7 @@ class UserAggregate extends AggregateRoot
         $this->teams[$event->team] = [
             'team_id' => $event->team,
             'team_name' => $event->name,
-            'client_id' => $event->client
+            'client_id' => $event->client,
         ];
     }
 
@@ -110,6 +104,7 @@ class UserAggregate extends AggregateRoot
             'date' => $event->date,
         ];
     }
+
     public function applyUserStoppedImpersonatedAnother(UserStoppedImpersonatedAnother $event)
     {
         $this->activity_history[] = [
@@ -127,6 +122,7 @@ class UserAggregate extends AggregateRoot
             'date' => $event->date,
         ];
     }
+
     public function applyUserStoppedBeingImpersonated(UserStoppedBeingImpersonated $event)
     {
         $this->activity_history[] = [
@@ -135,6 +131,7 @@ class UserAggregate extends AggregateRoot
             'date' => $event->date,
         ];
     }
+
     public function applyUserReceivedTextMsg(UserReceivedTextMsg $event)
     {
         $this->activity_history[] = [
@@ -144,11 +141,12 @@ class UserAggregate extends AggregateRoot
                 'template_id' => $event->template,
                 'misc' => [
                     'response' => $event->response,
-                    'client' => $event->client ?? null
-                ]
+                    'client' => $event->client ?? null,
+                ],
             ],
         ];
     }
+
     public function applyUserReceivedEmail(UserReceivedEmail $event)
     {
         $this->activity_history[] = [
@@ -159,71 +157,79 @@ class UserAggregate extends AggregateRoot
                 'template_id' => $event->template,
                 'misc' => [
                     'response' => $event->response,
-                    'client' => $event->client ?? null
-                ]
+                    'client' => $event->client ?? null,
+                ],
             ],
         ];
     }
 
-
-
-
     public function createTask(string $created_by_user_id, array $payload)
     {
         $this->recordThat(new TaskCreated($this->uuid(), $created_by_user_id, $payload));
+
         return $this;
     }
+
     public function deleteTask(string $deleted_by_user_id, TaskDeleted $event)
     {
         $this->recordThat(new TaskDeleted($this->uuid(), $deleted_by_user_id, $event));
+
         return $this;
     }
 
-    public function restoreTask( $restored_by_user_id, TaskRestored $event)
+    public function restoreTask($restored_by_user_id, TaskRestored $event)
     {
         $this->recordThat(new TaskRestored($this->uuid(), $restored_by_user_id, $event));
-        return $this;
 
+        return $this;
     }
+
     public function trashTask($deleted_by_user_id, TaskTrashed $event)
     {
         $this->recordThat(new TaskTrashed($this->uuid(), $deleted_by_user_id, $event));
+
         return $this;
     }
+
     public function updateTask($updated_by_user_id, TaskUpdated $event)
     {
         $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
+
         return $this;
     }
+
     public function markTaskAsComplete($updated_by_user_id, TaskMarkedComplete $event)
     {
         $this->recordThat(new TaskMarkedComplete($this->uuid()), $updated_by_user_id, $event);
+
         return $this;
     }
+
     public function markTaskAsIncomplete($updated_by_user_id, TaskMarkedIncomplete $event)
     {
         $this->recordThat(new TaskMarkedIncomplete($this->uuid()), $updated_by_user_id, $event);
+
         return $this;
     }
-
-
-
 
     public function createUser(string $created_by_user_id, array $payload)
     {
         $this->recordThat(new UserCreated($this->uuid(), $created_by_user_id, $payload));
+
         return $this;
     }
 
     public function deleteUser(string $deleted_by_user_id, array $payload)
     {
         $this->recordThat(new UserDeleted($this->uuid(), $deleted_by_user_id, $payload));
+
         return $this;
     }
 
     public function updateUser(string $updated_by_user_id, array $payload)
     {
         $this->recordThat(new UserUpdated($this->uuid(), $updated_by_user_id, $payload));
+
         return $this;
     }
 
@@ -231,13 +237,13 @@ class UserAggregate extends AggregateRoot
     {
         // @todo - logic to throw an exception if the user is active
         $this->recordThat(new WelcomeEmailSent($this->uuid()));
+
         return $this;
     }
 
     public function addUserToTeam(string $team_id, $team_name, $client_id = null)
     {
-        if(array_key_exists($team_id, $this->teams))
-        {
+        if (array_key_exists($team_id, $this->teams)) {
             // @todo - make an exception to throw here that the user is already a member
         }
 
@@ -248,19 +254,22 @@ class UserAggregate extends AggregateRoot
 
     public function setCustomCrudColumns(string $table, array $field_ids)
     {
-        $this->recordThat(new UserSetCustomCrudColumns($this->uuid(),$table, $field_ids));
+        $this->recordThat(new UserSetCustomCrudColumns($this->uuid(), $table, $field_ids));
+
         return $this;
     }
 
     public function logClientSMSActivity($template_id, $response, $client_id = null)
     {
         $this->recordThat(new UserReceivedTextMsg($this->uuid(), $template_id, $response, $client_id));
+
         return $this;
     }
 
     public function logClientEmailActivity($subject, $template_id, $response, $client_id = null)
     {
         $this->recordThat(new UserReceivedEmail($this->uuid(), $subject, $template_id, $response, $client_id));
+
         return $this;
     }
 
@@ -269,10 +278,8 @@ class UserAggregate extends AggregateRoot
         $results = $this->teams;
 
         $client = new Client();
-        foreach($results as $idx => $team)
-        {
-            if(!is_null($team['client_id']) && (($client->id ?? null) != $team['client_id']))
-            {
+        foreach ($results as $idx => $team) {
+            if (! is_null($team['client_id']) && (($client->id ?? null) != $team['client_id'])) {
                 $client = $client->find($team['client_id']);
             }
 
@@ -283,27 +290,31 @@ class UserAggregate extends AggregateRoot
         return $results;
     }
 
-    public function  activateUserImpersonationMode($victim_id)
+    public function activateUserImpersonationMode($victim_id)
     {
         $this->recordThat(new UserImpersonatedAnother($this->uuid(), $victim_id, date('Y-m-d H:i:s')));
+
         return $this;
     }
 
-    public function  deactivateUserImpersonationMode($liberated_id)
+    public function deactivateUserImpersonationMode($liberated_id)
     {
         $this->recordThat(new UserStoppedImpersonatedAnother($this->uuid(), $liberated_id, date('Y-m-d H:i:s')));
+
         return $this;
     }
 
     public function activatePossessionMode($invader_id)
     {
         $this->recordThat(new UserWasImpersonated($this->uuid(), $invader_id, date('Y-m-d H:i:s')));
+
         return $this;
     }
 
     public function deactivatePossessionMode($coward_id)
     {
         $this->recordThat(new UserStoppedBeingImpersonated($this->uuid(), $coward_id, date('Y-m-d H:i:s')));
+
         return $this;
     }
 
@@ -324,10 +335,10 @@ class UserAggregate extends AggregateRoot
 
     public function getProperty(string $prop)
     {
-        switch($prop)
-        {
+        switch ($prop) {
             case 'name':
                 return $this->getName();
+
                 break;
 
             default:
@@ -338,36 +349,42 @@ class UserAggregate extends AggregateRoot
     public function createNotification(array $data)
     {
         $this->recordThat(new NotificationCreated($this->uuid(), $data));
+
         return $this;
     }
 
     public function dismissNotification(string $id)
     {
         $this->recordThat(new NotificationDismissed($this->uuid(), $id));
+
         return $this;
     }
 
     public function createReminder(string $user_id, array $payload)
     {
         $this->recordThat(new ReminderCreated($user_id, $payload));
+
         return $this;
     }
 
     public function updateReminder(string $user_id, array $payload)
     {
         $this->recordThat(new ReminderUpdated($user_id, $payload));
+
         return $this;
     }
 
     public function deleteReminder(string $user_id, string $id)
     {
         $this->recordThat(new ReminderDeleted($user_id, $id));
+
         return $this;
     }
 
     public function triggerReminder(string $id)
     {
         $this->recordThat(new ReminderTriggered($this->uuid(), $id));
+
         return $this;
     }
 }

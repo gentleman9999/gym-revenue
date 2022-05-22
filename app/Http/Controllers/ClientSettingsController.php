@@ -4,20 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\ClientService;
-use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 
 class ClientSettingsController extends Controller
 {
-
     public function index()
     {
         $client_id = request()->user()->currentClientId();
-        if(!$client_id){
+        if (! $client_id) {
             return Redirect::route('dashboard');
         }
         $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($client_id);
@@ -33,7 +30,7 @@ class ClientSettingsController extends Controller
             'availableCommPreferences' => $test,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
-            'locations' => $client->locations ?? []
+            'locations' => $client->locations ?? [],
         ]);
     }
 
@@ -41,7 +38,7 @@ class ClientSettingsController extends Controller
     {
         $data = request()->validate([
             'services' => ['sometimes', 'array'],
-            'commPreferences' => ['sometimes', 'array']
+            'commPreferences' => ['sometimes', 'array'],
 
         ]);
         $client_id = request()->user()->currentClientId();

@@ -4,11 +4,9 @@ namespace Database\Seeders\AccessControl;
 
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
-use Illuminate\Database\Seeder;
 use Bouncer;
-use Laravel\Jetstream\Jetstream;
+use Illuminate\Database\Seeder;
 use Silber\Bouncer\Database\Role;
-use Symfony\Component\VarDumper\VarDumper;
 
 class ClientBouncerRolesSeeder extends Seeder
 {
@@ -29,7 +27,7 @@ class ClientBouncerRolesSeeder extends Seeder
                     Role::create([
                         'name' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE),
                         'scope' => $client->id ?? null,
-                        'group' => $enum->value
+                        'group' => $enum->value,
                 ])->update(['title' => mb_convert_case(str_replace("_", " ", $enum->name), MB_CASE_TITLE)]);
                 });
         }

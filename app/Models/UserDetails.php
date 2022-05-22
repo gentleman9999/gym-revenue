@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserDetails extends Model
 {
-    use SoftDeletes, Uuid;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -19,7 +20,7 @@ class UserDetails extends Model
     protected $fillable = ['user_id', 'name', 'value', 'misc', 'active'];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 
     public function user()
@@ -31,11 +32,10 @@ class UserDetails extends Model
     {
         $model = self::firstOrCreate([
             'user_id' => $user_id,
-            'name' => $detail
+            'name' => $detail,
         ]);
 
         $model->value = $value;
         $model->save();
     }
-
 }

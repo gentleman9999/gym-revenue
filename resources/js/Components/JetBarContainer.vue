@@ -6,6 +6,6 @@
 
 <script>
 export default {
-    name: "JetBarContainer"
-}
+    name: "JetBarContainer",
+};
 </script>

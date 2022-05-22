@@ -15,7 +15,6 @@ class LeadFactory extends Factory
      */
     protected $model = Lead::class;
 
-
     /**
      * Define the model's default state.
      *
@@ -29,6 +28,7 @@ class LeadFactory extends Factory
         $username = "{$first_name}.{$last_name}";
         $domain = $this->faker->freeEmailDomain;
         $email = "{$username}@{$domain}";
+
         return [
             'id' => Uuid::uuid4()->toString(),
             'client_id' => 0,
@@ -38,7 +38,7 @@ class LeadFactory extends Factory
             'email' => $email,
             'primary_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()),
             'ip_address' => $this->faker->ipv4(),
-            'gender' => $gender
+            'gender' => $gender,
         ];
     }
 
@@ -46,7 +46,7 @@ class LeadFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($client_id) {
             return [
-                'client_id' => $client_id
+                'client_id' => $client_id,
             ];
         });
     }
@@ -55,7 +55,7 @@ class LeadFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($lead_type_id) {
             return [
-                'lead_type_id' => $lead_type_id
+                'lead_type_id' => $lead_type_id,
             ];
         });
     }
@@ -64,7 +64,7 @@ class LeadFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($lead_source_id) {
             return [
-                'lead_source_id' => $lead_source_id
+                'lead_source_id' => $lead_source_id,
             ];
         });
     }
@@ -73,7 +73,7 @@ class LeadFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($membership_type_id) {
             return [
-                'membership_type_id' => $membership_type_id
+                'membership_type_id' => $membership_type_id,
             ];
         });
     }
@@ -82,9 +82,8 @@ class LeadFactory extends Factory
     {
         return $this->state(function (array $attrs) use ($gymrevenue_id) {
             return [
-                'gr_location_id' => $gymrevenue_id
+                'gr_location_id' => $gymrevenue_id,
             ];
         });
-
     }
 }

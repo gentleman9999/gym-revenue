@@ -87,7 +87,7 @@
     @apply flex flex-col -my-2 sm:-mx-6 lg:-mx-8 sm:px-6 lg:px-8 min-w-full;
     max-width: 100vw;
 }
-table{
+table {
     @apply shadow shadow-lg;
 
     th {
@@ -109,7 +109,7 @@ import AutoDataRow from "@/Components/CRUD/AutoDataRow";
 import { getFields } from "./helpers/getFields";
 import { getData } from "./helpers/getData";
 import SortableHeader from "@/Components/CRUD/SortableHeader";
-import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
+import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
 library.add(faAlignLeft);
 
@@ -173,7 +173,13 @@ export default {
         const data = getData(props);
 
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
-        return { modelNamePlural: __modelNamePlural, fields, customizedFields, isObject, data };
+        return {
+            modelNamePlural: __modelNamePlural,
+            fields,
+            customizedFields,
+            isObject,
+            data,
+        };
     },
 };
 </script>

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Imports;
+
 use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
@@ -10,17 +11,16 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class LocationsImportWithHeader implements ToCollection, WithHeadingRow
 {
-
     protected string $client_id;
 
-    public function __construct(string $client) {
+    public function __construct(string $client)
+    {
         $this->client_id = $client;
     }
 
     public function collection(Collection|\Illuminate\Support\Collection $rows)
     {
-        foreach ($rows as $row)
-        {
+        foreach ($rows as $row) {
             $gr_id = GenerateGymRevenueId::run($this->client_id);
             $test = Location::create([
                 'client_id' => $this->client_id,
@@ -34,61 +34,54 @@ class LocationsImportWithHeader implements ToCollection, WithHeadingRow
             ]);
 
             $row = $row->toArray();
-            if(array_key_exists('phone', $row))
-            {
+            if (array_key_exists('phone', $row)) {
                 LocationDetails::create([
                     'location_id' => $test->id,
                     'client_id' => $this->client_id,
                     'field' => 'phone',
-                    'value' => $row['phone']
+                    'value' => $row['phone'],
                 ]);
             }
-            if(array_key_exists('open_date', $row))
-            {
+            if (array_key_exists('open_date', $row)) {
                 LocationDetails::create([
                     'location_id' => $test->id,
                     'client' => $this->client_id,
                     'field' => 'open_date',
-                    'value' => $row['open_date']
+                    'value' => $row['open_date'],
                 ]);
             }
-            if(array_key_exists('close_date', $row))
-            {
+            if (array_key_exists('close_date', $row)) {
                 LocationDetails::create([
                     'location_id' => $test->id,
                     'client' => $this->client_id,
                     'field' => 'close_date',
-                    'value' => $row['close_date']
+                    'value' => $row['close_date'],
                 ]);
             }
-            if(array_key_exists('poc_first', $row))
-            {
+            if (array_key_exists('poc_first', $row)) {
                 LocationDetails::create([
                     'location_id' => $test->id,
                     'client' => $this->client_id,
                     'field' => 'poc_first',
-                    'value' => $row['poc_first']
+                    'value' => $row['poc_first'],
                 ]);
             }
-            if(array_key_exists('poc_last', $row))
-            {
+            if (array_key_exists('poc_last', $row)) {
                 LocationDetails::create([
                     'location_id' => $test->id,
                     'client' => $this->client_id,
                     'field' => 'poc_last',
-                    'value' => $row['poc_last']
+                    'value' => $row['poc_last'],
                 ]);
             }
-            if(array_key_exists('poc_phone', $row))
-            {
+            if (array_key_exists('poc_phone', $row)) {
                 LocationDetails::create([
                     'location_id' => $test->id,
                     'client' => $this->client_id,
                     'field' => 'poc_last',
-                    'value' => $row['poc_last']
+                    'value' => $row['poc_last'],
                 ]);
             }
         }
     }
-
 }

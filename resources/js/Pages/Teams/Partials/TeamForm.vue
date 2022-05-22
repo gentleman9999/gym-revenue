@@ -56,7 +56,10 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4" v-if="availableLocations?.length">
+            <div
+                class="col-span-6 sm:col-span-4"
+                v-if="availableLocations?.length"
+            >
                 <jet-label for="locations" value="Locations" />
                 <multiselect
                     v-model="form.locations"
@@ -102,7 +105,7 @@ import JetActionMessage from "@/Jetstream/ActionMessage";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 export default defineComponent({
     components: {
@@ -132,8 +135,10 @@ export default defineComponent({
             };
             operation = "Create";
         } else {
-            team.locations = page.props.value.locations.map(detail=>detail.value);
-            console.log('team.locations', team.locations);
+            team.locations = page.props.value.locations.map(
+                (detail) => detail.value
+            );
+            console.log("team.locations", team.locations);
         }
         const form = useForm(team);
 

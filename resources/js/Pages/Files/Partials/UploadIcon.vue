@@ -1,7 +1,11 @@
 <template>
     <div
         class="upload-btn-container"
-        :class="{ 'text-primary': active, 'text-gray-500': !active, 'upload-complete': !active }"
+        :class="{
+            'text-primary': active,
+            'text-gray-500': !active,
+            'upload-complete': !active,
+        }"
     >
         <svg
             class="upload-box"
@@ -142,5 +146,5 @@
 }
 </style>
 <script setup>
-const props = defineProps({ active: { type: Boolean, default: false} });
+const props = defineProps({ active: { type: Boolean, default: false } });
 </script>

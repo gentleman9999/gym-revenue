@@ -1,9 +1,7 @@
 <template>
     <app-layout title="Create Security Role">
         <template #header>
-            <h2 class="font-semibold text-xl leading-tight">
-                Create Role
-            </h2>
+            <h2 class="font-semibold text-xl leading-tight">Create Role</h2>
         </template>
 
         <div>
@@ -20,7 +18,7 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -42,16 +40,16 @@ export default defineComponent({
     props: {
         availableRoles: {
             type: Array,
-            default: []
+            default: [],
         },
         availableAbilities: {
             type: Array,
-            default: []
+            default: [],
         },
         securityGroups: {
             type: Array,
-            default: []
-        }
-    }
+            default: [],
+        },
+    },
 });
 </script>

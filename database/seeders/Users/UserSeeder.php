@@ -17,19 +17,14 @@ abstract class UserSeeder extends Seeder
     {
         VarDumper::dump("Adding {$this->type} Users...");
 
-        foreach($this->getUsersToAdd() as $idx => $user)
-        {
+        foreach ($this->getUsersToAdd() as $idx => $user) {
             $user_record = User::whereEmail($user['email'])->first();
-            if(is_null($user_record))
-            {
+            if (is_null($user_record)) {
                 VarDumper::dump("Adding {$user['first_name']} {$user['last_name']}");
                 $this->addUser($user);
-            }
-            else
-            {
+            } else {
                 VarDumper::dump("Skipping {$user['first_name']} {$user['last_name']}!");
             }
-
         }
     }
 }

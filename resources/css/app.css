@@ -1,11 +1,11 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-.sweet-modal-overlay{
+.sweet-modal-overlay {
     @apply mt-16;
 }
-.no-scroll{
+.no-scroll {
     overflow: hidden;
 }
 
@@ -15,43 +15,43 @@
     }
 
     /* Apply defaults to forms */
-    [type='text'] {
+    [type="text"] {
         @apply input input-bordered border-2;
     }
-    [type='email'] {
+    [type="email"] {
         @apply input input-bordered border-2;
     }
-    [type='url'] {
+    [type="url"] {
         @apply input input-bordered border-2;
     }
-    [type='password'] {
+    [type="password"] {
         @apply input input-bordered border-2;
     }
-    [type='number'] {
+    [type="number"] {
         @apply input input-bordered border-2;
     }
-    [type='date'] {
+    [type="date"] {
         @apply input input-bordered border-2;
     }
-    [type='datetime-local'] {
+    [type="datetime-local"] {
         @apply input input-bordered border-2;
     }
-    [type='month'] {
+    [type="month"] {
         @apply input input-bordered border-2;
     }
-    [type='search'] {
+    [type="search"] {
         @apply input input-bordered border-2;
     }
-    [type='tel'] {
+    [type="tel"] {
         @apply input input-bordered border-2;
     }
-    [type='time'] {
+    [type="time"] {
         @apply input input-bordered border-2;
     }
-    [type='week'] {
+    [type="week"] {
         @apply input input-bordered border-2;
     }
-    [type='checkbox'] {
+    [type="checkbox"] {
         @apply checkbox;
     }
     textarea {
@@ -60,32 +60,30 @@
     select {
         @apply select select-bordered border-2;
     }
-    input:focus{
+    input:focus {
         @apply focus:ring focus:ring-primary;
     }
 }
 
-.input-ghost{
+.input-ghost {
     @apply bg-transparent border-none;
 }
 
-.dp__input{
+.dp__input {
     @apply input;
 }
-.dp__disabled{
+.dp__disabled {
     @apply !bg-base-300;
 }
 
-
-*{
+* {
     --fc-neutral-bg-color: hsla(var(--n) / var(--tw-bg-opacity, 1));
     --fc-list-event-dot-width: 10px;
-    --fc-list-event-hover-bg-color: theme('colors.primary.500');
+    --fc-list-event-hover-bg-color: theme("colors.primary.500");
     --fc-neutral-bg-color: hsla(var(--s) / var(--tw-bg-opacity, 0.5));
-    --fc-page-bg-color: theme('colors.base-200');
-    --fc-list-event-hover-bg-color: theme('colors.primary.500');
-    --fc-event-border-color: theme('colors.neutral.500');
+    --fc-page-bg-color: theme("colors.base-200");
+    --fc-list-event-hover-bg-color: theme("colors.primary.500");
+    --fc-event-border-color: theme("colors.neutral.500");
     --fc-border-color: hsla(var(--bc) / var(--tw-bg-opacity, 0.3));
     --fc-today-bg-color: hsla(var(--p) / var(--tw-bg-opacity, 0.3));
 }
-

@@ -8,7 +8,6 @@ use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Models\Traits\Sortable;
-use Bouncer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Twilio\TwiML\Voice\Task;
 
@@ -22,41 +21,49 @@ class Role extends \Silber\Bouncer\Database\Role
     public static function getEntityFromGroup(string $group)
     {
         $entity = null;
-        switch($group)
-        {
+        switch ($group) {
             case 'users':
                 $entity = User::class;
+
                 break;
             case 'locations':
                 $entity = Location::class;
+
                 break;
             case 'leads':
                 $entity = Lead::class;
+
                 break;
             case 'members':
                 $entity = Member::class;
+
                 break;
             case 'teams':
                 $entity = Team::class;
+
                 break;
             case 'files':
                 $entity = File::class;
+
                 break;
             case 'calendar':
                 $entity = CalendarEvent::class;
+
                 break;
             case 'roles':
                 $entity = Role::class;
+
                 break;
             case 'classifications':
                 $entity = Classification::class;
+
                 break;
             case 'task':
                 $entity = Task::class;
+
                 break;
         }
 
         return $entity;
     }
-
 }

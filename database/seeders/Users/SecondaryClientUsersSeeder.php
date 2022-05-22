@@ -183,7 +183,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'client' => 'iFit',
                 'team_names' => [
                     'iFit Home Office', 'iFit Virginia',
-                    'VA - Va Beach 1', 'VA - Va Beach 2'
+                    'VA - Va Beach 1', 'VA - Va Beach 2',
                 ],
             ],
             [
@@ -198,7 +198,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                     'FL - Lake City', 'FL - Hilliard',
                     'FL - Orange Park', 'FL - Tampa 2',
                     'GA - Atlanta 1', 'GA - Atlanta 2',
-                    'GA - Atlanta 16'
+                    'GA - Atlanta 16',
                 ],
             ],
             [
@@ -296,7 +296,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
                 'role' => 'Employee',
                 'client' => 'iFit',
                 'team_names' => ['iFit Virginia', 'iFit Georgia'],
-            ]
+            ],
         ];
     }
 
@@ -324,7 +324,7 @@ class SecondaryClientUsersSeeder extends UserSeeder
             'team_ids' => $team_ids,
             'role' => $user['role'],
             'home_club' => $home_club,
-            'is_manager' => $manager
+            'is_manager' => $manager,
         ]);
     }
 }

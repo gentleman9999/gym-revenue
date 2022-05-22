@@ -20,7 +20,7 @@ class ClientGatewayProjector extends Projector
             'client_id' => $event->client,
             'provider_type' => $types[$event->type]['id'],
             'nickname' => $event->nickname,
-            'active' => 1
+            'active' => 1,
         ]);
     }
 }

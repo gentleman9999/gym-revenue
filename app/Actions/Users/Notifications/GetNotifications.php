@@ -3,7 +3,6 @@
 namespace App\Actions\Users\Notifications;
 
 use App\Models\Notification;
-use Bouncer;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -41,5 +40,4 @@ class GetNotifications
         );
 //        return $notifications;
     }
-
 }

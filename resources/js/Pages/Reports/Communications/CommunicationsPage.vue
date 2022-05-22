@@ -2,10 +2,7 @@
     <app-layout>
         <template #header> Communications </template>
 
-        <jet-bar-container>
-
-
-        </jet-bar-container>
+        <jet-bar-container> </jet-bar-container>
     </app-layout>
 </template>
 

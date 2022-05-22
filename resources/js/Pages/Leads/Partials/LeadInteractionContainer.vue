@@ -2,59 +2,119 @@
     <div class="flex flex-col items-center mb-4">
         <div class="w-full mb-8 mt-4">
             <div class="grid grid-cols-12 w-full gap-4">
-                <div class="col-span-12 lg:col-span-4 flex-shrink-0 bg-base-300 rounded-lg flex flex-col p-4">
-                    <inertia-link :href="route('data.leads.edit', leadId)" class="flex flex-col items-center justify-center">
-
+                <div
+                    class="col-span-12 lg:col-span-4 flex-shrink-0 bg-base-300 rounded-lg flex flex-col p-4"
+                >
+                    <inertia-link
+                        :href="route('data.leads.edit', leadId)"
+                        class="flex flex-col items-center justify-center"
+                    >
                         <div class="rounded-full border" :style="borderStyle">
-                            <font-awesome-icon icon="user-circle" size="6x" class="self-center opacity-10"/>
+                            <font-awesome-icon
+                                icon="user-circle"
+                                size="6x"
+                                class="self-center opacity-10"
+                            />
                         </div>
                         <h1 class="text-center text-2xl">
-                            {{ firstName }} {{ this.$page.props.middle_name.value }} {{ lastName }}
+                            {{ firstName }}
+                            {{ this.$page.props.middle_name.value }}
+                            {{ lastName }}
                         </h1>
-                        <div class="badge badge-success mt-4">Agreement #: {{agreementNum}}</div>
-                        <div class="badge badge-info mt-4" v-if="trialDates?.length">Trial Uses: {{trialDates?.length || 0}}</div>
-                        <div class="badge badge-error mt-4" v-if="trialMemberships?.length">Trial Expires: {{new Date(trialMemberships[0].expiry_date).toLocaleString()}}</div>
+                        <div class="badge badge-success mt-4">
+                            Agreement #: {{ agreementNum }}
+                        </div>
+                        <div
+                            class="badge badge-info mt-4"
+                            v-if="trialDates?.length"
+                        >
+                            Trial Uses: {{ trialDates?.length || 0 }}
+                        </div>
+                        <div
+                            class="badge badge-error mt-4"
+                            v-if="trialMemberships?.length"
+                        >
+                            Trial Expires:
+                            {{
+                                new Date(
+                                    trialMemberships[0].expiry_date
+                                ).toLocaleString()
+                            }}
+                        </div>
                     </inertia-link>
-
 
                     <!--                        <ul class="w-full">-->
                     <!--                            <li class="mb-4"><p><b>Email -</b> {{ email }}</p></li>-->
                     <!--                            <li><p><b>Phone -</b> {{ phone }}</p></li>-->
                     <!--                        </ul>-->
-                    <div class="flex flex-row mt-8 self-center" v-if="claimedByUser">
+                    <div
+                        class="flex flex-row mt-8 self-center"
+                        v-if="claimedByUser"
+                    >
                         <div class="mr-4">
-                            <Button type="button" success @click="activeContactMethod = 'email'">Email
-                                <span class="bg-base-300 p-1 rounded text-success text-xs ml-2">
-                                    {{interactionCount.emailedCount}}
+                            <Button
+                                type="button"
+                                success
+                                @click="activeContactMethod = 'email'"
+                                >Email
+                                <span
+                                    class="bg-base-300 p-1 rounded text-success text-xs ml-2"
+                                >
+                                    {{ interactionCount.emailedCount }}
                                 </span>
                             </Button>
                         </div>
                         <div class="mr-4">
-                            <Button type="button" error @click="activeContactMethod = 'phone'">Call
-                                <span class="bg-base-300 p-1 rounded text-error text-xs ml-2">
-                                    {{interactionCount.calledCount}}
+                            <Button
+                                type="button"
+                                error
+                                @click="activeContactMethod = 'phone'"
+                                >Call
+                                <span
+                                    class="bg-base-300 p-1 rounded text-error text-xs ml-2"
+                                >
+                                    {{ interactionCount.calledCount }}
                                 </span>
                             </Button>
                         </div>
                         <div class="mr-4">
-                            <Button type="button" info @click="activeContactMethod = 'sms'">SMS
-                                <span class="bg-base-300 p-1 rounded text-info text-xs ml-2">
-                                    {{interactionCount.smsCount}}
+                            <Button
+                                type="button"
+                                info
+                                @click="activeContactMethod = 'sms'"
+                                >SMS
+                                <span
+                                    class="bg-base-300 p-1 rounded text-info text-xs ml-2"
+                                >
+                                    {{ interactionCount.smsCount }}
                                 </span>
                             </Button>
                         </div>
                     </div>
                 </div>
-                <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
-                    <CommsHistory :details="details" ref="commsHistoryRef"/>
+                <div
+                    class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4"
+                >
+                    <CommsHistory :details="details" ref="commsHistoryRef" />
                 </div>
-                <sweet-modal :title="modalTitle" width="85%" ref="showViewModal" overlayTheme="dark"
-                             modal-theme="dark"
-                             enable-mobile-fullscreen
-                             @close="activeContactMethod = ''">
-                    <div class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4">
-                        <CommsActions :activeContactMethod="activeContactMethod" :phone="phone" :lead-id="leadId"
-                                      @done="$refs.showViewModal.close();"/>
+                <sweet-modal
+                    :title="modalTitle"
+                    width="85%"
+                    ref="showViewModal"
+                    overlayTheme="dark"
+                    modal-theme="dark"
+                    enable-mobile-fullscreen
+                    @close="activeContactMethod = ''"
+                >
+                    <div
+                        class="col-span-12 lg:col-span-8 rounded-lg bg-base-300 p-4"
+                    >
+                        <CommsActions
+                            :activeContactMethod="activeContactMethod"
+                            :phone="phone"
+                            :lead-id="leadId"
+                            @done="$refs.showViewModal.close()"
+                        />
                     </div>
                 </sweet-modal>
             </div>
@@ -63,14 +123,14 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue';
-import Button from '@/Components/Button';
-import FormSection from '@/Jetstream/FormSection'
+import { defineComponent } from "vue";
+import Button from "@/Components/Button";
+import FormSection from "@/Jetstream/FormSection";
 import CommsHistory from "./CommsHistory";
 import CommsActions from "./CommsActions";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {faUserCircle} from '@fortawesome/pro-solid-svg-icons';
-import {library} from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 
 library.add(faUserCircle);
@@ -84,49 +144,60 @@ export default defineComponent({
         Button,
         FormSection,
         FontAwesomeIcon,
-        SweetModal
+        SweetModal,
     },
-    props: ['userId', 'leadId', 'firstName', 'lastName', 'email', 'phone', 'details', 'trialDates', 'trialMemberships', 'trialMembershipTypes', 'interactionCount'],
+    props: [
+        "userId",
+        "leadId",
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "details",
+        "trialDates",
+        "trialMemberships",
+        "trialMembershipTypes",
+        "interactionCount",
+    ],
     data() {
         return {
-            activeContactMethod: '',
-            dynamicDetails: '',
-        }
+            activeContactMethod: "",
+            dynamicDetails: "",
+        };
     },
     computed: {
         borderStyle() {
-            let color = 'transparent'
+            let color = "transparent";
             for (let idx in this.details) {
                 let d = this.details[idx];
-                if (d.field === 'opportunity') {
-                    switch(d.value) {
-                        case 'High':
-                            color = 'green';
+                if (d.field === "opportunity") {
+                    switch (d.value) {
+                        case "High":
+                            color = "green";
                             break;
 
-                        case 'Medium':
-                            color = 'yellow';
+                        case "Medium":
+                            color = "yellow";
                             break;
 
-                        case 'Low':
-                            color = 'red';
+                        case "Low":
+                            color = "red";
                             break;
-
                     }
                 }
             }
             return {
-                'border-color': color,
-                'border-width': '5px'
-            }
+                "border-color": color,
+                "border-width": "5px",
+            };
         },
         claimedByUser() {
             let r = false;
 
             for (let idx in this.details) {
                 let d = this.details[idx];
-                if (d.field === 'claimed') {
-                    r = (d.value == this.userId);
+                if (d.field === "claimed") {
+                    r = d.value == this.userId;
                 }
             }
 
@@ -142,13 +213,15 @@ export default defineComponent({
                     return "Text Lead";
             }
         },
-        agreementNum(){
-            return this.details.find(detail => detail.field==='agreement_number').value;
-        }
+        agreementNum() {
+            return this.details.find(
+                (detail) => detail.field === "agreement_number"
+            ).value;
+        },
     },
     methods: {
         goToLeadDetailIndex(index) {
-            console.log('goToLeadDetailIndex', index);
+            console.log("goToLeadDetailIndex", index);
             this.$refs.commsHistoryRef.goToLeadDetailIndex(index);
         },
         fetchLeadInfo() {
@@ -156,21 +229,20 @@ export default defineComponent({
         },
         comingSoon() {
             new Noty({
-                type: 'warning',
-                theme: 'sunset',
-                text: 'Feature Coming Soon!',
-                timeout: 7500
+                type: "warning",
+                theme: "sunset",
+                text: "Feature Coming Soon!",
+                timeout: 7500,
             }).show();
-        }
+        },
     },
     watch: {
         activeContactMethod(val) {
-            val && this.$refs.showViewModal.open()
+            val && this.$refs.showViewModal.open();
         },
     },
     mounted() {
-        this.fetchLeadInfo()
-    }
+        this.fetchLeadInfo();
+    },
 });
 </script>
-

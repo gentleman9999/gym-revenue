@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LocationDetails extends Model
 {
-    use SoftDeletes, Uuid;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -19,7 +20,7 @@ class LocationDetails extends Model
     protected $fillable = ['location_id', 'client_id', 'field', 'value', 'misc', 'active'];
 
     protected $casts = [
-        'misc' => 'array'
+        'misc' => 'array',
     ];
 
     public function location()
@@ -32,7 +33,7 @@ class LocationDetails extends Model
         $model = self::firstOrCreate([
             'location_id' => $location_id,
             'client_id' => $client_id,
-            'field' => $field
+            'field' => $field,
         ]);
 
         $model->value = $value;

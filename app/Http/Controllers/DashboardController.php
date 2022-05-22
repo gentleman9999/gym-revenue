@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\SecurityGroupEnum;
-use Bouncer;
 use App\Aggregates\Users\UserAggregate;
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
 use App\Services\Dashboard\HomeDashboardService;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
     protected Client $clients;
-    protected  HomeDashboardService $service;
+    protected HomeDashboardService $service;
 
     public function __construct(Client $clients, HomeDashboardService $service)
     {
@@ -30,21 +28,15 @@ class DashboardController extends Controller
         $team_name = $team->name;
         $vue = 'Dashboard';
 
-        if(!is_null($client_detail))
-        {
+        if (! is_null($client_detail)) {
             $clients = collect([$client_detail->client->toArray()]);
             $account = $client_detail->client->name;
             $widgets = $this->service->getDashboardWidgets();
-            if($user->inSecurityGroup(SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN))
-            {
+            if ($user->inSecurityGroup(SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN)) {
                 $vue = 'Dashboards/AccountAdminDashboard';
-            }
-            else if($user->inSecurityGroup(SecurityGroupEnum::LOCATION_MANAGER))
-            {
+            } elseif ($user->inSecurityGroup(SecurityGroupEnum::LOCATION_MANAGER)) {
                 $vue = 'Dashboards/LocationManagerDashboard';
-            }
-            else
-            {
+            } else {
                 $vue = 'Dashboards/SalesRepDashboard';
             }
 
@@ -53,10 +45,9 @@ class DashboardController extends Controller
                 'clients' => $clients,
                 'accountName' => $account,
                 'widgets' => $widgets,
-                'announcements'=> $announcements
+                'announcements' => $announcements,
             ]);
-        }
-        else {
+        } else {
             $account = 'GymRevenue';
             $clients = $this->clients->all();
             $widgets = $this->service->getDashboardWidgets();
@@ -68,22 +59,21 @@ class DashboardController extends Controller
             $aggy = UserAggregate::retrieve($user->id);
             $teams = $aggy->getTeams();
 
-            if(count($clients) > 0)
-            {
+            if (count($clients) > 0) {
                 $clients = $clients->toArray();
-                foreach($clients as $idx => $client)
-                {
+                foreach ($clients as $idx => $client) {
                     $clients[$idx]['created_at'] = date('M d, Y', strtotime($client['created_at']));
                     $clients[$idx]['updated_at'] = date('M d, Y', strtotime($client['updated_at']));
                 }
             }
+
             return Inertia::render($vue, [
                 'teamName' => $team_name,
                 'teams' => $teams,
                 'clients' => $clients,
                 'accountName' => $account,
                 'widgets' => $widgets,
-                'announcements'=> $announcements
+                'announcements' => $announcements,
             ]);
         }
     }

@@ -32,23 +32,20 @@ class SecondaryTeamsSeeder extends Seeder
                     'shivam@capeandbay.com',
                     'philip@capeandbay.com',
                     'sterling@capeandbay.com',
-					'steve@capeandbay.com',
+                    'steve@capeandbay.com',
                     'blair@capeandbay.com',
-                ]
+                ],
             ],
         ];
 
-        foreach ($cnb_teams as $team)
-        {
+        foreach ($cnb_teams as $team) {
             VarDumper::dump($team['name']);
             $members = $team['members'];
             unset($team['members']);
             $new_team = Team::firstOrCreate($team);
 
-            if(count($members) > 0)
-            {
-                foreach($members as $idx => $email)
-                {
+            if (count($members) > 0) {
+                foreach ($members as $idx => $email) {
                     $user = User::whereEmail($email)->first();
                     $new_team->users()->attach($user);
                     UserAggregate::retrieve($user->id)
@@ -508,11 +505,10 @@ class SecondaryTeamsSeeder extends Seeder
                 'personal_team' => 0,
                 'default_team' => 0,
                 'client_id' => Client::where('name', 'iFit')->first()->id,
-            ]
+            ],
         ];
 
-        foreach ($client_teams as $team)
-        {
+        foreach ($client_teams as $team) {
             VarDumper::dump($team['name']);
             $associated_client = $team['client_id'];
             unset($team['client_id']);
@@ -521,9 +517,9 @@ class SecondaryTeamsSeeder extends Seeder
             //$user = User::whereId($team['user_id'])->with('associated_client')->first();
             ClientDetail::firstorCreate([
                 'client_id' => $associated_client,
-                'detail'=> 'team',
+                'detail' => 'team',
                 'value' => $new_team->id,
-                'active' => 1
+                'active' => 1,
             ]);
 
             UserAggregate::retrieve($team['user_id'])

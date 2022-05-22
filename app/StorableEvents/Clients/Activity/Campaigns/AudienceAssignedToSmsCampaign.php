@@ -2,11 +2,12 @@
 
 namespace App\StorableEvents\Clients\Activity\Campaigns;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
-
 class AudienceAssignedToSmsCampaign extends AudienceAssignedToEmailCampaign
 {
-    public $client, $audience, $campaign, $user;
+    public $client;
+    public $audience;
+    public $campaign;
+    public $user;
 
     public function __construct($client, $audience, $campaign, $user)
     {

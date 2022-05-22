@@ -6,7 +6,8 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class PrefixCreated extends ShouldBeStored
 {
-    public $client, $prefix;
+    public $client;
+    public $prefix;
 
     public function __construct(string $client, string $prefix)
     {

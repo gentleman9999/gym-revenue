@@ -4,15 +4,16 @@ namespace App\Mail\Users;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 class NewUserWelcomeEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $user;
+
     /**
      * Create a new message instance.
      *
@@ -21,7 +22,6 @@ class NewUserWelcomeEmail extends Mailable
     public function __construct(User $user)
     {
         $this->user = $user;
-
     }
 
     /**
@@ -35,7 +35,7 @@ class NewUserWelcomeEmail extends Mailable
         $role = 'some Role';
 
         return $this->from(
-            env('MAIL_FROM_ADDRESS','developers@capeandbay.com'),
+            env('MAIL_FROM_ADDRESS', 'developers@capeandbay.com'),
             env('MAIL_FROM_NAME', 'Cape & Bay Dev Team')
         )
             ->subject('You have been invited to join '.env('APP_NAME')." as {$role}!")

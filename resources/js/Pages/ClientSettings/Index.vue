@@ -78,8 +78,8 @@ export default defineComponent({
             type: Array,
         },
         locations: {
-            type: Array
-        }
+            type: Array,
+        },
     },
 });
 </script>

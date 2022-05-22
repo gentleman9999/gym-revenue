@@ -6,7 +6,8 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class NotificationDismissed extends ShouldBeStored
 {
-    public $user, $id;
+    public $user;
+    public $id;
 
     public function __construct(string $user, string $id)
     {

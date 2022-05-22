@@ -1,6 +1,8 @@
 <template>
     <div class="form-control">
-        <slot name="label"><label :for="$attrs.id" class="label">{{ label }}</label></slot>
+        <slot name="label"
+            ><label :for="$attrs.id" class="label">{{ label }}</label></slot
+        >
         <textarea
             class="form-control w-full"
             rows="4"
@@ -25,13 +27,13 @@ export default defineComponent({
             type: Number,
             default: 130,
         },
-        modelValue:{
-            type: String
-        },
-        label:{
+        modelValue: {
             type: String,
-            default: "Message"
-        }
+        },
+        label: {
+            type: String,
+            default: "Message",
+        },
     },
     emits: ["done"],
     setup(props, { emit, attrs }) {
@@ -40,7 +42,7 @@ export default defineComponent({
 
         const handleInput = (event) => {
             charsUsed.value = event.target.value.length;
-            emit('update:modelValue', event.target.value);
+            emit("update:modelValue", event.target.value);
         };
 
         // mounted(node.value);

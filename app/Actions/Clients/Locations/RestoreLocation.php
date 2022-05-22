@@ -2,12 +2,8 @@
 
 namespace App\Actions\Clients\Locations;
 
-use App\Models\Clients\Location;
-use Bouncer;
-use App\Actions\Fortify\PasswordValidationRules;
 use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Users\UserAggregate;
-use App\Models\User;
+use App\Models\Clients\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -38,6 +34,7 @@ class RestoreLocation
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('locations.restore', Location::class);
     }
 

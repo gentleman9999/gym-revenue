@@ -1,10 +1,8 @@
 <template>
     <app-layout title="Edit Member">
         <template #header>
-            <jet-bar-icon type="g0back" fill/>
-            <h2 class="font-semibold text-xl  leading-tight">
-                Edit Member
-            </h2>
+            <jet-bar-icon type="g0back" fill />
+            <h2 class="font-semibold text-xl leading-tight">Edit Member</h2>
         </template>
 
         <div>
@@ -15,24 +13,24 @@
                     :member="member"
                     :locations="locations"
                     :available_services="available_services"
-                    :interaction-count="interactionCount"/>
+                    :interaction-count="interactionCount"
+                />
             </div>
         </div>
     </app-layout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
-import Button from '@/Components/Button'
-import JetFormSection from '@/Jetstream/FormSection'
+import AppLayout from "@/Layouts/AppLayout";
+import Button from "@/Components/Button";
+import JetFormSection from "@/Jetstream/FormSection";
 
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
-import JetBarIcon from '@/Components/JetBarIcon'
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
+import JetBarIcon from "@/Components/JetBarIcon";
 
-import MemberForm from '@/Pages/Members/Partials/MemberForm'
-import {defineComponent} from 'vue'
-
+import MemberForm from "@/Pages/Members/Partials/MemberForm";
+import { defineComponent } from "vue";
 
 export default defineComponent({
     components: {
@@ -45,11 +43,11 @@ export default defineComponent({
         MemberForm,
     },
     props: [
-        'user_id',
-        'member',
-        'locations',
-        'available_services',
-        'interactionCount',
-    ]
-})
+        "user_id",
+        "member",
+        "locations",
+        "available_services",
+        "interactionCount",
+    ],
+});
 </script>

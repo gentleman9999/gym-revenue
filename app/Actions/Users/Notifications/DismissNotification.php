@@ -5,7 +5,6 @@ namespace App\Actions\Users\Notifications;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Notification;
 use App\Models\User;
-use Bouncer;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -15,7 +14,6 @@ class DismissNotification
     use AsAction;
 
     public string $commandSignature = 'notifications:dismiss {id}';
-
 
     /**
      * Get the validation rules that apply to the action.
@@ -32,6 +30,7 @@ class DismissNotification
     public function handle($id, $user)
     {
         UserAggregate::retrieve($user->id)->dismissNotification($id)->persist();
+
         return GetUnreadNotificationCount::run($user);
     }
 

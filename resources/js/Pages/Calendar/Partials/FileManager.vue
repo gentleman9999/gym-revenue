@@ -3,7 +3,10 @@
         <template #description>
             <p class="font-bold mt-4">Upload attachments to your event!</p>
             <div class="divider"></div>
-            <h1>You can access these files in the File Manager by filtering by Calendar Events.</h1>
+            <h1>
+                You can access these files in the File Manager by filtering by
+                Calendar Events.
+            </h1>
         </template>
         <template #title> Upload File Attachments </template>
         <template #form>

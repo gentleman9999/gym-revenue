@@ -10,17 +10,13 @@ use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
-use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Role;
 
 class User extends Authenticatable
 {
@@ -40,7 +36,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'id', 'name', 'email', 'password', 'first_name', 'last_name'
+        'id', 'name', 'email', 'password', 'first_name', 'last_name',
     ];
 
     /**
@@ -98,23 +94,26 @@ class User extends Authenticatable
     public function switchLocation($location)
     {
         $this->current_location_id = $location->id;
+
         return $this->save();
     }
 
     public function currentClientId()
     {
         $detail = ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first();
+
         return is_null($detail) ? null : $detail->client_id;
     }
 
     public function isClientUser()
     {
-        return !is_null($this->associated_client()->first());
+        return ! is_null($this->associated_client()->first());
     }
 
     public function client()
     {
         $associated_client = $this->associated_client()->first();
+
         return Client::find($associated_client);
     }
 
@@ -131,7 +130,8 @@ class User extends Authenticatable
     {
         $current_team_id = $this->currentTeam()->first()->id ?? null;
         $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
-        return $current_team ?  $current_team->pivot->role === 'Account Owner' : false;
+
+        return $current_team ? $current_team->pivot->role === 'Account Owner' : false;
     }
 
     public function details()
@@ -203,22 +203,27 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
     }
+
     public function start_date()
     {
         return $this->detail()->where('name', '=', 'start_date');
     }
+
     public function end_date()
     {
         return $this->detail()->where('name', '=', 'end_date');
     }
+
     public function termination_date()
     {
         return $this->detail()->where('name', '=', 'termination_date');
     }
+
     public function teams()
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
     }
+
     public function default_team()
     {
         return $this->detail()->where('name', '=', 'default_team');
@@ -254,7 +259,6 @@ class User extends Authenticatable
         return $this->details()->where('name', '=', 'column-config');
     }
 
-
     public function scopeFilter($query, array $filters)
     {
         $stop = 0;
@@ -273,7 +277,7 @@ class User extends Authenticatable
                 return $query->whereTeamId($team_id);
             });
         })->when($filters['roles'] ?? null, function ($query, $role) {
-            $query->join('assigned_roles', function($join) use ($role) {
+            $query->join('assigned_roles', function ($join) use ($role) {
                 $join->on('users.id', '=', 'assigned_roles.entity_id')
                     ->where('assigned_roles.role_id', '=', $role);
             })->get();
@@ -297,9 +301,10 @@ class User extends Authenticatable
     public function securityGroup()
     {
         $role = $this->role();
-        if(!$role){
+        if (! $role) {
             return null;
         }
+
         return SecurityGroupEnum::from($role->group);
     }
 

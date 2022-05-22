@@ -3,14 +3,15 @@
 namespace App\Models\GatewayProviders;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class ClientGatewayIntegration extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -24,6 +25,6 @@ class ClientGatewayIntegration extends Model
         'client_id',
         'provider_type',
         'nickname',
-        'active'
+        'active',
     ];
 }

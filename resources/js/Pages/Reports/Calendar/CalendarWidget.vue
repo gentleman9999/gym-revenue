@@ -50,15 +50,7 @@ export default defineComponent({
             dates.push(date);
         }
 
-        const days = [
-            "Sun",
-            "Mon",
-            "Tues",
-            "Wed",
-            "Thurs",
-            "Fri",
-            "Sat",
-        ];
+        const days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
         return { CalendarModal, dates, days };
     },

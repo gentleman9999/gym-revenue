@@ -4,7 +4,6 @@ namespace Database\Seeders\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -33,13 +32,12 @@ class ClientSeeder extends Seeder
         foreach ($clients as $name => $active) {
             $client = Client::firstOrCreate([
                 'name' => $name,
-                'active' => $active
+                'active' => $active,
             ]);
 
             foreach ($services as $service) {
                 ClientAggregate::retrieve($client->id)->addClientService($service['feature_name'], $service['slug'], true)->persist();
             }
-
         }
     }
 }

@@ -6,7 +6,12 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class EmailTemplateUpdated extends ShouldBeStored
 {
-    public $client, $template, $updated, $old, $new;
+    public $client;
+    public $template;
+    public $updated;
+    public $old;
+    public $new;
+
     public function __construct(string $client, string $template, string $updated, array $old, array $new)
     {
         $this->client = $client;

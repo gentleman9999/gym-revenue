@@ -3,7 +3,6 @@
 namespace Database\Seeders\Data;
 
 use App\Models\Clients\Client;
-use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadStatuses;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -30,8 +29,8 @@ class LeadStatusSeeder extends Seeder
                 LeadStatuses::create([
                     'client_id' => $client->id,
                     'status' => $lead_type,
-                    'order' => $idx+1,
-                    'active' => 1
+                    'order' => $idx + 1,
+                    'active' => 1,
                 ]);
 
                 VarDumper::dump("Adding lead status {$lead_type}");

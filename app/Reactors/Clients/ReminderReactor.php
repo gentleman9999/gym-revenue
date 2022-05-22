@@ -2,7 +2,6 @@
 
 namespace App\Reactors\Clients;
 
-
 use App\Actions\Users\Notifications\CreateNotification;
 use App\Models\Reminder;
 use App\Models\User;
@@ -32,7 +31,7 @@ class ReminderReactor extends Reactor implements ShouldQueue
             // the the view based on entity_type and the entity's data
             'misc' => [
                 'remind_time' => $reminder->remind_time,
-            ]
+            ],
         ], User::find($reminder->user_id));
     }
 }

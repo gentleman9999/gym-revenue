@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Endusers\Lead;
-use Bouncer;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,7 +21,7 @@ class TrashLead
     public function rules()
     {
         return [
-            'reason' => ['required','string']
+            'reason' => ['required','string'],
         ];
     }
 
@@ -36,6 +35,7 @@ class TrashLead
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('leads.trash', Lead::class);
     }
 

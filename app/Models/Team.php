@@ -80,7 +80,7 @@ class Team extends JetstreamTeam
 
     public static function fetchTeamIDFromName(string $name)
     {
-        $model = new self;
+        $model = new self();
 
         return $model->getTeamIDFromName($name);
     }
@@ -91,7 +91,7 @@ class Team extends JetstreamTeam
 
         $record = $this->select('id')->where('name', '=', $name)->first();
 
-        if (!is_null($record)) {
+        if (! is_null($record)) {
             $results = $record->id;
         }
 
@@ -108,7 +108,7 @@ class Team extends JetstreamTeam
     {
         $proof = $this->default_team_details()->first();
 
-        return (!is_null($proof));
+        return (! is_null($proof));
     }
 
     public function scopeFilter($query, array $filters)
@@ -134,7 +134,7 @@ class Team extends JetstreamTeam
 
         $model = self::select('name')->whereId($team_id)->first();
 
-        if (!is_null($model)) {
+        if (! is_null($model)) {
             $results = $model->name;
         }
 
@@ -149,7 +149,7 @@ class Team extends JetstreamTeam
             ->whereValue($team_id)->with('client')
             ->first();
 
-        if (!is_null($model)) {
+        if (! is_null($model)) {
             $results = $model->client;
         }
 
@@ -168,5 +168,4 @@ class Team extends JetstreamTeam
             ->withTimestamps()
             ->as('membership');
     }
-
 }

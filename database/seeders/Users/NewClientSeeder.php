@@ -35,22 +35,20 @@ class NewClientSeeder extends Seeder
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->get();
             $team_names = [];
-            foreach ($teams as $team)
-            {
+            foreach ($teams as $team) {
                 $team_names[] = $team['name'];
             }
 
 
-            foreach ($roles as $role)
-            {
-                if($role['title'] !== 'Employee') {
+            foreach ($roles as $role) {
+                if ($role['title'] !== 'Employee') {
                     if ($role['title'] === 'Sales Rep') {
                         $users = User::factory()
                             ->count(5)
                             ->make([
                                 'client' => $client->name,
                                 'role' => $role['id'],
-                                'team_names' => $team_names
+                                'team_names' => $team_names,
                             ]);
                     } else {
                         $users = User::factory()
@@ -58,20 +56,20 @@ class NewClientSeeder extends Seeder
                             ->make([
                                 'client' => $client->name,
                                 'role' => $role['id'],
-                                'team_names' => $team_names
+                                'team_names' => $team_names,
                             ]);
                     }
 
-                    foreach($users as $user)
-                    {
+                    foreach ($users as $user) {
                         $client = Client::whereName($user['client'])->first();
                         $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
                         $team_ids = $teams->pluck('id');
                         $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-                        if($possible_home_clubs->count() > 0 )
+                        if ($possible_home_clubs->count() > 0) {
                             $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
-                        else
+                        } else {
                             $home_club = null;
+                        }
                         $senior_managers = [3, 2, 1];
                         $managers = [4];
                         $manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
@@ -84,29 +82,28 @@ class NewClientSeeder extends Seeder
                             'team_ids' => $team_ids,
                             'role_id' => $user['role'],
                             'home_club' => $home_club,
-                            'is_manager' => $manager
+                            'is_manager' => $manager,
                         ]);
                     }
                 } else {
-                    foreach ($classification as $class)
-                    {
-                        if($class['title'] == 'Club Associate') {
+                    foreach ($classification as $class) {
+                        if ($class['title'] == 'Club Associate') {
                             $users = User::factory()
                                 ->count(10)
                                 ->make([
                                     'client' => $client->name,
                                     'role' => $role['id'],
                                     'classification' => $class['id'],
-                                    'team_names' => $team_names
+                                    'team_names' => $team_names,
                                 ]);
-                        } else if($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
+                        } elseif ($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
                             $users = User::factory()
                                 ->count(5)
                                 ->make([
                                     'client' => $client->name,
                                     'role' => $role['id'],
                                     'classification' => $class['id'],
-                                    'team_names' => $team_names
+                                    'team_names' => $team_names,
                                 ]);
                         } else {
                             $users = User::factory()
@@ -115,7 +112,7 @@ class NewClientSeeder extends Seeder
                                     'client' => $client->name,
                                     'role' => $role['id'],
                                     'classification' => $class['id'],
-                                    'team_names' => $team_names
+                                    'team_names' => $team_names,
                                 ]);
                         }
 
@@ -124,10 +121,11 @@ class NewClientSeeder extends Seeder
                             $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
                             $team_ids = $teams->pluck('id');
                             $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-                            if ($possible_home_clubs->count() > 0)
+                            if ($possible_home_clubs->count() > 0) {
                                 $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
-                            else
+                            } else {
                                 $home_club = null;
+                            }
 
                             CreateUser::run([
                                 'client_id' => $client->id,
@@ -145,8 +143,6 @@ class NewClientSeeder extends Seeder
                     }
                 }
             }
-
         }
-
     }
 }

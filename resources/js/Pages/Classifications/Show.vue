@@ -1,10 +1,6 @@
 <template>
     <app-layout :title="Classifications">
-
-        <page-toolbar-nav
-            title="Classifications"
-            :links="navLinks"
-        />
+        <page-toolbar-nav title="Classifications" :links="navLinks" />
         <gym-revenue-crud
             base-route="classifications"
             model-name="Classification"
@@ -47,11 +43,11 @@ export default defineComponent({
         Confirm,
         JetBarContainer,
         Button,
-        PageToolbarNav
+        PageToolbarNav,
     },
     props: ["classifications", "filters"],
     setup(props) {
-        console.log({classifications: props.classifications})
+        console.log({ classifications: props.classifications });
 
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -59,7 +55,9 @@ export default defineComponent({
         };
 
         const handleConfirmTrash = () => {
-            Inertia.delete(route("classifications.trash", confirmTrash.value.id));
+            Inertia.delete(
+                route("classifications.trash", confirmTrash.value.id)
+            );
             confirmTrash.value = null;
         };
 
@@ -70,23 +68,30 @@ export default defineComponent({
                 label: "Users",
                 href: route("users"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Security Roles",
                 href: route("roles"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Classification",
                 href: route("classifications"),
                 onClick: null,
-                active: true
-            }
+                active: true,
+            },
         ];
 
-        return {fields, confirmTrash, handleConfirmTrash, handleClickTrash, Inertia, navLinks};
+        return {
+            fields,
+            confirmTrash,
+            handleConfirmTrash,
+            handleClickTrash,
+            Inertia,
+            navLinks,
+        };
     },
 });
 </script>

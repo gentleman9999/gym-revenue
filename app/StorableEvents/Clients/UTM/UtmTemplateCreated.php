@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UtmTemplateCreated extends ShouldBeStored
 {
-    public $client, $user, $payload;
+    public $client;
+    public $user;
+    public $payload;
 
     public function __construct(string $client, array $payload, $user)
     {

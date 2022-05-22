@@ -8,14 +8,26 @@
         ref="modal"
     >
         <slot />
-        <template #button >
+        <template #button>
             <slot name="cancelButton">
-                <button @click="emit('cancel'); modal.close()" class="btn btn-error hover:text-white">
+                <button
+                    @click="
+                        emit('cancel');
+                        modal.close();
+                    "
+                    class="btn btn-error hover:text-white"
+                >
                     Cancel
                 </button>
             </slot>
             <slot name="confirmButton">
-                <button @click="emit('confirm'); modal.close()" class="btn btn-success hover:text-white ml-2">
+                <button
+                    @click="
+                        emit('confirm');
+                        modal.close();
+                    "
+                    class="btn btn-success hover:text-white ml-2"
+                >
                     Confirm
                 </button>
             </slot>
@@ -34,8 +46,8 @@ export default defineComponent({
         width: {
             type: String,
             required: false,
-            default: '85%'
-        }
+            default: "85%",
+        },
     },
     emits: ["confirm"],
     components: { SweetModal },

@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Classification;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\Database\Role;
 
 class ClassificationsController extends Controller
 {
@@ -23,12 +20,12 @@ class ClassificationsController extends Controller
     public function index(Request $request)
     {
         $client_id = $request->user()->currentClientId();
-        if (!$client_id) {
+        if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if(request()->user()->cannot('classifications.read', Classification::class))
-        {
+        if (request()->user()->cannot('classifications.read', Classification::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
 
@@ -40,21 +37,22 @@ class ClassificationsController extends Controller
 
         return Inertia::render('Classifications/Show', [
             'classifications' => $classifications,
-            'filters' => $request->all('search', 'trashed', 'state')
+            'filters' => $request->all('search', 'trashed', 'state'),
         ]);
     }
 
     public function create()
     {
         $client_id = request()->user()->currentClientId();
-        if (!$client_id) {
+        if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if(request()->user()->cannot('classifications.create', Classification::class))
-        {
+        if (request()->user()->cannot('classifications.create', Classification::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
+
         return Inertia::render('Classifications/Create', [
         ]);
     }
@@ -62,18 +60,20 @@ class ClassificationsController extends Controller
     public function edit($id)
     {
         $client_id = request()->user()->currentClientId();
-        if (!$client_id) {
+        if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Security Role ID provided")->flash();
+
             return Redirect::back();
         }
-        if(request()->user()->cannot('classifications.update', Classification::class))
-        {
+        if (request()->user()->cannot('classifications.update', Classification::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
+
         return Inertia::render('Classifications/Edit', [
             'classification' => Classification::findOrFail($id),
         ]);
@@ -83,20 +83,15 @@ class ClassificationsController extends Controller
     public function export(Request $request)
     {
         $client_id = $request->user()->currentClientId();
-        if (!$client_id) {
+        if (! $client_id) {
             abort(403);
         }
-        if(request()->user()->cannot('classifications.read', Classification::class))
-        {
+        if (request()->user()->cannot('classifications.read', Classification::class)) {
             abort(403);
         }
 
         $classifications = Classification::whereClientId($client_id)->get();
 
         return $classifications;
-
     }
-
-
-
 }

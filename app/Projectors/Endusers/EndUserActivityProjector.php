@@ -11,7 +11,6 @@ use App\Models\Endusers\Member;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Note;
 use App\Models\User;
-use App\StorableEvents\Endusers\LeadDetailUpdated;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadDeleted;
 use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
@@ -42,11 +41,11 @@ class EndUserActivityProjector extends Projector
 
         $lead->value = $event->user;
         $misc = $lead->misc;
-        if (!is_array($misc)) {
+        if (! is_array($misc)) {
             $misc = [];
         }
 
-        if (!array_key_exists('claim_date', $misc)) {
+        if (! array_key_exists('claim_date', $misc)) {
             $misc['claim_date'] = date('Y-m-d');
         }
 
@@ -86,7 +85,6 @@ class EndUserActivityProjector extends Projector
             'value' => $event->user,
             'misc' => $misc,
         ]);
-
     }
 
     public function onLeadWasCalledByRep(\App\StorableEvents\Endusers\Leads\LeadWasCalledByRep $event)
@@ -110,7 +108,7 @@ class EndUserActivityProjector extends Projector
                 'entity_id' => $event->lead,
                 'entity_type' => Lead::class,
                 'note' => $notes,
-                'created_by_user_id' => $event->user
+                'created_by_user_id' => $event->user,
             ]);
         }
     }
@@ -120,7 +118,7 @@ class EndUserActivityProjector extends Projector
         $audience_record = CommAudience::whereClientId($event->client)
             ->whereSlug($event->audience)->whereActive(1)->first();
 
-        if (!is_null($audience_record)) {
+        if (! is_null($audience_record)) {
             // add a new record to audience_members
             $audience_member_record = AudienceMember::firstOrCreate([
                 'client_id' => $event->client,
@@ -128,11 +126,11 @@ class EndUserActivityProjector extends Projector
                 'entity_id' => $event->user,
                 'entity_type' => $event->entity,
                 'subscribed' => true,
-                'dnc' => false
+                'dnc' => false,
             ]);
 
             // add a new record to entity's details
-            $entity_model = new $event->entity;
+            $entity_model = new $event->entity();
             $details_class = $entity_model::getDetailsTable();
             $details_model = new $details_class();
             $details_model->firstOrCreate([
@@ -142,11 +140,10 @@ class EndUserActivityProjector extends Projector
                 'value' => $audience_record->id,
                 'misc' => [
                     'date' => date('Y-m-d'),
-                    'audience_member_record' => $audience_member_record->id
+                    'audience_member_record' => $audience_member_record->id,
                 ],
             ]);
         }
-
     }
 
     public function onTrialMembershipAdded(TrialMembershipAdded $event)
@@ -161,14 +158,14 @@ class EndUserActivityProjector extends Projector
             'start_date' => $event->date,
             'expiry_date' => Carbon::instance(new \DateTime($event->date))->addDays($trial->trial_length),
             'club_id' => $lead->gr_location_id,
-            'active' => 1
+            'active' => 1,
         ]);
         LeadDetails::create([
             'client_id' => $event->client,
             'lead_id' => $event->lead,
             'field' => 'trial-started',
             'value' => $event->date,
-            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
+            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client],
         ]);
     }
 
@@ -181,17 +178,16 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $event->lead,
             'field' => 'trial-used',
             'value' => $event->trial,
-            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client]
+            'misc' => ['trial_id' => $event->trial, 'date' => $event->date, 'client' => $event->client],
         ]);
     }
-
 
     ///new lead projections
     public function onLeadCreated(LeadCreated $event)
     {
         //get only the keys we care about (the ones marked as fillable)
         $lead_table_data = array_filter($event->data, function ($key) {
-            return in_array($key, (new Lead)->getFillable());
+            return in_array($key, (new Lead())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
         $lead = Lead::create($lead_table_data);
 
@@ -207,7 +203,7 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $lead->id,
             'client_id' => $event->data['client_id'],
             'field' => 'created',
-            'value' => Carbon::now()
+            'value' => Carbon::now(),
         ]);
         LeadDetails::create([
             'lead_id' => $lead->id,
@@ -222,11 +218,12 @@ class EndUserActivityProjector extends Projector
             $file = $event->data['profile_picture'];
             $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
 
-            LeadDetails::create([
+            LeadDetails::create(
+                [
                     'lead_id' => $lead->id,
                     'client_id' => $lead->client_id,
                     'field' => 'profile_picture',
-                    'misc' => $file
+                    'misc' => $file,
                 ]
             );
         }
@@ -254,7 +251,8 @@ class EndUserActivityProjector extends Projector
             $file = $event->data['profile_picture'];
             $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
 
-            LeadDetails::firstOrCreate([
+            LeadDetails::firstOrCreate(
+                [
                     'lead_id' => $lead->id,
                     'client_id' => $lead->client_id,
                     'field' => 'profile_picture',
@@ -272,7 +270,7 @@ class EndUserActivityProjector extends Projector
             'lead_id' => $lead->id,
             'field' => 'softdelete',
             'value' => $event->reason,
-            'misc' => ['userid' => $event->user]
+            'misc' => ['userid' => $event->user],
         ]);
     }
 
@@ -304,7 +302,7 @@ class EndUserActivityProjector extends Projector
                 'entity_type' => Lead::class,
                 'title' => $notes['title'],
                 'note' => $notes['note'],
-                'created_by_user_id' => $event->user
+                'created_by_user_id' => $event->user,
             ]);
             LeadDetails::create([
                 'lead_id' => $lead->id,
@@ -315,11 +313,12 @@ class EndUserActivityProjector extends Projector
         }
 
         foreach ($event->lead['services'] ?? [] as $service_id) {
-            LeadDetails::create([
+            LeadDetails::create(
+                [
                     'lead_id' => $event->aggregateRootUuid(),
                     'client_id' => $lead->client_id,
                     'field' => 'service_id',
-                    'value' => $service_id
+                    'value' => $service_id,
                 ]
             );
         }
@@ -330,7 +329,7 @@ class EndUserActivityProjector extends Projector
     {
         //get only the keys we care about (the ones marked as fillable)
         $member_table_data = array_filter($event->data, function ($key) {
-            return in_array($key, (new Member)->getFillable());
+            return in_array($key, (new Member())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
         $member_table_data['agreement_number'] = floor(time() - 99999999);
         if (array_key_exists('profile_picture', $event->data) && $event->data['profile_picture']) {
@@ -362,7 +361,6 @@ class EndUserActivityProjector extends Projector
 //        ]);
 
         $this->createOrUpdateMemberDetailsAndNotes($event, $member);
-
     }
 
     public function onMemberUpdated(MemberUpdated $event)
@@ -430,7 +428,7 @@ class EndUserActivityProjector extends Projector
                 'entity_type' => Member::class,
                 'title' => $notes['title'],
                 'note' => $notes['note'],
-                'created_by_user_id' => $event->user
+                'created_by_user_id' => $event->user,
             ]);
 //            MemberDetails::create([
 //                'member_id' => $member->id,
@@ -450,5 +448,4 @@ class EndUserActivityProjector extends Projector
 //            );
 //        }
     }
-
 }

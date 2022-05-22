@@ -5,10 +5,9 @@ namespace App\Actions\Clients\Roles;
 use App\Aggregates\Clients\ClientAggregate;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 use Silber\Bouncer\Database\Role;
-
 
 class CreateRole
 {
@@ -25,7 +24,7 @@ class CreateRole
             'name' => ['string', 'required'],
             'id' => ['integer', 'sometimes', 'nullable'],
             'ability_names' => ['array', 'sometimes'],
-            'group' => ['required', 'integer','min:1', 'max:6']
+            'group' => ['required', 'integer','min:1', 'max:6'],
         ];
     }
 
@@ -43,6 +42,7 @@ class CreateRole
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('roles.create', Role::class);
     }
 
@@ -57,5 +57,4 @@ class CreateRole
 
         return Redirect::route('roles');
     }
-
 }

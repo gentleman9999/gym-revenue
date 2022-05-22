@@ -43,7 +43,7 @@ export default defineComponent({
         classification: {
             type: Object,
             required: true,
-        }
+        },
     },
 });
 </script>

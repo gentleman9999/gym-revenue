@@ -1,5 +1,12 @@
 <template>
-    <nav class="navbar sticky top-0 z-20 lg:flex p-0" :class="(('is_being_impersonated' in $page.props.user)) ? 'bg-error': 'bg-secondary'">
+    <nav
+        class="navbar sticky top-0 z-20 lg:flex p-0"
+        :class="
+            'is_being_impersonated' in $page.props.user
+                ? 'bg-error'
+                : 'bg-secondary'
+        "
+    >
         <!-- Logo -->
         <div
             class="flex-shrink-0 flex-grow lg:flex-grow-0 flex items-center bg-primary self-stretch w-72 justify-center"
@@ -79,61 +86,64 @@
                 </div>
 
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
-                    <div class="ml-3 relative" v-if="(!('is_being_impersonated' in $page.props.user))">
+                    <div
+                        class="ml-3 relative"
+                        v-if="!('is_being_impersonated' in $page.props.user)"
+                    >
                         <teams-dropdown
                             v-if="$page.props.jetstream.hasTeamFeatures"
                         />
                     </div>
 
-<!--                    <div class="ml-3 relative">-->
-<!--                        <button @click="comingSoon()">-->
-<!--                            <font-awesome-icon-->
-<!--                                :icon="['fas', 'search']"-->
-<!--                                size="sm"-->
-<!--                            />-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                    <div class="ml-3 relative">-->
-<!--                        <button @click="comingSoon()">-->
-<!--                            <font-awesome-icon-->
-<!--                                :icon="['fas', 'plus-circle']"-->
-<!--                                size="sm"-->
-<!--                            />-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                    <div class="ml-3 relative">-->
-<!--                        <button @click="comingSoon()">-->
-<!--                            <font-awesome-icon-->
-<!--                                :icon="['fas', 'question-circle']"-->
-<!--                                size="sm"-->
-<!--                            />-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                    <div class="ml-3 relative">-->
-<!--                        <button @click="comingSoon()">-->
-<!--                            <font-awesome-icon-->
-<!--                                :icon="['fas', 'th']"-->
-<!--                                size="sm"-->
-<!--                            />-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                    <div class="ml-3 relative">-->
-<!--                        <button @click="comingSoon()">-->
-<!--                            <font-awesome-icon-->
-<!--                                :icon="['fas', 'user-circle']"-->
-<!--                                size="sm"-->
-<!--                            />-->
-<!--                        </button>-->
-<!--                    </div>-->
+                    <!--                    <div class="ml-3 relative">-->
+                    <!--                        <button @click="comingSoon()">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                :icon="['fas', 'search']"-->
+                    <!--                                size="sm"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="ml-3 relative">-->
+                    <!--                        <button @click="comingSoon()">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                :icon="['fas', 'plus-circle']"-->
+                    <!--                                size="sm"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="ml-3 relative">-->
+                    <!--                        <button @click="comingSoon()">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                :icon="['fas', 'question-circle']"-->
+                    <!--                                size="sm"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="ml-3 relative">-->
+                    <!--                        <button @click="comingSoon()">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                :icon="['fas', 'th']"-->
+                    <!--                                size="sm"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="ml-3 relative">-->
+                    <!--                        <button @click="comingSoon()">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                :icon="['fas', 'user-circle']"-->
+                    <!--                                size="sm"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
                     <noty-bell></noty-bell>
-<!--                    <div class="ml-3 relative">-->
-<!--                        <button @click="comingSoon()">-->
-<!--                            <font-awesome-icon-->
-<!--                                :icon="['far', 'file-medical']"-->
-<!--                                size="sm"-->
-<!--                            />-->
-<!--                        </button>-->
-<!--                    </div>-->
+                    <!--                    <div class="ml-3 relative">-->
+                    <!--                        <button @click="comingSoon()">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                :icon="['far', 'file-medical']"-->
+                    <!--                                size="sm"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
                     <!-- Notifications -->
 
                     <!-- Settings Dropdown -->

@@ -4,23 +4,14 @@ namespace App\Http\Controllers\Comm;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
-use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
-use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Redirect;
-use Inertia\Inertia;
-use Prologue\Alerts\Facades\Alert;
 use function Aws\filter;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MassCommunicationsController extends Controller
 {
@@ -29,32 +20,32 @@ class MassCommunicationsController extends Controller
         $results = [
             'email_templates' => [
                 'active' => 0,
-                'created' => 0
+                'created' => 0,
             ],
             'sms_templates' => [
                 'active' => 0,
-                'created' => 0
+                'created' => 0,
             ],
             'email_campaigns' => [
                 'active' => 0,
-                'created' => 0
+                'created' => 0,
             ],
             'sms_campaigns' => [
                 'active' => 0,
-                'created' => 0
+                'created' => 0,
             ],
             'total_audience' => 0,
             'audience_breakdown' => [
-                'all' => 0
-            ]
+                'all' => 0,
+            ],
         ];
 
-        if (!is_null($client_id)) {
+        if (! is_null($client_id)) {
             $results['total_audience'] = Lead::whereClientId($client_id)->count();
             $results['audience_breakdown'] = [
                 'all' => Lead::whereClientId($client_id)->count(),
                 'prospects' => Lead::whereClientId($client_id)->count(),
-                'conversions' => 0
+                'conversions' => 0,
             ];
             $results['sms_templates'] = [
                 'created' => SmsTemplates::whereClientId($client_id)->count(),
@@ -77,7 +68,7 @@ class MassCommunicationsController extends Controller
             $results['audience_breakdown'] = [
                 'all' => 25,
                 'admins' => 10,
-                'employees' => 15
+                'employees' => 15,
             ];
         }
 
@@ -87,13 +78,10 @@ class MassCommunicationsController extends Controller
     private function filterHistoryLog(array $history_log, string $audience, string $client_id = null)
     {
         $results = [];
-//dd($audience, $history_log);
+        //dd($audience, $history_log);
         // look for logs about the audience
-        foreach ($history_log as $idx => $log)
-        {
-
-            if(array_key_exists('slug', $log) && ($log['slug'] == $audience))
-            {
+        foreach ($history_log as $idx => $log) {
+            if (array_key_exists('slug', $log) && ($log['slug'] == $audience)) {
                 $results[] = $log;
             }
         }
@@ -107,7 +95,7 @@ class MassCommunicationsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
-        if (!is_null($client_id)) {
+        if (! is_null($client_id)) {
             $aggy = ClientAggregate::retrieve($client_id);
             $history_log = $aggy->getCommunicationHistoryLog();
             $aud_options = [
@@ -118,13 +106,12 @@ class MassCommunicationsController extends Controller
 
             // @todo - make a function that crunches these datas
             $stats = $this->getStats($client_id);
-        }
-        else {
+        } else {
             $history_log = [];
             $aud_options = [
                 'all' => 'All',
                 'admins' => 'Cape & Bay Admins',
-                'employees' => 'Cape & Bay Non-Admins'
+                'employees' => 'Cape & Bay Non-Admins',
             ];
 
             $stats = $this->getStats($client_id);
@@ -137,6 +124,7 @@ class MassCommunicationsController extends Controller
                 case 'all':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
+
                     break;
                 case 'prospects':
                 case 'conversions':
@@ -145,6 +133,7 @@ class MassCommunicationsController extends Controller
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
                     $history_log = $this->filterHistoryLog($history_log, $aud, $client_id);
+
                     break;
 
                 default:
@@ -154,17 +143,17 @@ class MassCommunicationsController extends Controller
 
         //search filter
         $search = $request->query('search');
-        $history_log = collect($history_log)->filter(function($value, $key) use($search){
-            if(str_contains(strtolower($value['type']), strtolower($search))){
+        $history_log = collect($history_log)->filter(function ($value, $key) use ($search) {
+            if (str_contains(strtolower($value['type']), strtolower($search))) {
                 return true;
-            }else if(str_contains(strtolower($value['recordName']), strtolower($search))){
+            } elseif (str_contains(strtolower($value['recordName']), strtolower($search))) {
                 return true;
-            }else if(str_contains(strtolower($value['date']), strtolower($search))){
+            } elseif (str_contains(strtolower($value['date']), strtolower($search))) {
+                return true;
+            } elseif (str_contains(strtolower($value['by']), strtolower($search))) {
                 return true;
             }
-            else if(str_contains(strtolower($value['by']), strtolower($search))){
-                return true;
-            }
+
             return false;
         });
 
@@ -173,7 +162,7 @@ class MassCommunicationsController extends Controller
             'audiences' => $aud_options,
             'activeAudience' => $active_audience,
             'stats' => $stats,
-            'historyFeed' => paginate_array($request, $history_log)
+            'historyFeed' => paginate_array($request, $history_log),
 //            'historyFeed' => $history_log
         ]);
     }
@@ -184,7 +173,7 @@ class MassCommunicationsController extends Controller
         $client_id = request()->user()->currentClientId();
         $is_client_user = request()->user()->isClientUser();
 
-        if (!is_null($client_id)) {
+        if (! is_null($client_id)) {
             $aggy = ClientAggregate::retrieve($client_id);
             $history_log = $aggy->getCommunicationHistoryLog();
             $aud_options = [
@@ -195,13 +184,12 @@ class MassCommunicationsController extends Controller
 
             // @todo - make a function that crunches these datas
             $stats = $this->getStats($client_id);
-        }
-        else {
+        } else {
             $history_log = [];
             $aud_options = [
                 'all' => 'All',
                 'admins' => 'Cape & Bay Admins',
-                'employees' => 'Cape & Bay Non-Admins'
+                'employees' => 'Cape & Bay Non-Admins',
             ];
 
             $stats = $this->getStats($client_id);
@@ -214,6 +202,7 @@ class MassCommunicationsController extends Controller
                 case 'all':
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
+
                     break;
                 case 'prospects':
                 case 'conversions':
@@ -222,6 +211,7 @@ class MassCommunicationsController extends Controller
                     //@todo - what ever is needed to filfill this need
                     $active_audience = $aud;
                     $history_log = $this->filterHistoryLog($history_log, $aud, $client_id);
+
                     break;
 
                 default:
@@ -231,21 +221,20 @@ class MassCommunicationsController extends Controller
 
         //search filter
         $search = $request->query('search');
-        $history_log = collect($history_log)->filter(function($value, $key) use($search){
-            if(str_contains(strtolower($value['type']), strtolower($search))){
+        $history_log = collect($history_log)->filter(function ($value, $key) use ($search) {
+            if (str_contains(strtolower($value['type']), strtolower($search))) {
                 return true;
-            }else if(str_contains(strtolower($value['recordName']), strtolower($search))){
+            } elseif (str_contains(strtolower($value['recordName']), strtolower($search))) {
                 return true;
-            }else if(str_contains(strtolower($value['date']), strtolower($search))){
+            } elseif (str_contains(strtolower($value['date']), strtolower($search))) {
+                return true;
+            } elseif (str_contains(strtolower($value['by']), strtolower($search))) {
                 return true;
             }
-            else if(str_contains(strtolower($value['by']), strtolower($search))){
-                return true;
-            }
+
             return false;
         });
 
         return $history_log;
     }
-
 }

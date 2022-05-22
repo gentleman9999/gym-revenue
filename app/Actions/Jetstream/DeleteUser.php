@@ -2,24 +2,22 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Enums\SecurityGroupEnum;
-use Bouncer;
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
+use App\Enums\SecurityGroupEnum;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
-use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
 class DeleteUser implements DeletesUsers
 {
-    use PasswordValidationRules, AsAction;
+    use PasswordValidationRules;
+    use AsAction;
 
     /**
      * Get the validation rules that apply to the action.
@@ -49,6 +47,7 @@ class DeleteUser implements DeletesUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('users.delete', User::class);
     }
 
@@ -63,15 +62,15 @@ class DeleteUser implements DeletesUsers
         $team_users = collect($current_team->team_users()->with('user')->get());
         $non_admins = [];
 
-        foreach ($team_users as $team_user)
-        {
-            if(!$team_user->user->inSecurityGroup(SecurityGroupEnum::ADMIN)){
+        foreach ($team_users as $team_user) {
+            if (! $team_user->user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
                 $non_admins[] = $team_user->id;
             }
         }
 
-        if(count($non_admins) < 1 ) {
+        if (count($non_admins) < 1) {
             Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
+
             return Redirect::back();
         }
 
@@ -85,7 +84,6 @@ class DeleteUser implements DeletesUsers
 //        return Redirect::route('users');
         return Redirect::back();
     }
-
 
     /**
      * Delete the given user.

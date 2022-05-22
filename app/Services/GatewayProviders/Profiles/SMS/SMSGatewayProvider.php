@@ -20,8 +20,7 @@ abstract class SMSGatewayProvider extends GatewayProfile implements SMSProfile
 
     private function initMessageInterpreter($interpreter, $user_id)
     {
-        switch($interpreter)
-        {
+        switch ($interpreter) {
             default:
                 // The standard SMS interpreter uses the User's aggregate to convert tokens.
                 return new StandardSMSInterpreter($user_id);

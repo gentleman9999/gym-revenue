@@ -1,70 +1,89 @@
 <template>
-    <button :type="type" class="btn"
-            :class="{'btn-outline': outline, 'btn-ghost': ghost, 'btn-circle': circle, 'btn-square': square, 'loading': loading,  'btn-primary': primary, 'btn-secondary': secondary, 'btn-accent': accent, 'btn-info': info, 'btn-success': success, 'btn-warning': warning, 'btn-error': error, 'btn-xs': size === 'xs', 'btn-sm': size==='sm', 'btn-lg': size==='lg'}">
+    <button
+        :type="type"
+        class="btn"
+        :class="{
+            'btn-outline': outline,
+            'btn-ghost': ghost,
+            'btn-circle': circle,
+            'btn-square': square,
+            loading: loading,
+            'btn-primary': primary,
+            'btn-secondary': secondary,
+            'btn-accent': accent,
+            'btn-info': info,
+            'btn-success': success,
+            'btn-warning': warning,
+            'btn-error': error,
+            'btn-xs': size === 'xs',
+            'btn-sm': size === 'sm',
+            'btn-lg': size === 'lg',
+        }"
+    >
         <slot></slot>
     </button>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import { defineComponent } from "vue";
 
 export default defineComponent({
     props: {
         type: {
             type: String,
-            default: 'submit',
+            default: "submit",
         },
         ghost: {
             type: Boolean,
-            default: false
+            default: false,
         },
         outline: {
             type: Boolean,
-            default: false
+            default: false,
         },
         circle: {
             type: Boolean,
-            default: false
+            default: false,
         },
         square: {
             type: Boolean,
-            default: false
+            default: false,
         },
         loading: {
             type: Boolean,
-            default: false
+            default: false,
         },
         primary: {
             type: Boolean,
-            default: false
+            default: false,
         },
         secondary: {
             type: Boolean,
-            default: false
+            default: false,
         },
         accent: {
             type: Boolean,
-            default: false
+            default: false,
         },
         error: {
             type: Boolean,
-            default: false
+            default: false,
         },
         success: {
             type: Boolean,
-            default: false
+            default: false,
         },
         warning: {
             type: Boolean,
-            default: false
+            default: false,
         },
         info: {
             type: Boolean,
-            default: false
+            default: false,
         },
         size: {
             type: String,
-        }
-    }
-})
+        },
+    },
+});
 </script>

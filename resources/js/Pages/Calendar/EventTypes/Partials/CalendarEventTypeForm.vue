@@ -10,10 +10,7 @@
                     v-model="form.name"
                     autofocus
                 />
-                <jet-input-error
-                    :message="form.errors.name"
-                    class="mt-2"
-                />
+                <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
                 <jet-label for="description" value="Description" />
@@ -30,11 +27,7 @@
             </div>
             <div class="col-span-6">
                 <jet-label for="type" value="Type" />
-                <select
-                    id="type"
-                    class="block w-full mt-1"
-                    v-model="form.type"
-                >
+                <select id="type" class="block w-full mt-1" v-model="form.type">
                     <option>Sales Meeting</option>
                     <option>Training and Development</option>
                     <option>Tour</option>
@@ -43,10 +36,7 @@
                     <option>External Event</option>
                     <option>Task Follow-Up</option>
                 </select>
-                <jet-input-error
-                    :message="form.errors.type"
-                    class="mt-2"
-                />
+                <jet-input-error :message="form.errors.type" class="mt-2" />
             </div>
 
             <div class="col-span-6">
@@ -64,12 +54,8 @@
                     <option>blue</option>
                     <option>green</option>
                 </select>
-                <jet-input-error
-                    :message="form.errors.color"
-                    class="mt-2"
-                />
+                <jet-input-error :message="form.errors.color" class="mt-2" />
             </div>
-
         </template>
 
         <template #actions>
@@ -139,7 +125,9 @@ export default {
         const form = useForm(calendarEventType);
 
         let handleSubmit = () =>
-            form.put(route("calendar.event_types.update", calendarEventType.id));
+            form.put(
+                route("calendar.event_types.update", calendarEventType.id)
+            );
         if (operation === "Create") {
             handleSubmit = () => form.post(route("calendar.event_types.store"));
         }

@@ -1,23 +1,28 @@
 <template>
     <form @submit="handleSubmit" class="w-full grid grid-cols-6 gap-4">
-
         <div class="col-span-6" v-if="form.attendees?.length">
             <table class="table table-compact w-full">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>File</th>
-                    <th>Size</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>File</th>
+                        <th>Size</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="file in form.files"
-                        :key="file.id"
-                    >
+                    <tr v-for="file in form.files" :key="file.id">
                         <td>
                             <file-extension-icon
                                 :extension="file.extension"
-                                v-if="!['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(file.extension)"
+                                v-if="
+                                    ![
+                                        'jpg',
+                                        'jpeg',
+                                        'png',
+                                        'svg',
+                                        'webp',
+                                    ].includes(file.extension)
+                                "
                                 class="h-16 w-16"
                             />
                         </td>
@@ -26,18 +31,25 @@
                                 <div>
                                     <div class="font-bold">
                                         <a
-                                        :href="file.url"
-                                        :download="file.filename"
-                                        target="_blank"
-                                        class="link link-hover"
-                                        >{{ file.filename }}</a>
+                                            :href="file.url"
+                                            :download="file.filename"
+                                            target="_blank"
+                                            class="link link-hover"
+                                            >{{ file.filename }}</a
+                                        >
                                     </div>
-                                    <div class="text-sm opacity-50">{{ file.extension }}</div>
+                                    <div class="text-sm opacity-50">
+                                        {{ file.extension }}
+                                    </div>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="text-xs">Size:<span class="badge badge-ghost badge-sm">{{file.size}}</span></div>
+                            <div class="text-xs">
+                                Size:<span class="badge badge-ghost badge-sm">{{
+                                    file.size
+                                }}</span>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -45,9 +57,6 @@
         </div>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
-
-
-
     </form>
 </template>
 <style>
@@ -74,7 +83,7 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import "vue3-date-time-picker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
-import FileExtensionIcon from '@/Pages/Files/Partials/FileExtensionIcon'
+import FileExtensionIcon from "@/Pages/Files/Partials/FileExtensionIcon";
 
 export default {
     components: {
@@ -91,8 +100,7 @@ export default {
         let calendarEvent = props.calendar_event;
 
         const form = useForm(calendarEvent);
-        watchEffect(() => {
-        });
+        watchEffect(() => {});
         return {
             form,
         };

@@ -8,6 +8,7 @@ use Twilio\Rest\Client as Twilio;
 class FireTwilioMsg extends Action
 {
     protected $getAttributesFromConstructor = ['phone_number','msg'];
+
     /**
      * Determine if the user is authorized to make this action.
      *

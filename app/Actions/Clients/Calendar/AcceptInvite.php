@@ -3,13 +3,10 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Models\Calendar\CalendarAttendee;
-use App\Models\Calendar\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-
 
 class AcceptInvite
 {
@@ -51,5 +48,4 @@ class AcceptInvite
 
         return Redirect::back();
     }
-
 }

@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CalendarAttendee extends Model
 {
-    use HasFactory, Uuid;
+    use HasFactory;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -22,5 +23,4 @@ class CalendarAttendee extends Model
     {
         return $this->hasOne('App\Models\Calendar\CalendarEvent', 'id', 'calendar_event_id');
     }
-
 }

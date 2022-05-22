@@ -50,15 +50,29 @@
 
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
-                <component :is="tableComponent" v-bind="$props" :form="form" @open-customizer="openCustomizationModal"/>
+                <component
+                    :is="tableComponent"
+                    v-bind="$props"
+                    :form="form"
+                    @open-customizer="openCustomizationModal"
+                />
             </div>
             <div class="lg:hidden">
-                <component :is="cardsComponent" v-bind="$props" :form="form" @open-customizer="openCustomizationModal"/>
+                <component
+                    :is="cardsComponent"
+                    v-bind="$props"
+                    :form="form"
+                    @open-customizer="openCustomizationModal"
+                />
             </div>
         </template>
         <template v-else>
-            <component :is="tableComponent || cardsComponent" v-bind="$props"
-                       @open-customizer="openCustomizationModal" :form="form"/>
+            <component
+                :is="tableComponent || cardsComponent"
+                v-bind="$props"
+                @open-customizer="openCustomizationModal"
+                :form="form"
+            />
         </template>
 
         <slot name="pagination">
@@ -81,7 +95,7 @@
 </template>
 
 <script>
-import {defineComponent, ref} from "vue";
+import { defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import Pagination from "@/Components/Pagination";
@@ -92,10 +106,10 @@ import JetBarContainer from "@/Components/JetBarContainer";
 import PreviewModal from "@/Components/CRUD/PreviewModal";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm";
 import { useSearchFilter } from "./helpers/useSearchFilter";
-import {flattenObj} from "@/Components/CRUD/helpers/getData";
+import { flattenObj } from "@/Components/CRUD/helpers/getData";
 import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal";
-import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
-import {getFields} from "@/Components/CRUD/helpers/getFields";
+import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
+import { getFields } from "@/Components/CRUD/helpers/getFields";
 
 export default defineComponent({
     components: {
@@ -255,19 +269,24 @@ export default defineComponent({
             exportAll: {
                 label: "Export All",
                 handler: async () => {
-                    const response = await axios.get(route(`${props.baseRoute}.export`));
+                    const response = await axios.get(
+                        route(`${props.baseRoute}.export`)
+                    );
                     //TODO:some error handling stuff
-                    const data = merge(response.data, response.data?.map(flattenObj))
+                    const data = merge(
+                        response.data,
+                        response.data?.map(flattenObj)
+                    );
                     exportToCsv(data);
                 },
                 class: ["btn-secondary"],
-                shouldRender: () => !!props.resource.total
-            }
+                shouldRender: () => !!props.resource.total,
+            },
         };
         let topActions = [];
         if (props.topActions) {
             topActions = Object.values(
-                merge({...defaultTopActions}, props.topActions)
+                merge({ ...defaultTopActions }, props.topActions)
             )
                 .filter((action) => action)
                 .filter((action) =>
@@ -276,7 +295,15 @@ export default defineComponent({
         }
         const customizationModal = ref(null);
         const openCustomizationModal = () => customizationModal.value.open();
-        return {form, topActions, reset, clearFilters, clearSearch, customizationModal, openCustomizationModal};
+        return {
+            form,
+            topActions,
+            reset,
+            clearFilters,
+            clearSearch,
+            customizationModal,
+            openCustomizationModal,
+        };
     },
 });
 </script>

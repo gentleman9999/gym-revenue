@@ -6,7 +6,6 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 
@@ -16,7 +15,7 @@ class FilesController extends Controller
     {
         $client_id = request()->user()->currentClientId();
 
-        if(is_null($client_id)) {
+        if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
 
@@ -24,7 +23,7 @@ class FilesController extends Controller
         $roles = request()->user()->getRoles();
         $security_group = request()->user()->securityGroup();
 
-        if($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
+        if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
@@ -46,14 +45,15 @@ class FilesController extends Controller
         }
 
         return Inertia::render('Files/Show', [
-            'files' => $files
+            'files' => $files,
         ]);
     }
 
     public function edit($id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No file ID provided")->flash();
+
             return Redirect::route('files');
         }
 
@@ -73,13 +73,13 @@ class FilesController extends Controller
     {
         $client_id = request()->user()->currentClientId();
 
-        if(is_null($client_id)) {
+        if (is_null($client_id)) {
             abort(403);
         }
         $roles = request()->user()->getRoles();
         $security_group = request()->user()->securityGroup();
 
-        if($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
+        if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
@@ -96,5 +96,4 @@ class FilesController extends Controller
 
         return $files;
     }
-
 }

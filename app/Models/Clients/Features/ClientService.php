@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClientService extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $fillable = ['feature_name', 'slug', 'active'];
 
@@ -18,5 +20,4 @@ class ClientService extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
-
 }

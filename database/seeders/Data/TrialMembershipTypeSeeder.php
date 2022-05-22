@@ -4,7 +4,6 @@ namespace Database\Seeders\Data;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
-use App\Models\Endusers\LeadType;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -19,7 +18,7 @@ class TrialMembershipTypeSeeder extends Seeder
     {
         $trial_membership_types = [
             ['type_name' => 'default_free_trial', 'slug' => 'default-free-trial', 'trial_length' => 14],
-            ['type_name' => 'default_guest_pass', 'slug' => 'default-guest-pass', 'trial_length' => 1]
+            ['type_name' => 'default_guest_pass', 'slug' => 'default-guest-pass', 'trial_length' => 1],
         ];
 
         $clients = Client::all();
@@ -29,11 +28,10 @@ class TrialMembershipTypeSeeder extends Seeder
                 TrialMembershipType::create(array_merge($trial_membership_type, [
                     'client_id' => $client->id,
                     'active' => 1,
-                    'locations' => $client_locations
+                    'locations' => $client_locations,
                 ]));
                 VarDumper::dump("Adding Trial Membership Type {$trial_membership_type['type_name']}");
             }
         }
     }
-
 }

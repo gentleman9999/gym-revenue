@@ -2,8 +2,6 @@
 
 namespace App\StorableEvents\Clients;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
-
 class TeamCreated extends DefaultClientTeamCreated
 {
     public $name;

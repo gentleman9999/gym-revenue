@@ -1,5 +1,9 @@
 <template>
-    <tr class="hover" @click.prevent.stop="handleClick" @dblclick.prevent.stop="handleDoubleClick">
+    <tr
+        class="hover"
+        @click.prevent.stop="handleClick"
+        @dblclick.prevent.stop="handleDoubleClick"
+    >
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
             <render-field
                 :field="field"
@@ -35,9 +39,9 @@ import DataCard from "./DataCard";
 import CrudActions from "./CrudActions";
 import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField";
-import {Inertia} from "@inertiajs/inertia";
-import {preview} from "@/Components/CRUD/helpers/previewData";
-import {getCustomizedFields} from "@/Components/CRUD/helpers/getCustomizedFields";
+import { Inertia } from "@inertiajs/inertia";
+import { preview } from "@/Components/CRUD/helpers/previewData";
+import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
 export default defineComponent({
     inheritAttrs: false,
@@ -82,14 +86,14 @@ export default defineComponent({
             // required: true,
         },
         hasPreviewComponent: {
-            type: Boolean
+            type: Boolean,
         },
         onClick: {
-            type: Function
+            type: Function,
         },
         onDoubleClick: {
-            type: Function
-        }
+            type: Function,
+        },
     },
     setup(props) {
         const fields = getFields(props);
@@ -104,32 +108,31 @@ export default defineComponent({
                 if (!prevent) {
                     if (props.onClick) {
                         props.onClick();
-                    }else{
+                    } else {
                         openPreview();
                     }
                 }
                 prevent = false;
             }, delay);
-        }
+        };
 
         const openPreview = () => {
-            if(!props.hasPreviewComponent){
+            if (!props.hasPreviewComponent) {
                 return;
             }
             preview(props.baseRoute, props.data.id);
-        }
+        };
         const handleDoubleClick = () => {
             clearTimeout(timer);
             prevent = true;
-            if(props.onDoubleClick){
+            if (props.onDoubleClick) {
                 props.onDoubleClick();
                 return;
             }
             Inertia.visit(route(`${props.baseRoute}.edit`, props.data.id));
-        }
+        };
 
-
-        return {fields: customizedFields, handleClick, handleDoubleClick};
+        return { fields: customizedFields, handleClick, handleDoubleClick };
     },
 });
 </script>

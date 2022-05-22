@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands\Users;
 
+use App\Models\Clients\Client;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\Models\Clients\Client;
 use Illuminate\Console\Command;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -62,8 +62,7 @@ class AddNewUser extends Command
     private function getUsername()
     {
         $name = $this->option('name');
-        if(is_null($name))
-        {
+        if (is_null($name)) {
             $name = $this->ask('Enter the user\'s Full Name');
         }
 
@@ -73,8 +72,7 @@ class AddNewUser extends Command
     private function getEmail(string $user_name)
     {
         $email = $this->option('email');
-        if(is_null($email))
-        {
+        if (is_null($email)) {
             $email = $this->ask("Enter the {$user_name}'s Email Address");
         }
 
@@ -85,21 +83,14 @@ class AddNewUser extends Command
     {
         $client = $this->option('client');
 
-        if(!is_null($client))
-        {
-            if($client === "0")
-            {
+        if (! is_null($client)) {
+            if ($client === "0") {
                 return null;
-            }
-            else
-            {
+            } else {
                 $client_model = Client::find($client);
-                if(!is_null($client_model))
-                {
+                if (! is_null($client_model)) {
                     return $client_model->id;
-                }
-                else
-                {
+                } else {
                     $this->error('Invalid Client. Pick one.');
                     sleep(2);
                 }
@@ -110,25 +101,20 @@ class AddNewUser extends Command
         $clients = ['Cape & Bay'];
         $client_ids = [];
         $db_clients = Client::whereActive(1)->get();
-        foreach ($db_clients as $idx => $client)
-        {
+        foreach ($db_clients as $idx => $client) {
             $clients[$idx + 1] = $client->name;
             $client_ids[$idx + 1] = $client->id;
         }
         $this->info('Associate an Account with this user.');
-        foreach($clients as $idx => $name)
-        {
+        foreach ($clients as $idx => $name) {
             $this->warn("[{$idx}] {$name}");
         }
         $client_choice = $this->ask("Which client to associate {$user_name} with?");
 
-        if($client_choice > 0)
-        {
+        if ($client_choice > 0) {
             $client = $client_ids[$client_choice];
             $this->info($clients[$client_choice]);
-        }
-        else
-        {
+        } else {
             $this->info('Selected Cape & Bay');
         }
 
@@ -139,23 +125,18 @@ class AddNewUser extends Command
     {
         $selected_role = $this->option('role');
 
-        if(is_null($selected_role))
-        {
+        if (is_null($selected_role)) {
             $roles = [];
-            if(!is_null($client_choice))
-            {
+            if (! is_null($client_choice)) {
                 $roles[] = 'Account Owner';
                 $roles[] = 'Regional Admin';
                 $roles[] = 'Location Manager';
                 $roles[] = 'Sales Rep';
-            }
-            else
-            {
+            } else {
                 $roles[] = 'Admin';
             }
 
-            foreach($roles as $idx => $role)
-            {
+            foreach ($roles as $idx => $role) {
                 $this->warn("[{$idx}] {$role}");
             }
             $role_choice = $this->ask("Which Role should {$user_name} be assigned?");
@@ -172,24 +153,22 @@ class AddNewUser extends Command
             'last_name' => $lname,
             'name' => $user_name,
             'email' => $email,
-            'password' => bcrypt('Hello123!')
+            'password' => bcrypt('Hello123!'),
         ]);
 
         UserDetails::create([
             'user_id' => $user->id,
             'name' => 'phone',
-            'value' => '9015555555' //Need this for sms campaign testing
+            'value' => '9015555555', //Need this for sms campaign testing
         ]);
 
-        if(is_null($client))
-        {
+        if (is_null($client)) {
             $this->createCapeAndBayUser($user, $role);
-        }
-        else
-        {
+        } else {
             $this->createClientUser($user, $client, $role);
         }
     }
+
     private function createCapeAndBayUser(User $user, string $role)
     {
         // set default_team to 1 in user_details
@@ -197,13 +176,14 @@ class AddNewUser extends Command
             'user_id' => $user->id,
             'name' => 'default_team',
             'value' => 1,
-            'active' => 1
+            'active' => 1,
         ]);
 
         // set team_user record to 1 (or use an action if possible)
         $team = Team::find(1);
         $team->users()->attach(
-            $user, ['role' => $role]
+            $user,
+            ['role' => $role]
         );
         // Use Bouncer to assign the Admin Role
         Bouncer::assign($role)->to($user);
@@ -218,7 +198,7 @@ class AddNewUser extends Command
             'user_id' => $user->id,
             'name' => 'associated_client',
             'value' => $client,
-            'active' => 1
+            'active' => 1,
         ]);
 
         // Get the client's default-team name in client_details
@@ -232,12 +212,13 @@ class AddNewUser extends Command
             'user_id' => $user->id,
             'name' => 'default_team',
             'value' => $team->id,
-            'active' => 1
+            'active' => 1,
         ]);
 
         // set team_user record to $client's default-team's team_id (or use an action if possible)
         $team->users()->attach(
-            $user, ['role' => $role]
+            $user,
+            ['role' => $role]
         );
         // Use Bouncer to assign the Admin Role
         Bouncer::assign($role)->to($user);

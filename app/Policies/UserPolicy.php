@@ -39,9 +39,9 @@ class UserPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function create(User $user, User $model)
-//TODO: for some reason, adding in the $model to any of these policy functions causing the app to crash,
-//TODO:  and I don't know why.  If we had access to the model, we could actually check and make sure the team
-// is correct.
+    //TODO: for some reason, adding in the $model to any of these policy functions causing the app to crash,
+    //TODO:  and I don't know why.  If we had access to the model, we could actually check and make sure the team
+    // is correct.
     public function create(User $user)
     {
         return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.create', User::class);
@@ -58,6 +58,7 @@ class UserPolicy
     public function update(User $user)
     {
         return $user->can('users.update', $user->currentTeam()->first());
+
         return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.update', $user->currentTeam()->first());
     }
 

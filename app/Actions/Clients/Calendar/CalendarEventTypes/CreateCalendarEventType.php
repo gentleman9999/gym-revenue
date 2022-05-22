@@ -11,7 +11,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-
 class CreateCalendarEventType
 {
     use AsAction;
@@ -24,7 +23,7 @@ class CreateCalendarEventType
     public function rules()
     {
         return [
-            'name' =>['required', 'string','max:50'],
+            'name' => ['required', 'string','max:50'],
             'description' => ['string', 'nullable'],
             'type' => ['required', 'string', 'nullable'],
             'color' => ['required', 'string'],
@@ -47,12 +46,12 @@ class CreateCalendarEventType
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.create', CalendarEvent::class);
     }
 
     public function asController(ActionRequest $request)
     {
-
         $calendar = $this->handle(
             $request->validated(),
             $request->user()
@@ -60,7 +59,6 @@ class CreateCalendarEventType
 
         Alert::success("Calendar Event Type '{$calendar->name}' was created")->flash();
 
-        return Redirect::route('calendar.event_types.edit', $calendar->id );
+        return Redirect::route('calendar.event_types.edit', $calendar->id);
     }
-
 }

@@ -1,9 +1,5 @@
 <template>
-    <jet-bar-stat-card
-        :title="title"
-        :number="value"
-        :type="type"
-    >
+    <jet-bar-stat-card :title="title" :number="value" :type="type">
         <template v-slot:icon>
             <jet-bar-icon :type="icon" fill />
         </template>
@@ -16,7 +12,7 @@ import JetBarStatCard from "@/Components/JetBarStatCard";
 import JetBarIcon from "@/Components/JetBarIcon";
 
 export default defineComponent({
-    components:{
+    components: {
         JetBarStatCard,
         JetBarIcon,
     },
@@ -36,7 +32,7 @@ export default defineComponent({
         icon: {
             type: String,
             required: true,
-        }
+        },
     },
 });
 </script>

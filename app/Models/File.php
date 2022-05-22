@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Aggregates\Clients\FileAggregate;
 use App\Models\Clients\Client;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class File extends Model
 {
-    use HasFactory, SoftDeletes, Sortable;
+    use HasFactory;
+    use SoftDeletes;
+    use Sortable;
 
     protected $keyType = 'string';
 
@@ -26,7 +27,7 @@ class File extends Model
     protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'entity_type', 'entity_id']; //'deleted_at'
 
     protected $casts = [
-        'permissions' => 'array'
+        'permissions' => 'array',
     ];
 
     public function client()

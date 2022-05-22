@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
-
 class Client extends Model
 {
-    use Notifiable, SoftDeletes, Uuid;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -99,8 +100,7 @@ class Client extends Model
                 ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
                     // @todo - add more onboarding shit here.
                 ;
-                $aggy->persist();
+            $aggy->persist();
         });
     }
-
 }

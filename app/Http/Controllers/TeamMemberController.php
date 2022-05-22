@@ -40,7 +40,7 @@ class TeamMemberController extends Controller
             foreach ($emails as $email) {
                 $email_user = User::whereEmail($email)->first();
 
-                if(!is_null($email_user)) {
+                if (! is_null($email_user)) {
                     app(AddsTeamMembers::class)->add(
                         $request->user(),
                         $team,

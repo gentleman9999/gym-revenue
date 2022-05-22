@@ -2,12 +2,10 @@
 
 namespace App\Actions\Clients\Calendar;
 
-
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-
 
 class InviteAttendeeSMS
 {
@@ -27,11 +25,11 @@ class InviteAttendeeSMS
     public function handle($data)
     {
         $test = $data;
-/*
-        CalendarAggregate::retrieve($data['client_id'])
-            ->inviteCalendarAttendee($user->id ?? "Auto Generated", $data)
-            ->persist();
-*/
+        /*
+                CalendarAggregate::retrieve($data['client_id'])
+                    ->inviteCalendarAttendee($user->id ?? "Auto Generated", $data)
+                    ->persist();
+        */
         return true;
     }
 
@@ -50,5 +48,4 @@ class InviteAttendeeSMS
 
         return Redirect::back();
     }
-
 }

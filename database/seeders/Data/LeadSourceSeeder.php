@@ -32,12 +32,11 @@ class LeadSourceSeeder extends Seeder
                     'client_id' => $client->id,
                     'name' => $readable_source,
                     'source' => $lead_source,
-                    'ui' => 1
+                    'ui' => 1,
                 ]);
 
                 VarDumper::dump("Adding lead source {$readable_source}");
             }
         }
     }
-
 }

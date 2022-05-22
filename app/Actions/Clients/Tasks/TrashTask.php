@@ -4,7 +4,6 @@ namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Tasks;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -37,6 +36,7 @@ class TrashTask
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.trash', CalendarEvent::class);
     }
 

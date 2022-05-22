@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserAddedToTeam extends ShouldBeStored
 {
-    public $user, $team, $name, $client;
+    public $user;
+    public $team;
+    public $name;
+    public $client;
 
     public function __construct($user, $team, $name, $client = null)
     {

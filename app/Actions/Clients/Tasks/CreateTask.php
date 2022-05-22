@@ -11,7 +11,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-
 class CreateTask
 {
     use AsAction;
@@ -47,12 +46,12 @@ class CreateTask
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('task.create', TaskCreated::class);
     }
 
     public function asController(ActionRequest $request)
     {
-
         $task = $this->handle(
             $request->validated(),
             $request->user()
@@ -62,5 +61,4 @@ class CreateTask
 
         return Redirect::back();
     }
-
 }

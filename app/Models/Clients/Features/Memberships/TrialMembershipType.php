@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TrialMembershipType extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -18,10 +20,10 @@ class TrialMembershipType extends Model
     public $incrementing = false;
 
     protected $fillable = [
-       'id', 'client_id', 'type_name', 'slug', 'trial_length', 'locations', 'misc', 'active'
+       'id', 'client_id', 'type_name', 'slug', 'trial_length', 'locations', 'misc', 'active',
     ];
 
     protected $casts = [
-        'locations' => 'array'
+        'locations' => 'array',
     ];
 }

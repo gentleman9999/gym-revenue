@@ -2,7 +2,6 @@
 
 namespace App\Models\Endusers;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Note;
 use App\Models\Traits\Sortable;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -13,7 +12,11 @@ use Illuminate\Notifications\Notifiable;
 
 class Lead extends Model
 {
-    use Notifiable, SoftDeletes, Uuid, HasFactory, Sortable;
+    use Notifiable;
+    use SoftDeletes;
+    use Uuid;
+    use HasFactory;
+    use Sortable;
 
     protected $primaryKey = 'id';
 
@@ -55,7 +58,8 @@ class Lead extends Model
 
     public function trialMemberships()
     {
-        return $this->hasMany(TrialMembership::class)->orderBy('start_date', 'DESC');;
+        return $this->hasMany(TrialMembership::class)->orderBy('start_date', 'DESC');
+        ;
     }
 
     public function leadType()
@@ -144,7 +148,6 @@ class Lead extends Model
                     ->orWhereHas('client', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
                     });
-
             });
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {
@@ -170,49 +173,34 @@ class Lead extends Model
 
             /* Filter for Lead Sources */
         })->when($filters['opportunity'] ?? null, function ($query, $opportunity) {
-
             $query->whereHas('opportunity', function ($query) use ($opportunity) {
                 $query->whereIn('value',  $opportunity);
                 //$query->where('value', '=', $opportunity); <- for single select
             });
-
         })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed) {
-
             $query->whereHas('leadsclaimed', function ($query) use ($leadsclaimed) {
                 $query->whereIn('value',  $leadsclaimed);
             });
-
         })->when($filters['dob'] ?? null, function ($query, $dob) {
-
             $query->whereHas('dob', function ($query) use ($dob) {
                 $query->whereBetween('value', $dob);
             });
         })->when($filters['lastupdated'] ?? null, function ($query, $search) {
-
             $query->orderBy('updated_at', $search);
 
             /** Everything below already is redundant bc of the main search - but if it's in the ticket we do it. */
         })->when($filters['nameSearch'] ?? null, function ($query, $search) {
-
-                $query->where('first_name', 'like', '%' . $search . '%')
+            $query->where('first_name', 'like', '%' . $search . '%')
                     ->orWhere('last_name', 'like', '%' . $search . '%');
-
         })->when($filters['phoneSearch'] ?? null, function ($query, $search) {
-
-            $query->where('primary_phone','like', '%' . $search . '%');
-
+            $query->where('primary_phone', 'like', '%' . $search . '%');
         })->when($filters['emailSearch'] ?? null, function ($query, $search) {
-
-            $query->where('email','like', '%' . $search . '%');
-
+            $query->where('email', 'like', '%' . $search . '%');
         })->when($filters['agreementSearch'] ?? null, function ($query, $search) {
-
             $query->whereHas('agreementNumber', function ($query) use ($search) {
                 $query->where('value', 'like', '%' . $search . '%');
             });
-
         });
-
     }
 
     public static function getDetailsTable()

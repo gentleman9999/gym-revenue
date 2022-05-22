@@ -35,11 +35,11 @@
                             :close-on-select="false"
                             :create-option="true"
                             :options="
-                         this.$page.props.potentialUsers.map((user) => ({
-                            label: user.name,
-                            value: user.id,
-                        }))
-                    "
+                                this.$page.props.potentialUsers.map((user) => ({
+                                    label: user.name,
+                                    value: user.id,
+                                }))
+                            "
                             :classes="multiselectClasses"
                         />
                     </div>
@@ -51,9 +51,17 @@
                         >
                             Club
                         </label>
-                        <select  class="mt-1 w-full form-select" v-model="form.club">
+                        <select
+                            class="mt-1 w-full form-select"
+                            v-model="form.club"
+                        >
                             <option></option>
-                            <option v-for="club in clubs" :value="club.gymrevenue_id">{{club.name}}</option>
+                            <option
+                                v-for="club in clubs"
+                                :value="club.gymrevenue_id"
+                            >
+                                {{ club.name }}
+                            </option>
                         </select>
                     </div>
                 </beefy-search-filter>
@@ -65,25 +73,25 @@
             @confirm="handleConfirmDelete"
             @cancel="confirmDelete = null"
         >
-            Are you sure you want to delete team '{{ confirmDelete.name }}'? This action is permanent, and cannot be
-            undone.
+            Are you sure you want to delete team '{{ confirmDelete.name }}'?
+            This action is permanent, and cannot be undone.
         </confirm>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent, ref, onMounted, computed} from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import {Inertia} from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
 import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
-import {preview} from "@/Components/CRUD/helpers/previewData";
-import {usePage} from "@inertiajs/inertia-vue3";
+import { preview } from "@/Components/CRUD/helpers/previewData";
+import { usePage } from "@inertiajs/inertia-vue3";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
 import Multiselect from "@vueform/multiselect";
-import {getDefaultMultiselectTWClasses} from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 export default defineComponent({
     components: {
@@ -92,16 +100,19 @@ export default defineComponent({
         Confirm,
         BeefySearchFilter,
         TeamPreview,
-        Multiselect
+        Multiselect,
     },
     props: ["filters", "clubs", "teams", "preview", "potentialUsers"],
     setup(props) {
         const baseRoute = "teams";
-	const page = usePage();
+        const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        const {form, reset, clearFilters, clearSearch} = useSearchFilter('teams', {
-            club: null
-        });
+        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+            "teams",
+            {
+                club: null,
+            }
+        );
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -111,29 +122,28 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
-        const shouldShowDelete = ({ data }) => (abilities.value.includes("locations.delete") || abilities.value.includes("*")) && !data.default_team;
+        const shouldShowDelete = ({ data }) =>
+            (abilities.value.includes("locations.delete") ||
+                abilities.value.includes("*")) &&
+            !data.default_team;
 
-        const fields = [
-            "name",
-            "created_at",
-            "updated_at",
-        ];
+        const fields = ["name", "created_at", "updated_at"];
 
         const actions = {
             trash: false,
             restore: false,
             delete: {
-                label: 'Delete',
-                handler: ({data}) => handleClickDelete(data),
+                label: "Delete",
+                handler: ({ data }) => handleClickDelete(data),
                 shouldRender: shouldShowDelete,
-            }
-        }
+            },
+        };
 
         onMounted(() => {
             if (props.preview) {
-              preview(baseRoute, props.preview);
+                preview(baseRoute, props.preview);
             }
-        })
+        });
 
         return {
             confirmDelete,
@@ -147,7 +157,7 @@ export default defineComponent({
             baseRoute,
             clearFilters,
             clearSearch,
-            multiselectClasses: getDefaultMultiselectTWClasses()
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 });

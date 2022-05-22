@@ -15,19 +15,20 @@ class SMSGatewayProviderService extends GatewayProviderService
     protected $provider_type_slug = 'sms';
     protected SmsTemplates $sms_template;
     protected SMSGatewayProvider $gateway;
+
     public function __construct(SmsTemplates $sms_template)
     {
         $this->sms_template = $sms_template;
         $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();
         parent::__construct($model);
-        if(!is_null($this->sms_template->client_id))
+        if (! is_null($this->sms_template->client_id)) {
             $this->setAssociatedClient($this->sms_template->client_id);
+        }
     }
 
-    public function initSMSGateway($user_id) : void
+    public function initSMSGateway($user_id): void
     {
-        if($gateway = $this->getSMSGateway($user_id))
-        {
+        if ($gateway = $this->getSMSGateway($user_id)) {
             $this->gateway = $gateway;
         }
     }
@@ -38,20 +39,19 @@ class SMSGatewayProviderService extends GatewayProviderService
         $model = $this->sms_template->gateway()->first();
         $provider = 'default_cnb'; //can't use default because that requires client_id
 
-        if(!is_null($model))
-        {
+        if (! is_null($model)) {
             $provider = $model->value;
         }
-            switch($provider)
-            {
+        switch ($provider) {
                 case 'default_cnb':
 
                     $deets = [
                         'twilio_no' => env('TWILIO_NO'),
                         'twilio_sid' => env('TWILIO_SID'),
-                        'twilio_token' => env('TWILIO_TOKEN')
+                        'twilio_token' => env('TWILIO_TOKEN'),
                     ];
                     $results = new Twilio($deets, $user_id);
+
                 break;
                 // default will be the slug name given to the
                 // client_gateway_integrations configuration
@@ -60,28 +60,26 @@ class SMSGatewayProviderService extends GatewayProviderService
                      $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
                         ->whereNickname($model->value)->whereActive(1)->first(); //This needs to find the correct gateway_slug, right now it doesn't
 
-                    if(!is_null($client_integration_record))
-                    {
+                    if (! is_null($client_integration_record)) {
                         $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
                             ->with('details')->first();
 
-                        if(!is_null($gateway_provider_record))
-                        {
+                        if (! is_null($gateway_provider_record)) {
                             // @todo - get the credentials
                             $deets = [];
-                            foreach ($gateway_provider_record->details as $detail)
-                            {
-                                if($detail->detail == 'access_credential')
-                                {
-                                    if($detail->value == 'twilio_no')
+                            foreach ($gateway_provider_record->details as $detail) {
+                                if ($detail->detail == 'access_credential') {
+                                    if ($detail->value == 'twilio_no') {
                                         $deets['twilio_no'] = $detail->misc['value'];
+                                    }
 
-                                    if($detail->value == 'twilio_sid')
+                                    if ($detail->value == 'twilio_sid') {
                                         $deets['twilio_sid'] = $detail->misc['value'];
+                                    }
 
-                                    if($detail->value == 'twilio_token')
+                                    if ($detail->value == 'twilio_token') {
                                         $deets['twilio_token'] = $detail->misc['value'];
-
+                                    }
                                 }
                             }
                             $gateway = new $gateway_provider_record->profile_class();
@@ -94,7 +92,7 @@ class SMSGatewayProviderService extends GatewayProviderService
         return $results;
     }
 
-    public function getRawMessage() : string
+    public function getRawMessage(): string
     {
         return $this->sms_template->markup;
     }
@@ -121,6 +119,4 @@ class SMSGatewayProviderService extends GatewayProviderService
 
         return $results;
     }
-
-
 }

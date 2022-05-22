@@ -1,4 +1,4 @@
-<template >
+<template>
     <div class="btn-group" v-if="links?.length > 3">
         <template v-for="(link, key) in links">
             <div

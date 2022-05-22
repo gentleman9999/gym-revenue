@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\EndUserActivityAggregate;
 use App\Models\Endusers\Lead;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -31,18 +30,19 @@ class DeleteLead
     {
         $deleted = Lead::withTrashed()->findOrFail($id);
         EndUserActivityAggregate::retrieve($id)->deleteLead($current_user->id ?? "Auto Generated", $id)->persist();
+
         return $deleted;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('leads.delete', Lead::class);
     }
 
     public function asController(Request $request, $id)
     {
-
         $lead = $this->handle(
             $id,
             $request->user(),

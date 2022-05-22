@@ -22,21 +22,20 @@ class SMSCampaignsSeeder extends Seeder
         $cnb_record = SmsCampaigns::firstOrCreate([
             'name' => "Baby's First SMS Campaign (;",
             'active' => 0,
-            'created_by_user_id' => 'auto'
+            'created_by_user_id' => 'auto',
         ]);
         $cnb_template = SmsTemplates::whereNull('client_id')->first();
         AssignSMSTemplateToCampaign::dispatch($cnb_template->id, $cnb_record->id, $cnb_record->created_by_user_id)->onQueue('grp-'.env('APP_ENV').'-jobs');
 
         $clients = Client::whereActive(1)->get();
-        foreach ($clients as $client)
-        {
+        foreach ($clients as $client) {
             VarDumper::dump('Default sms campaign for '.$client->name);
 
             $record = SmsCampaigns::firstOrCreate([
                 'name' => $client->name."'s First SMS Campaign D;",
                 'client_id' => $client->id,
                 'active' => 0,
-                'created_by_user_id' => 'auto'
+                'created_by_user_id' => 'auto',
             ]);
             $template = SmsTemplates::whereClientId($client->id)->first();
             AssignSMSTemplateToCampaign::dispatch($template->id, $record->id, $record->created_by_user_id)->onQueue('grp-'.env('APP_ENV').'-jobs');

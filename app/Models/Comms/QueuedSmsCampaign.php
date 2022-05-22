@@ -17,7 +17,7 @@ class QueuedSmsCampaign extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'sms_campaign_id', 'trigger_at', 'started_at', 'completed_at'
+        'id', 'sms_campaign_id', 'trigger_at', 'started_at', 'completed_at',
     ];
 
     public function campaign()

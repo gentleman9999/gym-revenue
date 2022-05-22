@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class ClassificationCreated extends ShouldBeStored
 {
-    public $client, $user, $payload;
+    public $client;
+    public $user;
+    public $payload;
 
     public function __construct(string $client, string $user, array $payload)
     {

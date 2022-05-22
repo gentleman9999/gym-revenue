@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Calendar\CalendarAttendee;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class InviteController extends Controller

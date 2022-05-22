@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class LeadUpdated extends ShouldBeStored
 {
-    public $user, $data, $oldData;
+    public $user;
+    public $data;
+    public $oldData;
+
     public function __construct(string $user, array $data, array $oldData)
     {
         $this->user = $user;

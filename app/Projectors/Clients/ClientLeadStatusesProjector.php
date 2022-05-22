@@ -2,10 +2,7 @@
 
 namespace App\Projectors\Clients;
 
-use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadStatuses;
-use App\StorableEvents\Clients\Activity\Campaigns\LeadSourceCreated;
-use App\StorableEvents\Clients\Activity\Campaigns\LeadSourceUpdated;
 use App\StorableEvents\Clients\Activity\Leads\LeadStatusCreated;
 use App\StorableEvents\Clients\Activity\Leads\LeadStatusUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -24,7 +21,7 @@ class ClientLeadStatusesProjector extends Projector
         LeadStatuses::create([
             'status' => $event->data['status'],
             'client_id' => $event->client,
-            'order' => 1
+            'order' => 1,
         ]);
     }
 }

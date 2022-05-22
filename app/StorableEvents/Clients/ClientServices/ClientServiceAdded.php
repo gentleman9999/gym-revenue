@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class ClientServiceAdded extends ShouldBeStored
 {
-    public $client, $feature, $slug, $active;
+    public $client;
+    public $feature;
+    public $slug;
+    public $active;
 
     public function __construct(string $client, string $feature, string $slug, bool $active)
     {

@@ -1,34 +1,31 @@
 <template>
-    <div
-        class="wrapper"
-    >
-
-            <slot name="pre" />
-            <component
-                v-for="row in resource?.data || []"
-                :is="cardComponent"
-                v-bind="{ [modelKey]: row }"
-                :data="row"
-                :fields="fields"
-                :titleField="titleField"
-                :actions="actions"
-                :model-name="modelName"
-                :model-key="modelKey"
-                :model-name-plural="modelNamePlural"
-                :base-route="baseRoute"
-                :has-preview-component="!!previewComponent"
-            />
-            <div v-if="!resource?.data?.length" class="rounded-xl p-4 bg-base-100">
-                <div>
-                    No
-                    {{ modelNamePlural || "Records" }}
-                    found.
-                </div>
+    <div class="wrapper">
+        <slot name="pre" />
+        <component
+            v-for="row in resource?.data || []"
+            :is="cardComponent"
+            v-bind="{ [modelKey]: row }"
+            :data="row"
+            :fields="fields"
+            :titleField="titleField"
+            :actions="actions"
+            :model-name="modelName"
+            :model-key="modelKey"
+            :model-name-plural="modelNamePlural"
+            :base-route="baseRoute"
+            :has-preview-component="!!previewComponent"
+        />
+        <div v-if="!resource?.data?.length" class="rounded-xl p-4 bg-base-100">
+            <div>
+                No
+                {{ modelNamePlural || "Records" }}
+                found.
             </div>
+        </div>
     </div>
 </template>
 <style scoped>
-.wrapper{
+.wrapper {
     @apply shadow gap-4;
     @apply grid grid-cols-1 md:grid-cols-2 -my-2 py-2;
     @apply align-middle min-w-full sm:px-6 lg:px-8 sm:-mx-6 lg:-mx-8;
@@ -61,10 +58,10 @@ export default {
         },
         modelName: {
             type: String,
-            default: 'Record',
+            default: "Record",
         },
-        modelKey:{
-            type:String,
+        modelKey: {
+            type: String,
             required: true,
         },
         modelNamePlural: {
@@ -82,8 +79,8 @@ export default {
             default: {},
         },
         previewComponent: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     setup(props) {
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";

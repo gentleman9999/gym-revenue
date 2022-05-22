@@ -25,7 +25,10 @@ export const useSearchFilter = (
     const form = ref({ ...initialState, ...search });
 
     const formHandler = throttle(function () {
-        console.log('formchange', {form: form.value, pickBy: pickBy(form.value)})
+        console.log("formchange", {
+            form: form.value,
+            pickBy: pickBy(form.value),
+        });
         Inertia.get(route(baseRoute), pickBy(form.value), options);
     }, 150);
 
@@ -51,12 +54,12 @@ const paramsToObject = (entries) => {
     const result = {};
     for (let [key, value] of entries) {
         // each 'entry' is a [key, value] tupple
-        if(key.endsWith('[]')) {
-            key = key.replace('[]', '');
-            if(result[key]) {
-                result[key].push(value)
+        if (key.endsWith("[]")) {
+            key = key.replace("[]", "");
+            if (result[key]) {
+                result[key].push(value);
             } else {
-                result[key] = [value]
+                result[key] = [value];
             }
         } else {
             result[key] = value;

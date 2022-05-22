@@ -3,9 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Role;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
 use Bouncer;
+use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
 
 class AppServiceProvider extends ServiceProvider

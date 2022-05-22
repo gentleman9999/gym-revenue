@@ -29,6 +29,7 @@ class FireOffEmail
         switch ($entity_type) {
             case 'user':
                 $member = User::find($entity_id);
+
                 break;
             default:
                 //todo:report error - unknown entity_Type
@@ -39,14 +40,14 @@ class FireOffEmail
             $sent_to[] = [
                 'entity_type' => $entity_type,
                 'entity_id' => $entity_id,
-                'email' => $member->email
+                'email' => $member->email,
             ];
         }
 
         $sent_to_chunks = array_chunk($sent_to, $this->batchSize);
         $idx = 0;
         foreach (array_chunk($recipients, $this->batchSize, true) as $chunk) {
-            if (!AppState::isSimuationMode()) {
+            if (! AppState::isSimuationMode()) {
                 $client_aggy->emailSent($template, $sent_to_chunks[$idx], Carbon::now())->persist();
             }
             $idx++;

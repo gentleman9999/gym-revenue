@@ -1,10 +1,6 @@
 <template>
     <app-layout :title="title">
-
-        <page-toolbar-nav
-            title="Security Roles"
-            :links="navLinks"
-        />
+        <page-toolbar-nav title="Security Roles" :links="navLinks" />
         <gym-revenue-crud
             base-route="roles"
             model-name="Role"
@@ -50,14 +46,13 @@ export default defineComponent({
         Confirm,
         JetBarContainer,
         Button,
-        PageToolbarNav
+        PageToolbarNav,
     },
     props: ["roles", "filters"],
     setup(props) {
-
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
-            console.log('click delete', item);
+            console.log("click delete", item);
             confirmDelete.value = item;
         };
 
@@ -73,23 +68,30 @@ export default defineComponent({
                 label: "Users",
                 href: route("users"),
                 onClick: null,
-                active: false
+                active: false,
             },
             {
                 label: "Security Roles",
                 href: route("roles"),
                 onClick: null,
-                active: true
+                active: true,
             },
             {
                 label: "Classification",
                 href: route("classifications"),
                 onClick: null,
-                active: false
-            }
+                active: false,
+            },
         ];
 
-        return {fields, confirmDelete, handleConfirmDelete, handleClickDelete, Inertia, navLinks};
+        return {
+            fields,
+            confirmDelete,
+            handleConfirmDelete,
+            handleClickDelete,
+            Inertia,
+            navLinks,
+        };
     },
 });
 </script>

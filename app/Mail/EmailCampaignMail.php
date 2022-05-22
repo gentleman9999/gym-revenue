@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\Endusers\Lead;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,16 +10,19 @@ use Illuminate\Queue\SerializesModels;
 
 class EmailCampaignMail extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    protected $data, $markup;
+    protected $data;
+    protected $markup;
     protected $tokens = ['name'];
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $subject, string $markup, array $data,)
+    public function __construct(string $subject, string $markup, array $data)
     {
         $this->subject = $subject;
         $this->markup = $markup;
@@ -40,10 +42,12 @@ class EmailCampaignMail extends Mailable implements ShouldQueue
             ->html($this->transform($this->markup));
     }
 
-    protected function transform($string){
-        foreach($this->tokens as $token){
-            $string = str_replace("%{$token}%", $this->data[$token] ?? 'UNKNOWN_TOKEN' ,$string);
+    protected function transform($string)
+    {
+        foreach ($this->tokens as $token) {
+            $string = str_replace("%{$token}%", $this->data[$token] ?? 'UNKNOWN_TOKEN', $string);
         }
+
         return $string;
     }
 }

@@ -2,7 +2,10 @@
     <teleport to="body">
         <div class="modal" :class="{ 'modal-open': isOpen }">
             <div v-if="closable" class="absolute inset-0" @click="close"></div>
-            <div class="modal-box bg-base-200 max-h-[90vh] overflow-auto border-[1px] border-secondary" v-bind="$attrs">
+            <div
+                class="modal-box bg-base-200 max-h-[90vh] overflow-auto border-[1px] border-secondary"
+                v-bind="$attrs"
+            >
                 <button
                     type="button"
                     class="btn btn-ghost absolute top-2 right-2"
@@ -42,7 +45,7 @@ export default defineComponent({
             default: true,
         },
     },
-    setup(props, {emit}) {
+    setup(props, { emit }) {
         const { locked, lock, unlock } = useLockScroll("body", "no-scroll");
         onMounted(unlock); //todo: use another package or roll pour own lock scroll. we shouldn't have to call unlock on mount
 
@@ -56,11 +59,11 @@ export default defineComponent({
             if (locked) {
                 unlock();
             }
-            emit('close');
+            emit("close");
         };
         const open = () => {
             isOpen.value = true;
-            emit('open');
+            emit("open");
             // lock();
         };
 

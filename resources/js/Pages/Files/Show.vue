@@ -51,7 +51,11 @@
             />
         </sweet-modal>
 
-        <daisy-modal ref="permissionsModal" id="permissionsModal" @close="selectedFilePermissions = null">
+        <daisy-modal
+            ref="permissionsModal"
+            id="permissionsModal"
+            @close="selectedFilePermissions = null"
+        >
             <h1 class="font-bold mb-4">Modify File Permissions</h1>
             <Permissions-Form
                 :file="selectedFilePermissions"

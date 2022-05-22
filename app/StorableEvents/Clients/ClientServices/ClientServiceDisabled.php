@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class ClientServiceDisabled extends ShouldBeStored
 {
-    public $client, $slug, $user;
+    public $client;
+    public $slug;
+    public $user;
 
     public function __construct(string $client, string $slug, int $user)
     {

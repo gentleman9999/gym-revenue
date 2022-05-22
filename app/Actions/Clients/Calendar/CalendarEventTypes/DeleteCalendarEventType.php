@@ -4,7 +4,6 @@ namespace App\Actions\Clients\Calendar\CalendarEventTypes;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Models\Calendar\CalendarEvent;
-use Bouncer;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,16 +25,18 @@ class DeleteCalendarEventType
         ];
     }
 
-    public function handle($client_id, $id, $user=null)
+    public function handle($client_id, $id, $user = null)
     {
         $calendar_event_type = CalendarEvent::findOrFail($id);
         CalendarAggregate::retrieve($client_id)->deleteCalendarEventType($user->id ?? "Auto Generated", $id)->persist();
+
         return $calendar_event_type;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('calendar.update', CalendarEvent::class);
     }
 

@@ -8,19 +8,19 @@
 </template>
 
 <script>
-    import { defineComponent } from 'vue'
-    import JetApplicationMark from "@/Jetstream/ApplicationMark";
+import { defineComponent } from "vue";
+import JetApplicationMark from "@/Jetstream/ApplicationMark";
 
-    export default defineComponent({
-        components: {
-            JetApplicationMark
-        },
-    })
+export default defineComponent({
+    components: {
+        JetApplicationMark,
+    },
+});
 </script>
 
 <style scoped>
 .logo-e {
-    fill: #0074C8;
+    fill: #0074c8;
 }
 .subtitle {
     width: 100%;
@@ -33,6 +33,6 @@
 
 .subtitle small {
     font-size: 0.5rem;
-    color: #D6D6D6;
+    color: #d6d6d6;
 }
 </style>

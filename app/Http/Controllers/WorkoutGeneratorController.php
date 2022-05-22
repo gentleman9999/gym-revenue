@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class WorkoutGeneratorController extends Controller
@@ -12,22 +11,22 @@ class WorkoutGeneratorController extends Controller
         $args = [
             'core' => $this->getCoreValues(),
             'upper' => $this->getUpperValues(),
-            'lower' => $this->getLowerValues()
+            'lower' => $this->getLowerValues(),
         ];
 
         return Inertia::render('Extras/WorkoutGenerator', $args);
     }
 
-    private function getCoreValues() : array
+    private function getCoreValues(): array
     {
         $results = [
             'Exercise' => [],
             'Muscle Group' => [],
             'Body or Band' => [],
-            'TRX' => []
+            'TRX' => [],
         ];
 
-        $str = $this->getCSV(str_replace("\n", "","Plank,Core,True,False,
+        $str = $this->getCSV(str_replace("\n", "", "Plank,Core,True,False,
 Side Plank,Core,True,False,
 Push-up Plank,Core,True,False,
 Leg Raises,Core,True,False,
@@ -90,37 +89,36 @@ Cable Leaning Towers,Core,True,False,
 Prone Heel Touches,Core,True,False"));
 
         $count = 0;
-        foreach($str as $idx => $val)
-        {
-            switch($count)
-            {
+        foreach ($str as $idx => $val) {
+            switch ($count) {
                 case 1:
                     $results['Muscle Group'][] = $val;
+
                     break;
 
                 case 2:
                     $results['Body or Band'][] = $val;
+
                     break;
 
                 case 3:
                     $results['TRX'][] = $val;
+
                     break;
                 default:
                     $results['Exercise'][] = $val;
             }
-            if($count == 3)
-            {
+            if ($count == 3) {
                 $count = 0;
-            }
-            else
-            {
+            } else {
                 $count++;
             }
         }
+
         return $results;
     }
 
-    private function getLowerValues() : array
+    private function getLowerValues(): array
     {
         $results = [
             'Exercise' => [],
@@ -134,7 +132,7 @@ Prone Heel Touches,Core,True,False"));
             'TRX' => [],
         ];
 
-        $str = $this->getCSV(str_replace("\n", "","BB Deadlift,Hamstrings,Pull,True,False,True,False,False,False,
+        $str = $this->getCSV(str_replace("\n", "", "BB Deadlift,Hamstrings,Pull,True,False,True,False,False,False,
 DB Deadlift,Hamstrings,Pull,True,False,False,False,True,False,
 KB Deadlift,Hamstrings,Pull,True,False,False,True,False,False,
 BB Straight Legged Deadlift,Hamstrings,Pull,True,False,True,False,False,False,
@@ -221,51 +219,54 @@ Single Legged Hip Thrusts,Hips,Push,False,False,False,False,False,False,
 Skiers,Hamstrings,Both,False,True,False,False,False,False"));
 
         $count = 0;
-        foreach($str as $idx => $val)
-        {
-            switch($count)
-            {
+        foreach ($str as $idx => $val) {
+            switch ($count) {
                 case 1:
                     $results['Muscle Group'][] = $val;
+
                     break;
 
                 case 2:
                     $results['Direction'][] = $val;
+
                     break;
 
                 case 3:
                     $results['Major Lift'][] = $val;
+
                     break;
 
                 case 4:
                     $results['Body or Band'][] = $val;
+
                     break;
 
                 case 5:
                     $results['BB'][] = $val;
+
                     break;
 
                 case 6:
                     $results['KB'][] = $val;
+
                     break;
 
                 case 7:
                     $results['DB'][] = $val;
+
                     break;
 
                 case 8:
                     $results['TRX'][] = $val;
+
                     break;
 
                 default:
                     $results['Exercise'][] = $val;
             }
-            if($count == 8)
-            {
+            if ($count == 8) {
                 $count = 0;
-            }
-            else
-            {
+            } else {
                 $count++;
             }
         }
@@ -273,7 +274,7 @@ Skiers,Hamstrings,Both,False,True,False,False,False,False"));
         return $results;
     }
 
-    private function getUpperValues() : array
+    private function getUpperValues(): array
     {
         $results = [
             'Exercise' => [],
@@ -287,7 +288,7 @@ Skiers,Hamstrings,Both,False,True,False,False,False,False"));
             'TRX' => [],
         ];
 
-        $str = $this->getCSV(str_replace("\n", "","KB Standing Close Grip Chest Press,Chest,Push,True,False,False,True,False,False,
+        $str = $this->getCSV(str_replace("\n", "", "KB Standing Close Grip Chest Press,Chest,Push,True,False,False,True,False,False,
 DB Chest Press,Chest,Push,True,False,False,False,True,False,
 DB Incline Chest press,Chest,Push,True,False,False,False,True,False,
 DB Incline Reverse Chest Press,Chest,Push,True,False,False,False,True,False,
@@ -410,51 +411,54 @@ Landmine Pull and Press,Back,Pull,True,False,False,False,False,False,
 Landmine Single Arm Row,Back,Pull,True,False,False,False,False,False"));
 
         $count = 0;
-        foreach($str as $idx => $val)
-        {
-            switch($count)
-            {
+        foreach ($str as $idx => $val) {
+            switch ($count) {
                 case 1:
                     $results['Muscle Group'][] = $val;
+
                     break;
 
                 case 2:
                     $results['Direction'][] = $val;
+
                     break;
 
                 case 3:
                     $results['Major Lift'][] = $val;
+
                     break;
 
                 case 4:
                     $results['Body or Band'][] = $val;
+
                     break;
 
                 case 5:
                     $results['BB'][] = $val;
+
                     break;
 
                 case 6:
                     $results['KB'][] = $val;
+
                     break;
 
                 case 7:
                     $results['DB'][] = $val;
+
                     break;
 
                 case 8:
                     $results['TRX'][] = $val;
+
                     break;
 
                 default:
                     $results['Exercise'][] = $val;
             }
-            if($count == 8)
-            {
+            if ($count == 8) {
                 $count = 0;
-            }
-            else
-            {
+            } else {
                 $count++;
             }
         }

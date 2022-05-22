@@ -1,5 +1,10 @@
 <template>
-    <dashboard-widget-modal title="Calendar Reporting" v-bind="$attrs" ref="modal" page-route="Calendar">
+    <dashboard-widget-modal
+        title="Calendar Reporting"
+        v-bind="$attrs"
+        ref="modal"
+        page-route="Calendar"
+    >
     </dashboard-widget-modal>
 </template>
 <script>

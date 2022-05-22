@@ -38,8 +38,7 @@ class CalendarSeeder extends Seeder
                 })->get();
 
                 $randomUsers = [];
-                foreach($users as $user)
-                {
+                foreach ($users as $user) {
                     $randomUsers[] = $user->id;
                 }
 
@@ -57,7 +56,7 @@ class CalendarSeeder extends Seeder
 
                         $attendees = [];
                         for ($d = 1; $d <= 2; $d++) {
-                            $attendees[] = $randomUsers[rand(0,count($randomUsers)-1)];
+                            $attendees[] = $randomUsers[rand(0, count($randomUsers) - 1)];
                         }
 
                         /* no leads bc leads seeder is in different project
@@ -78,7 +77,6 @@ class CalendarSeeder extends Seeder
                         ];
 
                         CreateCalendarEvent::run($payload);
-
                     }
                 }
             }

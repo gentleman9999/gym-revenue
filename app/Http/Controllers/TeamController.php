@@ -7,7 +7,6 @@ use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Team;
 use App\Models\TeamDetail;
-use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -35,20 +34,17 @@ class TeamController extends Controller
         $current_user = $request->user();
         $client_id = $current_user->currentClientId();
         $current_team = request()->user()->currentTeam()->first();
-     //   $users = $current_team->team_users()->get();
+        //   $users = $current_team->team_users()->get();
         $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
             return $query->whereName('associated_client')->whereValue($client_id);
         })->get();
 
-        if ($client_id)
-        {
+        if ($client_id) {
             $client = Client::with('teams')->find($client_id);
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs  = Location::whereClientId($client_id)->get();
-        }
-        else if ($current_user->isCapeAndBayUser())
-        {
+            $clubs = Location::whereClientId($client_id)->get();
+        } elseif ($current_user->isCapeAndBayUser()) {
             $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
             $clubs = [];
         }
@@ -89,6 +85,7 @@ class TeamController extends Controller
     {
         if (request()->user()->cannot('teams.update', Team::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
 
@@ -118,12 +115,11 @@ class TeamController extends Controller
                 })->where('email', 'like', '%@capeandbay.com')->get());
             }
             $availableLocations = $team->isClientsDefaultTeam() ? [] : Location::whereClientId($client_id)->get();
-        } else if ($current_user->isCapeAndBayUser()) {
+        } elseif ($current_user->isCapeAndBayUser()) {
             //look for users that aren't client users
             $availableUsers = User::whereDoesntHave('details', function ($query) use ($current_user) {
                 return $query->where('name', '=', 'associated-client');
             })->where('email', 'like', '%@capeandbay.com')->get();
-
         }
 
         return Jetstream::inertia()->render($request, 'Teams/Edit', [
@@ -144,7 +140,7 @@ class TeamController extends Controller
         ]);
     }
 
-//TODO:event sourcing
+    //TODO:event sourcing
     public function store(Request $request)
     {
         $data = $request->validate($this->rules);
@@ -164,8 +160,9 @@ class TeamController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Team ID provided")->flash();
+
             return Redirect::route('teams');
         }
         $team = Jetstream::newTeamModel()->findOrFail($id);
@@ -186,8 +183,9 @@ class TeamController extends Controller
 
     public function delete($id)
     {
-        if (!$id) {
+        if (! $id) {
             Alert::error("No Team ID provided")->flash();
+
             return Redirect::route('teams');
         }
 
@@ -197,7 +195,8 @@ class TeamController extends Controller
 
         $deleter = app(DeletesTeams::class);
 
-        $deleter->delete($team);;
+        $deleter->delete($team);
+        ;
 
         Alert::success("Team '{$team->name}' deleted")->flash();
 
@@ -208,6 +207,7 @@ class TeamController extends Controller
     {
         if (request()->user()->cannot('teams.read', Team::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
+
             return Redirect::back();
         }
 
@@ -216,24 +216,27 @@ class TeamController extends Controller
 
         $team_users = $current_team->team_users()->get();
         $non_admin_users = [];
-        foreach ($team_users as $team_user)
-        {
-            if($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN) $non_admin_users[] = $team_user;
+        foreach ($team_users as $team_user) {
+            if ($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN) {
+                $non_admin_users[] = $team_user;
+            }
         }
 
-        if(count($non_admin_users) > 0) {
+        if (count($non_admin_users) > 0) {
             $first_user = User::find($non_admin_users[0]->user_id);
             $data['clubs'] = Location::whereClientId($first_user->client()[0]->id)->get();
             $data['client'] = Client::find($first_user->client()[0]->id);
         }
 
-        if (request()->user()->isCapeAndBayUser())
+        if (request()->user()->isCapeAndBayUser()) {
             $data['users'] = $team_users;
-        else
+        } else {
             $data['users'] = $non_admin_users;
+        }
 
         return $data;
     }
+
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
@@ -241,18 +244,14 @@ class TeamController extends Controller
         $client_id = $current_user->currentClientId();
         $current_team = request()->user()->currentTeam()->first();
 
-        if ($client_id)
-        {
+        if ($client_id) {
             $client = Client::with('teams')->find($client_id);
             $team_ids = $client->teams()->pluck('value');
             $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->get();
-        }
-        else if ($current_user->isCapeAndBayUser())
-        {
+        } elseif ($current_user->isCapeAndBayUser()) {
             $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->get();
         }
 
         return $teams;
     }
-
 }

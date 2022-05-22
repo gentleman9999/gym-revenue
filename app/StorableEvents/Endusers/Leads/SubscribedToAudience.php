@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class SubscribedToAudience extends ShouldBeStored
 {
-    public $user, $audience, $client, $entity;
+    public $user;
+    public $audience;
+    public $client;
+    public $entity;
 
     public function __construct($user, $audience, $client, $entity)
     {

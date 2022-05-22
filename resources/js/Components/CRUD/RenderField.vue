@@ -2,7 +2,7 @@
     <component
         v-if="field.component"
         :is="field.component"
-        v-bind="{ ...field.props, [modelKey]: data, data, value , field }"
+        v-bind="{ ...field.props, [modelKey]: data, data, value, field }"
     >
         {{ value }}
     </component>
@@ -37,13 +37,13 @@ export default defineComponent({
             type: Object,
             required: true,
         },
-        modelName:{
+        modelName: {
             type: String,
-            required: true
+            required: true,
         },
         modelKey: {
             type: String,
-            required: true
+            required: true,
         },
     },
     components: {

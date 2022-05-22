@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserWasImpersonated extends ShouldBeStored
 {
-    public $victim, $invader, $date;
+    public $victim;
+    public $invader;
+    public $date;
+
     public function __construct($victim, $invader, $date)
     {
         $this->victim = $victim;

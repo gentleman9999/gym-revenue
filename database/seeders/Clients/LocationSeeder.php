@@ -420,8 +420,8 @@ class LocationSeeder extends Seeder
             [
                 'key' => $key,
                 'extension' => 'csv',
-                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id
-            ]
+                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
+            ],
         ]);
     }
 }

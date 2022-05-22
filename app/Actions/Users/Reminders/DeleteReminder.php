@@ -3,12 +3,10 @@
 namespace App\Actions\Users\Reminders;
 
 use App\Aggregates\Users\UserAggregate;
-use App\Models\Reminder;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-
 
 class DeleteReminder
 {
@@ -28,13 +26,12 @@ class DeleteReminder
 
     public function handle($data, $current_user)
     {
-        if(!is_null($current_user)) {
+        if (! is_null($current_user)) {
             $client_id = $current_user->currentClientId();
             $data['client_id'] = $client_id;
         }
 
         UserAggregate::retrieve($current_user->id)->deleteReminder($current_user->id ?? "Auto Generated", $data['id'])->persist();
-
     }
 
     public function authorize(ActionRequest $request): bool
@@ -55,5 +52,4 @@ class DeleteReminder
 
         return Redirect::back();
     }
-
 }

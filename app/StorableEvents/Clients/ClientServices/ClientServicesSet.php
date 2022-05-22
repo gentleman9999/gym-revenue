@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class ClientServicesSet extends ShouldBeStored
 {
-    public $client, $services, $user;
+    public $client;
+    public $services;
+    public $user;
 
     public function __construct(string $client, array $services, int $user)
     {

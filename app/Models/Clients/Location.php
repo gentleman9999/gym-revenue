@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Location extends Model
 {
-    use HasFactory, SoftDeletes, Sortable;
+    use HasFactory;
+    use SoftDeletes;
+    use Sortable;
 
     protected $fillable = ['client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip', 'active', 'location_no', 'gymrevenue_id', 'deleted_at'];
 
@@ -51,8 +53,8 @@ class Location extends Model
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
-        })->when($filters['state'] ?? null, function($query, $state) {
-$query->where('state','like', '%'.$state.'%');
+        })->when($filters['state'] ?? null, function ($query, $state) {
+            $query->where('state', 'like', '%'.$state.'%');
         });
     }
 }

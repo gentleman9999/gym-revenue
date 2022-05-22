@@ -2,8 +2,7 @@ import { useFlash } from "./useFlash";
 import { ref, watch, watchEffect, onBeforeUnmount } from "vue";
 import { useUser } from "@/utils/useUser";
 import { useNotifications } from "@/utils/useNotifications";
-import {parseNotificationResponse} from "@/utils";
-
+import { parseNotificationResponse } from "@/utils";
 
 export const useNotificationAlertEmitter = () => {
     const user = useUser();
@@ -42,10 +41,7 @@ export const useNotificationAlertEmitter = () => {
     });
     watchEffect(() => {
         const privateUserChannel = `private-App.Models.User.${user?.value?.id}`;
-        if (
-            channel.value?.name &&
-            channel.value?.name !== privateUserChannel
-        ) {
+        if (channel.value?.name && channel.value?.name !== privateUserChannel) {
             console.log("leaving channel:", privateUserChannel);
             //leave channel when we log out
             Echo.leave(channel.value.name);
@@ -54,11 +50,11 @@ export const useNotificationAlertEmitter = () => {
         if (
             user.value?.id &&
             !channel.value &&
-            !window.Echo?.connector?.channels[
-                privateUserChannel
-            ]
+            !window.Echo?.connector?.channels[privateUserChannel]
         ) {
-            channel.value = window.Echo.private(`App.Models.User.${user?.value?.id}`);
+            channel.value = window.Echo.private(
+                `App.Models.User.${user?.value?.id}`
+            );
             channel.value.notification(handleIncomingNotification);
         }
     });

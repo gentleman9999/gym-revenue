@@ -2,8 +2,8 @@
 
 namespace App\Actions\Clients\Classifications;
 
-use App\Models\Clients\Classification;
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Clients\Classification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -30,12 +30,12 @@ class RestoreClassification
     {
         $client_id = $current_user->currentClientId();
         ClientAggregate::retrieve($client_id)->restoreClassification($current_user->id, $id)->persist();
-
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('classifications.restore', Classification::class);
     }
 

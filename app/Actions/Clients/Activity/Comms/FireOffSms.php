@@ -28,6 +28,7 @@ class FireOffSms
         switch ($entity_type) {
             case 'user':
                 $member = User::with('phone')->find($entity_id);
+
                 break;
             default:
                 //todo:report error - unknown entity_Type
@@ -36,7 +37,7 @@ class FireOffSms
         if ($member) {
             if ($member->phone) {
                 //TODO: we need to scrutinize phone format here
-                if (!AppState::isSimuationMode()) {
+                if (! AppState::isSimuationMode()) {
                     $sent_to[] = [
                         'entity_type' => $entity_type,
                         'entity_id' => $entity_id,
@@ -53,6 +54,7 @@ class FireOffSms
         foreach ($this->tokens as $token) {
             $string = str_replace("%{$token}%", $data[$token] ?? 'UNKNOWN_TOKEN', $string);
         }
+
         return $string;
     }
 

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models\Endusers;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -10,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LeadStatuses extends Model
 {
-    use HasFactory, SoftDeletes, Uuid;
+    use HasFactory;
+    use SoftDeletes;
+    use Uuid;
 
     protected $primaryKey = 'id';
 

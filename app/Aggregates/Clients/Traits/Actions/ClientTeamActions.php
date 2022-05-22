@@ -17,12 +17,9 @@ trait ClientTeamActions
 {
     public function createDefaultTeam(string $name)
     {
-        if(!empty($this->default_team))
-        {
+        if (! empty($this->default_team)) {
             throw ClientAccountException::defaultTeamAlreadyCreated($this->default_team);
-        }
-        else
-        {
+        } else {
             $this->recordThat(new DefaultClientTeamCreated($this->uuid(), $name));
         }
 
@@ -31,27 +28,24 @@ trait ClientTeamActions
 
     public function createTeamPrefix(string $prefix)
     {
-        if(!empty($this->team_prefix))
-        {
+        if (! empty($this->team_prefix)) {
             throw ClientAccountException::prefixAlreadyCreated($this->team_prefix, $this->default_team);
-        }
-        else {
+        } else {
             $this->recordThat(new PrefixCreated($this->uuid(), $prefix));
-
         }
+
         return $this;
     }
 
     public function addTeam(string $team_id, string $team_name)
     {
-        if(array_key_exists($team_id, $this->teams))
-        {
+        if (array_key_exists($team_id, $this->teams)) {
             throw ClientAccountException::teamAlreadyAssigned($team_name);
-        }
-        else {
+        } else {
             // @todo - make sure the team is not assigned to another client
             $this->recordThat(new TeamCreated($this->uuid(), $team_id, $team_name));
         }
+
         return $this;
     }
 
@@ -63,11 +57,9 @@ trait ClientTeamActions
             ->whereName('default_team')
             ->whereValue(1)->get();
 
-        if(count($users) > 0)
-        {
+        if (count($users) > 0) {
             $payload = [];
-            foreach($users as $user)
-            {
+            foreach ($users as $user) {
                 $payload[] = $user->user_id;
                 UserAggregate::retrieve($user->user_id)
                     ->addUserToTeam($team_id, $team->name, $client->id)
@@ -85,18 +77,21 @@ trait ClientTeamActions
     public function addUserToTeam(int $user_id, string $team_id, $role)
     {
         $this->recordThat(new UserRoleOnTeamUpdated($this->uuid(), $user_id, $team_id, ['role' => $role]));
+
         return $this;
     }
 
     public function removeUserFromTeam(int $user_id, string $team_id)
     {
         $this->recordThat(new UserRemovedFromTeam($this->uuid(), $user_id, $team_id, []));
+
         return $this;
     }
 
     public function updateUserRoleOnTeam(int $user_id, string $team_id, $old_role, $role)
     {
         $this->recordThat(new UserRoleOnTeamUpdated($this->uuid(), $user_id, $team_id, ['role' => $role, 'old_role' => $old_role]));
+
         return $this;
     }
 }

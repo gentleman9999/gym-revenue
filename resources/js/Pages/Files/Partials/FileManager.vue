@@ -151,12 +151,12 @@ const props = defineProps({
     clientId: { type: String, required: true },
     user: { type: Object },
     formSubmitOptions: { type: Object },
-    handleCancel: {type: Function}
+    handleCancel: { type: Function },
 });
 
 const defaultHandleCancel = () => {
-    Inertia.visit(route('files'));
-}
+    Inertia.visit(route("files"));
+};
 const resolvedHandleCancel = props.handleCancel || defaultHandleCancel;
 
 const emit = defineEmits(["submitted"]);
@@ -252,7 +252,6 @@ const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
     }
 });
 defineExpose({ reset: form.reset });
-
 
 onUnmounted(removeRouteGuard);
 </script>

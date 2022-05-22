@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class UserUpdated extends ShouldBeStored
 {
-    public $id, $user, $payload;
+    public $id;
+    public $user;
+    public $payload;
 
     public function __construct(string $id, string $user, array $payload)
     {

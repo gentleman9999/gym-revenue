@@ -6,7 +6,9 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class FileTrashed extends ShouldBeStored
 {
-    public $user, $id;
+    public $user;
+    public $id;
+
     public function __construct(string $user, $id)
     {
         $this->user = $user;

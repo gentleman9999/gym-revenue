@@ -2,36 +2,39 @@
     <app-layout title="Create User">
         <template #header>
             <div class="flex flex-row ml-4">
-                <Button type="button" @click="$inertia.visit(route('users'))"  info outline>
-                     Back
+                <Button
+                    type="button"
+                    @click="$inertia.visit(route('users'))"
+                    info
+                    outline
+                >
+                    Back
                 </Button>
 
-                <h2 class="font-semibold text-xl  leading-tight ml-4">
+                <h2 class="font-semibold text-xl leading-tight ml-4">
                     Create A New {{ $page.props.clientName }} User
                 </h2>
             </div>
-
         </template>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <user-form :client-id="$page.props.user.current_client_id"/>
+                <user-form :client-id="$page.props.user.current_client_id" />
             </div>
         </div>
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout'
-import Button from '@/Components/Button'
-import JetFormSection from '@/Jetstream/FormSection'
+import { defineComponent } from "vue";
+import AppLayout from "@/Layouts/AppLayout";
+import Button from "@/Components/Button";
+import JetFormSection from "@/Jetstream/FormSection";
 
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
 
-import UserForm from '@/Pages/Users/Partials/UserForm'
-
+import UserForm from "@/Pages/Users/Partials/UserForm";
 
 export default defineComponent({
     components: {
@@ -40,8 +43,7 @@ export default defineComponent({
         JetFormSection,
         JetInputError,
         JetLabel,
-        UserForm
+        UserForm,
     },
-
-})
+});
 </script>

@@ -3,7 +3,6 @@
 namespace App\Projectors\Clients;
 
 use App\Models\Endusers\LeadSource;
-use App\StorableEvents\Clients\Activity\Campaigns\ClientServiceEnabled;
 use App\StorableEvents\Clients\Activity\Campaigns\LeadSourceCreated;
 use App\StorableEvents\Clients\Activity\Campaigns\LeadSourceUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;

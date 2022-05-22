@@ -29,16 +29,13 @@ class CalendarEventTypeSeeder extends Seeder
                 'Prospecting' => ['name' => 'Prospecting', 'color' => 'grey'],
                 'External Event' => ['name' => 'External Event', 'color' => 'blue'],
                 'Task Follow-Up' => ['name' => 'Task Follow-Up', 'color' => 'green'],
-                'Task' => ['name' => 'Task', 'color' => 'green']
+                'Task' => ['name' => 'Task', 'color' => 'green'],
             ];
 
             if (count($clients) > 0) {
-                foreach ($clients as $client)
-                {
+                foreach ($clients as $client) {
                     VarDumper::dump('Creating Calendar Event Types for '.$client->name);
-                    foreach ($types as $type)
-                    {
-
+                    foreach ($types as $type) {
                         $payload = [
                             'client_id' => $client->id,
                             'name' => $type['name'].' Event Type for '.$client->name,

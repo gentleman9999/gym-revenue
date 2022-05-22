@@ -2,12 +2,11 @@
 
 use Illuminate\Pagination\LengthAwarePaginator;
 
-if (!function_exists('paginate_array')) {
-
+if (! function_exists('paginate_array')) {
     function paginate_array($request, $array, $per_page = 5): LengthAwarePaginator
     {
-        if(!is_array($array)){
-            $array=$array->toArray();
+        if (! is_array($array)) {
+            $array = $array->toArray();
         }
         $total = count($array);
         $current_page = $request->input("page") ?? 1;
@@ -20,6 +19,7 @@ if (!function_exists('paginate_array')) {
             'path' => $request->url(),
             'query' => $request->query(),
         ]);
+
         return $array;
     }
 }

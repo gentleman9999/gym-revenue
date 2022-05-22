@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class LeadTrashed extends ShouldBeStored
 {
-    public $user, $id, $reason;
+    public $user;
+    public $id;
+    public $reason;
+
     public function __construct(string $id, string $user, string $reason)
     {
         $this->user = $user;

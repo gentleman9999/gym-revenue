@@ -7,9 +7,8 @@ use App\Helpers\Uuid;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Prologue\Alerts\Facades\Alert;
 use Lorisleiva\Actions\Concerns\AsAction;
-
+use Prologue\Alerts\Facades\Alert;
 
 class CreateMember
 {
@@ -23,23 +22,23 @@ class CreateMember
     public function rules()
     {
         return [
-            'first_name'                => ['required', 'max:50'],
-            'middle_name'               => ['string', 'max:50', 'nullable'],
-            'last_name'                 => ['required', 'max:30'],
-            'email'                     => ['required', 'email:rfc,dns'],
-            'primary_phone'             => ['required', 'string'],
-            'alternate_phone'           => ['string', 'nullable'],
-            'gr_location_id'            => ['required', 'exists:locations,gymrevenue_id'],
-            'client_id'                 => ['required', 'exists:clients,id'],
-            'profile_picture'           => ['array', 'nullable'],
-            'profile_picture.uuid'      => 'sometimes|required|string',
-            'profile_picture.key'       => 'sometimes|required|string',
+            'first_name' => ['required', 'max:50'],
+            'middle_name' => ['string', 'max:50', 'nullable'],
+            'last_name' => ['required', 'max:30'],
+            'email' => ['required', 'email:rfc,dns'],
+            'primary_phone' => ['required', 'string'],
+            'alternate_phone' => ['string', 'nullable'],
+            'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
+            'client_id' => ['required', 'exists:clients,id'],
+            'profile_picture' => ['array', 'nullable'],
+            'profile_picture.uuid' => 'sometimes|required|string',
+            'profile_picture.key' => 'sometimes|required|string',
             'profile_picture.extension' => 'sometimes|required|string',
-            'profile_picture.bucket'    => 'sometimes|required|string',
-            'gender'                    => 'string|required',
-            'date_of_birth'             => 'required',
+            'profile_picture.bucket' => 'sometimes|required|string',
+            'gender' => 'string|required',
+            'date_of_birth' => 'required',
 //            'agreement_number'          => ['required', 'string'],
-            'notes'                     => 'nullable|array',
+            'notes' => 'nullable|array',
         ];
     }
 
@@ -58,12 +57,12 @@ class CreateMember
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+
         return $current_user->can('members.create', Member::class);
     }
 
     public function asController(ActionRequest $request)
     {
-
         $member = $this->handle(
             $request->validated(),
             $request->user()
@@ -71,7 +70,6 @@ class CreateMember
 
         Alert::success("Member'{$member->name}' was created")->flash();
 
-        return Redirect::route('data.members.edit', $member->id );
+        return Redirect::route('data.members.edit', $member->id);
     }
-
 }

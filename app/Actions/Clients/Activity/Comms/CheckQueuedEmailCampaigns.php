@@ -19,8 +19,8 @@ class CheckQueuedEmailCampaigns
     public function handle()
     {
         Log::debug("checking for queued email campaigns");
-        $queued_campaigns = QueuedEmailCampaign::whereNull('started_at')->where('trigger_at', '<=', DB::raw('now()') )->get();
-        foreach($queued_campaigns as $campaign){
+        $queued_campaigns = QueuedEmailCampaign::whereNull('started_at')->where('trigger_at', '<=', DB::raw('now()'))->get();
+        foreach ($queued_campaigns as $campaign) {
             echo "Firing off emails for $campaign->id";
             FireOffEmailCampaign::dispatch($campaign->email_campaign_id);
             $campaign->started_at = new DateTime();

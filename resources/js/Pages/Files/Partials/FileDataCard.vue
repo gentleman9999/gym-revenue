@@ -50,10 +50,10 @@ export default {
         titleField: {
             type: String,
         },
-        actions:{
+        actions: {
             type: Object,
-            default: {}
-        }
+            default: {},
+        },
     },
 };
 </script>

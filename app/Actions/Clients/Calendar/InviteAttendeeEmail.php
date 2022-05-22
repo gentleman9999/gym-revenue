@@ -12,7 +12,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-
 class InviteAttendeeEmail
 {
     use AsAction;
@@ -43,8 +42,7 @@ class InviteAttendeeEmail
 
         $shortUrl = ShortUrl::whereRoute($route)->first();
 
-        if(is_null($shortUrl))
-        {
+        if (is_null($shortUrl)) {
             CreateShortUrl::run(['route' => 'invite/'.$attendee->id], $client_id);
             $shortUrl = ShortUrl::whereRoute($route)->first();
         }
@@ -75,5 +73,4 @@ class InviteAttendeeEmail
 
         return Redirect::back();
     }
-
 }

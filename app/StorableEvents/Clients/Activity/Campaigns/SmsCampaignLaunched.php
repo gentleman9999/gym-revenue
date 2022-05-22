@@ -6,7 +6,10 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class SmsCampaignLaunched extends ShouldBeStored
 {
-    public $client, $campaign, $date, $user;
+    public $client;
+    public $campaign;
+    public $date;
+    public $user;
 
     public function __construct(string $client, string $campaign, string $date, string $user)
     {

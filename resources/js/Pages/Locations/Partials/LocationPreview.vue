@@ -52,7 +52,6 @@ input {
 }
 </style>
 
-
 <script>
 export default {
     props: ["location"],

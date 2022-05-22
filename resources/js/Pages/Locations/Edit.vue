@@ -1,32 +1,36 @@
 <template>
     <app-layout title="Edit Location">
         <template #header>
-            <jet-bar-icon type="g0back" fill/>
-            <h2 class="font-semibold text-xl  leading-tight">
-                Edit {{ $page.props.location.name  }} ({{ $page.props.location['gymrevenue_id'] }})
+            <jet-bar-icon type="g0back" fill />
+            <h2 class="font-semibold text-xl leading-tight">
+                Edit {{ $page.props.location.name }} ({{
+                    $page.props.location["gymrevenue_id"]
+                }})
             </h2>
         </template>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <location-form :client-id="this.$page.props.user.current_client_id" :location="$page.props.location"/>
+                <location-form
+                    :client-id="this.$page.props.user.current_client_id"
+                    :location="$page.props.location"
+                />
             </div>
         </div>
     </app-layout>
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
-import Button from '@/Components/Button'
-import JetFormSection from '@/Jetstream/FormSection'
+import AppLayout from "@/Layouts/AppLayout";
+import Button from "@/Components/Button";
+import JetFormSection from "@/Jetstream/FormSection";
 
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
-import JetBarIcon from '@/Components/JetBarIcon'
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
+import JetBarIcon from "@/Components/JetBarIcon";
 
-import LocationForm from '@/Pages/Locations/Partials/LocationForm'
-import {defineComponent} from 'vue'
-
+import LocationForm from "@/Pages/Locations/Partials/LocationForm";
+import { defineComponent } from "vue";
 
 export default defineComponent({
     components: {
@@ -39,6 +43,6 @@ export default defineComponent({
         JetBarIcon,
         LocationForm,
     },
-    props: ['locations']
-})
+    props: ["locations"],
+});
 </script>
