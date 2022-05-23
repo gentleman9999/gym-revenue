@@ -189,6 +189,8 @@ class EndUserActivityProjector extends Projector
         $lead_table_data = array_filter($event->data, function ($key) {
             return in_array($key, (new Lead())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
+        $lead_table_data['agreement_number'] = floor(time() - 99999999);
+
         $lead = Lead::create($lead_table_data);
 
         $user = User::find($event->user);
@@ -204,12 +206,6 @@ class EndUserActivityProjector extends Projector
             'client_id' => $event->data['client_id'],
             'field' => 'created',
             'value' => Carbon::now(),
-        ]);
-        LeadDetails::create([
-            'lead_id' => $lead->id,
-            'client_id' => $event->data['client_id'],
-            'field' => 'agreement_number',
-            'value' => floor(time() - 99999999),
         ]);
 
         $this->createOrUpdateLeadDetailsAndNotes($event, $lead);

@@ -24,7 +24,11 @@ class Lead extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'first_name', 'last_name', 'gender', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address', 'lead_type_id', 'membership_type_id', 'lead_source_id'];
+    protected $fillable = [
+        'id', 'client_id', 'first_name', 'last_name', 'gender', 'email',
+        'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address',
+        'lead_type_id', 'membership_type_id', 'lead_source_id', 'agreement_number',
+    ];
 
     public function details()
     {
@@ -139,6 +143,7 @@ class Lead extends Model
 //                    ->orWhere('lead_type', 'like', '%' . $search . '%')
                     ->orWhere('gr_location_id', 'like', '%' . $search . '%')
                     ->orWhere('ip_address', 'like', '%' . $search . '%')
+                    ->orWhere('agreement_number', 'like', '%' . $search . '%')
                     ->orWhereHas('location', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
                     })
@@ -197,9 +202,7 @@ class Lead extends Model
         })->when($filters['emailSearch'] ?? null, function ($query, $search) {
             $query->where('email', 'like', '%' . $search . '%');
         })->when($filters['agreementSearch'] ?? null, function ($query, $search) {
-            $query->whereHas('agreementNumber', function ($query) use ($search) {
-                $query->where('value', 'like', '%' . $search . '%');
-            });
+            $query->orWhere('agreement_number', 'like', '%' . $search . '%');
         });
     }
 
