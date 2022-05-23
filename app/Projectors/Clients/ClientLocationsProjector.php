@@ -18,7 +18,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientLocationsProjector extends Projector
 {
-    private $details = ['poc_first', 'poc_last'];
+    private $details = ['poc_first', 'poc_last', 'poc_phone'];
 
     public function onLocationCreated(LocationCreated $event)
     {

@@ -25,7 +25,6 @@ class CreateLocationsTable extends Migration
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
             $table->boolean('active')->default(1);
-            $table->string('poc_phone')->nullable();
             $table->string('phone')->nullable();
             $table->dateTime('open_date')->nullable();
             $table->dateTime('close_date')->nullable();

@@ -22,7 +22,7 @@ class Location extends Model
     protected $fillable = [
         'client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip',
         'active', 'location_no', 'gymrevenue_id', 'deleted_at',
-        'open_date', 'close_date', 'poc_phone', 'phone',
+        'open_date', 'close_date', 'phone',
     ];
 
     public function client()

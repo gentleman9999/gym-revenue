@@ -83,10 +83,10 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        $location = Location::find($id)->get();
+        $location = Location::findOrFail($id);
 
         $locationDetails = LocationDetails::where('location_id', $id)->get();
-        $poc_first = $poc_last = '';
+        $poc_first = $poc_last = $poc_phone = '';
 
         foreach ($locationDetails as $locationitems) {
             if ($locationitems->field == 'poc_first') {
@@ -95,16 +95,16 @@ class LocationsController extends Controller
             if ($locationitems->field == 'poc_last') {
                 $poc_last = $locationitems->value;
             }
+            if ($locationitems->field == 'poc_phone') {
+                $poc_phone = $locationitems->value;
+            }
         }
 
         return Inertia::render('Locations/Edit', [
             'location' => $location,
-            'phone' => $location->phone,
             'poc_first' => $poc_first,
             'poc_last' => $poc_last,
-            'poc_phone' => $location->poc_phone,
-            'open_date' => $location->open_date,
-            'close_date' => $location->close_date,
+            'poc_phone' => $poc_phone,
         ]);
     }
 
@@ -198,7 +198,7 @@ class LocationsController extends Controller
         }
 
         $locationDetails = LocationDetails::where('location_id', $id)->get();
-        $phone = $poc_first = $poc_last = $poc_phone = $opendate = $closedate = '';
+        $poc_first = $poc_last = $poc_phone = '';
 
         foreach ($locationDetails as $locationitems) {
             if ($locationitems->field == 'poc_first') {
@@ -207,11 +207,15 @@ class LocationsController extends Controller
             if ($locationitems->field == 'poc_last') {
                 $poc_last = $locationitems->value;
             }
+            if ($locationitems->field == 'poc_phone') {
+                $poc_phone = $locationitems->value;
+            }
         }
 
         $data = Location::findOrFail($id)->toArray();
         $data['poc_first'] = $poc_first;
         $data['poc_last'] = $poc_last;
+        $data['poc_phone'] = $poc_phone;
 
         return $data;
     }
