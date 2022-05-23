@@ -19,7 +19,11 @@ class Location extends Model
     use SoftDeletes;
     use Sortable;
 
-    protected $fillable = ['client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip', 'active', 'location_no', 'gymrevenue_id', 'deleted_at'];
+    protected $fillable = [
+        'client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip',
+        'active', 'location_no', 'gymrevenue_id', 'deleted_at',
+        'open_date', 'close_date', 'poc_phone', 'phone',
+    ];
 
     public function client()
     {
