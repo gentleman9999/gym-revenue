@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Leads;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -29,7 +29,7 @@ class DeleteLead
     public function handle($id, $current_user)
     {
         $deleted = Lead::withTrashed()->findOrFail($id);
-        EndUserActivityAggregate::retrieve($id)->deleteLead($current_user->id ?? "Auto Generated", $id)->persist();
+        LeadAggregate::retrieve($id)->delete($current_user->id ?? "Auto Generated", $id)->persist();
 
         return $deleted;
     }

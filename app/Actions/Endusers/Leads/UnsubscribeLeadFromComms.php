@@ -5,12 +5,12 @@ namespace App\Actions\Endusers\Leads;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Prologue\Alerts\Facades\Alert;
 
-class RestoreLead
+class UnsubscribeLeadFromComms
 {
     use AsAction;
 
@@ -26,31 +26,23 @@ class RestoreLead
         ];
     }
 
-    public function handle($id, $current_user)
+    public function handle($id)
     {
-        LeadAggregate::retrieve($id)->restore($current_user->id ?? "Auto Generated")->persist();
-
-        return Lead::findOrFail($id);
+        LeadAggregate::retrieve($id)->unsubscribeToComms(Carbon::now())->persist();
     }
 
-    public function authorize(ActionRequest $request): bool
-    {
-        $current_user = $request->user();
-
-        return $current_user->can('leads.restore', Lead::class);
-    }
+//    public function authorize(ActionRequest $request): bool
+//    {
+//        $current_user = $request->user();
+//
+//        return $current_user->can('leads.delete', Lead::class);
+//    }
 
     public function asController(Request $request, $id)
     {
-        $lead = $this->handle(
+        $this->handle(
             $id,
-            $request->user(),
         );
-
-
-        Alert::success("Lead '{$lead->name}' restored.")->flash();
-
-//        return Redirect::route('data.leads');
-        return Redirect::back();
+//        return Redirect::back();
     }
 }

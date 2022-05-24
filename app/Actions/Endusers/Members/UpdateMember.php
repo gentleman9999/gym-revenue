@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Members;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\MemberAggregate;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -43,8 +43,8 @@ class UpdateMember
 
     public function handle($data, $user = null)
     {
-        EndUserActivityAggregate::retrieve($data['client_id'])
-            ->updateMember($user->id ?? "Auto Generated", $data)
+        MemberAggregate::retrieve($data['client_id'])
+            ->update($user->id ?? "Auto Generated", $data)
             ->persist();
 
         return Member::findOrFail($data['id']);

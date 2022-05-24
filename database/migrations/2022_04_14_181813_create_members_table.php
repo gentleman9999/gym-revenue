@@ -27,6 +27,7 @@ class CreateMembersTable extends Migration
             $table->timestamp('date_of_birth');
             $table->string('agreement_number');
             $table->string('profile_picture')->nullable();
+            $table->boolean('unsubscribed_comms')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

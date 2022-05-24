@@ -18,6 +18,7 @@ class CreateLeadsTable extends Migration
             $table->uuid('client_id');
             $table->string('gr_location_id')->nullable();
             $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();
             $table->string('primary_phone')->nullable();
@@ -28,6 +29,9 @@ class CreateLeadsTable extends Migration
             $table->integer('membership_type_id')->nullable();
             $table->string('ip_address')->nullable();
             $table->string('agreement_number')->nullable();
+            $table->timestamp('date_of_birth')->nullable();
+            $table->string('opportunity')->nullable();
+            $table->boolean('unsubscribed_comms')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

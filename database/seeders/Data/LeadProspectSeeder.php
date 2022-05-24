@@ -3,7 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Endusers\Leads\CreateLead;
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
@@ -55,9 +55,9 @@ class LeadProspectSeeder extends Seeder
                             $date_range = mt_rand(1262055681, 1262215681);
                             //generate details
                             $prospect_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0, 2)];
-                            $prospect_data['dob'] = date("Y-m-d H:i:s", $date_range);
+                            $prospect_data['date_of_birth'] = date("Y-m-d H:i:s", $date_range);
                             $lead = CreateLead::run($prospect_data);
-                            $aggy = EndUserActivityAggregate::retrieve($lead->id);
+                            $aggy = LeadAggregate::retrieve($lead->id);
 
                             $lead_type_free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
 

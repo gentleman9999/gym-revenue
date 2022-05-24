@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Members;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\MemberAggregate;
 use App\Helpers\Uuid;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
@@ -47,8 +47,8 @@ class CreateMember
         $id = Uuid::new();
         $data['id'] = $id;
 
-        EndUserActivityAggregate::retrieve($data['client_id'])
-            ->createMember($user->id ?? "Auto Generated", $data)
+        MemberAggregate::retrieve($data['client_id'])
+            ->create($user->id ?? "Auto Generated", $data)
             ->persist();
 
         return Member::findOrFail($id);

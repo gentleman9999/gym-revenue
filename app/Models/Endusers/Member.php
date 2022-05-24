@@ -24,9 +24,16 @@ class Member extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender', 'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'profile_picture', 'agreement_number', 'gender', 'date_of_birth'];
+    protected $fillable = [
+        'id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender',
+        'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'profile_picture',
+        'agreement_number', 'gender', 'date_of_birth', 'unsubscribed_comms',
+    ];
 
-    protected $casts = ['profile_picture' => 'array'];
+    protected $casts = [
+        'profile_picture' => 'array',
+        'unsubscribed_comms' => 'boolean',
+    ];
 
 //    public function details()
 //    {
@@ -96,31 +103,14 @@ class Member extends Model
             $query->where('created_at', 'like', $createdat . '%');
 
             /* filters for typeoflead the data schema changed so lets get back to this */
-        })->when($filters['typeoflead'] ?? null, function ($query, $typeoflead) {
-            $query->whereIn('lead_type_id', $typeoflead);
-
-            /* Filter for Location(s) */
         })->when($filters['grlocation'] ?? null, function ($query, $grlocation) {
             $query->whereIn('gr_location_id', $grlocation);
 
             /* Filter for Lead Sources */
-        })->when($filters['leadsource'] ?? null, function ($query, $leadsource) {
-            $query->whereIn('lead_source_id', $leadsource);
-
-            /* Filter for Lead Sources */
         })->when($filters['opportunity'] ?? null, function ($query, $opportunity) {
-            $query->whereHas('opportunity', function ($query) use ($opportunity) {
-                $query->whereIn('value', $opportunity);
-                //$query->where('value', '=', $opportunity); <- for single select
-            });
-        })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed) {
-            $query->whereHas('leadsclaimed', function ($query) use ($leadsclaimed) {
-                $query->whereIn('value', $leadsclaimed);
-            });
-        })->when($filters['dob'] ?? null, function ($query, $dob) {
-            $query->whereHas('dob', function ($query) use ($dob) {
-                $query->whereBetween('value', $dob);
-            });
+            $query->whereIn('opportunity',  $opportunity);
+        })->when($filters['date_of_birth'] ?? null, function ($query, $dob) {
+            $query->whereBetween('date_of_birth', $dob);
         })->when($filters['lastupdated'] ?? null, function ($query, $search) {
             $query->orderBy('updated_at', $search);
 
@@ -133,9 +123,7 @@ class Member extends Model
         })->when($filters['emailSearch'] ?? null, function ($query, $search) {
             $query->where('email', 'like', '%' . $search . '%');
         })->when($filters['agreementSearch'] ?? null, function ($query, $search) {
-            $query->whereHas('agreementNumber', function ($query) use ($search) {
-                $query->where('value', 'like', '%' . $search . '%');
-            });
+            $query->orWhere('agreement_number', 'like', '%' . $search . '%');
         });
     }
 

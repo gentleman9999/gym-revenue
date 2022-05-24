@@ -124,15 +124,18 @@
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="dob" value="Date of Birth" />
+                <jet-label for="date_of_birth" value="Date of Birth" />
                 <date-picker
-                    v-model="form['dob']"
+                    v-model="form['date_of_birth']"
                     dark
                     :month-change-on-scroll="false"
                     :auto-apply="true"
                     :close-on-scroll="true"
                 />
-                <jet-input-error :message="form.errors.dob" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.date_of_birth"
+                    class="mt-2"
+                />
             </div>
             <div
                 class="form-control col-span-2"
@@ -466,7 +469,7 @@ export default {
                 lead_source_id: null,
                 profile_picture: null,
                 gender: "",
-                dob: "",
+                date_of_birth: "",
                 opportunity: "",
                 lead_owner: props.userId,
                 lead_status: "",
@@ -488,30 +491,11 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: null,
                 gender: lead.gender,
+                agreement_number: lead.agreement_number,
+                date_of_birth: lead.date_of_birth,
+                opportunity: lead.opportunity,
                 notes: { title: "", note: "" },
             };
-            //         leadData.notes = "";
-
-            console.log("Lead Owner", lead);
-
-            leadData.agreement_number = lead.agreement_number;
-            leadData.middle_name =
-                "middle_name" in lead && lead.middle_name !== null
-                    ? lead.middle_name.value
-                    : null;
-            leadData.dob =
-                "dob" in lead && lead.dob !== null ? lead.dob.value : null;
-            leadData.opportunity =
-                "opportunity" in lead && lead.opportunity !== null
-                    ? lead.opportunity.value
-                    : null;
-
-            // leadData["last_updated"] =
-            //     "last_updated" in lead && lead.last_updated
-            //         ? `Last Updated by ${lead.last_updated.value} at ${new Date(
-            //               lead.last_updated.updated_at
-            //           ).toLocaleDateString("en-US")}`
-            //         : "This lead has never been updated";
 
             leadData["lead_owner"] =
                 "lead_owner" in lead && lead.lead_owner !== null

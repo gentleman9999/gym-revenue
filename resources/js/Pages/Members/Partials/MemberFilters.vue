@@ -114,14 +114,14 @@
 
         <div class="form-control">
             <label
-                for="dob"
+                for="date_of_birth"
                 class="label label-text py-1 text-xs text-gray-400"
             >
                 Date of Birth:
             </label>
             <DatePicker
-                id="dob"
-                v-model="form.dob"
+                id="date_of_birth"
+                v-model="form.date_of_birth"
                 :enableTimePicker="false"
                 range
                 dark
