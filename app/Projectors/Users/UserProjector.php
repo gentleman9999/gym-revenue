@@ -5,7 +5,6 @@ namespace App\Projectors\Users;
 use App\Imports\UsersImport;
 use App\Imports\UsersImportWithHeader;
 use App\Models\Clients\Client;
-use App\Models\Clients\Location;
 use App\Models\Note;
 use App\Models\Notification;
 use App\Models\Tasks;
@@ -148,7 +147,7 @@ class UserProjector extends Projector
     public function onUserImported(UserImported $event)
     {
         $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
-        if (in_array($headings[0][0][0], (new Location())->getFillable())) {
+        if (in_array($headings[0][0][0], (new User())->getFillable())) {
             Excel::import(new UsersImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         } else {
             Excel::import(new UsersImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);

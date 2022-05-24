@@ -20,8 +20,9 @@ class UsersImport implements ToCollection
     public function collection(Collection|\Illuminate\Support\Collection $rows)
     {
         $client = Client::with('teams')->find($this->client_id);
-        $roles = Role::whereScope($client->id)->get();
-        $team_ids = $client->teams()->pluck('value');
+        $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
+        $team_ids = $client->teams()->pluck('id');
+        ;
         foreach ($rows as $row) {
             CreateUser::run([
                 'first_name' => $row[0],
@@ -29,9 +30,9 @@ class UsersImport implements ToCollection
                 'email' => $row[2],
                 'password' => 'Hello123!',
                 'team_ids' => $team_ids,
-                'role' => 4,
-                'home_club' => 0,
-                'is_manager' => 0,
+                'role_id' => $roles->id,
+                'home_club' => null,
+                'client_id' => $this->client_id,
             ]);
         }
     }

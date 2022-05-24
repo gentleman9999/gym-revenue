@@ -46,6 +46,6 @@ class ImportUser
             Alert::success("User Import complete.")->flash();
         }
 
-        return Redirect::route('locations');
+        return Redirect::route('users');
     }
 }

@@ -22,23 +22,27 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
     public function collection(Collection|\Illuminate\Support\Collection $rows)
     {
         $client = Client::with('teams')->find($this->client_id);
-        $roles = Role::whereScope($client->id)->get();
-        $team_ids = $client->teams()->pluck('value');
+        $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
+        $team_ids = $client->teams()->pluck('id');
+        ;
         foreach ($rows as $row) {
             $arrayRow = $row->toArray();
 
             $location = CreateUser::run([
-                'first_name' => $row[0],
-                'last_name' => $row[1],
-                'email' => $row[2],
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'email' => $row['email'],
                 'password' => 'Hello123!',
                 'team_ids' => $team_ids,
-                'role' => 4,
-                'home_club' => 0,
-                'is_manager' => 0,
-                //'phone' => array_key_exists('phone', $arrayRow) ? $row['phone'] : null,
-                //'open_date' => array_key_exists('open_date', $arrayRow) ? $row['open_date'] : null,
-                //'close_date' => array_key_exists('close_date', $arrayRow) ? $row['close_date'] : null,
+                'role_id' => $roles->id,
+                'home_club' => array_key_exists('home_club', $arrayRow) ? $row['phone'] : null,
+                'phone' => array_key_exists('phone', $arrayRow) ? $row['phone'] : null,
+                'address1' => array_key_exists('address1', $arrayRow) ? $row['address1'] : null,
+                'address2' => array_key_exists('address2', $arrayRow) ? $row['address2'] : null,
+                'city' => array_key_exists('city', $arrayRow) ? $row['city'] : null,
+                'state' => array_key_exists('state', $arrayRow) ? $row['state'] : null,
+                'zip' => array_key_exists('zip', $arrayRow) ? $row['zip'] : null,
+                'client_id' => $this->client_id,
             ]);
 
             if (array_key_exists('poc_phone', $arrayRow)) {
