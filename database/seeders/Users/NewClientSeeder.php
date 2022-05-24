@@ -32,7 +32,7 @@ class NewClientSeeder extends Seeder
             $classification = Classification::whereClientId($client->id)->get();
 
             /** Collect all teams into an array that so everyone is on every team */
-            $team_ids = $client->teams()->pluck('value');
+            $team_ids = $client->teams()->pluck('id');
             $teams = Team::whereIn('id', $team_ids)->get();
             $team_names = [];
             foreach ($teams as $team) {

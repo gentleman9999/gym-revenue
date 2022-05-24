@@ -2,8 +2,7 @@
 
 namespace App\Imports;
 
-use App\Actions\Clients\Locations\GenerateGymRevenueId;
-use App\Models\Clients\Location;
+use App\Actions\Clients\Locations\CreateLocation;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
@@ -19,16 +18,15 @@ class LocationsImport implements ToCollection
     public function collection(Collection|\Illuminate\Support\Collection $rows)
     {
         foreach ($rows as $row) {
-            $gr_id = GenerateGymRevenueId::run($this->client_id);
-            Location::create([
+            CreateLocation::run([
                 'client_id' => $this->client_id,
-                'gymrevenue_id' => $gr_id,
                 'name' => $row[0],
                 'location_no' => $row[1],
                 'city' => $row[2],
                 'state' => $row[3],
                 'zip' => $row[4],
                 'address1' => $row[5],
+                'shouldCreateTeam' => true,
             ]);
         }
     }

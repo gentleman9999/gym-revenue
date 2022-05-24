@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Actions\Jetstream\CreateTeam;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -510,20 +510,10 @@ class SecondaryTeamsSeeder extends Seeder
 
         foreach ($client_teams as $team) {
             VarDumper::dump($team['name']);
-            $associated_client = $team['client_id'];
-            unset($team['client_id']);
-            $new_team = Team::firstOrCreate($team);
-
-            //$user = User::whereId($team['user_id'])->with('associated_client')->first();
-            ClientDetail::firstorCreate([
-                'client_id' => $associated_client,
-                'detail' => 'team',
-                'value' => $new_team->id,
-                'active' => 1,
-            ]);
+            CreateTeam::run($team);
 
             UserAggregate::retrieve($team['user_id'])
-                ->addUserToTeam($new_team->id, $new_team->name, $associated_client)
+                ->addUserToTeam($new_team->id, $new_team->name, $team['client_id'])
                 ->persist();
         }
     }

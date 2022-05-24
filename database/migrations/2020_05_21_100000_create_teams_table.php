@@ -16,6 +16,7 @@ class CreateTeamsTable extends Migration
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->index();
+            $table->uuid('client_id')->index()->nullable();
             $table->string('name');
             $table->boolean('personal_team')->default(0);
             $table->boolean('default_team')->default(0);

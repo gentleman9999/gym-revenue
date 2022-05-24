@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Clients\Client;
 use App\Models\Clients\ClientDetail;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,10 +33,12 @@ class Team extends JetstreamTeam
      * @var string[]
      */
     protected $fillable = [
+        'id',
         'user_id',
         'name',
         'personal_team',
         'default_team',
+        'client_id',
     ];
 
     /**
@@ -145,12 +148,10 @@ class Team extends JetstreamTeam
     {
         $results = null;
 
-        $model = ClientDetail::whereDetail('team')
-            ->whereValue($team_id)->with('client')
-            ->first();
+        $model = self::select('name')->whereId($team_id)->first();
 
         if (! is_null($model)) {
-            $results = $model->client;
+            $results = $model->client_id;
         }
 
         return $results;
@@ -167,5 +168,10 @@ class Team extends JetstreamTeam
 //            ->withPivot('role')
             ->withTimestamps()
             ->as('membership');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 }

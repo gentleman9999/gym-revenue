@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -100,9 +99,7 @@ class User extends Authenticatable
 
     public function currentClientId()
     {
-        $detail = ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first();
-
-        return is_null($detail) ? null : $detail->client_id;
+        return is_null($this->currentTeam->client) ? null : $this->currentTeam->client->id;
     }
 
     public function isClientUser()

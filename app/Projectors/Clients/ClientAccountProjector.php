@@ -2,7 +2,6 @@
 
 namespace App\Projectors\Clients;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\ClientBillableActivity;
 use App\Models\Clients\ClientDetail;
@@ -19,6 +18,7 @@ use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplateDetails;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Team;
+use App\Models\TeamDetail;
 use App\Models\User;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
@@ -44,37 +44,33 @@ use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
-use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use App\StorableEvents\Clients\PrefixCreated;
+use App\StorableEvents\Clients\Teams\ClientTeamCreated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientAccountProjector extends Projector
 {
-    public function onDefaultClientTeamCreated(DefaultClientTeamCreated $event)
+    public function onClientTeamCreated(ClientTeamCreated $event)
     {
-        $default_team_name = $event->team;
+        $team = Team::findOrFail($event->payload['id']);
 
-        $team = Team::create([
-            'user_id' => 1,
-            'name' => $default_team_name,
-            'personal_team' => 0,
-            'default_team' => 1,
-        ]);
-        ClientDetail::create([
-            'client_id' => $event->client,
-            'detail' => 'default-team',
-            'value' => $team->id,
-        ]);
-        ClientDetail::create([
-            'client_id' => $event->client,
-            'detail' => 'team',
-            'value' => $team->id,
-        ]);
+        $isDefaultTeam = $event->payload['default_team'] ?? false;
 
-        ClientAggregate::retrieve($event->client)
-            ->addTeam($team->id, $default_team_name)
-            ->addCapeAndBayAdminsToTeam($team->id)
-            ->persist();
+        if ($isDefaultTeam) {
+            ClientDetail::create([
+                'client_id' => $event->client,
+                'detail' => 'default-team',
+                'value' => $team->id,
+            ]);
+        }
+        foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
+            TeamDetail::create(['team_id' => $team->id, 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
+        }
+//        ClientDetail::create([
+//            'client_id' => $event->client,
+//            'detail' => 'team',
+//            'value' => $team->id,
+//        ]);
     }
 
     public function onPrefixCreated(PrefixCreated $event)
