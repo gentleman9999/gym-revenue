@@ -494,9 +494,7 @@ export default {
 
             console.log("Lead Owner", lead);
 
-            leadData.agreement_number = lead.details_desc.find(
-                (detail) => detail.field === "agreement_number"
-            ).value;
+            leadData.agreement_number = lead.agreement_number;
             leadData.middle_name =
                 "middle_name" in lead && lead.middle_name !== null
                     ? lead.middle_name.value

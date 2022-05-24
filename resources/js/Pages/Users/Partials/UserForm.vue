@@ -490,24 +490,11 @@ export default {
                 "alt_email" in user && user["alt_email"] !== null
                     ? user["alt_email"].value ?? ""
                     : "";
-            user.address1 =
-                "address1" in user && user["address1"] !== null
-                    ? user["address1"].value
-                    : "";
-            user.address2 =
-                "address2" in user && user["address2"] !== null
-                    ? user["address2"].value
-                    : "";
-            user.city =
-                "city" in user && user["city"] !== null
-                    ? user["city"].value
-                    : "";
-            user.state =
-                "state" in user && user["state"] !== null
-                    ? user["state"].value
-                    : "";
-            user.zip =
-                "zip" in user && user["zip"] !== null ? user["zip"].value : "";
+            user.address1 = user["address1"];
+            user.address2 = user["address2"];
+            user.city = user["city"];
+            user.state = user["state"];
+            user.zip = user["zip"];
             user.jobTitle =
                 "job_title" in user && user["job_title"] !== null
                     ? user["job_title"].value
@@ -516,7 +503,7 @@ export default {
                 "home_club" in user && user["home_club"] !== null
                     ? user["home_club"].value
                     : "";
-            user.phone = phone;
+            user.phone = user["phone"];
             user.start_date =
                 "start_date" in user && user["start_date"] !== null
                     ? user["start_date"].value ?? ""

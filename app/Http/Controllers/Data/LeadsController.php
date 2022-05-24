@@ -74,6 +74,17 @@ class LeadsController extends Controller
                 ->appends(request()->except('page'));
         }
 
+        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
+        //MUST FIX BY DEMO 6/15/22
+        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
+        if ($request->get('sort') != '') {
+            if ($request->get('dir') == 'DESC') {
+                $sortedResult = $prospects->getCollection()->sortByDesc($request->get('sort'))->values();
+            } else {
+                $sortedResult = $prospects->getCollection()->sortBy($request->get('sort'))->values();
+            }
+            $prospects->setCollection($sortedResult);
+        }
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
