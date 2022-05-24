@@ -22,7 +22,7 @@ class UsersImport implements ToCollection
         $client = Client::with('teams')->find($this->client_id);
         $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
         $team_ids = $client->teams()->pluck('id');
-        ;
+
         foreach ($rows as $row) {
             CreateUser::run([
                 'first_name' => $row[0],
