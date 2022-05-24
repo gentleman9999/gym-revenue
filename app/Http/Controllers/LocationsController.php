@@ -83,13 +83,12 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
+        $location = Location::findOrFail($id);
+
         $locationDetails = LocationDetails::where('location_id', $id)->get();
-        $phone = $poc_first = $poc_last = $poc_phone = $opendate = $closedate = '';
+        $poc_first = $poc_last = $poc_phone = '';
 
         foreach ($locationDetails as $locationitems) {
-            if ($locationitems->field == 'phone') {
-                $phone = $locationitems->value;
-            }
             if ($locationitems->field == 'poc_first') {
                 $poc_first = $locationitems->value;
             }
@@ -99,22 +98,13 @@ class LocationsController extends Controller
             if ($locationitems->field == 'poc_phone') {
                 $poc_phone = $locationitems->value;
             }
-            if ($locationitems->field == 'open_date') {
-                $opendate = $locationitems->value;
-            }
-            if ($locationitems->field == 'close_date') {
-                $closedate = $locationitems->value;
-            }
         }
 
         return Inertia::render('Locations/Edit', [
-            'location' => Location::find($id),
-            'phone' => $phone,
+            'location' => $location,
             'poc_first' => $poc_first,
             'poc_last' => $poc_last,
             'poc_phone' => $poc_phone,
-            'opendate' => $opendate,
-            'closedate' => $closedate,
         ]);
     }
 
@@ -208,12 +198,9 @@ class LocationsController extends Controller
         }
 
         $locationDetails = LocationDetails::where('location_id', $id)->get();
-        $phone = $poc_first = $poc_last = $poc_phone = $opendate = $closedate = '';
+        $poc_first = $poc_last = $poc_phone = '';
 
         foreach ($locationDetails as $locationitems) {
-            if ($locationitems->field == 'phone') {
-                $phone = $locationitems->value;
-            }
             if ($locationitems->field == 'poc_first') {
                 $poc_first = $locationitems->value;
             }
@@ -223,21 +210,12 @@ class LocationsController extends Controller
             if ($locationitems->field == 'poc_phone') {
                 $poc_phone = $locationitems->value;
             }
-            if ($locationitems->field == 'open_date') {
-                $opendate = $locationitems->value;
-            }
-            if ($locationitems->field == 'close_date') {
-                $closedate = $locationitems->value;
-            }
         }
 
         $data = Location::findOrFail($id)->toArray();
-        $data['phone'] = $phone;
         $data['poc_first'] = $poc_first;
         $data['poc_last'] = $poc_last;
         $data['poc_phone'] = $poc_phone;
-        $data['opendate'] = $opendate;
-        $data['closedate'] = $closedate;
 
         return $data;
     }

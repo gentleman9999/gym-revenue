@@ -36,7 +36,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'id', 'name', 'email', 'password', 'first_name', 'last_name',
+        'id', 'name', 'email', 'password', 'first_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zip', 'phone',
     ];
 
     /**
@@ -149,44 +149,9 @@ class User extends Authenticatable
         return $this->hasMany(File::class, 'user_id', 'id');
     }
 
-    public function phone()
-    {
-        return $this->detail()->where('name', '=', 'phone');
-    }
-
-    public function phone_number()
-    {
-        return $this->detail()->where('name', '=', 'phone');
-    }
-
     public function altEmail()
     {
         return $this->detail()->where('name', '=', 'altEmail');
-    }
-
-    public function address1()
-    {
-        return $this->detail()->where('name', '=', 'address1');
-    }
-
-    public function address2()
-    {
-        return $this->detail()->where('name', '=', 'address2');
-    }
-
-    public function city()
-    {
-        return $this->detail()->where('name', '=', 'city');
-    }
-
-    public function state()
-    {
-        return $this->detail()->where('name', '=', 'state');
-    }
-
-    public function zip()
-    {
-        return $this->detail()->where('name', '=', 'zip');
     }
 
     public function jobTitle()
@@ -261,10 +226,16 @@ class User extends Authenticatable
 
     public function scopeFilter($query, array $filters)
     {
-        $stop = 0;
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('address1', 'like', '%' . $search . '%')
+                    ->orWhere('address2', 'like', '%' . $search . '%')
+                    ->orWhere('city', 'like', '%' . $search . '%')
+                    ->orWhere('state', 'like', '%' . $search . '%')
+                    ->orWhere('zip', 'like', '%' . $search . '%');
             });
         })->when($filters['club'] ?? null, function ($query, $club_id) {
             $query->whereHas('teams', function ($query) use ($club_id) {
