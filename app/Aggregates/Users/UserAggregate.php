@@ -25,6 +25,7 @@ use App\StorableEvents\Users\Reminder\ReminderUpdated;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
+use App\StorableEvents\Users\UserImported;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use App\StorableEvents\Users\WelcomeEmailSent;
@@ -215,6 +216,13 @@ class UserAggregate extends AggregateRoot
     public function createUser(string $created_by_user_id, array $payload)
     {
         $this->recordThat(new UserCreated($this->uuid(), $created_by_user_id, $payload));
+
+        return $this;
+    }
+
+    public function importUser(string $created_by_user_id, string $key, string $client)
+    {
+        $this->recordThat(new UserImported($this->uuid(), $created_by_user_id, $key, $client));
 
         return $this;
     }

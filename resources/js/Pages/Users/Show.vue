@@ -9,6 +9,7 @@
             :fields="fields"
             :resource="users"
             :actions="actions"
+            :top-actions="topActions"
             :preview-component="UserPreview"
         >
             <template #filter>
@@ -92,6 +93,14 @@
             Are you sure you want to delete user '{{ confirmDelete.name }}'?
             This action is permanent, and cannot be undone.
         </confirm>
+
+        <daisy-modal
+            ref="importUser"
+            id="importUser"
+            class="lg:max-w-5xl bg-base-300"
+        >
+            <file-manager @submitted="closeModals" />
+        </daisy-modal>
     </app-layout>
 </template>
 
@@ -110,6 +119,8 @@ import UserPreview from "@/Pages/Users/Partials/UserPreview";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
+import DaisyModal from "@/Components/DaisyModal";
+import FileManager from "./Partials/FileManager";
 
 export default defineComponent({
     components: {
@@ -122,6 +133,8 @@ export default defineComponent({
         PageToolbarNav,
         UserPreview,
         Multiselect,
+        DaisyModal,
+        FileManager,
     },
     props: [
         "users",
@@ -135,9 +148,6 @@ export default defineComponent({
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
-        console.log("page.props.value.users", page.props.value.users);
-        console.log("teamId", teamId.value);
-        console.log("abilities", abilities.value);
 
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             "users",
@@ -153,6 +163,15 @@ export default defineComponent({
         const handleConfirmDelete = () => {
             Inertia.delete(route("users.delete", confirmDelete.value.id));
             confirmDelete.value = null;
+        };
+
+        const importUser = ref();
+        const handleClickImport = () => {
+            importUser.value.open();
+        };
+
+        const closeModals = () => {
+            importUser.value.close();
         };
 
         let fields = [
@@ -196,11 +215,6 @@ export default defineComponent({
                 "home_team",
             ];
         }
-
-        // const shouldShowDelete = ({ data }) => {
-        //     console.log({ability: abilities.value.includes("users.delete")});
-        //     abilities.value["users.delete"]
-        // }
 
         const shouldShowDelete = ({ data }) =>
             (abilities.value.includes("users.delete") ||
@@ -253,6 +267,14 @@ export default defineComponent({
             });
         }
 
+        const topActions = {
+            import: {
+                label: "Import",
+                handler: handleClickImport,
+                class: "btn-primary",
+            },
+        };
+
         return {
             confirmDelete,
             fields,
@@ -266,6 +288,10 @@ export default defineComponent({
             navLinks,
             UserPreview,
             multiselectClasses: getDefaultMultiselectTWClasses(),
+            topActions,
+            handleClickImport,
+            importUser,
+            closeModals,
         };
     },
 });

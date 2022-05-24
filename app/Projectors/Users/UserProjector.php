@@ -2,7 +2,10 @@
 
 namespace App\Projectors\Users;
 
+use App\Imports\UsersImport;
+use App\Imports\UsersImportWithHeader;
 use App\Models\Clients\Client;
+use App\Models\Clients\Location;
 use App\Models\Note;
 use App\Models\Notification;
 use App\Models\Tasks;
@@ -17,11 +20,14 @@ use App\StorableEvents\Users\Notifications\NotificationCreated;
 use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
+use App\StorableEvents\Users\UserImported;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\UserUpdated;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -137,6 +143,16 @@ class UserProjector extends Projector
                 $team->users()->attach($user);
             }
         });
+    }
+
+    public function onUserImported(UserImported $event)
+    {
+        $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        if (in_array($headings[0][0][0], (new Location())->getFillable())) {
+            Excel::import(new UsersImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        } else {
+            Excel::import(new UsersImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        }
     }
 
     public function onUserUpdated(UserUpdated $event)
