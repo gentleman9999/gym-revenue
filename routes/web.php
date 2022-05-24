@@ -173,7 +173,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
-    Route::post('/', \App\Actions\Clients\Locations\ImportLocation::class)->name('users.import');
+    Route::post('/', \App\Actions\Fortify\ImportUser::class)->name('users.import');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit')->where(['id' => '[0-9]+']);
     Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view')->where(['id' => '[0-9]+']);
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update')->where(['id' => '[0-9]+']);

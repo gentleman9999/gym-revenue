@@ -212,7 +212,7 @@ const allFiles = computed(() =>
 const formSubmitOptions = props?.formSubmitOptions || {};
 
 const handleSubmit = () => {
-    Inertia.post(route("locations.import"), allFiles.value, {
+    Inertia.post(route("users.import"), allFiles.value, {
         onSuccess: () => {
             emit("submitted");
             form.reset();
