@@ -220,7 +220,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = User::with('details', 'teams', 'phone_number', 'files', 'classification')->findOrFail($id); //User we're peeking
+        $user = User::with('details', 'teams', 'files', 'classification')->findOrFail($id); //User we're peeking
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRole();
@@ -229,9 +229,7 @@ class UsersController extends Controller
             $data['classification']['value'] = Classification::whereId($data['classification']['value'])->first()->title;
         }
 
-        if ($user->phone_number) { //Not totally sure this is necessary atm
-            $data['phone'] = $user->phone_number->value;
-        }
+
 
         $requesting_user_teams = $requesting_user->teams ?? [];
         $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
