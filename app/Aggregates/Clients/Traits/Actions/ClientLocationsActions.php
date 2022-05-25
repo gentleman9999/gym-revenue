@@ -4,8 +4,8 @@ namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\StorableEvents\Clients\Locations\LocationCreated;
 use App\StorableEvents\Clients\Locations\LocationDeleted;
-use App\StorableEvents\Clients\Locations\LocationImported;
 use App\StorableEvents\Clients\Locations\LocationRestored;
+use App\StorableEvents\Clients\Locations\LocationsImported;
 use App\StorableEvents\Clients\Locations\LocationTrashed;
 use App\StorableEvents\Clients\Locations\LocationUpdated;
 
@@ -20,7 +20,7 @@ trait ClientLocationsActions
 
     public function importLocation(string $created_by_user_id, $key)
     {
-        $this->recordThat(new LocationImported($this->uuid(), $created_by_user_id, $key));
+        $this->recordThat(new LocationsImported($this->uuid(), $created_by_user_id, $key));
 
         return $this;
     }

@@ -4,7 +4,7 @@ namespace App\StorableEvents\Users;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class UserImported extends ShouldBeStored
+class UsersImported extends ShouldBeStored
 {
     public $id;
     public $user;
