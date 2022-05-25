@@ -4,7 +4,6 @@ namespace App\Imports;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
-use App\Models\Clients\LocationDetails;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -44,15 +43,6 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 'zip' => array_key_exists('zip', $arrayRow) ? $row['zip'] : null,
                 'client_id' => $this->client_id,
             ]);
-
-            if (array_key_exists('poc_phone', $arrayRow)) {
-                LocationDetails::create([
-                    'location_id' => $location->id,
-                    'client' => $this->client_id,
-                    'field' => 'poc_phone',
-                    'value' => $row['poc_phone'],
-                ]);
-            }
         }
     }
 }
