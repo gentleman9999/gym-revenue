@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -26,6 +27,10 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
 
         foreach ($rows as $row) {
             $arrayRow = $row->toArray();
+
+            if (! is_null(User::whereEmail($row['email'])->first())) {
+                continue;
+            }
 
             $location = CreateUser::run([
                 'first_name' => $row['first_name'],

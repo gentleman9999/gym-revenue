@@ -2,13 +2,18 @@
 
 namespace App\Reactors\Users;
 
+use App\Imports\UsersImport;
+use App\Imports\UsersImportWithHeader;
 use App\Mail\Users\NewUserWelcomeEmail;
 use App\Models\User;
 use App\Notifications\GymRevNotification;
 use App\StorableEvents\Users\Notifications\NotificationCreated;
+use App\StorableEvents\Users\UserImported;
 use App\StorableEvents\Users\WelcomeEmailSent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class UserReactor extends Reactor implements ShouldQueue
@@ -27,6 +32,16 @@ class UserReactor extends Reactor implements ShouldQueue
 
         if ($user->contact_preference->value == 'sms') {
         } else {
+        }
+    }
+
+    public function onUserImported(UserImported $event)
+    {
+        $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        if (in_array($headings[0][0][0], (new User())->getFillable())) {
+            Excel::import(new UsersImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+        } else {
+            Excel::import(new UsersImport($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         }
     }
 }
