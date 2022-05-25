@@ -24,7 +24,7 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
         $client = Client::with('teams')->find($this->client_id);
         $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
         $team_ids = $client->teams()->pluck('id');
-        ;
+
         foreach ($rows as $row) {
             $arrayRow = $row->toArray();
 
