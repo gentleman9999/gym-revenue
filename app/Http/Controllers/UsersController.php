@@ -129,11 +129,10 @@ class UsersController extends Controller
         // Get the user's currently accessed team for scoping
         $current_team = $user->currentTeam()->first();
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
-        $client_detail = $current_team->client_details()->first();
         // CnB Client-based data is not present in the DB and thus the details could be empty.
-        $client = (! is_null($client_detail)) ? $client_detail->client()->first() : null;
+        $client = $current_team->client;
         // IF we got details, we got the client name, otherwise its Cape & Bay
-        $client_name = (! is_null($client_detail)) ? $client->name : 'Cape & Bay';
+        $client_name = (! is_null($client)) ? $client->name : 'Cape & Bay';
 
         $client_id = request()->user()->currentClientId();
 
