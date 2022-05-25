@@ -10,10 +10,9 @@ class ReportsDashboardController extends Controller
     {
         $user = auth()->user();
         $team = $user->currentTeam;
-        $client_detail = $team->client_details()->first();
         $team_name = $team->name;
 
-        if (! is_null($client_detail)) {
+        if (! is_null($team->client)) {
 //            $widgets = $this->service->getDashboardWidgets();
 
             return Inertia::render(
@@ -33,14 +32,13 @@ class ReportsDashboardController extends Controller
     {
         $user = auth()->user();
         $team = $user->currentTeam;
-        $client_detail = $team->client_details()->first();
         $team_name = $team->name;
 
         if (! $type) {
             abort(404);
         }
 
-        if (! is_null($client_detail)) {
+        if (! is_null($team->client)) {
 //            $widgets = $this->service->getDashboardWidgets();
 
             return Inertia::render(

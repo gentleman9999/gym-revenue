@@ -23,14 +23,14 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $team = $user->currentTeam;
-        $client_detail = $team->client_details()->first();
+        $client = $team->client;
         $announcements = [];
         $team_name = $team->name;
         $vue = 'Dashboard';
 
-        if (! is_null($client_detail)) {
-            $clients = collect([$client_detail->client->toArray()]);
-            $account = $client_detail->client->name;
+        if (! is_null($client)) {
+            $clients = collect([$client]);
+            $account = $client->name;
             $widgets = $this->service->getDashboardWidgets();
             if ($user->inSecurityGroup(SecurityGroupEnum::ADMIN, SecurityGroupEnum::ACCOUNT_OWNER, SecurityGroupEnum::REGIONAL_ADMIN)) {
                 $vue = 'Dashboards/AccountAdminDashboard';

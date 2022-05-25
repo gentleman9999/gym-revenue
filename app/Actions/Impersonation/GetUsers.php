@@ -57,8 +57,7 @@ class GetUsers
 
         // If the team is a default_team, then get all users for that client
         if ($current_team->default_team) {
-            $client_detail = $current_team->client_details()->first();
-            if (is_null($client_detail)) {
+            if (is_null($current_team->client)) {
                 // This is a CnB Team
                 $imp_users = User::all();
                 foreach ($imp_users as $imp_user) {
@@ -68,7 +67,7 @@ class GetUsers
                 }
             } else {
                 // This is a client team
-                $client = $client_detail->client;
+                $client = $current_team->client;
                 $user_details = UserDetails::where('name', '=', 'associated_client')
                     ->whereValue($client->id)->with('user')->whereActive(1)
                     ->get();

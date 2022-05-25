@@ -62,13 +62,6 @@ class Team extends JetstreamTeam
         return $this->hasOne('App\Models\TeamDetail', 'team_id', 'id');
     }
 
-    public function client_details()
-    {
-        return $this->hasMany(ClientDetail::class, 'value', 'id')
-            ->where('detail', '=', 'team')
-            ->with('client');
-    }
-
     public function locations()
     {
         return $this->details()->whereName('team-location');
