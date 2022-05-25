@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Actions\Fortify\CreateUser;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,7 +21,6 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
 
     public function collection(Collection|\Illuminate\Support\Collection $rows)
     {
-        $client = Client::with('teams')->find($this->client_id);
         $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
 
         foreach ($rows as $row) {
