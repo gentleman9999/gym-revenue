@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Actions\Fortify\CreateUser;
 use App\Models\Clients\Client;
+use App\Models\Clients\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -23,7 +24,6 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
     {
         $client = Client::with('teams')->find($this->client_id);
         $roles = Role::whereScope($this->client_id)->whereTitle('Employee')->first();
-        $team_ids = $client->teams()->pluck('id');
 
         foreach ($rows as $row) {
             $arrayRow = $row->toArray();
@@ -32,11 +32,16 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 continue;
             }
 
-            if (! array_key_exists('location_no', $arrayRow)) {
-                continue;
+            $team_ids = [];
+            if (array_key_exists('location_no', $arrayRow)) {
+                $location = Location::whereLocationNo($row['location_no'])->first();
+                if (! $location) {
+                    continue;
+                }
+                $team_ids[] = $location->defaultTeam->id;
             }
 
-            $location = CreateUser::run([
+            CreateUser::run([
                 'first_name' => $row['first_name'],
                 'last_name' => $row['last_name'],
                 'email' => $row['email'],

@@ -25,7 +25,7 @@ class CreateLocation
             'name' => ['required', 'max:50'],
             'city' => ['required', 'max:30'],
             'state' => ['required', 'size:2'],
-            'client_id' => ['required'],
+            'client_id' => ['required', 'exists:clients,id'],
             'address1' => ['required','max:200'],
             'address2' => [],
             'zip' => ['required', 'size:5'],
@@ -34,8 +34,9 @@ class CreateLocation
             'poc_phone' => [],
             'open_date' => [],
             'close_date' => [],
-            'location_no' => ['required', 'max:50'],
-            'gymrevenue_id' => [],
+            'location_no' => ['required', 'max:50', 'exists:locations,location_no'],
+            'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
+            'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
         ];
     }
 

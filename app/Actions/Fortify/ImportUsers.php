@@ -9,7 +9,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class ImportUser
+class ImportUsers
 {
     use AsAction;
 
@@ -18,7 +18,7 @@ class ImportUser
         $result = false;
         foreach ($data as $item) {
             if ($item['extension'] === 'csv') {
-                UserAggregate::retrieve($current_user->id)->importUser($current_user->id ?? "Auto Generated", $item['key'], $current_user->currentClientId())->persist();
+                UserAggregate::retrieve($current_user->id)->importUsers($current_user->id ?? "Auto Generated", $item['key'], $current_user->currentClientId())->persist();
                 $result = true;
             } else {
                 Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
