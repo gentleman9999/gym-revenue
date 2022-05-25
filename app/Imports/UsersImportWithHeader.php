@@ -32,6 +32,10 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 continue;
             }
 
+            if (! array_key_exists('location_no', $arrayRow)) {
+                continue;
+            }
+
             $location = CreateUser::run([
                 'first_name' => $row['first_name'],
                 'last_name' => $row['last_name'],
