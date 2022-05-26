@@ -1,9 +1,9 @@
 <template>
     <div class="flex w-1/3 px-3">
-        <kpi-card class="kpi-card w-full" label="Category 1">
-            <div class="flex flex-row justify-between items-end mb-3">
+        <kpi-card class="kpi-card w-full" label="Category 3">
+            <div class="flex flex-row justify-between items-end">
                 <div class="text-secondary text-lg text-bold">
-                    Revenue Per Member Overall
+                    Personal Training
                 </div>
                 <div class="flex flex-row space-x-2 cursor-pointer">
                     <favorite-btn
@@ -15,25 +15,25 @@
                     </span>
                 </div>
             </div>
+            <div class="font-bold text-white text-sm mb-3">
+                Recurring Services Revenue Per Member
+            </div>
             <div class="w-full">
-                <revenue-chart />
+                <training-chart />
             </div>
             <div class="card-footer">
-                <button-tabs
-                    :items="buttons"
-                    :activeIndex="activeIndex"
-                    :onChange="setActive"
-                />
-
-                <div class="flex flex-row pl-6 mt-4 justify-between">
+                <div class="flex flex-col mt-4 justify-between">
                     <div class="space-x-2.5">
-                        <span class="text-secondary text-base">Total:</span>
-                        <span class="text-lg text-white">$4,895</span>
+                        <span class="text-secondary text-base"
+                            >Overall PT Units:</span
+                        >
+                        <span class="text-lg text-white">9,347</span>
                     </div>
-                    <div
-                        class="flex items-center text-white bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
-                    >
-                        Detail
+                    <div class="space-x-2.5">
+                        <span class="text-secondary text-base"
+                            >Overall PT $ Amount:</span
+                        >
+                        <span class="text-lg text-white">$156,098</span>
                     </div>
                 </div>
             </div>
@@ -50,19 +50,12 @@
 </style>
 <script setup>
 import { ref } from "vue";
-import RevenueChart from "./RevenueChart";
+import TrainingChart from "./TrainingChart";
 import FavoriteBtn from "@/Components/FavoriteBtn";
-import ButtonTabs from "@/Components/ButtonTabs.vue";
 import KpiCard from "@/Components/Card.vue";
 
 const isFavorite = ref(false);
 const toggleFavorite = (value) => {
     isFavorite.value = value;
 };
-const activeIndex = ref(0);
-const setActive = (value) => {
-    activeIndex.value = value;
-};
-
-const buttons = ["Membership", "Personal Training", "Retail Sales"];
 </script>

@@ -4,6 +4,7 @@
             v-for="(item, index) in items"
             :key="index"
             :class="getClassName(index)"
+            @click="activeTab = index"
         >
             {{ item }}
         </div>
@@ -11,6 +12,8 @@
 </template>
 <style scoped></style>
 <script setup>
+import { computed } from "@vue/reactivity";
+
 const props = defineProps({
     items: {
         type: Array,
@@ -20,8 +23,21 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    onChange: {
+        type: Function,
+        default: (ndx) => null,
+    },
 });
 const getClassName = (ndx) =>
     "text-white cursor-pointer p-1 rounded " +
     (ndx === props.activeIndex ? "bg-secondary" : "hover:text-secondary");
+
+const activeTab = computed({
+    get() {
+        return props.activeIndex;
+    },
+    set(value) {
+        props.onChange(value);
+    },
+});
 </script>

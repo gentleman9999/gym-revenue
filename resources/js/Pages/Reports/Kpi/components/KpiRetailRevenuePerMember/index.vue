@@ -1,34 +1,31 @@
 <template>
     <div class="flex w-1/3 px-3">
-        <kpi-card class="kpi-card w-full" label="Category 2">
-            <div class="flex flex-row justify-between items-center mb-3">
+        <kpi-card class="kpi-card w-full">
+            <div class="flex flex-row justify-between items-end mb-3">
                 <div class="text-secondary text-lg text-bold">
-                    Membership Revenue Per Member
+                    Retail Revenue Per Member
                 </div>
                 <div class="flex flex-row space-x-2 cursor-pointer">
+                    <favorite-btn
+                        :value="isFavorite"
+                        :onChange="toggleFavorite"
+                    />
                     <span class="flex items-center w-4">
                         <img src="/img/arrow-up.svg" />
                     </span>
                 </div>
             </div>
             <div class="w-full">
-                <membership-chart />
+                <retail-chart />
             </div>
             <div class="card-footer">
-                <div class="mt-2">
-                    <button-tabs
-                        :items="buttons"
-                        :activeIndex="activeIndex"
-                        :onChange="setActive"
-                    />
-                </div>
-                <div class="flex flex-row mt-4 justify-between">
-                    <div class="space-x-2.5">
-                        <span class="text-secondary text-base"
-                            >Overall Membership:</span
-                        >
-                        <span class="text-lg text-white">82,348</span>
-                    </div>
+                <button-tabs
+                    :items="buttons"
+                    :activeIndex="activeIndex"
+                    :onChange="setActive"
+                />
+
+                <div class="flex flex-row pl-6 mt-4 justify-end">
                     <div
                         class="flex items-center text-white bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
                     >
@@ -49,7 +46,8 @@
 </style>
 <script setup>
 import { ref } from "vue";
-import MembershipChart from "./MembershipChart";
+import RetailChart from "./RetailChart";
+import FavoriteBtn from "@/Components/FavoriteBtn";
 import ButtonTabs from "@/Components/ButtonTabs.vue";
 import KpiCard from "@/Components/Card.vue";
 
@@ -57,11 +55,10 @@ const isFavorite = ref(false);
 const toggleFavorite = (value) => {
     isFavorite.value = value;
 };
-
 const activeIndex = ref(0);
 const setActive = (value) => {
     activeIndex.value = value;
 };
 
-const buttons = ["Memberships", "Annual Fees", "Retail Sales"];
+const buttons = ["Subject", "Subject", "Subject", "Subject"];
 </script>

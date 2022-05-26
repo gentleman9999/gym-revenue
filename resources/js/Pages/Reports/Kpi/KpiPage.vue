@@ -1,9 +1,12 @@
 <template>
     <app-layout>
         <template #header> KPI </template>
-        <div class="flex flex-row justify-between">
+        <div class="flex flex-row flex-wrap">
             <kpi-revenue-per-member-overall />
             <kpi-membership-revenue-per-member />
+            <kpi-personal-training />
+            <kpi-retail-revenue-per-member />
+            <kpi-membership />
         </div>
         <jet-bar-container> </jet-bar-container>
     </app-layout>
@@ -15,6 +18,9 @@ import AppLayout from "@/Layouts/AppLayout";
 import JetBarContainer from "@/Components/JetBarContainer";
 import KpiRevenuePerMemberOverall from "./components/KpiRevenuePerMemberOverall";
 import KpiMembershipRevenuePerMember from "./components/KpiMembershipRevenuePerMember";
+import KpiPersonalTraining from "./components/KpiPersonalTraining";
+import KpiRetailRevenuePerMember from "./components/KpiRetailRevenuePerMember";
+import KpiMembership from "./components/KpiMembership";
 
 export default defineComponent({
     components: {
@@ -22,6 +28,9 @@ export default defineComponent({
         JetBarContainer,
         KpiRevenuePerMemberOverall,
         KpiMembershipRevenuePerMember,
+        KpiPersonalTraining,
+        KpiRetailRevenuePerMember,
+        KpiMembership,
     },
 });
 </script>

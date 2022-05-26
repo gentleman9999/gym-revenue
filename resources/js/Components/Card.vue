@@ -23,7 +23,7 @@ const props = defineProps({
 });
 const derivedClass = computed({
     get() {
-        return `px-4 py-3 border border-secondary rounded-lg bg-neutral-900 relative ${
+        return `px-4 py-3 border border-secondary rounded-lg bg-neutral-900 relative mb-3 ${
             props.class
         } ${props.label ? "mt-9" : ""}`;
     },
