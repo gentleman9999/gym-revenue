@@ -28,7 +28,9 @@ class UnsubscribeLeadFromComms
 
     public function handle($id)
     {
-        LeadAggregate::retrieve($id)->unsubscribeToComms(Carbon::now())->persist();
+        LeadAggregate::retrieve($id)->unsubscribeFromComms(Carbon::now())->persist();
+
+        return Lead::findOrFail($id);
     }
 
 //    public function authorize(ActionRequest $request): bool

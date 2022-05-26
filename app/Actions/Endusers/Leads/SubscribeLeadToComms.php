@@ -29,6 +29,8 @@ class SubscribeLeadToComms
     public function handle($id)
     {
         LeadAggregate::retrieve($id)->subscribeToComms(Carbon::now())->persist();
+
+        return Lead::findOrFail($id);
     }
 
 //    public function authorize(ActionRequest $request): bool

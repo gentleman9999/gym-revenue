@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Actions\Endusers\Leads\SubscribeLeadToComms;
+use App\Actions\Endusers\Leads\UnsubscribeLeadFromComms;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Http\Controllers\Controller;
@@ -707,5 +709,21 @@ class LeadsController extends Controller
         }
 
         return $prospects;
+    }
+
+    public function communicationPreferences(Request $request, Lead $lead)
+    {
+        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead]);
+    }
+
+    public function updateCommunicationPreferences(Request $request, Lead $lead)
+    {
+        if ($request->subscribe) {
+            $lead = SubscribeLeadToComms::run($lead->id);
+        } else {
+            $lead = UnsubscribeLeadFromComms::run($lead->id);
+        }
+
+        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
     }
 }

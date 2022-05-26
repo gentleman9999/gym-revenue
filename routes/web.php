@@ -262,3 +262,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reports')->group(functi
 Route::prefix('s')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
 });
+
+//since this is for endusers to opt in/out of communications, we don't want to load up the CRM App bundle
+Route::prefix('/communication-preferences')->group(function () {
+    Route::get('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@communicationPreferences')->name('comms-prefs');
+    Route::post('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateCommunicationPreferences')->name('comms-prefs.update');
+});
