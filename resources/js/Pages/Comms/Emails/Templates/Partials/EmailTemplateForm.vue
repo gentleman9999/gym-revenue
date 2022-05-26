@@ -141,6 +141,7 @@ export default {
     },
     props: ["clientId", "template", "canActivate"],
     setup(props, context) {
+        console.log("process.env", process.env);
         const modal = ref(null);
         let template = props.template;
         let operation = "Update";
@@ -178,11 +179,29 @@ export default {
             //this could be cool to add in a clients plans. we just need to hide it until we know how to
             //tap into the API to pull in the plans
             contentBlocks: {
-                product: {
-                    hidden: true,
-                },
+                // product: {
+                //     hidden: true,
+                // },
             },
             // savedBlocks: [],
+            api: {
+                // Your own endpoint for uploading images
+                IMAGE_UPLOAD: "/images/upload",
+                // Your own endpoint for getting contents of folders
+                FOLDERS: "/images/folder-contents",
+                // Your own endpoint to retrieve base64 image edited by Image Editor
+                IMAGE_EDITOR_UPLOAD: "/images/image-editor-upload",
+                // Create Autosave
+                // AUTOSAVE: "/autosave",
+                // Retreive all autosaves
+                // AUTOSAVES: "/autosaves",
+                // Retreive an autosave
+                // GET_AUTOSAVE: "/autosave/",
+                // Retrieve feeds of products
+                FEEDS: `${process.env.APP_URL}/feeds`,
+                // Retrieve products from feed
+                PRODUCTS: "/products",
+            },
             mergeTags: [
                 {
                     name: "Merge tags", // Group name
