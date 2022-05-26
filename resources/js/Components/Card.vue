@@ -45,8 +45,8 @@ const props = defineProps({
     options: {
         type: Object,
         default: {
-            collapse: true,
-            favorite: true,
+            collapse: false,
+            favorite: false,
         },
     },
 });

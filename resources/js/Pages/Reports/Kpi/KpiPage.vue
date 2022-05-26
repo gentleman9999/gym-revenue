@@ -7,6 +7,7 @@
             <kpi-personal-training />
             <kpi-retail-revenue-per-member />
             <kpi-membership />
+            <kpi-other-services />
         </div>
         <jet-bar-container> </jet-bar-container>
     </app-layout>
@@ -29,6 +30,7 @@ import KpiMembershipRevenuePerMember from "./components/KpiMembershipRevenuePerM
 import KpiPersonalTraining from "./components/KpiPersonalTraining";
 import KpiRetailRevenuePerMember from "./components/KpiRetailRevenuePerMember";
 import KpiMembership from "./components/KpiMembership";
+import KpiOtherServices from "./components/KpiOtherServices";
 
 export default defineComponent({
     components: {
@@ -39,6 +41,7 @@ export default defineComponent({
         KpiPersonalTraining,
         KpiRetailRevenuePerMember,
         KpiMembership,
+        KpiOtherServices,
     },
 });
 </script>
