@@ -32,6 +32,12 @@
                     />
                 </div>
             </div>
+
+            <TopolEditor
+                :options="customOptions"
+                @onSave="handleOnSave"
+            ></TopolEditor>
+
             <div class="col-span-6">
                 <div class="form-control">
                     <label for="template" class="label">Template Markup</label>
@@ -122,6 +128,7 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
+import { TopolEditor } from "@topol.io/editor-vue";
 
 export default {
     components: {
@@ -130,6 +137,7 @@ export default {
         JetFormSection,
         JetInputError,
         SweetModal,
+        TopolEditor,
     },
     props: ["clientId", "template", "canActivate"],
     setup(props, context) {
@@ -160,7 +168,94 @@ export default {
                 form.post(route("comms.email-templates.store"));
         }
 
-        return { form, buttonText: operation, handleSubmit, modal };
+        const customOptions = {
+            authorize: {
+                // apiKey: "DItrNa1tkR8lXPoTEKq8Mf6MFm2hessWJaCKlNMR0cQ9wmwq0QUuk0GBirAO",
+                apiKey: "r00uTVwXAIIXDJMrm3sAZQA6FTbhlKamkvY3KIID40fIrwoa8AXuEKpxY0dx",
+                userId: "philip",
+            },
+            windowBar: ["fullscreen", "close"],
+            //this could be cool to add in a clients plans. we just need to hide it until we know how to
+            //tap into the API to pull in the plans
+            contentBlocks: {
+                product: {
+                    hidden: true,
+                },
+            },
+            // savedBlocks: [],
+            mergeTags: [
+                {
+                    name: "Merge tags", // Group name
+                    items: [
+                        {
+                            value: "%%recipient.first_name%%", // Text to be inserted
+                            text: "First name", // Shown text in the menu
+                            label: "Customer's first name", // Shown description title in the menu
+                        },
+                        {
+                            value: "*|LAST_NAME|*",
+                            text: "Last name",
+                            label: "Customer's last name",
+                        },
+
+                        //Nested Merge Tags
+                        {
+                            name: "Some Group",
+                            items: [
+                                {
+                                    value: "*|FIRST_NAME_NESTED|*",
+                                    text: "First name 2",
+                                    label: "Customer's first name 2",
+                                },
+                                {
+                                    value: "*|LAST_NAME_NESTED|*",
+                                    text: "Last name 2",
+                                    label: "Customer's last name 2",
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    name: "Special links", // Group name
+                    items: [
+                        {
+                            value: '<a href="*|UNSUBSCRIBE_LINK|*">Unsubscribe</a>',
+                            text: "Unsubscribe",
+                            label: "Unsubscribe link",
+                        },
+                        {
+                            value: '<a href="*|WEB_VERSION_LINK|*">Web version</a>',
+                            text: "Web version",
+                            label: "Web version link",
+                        },
+                    ],
+                },
+                {
+                    name: "Special content", // Group name
+                    items: [
+                        {
+                            value: 'For more details, please visit our <a href="https://www.shop.shop">e-shop</a>!',
+                            text: "Visit our site",
+                            label: "Call to Action",
+                        },
+                    ],
+                },
+            ],
+        };
+
+        const handleOnSave = (args) => {
+            console.log("handleOnSave", args);
+        };
+
+        return {
+            form,
+            buttonText: operation,
+            handleSubmit,
+            modal,
+            customOptions,
+            handleOnSave,
+        };
     },
 };
 </script>
