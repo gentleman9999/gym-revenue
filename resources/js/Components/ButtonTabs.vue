@@ -3,7 +3,11 @@
         <div
             v-for="(item, index) in items"
             :key="index"
-            :class="getClassName(index)"
+            :class="{
+                'text-white cursor-pointer p-1 rounded': true,
+                'bg-secondary': index === props.activeIndex,
+                'hover:text-secondary': index !== props.activeIndex,
+            }"
             @click="activeTab = index"
         >
             {{ item }}
@@ -28,9 +32,6 @@ const props = defineProps({
         default: (ndx) => null,
     },
 });
-const getClassName = (ndx) =>
-    "text-white cursor-pointer p-1 rounded " +
-    (ndx === props.activeIndex ? "bg-secondary" : "hover:text-secondary");
 
 const activeTab = computed({
     get() {

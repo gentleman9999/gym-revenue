@@ -1,7 +1,20 @@
 <template>
-    <span :class="derivedClass" @click="isFavorite = !isFavorite">&#9733;</span>
+    <span
+        :class="{
+            'favorite-btn text-2xl': true,
+            'text-secondary': value,
+            'text-neutral-500': !value,
+        }"
+        @click="isFavorite = !isFavorite"
+    >
+        &#9733;
+    </span>
 </template>
-<style scoped></style>
+<style scoped>
+.favorite-btn {
+    user-select: none;
+}
+</style>
 <script setup>
 import { computed } from "@vue/reactivity";
 const props = defineProps({
@@ -20,13 +33,6 @@ const isFavorite = computed({
     },
     set(value) {
         props.onChange(value);
-    },
-});
-const derivedClass = computed({
-    get() {
-        return props.value
-            ? "text-2xl text-secondary"
-            : "text-2xl text-neutral-500";
     },
 });
 </script>

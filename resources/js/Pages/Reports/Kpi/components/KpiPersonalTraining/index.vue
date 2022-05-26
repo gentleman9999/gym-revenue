@@ -1,21 +1,15 @@
 <template>
-    <div class="flex w-1/3 px-3">
-        <kpi-card class="kpi-card w-full" label="Category 3">
-            <div class="flex flex-row justify-between items-end">
-                <div class="text-secondary text-lg text-bold">
-                    Personal Training
-                </div>
-                <div class="flex flex-row space-x-2 cursor-pointer">
-                    <favorite-btn
-                        :value="isFavorite"
-                        :onChange="toggleFavorite"
-                    />
-                    <span class="flex items-center w-4">
-                        <img src="/img/arrow-up.svg" />
-                    </span>
-                </div>
-            </div>
-            <div class="font-bold text-white text-sm mb-3">
+    <kpi-card-wrapper>
+        <kpi-card
+            class="kpi-card w-full"
+            label="Category 3"
+            header="Personal Training"
+            :options="{
+                collapse: true,
+                favorite: true,
+            }"
+        >
+            <div class="font-bold text-white text-sm mb-3 mt-[-12px]">
                 Recurring Services Revenue Per Member
             </div>
             <div class="w-full">
@@ -38,24 +32,12 @@
                 </div>
             </div>
         </kpi-card>
-    </div>
+    </kpi-card-wrapper>
 </template>
-<style scoped>
-.kpi-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 400px;
-}
-</style>
+
 <script setup>
 import { ref } from "vue";
 import TrainingChart from "./TrainingChart";
-import FavoriteBtn from "@/Components/FavoriteBtn";
 import KpiCard from "@/Components/Card.vue";
-
-const isFavorite = ref(false);
-const toggleFavorite = (value) => {
-    isFavorite.value = value;
-};
+import KpiCardWrapper from "../KpiCardWrapper.vue";
 </script>

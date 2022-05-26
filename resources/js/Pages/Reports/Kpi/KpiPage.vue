@@ -1,7 +1,7 @@
 <template>
     <app-layout>
         <template #header> KPI </template>
-        <div class="flex flex-row flex-wrap">
+        <div class="flex flex-row flex-wrap w-full">
             <kpi-revenue-per-member-overall />
             <kpi-membership-revenue-per-member />
             <kpi-personal-training />
@@ -12,6 +12,14 @@
     </app-layout>
 </template>
 
+<style>
+.kpi-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 370px;
+}
+</style>
 <script>
 import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
