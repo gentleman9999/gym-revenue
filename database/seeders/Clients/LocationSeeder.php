@@ -4,7 +4,7 @@ namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Locations\CreateLocation;
 use App\Actions\Clients\Locations\GenerateGymRevenueId;
-use App\Actions\Clients\Locations\ImportLocation;
+use App\Actions\Clients\Locations\ImportLocations;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
@@ -417,7 +417,7 @@ class LocationSeeder extends Seeder
         $key = 'tmp/trufit-clubs';
         $csv = file_get_contents('database/data/trufit-clubs.csv');
         Storage::disk('s3')->put($key, $csv);
-        ImportLocation::run([
+        ImportLocations::run([
             [
                 'key' => $key,
                 'extension' => 'csv',
