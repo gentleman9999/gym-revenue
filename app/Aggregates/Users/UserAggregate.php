@@ -3,6 +3,7 @@
 namespace App\Aggregates\Users;
 
 use App\Models\Clients\Client;
+use App\Models\User;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\StorableEvents\Clients\Tasks\TaskDeleted;
 use App\StorableEvents\Clients\Tasks\TaskMarkedComplete;
@@ -10,6 +11,7 @@ use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskRestored;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
 use App\StorableEvents\Clients\Tasks\TaskUpdated;
+use App\StorableEvents\Users\Activity\API\AccessTokenGranted;
 use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
@@ -52,6 +54,13 @@ class UserAggregate extends AggregateRoot
     protected string $start_date = '';
     protected string $end_date = '';
     protected string $termination_date = '';
+
+    public function grantAccessToken()
+    {
+        $this->recordThat(new AccessTokenGranted($this->uuid()));
+
+        return $this;
+    }
 
     public function applyNewUser(UserCreated $event)
     {
