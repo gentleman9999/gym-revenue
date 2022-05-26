@@ -211,11 +211,6 @@ class User extends Authenticatable
         return $this->detail()->where('name', '=', 'is_manager');
     }
 
-    public function api_token()
-    {
-        return $this->detail()->where('name', '=', 'api-token');
-    }
-
     public function column_config()
     {
         return $this->details()->where('name', '=', 'column-config');

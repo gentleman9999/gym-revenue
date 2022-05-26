@@ -6,6 +6,7 @@ use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Location;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -42,7 +43,7 @@ class GrantAccessToken
         Alert::success("Access Token Generated & granted.")->flash();
 
 
-        //return Redirect::route('users');
+        return Redirect::back();
     }
 
     public function asCommand(Command $command): void
