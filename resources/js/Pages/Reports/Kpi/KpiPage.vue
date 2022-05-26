@@ -1,6 +1,12 @@
 <template>
     <app-layout>
-        <template #header> KPI </template>
+        <template #header>
+            <reports-title>
+                <template #title>
+                    <h1>KPI</h1>
+                </template>
+            </reports-title>
+        </template>
         <div class="flex flex-row flex-wrap w-full">
             <kpi-revenue-per-member-overall />
             <kpi-membership-revenue-per-member />
@@ -31,6 +37,7 @@ import KpiPersonalTraining from "./components/KpiPersonalTraining";
 import KpiRetailRevenuePerMember from "./components/KpiRetailRevenuePerMember";
 import KpiMembership from "./components/KpiMembership";
 import KpiOtherServices from "./components/KpiOtherServices";
+import ReportsTitle from "../components/ReportsTitle";
 
 export default defineComponent({
     components: {
@@ -42,6 +49,7 @@ export default defineComponent({
         KpiRetailRevenuePerMember,
         KpiMembership,
         KpiOtherServices,
+        ReportsTitle,
     },
 });
 </script>
