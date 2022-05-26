@@ -1,18 +1,17 @@
 <template>
-    <kpi-card class="kpi-card" label="Category 1">
-        <div class="flex flex-row justify-between items-end mb-3">
+    <kpi-card class="kpi-card" label="Category 2">
+        <div class="flex flex-row justify-between items-center mb-3">
             <div class="text-secondary text-lg text-bold">
-                Revenue Per Member Overall
+                Membership Revenue Per Member
             </div>
             <div class="flex flex-row space-x-2 cursor-pointer">
-                <favorite-btn :value="isFavorite" :onChange="toggleFavorite" />
                 <span class="flex items-center w-4">
                     <img src="/img/arrow-up.svg" />
                 </span>
             </div>
         </div>
         <div class="w-full">
-            <revenue-chart />
+            <membership-chart />
         </div>
         <button-tabs :items="buttons" />
         <div class="flex flex-row pl-6 mt-4 justify-between">
@@ -37,8 +36,7 @@
 <script setup>
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
-import RevenueChart from "./RevenueChart";
-import FavoriteBtn from "@/Components/FavoriteBtn";
+import MembershipChart from "./MembershipChart";
 import ButtonTabs from "@/Components/ButtonTabs.vue";
 import KpiCard from "@/Components/Card.vue";
 
@@ -47,5 +45,5 @@ const toggleFavorite = (value) => {
     isFavorite.value = value;
 };
 
-const buttons = ["Membership", "Personal Training", "Retail Sales"];
+const buttons = ["Memberships", "Annual Fees", "Retail Sales"];
 </script>
