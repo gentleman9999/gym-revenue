@@ -157,7 +157,9 @@ export default {
             form.put(route("comms.email-templates.update", template.id));
         if (operation === "Create") {
             handleSubmit = () =>
-                form.post(route("comms.email-templates.store"));
+                form.post(route("comms.email-templates.store"), {
+                    headers: { "X-Inertia-Modal-Redirect": true },
+                });
         }
 
         return { form, buttonText: operation, handleSubmit, modal };

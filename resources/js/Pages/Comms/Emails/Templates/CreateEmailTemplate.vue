@@ -1,20 +1,31 @@
 <template>
-    <app-layout title="Create Email Template">
-        <template #header>
+    <ModalableWrapper>
+        <app-layout title="Create Email Template">
+            <template #header>
+                <h2 class="font-semibold text-xl leading-tight">
+                    Create Email Template
+                </h2>
+            </template>
+
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
+            </div>
+        </app-layout>
+        <template #modal-only>
             <h2 class="font-semibold text-xl leading-tight">
                 Create Email Template
             </h2>
+            <ModalSlot />
         </template>
-
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <email-template-form
-                    :client-id="$page.props.user.current_client_id"
-                    :can-activate="false"
-                />
-            </div>
-        </div>
-    </app-layout>
+        <template #modal>
+            <email-template-form
+                :client-id="$page.props.user.current_client_id"
+                :can-activate="false"
+            />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -27,6 +38,7 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
 import EmailTemplateForm from "./Partials/EmailTemplateForm";
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
@@ -36,6 +48,8 @@ export default defineComponent({
         JetInputError,
         JetLabel,
         EmailTemplateForm,
+        ModalableWrapper,
+        ModalSlot,
     },
 });
 </script>
