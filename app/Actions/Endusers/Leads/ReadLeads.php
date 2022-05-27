@@ -3,12 +3,12 @@
 namespace App\Actions\Endusers\Leads;
 
 use App\Models\Clients\Client;
-use App\Models\Clients\Location;
+use App\Models\Endusers\Lead;
 use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class ReadLead
+class ReadLeads
 {
     use AsAction;
 
@@ -26,7 +26,7 @@ class ReadLead
 
     public function handle($data, $current_user = null)
     {
-        $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['page_count'] : 10;
+        $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
         $prospects = [];
         $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
 
@@ -61,41 +61,44 @@ class ReadLead
         }
     }
 
-    private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
+    private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
     {
         $results = [];
 
         if ((! is_null($client_id))) {
+            /**
+             * BUSINESS RULES
+             * 1. There must be an active client and an active team.
+             * 2. Client Default Team, then all leads from the client
+             * 3. Else, get the team_locations for the active_team
+             * 4. Query for client id and locations in
+             */
             $current_team = request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
+
             $default_team_name = $client->default_team_name->value;
 
-            // The active_team is the current client's default_team (gets all the client's locations)
-            if ($current_team->id == $default_team_name) {
-                $results = Location::whereClientId($client_id);
-            } else {
-                // The active_team is not the current client's default_team
-                $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->whereActive(1)
-                    ->get();
+            $team_locations = [];
 
-                if (count($team_locations) > 0) {
-                    $in_query = [];
-                    // so get the teams listed in team_details
-                    foreach ($team_locations as $team_location) {
-                        $in_query[] = $team_location->value;
+            if ($current_team->id != $default_team_name) {
+                $team_locations_records = TeamDetail::whereTeamId($current_team->id)
+                    ->where('name', '=', 'team-location')->get();
+
+                if (count($team_locations_records) > 0) {
+                    foreach ($team_locations_records as $team_locations_record) {
+                        // @todo - we will probably need to do some user-level scoping
+                        // example - if there is scoping and this club is not there, don't include it
+                        $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Location::whereClientId($client_id)
-                        ->whereIn('gymrevenue_id', $in_query);
+                    $results = Lead::whereClientId($client_id)
+                        ->whereIn('gr_location_id', $team_locations);
                 }
-            }
-        } else {
-            // Cape & Bay user
-            if (! $is_client_user) {
-                $results = new Location();
+            } else {
+                $results = Lead::whereClientId($client_id);
             }
         }
+
 
         return $results;
     }
