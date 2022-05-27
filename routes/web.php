@@ -40,7 +40,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::get('/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
     Route::get('/view/{id}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
     Route::post('/', \App\Actions\Clients\Locations\CreateLocation::class)->name('locations.store');
-    Route::post('/', \App\Actions\Clients\Locations\ImportLocations::class)->name('locations.import');
+    Route::post('/import', \App\Actions\Clients\Locations\ImportLocations::class)->name('locations.import');
     Route::put('/{id}', \App\Actions\Clients\Locations\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
     Route::delete('/{id}', \App\Actions\Clients\Locations\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
     Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
@@ -174,7 +174,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
-    Route::post('/', \App\Actions\Fortify\ImportUsers::class)->name('users.import');
+    Route::post('/import', \App\Actions\Fortify\ImportUsers::class)->name('users.import');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit')->where(['id' => '[0-9]+']);
     Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view')->where(['id' => '[0-9]+']);
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update')->where(['id' => '[0-9]+']);
