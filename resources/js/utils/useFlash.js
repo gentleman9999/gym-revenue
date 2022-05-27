@@ -1,5 +1,5 @@
 import { usePage } from "@inertiajs/inertia-vue3";
-import { computed, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { useModal } from "@/Components/InertiaModal";
 
 export const useFlash = () => {
@@ -7,13 +7,8 @@ export const useFlash = () => {
     const modal = useModal();
     const flash = ref(page.props?.value?.flash);
 
-    const modalFlash = computed(() => modal.value?.page.props);
-    console.log({ flash, modal, modalFlash: modalFlash.value });
-
-    //we compare json here to prevent double display of the alert
-
+    //we compare json here to try and prevent double display of the alert. but it doesn't work.
     watchEffect(() => {
-        console.log({ modalprops: modal.value?.page?.props?.flash });
         const newFlash =
             modal.value?.page?.props?.flash || page.props?.value?.flash;
         if (JSON.stringify(flash.value) !== JSON.stringify(newFlash)) {
