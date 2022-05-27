@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('/leads')->group(function () {
+    Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class)->name('leads.read');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('/members')->group(function () {
+    Route::get('/', \App\Actions\Endusers\Members\ReadMembers::class)->name('members.read');
+});

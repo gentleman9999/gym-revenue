@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Actions\Endusers\Leads;
+namespace App\Actions\Endusers\Members;
 
 use App\Models\Clients\Client;
-use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class ReadLeads
+class ReadMembers
 {
     use AsAction;
 
@@ -20,25 +20,19 @@ class ReadLeads
     public function rules()
     {
         return [
-            'per_page' => 'sometimes|required',
+            'per_page' => 'sometimes',
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data, $user = null)
     {
         $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
-        $prospects = [];
-        $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
+        $members = [];
+        $members_model = $this->setUpMembersObject(request()->user()->isClientUser(), request()->user()->currentClientId());
 
-        if (! empty($prospects_model)) {
-            $prospects = $prospects_model
+        if (! empty($members_model)) {
+            $members = $members_model
                 ->with('location')
-                ->with('leadType')
-                ->with('membershipType')
-                ->with('leadSource')
-                ->with('leadsclaimed')
-                ->with('detailsDesc')
-                ->with('opportunity')
                 ->with('notes')
                 ->orderBy('created_at', 'desc')
                 ->sort()
@@ -46,22 +40,22 @@ class ReadLeads
                 ->appends(request()->except('page'));
         }
 
-        return $prospects;
+        return $members;
     }
 
     public function asController(ActionRequest $request)
     {
-        $lead = $this->handle(
+        $member = $this->handle(
             $request->validated(),
-            $request->user(),
+            $request->user()
         );
 
         if (! $request->wantsJson()) {
-            return $lead;
+            return $member;
         }
     }
 
-    private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
+    private function setUpMembersObject(bool $is_client_user, string $client_id = null)
     {
         $results = [];
 
@@ -84,11 +78,11 @@ class ReadLeads
                         $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Lead::whereClientId($client_id)
+                    $results = Member::whereClientId($client_id)
                         ->whereIn('gr_location_id', $team_locations);
                 }
             } else {
-                $results = Lead::whereClientId($client_id);
+                $results = Member::whereClientId($client_id);
             }
         }
 
