@@ -3,6 +3,7 @@
         :type="type"
         class="btn"
         :class="{
+            class: true,
             'btn-outline': outline,
             'btn-ghost': ghost,
             'btn-circle': circle,
@@ -29,6 +30,10 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
     props: {
+        class: {
+            type: String,
+            default: "",
+        },
         type: {
             type: String,
             default: "submit",

@@ -3,7 +3,17 @@
         <template #header>
             <reports-title>
                 <template #title>
-                    <h1>KPI</h1>
+                    <h1>KPI Dashboard</h1>
+                    <div
+                        class="flex flex-row text-white space-x-2 text-xs items-center"
+                    >
+                        <span class="cursor-pointer text-secondary"
+                            >Monthly</span
+                        >
+                        <span class="cursor-pointer">Quartely</span>
+                        <span class="cursor-pointer">Annual</span>
+                        <span class="cursor-pointer">YOY Comparisons</span>
+                    </div>
                 </template>
             </reports-title>
         </template>

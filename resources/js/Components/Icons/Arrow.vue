@@ -14,29 +14,45 @@
             width="11.949"
             height="21.668"
             viewBox="0 0 11.949 21.668"
+            :transform="transform"
         >
             <rect
                 width="1.5"
                 height="15"
-                rx="0.75"
+                rx="1"
                 transform="translate(1.061 21.668) rotate(-135)"
-                fill="#0074c8"
+                :fill="fill"
             />
             <rect
                 width="1.5"
                 height="15"
-                rx="0.75"
+                rx="1"
                 transform="translate(0.281 1.061) rotate(-45)"
-                fill="#0074c8"
+                :fill="fill"
             />
         </svg>
     </div>
 </template>
 <script setup>
+import { computed } from "@vue/reactivity";
 const props = defineProps({
     direction: {
         type: String,
         default: "right",
+    },
+    fill: {
+        type: String,
+        default: "#FFF",
+    },
+    size: {
+        type: String,
+        default: "sm",
+    },
+});
+
+const transform = computed({
+    get() {
+        return props.size === "xs" ? "scale(0.7)" : "scale(1)";
     },
 });
 </script>
