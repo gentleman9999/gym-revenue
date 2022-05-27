@@ -164,9 +164,9 @@ export default defineComponent({
                             redirectBack: (e) => {
                                 console.log("redirect-back", e);
                             },
-                            // onClose: () => {
-                            //     Inertia.reload();
-                            // },
+                            modalProps: {
+                                class: "max-w-[90vw] min-h-[90vh] p-0",
+                            },
                             reloadOnClose: true,
                         }
                     );

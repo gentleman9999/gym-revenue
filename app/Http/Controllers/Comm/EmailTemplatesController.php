@@ -85,7 +85,9 @@ class EmailTemplatesController extends Controller
 
     public function create()
     {
-        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', []);
+        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', [
+            'plansUrl' => env('APP_URL') . "/api/plans",
+        ]);
     }
 
     public function edit($id)

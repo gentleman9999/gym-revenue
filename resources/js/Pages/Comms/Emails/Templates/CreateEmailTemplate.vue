@@ -13,17 +13,12 @@
                 </div>
             </div>
         </app-layout>
-        <template #modal-only>
-            <h2 class="font-semibold text-xl leading-tight">
-                Create Email Template
-            </h2>
-            <ModalSlot />
-        </template>
         <template #modal>
-            <email-template-form
-                :client-id="$page.props.user.current_client_id"
-                :can-activate="false"
-            />
+            <!--            <email-template-form-->
+            <!--                :client-id="$page.props.user.current_client_id"-->
+            <!--                :can-activate="false"-->
+            <!--            />-->
+            <email-builder @close="handleClose" :products-url="plansUrl" />
         </template>
     </ModalableWrapper>
 </template>
@@ -38,9 +33,16 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
 import EmailTemplateForm from "./Partials/EmailTemplateForm";
+import EmailBuilder from "./Partials/EmailBuilder";
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
+    props: {
+        plansUrl: {
+            type: String,
+            required: true,
+        },
+    },
     components: {
         AppLayout,
         Button,
@@ -50,6 +52,11 @@ export default defineComponent({
         EmailTemplateForm,
         ModalableWrapper,
         ModalSlot,
+        EmailBuilder,
+    },
+    setup() {
+        const handleClose = () => console.log("doclose");
+        return { handleClose };
     },
 });
 </script>
