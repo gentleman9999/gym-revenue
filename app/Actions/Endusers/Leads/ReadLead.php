@@ -9,7 +9,7 @@ use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class CreateLead
+class ReadLead
 {
     use AsAction;
 
