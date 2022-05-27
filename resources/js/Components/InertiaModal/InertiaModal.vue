@@ -26,6 +26,7 @@ import { fireErrorEvent, fireSuccessEvent } from "./events";
 import uniqueId from "./uniqueId";
 import { injectIsModal, modalHeader, modalRedirect } from "./symbols";
 import { provider } from "./useModalSlot";
+import { useModal } from "@/Components/InertiaModal";
 
 const props = defineProps({
     component: String,
@@ -36,7 +37,8 @@ const props = defineProps({
     },
 });
 
-const modal = shallowRef(null);
+// const modal = shallowRef(null);
+const modal = useModal();
 
 const telRef = provider();
 
