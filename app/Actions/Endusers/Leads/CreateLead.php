@@ -76,7 +76,7 @@ class CreateLead
             $request->user(),
         );
 
-        if (! $request->headers->has('X-inertia')) {
+        if (! $request->wantsJson()) {
             return $lead;
         }
 

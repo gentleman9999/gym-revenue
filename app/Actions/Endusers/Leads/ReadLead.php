@@ -20,12 +20,13 @@ class ReadLead
     public function rules()
     {
         return [
+            'per_page' => 'sometimes|required',
         ];
     }
 
     public function handle($data, $current_user = null)
     {
-        $page_count = 10;
+        $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['page_count'] : 10;
         $prospects = [];
         $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
 
@@ -55,7 +56,7 @@ class ReadLead
             $request->user(),
         );
 
-        if (! $request->headers->has('X-inertia')) {
+        if (! $request->wantsJson()) {
             return $lead;
         }
     }
