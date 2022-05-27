@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
-use App\Models\Endusers\Lead;
 use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -38,7 +37,6 @@ class ReadLead
                 ->with('leadSource')
                 ->with('leadsclaimed')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->with('opportunity')
                 ->with('notes')
                 ->orderBy('created_at', 'desc')
@@ -47,7 +45,7 @@ class ReadLead
                 ->appends(request()->except('page'));
         }
 
-        return Lead::findOrFail($id);
+        return $prospects;
     }
 
     public function asController(ActionRequest $request)
