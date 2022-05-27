@@ -16,7 +16,7 @@
                 </button>
 
                 <slot />
-                <template v-if="$slots.footer">
+                <template v-if="$slots?.actions">
                     <div class="modal-action">
                         <slot name="actions"></slot>
                     </div>

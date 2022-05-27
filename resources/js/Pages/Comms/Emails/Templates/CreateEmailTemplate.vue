@@ -14,11 +14,11 @@
             </div>
         </app-layout>
         <template #modal>
-            <!--            <email-template-form-->
-            <!--                :client-id="$page.props.user.current_client_id"-->
-            <!--                :can-activate="false"-->
-            <!--            />-->
-            <email-builder @close="handleClose" :products-url="plansUrl" />
+            <email-template-form
+                :client-id="$page.props.user.current_client_id"
+                :can-activate="false"
+            />
+            <!--            <email-builder @close="handleClose" :products-url="plansUrl" />-->
         </template>
     </ModalableWrapper>
 </template>

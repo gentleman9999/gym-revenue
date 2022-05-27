@@ -143,6 +143,22 @@ export default defineComponent({
 
         const actions = computed(() => {
             return {
+                edit: {
+                    handler: ({ data }) => {
+                        Inertia.visitInModal(
+                            route("comms.email-templates.edit", data.id),
+                            {
+                                // redirectBack: (e) => {
+                                //     console.log("redirect-back", e);
+                                // },
+                                modalProps: {
+                                    class: "max-w-[90vw] h-[90vh] p-0",
+                                },
+                                // reloadOnClose: true,
+                            }
+                        );
+                    },
+                },
                 selfSend: {
                     label: "Send You a Test Email",
                     handler: ({ data }) => handleOpenSendModal(data),
@@ -157,15 +173,14 @@ export default defineComponent({
             create: {
                 label: "New Template",
                 handler: () => {
-                    console.log({ Inertia });
                     Inertia.visitInModal(
                         route("comms.email-templates.create"),
                         {
-                            redirectBack: (e) => {
-                                console.log("redirect-back", e);
-                            },
+                            // redirectBack: (e) => {
+                            //     console.log("redirect-back", e);
+                            // },
                             modalProps: {
-                                class: "max-w-[90vw] min-h-[90vh] p-0",
+                                class: "max-w-[90vw] h-[90vh] p-0",
                             },
                             reloadOnClose: true,
                         }

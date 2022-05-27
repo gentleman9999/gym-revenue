@@ -21,7 +21,7 @@ class BouncerAbilitiesSeeder extends Seeder
         /** Admin */
         Bouncer::allow('Admin')->everything(); // I mean....right?
 
-        $crud_models = collect(['users', 'locations', 'leads', 'members', 'files', 'teams', 'tasks', 'calendar', 'roles', 'classifications']);
+        $crud_models = collect(['users', 'locations', 'leads', 'members', 'files', 'teams', 'tasks', 'calendar', 'roles', 'classifications', 'email-templates']);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
         // Create the Full Unrestricted Abilities

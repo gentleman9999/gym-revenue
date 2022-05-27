@@ -1,5 +1,5 @@
 <template>
-    <div :ref="ref"></div>
+    <div :ref="ref" class="h-full"></div>
 </template>
 
 <script setup>

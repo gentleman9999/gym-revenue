@@ -13,12 +13,6 @@
                 </div>
             </div>
         </app-layout>
-        <template #modal-only>
-            <h2 class="font-semibold text-xl leading-tight">
-                Edit Email Template
-            </h2>
-            <ModalSlot />
-        </template>
         <template #modal>
             <email-template-form
                 :client-id="$page.props.user.current_client_id"

@@ -1,29 +1,36 @@
 <template>
+    <div
+        v-if="showSpinner"
+        class="w-full h-full flex items-center justify-center"
+    >
+        <spinner />
+    </div>
     <TopolEditor
         :options="customOptions"
-        @onSave="handleOnSave"
-        @onSaveAndClose="handleOnSaveAndClose"
-        @init="handleOnInit"
-        @loaded="handleOnLoaded"
-        @close="handleOnClose"
         v-bind="$attrs"
+        @onClose="handleOnClose"
+        @close="handleOnClose"
+        @onInit="handleOnInit"
+        @onLoaded="handleOnLoaded"
+        :class="{ hidden: showSpinner }"
     />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { TopolEditor } from "@topol.io/editor-vue";
+import { ref, watch } from "vue";
+import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import Spinner from "@/Components/Spinner";
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "onInit", "onLoaded"]);
 
 const props = defineProps({
     title: {
         type: String,
         default: "Email Template Builder",
     },
-    template: {
-        type: String,
+    json: {
+        type: Object,
     },
     productsUrl: {
         type: String,
@@ -39,6 +46,7 @@ const customOptions = {
         apiKey: "r00uTVwXAIIXDJMrm3sAZQA6FTbhlKamkvY3KIID40fIrwoa8AXuEKpxY0dx",
         userId: page.props.value.user.id,
     },
+    disableAlerts: true,
     windowBar: ["fullscreen", "close"],
     //this could be cool to add in a clients plans. we just need to hide it until we know how to
     //tap into the API to pull in the plans
@@ -136,7 +144,8 @@ const customOptions = {
         },
     ],
 };
-
+const ready = ref(false);
+const showSpinner = ref(true);
 const handleOnSave = (args) => {
     console.log("handleOnSave", args);
 };
@@ -144,12 +153,28 @@ const handleOnSaveAndClose = (args) => {
     console.log("handleOnSaveAndClose", args);
 };
 const handleOnInit = (args) => {
-    console.log("handleOnInit", args);
+    ready.value = true;
+    if (!props.json) {
+        showSpinner.value = false;
+    }
+    emit("onInit", args);
 };
 const handleOnLoaded = (args) => {
-    console.log("handleOnLoaded", args);
+    showSpinner.value = false;
+    emit("onLoaded", args);
 };
 const handleOnClose = (args) => {
     console.log("handleOnClose", args);
 };
+
+watch(
+    [props.json, ready],
+    () => {
+        if (ready.value && props.json) {
+            console.log("trying to load topol json", props.json);
+            TopolPlugin.load(JSON.stringify(props.json));
+        }
+    },
+    { immediate: true }
+);
 </script>

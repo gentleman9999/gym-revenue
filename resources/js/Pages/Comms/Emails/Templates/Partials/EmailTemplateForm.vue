@@ -1,22 +1,27 @@
 <template>
-    <email-builder />
-    <daisy-modal>
+    <email-builder
+        @onSave="handleOnSave"
+        @onSaveAndClose="handleOnSaveAndClose"
+        :json="template?.json || null"
+        :title="template?.name || undefined"
+    />
+    <daisy-modal ref="nameModal">
         <div class="form-control">
             <label for="name" class="label">Name</label>
             <input type="text" v-model="form.name" autofocus id="name" />
             <jet-input-error :message="form.errors.name" class="mt-2" />
         </div>
-        <!--        TODO: remove subject from email templates. templates should just be name, json, html, and thumbnail img-->
-        <!--        <div class="form-control">-->
-        <!--            <label for="subject" class="label">Subject Line</label>-->
-        <!--            <input-->
-        <!--                type="text"-->
-        <!--                v-model="form.subject"-->
-        <!--                id="subject"-->
-        <!--                class="form-control w-full"-->
-        <!--            />-->
-        <!--            <jet-input-error :message="form.errors.subject" class="mt-2" />-->
-        <!--        </div>-->
+        <!--        TODO: we may need to remove subject from email templates. depends on design-->
+        <div class="form-control">
+            <label for="subject" class="label">Subject Line</label>
+            <input
+                type="text"
+                v-model="form.subject"
+                id="subject"
+                class="form-control w-full"
+            />
+            <jet-input-error :message="form.errors.subject" class="mt-2" />
+        </div>
         <!--        <div class="form-control col-span-6 flex flex-row" v-if="canActivate">-->
         <!--            <input-->
         <!--                type="checkbox"-->
@@ -32,23 +37,13 @@
         <!--            <jet-input-error :message="form.errors.active" class="mt-2" />-->
         <!--        </div>-->
         <template #actions>
-            <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <Button
-                type="button"
-                @click="$inertia.visit(route('comms.email-templates'))"
-                :class="{ 'opacity-25': form.processing }"
-                error
-                outline
-                :disabled="form.processing"
-            >
-                Cancel
-            </Button>
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
                 :loading="form.processing"
+                @click="handleSubmit"
             >
                 {{ buttonText }}
             </Button>
@@ -65,6 +60,8 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import SweetModal from "@/Components/SweetModal3/SweetModal";
 import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder";
+import DaisyModal from "@/Components/DaisyModal";
+import usePage from "@/Components/InertiaModal/usePage";
 
 export default {
     components: {
@@ -74,36 +71,74 @@ export default {
         JetFormSection,
         JetInputError,
         SweetModal,
-        DaisyModal:
+        DaisyModal,
     },
     props: ["clientId", "template", "canActivate"],
     setup(props, context) {
-        console.log("process.env", process.env);
-        const modal = ref(null);
-        let template = props.template;
+        const page = usePage();
+        const nameModal = ref(null);
+        let template = props?.template || {
+            markup: null,
+            json: null,
+            thumbnail: null,
+            name: null,
+            subject: null,
+            client_id: page.props.value.user?.current_client_id,
+        };
         let operation = "Update";
-
-        const form = useForm(template);
-
-        let handleSubmit = () =>
-            form.put(route("comms.email-templates.update", template.id));
-        if (operation === "Create") {
-            handleSubmit = () =>
-                form.post(route("comms.email-templates.store"), {
-                    headers: { "X-Inertia-Modal-Redirect": true },
-                });
+        if (!props.template) {
+            operation = "Create";
         }
 
-        const handleOnSave = (args) => {
-            console.log("handleOnSave", args);
+        const form = useForm(template);
+        const closeAfterSave = ref(false);
+
+        let handleSubmit = () => {
+            if (!form.processing) {
+                form.put(route("comms.email-templates.update", template.id));
+            }
+        };
+        if (operation === "Create") {
+            handleSubmit = () => {
+                if (!form.processing) {
+                    form.post(route("comms.email-templates.store"), {
+                        // headers: { "X-Inertia-Modal-Redirect": true },
+                        onSuccess: () => {
+                            console.log("onSuccess!");
+                            if (closeAfterSave.value) {
+                                console.log("close the modal now!");
+                            }
+                        },
+                    });
+                }
+            };
+        }
+
+        const handleOnSave = ({ html, json }) => {
+            console.log("handleOnSave");
+            form.markup = html;
+            form.json = json;
+            //TODO: generate thumbnail
+            // form.thumbnail = generateThumbnail(html);
+            if (!form.name) {
+                nameModal.value.open();
+                return;
+            }
+            handleSubmit();
+        };
+
+        const handleOnSaveAndClose = ({ html, json }) => {
+            closeAfterSave.value = true;
+            handleOnSave({ html, json });
         };
 
         return {
             form,
             buttonText: operation,
             handleSubmit,
-            modal,
+            nameModal,
             handleOnSave,
+            handleOnSaveAndClose,
         };
     },
 };
