@@ -1,9 +1,8 @@
 <template>
     <button
         :type="type"
-        class="btn"
+        class="btn w-max"
         :class="{
-            class: true,
             'btn-outline': outline,
             'btn-ghost': ghost,
             'btn-circle': circle,
@@ -30,10 +29,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
     props: {
-        class: {
-            type: String,
-            default: "",
-        },
         type: {
             type: String,
             default: "submit",

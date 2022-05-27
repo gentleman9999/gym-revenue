@@ -1,7 +1,6 @@
 <template>
     <div class="relative">
         <Button
-            class="w-max"
             :size="size"
             secondary
             :outline="isCollapsed"

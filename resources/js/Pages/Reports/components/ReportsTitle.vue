@@ -1,14 +1,20 @@
 <template>
-    <div class="flex flex-row w-full justify-between mt-[-14px] mb-[51px]">
+    <div
+        class="flex flex-col md:flex-row w-full justify-between mt-[-14px] mb-[51px]"
+    >
         <slot name="title"></slot>
-        <div class="reports-title-filter flex flex-row items-center space-x-3">
-            <select-box
-                label="Data View"
-                size="xs"
-                :items="viewOptions"
-                :value="viewMode"
-                :onChange="setViewMode"
-            />
+        <div
+            class="reports-title-filter flex flex-row items-center space-x-3 flex-wrap lg:flex-nowrap"
+        >
+            <div class="ml-[0.75rem]">
+                <select-box
+                    label="Data View"
+                    size="xs"
+                    :items="viewOptions"
+                    :value="viewMode"
+                    :onChange="setViewMode"
+                />
+            </div>
             <Button size="xs" secondary> + Add Lead </Button>
             <Button outline size="xs" secondary> + Build a Campaign </Button>
             <Button outline size="xs" secondary> + Communication </Button>
@@ -21,6 +27,9 @@
     color: #fff;
     border-radius: 4px;
     border-color: #0074c8;
+}
+.reports-title-filter {
+    max-width: calc(100vw - 32px);
 }
 </style>
 <script setup>
