@@ -76,6 +76,10 @@ class CreateLead
             $request->user(),
         );
 
+        if (! $request->headers->has('X-inertia')) {
+            return $lead;
+        }
+
         Alert::success("Lead '{$lead->name}' was created")->flash();
 
         return Redirect::route('data.leads.edit', $lead->id);

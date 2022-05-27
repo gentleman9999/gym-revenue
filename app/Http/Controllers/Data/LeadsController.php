@@ -715,4 +715,48 @@ class LeadsController extends Controller
 
         return $prospects;
     }
+
+    public function read(Request $request)
+    {
+        $page_count = 10;
+        $prospects = [];
+        $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
+
+        if (! empty($prospects_model)) {
+            $prospects = $prospects_model
+                ->with('location')
+                ->with('leadType')
+                ->with('membershipType')
+                ->with('leadSource')
+                ->with('leadsclaimed')
+                ->with('detailsDesc')
+                //  ->with('leadsclaimed')
+                ->with('opportunity')
+                ->with('notes')
+                ->filter($request->only(
+                    'search',
+                    'trashed',
+                    'typeoflead',
+                    'createdat',
+                    'grlocation',
+                    'leadsource',
+                    'leadsclaimed',
+                    'opportunity',
+                    'claimed',
+                    'dob',
+                    'nameSearch',
+                    'phoneSearch',
+                    'emailSearch',
+                    'agreementSearch',
+                    'lastupdated'
+                ))
+                ->orderBy('created_at', 'desc')
+                ->sort()
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
+        }
+
+
+        return $prospects;
+    }
 }

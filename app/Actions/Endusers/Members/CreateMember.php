@@ -68,6 +68,10 @@ class CreateMember
             $request->user()
         );
 
+        if (! $request->headers->has('X-inertia')) {
+            return $member;
+        }
+
         Alert::success("Member'{$member->name}' was created")->flash();
 
         return Redirect::route('data.members.edit', $member->id);
