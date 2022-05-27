@@ -158,13 +158,17 @@ class EmailTemplatesController extends Controller
         ClientAggregate::retrieve($data['client_id'])
             ->updateEmailTemplate($template->id, request()->user()->id, $old_values, $template->toArray())
             ->persist();
+
+        Alert::info("Template {$template['name']} successfully updated")->flash();
+
         /*
 
         */
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
-        return Redirect::route('comms.email-templates');
-//        return Redirect::route('comms.email-templates.edit', $template->id);
+//        return Redirect::route('comms.email-templates');
+        return Redirect::route('comms.email-templates.edit', $template->id);
+//        return Redirect::back();
     }
 
     public function trash($id)

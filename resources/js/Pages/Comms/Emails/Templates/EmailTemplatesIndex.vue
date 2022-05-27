@@ -31,7 +31,7 @@
             :fields="fields"
             :resource="templates"
             :actions="actions"
-            :top-actions="{ create: { label: 'New Template' } }"
+            :top-actions="topActions"
         />
 
         <confirm
@@ -153,6 +153,27 @@ export default defineComponent({
             };
         });
 
+        const topActions = {
+            create: {
+                label: "New Template",
+                handler: () => {
+                    console.log({ Inertia });
+                    Inertia.visitInModal(
+                        route("comms.email-templates.create"),
+                        {
+                            redirectBack: (e) => {
+                                console.log("redirect-back", e);
+                            },
+                            // onClose: () => {
+                            //     Inertia.reload();
+                            // },
+                            reloadOnClose: true,
+                        }
+                    );
+                },
+            },
+        };
+
         const comingSoon = () => {
             new Noty({
                 type: "warning",
@@ -171,6 +192,7 @@ export default defineComponent({
             handleCloseTextModal,
             confirmSend,
             sendVars,
+            topActions,
         };
     },
 });
