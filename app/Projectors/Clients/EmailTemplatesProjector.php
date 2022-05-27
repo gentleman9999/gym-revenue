@@ -6,6 +6,7 @@ use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
 use App\Models\User;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EmailTemplatesProjector extends Projector
@@ -21,18 +22,18 @@ class EmailTemplatesProjector extends Projector
 
         $template = EmailTemplates::create($template_data);
 
+        $msg = 'Template was auto-generated';
+        if ($event->user !== 'Auto Generated') {
+            $user = User::find($event->user);
+            $msg = 'Template was created by ' . $user->name . ' on ' . $event->metaData()['created-at']->format('Y-m-d');
+        }
         $detail = EmailTemplateDetails::create([
             'email_template_id' => $event->data['id'],
             'client_id' => $event->client,
             'detail' => 'created',
             'value' => $event->metaData()['created-at'],
+            'misc' => ['msg' => $msg],
         ]);
-        if ($event->user == 'Auto Generated') {
-            $detail->misc = ['msg' => 'Template was auto-generated'];
-        } else {
-            $user = User::find($event->user);
-            $detail->misc = ['msg' => 'Template was created by ' . $user->name . ' on ' . date('Y-m-d')];
-        }
 
         // also set the email provider gateway slug
         EmailTemplateDetails::create([
@@ -46,17 +47,19 @@ class EmailTemplatesProjector extends Projector
 
     public function onEmailTemplateUpdated(EmailTemplateUpdated $event)
     {
-        EmailTemplates::updateOrFail($event->data);
-
-        $user = User::find($event->user);
-        EmailTemplateDetails::create([
-            'email_template_id' => $event->data['id'],
-            'client_id' => $event->client,
-            'detail' => 'updated',
-            'value' => $event->user,
-            'misc' => [
-                'msg' => 'Template was updated by ' . $user->name . ' on ' . date('Y-m-d', $event->metaData()['created-at']),
-            ],
-        ]);
+        EmailTemplates::findOrFail($event->data['id'])->updateOrFail($event->data);
+        if ($event->user !== 'Auto Generated') {
+            $user = User::find($event->user);
+            $msg = 'Template was updated by ' . $user->name . ' on ' . $event->metaData()['created-at']->format('Y-m-d');
+            EmailTemplateDetails::create([
+                'email_template_id' => $event->data['id'],
+                'client_id' => $event->client,
+                'detail' => 'updated',
+                'value' => $event->user,
+                'misc' => [
+                    'msg' => $msg,
+                ],
+            ]);
+        }
     }
 }

@@ -222,7 +222,7 @@ const visitInModal = (url, options = {}) => {
                     };
                 });
             // return Promise.reject(new axios.Cancel());
-            // cancelToken.value.cancel();
+            cancelToken.value?.cancel();
             return Promise.reject();
         }
         return response;

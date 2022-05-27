@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import Spinner from "@/Components/Spinner";
@@ -166,9 +166,11 @@ const handleOnLoaded = (args) => {
 const handleOnClose = (args) => {
     console.log("handleOnClose", args);
 };
-
+// onMounted(()=>{
+//
+// })
 watch(
-    [props.json, ready],
+    [ready],
     () => {
         if (ready.value && props.json) {
             console.log("trying to load topol json", props.json);

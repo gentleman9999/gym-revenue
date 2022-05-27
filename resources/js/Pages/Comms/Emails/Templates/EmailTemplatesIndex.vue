@@ -148,9 +148,9 @@ export default defineComponent({
                         Inertia.visitInModal(
                             route("comms.email-templates.edit", data.id),
                             {
-                                // redirectBack: (e) => {
-                                //     console.log("redirect-back", e);
-                                // },
+                                redirectBack: (e) => {
+                                    console.log("redirect-back", e);
+                                },
                                 modalProps: {
                                     class: "max-w-[90vw] h-[90vh] p-0",
                                 },
@@ -176,9 +176,9 @@ export default defineComponent({
                     Inertia.visitInModal(
                         route("comms.email-templates.create"),
                         {
-                            // redirectBack: (e) => {
-                            //     console.log("redirect-back", e);
-                            // },
+                            redirectBack: (e) => {
+                                console.log("redirect-back", e);
+                            },
                             modalProps: {
                                 class: "max-w-[90vw] h-[90vh] p-0",
                             },
