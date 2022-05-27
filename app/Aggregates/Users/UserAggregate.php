@@ -3,6 +3,7 @@
 namespace App\Aggregates\Users;
 
 use App\Models\Clients\Client;
+use App\Models\User;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\StorableEvents\Clients\Tasks\TaskDeleted;
 use App\StorableEvents\Clients\Tasks\TaskMarkedComplete;
@@ -10,6 +11,7 @@ use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskRestored;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
 use App\StorableEvents\Clients\Tasks\TaskUpdated;
+use App\StorableEvents\Users\Activity\API\AccessTokenGranted;
 use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
@@ -26,6 +28,7 @@ use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserCreated;
 use App\StorableEvents\Users\UserDeleted;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
+use App\StorableEvents\Users\UsersImported;
 use App\StorableEvents\Users\UserUpdated;
 use App\StorableEvents\Users\WelcomeEmailSent;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
@@ -51,6 +54,13 @@ class UserAggregate extends AggregateRoot
     protected string $start_date = '';
     protected string $end_date = '';
     protected string $termination_date = '';
+
+    public function grantAccessToken()
+    {
+        $this->recordThat(new AccessTokenGranted($this->uuid()));
+
+        return $this;
+    }
 
     public function applyNewUser(UserCreated $event)
     {
@@ -215,6 +225,13 @@ class UserAggregate extends AggregateRoot
     public function createUser(string $created_by_user_id, array $payload)
     {
         $this->recordThat(new UserCreated($this->uuid(), $created_by_user_id, $payload));
+
+        return $this;
+    }
+
+    public function importUsers(string $created_by_user_id, string $key, string $client)
+    {
+        $this->recordThat(new UsersImported($this->uuid(), $created_by_user_id, $key, $client));
 
         return $this;
     }

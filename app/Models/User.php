@@ -35,7 +35,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'id', 'name', 'email', 'password', 'first_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zip', 'phone',
+        'id', 'name', 'email', 'password', 'first_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zip', 'phone', 'access_token',
     ];
 
     /**
@@ -209,11 +209,6 @@ class User extends Authenticatable
     public function is_manager()
     {
         return $this->detail()->where('name', '=', 'is_manager');
-    }
-
-    public function api_token()
-    {
-        return $this->detail()->where('name', '=', 'api-token');
     }
 
     public function column_config()

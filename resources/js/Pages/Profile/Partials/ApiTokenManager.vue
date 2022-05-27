@@ -11,20 +11,20 @@
 
             <template #form>
                 <!-- Token Name -->
-                <div class="col-span-6 sm:col-span-4">
-                    <jet-label for="name" value="Name" />
-                    <input
-                        id="name"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="createApiTokenForm.name"
-                        autofocus
-                    />
-                    <jet-input-error
-                        :message="createApiTokenForm.errors.name"
-                        class="mt-2"
-                    />
-                </div>
+                <!--                <div class="col-span-6 sm:col-span-4">-->
+                <!--                    <jet-label for="name" value="Name" />-->
+                <!--                    <input-->
+                <!--                        id="name"-->
+                <!--                        type="text"-->
+                <!--                        class="mt-1 block w-full"-->
+                <!--                        v-model="createApiTokenForm.name"-->
+                <!--                        autofocus-->
+                <!--                    />-->
+                <!--                    <jet-input-error-->
+                <!--                        :message="createApiTokenForm.errors.name"-->
+                <!--                        class="mt-2"-->
+                <!--                    />-->
+                <!--                </div>-->
 
                 <!-- Token Permissions -->
                 <div class="col-span-6" v-if="availablePermissions.length > 0">
@@ -60,10 +60,11 @@
                 </jet-action-message>
 
                 <Button
+                    secondary
                     :class="{ 'opacity-25': createApiTokenForm.processing }"
                     :disabled="createApiTokenForm.processing"
                 >
-                    Create
+                    Create API Token
                 </Button>
             </template>
         </jet-form-section>
@@ -253,7 +254,20 @@ export default defineComponent({
         JetSectionBorder,
     },
 
-    props: ["tokens", "availablePermissions", "defaultPermissions"],
+    props: {
+        tokens: {
+            type: Array,
+            default: [],
+        },
+        availablePermissions: {
+            type: Array,
+            default: [],
+        },
+        defaultPermissions: {
+            type: Array,
+            default: [],
+        },
+    },
 
     data() {
         return {

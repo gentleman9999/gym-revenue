@@ -2,6 +2,7 @@
 
 namespace App\Models\Clients;
 
+use App\Models\Team;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +23,7 @@ class Location extends Model
     protected $fillable = [
         'client_id', 'name', 'address1', 'address2', 'city', 'state', 'zip',
         'active', 'location_no', 'gymrevenue_id', 'deleted_at',
-        'open_date', 'close_date', 'phone',
+        'open_date', 'close_date', 'phone', 'default_team_id',
     ];
 
     public function client()
@@ -60,5 +61,10 @@ class Location extends Model
         })->when($filters['state'] ?? null, function ($query, $state) {
             $query->where('state', 'like', '%'.$state.'%');
         });
+    }
+
+    public function defaultTeam()
+    {
+        return $this->hasOne(Team::class, 'id', 'default_team_id');
     }
 }

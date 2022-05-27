@@ -34,7 +34,12 @@ class ClientLocationsProjector extends Projector
 
     public function onLocationUpdated(LocationUpdated $event)
     {
-        Location::findOrFail($event->payload['id'])->updateOrFail($event->payload);
+        //get only the keys we care about (the ones marked as fillable)
+        $location_table_data = array_filter($event->payload, function ($key) {
+            return in_array($key, (new Location())->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+
+        Location::findOrFail($event->payload['id'])->updateOrFail($location_table_data);
 
         foreach ($this->details as $field) {
             LocationDetails::createOrUpdateRecord($event->payload['id'], $event->client, $field, $event->payload[$field] ?? null);

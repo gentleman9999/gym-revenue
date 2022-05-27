@@ -93,9 +93,9 @@ class UserProfileController extends Controller
             $addl_data['contact_preference'] = $contact_preference->value;
         }
 
-        $api_token = $user->api_token()->first();
+        $api_token = $user->access_token;
         if (! is_null($api_token)) {
-            $addl_data['token'] = base64_decode($api_token->value);
+            $addl_data['token'] = base64_decode($api_token);
         }
 
         return Jetstream::inertia()->render($request, 'Profile/Show', [

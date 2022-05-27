@@ -26,6 +26,7 @@ class CreateLocationsTable extends Migration
             $table->string('address2')->nullable();
             $table->boolean('active')->default(1);
             $table->string('phone')->nullable();
+            $table->integer('default_team_id')->nullable();
             $table->dateTime('open_date')->nullable();
             $table->dateTime('close_date')->nullable();
             $table->timestamps();
