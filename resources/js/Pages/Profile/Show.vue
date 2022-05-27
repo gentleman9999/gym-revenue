@@ -6,20 +6,36 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
+                <template
+                    v-if="$page.props.jetstream.canUpdateProfileInformation"
+                >
                     <update-profile-information-form
                         :user="$page.props.user"
                         :addlData="addlData"
                     />
 
                     <jet-section-border />
-                </div>
+                </template>
 
-                <div v-if="$page.props.user.has_api_token">
+                <template
+                    v-if="
+                        !$page.props.user.has_api_token &&
+                        ($page.props.user.abilities.includes('*') ||
+                            $page.props.user.abilities.includes(
+                                'access_tokens.read'
+                            ))
+                    "
+                >
+                    <api-token-manager />
+
+                    <jet-section-border />
+                </template>
+
+                <template v-if="$page.props.user.has_api_token">
                     <show-api-token-form
                         class="mt-10 sm:mt-0"
                         v-if="!('is_being_impersonated' in $page.props.user)"
-                        :token="addlData['token']"
+                        :token="$page.props.user.access_token"
                     />
                     <jet-form-section v-else>
                         <template #title> API Access </template>
@@ -38,7 +54,7 @@
                     </jet-form-section>
 
                     <jet-section-border />
-                </div>
+                </template>
 
                 <div
                     v-if="$page.props.jetstream.canUpdatePassword"
@@ -133,11 +149,13 @@ import UpdatePasswordForm from "@/Pages/Profile/Partials/UpdatePasswordForm";
 import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfileInformationForm";
 import JetFormSection from "@/Jetstream/FormSection";
 import ShowApiTokenForm from "@/Pages/Profile/Partials/ShowAPITokenForm";
+import ApiTokenManager from "@/Pages/Profile/Partials/ApiTokenManager";
 
 export default defineComponent({
     props: ["sessions", "addlData"],
 
     components: {
+        ApiTokenManager,
         AppLayout,
         DeleteUserForm,
         JetSectionBorder,
