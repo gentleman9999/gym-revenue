@@ -19,7 +19,7 @@
     </kpi-card-wrapper>
 </template>
 <script setup>
-import { ref, h } from "vue";
+import { h } from "vue";
 
 import KpiCard from "@/Components/Card.vue";
 import DataTable from "@/Components/DataTable";

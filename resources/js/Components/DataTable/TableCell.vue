@@ -5,7 +5,6 @@
 import { h } from "vue";
 const props = defineProps({
     value: {
-        type: String,
         default: "",
     },
     renderer: {

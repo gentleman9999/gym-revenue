@@ -1,13 +1,19 @@
 <template>
-    <thead class="sticky top-0 z-10 border-b bg-neutral-900 text-white">
-        <th v-for="column in columns" :key="column.field" :class="column.class">
+    <thead class="sticky top-0 bg-neutral-900 text-white">
+        <th
+            v-for="column in columns"
+            :key="column.field"
+            class="px-3"
+            :class="column.class"
+        >
             {{ column.label }}
         </th>
     </thead>
 </template>
 <style scoped>
 thead {
-    border-color: #868686;
+    border-bottom: 1px solid #868686;
+    z-index: 5;
 }
 </style>
 <script setup>

@@ -11,7 +11,13 @@
             class="flex flex-row justify-between items-center mb-3"
         >
             <div class="text-secondary text-lg text-bold">{{ header }}</div>
-            <div class="flex flex-row space-x-2 cursor-pointer">
+            <div class="flex flex-row space-x-2 cursor-pointer items-center">
+                <select-box
+                    v-if="options.filter && options.filter.length"
+                    :items="options.filter"
+                    :label="options.filterLabel"
+                    size="xs"
+                />
                 <favorite-btn
                     v-if="options.favorite"
                     :value="isFavorite"
@@ -29,6 +35,7 @@
 import { computed } from "@vue/reactivity";
 import { ref } from "vue";
 import FavoriteBtn from "@/Components/FavoriteBtn";
+import SelectBox from "@/Components/SelectBox";
 const props = defineProps({
     class: {
         type: String,
@@ -47,6 +54,8 @@ const props = defineProps({
         default: {
             collapse: false,
             favorite: false,
+            filter: [],
+            filterLabel: "",
         },
     },
 });
