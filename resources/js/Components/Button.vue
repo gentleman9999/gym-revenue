@@ -1,7 +1,7 @@
 <template>
     <button
         :type="type"
-        class="btn w-max"
+        class="btn w-max rounded"
         :class="{
             'btn-outline': outline,
             'btn-ghost': ghost,

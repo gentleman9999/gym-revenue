@@ -6,12 +6,15 @@
         >
             {{ label }}
         </div>
-        <div
-            v-if="header"
-            class="flex flex-row justify-between items-center mb-3"
-        >
-            <div class="text-secondary text-lg text-bold">{{ header }}</div>
+        <div class="flex flex-row justify-between items-center mb-3">
+            <!-- Can use one of them to display header -->
+            <div class="text-secondary text-lg text-bold" v-if="header">
+                {{ header }}
+            </div>
+            <slot v-else name="cardTitle"></slot>
+
             <div class="flex flex-row space-x-2 cursor-pointer items-center">
+                <search-input v-if="options.search" />
                 <select-box
                     v-if="options.filter && options.filter.length"
                     :items="options.filter"
@@ -36,6 +39,7 @@ import { computed } from "@vue/reactivity";
 import { ref } from "vue";
 import FavoriteBtn from "@/Components/FavoriteBtn";
 import SelectBox from "@/Components/SelectBox";
+import SearchInput from "@/Components/SearchInput";
 const props = defineProps({
     class: {
         type: String,
@@ -47,7 +51,6 @@ const props = defineProps({
     },
     header: {
         type: String,
-        default: "",
     },
     options: {
         type: Object,

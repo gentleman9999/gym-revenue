@@ -1,5 +1,5 @@
 <template>
-    <div class="relative">
+    <div :class="className">
         <Button
             :size="size"
             secondary
@@ -20,8 +20,19 @@
         </select-box-content>
     </div>
 </template>
+<style>
+.select-box-wrapper {
+    position: relative;
+}
+.select-box-wrapper.bg-white.collapsed:not(:hover) button {
+    color: black;
+}
+.select-box-wrapper.bg-white.collapsed:not(:hover) svg {
+    filter: brightness(0);
+}
+</style>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Button from "@/Components/Button";
 import SelectBoxIcon from "./SelectBoxIcon";
 import SelectBoxContent from "./SelectBoxContent";
@@ -47,6 +58,10 @@ const props = defineProps({
         type: String,
         default: "sm",
     },
+    class: {
+        type: String,
+        default: "",
+    },
 });
 const isCollapsed = ref(true);
 const toggleCollapsed = () => {
@@ -56,4 +71,11 @@ const onChange = (value) => {
     toggleCollapsed();
     props.onChange(value);
 };
+
+const className = computed({
+    get() {
+        let additional = isCollapsed.value ? " collapsed" : "";
+        return "select-box-wrapper " + props.class + additional;
+    },
+});
 </script>

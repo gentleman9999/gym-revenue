@@ -1,5 +1,5 @@
 <template>
-    <kpi-card-wrapper class="w-1/2">
+    <kpi-card-wrapper class="lg:w-1/2">
         <kpi-card
             class="w-full"
             header="Penetration Percentage"
