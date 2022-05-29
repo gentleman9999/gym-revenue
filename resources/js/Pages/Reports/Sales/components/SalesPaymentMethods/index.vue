@@ -15,7 +15,6 @@
                 :items="payOptions"
                 :value="payMethod"
                 :onChange="setPayMethod"
-                class="bg-white text-black border-secondary rounded"
             />
         </div>
     </sales-card>
@@ -23,7 +22,6 @@
 <script setup>
 import { ref } from "vue";
 import DatePicker from "vue3-date-time-picker";
-import SalesCardWrapper from "../SalesCardWrapper";
 import SalesCard from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";
 

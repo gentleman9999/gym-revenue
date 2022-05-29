@@ -29,7 +29,6 @@
 <script setup>
 import { ref } from "vue";
 import DatePicker from "vue3-date-time-picker";
-import SalesCardWrapper from "../SalesCardWrapper";
 import SalesCard from "@/Components/Card";
 import CalendarIcon from "@/Components/Icons/Calendar";
 import Button from "@/Components/Button";

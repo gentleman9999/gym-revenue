@@ -13,6 +13,7 @@
                 <sales-purchase-date />
                 <sales-payment-methods />
             </div>
+            <sales-annual-fees />
         </div>
         <jet-bar-container> </jet-bar-container>
     </app-layout>
@@ -26,4 +27,5 @@ import ReportsTitle from "../components/ReportsTitle";
 import SalesClub from "./components/SalesClub";
 import SalesPurchaseDate from "./components/SalesPurchaseDate";
 import SalesPaymentMethods from "./components/SalesPaymentMethods";
+import SalesAnnualFees from "./components/SalesAnnualFees";
 </script>

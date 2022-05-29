@@ -23,6 +23,7 @@
 <style>
 .select-box-wrapper {
     position: relative;
+    width: fit-content;
 }
 .select-box-wrapper.bg-white.collapsed:not(:hover) button {
     color: black;
