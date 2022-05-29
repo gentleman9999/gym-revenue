@@ -6,7 +6,12 @@
         >
             {{ label }}
         </div>
-        <div class="flex flex-row justify-between items-center mb-3">
+        <div
+            class="flex flex-row justify-between items-center mb-3"
+            :class="{
+                'border-b border-neutral-500': options.borderedTitle,
+            }"
+        >
             <!-- Can use one of them to display header -->
             <div class="text-secondary text-lg text-bold" v-if="header">
                 {{ header }}
@@ -59,6 +64,7 @@ const props = defineProps({
             favorite: false,
             filter: [],
             filterLabel: "",
+            borderedTitle: false,
         },
     },
 });

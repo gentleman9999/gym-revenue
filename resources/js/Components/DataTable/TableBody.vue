@@ -6,7 +6,12 @@
                 :key="column.field + item.id"
                 class="border-b"
             >
-                <div class="border-r h-full">
+                <div
+                    class="h-full"
+                    :class="{
+                        'border-r': !collapsed,
+                    }"
+                >
                     <table-cell
                         :value="item[column.field]"
                         :renderer="column.renderer ? column.renderer : null"
@@ -38,6 +43,10 @@ const props = defineProps({
     data: {
         type: Array,
         default: [],
+    },
+    collapsed: {
+        type: Boolean,
+        default: false,
     },
 });
 </script>

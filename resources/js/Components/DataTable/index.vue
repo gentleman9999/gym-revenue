@@ -1,7 +1,7 @@
 <template>
-    <table :class="'overflow-scroll block max-w-[90vw] ' + props.class">
+    <table :class="'overflow-y-scroll block max-w-[90vw] ' + props.class">
         <table-header :columns="columns" />
-        <table-body :columns="columns" :data="data" />
+        <table-body :columns="columns" :data="data" :collapsed="collapsed" />
     </table>
 </template>
 <script setup>
@@ -19,6 +19,10 @@ const props = defineProps({
     columns: {
         type: Array,
         default: [],
+    },
+    collapsed: {
+        type: Boolean,
+        default: false,
     },
 });
 </script>
