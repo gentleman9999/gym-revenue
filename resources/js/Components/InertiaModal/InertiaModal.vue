@@ -1,3 +1,7 @@
+<!--
+Hopefully will one day be solved by
+https://github.com/inertiajs/inertia/pull/642
+-->
 <template>
     <template v-if="modal">
         <slot
@@ -222,7 +226,7 @@ const visitInModal = (url, options = {}) => {
                     };
                 });
             // return Promise.reject(new axios.Cancel());
-            cancelToken.value?.cancel();
+            // cancelToken.value?.cancel();
             return Promise.reject();
         }
         return response;
