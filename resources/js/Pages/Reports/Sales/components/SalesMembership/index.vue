@@ -8,7 +8,7 @@
                 borderedTitle: true,
             }"
         >
-            <data-table :columns="columns" :data="data" />
+            <data-table :columns="columns" :data="data" class="mt-8" />
             <template #cardTitle>
                 <div class="text-white text-bold text-lg">Memberships</div>
             </template>

@@ -5,8 +5,12 @@
             <div class="text-secondary w-1/3">Quantity</div>
             <div class="text-secondary w-1/3">Total</div>
         </div>
-        <div class="border border-secondary rounded">
-            <div class="flex flex-row" v-for="(row, ndx) in data" :key="ndx">
+        <div class="border border-secondary rounded pt-2 pb-4 mt-3">
+            <div
+                class="flex flex-row mt-2"
+                v-for="(row, ndx) in data"
+                :key="ndx"
+            >
                 <div
                     v-for="(item, index) in row"
                     :key="ndx + '-' + index"
