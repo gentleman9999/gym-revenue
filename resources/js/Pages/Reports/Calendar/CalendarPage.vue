@@ -9,25 +9,31 @@
         </template>
         <div class="px-10 flex flex-col">
             <div class="text-secondary pl-9 text-xl">Client Activity</div>
-            <div class="flex flex-row space-x-2">
-                <div class="flex w-3/5 space-x-2">
-                    <calendar-summary-card
-                        title="Confirmed"
-                        diagram="/img/mocks/clalendar_page_1.png"
-                        class="w-1/3"
-                    />
-                    <calendar-summary-card
-                        title="Canceled"
-                        diagram="/img/mocks/clalendar_page_2.png"
-                        class="w-1/3"
-                    />
-                    <calendar-summary-card
-                        title="Rescheduled"
-                        diagram="/img/mocks/clalendar_page_3.png"
-                        class="w-1/3"
-                    />
+            <div class="flex flex-row space-x-2 flex-wrap">
+                <div class="flex w-full md:w-3/5 flex-wrap">
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Confirmed"
+                            diagram="/img/mocks/clalendar_page_1.png"
+                        />
+                    </div>
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Canceled"
+                            diagram="/img/mocks/clalendar_page_2.png"
+                        />
+                    </div>
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Rescheduled"
+                            diagram="/img/mocks/clalendar_page_3.png"
+                        />
+                    </div>
                 </div>
+                <calendar-grid />
             </div>
+
+            <calendar-schedule-table :data="schedule" />
         </div>
         <jet-bar-container> </jet-bar-container>
     </app-layout>
@@ -39,4 +45,37 @@ import AppLayout from "@/Layouts/AppLayout";
 import JetBarContainer from "@/Components/JetBarContainer";
 import CalendarTitle from "../components/CalendarTitle";
 import CalendarSummaryCard from "./components/CalendarSummaryCard";
+import CalendarGrid from "./components/CalendarGrid";
+import CalendarScheduleTable from "./components/CalendarScheduleTable";
+
+const schedule = [
+    {
+        id: 1,
+        location: "Location ONE",
+        event: "Welcome Call",
+        employee: "/img/avatars/calendar-avatar.png",
+        time: "9.00AM",
+    },
+    {
+        id: 2,
+        location: "Location TWO",
+        event: "Welcome Email",
+        employee: "/img/avatars/calendar-avatar.png",
+        time: "10.00AM",
+    },
+    {
+        id: 3,
+        location: "Location THREE",
+        event: "Text",
+        employee: "/img/avatars/calendar-avatar.png",
+        time: "10.30AM",
+    },
+    {
+        id: 4,
+        location: "Location FOUR",
+        event: "Team Meeting",
+        employee: "/img/avatars/calendar-avatar.png",
+        time: "11.00AM",
+    },
+];
 </script>
