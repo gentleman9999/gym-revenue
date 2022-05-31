@@ -4,7 +4,7 @@
             v-for="column in columns"
             :key="column.field"
             class="px-3"
-            :class="column.class"
+            :class="column.class + (rowBordered ? ' px-3' : '  px-3 border-b')"
         >
             {{ column.label }}
         </th>
@@ -12,7 +12,6 @@
 </template>
 <style scoped>
 thead {
-    border-bottom: 1px solid #868686;
     z-index: 5;
 }
 </style>
@@ -21,6 +20,10 @@ const props = defineProps({
     columns: {
         type: Array,
         default: [],
+    },
+    rowBordered: {
+        type: Boolean,
+        default: false,
     },
 });
 </script>
