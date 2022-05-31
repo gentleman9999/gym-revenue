@@ -20,6 +20,16 @@ class NewClientSeeder extends Seeder
      */
     public function run()
     {
+        $amountOfSalesReps = 5;
+        $amountOfAssociates = 10;
+        $amountOfTrainers = 5;
+        $amountOfElse = 2;
+        if (env('QUICK_SEED')) {
+            $amountOfSalesReps = 1;
+            $amountOfAssociates = 1;
+            $amountOfTrainers = 1;
+            $amountOfElse = 1;
+        }
         VarDumper::dump("Adding Factory Users...");
 
         $clients = Client::all();
@@ -44,7 +54,7 @@ class NewClientSeeder extends Seeder
                 if ($role['title'] !== 'Employee') {
                     if ($role['title'] === 'Sales Rep') {
                         $users = User::factory()
-                            ->count(5)
+                            ->count($amountOfSalesReps)
                             ->make([
                                 'client' => $client->name,
                                 'role_id' => $role['id'],
@@ -86,7 +96,7 @@ class NewClientSeeder extends Seeder
                     foreach ($classification as $class) {
                         if ($class['title'] == 'Club Associate') {
                             $users = User::factory()
-                                ->count(10)
+                                ->count($amountOfAssociates)
                                 ->make([
                                     'client' => $client->name,
                                     'role_id' => $role['id'],
@@ -95,7 +105,7 @@ class NewClientSeeder extends Seeder
                                 ]);
                         } elseif ($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
                             $users = User::factory()
-                                ->count(5)
+                                ->count($amountOfTrainers)
                                 ->make([
                                     'client' => $client->name,
                                     'role_id' => $role['id'],
@@ -104,7 +114,7 @@ class NewClientSeeder extends Seeder
                                 ]);
                         } else {
                             $users = User::factory()
-                                ->count(2)
+                                ->count($amountOfElse)
                                 ->make([
                                     'client' => $client->name,
                                     'role_id' => $role['id'],
