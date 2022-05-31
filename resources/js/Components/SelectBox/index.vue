@@ -7,7 +7,16 @@
             :onClick="toggleCollapsed"
         >
             {{ label }}
-            <select-box-icon :isCollapsed="isCollapsed" :size="size" />
+            <select-box-icon
+                :isCollapsed="isCollapsed"
+                :size="size"
+                :color="
+                    {
+                        white: '#FFF',
+                        secondary: '#0074C8',
+                    }[color]
+                "
+            />
         </Button>
         <select-box-content v-if="!isCollapsed">
             <select-box-item
@@ -62,6 +71,10 @@ const props = defineProps({
     class: {
         type: String,
         default: "",
+    },
+    color: {
+        type: String,
+        default: "white",
     },
 });
 const isCollapsed = ref(true);

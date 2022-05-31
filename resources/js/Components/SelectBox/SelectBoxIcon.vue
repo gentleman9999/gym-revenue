@@ -6,7 +6,11 @@
             'rotate-180': !isCollapsed,
         }"
     >
-        <arrow-icon direction="down" fill="#FFF" :size="size" />
+        <arrow-icon
+            direction="down"
+            :fill="isCollapsed ? color : '#FFF'"
+            :size="size"
+        />
     </span>
 </template>
 <script setup>
@@ -18,6 +22,10 @@ const props = defineProps({
     size: {
         type: String,
         default: "sm",
+    },
+    color: {
+        type: String,
+        default: "#FFF",
     },
 });
 </script>

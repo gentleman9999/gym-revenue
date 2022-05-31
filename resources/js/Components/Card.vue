@@ -31,9 +31,8 @@
                     :value="isFavorite"
                     :onChange="toggleFavorite"
                 />
-                <span class="flex items-center w-4" v-if="options.collapse">
-                    <img src="/img/arrow-up.svg" />
-                </span>
+                <more-icon v-if="options.more" />
+                <arrow-icon v-if="options.collapse" direction="up" size="xs" />
             </div>
         </div>
         <slot></slot>
@@ -45,6 +44,9 @@ import { ref } from "vue";
 import FavoriteBtn from "@/Components/FavoriteBtn";
 import SelectBox from "@/Components/SelectBox";
 import SearchInput from "@/Components/SearchInput";
+import MoreIcon from "@/Components/Icons/More";
+import ArrowIcon from "@/Components/Icons/Arrow";
+
 const props = defineProps({
     class: {
         type: String,
@@ -70,7 +72,7 @@ const props = defineProps({
 });
 const derivedClass = computed({
     get() {
-        return `px-4 py-3 border border-secondary rounded-lg bg-neutral-900 relative mb-3 ${
+        return `px-4 py-3 border border-secondary rounded bg-neutral-900 relative mb-3 ${
             props.class
         } ${props.label ? "mt-9" : ""}`;
     },

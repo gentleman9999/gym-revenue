@@ -3,7 +3,7 @@
         <tr
             v-for="item in props.data"
             :key="item.id"
-            class="hover:bg-indigo-100"
+            class="hover:bg-indigo-100 hover:text-black"
         >
             <td class="border-l border-secondary">
                 <div>{{ item.location }}</div>
@@ -23,6 +23,7 @@
                     :items="available_status"
                     size="xs"
                     class="float-right"
+                    color="secondary"
                 />
             </td>
             <td class="border-r border-secondary">

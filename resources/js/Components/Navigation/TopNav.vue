@@ -75,12 +75,12 @@
                             />
                         </div>
 
-                        <jet-nav-link
+                        <!-- <jet-nav-link
                             :href="route('reports.page', 'Kpi')"
                             :active="route().current('reports.pages')"
                         >
                             Reporting Dashboard
-                        </jet-nav-link>
+                        </jet-nav-link> -->
 
                         <jet-nav-link
                             href="#"

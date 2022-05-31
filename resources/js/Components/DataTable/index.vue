@@ -5,13 +5,18 @@
                 'border-separate': rowBordered,
             }"
         >
-            <table-header :columns="columns" :rowBordered="rowBordered" />
+            <table-header
+                v-if="!noHeader"
+                :columns="columns"
+                :rowBordered="rowBordered"
+            />
             <table-body
                 :columns="columns"
                 :data="data"
                 :collapsed="collapsed"
                 :border="borderType"
                 :rowBordered="rowBordered"
+                :interactive="interactive"
             />
         </table>
     </div>
@@ -30,10 +35,6 @@ const props = defineProps({
         type: String,
         default: "",
     },
-    borderType: {
-        type: String,
-        default: "",
-    },
     data: {
         type: Array,
         default: [],
@@ -42,11 +43,24 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+
+    borderType: {
+        type: String,
+        default: "",
+    },
     collapsed: {
         type: Boolean,
         default: false,
     },
     rowBordered: {
+        type: Boolean,
+        default: false,
+    },
+    interactive: {
+        type: Boolean,
+        default: false,
+    },
+    noHeader: {
         type: Boolean,
         default: false,
     },

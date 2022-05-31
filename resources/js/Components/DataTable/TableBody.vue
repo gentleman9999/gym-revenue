@@ -1,6 +1,13 @@
 <template>
     <tbody>
-        <tr v-for="item in data" :key="item.id">
+        <tr
+            v-for="item in data"
+            :key="item.id"
+            :class="{
+                'hover:bg-indigo-100': interactive,
+                'hover:text-black': interactive,
+            }"
+        >
             <td
                 v-for="(column, col_ndx) in columns"
                 :key="column.field + item.id"
@@ -42,6 +49,9 @@ td {
 td > div {
     text-align: center;
 }
+tr:hover .text-white {
+    color: #0074c8;
+}
 </style>
 <script setup>
 import { h } from "vue";
@@ -58,6 +68,10 @@ const props = defineProps({
     data: {
         type: Array,
         default: [],
+    },
+    interactive: {
+        type: Boolean,
+        default: false,
     },
     collapsed: {
         type: Boolean,
