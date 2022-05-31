@@ -9,10 +9,11 @@
         :options="customOptions"
         v-bind="$attrs"
         @onClose="handleOnClose"
-        @close="handleOnClose"
+        @onClosed="handleOnClose"
         @onInit="handleOnInit"
         @onLoaded="handleOnLoaded"
         :class="{ hidden: showSpinner }"
+        style="position: unset"
     />
 </template>
 
@@ -48,6 +49,13 @@ const customOptions = {
     },
     disableAlerts: true,
     windowBar: ["fullscreen", "close"],
+    // callbacks: {
+    //     // onClose: ()=>emit("close"),
+    //     onClose: () => {
+    //         console.log("onClose");
+    //         emit("close");
+    //     },
+    // },
     //this could be cool to add in a clients plans. we just need to hide it until we know how to
     //tap into the API to pull in the plans
     contentBlocks: {
@@ -73,13 +81,6 @@ const customOptions = {
         FEEDS: props.productsUrl,
         // Retrieve products from feed
         PRODUCTS: "/products",
-    },
-    callbacks: {
-        // onClose: ()=>emit("close"),
-        onClose: () => {
-            console.log("onClose");
-            emit("close");
-        },
     },
     mergeTags: [
         {

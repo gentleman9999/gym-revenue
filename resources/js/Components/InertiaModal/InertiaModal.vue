@@ -28,7 +28,12 @@ import Axios from "axios";
 import { provide, shallowRef, watch, watchEffect } from "vue";
 import { fireErrorEvent, fireSuccessEvent } from "./events";
 import uniqueId from "./uniqueId";
-import { injectIsModal, modalHeader, modalRedirect } from "./symbols";
+import {
+    injectIsModal,
+    modalHeader,
+    modalRedirect,
+    modalRedirectBack,
+} from "./symbols";
 import { provider } from "./useModalSlot";
 import { useModal } from "@/Components/InertiaModal";
 
@@ -163,6 +168,7 @@ const visitInModal = (url, options = {}) => {
                             } else if (
                                 modalRedirect in event.detail.visit.headers
                             ) {
+                                console.log("redirect is modalable");
                                 //check if we wanted a redirect in the modal
                                 event.detail.visit.headers[modalHeader] =
                                     currentId;
@@ -184,9 +190,8 @@ const visitInModal = (url, options = {}) => {
                                         return config;
                                     });
                             } else if (opts.redirectBack) {
-                                event.detail.visit.headers[
-                                    "X-Inertia-Modal-Redirect-Back"
-                                ] = "true";
+                                event.detail.visit.headers[modalRedirectBack] =
+                                    "true";
                                 if (typeof opts.redirectBack === "function") {
                                     removeSuccessEventListener = Inertia.on(
                                         "success",
@@ -196,20 +201,6 @@ const visitInModal = (url, options = {}) => {
                             }
                         }
                     );
-                    console.log("received inertia response -", {
-                        loading: false,
-                        component,
-                        removeBeforeEventListener,
-                        removeSuccessEventListener,
-                        interceptor,
-                        page,
-                        cancelToken,
-                        onClose: opts.onClose,
-                        reloadOnClose: opts.reloadOnClose,
-                        props: opts.modalProps,
-                        pageProps: opts.pageProps,
-                        close,
-                    });
                     modal.value = {
                         loading: false,
                         component,
@@ -225,9 +216,7 @@ const visitInModal = (url, options = {}) => {
                         close,
                     };
                 });
-            // return Promise.reject(new axios.Cancel());
-            // cancelToken.value?.cancel();
-            return Promise.reject();
+            return Promise.reject(new axios.Cancel());
         }
         return response;
     });

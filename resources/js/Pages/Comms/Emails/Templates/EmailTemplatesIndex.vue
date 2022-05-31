@@ -153,6 +153,7 @@ export default defineComponent({
                                 },
                                 modalProps: {
                                     class: "max-w-[90vw] h-[90vh] p-0",
+                                    showCloseButton: false,
                                 },
                                 // reloadOnClose: true,
                             }
@@ -176,11 +177,12 @@ export default defineComponent({
                     Inertia.visitInModal(
                         route("comms.email-templates.create"),
                         {
-                            redirectBack: (e) => {
-                                console.log("redirect-back", e);
-                            },
+                            // redirectBack: (e) => {
+                            //     console.log("redirect-back-after-create", e);
+                            // },
                             modalProps: {
                                 class: "max-w-[90vw] h-[90vh] p-0",
+                                showCloseButton: false,
                             },
                             reloadOnClose: true,
                         }

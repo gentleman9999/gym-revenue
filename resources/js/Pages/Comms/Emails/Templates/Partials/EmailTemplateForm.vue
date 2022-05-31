@@ -62,6 +62,7 @@ import SweetModal from "@/Components/SweetModal3/SweetModal";
 import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder";
 import DaisyModal from "@/Components/DaisyModal";
 import usePage from "@/Components/InertiaModal/usePage";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
@@ -75,6 +76,7 @@ export default {
     },
     props: ["clientId", "template", "canActivate"],
     setup(props, context) {
+        const inertiaModal = useModal();
         const page = usePage();
         const nameModal = ref(null);
         let template = props?.template || {
@@ -95,18 +97,32 @@ export default {
 
         let handleSubmit = () => {
             if (!form.processing) {
-                form.put(route("comms.email-templates.update", template.id));
+                form.put(route("comms.email-templates.update", template.id), {
+                    // headers: { "X-Inertia-Modal-Redirect": true },
+                    headers: { "X-Inertia-Modal-CloseOnSuccess": true },
+                    onFinish: () => {
+                        if (closeAfterSave.value) {
+                            console.log(
+                                "closeAfterSave",
+                                closeAfterSave.value,
+                                inertiaModal.value
+                            );
+                            inertiaModal.value.close();
+                        }
+                    },
+                });
             }
         };
         if (operation === "Create") {
             handleSubmit = () => {
                 if (!form.processing) {
                     form.post(route("comms.email-templates.store"), {
-                        // headers: { "X-Inertia-Modal-Redirect": true },
+                        headers: { "X-Inertia-Modal-Redirect": true },
                         onSuccess: () => {
-                            console.log("onSuccess!");
+                            console.log("onSuccess-Create!");
                             if (closeAfterSave.value) {
                                 console.log("close the modal now!");
+                                inertiaModal.value.close();
                             }
                         },
                     });

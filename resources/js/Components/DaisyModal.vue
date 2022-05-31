@@ -10,7 +10,7 @@
                     type="button"
                     class="btn btn-ghost absolute top-2 right-2"
                     @click="close"
-                    v-if="closable"
+                    v-if="closable && showCloseButton"
                 >
                     x
                 </button>
@@ -38,15 +38,15 @@ import { useLockScroll } from "vue-composable";
 
 export default defineComponent({
     props: {
-        id: {
-            type: String,
-            required: true,
-        },
         open: {
             type: Boolean,
             default: false,
         },
         closable: {
+            type: Boolean,
+            default: true,
+        },
+        showCloseButton: {
             type: Boolean,
             default: true,
         },

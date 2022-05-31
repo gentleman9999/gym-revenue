@@ -57,7 +57,8 @@ class UpdateEmailTemplate
 
         Alert::success("Email Template'{$template->name}' was updated")->flash();
 
-//        return Redirect::route('comms.email-templates.edit', $template->id);
-        return Redirect::back();
+        return Redirect::route('comms.email-templates.edit', $template->id);
+        //redirecting back causes infinite loop in inertia modals.
+//        return Redirect::back();
     }
 }
