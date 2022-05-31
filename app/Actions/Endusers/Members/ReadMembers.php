@@ -4,6 +4,7 @@ namespace App\Actions\Endusers\Members;
 
 use App\Models\Clients\Client;
 use App\Models\Endusers\Member;
+use App\Models\Team;
 use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -28,7 +29,8 @@ class ReadMembers
     {
         $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
         $members = [];
-        $members_model = $this->setUpMembersObject(request()->user()->isClientUser(), request()->user()->currentClientId());
+        //$members_model = $this->setUpMembersObject(request()->user()->isClientUser(), request()->user()->currentClientId());
+        $members_model = $this->setUpMembersObject(true, '2f108597-fe62-458f-ac30-a159936f7aa');
 
         if (! empty($members_model)) {
             $members = $members_model
@@ -45,13 +47,13 @@ class ReadMembers
 
     public function asController(ActionRequest $request)
     {
-        $member = $this->handle(
+        $members = $this->handle(
             $request->validated(),
             $request->user()
         );
 
-        if (! $request->wantsJson()) {
-            return $member;
+        if ($request->wantsJson()) {
+            return $members;
         }
     }
 
@@ -60,7 +62,7 @@ class ReadMembers
         $results = [];
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $current_team = Team::whereId(60)->first(); //request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
 
             $default_team_name = $client->default_team_name->value;

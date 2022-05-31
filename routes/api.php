@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/leads', \App\Actions\Endusers\Leads\ReadLeads::class);
 
+Route::get('/members', \App\Actions\Endusers\Members\ReadMembers::class);
 
 /*
 Route::middleware('auth:sanctum')->prefix('/members')->group(function () {

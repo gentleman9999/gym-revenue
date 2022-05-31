@@ -4,6 +4,7 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
+use App\Models\Team;
 use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -34,7 +35,9 @@ class ReadLeads
 
 
         $prospects = [];
-        $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
+        //$prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
+        $prospects_model = $this->setUpLeadsObject(true, '2f108597-fe62-458f-ac30-a159936f7aae');
+
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -57,13 +60,13 @@ class ReadLeads
 
     public function asController(ActionRequest $request)
     {
-        $lead = $this->handle(
+        $leads = $this->handle(
             $request->validated(),
             $request->user(),
         );
 
-        if (! $request->wantsJson()) {
-            return $lead;
+        if ($request->wantsJson()) {
+            return $leads;
         }
     }
 
@@ -72,7 +75,7 @@ class ReadLeads
         $results = [];
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $current_team = Team::whereId(60)->first(); //request()->user()->currentTeam()->first();
             $client = Client::whereId($client_id)->with('default_team_name')->first();
 
             $default_team_name = $client->default_team_name->value;
