@@ -17,6 +17,10 @@ class CalendarSeeder extends Seeder
      */
     public function run()
     {
+        $amountOfEvents = 5;
+        if (env('QUICK_SEED')) {
+            $amountOfEvents = 2;
+        }
         // Get all the Clients
         VarDumper::dump('Getting Clients');
         $clients = Client::whereActive(1)->get();
@@ -40,7 +44,7 @@ class CalendarSeeder extends Seeder
                 $randomUsers = array_values(array_unique($randomUsers));
 
                 foreach ($typesOfEvents as $eventType) {
-                    for ($i = 1; $i <= 5; $i++) {
+                    for ($i = 1; $i <= $amountOfEvents; $i++) {
                         $datebetween = abs(($dateend - $datestart) / $daystep);
                         $randomday = rand(0, $datebetween);
                         $hour1 = rand(3, 12);
