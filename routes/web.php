@@ -46,8 +46,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/user/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
+    Route::post('/tokens', \App\Actions\Fortify\GrantAccessToken::class)->name('api-tokens.store');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
