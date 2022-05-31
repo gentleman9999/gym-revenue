@@ -26,7 +26,12 @@ class ReadLeads
 
     public function handle($data, $current_user = null)
     {
-        $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
+        if (array_key_exists('per_page', $data)) {
+            $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
+        } else {
+            $page_count = 10;
+        }
+
         $prospects = [];
         $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
 
