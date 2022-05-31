@@ -23,11 +23,22 @@ class EmailTemplates extends Model
     protected $fillable = [
         'id', 'client_id', 'name', 'markup', 'subject',
         'json', 'active', 'team_id', 'created_by_user_id',
+        'thumbnail',
     ];
 
     protected $casts = [
         'json' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::updating(function ($model) {
+            if ($model->getOriginal()['markup'] !== $model->markup) {
+                //markup changed, so reset the thumbnail
+                $model->thumbnail = null;
+            }
+        });
+    }
 
     public function scopeFilter($query, array $filters)
     {

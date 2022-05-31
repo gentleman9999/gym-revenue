@@ -6,6 +6,7 @@ use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
 use App\Models\User;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\EmailTemplateThumbnailUpdated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -61,5 +62,10 @@ class EmailTemplatesProjector extends Projector
                 ],
             ]);
         }
+    }
+
+    public function onEmailTemplateThumbnailUpdated(EmailTemplateThumbnailUpdated $event)
+    {
+        EmailTemplates::findOrFail($event->id)->updateOrFail(['thumbnail' => $event->thumbnail]);
     }
 }
