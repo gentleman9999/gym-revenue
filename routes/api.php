@@ -18,10 +18,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::prefix('leads')->group(function () {
+    Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class);
+    Route::post('/', \App\Actions\Endusers\Leads\CreateLead::class);
+});
 
-Route::get('/leads', \App\Actions\Endusers\Leads\ReadLeads::class);
-
-Route::get('/members', \App\Actions\Endusers\Members\ReadMembers::class);
+Route::prefix('members')->group(function () {
+    Route::get('/', \App\Actions\Endusers\Members\ReadMembers::class);
+    Route::post('/', \App\Actions\Endusers\Members\CreateMember::class);
+});
 
 /*
 Route::middleware('auth:sanctum')->prefix('/members')->group(function () {
