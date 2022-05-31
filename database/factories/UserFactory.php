@@ -44,7 +44,7 @@ class UserFactory extends Factory
             'address2' => $this->faker->secondaryAddress,
             'city' => $this->faker->city,
             'state' => $this->faker->stateAbbr,
-            'zip' => trim($this->faker->postcode, 5),
+            'zip' => substr($this->faker->postcode, 0, 5),
             'alternate_email' => $alternate_email,
             'phone' => $phone,
             'job_title' => $this->faker->jobTitle(),
