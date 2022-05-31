@@ -36,6 +36,10 @@ const props = defineProps({
     productsUrl: {
         type: String,
     },
+    apiKey: {
+        type: String,
+        required: true,
+    },
 });
 
 const page = usePage();
@@ -43,8 +47,7 @@ const page = usePage();
 const customOptions = {
     title: props.title,
     authorize: {
-        // apiKey: "DItrNa1tkR8lXPoTEKq8Mf6MFm2hessWJaCKlNMR0cQ9wmwq0QUuk0GBirAO",
-        apiKey: "r00uTVwXAIIXDJMrm3sAZQA6FTbhlKamkvY3KIID40fIrwoa8AXuEKpxY0dx",
+        apiKey: props.apiKey,
         userId: page.props.value.user.id,
     },
     disableAlerts: true,

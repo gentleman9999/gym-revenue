@@ -85,6 +85,7 @@ class EmailTemplatesController extends Controller
     public function create()
     {
         return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', [
+            'topolApiKey' => env('TOPOL_API_KEY'),
             'plansUrl' => env('APP_URL') . "/api/plans",
         ]);
     }
@@ -102,6 +103,8 @@ class EmailTemplatesController extends Controller
 
         return Inertia::render('Comms/Emails/Templates/EditEmailTemplate', [
             'template' => $template,
+            'topolApiKey' => env('TOPOL_API_KEY'),
+            'plansUrl' => env('APP_URL') . "/api/plans",
         ]);
     }
 

@@ -17,7 +17,11 @@ class EmailTemplateSeeder extends Seeder
      */
     public function run()
     {
-        $default_markup = "<html><body>Hello, %name%!<br/> Have a great day!<br /><br /><br /><span>Sincerely,</span><br/><br/><br/><br/>GymmieBot</body></html>";
+        //TODO: could create more pregenerated ones, and loop over directory
+        $template = json_decode(file_get_contents('database/data/templates/email/basic.json'));
+
+        $default_markup = $template->markup;
+        $default_json = $template->json;
 //        // For Cape & Bay
 //        VarDumper::dump('Default email template for Cape & Bay');
 //        $template = CreateEmailTemplate::run([
@@ -41,7 +45,7 @@ class EmailTemplateSeeder extends Seeder
                 'client_id' => $client->id,
                 'active' => 1,
                 'markup' => $default_markup,
-                'json' => '',//TODO
+                'json' => $default_json,
             ]);
 
             $template->active = 1;

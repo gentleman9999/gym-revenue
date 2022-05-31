@@ -13,13 +13,13 @@
                     class="btn justify-self-end"
                     :href="route('comms.dashboard')"
                 >
-                    <span
-                        ><font-awesome-icon
+                    <span>
+                        <font-awesome-icon
                             :icon="['far', 'chevron-double-left']"
                             size="sm"
                         />
-                        Back</span
-                    >
+                        Back
+                    </span>
                 </inertia-link>
             </div>
         </template>
@@ -32,6 +32,8 @@
             :resource="templates"
             :actions="actions"
             :top-actions="topActions"
+            :table-component="false"
+            :card-component="EmailTemplateCard"
         />
 
         <confirm
@@ -65,11 +67,12 @@ import {
     faChevronDoubleLeft,
     faEllipsisH,
 } from "@fortawesome/pro-regular-svg-icons";
+import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendModal from "@/Components/SweetModal3/SweetModal";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail";
-
-library.add(faChevronDoubleLeft, faEllipsisH);
+import EmailTemplateCard from "./Partials/EmailTemplateCard";
+library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 export default defineComponent({
     name: "EmailTemplatesIndex",
@@ -210,6 +213,7 @@ export default defineComponent({
             confirmSend,
             sendVars,
             topActions,
+            EmailTemplateCard,
         };
     },
 });

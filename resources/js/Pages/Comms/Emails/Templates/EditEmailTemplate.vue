@@ -18,6 +18,7 @@
                 :client-id="$page.props.user.current_client_id"
                 :template="template"
                 :can-activate="true"
+                :topol-api-key="topolApiKey"
             />
         </template>
     </ModalableWrapper>
@@ -49,6 +50,14 @@ export default defineComponent({
         template: {
             required: true,
             type: Object,
+        },
+        topolApiKey: {
+            type: String,
+            required: true,
+        },
+        plansUrl: {
+            type: String,
+            required: true,
         },
     },
 });

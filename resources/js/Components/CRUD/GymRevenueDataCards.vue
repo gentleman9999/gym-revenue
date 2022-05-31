@@ -27,7 +27,7 @@
 <style scoped>
 .wrapper {
     @apply shadow gap-4;
-    @apply grid grid-cols-1 md:grid-cols-2 -my-2 py-2;
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 -my-2 py-2;
     @apply align-middle min-w-full sm:px-6 lg:px-8 sm:-mx-6 lg:-mx-8;
     max-width: 100vw;
 }

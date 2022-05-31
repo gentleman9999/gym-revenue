@@ -17,6 +17,7 @@
             <email-template-form
                 :client-id="$page.props.user.current_client_id"
                 :can-activate="false"
+                :topol-api-key="topolApiKey"
             />
             <!--            <email-builder @close="handleClose" :products-url="plansUrl" />-->
         </template>
@@ -39,6 +40,10 @@ import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 export default defineComponent({
     props: {
         plansUrl: {
+            type: String,
+            required: true,
+        },
+        topolApiKey: {
             type: String,
             required: true,
         },

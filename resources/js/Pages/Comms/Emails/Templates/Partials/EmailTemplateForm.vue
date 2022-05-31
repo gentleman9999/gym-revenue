@@ -4,6 +4,7 @@
         @onSaveAndClose="handleOnSaveAndClose"
         :json="template?.json || null"
         :title="template?.name || undefined"
+        :api-key="topolApiKey"
     />
     <daisy-modal ref="nameModal">
         <div class="form-control">
@@ -74,7 +75,7 @@ export default {
         SweetModal,
         DaisyModal,
     },
-    props: ["clientId", "template", "canActivate"],
+    props: ["clientId", "template", "canActivate", "topolApiKey"],
     setup(props, context) {
         const inertiaModal = useModal();
         const page = usePage();
