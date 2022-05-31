@@ -32,6 +32,7 @@ class ReadLeads
             $page_count = 10;
         }
 
+
         $prospects = [];
         $prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
 

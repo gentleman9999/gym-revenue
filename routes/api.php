@@ -18,11 +18,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->prefix('/leads')->group(function () {
-    Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class)->name('leads.read');
-});
 
-Route::get('/testleads', \App\Actions\Endusers\Leads\ReadLeads::class);
+Route::get('/leads', \App\Actions\Endusers\Leads\ReadLeads::class);
 
 
 /*
