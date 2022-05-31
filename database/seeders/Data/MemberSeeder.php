@@ -17,6 +17,10 @@ class MemberSeeder extends Seeder
      */
     public function run()
     {
+        $amountOfMembers = 3;
+        if (env('QUICK_SEED')) {
+            $amountOfMembers = 1;
+        }
         VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)
@@ -29,7 +33,7 @@ class MemberSeeder extends Seeder
                 // For each client, get all the locations
                 if (count($client->locations) > 0) {
                     foreach ($client->locations as $idx => $location) {
-                        $members = Member::factory()->count(3)
+                        $members = Member::factory()->count($amountOfMembers)
                             // over ride the client id and gr id from the factory
                             ->client_id($client->id)
                             ->gr_location_id($location->gymrevenue_id ?? '')

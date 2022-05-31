@@ -29,7 +29,7 @@ class UserFactory extends Factory
         $username = "{$first_name}.{$last_name}";
         $domain = $this->faker->freeEmailDomain;
         $alternate_email = "{$username}@{$domain}";
-        $phone = preg_replace('/[^0-9.]+/', '', $this->faker->phoneNumber);
+        $phone = preg_replace('/[^0-9]+/', '', $this->faker->phoneNumber);
         if (str_starts_with("1", $phone)) {
             $phone = substr($phone, 1);
         }
@@ -47,6 +47,7 @@ class UserFactory extends Factory
             'zip' => trim($this->faker->postcode, 5),
             'alternate_email' => $alternate_email,
             'phone' => $phone,
+            'job_title' => $this->faker->jobTitle(),
         ];
     }
 

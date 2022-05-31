@@ -20,6 +20,10 @@ class LeadProspectSeeder extends Seeder
      */
     public function run()
     {
+        $amountOfLeads = 20;
+        if (env('QUICK_SEED')) {
+            $amountOfLeads = 2;
+        }
         VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)
@@ -36,13 +40,13 @@ class LeadProspectSeeder extends Seeder
                 if (count($client->locations) > 0) {
                     foreach ($client->locations as $idx => $location) {
                         // For each location, MAKE 25 users, don't create
-                        $prospects = Lead::factory()->count(25)
+                        $prospects = Lead::factory()->count($amountOfLeads)
                             // over ride the client id and gr id from the factory
                             ->client_id($client->id)
                             ->gr_location_id($location->gymrevenue_id ?? '')
                             ->make();
 
-                        VarDumper::dump('Generating Leads!');
+                        VarDumper::dump('Generating Leads for '.$client->name.'!');
                         foreach ($prospects as $prospect) {
                             $prospect->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
                             $prospect->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
