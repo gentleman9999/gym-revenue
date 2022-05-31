@@ -196,7 +196,7 @@ const visitInModal = (url, options = {}) => {
                             }
                         }
                     );
-                    console.log({
+                    console.log("received inertia response -", {
                         loading: false,
                         component,
                         removeBeforeEventListener,

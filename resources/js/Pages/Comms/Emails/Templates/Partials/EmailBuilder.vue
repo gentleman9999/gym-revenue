@@ -74,16 +74,13 @@ const customOptions = {
         // Retrieve products from feed
         PRODUCTS: "/products",
     },
-    // callbacks: {
-    //     // onClose: ()=>emit("close"),
-    //     onClose: ()=> {
-    //         console.log('onClose');
-    //         emit("close")
-    //     },
-    //     onInit: ()=> {
-    //         console.log('INIT!');
-    //     },
-    // },
+    callbacks: {
+        // onClose: ()=>emit("close"),
+        onClose: () => {
+            console.log("onClose");
+            emit("close");
+        },
+    },
     mergeTags: [
         {
             name: "Merge tags", // Group name
