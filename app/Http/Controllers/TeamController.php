@@ -30,9 +30,7 @@ class TeamController extends Controller
         $client_id = $current_user->currentClientId();
         $current_team = request()->user()->currentTeam()->first();
         //   $users = $current_team->team_users()->get();
-        $users = User::with(['teams', 'home_club'])->whereHas('detail', function ($query) use ($client_id) {
-            return $query->whereName('associated_client')->whereValue($client_id);
-        })->get();
+        $users = User::with(['teams', 'home_location'])->whereClientId($client_id)->get();
 
         if ($client_id) {
             $client = Client::with('teams')->find($client_id);
@@ -100,21 +98,15 @@ class TeamController extends Controller
         })->get();
 
         if ($client_id) {
-            $availableUsers = User::whereHas('detail', function ($query) use ($client_id) {
-                return $query->whereName('associated_client')->whereValue($client_id);
-            })->get();
+            $availableUsers = User::whereClientId($client_id)->get();
             if ($current_user->isCapeAndBayUser()) {
                 //if cape and bay user, add all the non client associated capeandbay users
-                $availableUsers = $availableUsers->merge(User::whereDoesntHave('details', function ($query) use ($current_user) {
-                    return $query->where('name', '=', 'associated-client');
-                })->where('email', 'like', '%@capeandbay.com')->get());
+                $availableUsers = $availableUsers->merge(User::whereClientId(null)->where('email', 'like', '%@capeandbay.com')->get());
             }
             $availableLocations = $team->isClientsDefaultTeam() ? [] : Location::whereClientId($client_id)->get();
         } elseif ($current_user->isCapeAndBayUser()) {
             //look for users that aren't client users
-            $availableUsers = User::whereDoesntHave('details', function ($query) use ($current_user) {
-                return $query->where('name', '=', 'associated-client');
-            })->where('email', 'like', '%@capeandbay.com')->get();
+            $availableUsers = User::whereClientId(null)->get();
         }
 
         return Jetstream::inertia()->render($request, 'Teams/Edit', [
@@ -156,8 +148,8 @@ class TeamController extends Controller
 
         if (count($non_admin_users) > 0) {
             $first_user = User::find($non_admin_users[0]->user_id);
-            $data['clubs'] = Location::whereClientId($first_user->client()[0]->id)->get();
-            $data['client'] = Client::find($first_user->client()[0]->id);
+            $data['clubs'] = Location::whereClientId($first_user->client->id)->get();
+            $data['client'] = Client::find($first_user->client->id);
         }
 
         if (request()->user()->isCapeAndBayUser()) {

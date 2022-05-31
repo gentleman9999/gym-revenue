@@ -28,11 +28,11 @@
         </div>
         <div
             class="field col-span-6 lg:col-span-3"
-            v-if="user.classification.value"
+            v-if="user.classification?.title"
         >
             <label>Classification:</label>
             <div class="data">
-                {{ user.classification.value }}
+                {{ user.classification.title }}
             </div>
         </div>
         <template v-if="user.teams?.length">

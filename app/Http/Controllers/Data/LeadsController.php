@@ -113,7 +113,7 @@ class LeadsController extends Controller
             'grlocations' => Location::whereClientId($client_id)->get(),
             'leadsources' => LeadSource::whereClientId($client_id)->get(),
             'opportunities' => array_values($opportunities->toArray()),
-            'leadsclaimed' => LeadDetails::whereClientId($client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value'),
+            'leadsclaimed' => LeadDetails::where('lead_details.client_id', '=', $client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value'),
 
         ]);
     }

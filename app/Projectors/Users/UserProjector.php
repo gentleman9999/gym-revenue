@@ -37,22 +37,11 @@ class UserProjector extends Projector
                 return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
 
-            $user_table_data['name'] = "{$user_table_data['first_name']} {$user_table_data['last_name']}";
-
             //create the entry in users table
             $user = User::create($user_table_data);
 
-
-
             $details = [
-                'altEmail' => $data['altEmail'] ?? null,
-                'jobTitle' => $data['jobTitle'] ?? null,
-                'start_date' => $data['start_date'] ?? null,
-                'end_date' => $data['end_date'] ?? null,
-                'termination_date' => $data['termination_date'] ?? null,
-                'home_club' => $data['home_club'] ?? null,
-                'is_manager' => $data['is_manager'] ?? null,
-                'classification' => $data['classification'] ?? null,
+                'contact_preference' => $data['contact_preference'] ?? null,
             ];
 
             // Go through the details and create them in the user_details via the
@@ -75,8 +64,6 @@ class UserProjector extends Projector
             }
 
             if ($client_id) {
-                //setup their client association
-                UserDetails::create(['user_id' => $user->id, 'name' => 'associated_client', 'value' => $client_id]);
                 // Get the client's default-team name in client_details
                 $client_model = Client::whereId($client_id)->with('default_team_name')->first();
                 $default_team_name = $client_model->default_team_name->value;
@@ -99,14 +86,8 @@ class UserProjector extends Projector
              * These two declarations should never EVER be chained together.
              */
             $role = null;
-            $classification = null; //User's classification (ex: Front Desk Assistant)
             if (array_key_exists('role', $data)) {
                 $role = Role::whereId($data['role'])->get();
-            }
-            if (array_key_exists('classification', $data) && $data['classification']) {
-                if ($client_id) {
-                    $classification = $data['classification'];
-                }
             }
             if (array_key_exists('team_id', $data)) {
                 if ($data['team_id'] === 1 || $data['team_id'] === 10) {
@@ -117,11 +98,6 @@ class UserProjector extends Projector
 
             //let the bouncer know this $user is OG
             Bouncer::assign($role)->to($user);
-            UserDetails::create([
-                'user_id' => $user->id,
-                'name' => 'classification',
-                'value' => $classification,
-            ]);
 
             //attach the user to their teams
             $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
@@ -145,20 +121,12 @@ class UserProjector extends Projector
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data, $event) {
-            $user = User::with(['teams', 'associated_client'])->findOrFail($data['id']);
+            $user = User::with(['teams'])->findOrFail($data['id']);
             $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
             $user->updateOrFail($data);
 
             $details = [
-                'altEmail' => $data['altEmail'] ?? null,
-                'jobTitle' => $data['jobTitle'] ?? null,
-                'home_club' => $data['home_club'] ?? null,
-                'start_date' => $data['start_date'] ?? null,
-                'end_date' => $data['end_date'] ?? null,
-                'termination_date' => $data['termination_date'] ?? null,
-                'is_manager' => $data['is_manager'] ?? null,
-                'classification' => $data['classification'] ?? null,
                 'contact_preference' => $data['contact_preference'] ?? null,
             ];
 
@@ -167,8 +135,6 @@ class UserProjector extends Projector
             foreach ($details as $detail => $value) {
                 UserDetails::createOrUpdateRecord($user->id, $detail, $value);
             }
-
-            $client_id = $user->associated_client ? $user->associated_client->value : null;
 
             $notes = $data['notes'] ?? false;
             if ($notes) {

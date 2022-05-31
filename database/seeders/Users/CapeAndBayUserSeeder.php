@@ -97,8 +97,8 @@ class CapeAndBayUserSeeder extends UserSeeder
             'password' => 'Hello123!',
             'team_id' => 1,
             'role_id' => 1,
-//            'home_club' => $home_club,
-            'is_manager' => 'Senior Manager',
+//            'home_location_id' => $home_location_id,
+            'manager' => 'Senior Manager',
         ]);
     }
 }

@@ -29,13 +29,13 @@ class UpdateUser implements UpdatesUserProfileInformation
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.request()->id],
-            'altEmail' => ['sometimes','required', 'email'],
+            'alternate_email' => ['sometimes','required', 'email'],
             'address1' => ['required'],
             'address2' => ['sometimes', 'nullable'],
             'city' => ['required'],
             'state' => ['required'],
             'zip' => ['required'],
-            'jobTitle' => ['required'],
+            'job_title' => ['required'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
             'termination_date' => ['sometimes'],
@@ -43,11 +43,11 @@ class UpdateUser implements UpdatesUserProfileInformation
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required','integer', 'exists:teams,id'],
             'role_id' => ['required', 'integer'],
-            'classification' => ['required'],
+            'classification_id' => ['required'],
             'contact_preference' => ['nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
-            'home_club' => ['nullable', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?
+            'home_location_id' => ['nullable', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?
         ];
     }
 

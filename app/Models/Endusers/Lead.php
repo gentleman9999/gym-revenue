@@ -28,11 +28,22 @@ class Lead extends Model
         'id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender', 'email',
         'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address',
         'lead_type_id', 'membership_type_id', 'lead_source_id', 'agreement_number',
-        'unsubscribed_comms', 'date_of_birth', 'opportunity',
+        'unsubscribed_comms', 'date_of_birth', 'opportunity', 'external_id', 'misc',
     ];
 
     protected $casts = [
+        'profile_picture' => 'array',
         'unsubscribed_comms' => 'boolean',
+        'misc' => 'array',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'name',
     ];
 
     public function details()

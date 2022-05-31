@@ -41,7 +41,7 @@ class CreateLead
             'date_of_birth' => 'sometimes|required',
             'opportunity' => 'sometimes|required',
             'lead_owner' => 'sometimes|required|exists:users,id',
-            'lead_status' => 'sometimes|required|exists:lead_statuses,id',
+            'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
             'notes' => 'nullable|array',
         ];
     }

@@ -187,9 +187,8 @@ export default defineComponent({
                 transform: (data) => data?.value,
             },
             {
-                name: "is_manager",
+                name: "manager",
                 label: "Manager",
-                transform: (data) => data?.value,
             },
             "home_team",
         ];
@@ -198,19 +197,19 @@ export default defineComponent({
                 "name",
                 "email",
                 {
-                    name: "home_club_name",
+                    name: "home_location.name",
                     label: "Home Club",
+                    // transform: (data) => data?.home_location?.name,
                 },
                 "role",
                 {
                     name: "classification",
                     label: "Classification",
-                    transform: (data) => data?.value,
+                    transform: (data) => data?.title,
                 },
                 {
-                    name: "is_manager",
+                    name: "manager",
                     label: "Manager",
-                    transform: (data) => data.value,
                 },
                 "home_team",
             ];

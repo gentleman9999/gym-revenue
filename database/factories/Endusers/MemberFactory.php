@@ -28,9 +28,6 @@ class MemberFactory extends Factory
         $username = "{$first_name}.{$last_name}";
         $domain = $this->faker->freeEmailDomain;
         $email = "{$username}@{$domain}";
-        $date_range = mt_rand(1262055681, 1262215681);
-//                            $member_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0,2)];
-        $date_of_birth = date("Y-m-d H:i:s", $date_range);
 
         return [
             'id' => Uuid::uuid4()->toString(),
@@ -42,7 +39,7 @@ class MemberFactory extends Factory
             'primary_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()),
             'gender' => $gender,
             'agreement_number' => Uuid::uuid4()->toString(),
-            'date_of_birth' => $date_of_birth,
+            'date_of_birth' => $this->faker->dateTimeBetween('-80 years', '-18 year')->format('Y-m-d H:i:s'),
 
         ];
     }

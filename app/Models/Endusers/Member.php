@@ -27,12 +27,22 @@ class Member extends Model
     protected $fillable = [
         'id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender',
         'email', 'primary_phone', 'alternate_phone', 'gr_location_id', 'profile_picture',
-        'agreement_number', 'gender', 'date_of_birth', 'unsubscribed_comms',
+        'agreement_number', 'gender', 'date_of_birth', 'unsubscribed_comms', 'external_id', 'misc',
     ];
 
     protected $casts = [
         'profile_picture' => 'array',
         'unsubscribed_comms' => 'boolean',
+        'misc' => 'array',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'name',
     ];
 
 //    public function details()

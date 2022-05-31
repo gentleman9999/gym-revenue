@@ -39,6 +39,8 @@ class LeadFactory extends Factory
             'primary_phone' => preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '$1$2$3', $this->faker->phoneNumber()),
             'ip_address' => $this->faker->ipv4(),
             'gender' => $gender,
+            'date_of_birth' => $this->faker->dateTimeBetween('-80 years', '-18 year')->format('Y-m-d H:i:s'),
+            'opportunity' => ['Low', 'Medium', 'High'][rand(0, 2)],
         ];
     }
 

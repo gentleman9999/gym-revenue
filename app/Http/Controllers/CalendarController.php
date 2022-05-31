@@ -73,9 +73,7 @@ class CalendarController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::whereHas('detail', function ($query) use ($client_id) {
-                    return $query->whereName('associated_client')->whereValue($client_id);
-                })->get();
+                $users = User::whereClientId($client_id)->get();
             } else {
                 // else - get the members of that team
                 $team_users = TeamUser::whereTeamId($current_team->id)->get();

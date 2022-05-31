@@ -15,10 +15,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->uuid('client_id')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
+            $table->string('alternate_email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone')->nullable();
             $table->string('address1')->nullable();
@@ -28,6 +29,13 @@ class CreateUsersTable extends Migration
             $table->string('zip')->nullable();
             $table->string('access_token')->nullable();
             $table->string('password')->nullable();
+            $table->string('job_title')->nullable();
+            $table->uuid('home_location_id')->nullable();
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
+            $table->timestamp('termination_date')->nullable();
+            $table->uuid('classification_id')->nullable();
+            $table->string('manager')->nullable();
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();

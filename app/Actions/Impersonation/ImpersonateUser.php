@@ -48,9 +48,8 @@ class ImpersonateUser
         UserAggregate::retrieve($victim->id)->activatePossessionMode($invader->id)->persist();
 
         // rat on this user to the paying customer - the client (aggy)
-        $associated_client = $victim->associated_client()->first();
-        if (! is_null($associated_client)) {
-            ClientAggregate::retrieve($associated_client->value)
+        if (! is_null($victim->client)) {
+            ClientAggregate::retrieve($victim->client->id)
                 ->logImpersonationModeActivity($victim->id, $invader->id)->persist();
         }
 

@@ -404,9 +404,14 @@ class LocationSeeder extends Seeder
             $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
             $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
 
+            $temp_data = Location::factory()
+                ->count(1)
+                ->make()[0];
+            $finalData = array_merge($temp_data->toArray(), $location);
+
             if (is_null($loc_record)) {
                 VarDumper::dump("Adding {$location['name']}");
-                CreateLocation::run($location);
+                CreateLocation::run($finalData);
             } else {
                 VarDumper::dump("Skipping {$location['name']}!");
             }

@@ -52,34 +52,37 @@ class LeadProspectSeeder extends Seeder
 
                             // For each fake user, run them through the EnduserActivityAggregate
                             $prospect_data = $prospect->toArray();
-                            $date_range = mt_rand(1262055681, 1262215681);
-                            //generate details
-                            $prospect_data['opportunity'] = ['Low', 'Medium', 'High'][rand(0, 2)];
-                            $prospect_data['date_of_birth'] = date("Y-m-d H:i:s", $date_range);
-                            $lead = CreateLead::run($prospect_data);
-                            $aggy = LeadAggregate::retrieve($lead->id);
 
-                            $lead_type_free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
+                            try {
+                                //sometimes seeder creates duplicate lead name/emails
 
-                            if ($prospect->lead_type_id === $lead_type_free_trial_id) {
-                                $trial_id = $client->trial_membership_types[random_int(0, count($client->trial_membership_types) - 1)]->id;
-                                $num_days_ago_trial_started = random_int(-9, -5);
-                                $date_started = Carbon::now()->addDays($num_days_ago_trial_started);
-                                $aggy->addTrialMembership($client->id, $trial_id, $date_started);
-                                $num_times_trial_used = random_int(1, 3);
-                                $date_used = $date_started;
-                                for ($i = 1; $i <= $num_times_trial_used; $i++) {
-                                    $num_days = random_int(1, 3);
-                                    $num_hours = random_int(5, 14);
-                                    $date_used->addDays($num_days)->addHours($num_hours);
-                                    $aggy->useTrialMembership($client->id, $trial_id, $date_used);
+
+                                $lead = CreateLead::run($prospect_data);
+                                $aggy = LeadAggregate::retrieve($lead->id);
+
+                                $lead_type_free_trial_id = $client->lead_types->keyBy('name')['free_trial']->id;
+
+                                if ($prospect->lead_type_id === $lead_type_free_trial_id) {
+                                    $trial_id = $client->trial_membership_types[random_int(0, count($client->trial_membership_types) - 1)]->id;
+                                    $num_days_ago_trial_started = random_int(-9, -5);
+                                    $date_started = Carbon::now()->addDays($num_days_ago_trial_started);
+                                    $aggy->addTrialMembership($client->id, $trial_id, $date_started);
+                                    $num_times_trial_used = random_int(1, 3);
+                                    $date_used = $date_started;
+                                    for ($i = 1; $i <= $num_times_trial_used; $i++) {
+                                        $num_days = random_int(1, 3);
+                                        $num_hours = random_int(5, 14);
+                                        $date_used->addDays($num_days)->addHours($num_hours);
+                                        $aggy->useTrialMembership($client->id, $trial_id, $date_used);
+                                    }
+                                    $aggy->persist();
                                 }
-                                $aggy->persist();
-                            }
 
-                            if (env('SEED_LEAD_DETAILS', false)) {
-                                //only for seeding mass comm lead details for ui dev
-                                LeadDetails::factory()->count(random_int(0, 20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();
+                                if (env('SEED_LEAD_DETAILS', false)) {
+                                    //only for seeding mass comm lead details for ui dev
+                                    LeadDetails::factory()->count(random_int(0, 20))->lead_id($prospect->id)->client_id($prospect->client_id)->create();
+                                }
+                            } catch (\Exception $e) {
                             }
                         }
                     }

@@ -47,7 +47,7 @@ class NewClientSeeder extends Seeder
                             ->count(5)
                             ->make([
                                 'client' => $client->name,
-                                'role' => $role['id'],
+                                'role_id' => $role['id'],
                                 'team_names' => $team_names,
                             ]);
                     } else {
@@ -55,7 +55,7 @@ class NewClientSeeder extends Seeder
                             ->count(1)
                             ->make([
                                 'client' => $client->name,
-                                'role' => $role['id'],
+                                'role_id' => $role['id'],
                                 'team_names' => $team_names,
                             ]);
                     }
@@ -64,26 +64,23 @@ class NewClientSeeder extends Seeder
                         $client = Client::whereName($user['client'])->first();
                         $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
                         $team_ids = $teams->pluck('id');
-                        $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-                        if ($possible_home_clubs->count() > 0) {
-                            $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
+                        $possible_home_locations = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
+                        if ($possible_home_locations->count() > 0) {
+                            $home_location_id = $possible_home_locations[random_int(0, $possible_home_locations->count() - 1)];
                         } else {
-                            $home_club = null;
+                            $home_location_id = null;
                         }
                         $senior_managers = [3, 2, 1];
                         $managers = [4];
-                        $manager = in_array($user['role'], $senior_managers) ? 'Senior Manager' : (in_array($user['role'], $managers) ? 'Manager' : null);
-                        CreateUser::run([
+                        $manager = in_array($user['role_id'], $senior_managers) ? 'Senior Manager' : (in_array($user['role_id'], $managers) ? 'Manager' : null);
+                        $final_data = array_merge($user->toArray(), [
                             'client_id' => $client->id,
-                            'first_name' => $user['first_name'],
-                            'last_name' => $user['last_name'],
-                            'email' => $user['email'],
                             'password' => 'Hello123!',
                             'team_ids' => $team_ids,
-                            'role_id' => $user['role'],
-                            'home_club' => $home_club,
-                            'is_manager' => $manager,
+                            'home_location_id' => $home_location_id,
+                            'manager' => $manager,
                         ]);
+                        CreateUser::run($final_data);
                     }
                 } else {
                     foreach ($classification as $class) {
@@ -92,7 +89,7 @@ class NewClientSeeder extends Seeder
                                 ->count(10)
                                 ->make([
                                     'client' => $client->name,
-                                    'role' => $role['id'],
+                                    'role_id' => $role['id'],
                                     'classification' => $class['id'],
                                     'team_names' => $team_names,
                                 ]);
@@ -101,7 +98,7 @@ class NewClientSeeder extends Seeder
                                 ->count(5)
                                 ->make([
                                     'client' => $client->name,
-                                    'role' => $role['id'],
+                                    'role_id' => $role['id'],
                                     'classification' => $class['id'],
                                     'team_names' => $team_names,
                                 ]);
@@ -110,7 +107,7 @@ class NewClientSeeder extends Seeder
                                 ->count(2)
                                 ->make([
                                     'client' => $client->name,
-                                    'role' => $role['id'],
+                                    'role_id' => $role['id'],
                                     'classification' => $class['id'],
                                     'team_names' => $team_names,
                                 ]);
@@ -120,25 +117,22 @@ class NewClientSeeder extends Seeder
                             $client = Client::whereName($user['client'])->first();
                             $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
                             $team_ids = $teams->pluck('id');
-                            $possible_home_clubs = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-                            if ($possible_home_clubs->count() > 0) {
-                                $home_club = $possible_home_clubs[random_int(0, $possible_home_clubs->count() - 1)];
+                            $possible_home_locations = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
+                            if ($possible_home_locations->count() > 0) {
+                                $home_location_id = $possible_home_locations[random_int(0, $possible_home_locations->count() - 1)];
                             } else {
-                                $home_club = null;
+                                $home_location_id = null;
                             }
 
-                            CreateUser::run([
+                            $final_data = array_merge($user->toArray(), [
                                 'client_id' => $client->id,
-                                'first_name' => $user['first_name'],
-                                'last_name' => $user['last_name'],
-                                'email' => $user['email'],
                                 'password' => 'Hello123!',
                                 'team_ids' => $team_ids,
-                                'role_id' => $user['role'],
-                                'classification' => $user['classification'],
-                                'home_club' => $home_club,
-                                'is_manager' => null,
+                                'home_location_id' => $home_location_id,
+                                'manager' => null,
                             ]);
+
+                            CreateUser::run($final_data);
                         }
                     }
                 }

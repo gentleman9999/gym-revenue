@@ -93,18 +93,6 @@
                     class="mt-2"
                 />
             </div>
-            <!-- Name -->
-            <div class="col-span-2 sm:col-span-2">
-                <jet-label for="name" value="Name" />
-                <input
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    autocomplete="name"
-                />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
-            </div>
 
             <!-- Phone # -->
             <div class="col-span-2 sm:col-span-2">
@@ -130,16 +118,19 @@
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
 
-            <!-- AltEmail -->
+            <!-- alternate_email -->
             <div class="col-span-2 sm:col-span-2">
-                <jet-label for="altEmail" value="Personal Email" />
+                <jet-label for="alternate_email" value="Personal Email" />
                 <input
-                    id="altEmail"
+                    id="alternate_email"
                     type="email"
                     class="mt-1 block w-full"
-                    v-model="form.altEmail"
+                    v-model="form.alternate_email"
                 />
-                <jet-input-error :message="form.errors.altEmail" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.alternate_email"
+                    class="mt-2"
+                />
             </div>
 
             <!-- Address 1 -->
@@ -276,15 +267,15 @@ export default defineComponent({
                 id: this.user.id,
                 first_name: this.user["first_name"],
                 last_name: this.user["last_name"],
-                address1: this.addlData ? this.addlData.address1 : "",
-                address2: this.addlData ? this.addlData.address2 : "",
-                city: this.addlData ? this.addlData.city : "",
-                state: this.addlData ? this.addlData.state : "",
-                zip: this.addlData ? this.addlData.zip : "",
-                jobTitle: this.addlData ? this.addlData.jobTitle : "",
-                name: this.user.name,
+                address1: this.user["address1"],
+                address2: this.user["address2"],
+                city: this.user["city"],
+                state: this.user["state"],
+                zip: this.user["zip"],
+                job_title: this.user["job_title"],
                 email: this.user.email,
-                phone: this.addlData ? this.addlData.phone : "",
+                alternate_email: this.user.alternate_email,
+                phone: this.user.phone,
                 photo: null,
                 contact_preference: this.addlData
                     ? this.addlData.contact_preference
