@@ -44,9 +44,7 @@
                 <lead-stats-card progress="/img/mocks/clalendar_page_3.png" />
             </div>
         </div>
-        <div>
-            <attach-rate-membership />
-        </div>
+        <attach-rate-membership />
 
         <jet-bar-container> </jet-bar-container>
     </app-layout>
