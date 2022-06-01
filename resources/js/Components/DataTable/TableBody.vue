@@ -4,8 +4,8 @@
             v-for="item in data"
             :key="item.id"
             :class="{
-                'hover:bg-indigo-100': interactive,
-                'hover:text-black': interactive,
+                'hover:bg-neutral-300': interactive,
+                'hover:text-primary-900': interactive,
             }"
         >
             <td
@@ -42,15 +42,10 @@
 </template>
 <style scoped>
 td {
-    height: 1px;
-    padding: 12px 0;
-    /* border-color: #868686; */
+    @apply h-px py-3;
 }
 td > div {
-    text-align: center;
-}
-tr:hover .text-white {
-    color: #0074c8;
+    @apply text-center;
 }
 </style>
 <script setup>

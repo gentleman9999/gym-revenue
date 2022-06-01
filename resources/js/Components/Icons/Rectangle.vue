@@ -5,15 +5,7 @@
         height="17"
         viewBox="0 0 17 17"
     >
-        <rect width="17" height="17" :fill="fill" />
+        <rect width="17" height="17" fill="currentColor" />
     </svg>
 </template>
-<script setup>
-const props = defineProps({
-    fill: {
-        type: String,
-        default: "#005CA0",
-    },
-});
-// #003A73
-</script>
+<script setup></script>

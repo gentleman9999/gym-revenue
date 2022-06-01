@@ -1,8 +1,8 @@
 <template>
     <div
-        class="hover:text-white hover:bg-secondary px-4 py-2"
+        class="hover:text-base-content hover:bg-secondary px-4 py-2"
         :class="{
-            'bg-secondary text-white': selected,
+            'bg-secondary text-base-content': selected,
         }"
         @click="handleClick"
     >

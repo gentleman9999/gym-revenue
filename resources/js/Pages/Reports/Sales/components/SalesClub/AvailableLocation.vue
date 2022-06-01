@@ -15,17 +15,14 @@
 </template>
 <style scope>
 .content-wrapper {
-    z-index: 1;
+    @apply z-1;
 }
 .location-wrapper {
-    position: absolute;
-    right: 24px;
-    top: 0px;
     width: calc(100% - 24px);
+    @apply absolute right-6 top-0;
 }
 .available-item {
-    cursor: pointer;
-    user-select: none;
+    @apply cursor-pointer select-none;
 }
 </style>
 <script setup>

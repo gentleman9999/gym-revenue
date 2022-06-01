@@ -8,7 +8,7 @@
         class="h-full"
     >
         <template #cardTitle>
-            <div class="text-white text-lg text-bold">
+            <div class="text-base-content text-lg text-bold">
                 Conversion by Entry Source MTD
             </div>
         </template>

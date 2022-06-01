@@ -16,27 +16,18 @@
 </template>
 <style scoped>
 .search-input {
-    background: transparent;
-    border-radius: 4px;
-    border-width: 1px;
-    overflow: hidden;
-    padding-left: 8px;
-    padding-right: 32px;
-    text-align: right;
+    @apply bg-transparent rounded border overflow-hidden pl-2 pr-8 text-right;
 }
 .search-icon {
-    position: absolute;
-    right: 10px;
-    top: 4px;
+    @apply absolute right-2.5 top-1;
 }
 .search-input:hover,
 .search-input:focus {
-    text-align: left;
-    outline: none;
+    @apply text-left outline-0;
 }
 .search-input-wrapper:hover .search-icon,
 .search-input-wrapper:focus .search-icon {
-    display: none;
+    @apply hidden;
 }
 </style>
 <script setup>

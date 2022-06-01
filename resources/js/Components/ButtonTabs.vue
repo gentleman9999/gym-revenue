@@ -4,7 +4,7 @@
             v-for="(item, index) in items"
             :key="index"
             :class="{
-                'text-white cursor-pointer p-1 rounded': true,
+                'text-base-content cursor-pointer p-1 rounded': true,
                 'bg-secondary': index === props.activeIndex,
                 'hover:text-secondary': index !== props.activeIndex,
             }"

@@ -24,9 +24,7 @@
 </template>
 <style scope>
 .reports-title-filter .btn-secondary {
-    color: #fff;
-    border-radius: 4px;
-    border-color: #0074c8;
+    @apply text-base-content border-secondary rounded;
 }
 .reports-title-filter {
     max-width: calc(100vw - 32px);

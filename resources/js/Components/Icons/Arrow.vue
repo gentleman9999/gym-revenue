@@ -21,14 +21,14 @@
                 height="15"
                 rx="1"
                 transform="translate(1.061 21.668) rotate(-135)"
-                :fill="fill"
+                fill="currentColor"
             />
             <rect
                 width="1.5"
                 height="15"
                 rx="1"
                 transform="translate(0.281 1.061) rotate(-45)"
-                :fill="fill"
+                fill="currentColor"
             />
         </svg>
     </div>
@@ -39,10 +39,6 @@ const props = defineProps({
     direction: {
         type: String,
         default: "right",
-    },
-    fill: {
-        type: String,
-        default: "#FFF",
     },
     size: {
         type: String,

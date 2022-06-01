@@ -20,7 +20,7 @@
 
                 <div class="flex flex-row pl-6 mt-4 justify-end">
                     <div
-                        class="flex items-center text-white bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
+                        class="flex items-center text-base-content bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
                     >
                         Detail
                     </div>

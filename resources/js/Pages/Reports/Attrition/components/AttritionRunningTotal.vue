@@ -9,7 +9,7 @@
             }"
         >
             <template #cardTitle
-                ><div class="text-white">Running Totals</div></template
+                ><div class="text-base-content">Running Totals</div></template
             >
             <div class="flex flex-col">
                 <select-box :items="items" label="$ Gained" />

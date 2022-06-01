@@ -25,10 +25,10 @@
                         <span class="text-secondary text-base"
                             >Overall Membership:</span
                         >
-                        <span class="text-lg text-white">82,348</span>
+                        <span class="text-lg text-base-content">82,348</span>
                     </div>
                     <div
-                        class="flex items-center text-white bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
+                        class="flex items-center text-base-content bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
                     >
                         Detail
                     </div>

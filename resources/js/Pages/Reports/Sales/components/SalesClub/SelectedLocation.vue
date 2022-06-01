@@ -17,21 +17,15 @@
 </template>
 <style scope>
 .content-wrapper {
-    z-index: 1;
+    @apply z-1;
 }
 .location-wrapper {
-    position: absolute;
-    right: 24px;
-    top: 0px;
     width: calc(100% - 24px);
+    @apply absolute right-6 top-0;
 }
 .selected-item {
-    background: #f1f1f1;
-    cursor: pointer;
-    user-select: none;
-    text-align: center;
-    width: calc(50% - 20px);
-    margin-left: 8px;
+    width: calc(50% - 24px);
+    @apply bg-slate-100 ml-2 text-center cursor-pointer select-none;
 }
 </style>
 <script setup>

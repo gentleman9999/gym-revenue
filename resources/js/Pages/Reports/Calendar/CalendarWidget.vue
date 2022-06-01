@@ -5,7 +5,7 @@
     >
         <div class="flex flex-row gap-4">
             <div class="w-12 flex flex-col gap-2 flex-shrink-0">
-                <template v-for="date in dates">
+                <template v-for="(date, ndx) in dates" :key="ndx">
                     <div
                         class="flex flex-col border-[1px] border-secondary rounded flex items-center justify-center h-12 text-xl font-bold"
                     >

@@ -2,7 +2,7 @@
     <div :class="derivedClass">
         <div
             v-if="label"
-            class="absolute top-[-36px] text-sm font-bold rounded-t px-3 py-2 text-white bg-secondary"
+            class="absolute top-[-36px] text-sm font-bold rounded-t px-3 py-2 text-base-content bg-secondary"
         >
             {{ label }}
         </div>

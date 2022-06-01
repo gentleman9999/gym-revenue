@@ -1,5 +1,5 @@
 <template>
-    <thead class="sticky top-0 bg-neutral-900 text-white">
+    <thead class="sticky top-0 bg-neutral-900 text-base-content">
         <th
             v-for="column in columns"
             :key="column.field"
@@ -12,7 +12,7 @@
 </template>
 <style scoped>
 thead {
-    z-index: 5;
+    @apply z-10;
 }
 </style>
 <script setup>

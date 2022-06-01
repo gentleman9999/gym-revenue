@@ -12,7 +12,7 @@
 </template>
 <style scoped>
 .favorite-btn {
-    user-select: none;
+    @apply select-none;
 }
 </style>
 <script setup>

@@ -10,12 +10,7 @@
             <select-box-icon
                 :isCollapsed="isCollapsed"
                 :size="size"
-                :color="
-                    {
-                        white: '#FFF',
-                        secondary: '#0074C8',
-                    }[color]
-                "
+                :color="color"
             />
         </Button>
         <select-box-content v-if="!isCollapsed">
@@ -31,14 +26,7 @@
 </template>
 <style>
 .select-box-wrapper {
-    position: relative;
-    width: fit-content;
-}
-.select-box-wrapper.bg-white.collapsed:not(:hover) button {
-    color: black;
-}
-.select-box-wrapper.bg-white.collapsed:not(:hover) svg {
-    filter: brightness(0);
+    @apply relative w-fit;
 }
 </style>
 <script setup>
@@ -74,7 +62,7 @@ const props = defineProps({
     },
     color: {
         type: String,
-        default: "white",
+        default: "text-base-content",
     },
 });
 const isCollapsed = ref(true);

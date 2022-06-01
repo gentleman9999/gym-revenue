@@ -8,7 +8,9 @@
         class="h-full"
     >
         <template #cardTitle>
-            <div class="text-white text-lg text-bold">Draft Related Items</div>
+            <div class="text-base-content text-lg text-bold">
+                Draft Related Items
+            </div>
         </template>
         <div class="flex flex-col">
             <img src="/img/mocks/sales_page_3.png" />

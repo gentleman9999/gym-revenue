@@ -8,7 +8,10 @@
     >
         <arrow-icon
             direction="down"
-            :fill="isCollapsed ? color : '#FFF'"
+            :class="{
+                color,
+                'fill-base-content': !isCollapsed,
+            }"
             :size="size"
         />
     </span>
@@ -25,7 +28,7 @@ const props = defineProps({
     },
     color: {
         type: String,
-        default: "#FFF",
+        default: "text-base-content",
     },
 });
 </script>

@@ -10,7 +10,9 @@
         >
             <data-table :columns="columns" :data="data" class="mt-8" />
             <template #cardTitle>
-                <div class="text-white text-bold text-lg">Memberships</div>
+                <div class="text-base-content text-bold text-lg">
+                    Memberships
+                </div>
             </template>
             <div class="text-center text-xl mt-9 mb-5">Cash Breakdown</div>
             <bill-table />

@@ -3,7 +3,7 @@
         <sales-card class="w-full">
             <template #cardTitle>
                 <div
-                    class="text-white w-full text-lg text-bold border-b border-neutral-500"
+                    class="text-base-content w-full text-lg text-bold border-b border-neutral-500"
                 >
                     Annual Fees
                 </div>

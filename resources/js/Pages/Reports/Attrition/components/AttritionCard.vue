@@ -4,8 +4,8 @@
             class="text-xl mt-[-25px] mx-[-17px] rounded-t pl-6 py-2.5"
             :class="{
                 'bg-secondary': type === 'secondary',
-                'bg-[#FF0000]': type === 'warning',
-                'bg-[#9E9E9E]': type === 'gray',
+                'bg-error': type === 'warning',
+                'bg-neutral-500': type === 'gray',
             }"
         >
             {{ title }}

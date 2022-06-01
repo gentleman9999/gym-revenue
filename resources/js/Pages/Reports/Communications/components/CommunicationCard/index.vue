@@ -3,7 +3,7 @@
         <Card :options="{ more: true }">
             <template #cardTitle>
                 <div
-                    class="text-white text-lg text-bold w-2/3 border-b border-neutral-500"
+                    class="text-base-content text-lg text-bold w-2/3 border-b border-neutral-500"
                 >
                     {{ title }}
                 </div>

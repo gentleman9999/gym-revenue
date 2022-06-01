@@ -9,7 +9,7 @@
             }"
         >
             <template #cardTitle
-                ><div class="text-white">Waterline</div></template
+                ><div class="text-base-content">Waterline</div></template
             >
             <div class="flex flex-col">
                 <img
@@ -18,11 +18,11 @@
                 />
                 <div class="flex flex-row mt-4 pl-5 space-x-8">
                     <div class="flex flex-row space-x-3">
-                        <rectangle-icon />
+                        <rectangle-icon class="text-secondary-600" />
                         <span class="text-xs">New Members</span>
                     </div>
                     <div class="flex flex-row space-x-3">
-                        <rectangle-icon fill="#003A73" />
+                        <rectangle-icon class="text-secondary-700" />
                         <span class="text-xs">Renewals</span>
                     </div>
                 </div>

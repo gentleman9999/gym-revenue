@@ -9,7 +9,7 @@
                 favorite: true,
             }"
         >
-            <div class="font-bold text-white text-sm mb-3 mt-[-12px]">
+            <div class="font-bold text-base-content text-sm mb-3 mt-[-12px]">
                 Recurring Services Revenue Per Member
             </div>
             <div class="w-full">
@@ -21,13 +21,13 @@
                         <span class="text-secondary text-base"
                             >Overall PT Units:</span
                         >
-                        <span class="text-lg text-white">9,347</span>
+                        <span class="text-lg text-base-content">9,347</span>
                     </div>
                     <div class="space-x-2.5">
                         <span class="text-secondary text-base"
                             >Overall PT $ Amount:</span
                         >
-                        <span class="text-lg text-white">$156,098</span>
+                        <span class="text-lg text-base-content">$156,098</span>
                     </div>
                 </div>
             </div>

@@ -23,8 +23,8 @@
 </template>
 <style scoped>
 table {
-    width: 100%;
     border-spacing: 0 5px;
+    @apply w-full;
 }
 </style>
 <script setup>

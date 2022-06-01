@@ -8,7 +8,9 @@
         class="h-full"
     >
         <template #cardTitle>
-            <div class="text-white text-lg text-bold">Percentage to Goal</div>
+            <div class="text-base-content text-lg text-bold">
+                Percentage to Goal
+            </div>
         </template>
         <div class="flex flex-col">
             <img src="/img/mocks/sales_page_4.png" />

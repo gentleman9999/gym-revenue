@@ -22,10 +22,10 @@
                 <div class="flex flex-row pl-6 mt-4 justify-between">
                     <div class="space-x-2.5">
                         <span class="text-secondary text-base">Total:</span>
-                        <span class="text-lg text-white">$4,895</span>
+                        <span class="text-lg text-base-content">$4,895</span>
                     </div>
                     <div
-                        class="flex items-center text-white bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
+                        class="flex items-center text-base-content bg-secondary rounded hover:text-secondary hover:bg-transparent px-2.5 py-1.25"
                     >
                         Detail
                     </div>

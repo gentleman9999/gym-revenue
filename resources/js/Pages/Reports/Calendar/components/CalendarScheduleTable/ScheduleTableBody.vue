@@ -3,7 +3,7 @@
         <tr
             v-for="item in props.data"
             :key="item.id"
-            class="hover:bg-indigo-100 hover:text-black"
+            class="hover:bg-neutral-300 hover:text-base-100"
         >
             <td class="border-l border-secondary">
                 <div>{{ item.location }}</div>
@@ -34,18 +34,10 @@
 </template>
 <style scoped>
 td {
-    border-bottom: 1px solid #0074c7;
-    border-top: 1px solid #0074c7;
-    height: 1px;
-    padding: 12px 0;
+    @apply border-y border-secondary h-px py-3;
 }
 td:not(:nth-last-child(2)) > div {
-    align-items: center;
-    border-right: 1px solid #0074c7;
-    justify-content: center;
-    display: flex;
-    height: 100%;
-    text-align: center;
+    @apply flex h-full border-r border-secondary justify-center items-center;
 }
 </style>
 <script setup>

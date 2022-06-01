@@ -8,7 +8,7 @@
         >
             <template #cardTitle>
                 <div
-                    class="text-white text-lg text-bold w-1/2 border-b border-neutral-500"
+                    class="text-base-content text-lg text-bold w-1/2 border-b border-neutral-500"
                 >
                     Clubs
                 </div>

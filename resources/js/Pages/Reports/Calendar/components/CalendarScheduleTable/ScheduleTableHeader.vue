@@ -10,9 +10,6 @@
 </template>
 <style scoped>
 thead {
-    position: sticky;
-    top: 0px;
-    background: #1c1c1c;
-    z-index: 1;
+    @apply sticky bg-neutral-900 top-0 z-1;
 }
 </style>

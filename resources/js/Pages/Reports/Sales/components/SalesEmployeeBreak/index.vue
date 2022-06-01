@@ -8,7 +8,9 @@
         class="h-full"
     >
         <template #cardTitle>
-            <div class="text-white text-lg text-bold">Employee Breakdown</div>
+            <div class="text-base-content text-lg text-bold">
+                Employee Breakdown
+            </div>
         </template>
         <div class="flex flex-col">
             <data-table

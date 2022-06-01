@@ -1,5 +1,5 @@
 <template>
-    <Card>
+    <Card class="mx-2">
         <table class="text-center w-full">
             <schedule-table-header />
             <schedule-table-body :data="data" />
@@ -8,9 +8,8 @@
 </template>
 <style scoped>
 table {
-    border-collapse: separate;
     border-spacing: 0 20px;
-    width: 100%;
+    @apply w-full border-separate;
 }
 </style>
 <script setup>
