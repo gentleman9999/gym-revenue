@@ -1,5 +1,5 @@
 <template>
-    <div :class="'overflow-y-scroll max-w-[90vw] pr-2 ' + props.class">
+    <div :class="'overflow-y-auto max-w-[90vw] pr-2 ' + props.class">
         <table
             :class="{
                 'border-separate': rowBordered,

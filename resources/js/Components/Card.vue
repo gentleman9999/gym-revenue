@@ -7,7 +7,7 @@
             {{ label }}
         </div>
         <div
-            class="flex flex-row justify-between items-center mb-3"
+            class="flex flex-row justify-between items-start mb-3"
             :class="{
                 'border-b border-neutral-500': options.borderedTitle,
             }"
