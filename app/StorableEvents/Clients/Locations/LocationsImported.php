@@ -4,7 +4,7 @@ namespace App\StorableEvents\Clients\Locations;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class LocationImported extends ShouldBeStored
+class LocationsImported extends ShouldBeStored
 {
     public $client;
     public $user;

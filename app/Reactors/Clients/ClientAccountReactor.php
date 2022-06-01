@@ -4,6 +4,7 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
+use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\QueuedEmailCampaign;
@@ -16,11 +17,21 @@ use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
+use App\StorableEvents\Clients\Teams\ClientTeamCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientAccountReactor extends Reactor implements ShouldQueue
 {
+    public function onTeamCreated(ClientTeamCreated $event)
+    {
+        if ($event->payload['default_team'] ?? false) {
+            ClientAggregate::retrieve($event->client)
+                ->addCapeAndBayAdminsToTeam($event->payload['id'])
+                ->persist();
+        }
+    }
+
     public function onEmailCampaignLaunched(EmailCampaignLaunched $event)
     {
         if (strtotime($event->date) <= strtotime('now')) {

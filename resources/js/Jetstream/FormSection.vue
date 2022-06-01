@@ -29,9 +29,13 @@
         </jet-section-title>
 
         <div class="mt-5 md:mt-0 md:col-span-2" v-if="!isCollapsed">
-            <form @submit.prevent="$emit('submitted')">
+            <form
+                @submit.prevent="$emit('submitted')"
+                class="shadow border border-secondary border-1 rounded"
+                :class="hasActions ? '' : 'sm:rounded-md'"
+            >
                 <div
-                    class="px-4 py-5 bg-base-300 sm:p-6 shadow border border-secondary border-1 rounded"
+                    class="px-4 py-5 sm:p-6"
                     :class="hasActions ? '' : 'sm:rounded-md'"
                 >
                     <div class="grid grid-cols-6 gap-6">

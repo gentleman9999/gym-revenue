@@ -9,7 +9,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class ImportLocation
+class ImportLocations
 {
     use AsAction;
 
@@ -18,7 +18,7 @@ class ImportLocation
         $result = false;
         foreach ($data as $item) {
             if ($item['extension'] === 'csv') {
-                ClientAggregate::retrieve($item['client_id'])->importLocation($current_user->id ?? "Auto Generated", $item['key'])->persist();
+                ClientAggregate::retrieve($item['client_id'])->importLocations($current_user->id ?? "Auto Generated", $item['key'])->persist();
                 $result = true;
             } else {
                 Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();

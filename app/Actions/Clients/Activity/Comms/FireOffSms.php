@@ -24,24 +24,24 @@ class FireOffSms
         $template = SmsTemplates::with('gateway')->findOrFail($templateId);
         $client_aggy = ClientAggregate::retrieve($client_id);
         $sent_to = [];
-        $member = null;
+        $entity = null;
         switch ($entity_type) {
             case 'user':
-                $member = User::with('phone')->find($entity_id);
+                $entity = User::find($entity_id);
 
                 break;
             default:
                 //todo:report error - unknown entity_Type
                 break;
         }
-        if ($member) {
-            if ($member->phone) {
+        if ($entity) {
+            if ($entity->phone) {
                 //TODO: we need to scrutinize phone format here
                 if (! AppState::isSimuationMode()) {
                     $sent_to[] = [
                         'entity_type' => $entity_type,
                         'entity_id' => $entity_id,
-                        'phone' => $member->phone->value,
+                        'phone' => $entity->phone->value,
                     ];
                     $client_aggy->smsSent($template, $sent_to, Carbon::now())->persist();
                 }

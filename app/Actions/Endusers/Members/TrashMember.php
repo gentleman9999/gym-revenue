@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Members;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\MemberAggregate;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -28,7 +28,7 @@ class TrashMember
     public function handle($id, $user = null)
     {
         $member = Member::findOrFail($id);
-        EndUserActivityAggregate::retrieve($member->client_id)->trashMember($user->id ?? "Auto Generated", $id)->persist();
+        MemberAggregate::retrieve($member->client_id)->trash($user->id ?? "Auto Generated", $id)->persist();
 
         return $member;
     }

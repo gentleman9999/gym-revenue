@@ -51,22 +51,22 @@ class FireOffEmailCampaign
         $sent_to = [];
         foreach ($audience_members as $audience_member_breakdown) {
             foreach ($audience_member_breakdown as $audience_member) {
-                $member = null;
+                $entity = null;
                 switch ($audience_member->entity_type) {
                     case 'user':
-                        $member = User::find($audience_member->entity_id);
+                        $entity = User::find($audience_member->entity_id);
 
                         break;
                     default:
                         //todo:report error - unknown entity_Type
                         break;
                 }
-                if ($member) {
-                    $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
+                if ($entity) {
+                    $recipients[$entity->email] = ['email' => $entity->email, 'name' => $entity->name];
                     $sent_to[] = [
                         'entity_type' => $audience_member->entity_type,
                         'entity_id' => $audience_member->entity_id,
-                        'email' => $member->email,
+                        'email' => $entity->email,
                         'gateway' => $gateway,
                     ];
                 }

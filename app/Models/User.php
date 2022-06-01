@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Enums\SecurityGroupEnum;
+use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Location;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +36,10 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'id', 'name', 'email', 'password', 'first_name', 'last_name',
+        'id', 'email', 'alternate_email', 'password', 'first_name', 'last_name',
+        'address1', 'address2', 'city', 'state', 'zip', 'phone', 'client_id',
+        'manager', 'classification_id', 'home_location_id', 'start_date', 'end_date',
+        'termination_date', 'job_title', 'access_token',
     ];
 
     /**
@@ -66,7 +69,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url',
+        'profile_photo_url', 'name',
     ];
 
     /**
@@ -100,21 +103,17 @@ class User extends Authenticatable
 
     public function currentClientId()
     {
-        $detail = ClientDetail::whereDetail('team')->whereValue($this->current_team_id)->first();
-
-        return is_null($detail) ? null : $detail->client_id;
+        return is_null($this->currentTeam->client) ? null : $this->currentTeam->client->id;
     }
 
     public function isClientUser()
     {
-        return ! is_null($this->associated_client()->first());
+        return $this->client !== null;
     }
 
     public function client()
     {
-        $associated_client = $this->associated_client()->first();
-
-        return Client::find($associated_client);
+        return $this->belongsTo(Client::class);
     }
 
     public function isCapeAndBayUser()
@@ -149,51 +148,6 @@ class User extends Authenticatable
         return $this->hasMany(File::class, 'user_id', 'id');
     }
 
-    public function phone()
-    {
-        return $this->detail()->where('name', '=', 'phone');
-    }
-
-    public function phone_number()
-    {
-        return $this->detail()->where('name', '=', 'phone');
-    }
-
-    public function altEmail()
-    {
-        return $this->detail()->where('name', '=', 'altEmail');
-    }
-
-    public function address1()
-    {
-        return $this->detail()->where('name', '=', 'address1');
-    }
-
-    public function address2()
-    {
-        return $this->detail()->where('name', '=', 'address2');
-    }
-
-    public function city()
-    {
-        return $this->detail()->where('name', '=', 'city');
-    }
-
-    public function state()
-    {
-        return $this->detail()->where('name', '=', 'state');
-    }
-
-    public function zip()
-    {
-        return $this->detail()->where('name', '=', 'zip');
-    }
-
-    public function jobTitle()
-    {
-        return $this->detail()->where('name', '=', 'jobTitle');
-    }
-
     public function contact_preference()
     {
         return $this->detail()->where('name', '=', 'contact_preference');
@@ -204,21 +158,6 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
     }
 
-    public function start_date()
-    {
-        return $this->detail()->where('name', '=', 'start_date');
-    }
-
-    public function end_date()
-    {
-        return $this->detail()->where('name', '=', 'end_date');
-    }
-
-    public function termination_date()
-    {
-        return $this->detail()->where('name', '=', 'termination_date');
-    }
-
     public function teams()
     {
         return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
@@ -227,26 +166,6 @@ class User extends Authenticatable
     public function default_team()
     {
         return $this->detail()->where('name', '=', 'default_team');
-    }
-
-    public function home_club()
-    {
-        return $this->detail()->where('name', '=', 'home_club');
-    }
-
-    public function associated_client()
-    {
-        return $this->detail()->where('name', '=', 'associated_client');
-    }
-
-    public function classification()
-    {
-        return $this->detail()->where('name', '=', 'classification');
-    }
-
-    public function is_manager()
-    {
-        return $this->detail()->where('name', '=', 'is_manager');
     }
 
     public function api_token()
@@ -261,10 +180,16 @@ class User extends Authenticatable
 
     public function scopeFilter($query, array $filters)
     {
-        $stop = 0;
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('address1', 'like', '%' . $search . '%')
+                    ->orWhere('address2', 'like', '%' . $search . '%')
+                    ->orWhere('city', 'like', '%' . $search . '%')
+                    ->orWhere('state', 'like', '%' . $search . '%')
+                    ->orWhere('zip', 'like', '%' . $search . '%');
             });
         })->when($filters['club'] ?? null, function ($query, $club_id) {
             $query->whereHas('teams', function ($query) use ($club_id) {
@@ -321,5 +246,25 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany('notifications');
+    }
+
+    public function home_location()
+    {
+        return $this->belongsTo(Location::class, 'home_location_id', 'gymrevenue_id');
+    }
+
+    public function classification()
+    {
+        return $this->belongsTo(Classification::class);
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
+
+    public function getIsManagerAttribute()
+    {
+        return $this->manager !== null && $this->manager !== '';
     }
 }

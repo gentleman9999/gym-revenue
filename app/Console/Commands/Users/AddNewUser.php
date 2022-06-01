@@ -193,14 +193,6 @@ class AddNewUser extends Command
 
     private function createClientUser(User $user, string $client, string $role)
     {
-        // set associated_client to $client in user_details
-        UserDetails::create([
-            'user_id' => $user->id,
-            'name' => 'associated_client',
-            'value' => $client,
-            'active' => 1,
-        ]);
-
         // Get the client's default-team name in client_details
         $client_model = Client::whereId($client)->with('default_team_name')->first();
         $default_team_id = $client_model->default_team_name->value;

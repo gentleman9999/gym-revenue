@@ -10,14 +10,9 @@ use App\StorableEvents\Endusers\Leads\LeadWasCalledByRep;
 use App\StorableEvents\Endusers\Leads\LeadWasTextMessagedByRep;
 use App\StorableEvents\Endusers\Leads\TrialMembershipUsed;
 use App\StorableEvents\Endusers\LeadServicesSet;
-use App\StorableEvents\Endusers\Members\MemberCreated;
-use App\StorableEvents\Endusers\Members\MemberDeleted;
-use App\StorableEvents\Endusers\Members\MemberRestored;
-use App\StorableEvents\Endusers\Members\MemberTrashed;
-use App\StorableEvents\Endusers\Members\MemberUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
-class EndUserActivityAggregate extends AggregateRoot
+class LeadAggregate extends AggregateRoot
 {
     protected static bool $allowConcurrency = true;
     protected array $lead = [];
@@ -78,28 +73,28 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
-    public function claimLead(string $user_id, string $client_id)
+    public function claim(string $user_id, string $client_id)
     {
         $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadClaimedByRep($this->uuid(), $user_id, $client_id));
 
         return $this;
     }
 
-    public function emailLead(array $data, string $user)
+    public function email(array $data, string $user)
     {
         $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep($this->uuid(), $data, $user));
 
         return $this;
     }
 
-    public function logPhoneCallWithLead(array $data, string $user)
+    public function logPhoneCall(array $data, string $user)
     {
         $this->recordThat(new LeadWasCalledByRep($this->uuid(), $data, $user));
 
         return $this;
     }
 
-    public function textMessageLead(array $data, string $user)
+    public function textMessage(array $data, string $user)
     {
         $this->recordThat(new LeadWasTextMessagedByRep($this->uuid(), $data, $user));
 
@@ -123,72 +118,51 @@ class EndUserActivityAggregate extends AggregateRoot
         return $this;
     }
 
-    public function createLead(array $data, string $userId = 'Auto Generated')
+    public function create(array $data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadCreated($userId, $data));
 
         return $this;
     }
 
-    public function updateLead($data, $old_data, string $userId = 'Auto Generated')
+    public function update($data, $old_data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadUpdated($userId, $data, $old_data));
 
         return $this;
     }
 
-    public function trashLead(string $reason, string $userId = 'Auto Generated')
+    public function trash(string $reason, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadTrashed($this->uuid(), $userId, $reason));
 
         return $this;
     }
 
-    public function restoreLead(string $userId = 'Auto Generagted')
+    public function restore(string $userId = 'Auto Generagted')
     {
         $this->recordThat(new LeadRestored($userId, $this->uuid()));
 
         return $this;
     }
 
-    public function deleteLead(array $data, string $userId = 'Auto Generated')
+    public function delete(array $data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadDeleted($userId, $this->uuid(), $data));
 
         return $this;
     }
 
-    public function createMember(string $created_by_user_id, array $payload)
+    public function subscribeToComms($subscribed_at)
     {
-        $this->recordThat(new MemberCreated($this->uuid(), $created_by_user_id, $payload));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadSubscribedToComms($this->uuid(), $subscribed_at));
 
         return $this;
     }
 
-    public function updateMember(string $updated_by_user_id, array $payload)
+    public function unsubscribeFromComms($unsubscribed_at)
     {
-        $this->recordThat(new MemberUpdated($this->uuid(), $updated_by_user_id, $payload));
-
-        return $this;
-    }
-
-    public function trashMember(string $trashed_by_user_id, string $id)
-    {
-        $this->recordThat(new MemberTrashed($this->uuid(), $trashed_by_user_id, $id));
-
-        return $this;
-    }
-
-    public function restoreMember(string $trashed_by_user_id, string $id)
-    {
-        $this->recordThat(new MemberRestored($this->uuid(), $trashed_by_user_id, $id));
-
-        return $this;
-    }
-
-    public function deleteMember(string $trashed_by_user_id, string $id)
-    {
-        $this->recordThat(new MemberDeleted($this->uuid(), $trashed_by_user_id, $id));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadUnsubscribedFromComms($this->uuid(), $unsubscribed_at));
 
         return $this;
     }

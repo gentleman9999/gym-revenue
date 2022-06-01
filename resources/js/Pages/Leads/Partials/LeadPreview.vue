@@ -36,11 +36,15 @@
         </div>
         <div
             class="field col-span-6 lg:col-span-3"
-            v-if="data.lead?.dob?.value"
+            v-if="data.lead?.date_of_birth"
         >
             <label>Birthdate:</label>
-            <div class="data" v-if="data.lead.dob">
-                {{ new Date(data.lead.dob.value).toLocaleDateString("en-US") }}
+            <div class="data" v-if="data.lead.date_of_birth">
+                {{
+                    new Date(data.lead.date_of_birth).toLocaleDateString(
+                        "en-US"
+                    )
+                }}
             </div>
         </div>
         <div class="field col-span-6 lg:col-span-3">

@@ -25,22 +25,22 @@ class FireOffEmail
         $recipients = [];
         $sent_to = [];
         $client_aggy = ClientAggregate::retrieve($client_id);
-        $member = null;
+        $entity = null;
         switch ($entity_type) {
             case 'user':
-                $member = User::find($entity_id);
+                $entity = User::find($entity_id);
 
                 break;
             default:
                 //todo:report error - unknown entity_Type
                 break;
         }
-        if ($member) {
-            $recipients[$member->email] = ['email' => $member->email, 'name' => $member->name];
+        if ($entity) {
+            $recipients[$entity->email] = ['email' => $entity->email, 'name' => $entity->name];
             $sent_to[] = [
                 'entity_type' => $entity_type,
                 'entity_id' => $entity_id,
-                'email' => $member->email,
+                'email' => $entity->email,
             ];
         }
 

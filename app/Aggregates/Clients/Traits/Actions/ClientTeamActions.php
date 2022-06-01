@@ -7,25 +7,15 @@ use App\Exceptions\Clients\ClientAccountException;
 use App\Models\Team;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
-use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use App\StorableEvents\Clients\PrefixCreated;
-use App\StorableEvents\Clients\TeamCreated;
+use App\StorableEvents\Clients\Teams\ClientTeamCreated;
+use App\StorableEvents\Clients\Teams\ClientTeamDeleted;
+use App\StorableEvents\Clients\Teams\ClientTeamUpdated;
 use App\StorableEvents\Clients\UserRemovedFromTeam;
 use App\StorableEvents\Clients\UserRoleOnTeamUpdated;
 
 trait ClientTeamActions
 {
-    public function createDefaultTeam(string $name)
-    {
-        if (! empty($this->default_team)) {
-            throw ClientAccountException::defaultTeamAlreadyCreated($this->default_team);
-        } else {
-            $this->recordThat(new DefaultClientTeamCreated($this->uuid(), $name));
-        }
-
-        return $this;
-    }
-
     public function createTeamPrefix(string $prefix)
     {
         if (! empty($this->team_prefix)) {
@@ -37,14 +27,28 @@ trait ClientTeamActions
         return $this;
     }
 
-    public function addTeam(string $team_id, string $team_name)
+    public function createTeam(array $payload, string $created_by_user_id = 'Auto Generated')
     {
-        if (array_key_exists($team_id, $this->teams)) {
-            throw ClientAccountException::teamAlreadyAssigned($team_name);
-        } else {
-            // @todo - make sure the team is not assigned to another client
-            $this->recordThat(new TeamCreated($this->uuid(), $team_id, $team_name));
+        if (array_key_exists($payload['id'], $this->teams)) {
+            throw ClientAccountException::teamAlreadyAssigned($payload['name']);
         }
+        // @todo - make sure the team is not assigned to another client
+
+        $this->recordThat(new ClientTeamCreated($this->uuid(), $created_by_user_id, $payload));
+
+        return $this;
+    }
+
+    public function deleteTeam($id, string $deleted_by_user_id)
+    {
+        $this->recordThat(new ClientTeamDeleted($this->uuid(), $deleted_by_user_id, $id));
+
+        return $this;
+    }
+
+    public function updateTeam(array $payload, string $updated_by_user_id)
+    {
+        $this->recordThat(new ClientTeamUpdated($this->uuid(), $updated_by_user_id, $payload));
 
         return $this;
     }
@@ -52,7 +56,6 @@ trait ClientTeamActions
     public function addCapeAndBayAdminsToTeam(string $team_id)
     {
         $team = Team::find($team_id);
-        $client = Team::getClientFromTeamId($team_id);
         $users = UserDetails::select('user_id')
             ->whereName('default_team')
             ->whereValue(1)->get();
@@ -62,7 +65,7 @@ trait ClientTeamActions
             foreach ($users as $user) {
                 $payload[] = $user->user_id;
                 UserAggregate::retrieve($user->user_id)
-                    ->addUserToTeam($team_id, $team->name, $client->id)
+                    ->addUserToTeam($team_id, $team->name, $this->uuid())
                     ->persist();
             }
 

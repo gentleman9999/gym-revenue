@@ -81,7 +81,6 @@ export default defineComponent({
         "user",
         "opportunities",
         "leadsclaimed",
-        "dob",
         "nameSearch",
     ],
     setup(props) {
@@ -156,8 +155,8 @@ export default defineComponent({
                 component: CrudBadge,
                 props: {
                     getProps: ({ data: { opportunity } }) => ({
-                        class: badgeClassesOpportunity(opportunity?.value),
-                        text: opportunity?.value,
+                        class: badgeClassesOpportunity(opportunity),
+                        text: opportunity,
                     }),
                 },
             },
@@ -204,7 +203,7 @@ export default defineComponent({
                         (detail) =>
                             parseInt(detail.value) === parseInt(props.user.id)
                     );
-                    return yours.length;
+                    return yours.length && !data?.unsubscribed_comms;
                 },
             },
         };

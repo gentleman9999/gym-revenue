@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -45,7 +45,7 @@ class MembersController extends Controller
                     'trashed',
                     'createdat',
                     'grlocation',
-                    'dob',
+                    'date_of_birth',
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
@@ -57,6 +57,19 @@ class MembersController extends Controller
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
         }
+
+        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
+        //MUST FIX BY DEMO 6/15/22
+        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
+        if ($request->get('sort') != '') {
+            if ($request->get('dir') == 'DESC') {
+                $sortedResult = $members->getCollection()->sortByDesc($request->get('sort'))->values();
+            } else {
+                $sortedResult = $members->getCollection()->sortBy($request->get('sort'))->values();
+            }
+            $members->setCollection($sortedResult);
+        }
+
 
 
         return Inertia::render('Members/Index', [
@@ -70,7 +83,7 @@ class MembersController extends Controller
                 'createdat',
                 'grlocation',
                 'claimed',
-                'dob',
+                'date_of_birth',
                 'nameSearch',
                 'phoneSearch',
                 'emailSearch',
@@ -218,7 +231,7 @@ class MembersController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $member_aggy = EndUserActivityAggregate::retrieve($member_id);
+        $member_aggy = LeadAggregate::retrieve($member_id);
 
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
@@ -256,7 +269,7 @@ class MembersController extends Controller
 
             return Redirect::route('data.members');
         }
-        $aggy = EndUserActivityAggregate::retrieve($member_id);
+        $aggy = LeadAggregate::retrieve($member_id);
         $preview_note = Note::select('note')->whereEntityId($member_id)->get();
 
 
@@ -355,7 +368,7 @@ class MembersController extends Controller
 
         if ($member) {
             if (array_key_exists('method', request()->all())) {
-                $aggy = EndUserActivityAggregate::retrieve($member_id);
+                $aggy = LeadAggregate::retrieve($member_id);
                 $data = request()->all();
 
                 $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -368,19 +381,19 @@ class MembersController extends Controller
 
                 switch (request()->get('method')) {
                     case 'email':
-                        $aggy->emailLead($data, auth()->user()->id)->persist();
+                        $aggy->email($data, auth()->user()->id)->persist();
                         Alert::success("Email sent to member")->flash();
 
                         break;
 
                     case 'phone':
-                        $aggy->logPhoneCallWithLead($data, auth()->user()->id)->persist();
+                        $aggy->logPhoneCall($data, auth()->user()->id)->persist();
                         Alert::success("Call Log Updated")->flash();
 
                         break;
 
                     case 'sms':
-                        $aggy->textMessageLead($data, auth()->user()->id)->persist();
+                        $aggy->textMessage($data, auth()->user()->id)->persist();
                         Alert::success("SMS Sent")->flash();
 
                         break;
@@ -410,7 +423,7 @@ class MembersController extends Controller
             return Redirect::route('data.members');
         }
         $user = request()->user();
-        $member_aggy = EndUserActivityAggregate::retrieve($member_id);
+        $member_aggy = LeadAggregate::retrieve($member_id);
 //        $data = Member::whereId($member_id)->with('detailsDesc')->first();
         $data = Member::whereId($member_id)->first();
         $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
@@ -451,7 +464,7 @@ class MembersController extends Controller
                     'trashed',
                     'createdat',
                     'grlocation',
-                    'dob',
+                    'date_of_birth',
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',

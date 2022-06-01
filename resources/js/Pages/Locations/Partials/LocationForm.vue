@@ -97,7 +97,14 @@
 
             <div class="col-span-2 space-y-2">
                 <jet-label for="open_date" value="Open Date" />
-                <DatePicker id="open_date" v-model="form.open_date" dark />
+                <DatePicker
+                    id="open_date"
+                    v-model="form.open_date"
+                    dark
+                    :month-change-on-scroll="false"
+                    :auto-apply="true"
+                    :close-on-scroll="true"
+                />
 
                 <jet-input-error
                     :message="form.errors.open_date"
@@ -106,7 +113,14 @@
             </div>
             <div class="col-span-2 space-y-2">
                 <jet-label for="close_date" value="Close Date" />
-                <DatePicker id="close_date" v-model="form.close_date" dark />
+                <DatePicker
+                    id="close_date"
+                    v-model="form.close_date"
+                    dark
+                    :month-change-on-scroll="false"
+                    :auto-apply="true"
+                    :close-on-scroll="true"
+                />
 
                 <jet-input-error
                     :message="form.errors.close_date"
@@ -214,18 +228,14 @@ export default {
         "open_date",
         "close_date",
         "location_no",
-        "DatePicker",
     ],
     setup(props, context) {
         const page = usePage();
 
         let location = props.location;
-        let phone = page.props.value.phone;
         let poc_first = page.props.value.poc_first;
         let poc_last = page.props.value.poc_last;
         let poc_phone = page.props.value.poc_phone;
-        let open_date = page.props.value.open_date;
-        let close_date = page.props.value.close_date;
 
         let operation = "Update";
         if (!location) {
@@ -247,27 +257,41 @@ export default {
             };
             operation = "Create";
         } else {
-            location.phone = phone;
+            location.phone = location.phone;
             location.poc_first = poc_first;
             location.poc_last = poc_last;
             location.poc_phone = poc_phone;
-            location.open_date = open_date;
-            location.close_date = close_date;
-
-            let address1 = location.address1;
-            let address2 = location.address2;
-            location.address1 = address1;
-            location.address2 = address2;
+            location.open_date = location.open_date;
+            location.close_date = location.close_date;
+            location.address1 = location.address1;
+            location.address2 = location.address2;
         }
+
+        const transformDate = (date) => {
+            if (!date?.toISOString) {
+                return date;
+            }
+
+            return date.toISOString().slice(0, 19).replace("T", " ");
+        };
+
+        const transformData = (data) => ({
+            ...data,
+            open_date: transformDate(data.open_date),
+            close_date: transformDate(data.close_date),
+        });
 
         const form = useForm(location);
         //
         //    form.put(`/locations/${location.id}`);
         let handleSubmit = () =>
-            form.put(route("locations.update", location.id));
+            form
+                .transform(transformData)
+                .put(route("locations.update", location.id));
 
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("locations.store"));
+            handleSubmit = () =>
+                form.transform(transformData).post(route("locations.store"));
         }
 
         let optionsStates = [];

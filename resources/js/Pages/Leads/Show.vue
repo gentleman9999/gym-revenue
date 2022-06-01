@@ -15,6 +15,7 @@
                 :trial-dates="trialDates"
                 :trial-memberships="lead.trial_memberships"
                 :interaction-count="interactionCount"
+                :agreement-number="lead.agreement_number"
             />
         </jet-bar-container>
     </app-layout>

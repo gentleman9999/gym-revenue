@@ -411,12 +411,7 @@ export default defineComponent({
         // },
         //the above inertia based code should work, but weird fatal. workaround by just posting with axios and reloading
         async addTeamMember() {
-            const resp = await axios.post(
-                route("team-member.store", this.team),
-                this.addTeamMemberForm.data()
-            );
-            this.addTeamMemberForm.reset();
-            this.$inertia.reload();
+            this.addTeamMemberForm.post(route("team-member.store", this.team));
         },
 
         cancelTeamInvitation(invitation) {

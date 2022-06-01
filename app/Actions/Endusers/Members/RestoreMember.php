@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Members;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\MemberAggregate;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,7 +27,7 @@ class RestoreMember
     public function handle($id, $user = null)
     {
         $client_id = Member::withTrashed()->findOrFail($id)->client->id;
-        EndUserActivityAggregate::retrieve($client_id)->restoreMember($user->id ?? "Auto Generated", $id)->persist();
+        MemberAggregate::retrieve($client_id)->restore($user->id ?? "Auto Generated", $id)->persist();
 
         return Member::withTrashed()->findOrFail($id);
     }

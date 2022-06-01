@@ -4,7 +4,7 @@ namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Locations\CreateLocation;
 use App\Actions\Clients\Locations\GenerateGymRevenueId;
-use App\Actions\Clients\Locations\ImportLocation;
+use App\Actions\Clients\Locations\ImportLocations;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
@@ -404,19 +404,25 @@ class LocationSeeder extends Seeder
             $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
             $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
 
+            $temp_data = Location::factory()
+                ->count(1)
+                ->make()[0];
+            $finalData = array_merge($temp_data->toArray(), $location);
+
             if (is_null($loc_record)) {
                 VarDumper::dump("Adding {$location['name']}");
-                CreateLocation::run($location);
+                CreateLocation::run($finalData);
             } else {
                 VarDumper::dump("Skipping {$location['name']}!");
             }
         }
 
         ///now do trufit csv import
+        VarDumper::dump("Adding TruFit Locations from CSV");
         $key = 'tmp/trufit-clubs';
         $csv = file_get_contents('database/data/trufit-clubs.csv');
         Storage::disk('s3')->put($key, $csv);
-        ImportLocation::run([
+        ImportLocations::run([
             [
                 'key' => $key,
                 'extension' => 'csv',

@@ -6,7 +6,6 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 class LocationCreated extends ShouldBeStored
 {
-    //user = request's current_user
     public $client;
     public $user;
     public $payload;

@@ -22,7 +22,7 @@
                             {{ lastName }}
                         </h1>
                         <div class="badge badge-success mt-4">
-                            Agreement #: {{ agreementNum }}
+                            Agreement #: {{ agreementNumber }}
                         </div>
                         <div
                             class="badge badge-info mt-4"
@@ -158,6 +158,7 @@ export default defineComponent({
         "trialMemberships",
         "trialMembershipTypes",
         "interactionCount",
+        "agreementNumber",
     ],
     data() {
         return {
@@ -212,11 +213,6 @@ export default defineComponent({
                 case "sms":
                     return "Text Lead";
             }
-        },
-        agreementNum() {
-            return this.details.find(
-                (detail) => detail.field === "agreement_number"
-            ).value;
         },
     },
     methods: {

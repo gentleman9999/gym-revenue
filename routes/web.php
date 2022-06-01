@@ -40,14 +40,15 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::get('/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
     Route::get('/view/{id}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
     Route::post('/', \App\Actions\Clients\Locations\CreateLocation::class)->name('locations.store');
-    Route::post('/', \App\Actions\Clients\Locations\ImportLocation::class)->name('locations.import');
+    Route::post('/import', \App\Actions\Clients\Locations\ImportLocations::class)->name('locations.import');
     Route::put('/{id}', \App\Actions\Clients\Locations\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
     Route::delete('/{id}', \App\Actions\Clients\Locations\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
     Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/user/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
+    Route::post('/tokens', \App\Actions\Fortify\GrantAccessToken::class)->name('api-tokens.store');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
@@ -173,6 +174,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
+    Route::post('/import', \App\Actions\Fortify\ImportUsers::class)->name('users.import');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit')->where(['id' => '[0-9]+']);
     Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view')->where(['id' => '[0-9]+']);
     Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update')->where(['id' => '[0-9]+']);
@@ -184,14 +186,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
     Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
-    Route::post('/', \App\Http\Controllers\TeamController::class . '@store')->name('teams.store');
+    Route::post('/', \App\Actions\Jetstream\CreateTeam::class)->name('teams.store');
     Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
     Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
     //Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
-    Route::put('/update/{id}', \App\Http\Controllers\TeamController::class . '@update')->name('team.update');
-    Route::delete('/{id}', \App\Http\Controllers\TeamController::class . '@delete')->name('teams.delete');
+    Route::put('/update/{id}', \App\Actions\Jetstream\UpdateTeam::class)->name('team.update');
+    Route::delete('/{id}', \App\Actions\Jetstream\DeleteTeam::class)->name('teams.delete');
     Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
@@ -261,4 +263,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reports')->group(functi
 
 Route::prefix('s')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\ShortUrlController::class . '@index')->name('short');
+});
+
+//since this is for endusers to opt in/out of communications, we don't want to load up the CRM App bundle
+Route::prefix('/communication-preferences')->group(function () {
+    Route::get('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@communicationPreferences')->name('comms-prefs');
+    Route::post('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateCommunicationPreferences')->name('comms-prefs.update');
 });

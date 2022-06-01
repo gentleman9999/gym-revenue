@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Actions\Endusers\Leads\SubscribeLeadToComms;
+use App\Actions\Endusers\Leads\UnsubscribeLeadFromComms;
 use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -38,7 +40,7 @@ class LeadsController extends Controller
         $page_count = 10;
         $prospects = [];
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
-        $opportunities = LeadDetails::whereClientId($client_id)->whereField('opportunity')->get()->unique('value');
+        $opportunities = Lead::whereClientId($client_id)->select('opportunity')->distinct()->get()->pluck('opportunity');
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -49,7 +51,6 @@ class LeadsController extends Controller
                 ->with('leadsclaimed')
                 ->with('detailsDesc')
                 //  ->with('leadsclaimed')
-                ->with('opportunity')
                 ->with('notes')
                 ->filter($request->only(
                     'search',
@@ -61,7 +62,7 @@ class LeadsController extends Controller
                     'leadsclaimed',
                     'opportunity',
                     'claimed',
-                    'dob',
+                    'date_of_birth',
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
@@ -74,6 +75,17 @@ class LeadsController extends Controller
                 ->appends(request()->except('page'));
         }
 
+        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
+        //MUST FIX BY DEMO 6/15/22
+        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
+        if ($request->get('sort') != '') {
+            if ($request->get('dir') == 'DESC') {
+                $sortedResult = $prospects->getCollection()->sortByDesc($request->get('sort'))->values();
+            } else {
+                $sortedResult = $prospects->getCollection()->sortBy($request->get('sort'))->values();
+            }
+            $prospects->setCollection($sortedResult);
+        }
 
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
@@ -90,7 +102,7 @@ class LeadsController extends Controller
                 'leadsclaimed',
                 'opportunity',
                 'claimed',
-                'dob',
+                'date_of_birth',
                 'nameSearch',
                 'phoneSearch',
                 'emailSearch',
@@ -101,7 +113,7 @@ class LeadsController extends Controller
             'grlocations' => Location::whereClientId($client_id)->get(),
             'leadsources' => LeadSource::whereClientId($client_id)->get(),
             'opportunities' => array_values($opportunities->toArray()),
-            'leadsclaimed' => LeadDetails::whereClientId($client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value'),
+            'leadsclaimed' => LeadDetails::where('lead_details.client_id', '=', $client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value'),
 
         ]);
     }
@@ -311,7 +323,7 @@ class LeadsController extends Controller
         $lead_sources = LeadSource::whereClientId($client_id)->get();
         $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
 
-        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
+        $lead_aggy = LeadAggregate::retrieve($lead_id);
 
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
@@ -329,9 +341,6 @@ class LeadsController extends Controller
             'detailsDesc',
             'profile_picture',
             'trialMemberships',
-            'middle_name',
-            'dob',
-            'opportunity',
             'lead_owner',
             'lead_status',
             'last_updated',
@@ -372,7 +381,7 @@ class LeadsController extends Controller
 
             return Redirect::route('data.leads');
         }
-        $aggy = EndUserActivityAggregate::retrieve($lead_id);
+        $aggy = LeadAggregate::retrieve($lead_id);
         $middle_name = 'test';
         $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field', 'middle_name')->get();
         foreach ($middle_names as $middle_name) {
@@ -415,8 +424,8 @@ class LeadsController extends Controller
                 'misc' => ['claim_date' => date('Y-m-d')],
             ]);
 
-            EndUserActivityAggregate::retrieve($data['lead_id'])
-                ->claimLead($data['user_id'], $data['client_id'])
+            LeadAggregate::retrieve($data['lead_id'])
+                ->claim($data['user_id'], $data['client_id'])
                 ->persist();
 
             \Alert::info('This lead has been claimed by you! You may now interact with it!')->flash();
@@ -499,7 +508,7 @@ class LeadsController extends Controller
 
         if ($lead) {
             if (array_key_exists('method', request()->all())) {
-                $aggy = EndUserActivityAggregate::retrieve($lead_id);
+                $aggy = LeadAggregate::retrieve($lead_id);
                 $data = request()->all();
 
                 $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -512,19 +521,19 @@ class LeadsController extends Controller
 
                 switch (request()->get('method')) {
                     case 'email':
-                        $aggy->emailLead($data, auth()->user()->id)->persist();
+                        $aggy->email($data, auth()->user()->id)->persist();
                         Alert::success("Email sent to lead")->flash();
 
                         break;
 
                     case 'phone':
-                        $aggy->logPhoneCallWithLead($data, auth()->user()->id)->persist();
+                        $aggy->logPhoneCall($data, auth()->user()->id)->persist();
                         Alert::success("Call Log Updated")->flash();
 
                         break;
 
                     case 'sms':
-                        $aggy->textMessageLead($data, auth()->user()->id)->persist();
+                        $aggy->textMessage($data, auth()->user()->id)->persist();
                         Alert::success("SMS Sent")->flash();
 
                         break;
@@ -634,7 +643,7 @@ class LeadsController extends Controller
             return Redirect::route('data.leads');
         }
         $user = request()->user();
-        $lead_aggy = EndUserActivityAggregate::retrieve($lead_id);
+        $lead_aggy = LeadAggregate::retrieve($lead_id);
         $data = Lead::whereId($lead_id)->with('detailsDesc')->first();
         $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
         $preview_note = Note::select('note')->whereEntityId($lead_id)->get();
@@ -643,9 +652,6 @@ class LeadsController extends Controller
                 'detailsDesc',
                 'profile_picture',
                 'trialMemberships',
-                'middle_name',
-                'dob',
-                'opportunity',
                 'lead_owner',
                 'lead_status',
                 'last_updated'
@@ -691,7 +697,7 @@ class LeadsController extends Controller
                     'leadsclaimed',
                     'opportunity',
                     'claimed',
-                    'dob',
+                    'date_of_birth',
                     'nameSearch',
                     'phoneSearch',
                     'emailSearch',
@@ -703,5 +709,21 @@ class LeadsController extends Controller
         }
 
         return $prospects;
+    }
+
+    public function communicationPreferences(Request $request, Lead $lead)
+    {
+        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead]);
+    }
+
+    public function updateCommunicationPreferences(Request $request, Lead $lead)
+    {
+        if ($request->subscribe) {
+            $lead = SubscribeLeadToComms::run($lead->id);
+        } else {
+            $lead = UnsubscribeLeadFromComms::run($lead->id);
+        }
+
+        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
     }
 }

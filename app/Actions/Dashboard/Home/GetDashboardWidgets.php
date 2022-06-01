@@ -18,17 +18,16 @@ class GetDashboardWidgets
         $results = [];
 
         $team = auth()->user()->currentTeam;
-        $client_detail = $team->client_details()->first();
 
-        if (! is_null($client_detail)) {
+        if (! is_null($team->client)) {
             $num_locs = 0;
             $num_ecs = 0;
             $num_scs = 0;
             $last_widget_count = 0;
             if ($team->isClientsDefaultTeam()) {
-                $num_locs = Location::whereClientId($client_detail->client_id)->whereActive(1)->count();
-                $num_ecs = EmailCampaigns::whereClientId($client_detail->client_id)->count();
-                $num_scs = SmsCampaigns::whereClientId($client_detail->client_id)->count();
+                $num_locs = Location::whereClientId($team->client_id)->whereActive(1)->count();
+                $num_ecs = EmailCampaigns::whereClientId($team->client_id)->count();
+                $num_scs = SmsCampaigns::whereClientId($team->client_id)->count();
             } else {
                 // get the locations the active team has access to
                 $num_locs = TeamDetail::whereTeamId($team->id)
@@ -38,8 +37,8 @@ class GetDashboardWidgets
                 // @todo - these queries need to be adjusted for all "any" campaigns and campaigns scoped to their team
                 // @todo - maybe add a filter() function to the models.
                 if (true) { // Check that the user is not a sales rep
-                    $num_ecs = EmailCampaigns::whereClientId($client_detail->client_id)->count();
-                    $num_scs = SmsCampaigns::whereClientId($client_detail->client_id)->count();
+                    $num_ecs = EmailCampaigns::whereClientId($team->client_id)->count();
+                    $num_scs = SmsCampaigns::whereClientId($team->client_id)->count();
                 }
                 // @todo - an else
             }

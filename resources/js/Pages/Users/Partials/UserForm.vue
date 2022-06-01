@@ -51,13 +51,16 @@
             <div class="form-control col-span-2">
                 <jet-label for="email" value="Personal Email" />
                 <input
-                    id="altEmail"
+                    id="alternate_email"
                     type="email"
                     class="block w-full mt-1"
-                    v-model="form.altEmail"
+                    v-model="form.alternate_email"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.altEmail" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.alternate_email"
+                    class="mt-2"
+                />
             </div>
 
             <!-- Contact Phone # -->
@@ -141,15 +144,18 @@
 
             <!-- Official Position -->
             <div class="form-control col-span-2">
-                <jet-label for="jobTitle" value="Official Position" />
+                <jet-label for="job_title" value="Official Position" />
                 <input
-                    id="jobTitle"
+                    id="job_title"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.jobTitle"
+                    v-model="form.job_title"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.jobTitle" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.job_title"
+                    class="mt-2"
+                />
             </div>
 
             <!-- Contact Preference -->
@@ -178,7 +184,7 @@
                 <select
                     id="classification"
                     class="block w-full mt-1"
-                    v-model="form.classification"
+                    v-model="form.classification_id"
                 >
                     <option
                         v-for="classy in classifications"
@@ -210,11 +216,11 @@
 
             <!-- Home Club -->
             <div class="form-control col-span-2" v-if="clientId">
-                <jet-label for="home_club" value="Home Club" />
+                <jet-label for="home_location_id" value="Home Club" />
                 <select
-                    id="home_club"
+                    id="home_location_id"
                     class="block w-full mt-1"
-                    v-model="form.home_club"
+                    v-model="form.home_location_id"
                 >
                     <option
                         v-for="{ gymrevenue_id, name } in locations"
@@ -224,7 +230,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors.home_club"
+                    :message="form.errors.home_location_id"
                     class="mt-2"
                 />
             </div>
@@ -467,77 +473,35 @@ export default {
         const locations = page.props.value.locations;
 
         const team_id = page.props.value.user.current_team_id;
-        let phone =
-            user !== undefined &&
-            "phone_number" in user &&
-            user["phone_number"] &&
-            "value" in user["phone_number"]
-                ? user["phone_number"].value
-                : null;
 
         let operation = "Update";
         if (user) {
             user.role_id = user["role_id"];
-            user.classification =
-                "classification" in user && user["classification"] !== null
-                    ? user["classification"].value ?? ""
-                    : "";
+            user.classification_id = user.classification_id;
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
             user.first_name = user["first_name"];
             user.last_name = user["last_name"];
-            user.altEmail =
-                "alt_email" in user && user["alt_email"] !== null
-                    ? user["alt_email"].value ?? ""
-                    : "";
-            user.address1 =
-                "address1" in user && user["address1"] !== null
-                    ? user["address1"].value
-                    : "";
-            user.address2 =
-                "address2" in user && user["address2"] !== null
-                    ? user["address2"].value
-                    : "";
-            user.city =
-                "city" in user && user["city"] !== null
-                    ? user["city"].value
-                    : "";
-            user.state =
-                "state" in user && user["state"] !== null
-                    ? user["state"].value
-                    : "";
-            user.zip =
-                "zip" in user && user["zip"] !== null ? user["zip"].value : "";
-            user.jobTitle =
-                "job_title" in user && user["job_title"] !== null
-                    ? user["job_title"].value
-                    : "";
-            user.home_club =
-                "home_club" in user && user["home_club"] !== null
-                    ? user["home_club"].value
-                    : "";
-            user.phone = phone;
-            user.start_date =
-                "start_date" in user && user["start_date"] !== null
-                    ? user["start_date"].value ?? ""
-                    : "";
-            user.end_date =
-                "end_date" in user && user["end_date"] !== null
-                    ? user["end_date"].value ?? ""
-                    : "";
-            user.termination_date =
-                "termination_date" in user && user["termination_date"] !== null
-                    ? user["termination_date"].value ?? ""
-                    : "";
+            user.alternate_email = user["alternate_email"];
+            user.address1 = user["address1"];
+            user.address2 = user["address2"];
+            user.city = user["city"];
+            user.state = user["state"];
+            user.zip = user["zip"];
+            user.job_title = user["job_title"];
+            user.phone = user["phone"];
+            user.start_date = user["start_date"];
+            user.end_date = user["end_date"];
+            user.termination_date = user["termination_date"];
             user.notes = { title: "", note: "" };
         } else {
             user = {
                 first_name: "",
                 last_name: "",
                 email: "",
-                altEmail: "",
+                alternate_email: "",
                 role_id: 0,
-                classification: "",
+                classification_id: "",
                 contact_preference: null,
                 phone: "",
                 address1: "",
@@ -550,13 +514,13 @@ export default {
                 termination_date: "",
                 state: "",
                 zip: "",
-                jobTitle: "",
+                job_title: "",
                 client_id: props.clientId,
             };
             //only add clientId when applicable to make user validation rules work better
             if (props.clientId) {
                 user.client_id = props.clientId;
-                user.home_club = null;
+                user.home_location_id = null;
                 user.notes = { title: "", note: "" };
                 user.start_date = null;
                 user.end_date = null;
@@ -569,9 +533,22 @@ export default {
             form.state = text.toUpperCase();
         };
 
+        const transformDate = (date) => {
+            if (!date?.toISOString) {
+                return date;
+            }
+
+            return date.toISOString().slice(0, 19).replace("T", " ");
+        };
+
         const transformFormSubmission = (data) => {
             if (!data.notes?.title) {
                 delete data.notes;
+            }
+            if (data?.start_date) {
+                data.start_date = transformDate(data.start_date);
+                data.end_date = transformDate(data.end_date);
+                data.termination_date = transformDate(data.termination_date);
             }
             return data;
         };

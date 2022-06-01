@@ -23,15 +23,31 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $firstName = $this->faker->firstName();
-        $lastName = $this->faker->lastName();
+        $gender = $this->faker->randomElement(['male', 'female']) ;
+        $first_name = $this->faker->firstName($gender);
+        $last_name = $this->faker->lastName();
+        $username = "{$first_name}.{$last_name}";
+        $domain = $this->faker->freeEmailDomain;
+        $alternate_email = "{$username}@{$domain}";
+        $phone = preg_replace('/[^0-9]+/', '', $this->faker->phoneNumber);
+        if (str_starts_with("1", $phone)) {
+            $phone = substr($phone, 1);
+        }
 
         return [
-            'first_name' => $firstName,
-            'last_name' => $lastName,
-            'name' => $firstName. ' ' .$lastName,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'name' => $first_name. ' ' .$last_name,
             'email_verified_at' => now(),
             'password' => bcrypt('Hello123!'), // password
+            'address1' => $this->faker->streetAddress,
+            'address2' => $this->faker->secondaryAddress,
+            'city' => $this->faker->city,
+            'state' => $this->faker->stateAbbr,
+            'zip' => substr($this->faker->postcode, 0, 5),
+            'alternate_email' => $alternate_email,
+            'phone' => $phone,
+            'job_title' => $this->faker->jobTitle(),
         ];
     }
 

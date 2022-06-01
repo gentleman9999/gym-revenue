@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Leads;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -37,10 +37,10 @@ class UpdateLead
             'profile_picture.extension' => 'sometimes|required',
             'profile_picture.bucket' => 'sometimes|required',
             'gender' => 'sometimes|required',
-            'dob' => 'sometimes|required',
+            'date_of_birth' => 'sometimes|required',
             'opportunity' => 'sometimes|required',
             'lead_owner' => 'sometimes|required|exists:users,id',
-            'lead_status' => 'sometimes|required|exists:lead_statuses,id',
+            'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
             'notes' => 'nullable|array',
         ];
     }
@@ -49,16 +49,13 @@ class UpdateLead
     {
         $old_data = Lead::with([
             'profile_picture',
-            'middle_name',
-            'dob',
-            'opportunity',
             'lead_owner',
             'lead_status',
         ])->findOrFail($data['id'])->toArray();
-        $aggy = EndUserActivityAggregate::retrieve($data['id']);
-        $aggy->updateLead($data, $old_data, $current_user->id ?? 'Auto Generated');
+        $aggy = LeadAggregate::retrieve($data['id']);
+        $aggy->update($data, $old_data, $current_user->id ?? 'Auto Generated');
         if ($current_user) {
-            $aggy->claimLead($current_user->id, $data['client_id']);
+            $aggy->claim($current_user->id, $data['client_id']);
         }
         $aggy->persist();
 

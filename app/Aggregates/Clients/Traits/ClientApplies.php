@@ -31,18 +31,12 @@ use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
-use App\StorableEvents\Clients\DefaultClientTeamCreated;
 use App\StorableEvents\Clients\PrefixCreated;
-use App\StorableEvents\Clients\TeamCreated;
+use App\StorableEvents\Teams\TeamCreated;
 
 trait ClientApplies
 {
     protected string $date_format = 'Y-m-d H:i:s';
-
-    public function applyDefaultClientTeamCreated(DefaultClientTeamCreated $event)
-    {
-        $this->default_team = $event->team;
-    }
 
     public function applyPrefixCreated(PrefixCreated $event)
     {
@@ -51,7 +45,10 @@ trait ClientApplies
 
     public function applyTeamCreated(TeamCreated $event)
     {
-        $this->teams[$event->team] = $event->name;
+        $this->teams[$event->payload['id']] = $event->payload['name'];
+        if ($event->payload['default_team'] ?? false) {
+            $this->default_team = $event->payload['id'];
+        }
     }
 
     public function applyAudienceCreated(AudienceCreated $event)

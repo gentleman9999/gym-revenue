@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Leads;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,7 +27,7 @@ class TrashLead
 
     public function handle($id, $current_user, $reason)
     {
-        EndUserActivityAggregate::retrieve($id)->trashLead($reason, $current_user->id ?? "Auto Generated")->persist();
+        LeadAggregate::retrieve($id)->trash($reason, $current_user->id ?? "Auto Generated")->persist();
 
         return Lead::withTrashed()->findOrFail($id);
     }
