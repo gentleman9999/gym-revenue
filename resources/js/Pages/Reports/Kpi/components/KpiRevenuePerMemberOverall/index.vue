@@ -7,6 +7,7 @@
             :options="{
                 collapse: true,
                 favorite: true,
+                more: true,
             }"
         >
             <div class="w-full">

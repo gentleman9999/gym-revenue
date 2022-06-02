@@ -25,19 +25,40 @@
                     :items="options.filter"
                     :label="options.filterLabel"
                     size="xs"
+                    class="select-box"
                 />
                 <favorite-btn
                     v-if="options.favorite"
                     :value="isFavorite"
                     :onChange="toggleFavorite"
                 />
-                <more-icon v-if="options.more" />
-                <arrow-icon v-if="options.collapse" direction="up" size="xs" />
+                <more-icon v-if="options.more" class="more-btn" />
+                <arrow-icon
+                    v-if="options.collapse"
+                    direction="up"
+                    size="xs"
+                    class="collapse-btn"
+                />
             </div>
         </div>
         <slot></slot>
     </div>
 </template>
+<style scoped>
+.no-favorite .favorite-btn,
+.no-collapse .collapse-btn {
+    @apply hidden;
+}
+.no-collapse .collapse-btn {
+    @apply hidden;
+}
+.no-more .more-btn {
+    @apply hidden;
+}
+.no-select .select-box {
+    @apply hidden;
+}
+</style>
 <script setup>
 import { computed } from "@vue/reactivity";
 import { ref } from "vue";

@@ -28,15 +28,15 @@
                         progress="/img/mocks/clalendar_page_1.png"
                     />
                     <communication-card
-                        title="Deliver Rate"
-                        progress="/img/mocks/clalendar_page_1.png"
+                        title="Open Rate"
+                        progress="/img/mocks/clalendar_page_2.png"
                     />
                     <communication-card
-                        title="Deliver Rate"
-                        progress="/img/mocks/clalendar_page_1.png"
+                        title="Click Rate"
+                        progress="/img/mocks/clalendar_page_3.png"
                     />
                     <communication-card
-                        title="Deliver Rate"
+                        title="Opt-Out Rate"
                         progress="/img/mocks/clalendar_page_1.png"
                     />
                 </div>
