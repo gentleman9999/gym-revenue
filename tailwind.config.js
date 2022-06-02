@@ -148,7 +148,7 @@ module.exports = {
                     "accent-focus": colors.accent[600],
                     "accent-content": "#ffffff",
                     neutral: "#1c1c1c",
-                    "neutral-focus": colors.primary[500],
+                    "neutral-focus": colors.primary[900],
                     "neutral-content": "#ffffff",
                     "base-100": "#242424",
                     "base-200": "#202020",

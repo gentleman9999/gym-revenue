@@ -1,5 +1,8 @@
 <template>
-    <form @submit="handleSubmit" class="w-full grid grid-cols-6 gap-4">
+    <form
+        @submit="handleSubmit"
+        class="w-full flex flex-col px-6 py-6 space-y-4"
+    >
         <!--        <template #title>-->
         <!--            Location Details-->
         <!--        </template>-->
@@ -7,68 +10,29 @@
         <!--        <template #description>-->
         <!--            {{ buttonText }} a location.-->
         <!--        </template>-->
-
-        <div class="col-span-6" v-if="calendar_event?.owner_id">
-            <div class="avatar">
-                <div
-                    class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
-                >
-                    <img :src="calendar_event?.event_owner.profile_photo_url" />
-                </div>
+        <div class="flex flex-row justify-between">
+            <div class="flex">
+                <jet-label for="full_day_event" value="All Day" />
+                <input
+                    id="full_day_event"
+                    type="checkbox"
+                    class="toggle ml-2"
+                    v-model="form.full_day_event"
+                    :disabled="calendar_event?.type.type == 'Task'"
+                />
+                <jet-input-error :message="form.errors.start" class="mt-2" />
             </div>
-            <div>
-                <h1>
-                    {{ calendar_event?.event_owner.name }}
-                </h1>
-            </div>
+            <div>Project Status</div>
         </div>
-
-        <div class="col-span-6">
-            <jet-label for="title" value="Title" />
-            <input
-                id="title"
-                type="text"
-                class=""
-                v-model="form.title"
-                autofocus
-            />
-            <jet-input-error :message="form.errors.title" class="mt-2" />
-        </div>
-        <div class="col-span-6">
-            <jet-label for="description" value="Description" />
-            <textarea id="description" class="" v-model="form.description" />
-            <jet-input-error :message="form.errors.description" class="mt-2" />
-        </div>
-        <div class="col-span-6">
-            <jet-label for="calendar_event_type" value="Event Type" />
-            <select v-model="form.event_type_id">
-                <option v-for="{ id, name } in calendarEventTypes" :value="id">
-                    {{ name }}
-                </option>
-            </select>
-            <jet-input-error :message="form.errors.type" class="mt-2" />
-        </div>
-        <div class="col-span-6">
-            <jet-label for="full_day_event" value="All Day" />
-            <input
-                id="full_day_event"
-                type="checkbox"
-                class=""
-                v-model="form.full_day_event"
-                :disabled="calendar_event?.type.type == 'Task'"
-            />
-            <jet-input-error :message="form.errors.start" class="mt-2" />
-        </div>
-        <div class="col-span-3">
+        <div class="flex flex-col">
             <jet-label
                 for="start"
                 value="Due Date"
                 v-if="calendar_event?.type.type == 'Task'"
             />
-            <jet-label for="start" value="Start" v-else />
+            <jet-label for="start" value="Starts" v-else />
             <date-picker
                 required
-                dark
                 id="start"
                 v-model="form.start"
                 :enable-time-picker="!form.full_day_event"
@@ -76,16 +40,15 @@
                 :month-change-on-scroll="false"
                 :auto-apply="true"
                 :close-on-scroll="true"
+                class="bg-neutral-100 text-neutral-900"
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
-
         <template v-if="calendar_event?.type.type !== 'Task'">
-            <div class="col-span-3">
-                <jet-label for="end" value="End" />
+            <div class="flex flex-col">
+                <jet-label for="end" value="Ends" />
                 <date-picker
                     required
-                    dark
                     id="end"
                     v-model="form.end"
                     :enable-time-picker="!form.full_day_event"
@@ -94,15 +57,16 @@
                     :auto-apply="true"
                     :close-on-scroll="true"
                     :disabled="calendar_event?.type.type === 'Task'"
+                    class="bg-neutral-100 text-neutral-900"
                 />
                 <jet-input-error :message="form.errors.end" class="mt-2" />
             </div>
 
-            <div class="col-span-3">
+            <div class="flex flex-col">
                 <jet-label for="user_attendees" value="Select User Attendees" />
                 <multiselect
                     v-model="form.user_attendees"
-                    class="py-2"
+                    class="bg-neutral-100 text-neutral-900 py-2"
                     id="user_attendees"
                     mode="tags"
                     :close-on-select="false"
@@ -119,11 +83,60 @@
             </div>
         </template>
 
+        <!-- <div class="col-span-6" v-if="calendar_event?.owner_id">
+            <div class="avatar">
+                <div
+                    class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+                >
+                    <img :src="calendar_event?.event_owner.profile_photo_url" />
+                </div>
+            </div>
+            <div>
+                <h1>
+                    {{ calendar_event?.event_owner.name }}
+                </h1>
+            </div>
+        </div> -->
+
+        <div class="col-span-6">
+            <jet-label for="title" value="Title" />
+            <input
+                id="title"
+                type="text"
+                class="bg-neutral-100 text-neutral-900"
+                v-model="form.title"
+                autofocus
+            />
+            <jet-input-error :message="form.errors.title" class="mt-2" />
+        </div>
+        <div class="col-span-6">
+            <jet-label for="description" value="Description" />
+            <textarea
+                id="description"
+                class="bg-neutral-100 text-neutral-900"
+                v-model="form.description"
+            />
+            <jet-input-error :message="form.errors.description" class="mt-2" />
+        </div>
+        <div class="col-span-6">
+            <jet-label for="calendar_event_type" value="Event Type" />
+            <select
+                v-model="form.event_type_id"
+                class="bg-neutral-100 text-neutral-900"
+            >
+                <option v-for="{ id, name } in calendarEventTypes" :value="id">
+                    {{ name }}
+                </option>
+            </select>
+            <jet-input-error :message="form.errors.type" class="mt-2" />
+        </div>
+        <div class="col-span-6"></div>
+
         <div class="col-span-3">
             <jet-label for="lead_attendees" value="Select Lead Attendees" />
             <multiselect
                 v-model="form.lead_attendees"
-                class="py-2"
+                class="py-2 bg-neutral-100 text-neutral-900"
                 id="lead_attendees"
                 mode="tags"
                 :close-on-select="false"
@@ -139,29 +152,26 @@
             />
         </div>
 
-        <div class="col-span-3" v-if="calendar_event?.attendees?.length">
+        <div
+            class="flex flex-row space-x-2 items-center"
+            v-if="calendar_event?.attendees?.length"
+        >
             <jet-label for="attendeesModal" value="View All Attendees" />
             <button
                 @click.prevent="showAttendeesModal.open"
-                class="btn btn-sm btn-info hover:text-white"
+                class="btn w-max rounded btn-secondary btn-sm"
             >
                 Open List
             </button>
         </div>
 
-        <div class="col-span-3 space-x-2">
-            <jet-label for="attendeesModal" value="Event File Attachments" />
-            <button
-                @click.prevent="handleClickUpload"
-                class="btn btn-sm btn-info hover:text-white"
-            >
-                Upload
+        <div class="flex flex-row space-x-4 items-center">
+            <jet-label for="attendeesModal" value="Attachments" />
+            <button @click.prevent="showFilesModal.open">
+                <file-icon />
             </button>
-            <button
-                @click.prevent="showFilesModal.open"
-                class="btn btn-sm btn-info hover:text-white"
-            >
-                View
+            <button @click.prevent="handleClickUpload">
+                <add-icon />
             </button>
         </div>
 
@@ -183,7 +193,7 @@
                 <input
                     id="my_reminder"
                     type="text"
-                    class=""
+                    class="bg-neutral-100 text-neutral-900"
                     v-model="form.my_reminder"
                 />
                 <jet-input-error
@@ -193,31 +203,33 @@
             </div>
 
             <div
-                class="col-span-2 space-x-2"
+                class="flex flex-row space-x-2 items-center"
                 v-if="calendar_event?.my_reminder"
             >
                 <jet-label for="reminder_option" value="Delete Reminder" />
-                <button
+                <Button
                     @click.prevent="
                         handleReminderDelete(calendar_event.my_reminder.id)
                     "
-                    class="btn btn-sm btn-info hover:text-white"
+                    secondary
+                    size="sm"
                 >
                     Delete
-                </button>
+                </Button>
                 <jet-input-error
                     :message="form.errors.reminder_option"
                     class="mt-2"
                 />
             </div>
-            <div class="col-span-2 space-x-2" v-else>
+            <div class="flex flex-row space-x-2 items-center" v-else>
                 <jet-label for="reminder_option" value="Create Reminder" />
-                <button
+                <Button
                     @click.prevent="handleReminderCreate(calendar_event.id)"
-                    class="btn btn-sm btn-info hover:text-white"
+                    secondary
+                    size="sm"
                 >
                     Create
-                </button>
+                </Button>
                 <jet-input-error
                     :message="form.errors.reminder_option"
                     class="mt-2"
@@ -236,6 +248,7 @@
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
                 :loading="form.processing"
+                size="sm"
             >
                 {{ buttonText }}
             </Button>
@@ -272,7 +285,7 @@
         </daisy-modal>
     </form>
 </template>
-<style>
+<style scope>
 input {
     @apply input input-sm;
 }
@@ -303,6 +316,8 @@ import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import FileManager from "./FileManager";
 import { Inertia } from "@inertiajs/inertia";
+import FileIcon from "@/Components/Icons/File";
+import AddIcon from "@/Components/Icons/Add";
 
 export default {
     components: {
@@ -317,6 +332,8 @@ export default {
         FilesForm,
         Multiselect,
         FileManager,
+        FileIcon,
+        AddIcon,
     },
     props: ["client_id", "calendar_event", "client_users", "lead_users"],
     setup(props, { emit }) {
