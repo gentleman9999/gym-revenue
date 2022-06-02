@@ -362,7 +362,6 @@ class AppStateSeeder extends Seeder
                     'API - Ability to read from Leads or Members data functionality created.',
                     'BUG - All Column sorting has been patched, you can now sort by all columns in any CRUD.',
                     'BACKEND MAINTENANCE - Moved data columns into more appropriate tables for future storage.',
-                    'BUG - Calendar drag & drop was breaking when update event was moved.',
                 ],
             ],
         ]);
