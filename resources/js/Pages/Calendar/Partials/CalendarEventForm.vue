@@ -286,6 +286,14 @@
     </form>
 </template>
 <style scope>
+.toggle:checked:focus:focus {
+    box-shadow: var(--handleoffset) 0 0 2px hsl(var(--b1)) inset,
+        0 0 0 2px hsl(var(--b1)) inset, var(--focus-shadow);
+}
+.toggle:focus:focus {
+    box-shadow: calc(var(--handleoffset) * -1) 0 0 2px hsl(var(--b1)) inset,
+        0 0 0 2px hsl(var(--b1)) inset, var(--focus-shadow);
+}
 input {
     @apply input input-sm;
 }
