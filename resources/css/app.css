@@ -100,3 +100,7 @@
 ::-webkit-scrollbar-thumb {
     @apply border rounded-lg bg-neutral-300 border-neutral-500;
 }
+
+.tabledata .badge {
+    @apply max-w-full block overflow-hidden overflow-ellipsis mx-auto my-2;
+}
