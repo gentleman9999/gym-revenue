@@ -6,6 +6,7 @@ use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Team;
 use App\Models\TeamDetail;
+use App\Models\User;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -22,10 +23,11 @@ class ReadLeads
     {
         return [
             'per_page' => 'sometimes|required',
+            'access_token' => 'required',
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data)
     {
         if (array_key_exists('per_page', $data)) {
             $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
@@ -33,10 +35,11 @@ class ReadLeads
             $page_count = 10;
         }
 
+        $current_user = User::whereAccessToken($data['access_token'])->first();
 
         $prospects = [];
-        //$prospects_model = $this->setUpLeadsObject(request()->user()->isClientUser(), request()->user()->currentClientId());
-        $prospects_model = $this->setUpLeadsObject(true, '2f108597-fe62-458f-ac30-a159936f7aae');
+        $prospects_model = $this->setUpLeadsObject($current_user->isClientUser(), $current_user->currentClientId());
+        //$prospects_model = $this->setUpLeadsObject(true, '2f108597-fe62-458f-ac30-a159936f7aae');
 
 
         if (! empty($prospects_model)) {
@@ -62,7 +65,6 @@ class ReadLeads
     {
         $leads = $this->handle(
             $request->validated(),
-            $request->user(),
         );
 
         if ($request->wantsJson()) {
