@@ -25,12 +25,11 @@ class EnsureTokenIsValid
             $token = Str::substr($header, 7);
         }
 
-        if (is_null($request->input('access_token'))) {
-            return redirect('home'); //Change this to an error about not having a token
+        if ($token == '') {
+            abort(403);
         }
 
-        $user = User::whereAccessToken($request->input('access_token'))->firstOrFail();
-
+        $user = User::whereAccessToken($token)->firstOrFail();
 
         return $next($request);
     }
