@@ -89,10 +89,12 @@
             <daisy-modal
                 ref="dateSelect"
                 id="dateSelect"
-                class="lg:max-w-5xl bg-base-300"
+                class="bg-base-300 rounded-lg"
             >
-                <div>
-                    {{ currentView }}
+                <div class="flex flex-col space-y-4">
+                    <h1 class="text text-base-content text-xl pb-2">
+                        Pick a Date
+                    </h1>
                     <date-picker
                         dark
                         :weekPicker="currentView === 'timeGridWeek'"
@@ -101,6 +103,13 @@
                         :modelValue="selectedDate"
                         @update:modelValue="onSelectDate"
                     />
+                    <Button
+                        class="self-end"
+                        size="xs"
+                        secondary
+                        @click="hideDateSelectModal"
+                        >Close</Button
+                    >
                 </div>
             </daisy-modal>
             <FullCalendar :options="calendarOptions" ref="calendar" />
@@ -128,6 +137,7 @@ import DaisyModal from "@/Components/DaisyModal";
 import ArrowIcon from "@/Components/Icons/Arrow";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import Button from "@/Components/Button";
 
 export default defineComponent({
     components: {
@@ -141,6 +151,7 @@ export default defineComponent({
         DaisyModal,
         DatePicker,
         ArrowIcon,
+        Button,
     },
     props: [
         "sessions",
@@ -280,6 +291,9 @@ export default defineComponent({
                 selectedDate.value = start.value;
             }
             dateSelect.value.open();
+        };
+        const hideDateSelectModal = () => {
+            dateSelect.value.close();
         };
         const onSelectDate = (modelData) => {
             selectedDate.value = modelData;
@@ -472,6 +486,7 @@ export default defineComponent({
             showDateSelectModal,
             selectedDate,
             onSelectDate,
+            hideDateSelectModal,
         };
     },
 });
