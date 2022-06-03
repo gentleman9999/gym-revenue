@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full md:w-1/4 px-2">
+    <div class="w-full px-2">
         <Card :options="{ more: true }">
             <template #cardTitle>
                 <div
