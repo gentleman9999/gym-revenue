@@ -23,23 +23,23 @@ class ReadLeads
     {
         return [
             'per_page' => 'sometimes|required',
-            'access_token' => 'required',
         ];
     }
 
     public function handle($data)
     {
+        $test = 0;
         if (array_key_exists('per_page', $data)) {
             $page_count = $data['per_page'] > 0 && $data['per_page'] < 1000 ? $data['per_page'] : 10;
         } else {
             $page_count = 10;
         }
 
-        $current_user = User::whereAccessToken($data['access_token'])->first();
+
 
         $prospects = [];
-        $prospects_model = $this->setUpLeadsObject($current_user->isClientUser(), $current_user->currentClientId());
-        //$prospects_model = $this->setUpLeadsObject(true, '2f108597-fe62-458f-ac30-a159936f7aae');
+        //$prospects_model = $this->setUpLeadsObject($current_user->isClientUser(), $current_user->currentClientId());
+        $prospects_model = $this->setUpLeadsObject(true, '2f108597-fe62-458f-ac30-a159936f7aae');
 
 
         if (! empty($prospects_model)) {
