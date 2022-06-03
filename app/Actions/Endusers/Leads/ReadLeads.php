@@ -22,7 +22,8 @@ class ReadLeads
     public function rules()
     {
         return [
-            'per_page' => 'sometimes|required',
+            'per_page' => 'sometimes|nullable',
+            'client_id' => 'exists:clients,id|required',
         ];
     }
 
@@ -38,8 +39,7 @@ class ReadLeads
 
 
         $prospects = [];
-        //$prospects_model = $this->setUpLeadsObject($current_user->isClientUser(), $current_user->currentClientId());
-        $prospects_model = $this->setUpLeadsObject(true, '2f108597-fe62-458f-ac30-a159936f7aae');
+        $prospects_model = $this->setUpLeadsObject($data['client_id']);
 
 
         if (! empty($prospects_model)) {
@@ -49,8 +49,6 @@ class ReadLeads
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('leadsclaimed')
-                ->with('detailsDesc')
-                ->with('opportunity')
                 ->with('notes')
                 ->orderBy('created_at', 'desc')
                 ->sort()
@@ -72,7 +70,7 @@ class ReadLeads
         }
     }
 
-    private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
+    private function setUpLeadsObject(string $client_id = null)
     {
         $results = [];
 
