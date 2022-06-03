@@ -402,9 +402,9 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import { useGoBack } from "@/utils";
-import DatePicker from "vue3-date-time-picker";
+import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
-import "vue3-date-time-picker/dist/main.css";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 library.add(faUserCircle);
 

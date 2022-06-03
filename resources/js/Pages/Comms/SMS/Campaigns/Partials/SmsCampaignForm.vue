@@ -204,8 +204,8 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import Confirm from "@/Components/Confirm";
-import DatePicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/dist/main.css";
+import DatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 
