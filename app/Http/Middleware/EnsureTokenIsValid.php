@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class EnsureTokenIsValid
 {
@@ -17,7 +18,12 @@ class EnsureTokenIsValid
      */
     public function handle(Request $request, Closure $next)
     {
-        $test = 0;
+        $token = '';
+
+        $header = $request->header('Authorization', '');
+        if (Str::startsWith($header, 'Bearer ')) {
+            $token = Str::substr($header, 7);
+        }
 
         if (is_null($request->input('access_token'))) {
             return redirect('home'); //Change this to an error about not having a token
