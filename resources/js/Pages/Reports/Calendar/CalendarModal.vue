@@ -5,15 +5,40 @@
         ref="modal"
         page-route="Calendar"
     >
+        <div class="flex flex-row space-x-2">
+            <calendar-summary-card
+                title="Confirmed"
+                diagram="/img/mocks/clalendar_page_1.png"
+                :favorite="false"
+                :collapse="false"
+                :showAction="false"
+            />
+            <calendar-summary-card
+                title="Canceled"
+                diagram="/img/mocks/clalendar_page_2.png"
+                :favorite="false"
+                :collapse="false"
+                :showAction="false"
+            />
+            <calendar-summary-card
+                title="Rescheduled"
+                diagram="/img/mocks/clalendar_page_3.png"
+                :favorite="false"
+                :collapse="false"
+                :showAction="false"
+            />
+        </div>
     </dashboard-widget-modal>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
 import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
+import CalendarSummaryCard from "./components/CalendarSummaryCard";
 
 export default defineComponent({
     components: {
         DashboardWidgetModal,
+        CalendarSummaryCard,
     },
     setup() {
         const modal = ref();

@@ -2,8 +2,8 @@
     <Card
         :options="{
             borderedTitle: true,
-            favorite: true,
-            collapse: true,
+            favorite: favorite,
+            collapse: collapse,
         }"
     >
         <template #cardTitle>
@@ -13,7 +13,9 @@
         </template>
         <div class="flex flex-col">
             <img :src="diagram" class="px-5" />
-            <Button size="xs" secondary class="self-end">Detail</Button>
+            <Button v-if="showAction" size="xs" secondary class="self-end"
+                >Detail</Button
+            >
         </div>
     </Card>
 </template>
@@ -28,6 +30,18 @@ const props = defineProps({
     diagram: {
         type: String,
         default: "",
+    },
+    favorite: {
+        type: Boolean,
+        default: true,
+    },
+    collapse: {
+        type: Boolean,
+        default: true,
+    },
+    showAction: {
+        type: Boolean,
+        default: true,
     },
 });
 </script>

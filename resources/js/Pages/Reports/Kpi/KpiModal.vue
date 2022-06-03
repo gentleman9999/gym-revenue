@@ -5,15 +5,33 @@
         ref="modal"
         page-route="Kpi"
     >
+        <div class="flex flex-row">
+            <kpi-revenue-per-member-overall
+                class="lg:w-1/2 md:w-1/2 no-favorite no-collapse"
+            />
+            <kpi-personal-training
+                class="lg:w-1/2 md:w-1/2 no-favorite no-collapse"
+            />
+        </div>
+        <kpi-attachment-rate
+            class="lg:w-full no-favorite no-collapse no-select"
+        />
     </dashboard-widget-modal>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
 import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
 
+import KpiRevenuePerMemberOverall from "./components/KpiRevenuePerMemberOverall";
+import KpiPersonalTraining from "./components/KpiPersonalTraining";
+import KpiAttachmentRate from "./components/KpiOtherServices/AttachmentRate";
+
 export default defineComponent({
     components: {
         DashboardWidgetModal,
+        KpiRevenuePerMemberOverall,
+        KpiPersonalTraining,
+        KpiAttachmentRate,
     },
     setup() {
         const modal = ref();

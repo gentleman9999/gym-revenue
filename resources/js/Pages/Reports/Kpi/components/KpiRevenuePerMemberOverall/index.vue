@@ -2,11 +2,12 @@
     <kpi-card-wrapper>
         <kpi-card
             label="Category 1"
-            class="kpi-card w-full"
+            class="kpi-card w-full min-w-max"
             header="Revenue Per Member Overall"
             :options="{
                 collapse: true,
                 favorite: true,
+                more: true,
             }"
         >
             <div class="w-full">
