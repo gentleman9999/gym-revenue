@@ -1,5 +1,5 @@
 <template>
-    <daisy-modal id="confirmModal" ref="confirmModal">
+    <daisy-modal id="confirmModal" ref="confirmModal" :closable="false">
         <slot />
 
         <div class="flex w-full justify-between mt-8">
@@ -39,8 +39,13 @@ export default defineComponent({
     setup(props, { emit }) {
         const confirmModal = ref(null);
 
+        const handleModalClosed = () => {
+            emit("cancel");
+            console.log("CLOSE ME!");
+        };
+
         const handleClickCancel = () => {
-            confirmModal.value.close();
+            confirmModal.value?.close();
             emit("cancel");
         };
 
@@ -53,7 +58,13 @@ export default defineComponent({
             confirmModal.value.open();
         });
 
-        return { confirmModal, emit, handleClickCancel, handleClickConfirm };
+        return {
+            confirmModal,
+            emit,
+            handleClickCancel,
+            handleClickConfirm,
+            handleModalClosed,
+        };
     },
     emits: ["confirm"],
 });
