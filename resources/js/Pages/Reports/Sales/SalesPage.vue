@@ -13,7 +13,7 @@
                 <sales-purchase-date />
                 <sales-payment-methods />
             </div>
-            <sales-annual-fees />
+            <sales-annual-fees class="lg:w-1/4" />
         </div>
         <sales-club-table />
         <div class="flex flex-row px-7 w-full">

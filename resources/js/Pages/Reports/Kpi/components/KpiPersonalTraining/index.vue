@@ -7,6 +7,7 @@
             :options="{
                 collapse: true,
                 favorite: true,
+                more: true,
             }"
         >
             <div class="font-bold text-base-content text-sm mb-3 mt-[-12px]">
