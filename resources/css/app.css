@@ -2,9 +2,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-.sweet-modal-overlay {
-    @apply mt-16;
-}
 .no-scroll {
     overflow: hidden;
 }

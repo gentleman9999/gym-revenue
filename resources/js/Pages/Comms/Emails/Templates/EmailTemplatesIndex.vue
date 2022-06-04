@@ -66,7 +66,6 @@ import {
     faEllipsisH,
 } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import ConfirmSendModal from "@/Components/SweetModal3/SweetModal";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail";
 
 library.add(faChevronDoubleLeft, faEllipsisH);
@@ -78,7 +77,6 @@ export default defineComponent({
         AppLayout,
         Confirm,
         GymRevenueCrud,
-        ConfirmSendModal,
         ConfirmSendForm,
     },
     props: ["title", "filters", "templates"],

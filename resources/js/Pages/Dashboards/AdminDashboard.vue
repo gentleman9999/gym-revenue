@@ -137,7 +137,7 @@
                                         >
                                     </button>
                                 </div>
-                                <announce-modal
+                                <daisy-modal
                                     title="Deployment Announcement"
                                     width="85%"
                                     overlayTheme="dark"
@@ -199,7 +199,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                </announce-modal>
+                                </daisy-modal>
                             </div>
                         </div>
                     </div>
@@ -216,7 +216,8 @@ import JetBarAlert from "@/Components/JetBarAlert";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
 import JetBarBadge from "@/Components/JetBarBadge";
 import JetBarIcon from "@/Components/JetBarIcon";
-import AnnounceModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
+
 import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBars, faCog, faFileUpload } from "@fortawesome/pro-solid-svg-icons";
@@ -256,10 +257,10 @@ export default {
         GymRevenueTable,
         JetBarBadge,
         JetBarIcon,
-        AnnounceModal,
         FontAwesomeIcon,
         DashboardStats,
         DashboardHeader,
+        DaisyModal,
     },
     props: [
         "teamName",
