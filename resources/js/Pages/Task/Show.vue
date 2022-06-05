@@ -1,6 +1,12 @@
 <template>
     <app-layout :title="title">
         <page-toolbar-nav title="Tasks" :links="navLinks" />
+        <task-date-switcher
+            :startOfTheWeek="startOfTheWeek"
+            :setStartOfTheWeek="setStartOfTheWeek"
+            :selectedDate="selectedDate"
+            :setSelectedDate="setSelectedDate"
+        />
         <gym-revenue-crud
             base-route="tasks"
             model-name="Task"
@@ -72,6 +78,7 @@ import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import PageToolbarNav from "@/Components/PageToolbarNav";
+import TaskDateSwitcher from "./components/TaskDateSwitcher";
 
 export default defineComponent({
     components: {
@@ -83,6 +90,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
         CalendarEventForm,
+        TaskDateSwitcher,
     },
     props: ["tasks", "filters"],
     setup(props) {
@@ -124,6 +132,18 @@ export default defineComponent({
             confirmDelete.value = item;
         };
 
+        const selectedDate = ref(new Date());
+
+        let startDay = new Date();
+        let day = startDay.getDay() === 0 ? 7 : startDay.getDay();
+        startDay.setDate(startDay.getDate() - day + 1);
+        const startOfTheWeek = ref(startDay);
+        const setSelectedDate = (val) => {
+            selectedDate.value = val;
+        };
+        const setStartOfTheWeek = (val) => {
+            selectedDate.value = val;
+        };
         const fields = [
             "title",
             "created_at",
@@ -181,6 +201,10 @@ export default defineComponent({
             selectedCalendarEvent,
             closeModals,
             topActions,
+            selectedDate,
+            setSelectedDate,
+            startOfTheWeek,
+            setStartOfTheWeek,
         };
     },
 });
