@@ -16,18 +16,28 @@
             X
         </button>
     </div>
+    <teleport to="main">
+        <div class="filter-drawer">
+            <div
+                v-if="visible"
+                class="w-full grid grid-cols-2 lg:block gap-4 col-span-3"
+                :class="{ 'filters-open': visible }"
+            >
+                <slot />
 
-    <div class="w-full grid grid-cols-2 lg:grid-cols-6 gap-4 col-span-3">
-        <slot />
-
-        <button
-            class="btn btn-sm btn-outline self-end"
-            type="button"
-            @click="$emit('clear-filters')"
-        >
-            Clear Filters
-        </button>
-    </div>
+                <button
+                    class="btn btn-sm btn-outline self-end"
+                    type="button"
+                    @click="$emit('clear-filters')"
+                >
+                    Clear Filters
+                </button>
+            </div>
+            <button class="toggle-filters" @click="toggleFilterDrawer">
+                Filter
+            </button>
+        </div>
+    </teleport>
 </template>
 
 <style scoped>
@@ -40,10 +50,32 @@ input {
 select {
     @apply select select-sm select-bordered;
 }
+
+.filter-drawer {
+    @apply max-w-sm relative bg-primary-200 bg-opacity-30 transition-transform;
+    grid-column: 1;
+    grid-row: 1;
+
+    button.toggle-filters {
+        @apply h-8 w-12 bg-red-400 rounded-r-lg absolute right-[-3rem] top-[5rem] z-50;
+    }
+}
+
+.filters-open {
+    @apply p-8;
+}
+</style>
+
+<style>
+main {
+    @apply grid;
+    grid-template-rows: 100%;
+    grid-template-columns: auto 1fr;
+}
 </style>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
     props: {
@@ -52,6 +84,15 @@ export default defineComponent({
             type: Number,
             default: 300,
         },
+    },
+    setup() {
+        const visible = ref(false);
+
+        const toggleFilterDrawer = () => {
+            visible.value = !visible.value;
+        };
+
+        return { visible, toggleFilterDrawer };
     },
 });
 </script>
