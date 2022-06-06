@@ -229,7 +229,7 @@
             </div>
         </transition>
     </div>
-    <impersonation-modal
+    <daisy-modal
         title="Impersonation Mode"
         width="100%"
         overlayTheme="dark"
@@ -241,14 +241,14 @@
             v-if="impVars.showModal"
             @close="impVars.closeModal()"
         ></list-of-users-to-impersonate>
-    </impersonation-modal>
+    </daisy-modal>
     <!--    <div v-show="showingSidebarManageTeamsDropdown" @click="showingSidebarManageTeamsDropdown = false" class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 </template>
 
 <script>
 import { ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import ImpersonationModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
 export default {
     name: "JetBarResponsiveLinks",
@@ -260,7 +260,7 @@ export default {
     },
     components: {
         ListOfUsersToImpersonate,
-        ImpersonationModal,
+        DaisyModal,
     },
     methods: {
         switchToTeam(team) {

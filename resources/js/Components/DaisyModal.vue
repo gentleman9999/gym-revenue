@@ -72,6 +72,7 @@ export default defineComponent({
                 open();
             } else {
                 close();
+                emit("close");
             }
         });
 
@@ -85,5 +86,6 @@ export default defineComponent({
 
         return { isOpen, close, open };
     },
+    emits: ["close", "open"],
 });
 </script>

@@ -87,7 +87,7 @@
 import { computed, defineComponent, ref, watchEffect } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import { Inertia } from "@inertiajs/inertia";
 import "@fullcalendar/core/vdom"; // solves problem with Vite
 import FullCalendar from "@fullcalendar/vue3";
@@ -106,7 +106,7 @@ export default defineComponent({
         CalendarEventForm,
         AppLayout,
         GymRevenueCrud,
-        SweetModal,
+        DaisyModal,
         FullCalendar,
         PageToolbarNav,
     },
