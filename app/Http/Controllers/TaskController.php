@@ -52,7 +52,7 @@ class TaskController extends Controller
                 ->get(),
             'overdue_tasks' => CalendarEvent::whereEventTypeId($typeTaskForClient->id)
                 ->whereNull('event_completion')
-                ->where('start', '>=', date('Y-m-d H:i:s'))
+                ->whereDate('start', '<', date('Y-m-d H:i:s'))
                 ->with('type')
                 ->get(),
             'completed_tasks' => CalendarEvent::whereEventTypeId($typeTaskForClient->id)
