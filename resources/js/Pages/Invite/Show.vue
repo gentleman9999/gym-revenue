@@ -55,7 +55,6 @@
 <script>
 import { defineComponent, watch, watchEffect, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
 import { Inertia } from "@inertiajs/inertia";
 import MaybeAuthLayout from "@/Layouts/MaybeAuthLayout";
 
@@ -63,7 +62,6 @@ export default defineComponent({
     components: {
         MaybeAuthLayout,
         AppLayout,
-        SweetModal,
     },
     props: ["attendeeData"],
 

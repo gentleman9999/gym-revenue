@@ -121,7 +121,7 @@
 import { computed, defineComponent, ref, watchEffect } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import { Inertia } from "@inertiajs/inertia";
 import "@fullcalendar/core/vdom"; // solves problem with Vite
 import FullCalendar from "@fullcalendar/vue3";
@@ -133,7 +133,6 @@ import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
-import DaisyModal from "@/Components/DaisyModal";
 import ArrowIcon from "@/Components/Icons/Arrow";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -145,7 +144,7 @@ export default defineComponent({
         CalendarEventForm,
         AppLayout,
         GymRevenueCrud,
-        SweetModal,
+        DaisyModal,
         FullCalendar,
         PageToolbarNav,
         DaisyModal,

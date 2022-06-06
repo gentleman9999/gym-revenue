@@ -102,16 +102,9 @@
             </Button>
         </template>
     </jet-form-section>
-    <sweet-modal
-        title="Preview"
-        width="85%"
-        overlayTheme="dark"
-        modal-theme="dark"
-        enable-mobile-fullscreen
-        ref="modal"
-    >
+    <daisy-modal id="modal" ref="modal">
         <div v-html="form.markup"></div>
-    </sweet-modal>
+    </daisy-modal>
 </template>
 
 <script>
@@ -121,7 +114,7 @@ import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 
 export default {
     components: {
@@ -129,7 +122,7 @@ export default {
         Button,
         JetFormSection,
         JetInputError,
-        SweetModal,
+        DaisyModal,
     },
     props: ["clientId", "template", "canActivate"],
     setup(props, context) {
