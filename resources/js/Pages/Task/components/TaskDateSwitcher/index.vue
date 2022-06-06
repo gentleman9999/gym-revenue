@@ -1,5 +1,6 @@
 <template>
     <div class="task-date-switcher">
+        <week-switcher @on-update="changeWeek" direction="left" />
         <date-switcher-card
             v-for="(date, ndx) in daysOfWeek"
             :key="ndx"
@@ -8,16 +9,18 @@
             :active="currentDate === date"
             @click="() => handleCardClick(ndx)"
         />
+        <week-switcher @on-update="changeWeek" direction="right" />
     </div>
 </template>
 <style scoped>
 .task-date-switcher {
-    @apply flex flex-row space-x-4 px-4;
+    @apply flex flex-row space-x-4 px-4 items-center;
 }
 </style>
 <script setup>
 import { ref, computed } from "vue";
 import DateSwitcherCard from "./DateSwitcherCard";
+import WeekSwitcher from "./WeekSwitcher";
 const props = defineProps({
     selectedDate: {
         type: Date,
@@ -34,6 +37,12 @@ const props = defineProps({
         type: Function,
     },
 });
+
+const changeWeek = (sign) => {
+    let start = new Date(props.startOfTheWeek);
+    start.setDate(start.getDate() + sign * 7);
+    props.setStartOfTheWeek(start);
+};
 
 const handleCardClick = (ndx) => {
     let current = new Date(props.startOfTheWeek);
