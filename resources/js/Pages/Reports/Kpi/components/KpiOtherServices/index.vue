@@ -5,7 +5,7 @@
             header="Personal Training or Other Add-on Services"
         >
             <div class="flex flex-row flex-wrap">
-                <attachment-rate />
+                <attachment-rate class="no-more" />
                 <service-summary />
                 <penetration-percent />
             </div>

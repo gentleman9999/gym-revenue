@@ -15,6 +15,7 @@
                     'Bellville City',
                 ],
                 filterLabel: 'Location(s)',
+                more: true,
             }"
         >
             <data-table :columns="columns" :data="data" />
