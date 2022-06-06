@@ -84,7 +84,13 @@ export default defineComponent({
         PageToolbarNav,
         CalendarEventForm,
     },
-    props: ["tasks", "filters"],
+    props: [
+        "tasks",
+        "filters",
+        "incomplete_tasks",
+        "overdue_tasks",
+        "completed_tasks",
+    ],
     setup(props) {
         const createEventModal = ref();
         const editEventModal = ref();
