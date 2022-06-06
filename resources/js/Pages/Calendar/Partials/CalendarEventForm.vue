@@ -22,7 +22,14 @@
                 />
                 <jet-input-error :message="form.errors.start" class="mt-2" />
             </div>
-            <div>Project Status</div>
+            <div v-if="calendar_event?.event_completion == null">
+                Project Status:
+                <div class="badge badge-error gap-2">incomplete</div>
+            </div>
+            <div v-else>
+                Project Status:
+                <div class="badge badge-success gap-2">complete</div>
+            </div>
         </div>
         <div class="flex flex-col">
             <jet-label
