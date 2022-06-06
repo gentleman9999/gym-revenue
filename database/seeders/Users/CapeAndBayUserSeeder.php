@@ -3,7 +3,7 @@
 namespace Database\Seeders\Users;
 
 use App\Actions\Fortify\CreateUser;
-use App\Models\Team;
+use App\Actions\Jetstream\CreateTeam;
 
 class CapeAndBayUserSeeder extends UserSeeder
 {
@@ -11,11 +11,11 @@ class CapeAndBayUserSeeder extends UserSeeder
 
     protected function getUsersToAdd(): array
     {
-        Team::firstOrCreate([
+        CreateTeam::run([
             'user_id' => 1,
             'name' => 'Cape & Bay Admin Team',
             'personal_team' => 0,
-            'default_team' => 1,
+            'home_team' => 1,
         ]);
 
         return [

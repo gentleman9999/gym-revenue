@@ -2,7 +2,6 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\TeamAggregate;
 use App\Models\Team;
 use App\Models\User;
@@ -29,13 +28,13 @@ class CreateTeam implements CreatesTeams
             'name' => ['required', 'max:50'],
             'user_id' => ['sometimes', 'exists:users,id'],
 //            'personal_team' => ['sometimes', 'boolean'],
-            'default_team' => ['sometimes', 'boolean'],
+            'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($payload, $current_user = null)
     {
         if ($current_user) {
             AddingTeam::dispatch($current_user);
@@ -46,15 +45,9 @@ class CreateTeam implements CreatesTeams
 //        ]);
 
         $id = (Team::max('id') ?? 0) + 1;
-        $data['id'] = $id;
+        $payload['id'] = $id;
 
-        TeamAggregate::retrieve($id)->createTeam($data)->persist();
-
-        $client_id = $data['client_id'] ?? null;
-
-        if ($client_id) {
-            ClientAggregate::retrieve($data['client_id'])->createTeam($data)->persist();
-        }
+        TeamAggregate::retrieve($id)->createTeam($payload)->persist();
 
         $team = Team::findOrFail($id);
 //        if($current_user){

@@ -36,8 +36,8 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'id', 'email', 'alternate_email', 'password', 'first_name', 'last_name',
-        'address1', 'address2', 'city', 'state', 'zip', 'phone', 'client_id',
+        'email', 'alternate_email', 'password', 'first_name', 'last_name',
+        'address1', 'address2', 'city', 'state', 'zip', 'phone',
         'manager', 'classification_id', 'home_location_id', 'start_date', 'end_date',
         'termination_date', 'job_title', 'access_token',
     ];
@@ -61,6 +61,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_cape_and_bay_user' => 'boolean',
     ];
 
     /**
@@ -79,7 +80,7 @@ class User extends Authenticatable
      */
     public function currentTeam()
     {
-        if (is_null($this->current_team_id) && $this->id) {
+        if (is_null($this->current_team_id)) {
             $default_team = $this->default_team()->first();
             $team_record = Team::find($default_team->value);
             $this->switchTeam($team_record);
@@ -114,11 +115,6 @@ class User extends Authenticatable
     public function client()
     {
         return $this->belongsTo(Client::class);
-    }
-
-    public function isCapeAndBayUser()
-    {
-        return $this->teams()->get()->contains('id', 1);//ID1 = CapeAndBayAdminTeam
     }
 
     /**
@@ -182,7 +178,8 @@ class User extends Authenticatable
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('phone', 'like', '%' . $search . '%')
                     ->orWhere('address1', 'like', '%' . $search . '%')

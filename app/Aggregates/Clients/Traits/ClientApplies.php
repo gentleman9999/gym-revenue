@@ -46,8 +46,8 @@ trait ClientApplies
     public function applyTeamCreated(TeamCreated $event)
     {
         $this->teams[$event->payload['id']] = $event->payload['name'];
-        if ($event->payload['default_team'] ?? false) {
-            $this->default_team = $event->payload['id'];
+        if ($event->payload['home_team'] ?? false) {
+            $this->home_team = $event->payload['id'];
         }
     }
 

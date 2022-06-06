@@ -84,7 +84,7 @@ export default defineComponent({
         PageToolbarNav,
         CalendarEventForm,
     },
-    props: ["tasks", "filters"],
+    props: ["tasks", "filters", "lead_users", "client_users", "client_id"],
     setup(props) {
         const createEventModal = ref();
         const editEventModal = ref();

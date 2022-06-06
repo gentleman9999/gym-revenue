@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
-use App\Models\Team;
 use App\Models\TeamDetail;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -75,14 +74,12 @@ class ReadLeads
         $results = [];
 
         if ((! is_null($client_id))) {
-            $current_team = Team::whereId(60)->first(); //request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
-
-            $default_team_name = $client->default_team_name->value;
+            $current_team = request()->user()->currentTeam()->first();
+            $client = Client::find($client_id);
 
             $team_locations = [];
 
-            if ($current_team->id != $default_team_name) {
+            if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
 

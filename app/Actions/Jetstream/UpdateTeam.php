@@ -6,12 +6,11 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\TeamAggregate;
 use App\Models\Team;
 use Illuminate\Support\Facades\Redirect;
-use Laravel\Jetstream\Contracts\DeletesTeams;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateTeam implements DeletesTeams
+class UpdateTeam
 {
     use AsAction;
 
@@ -27,20 +26,20 @@ class UpdateTeam implements DeletesTeams
             'name' => ['required', 'max:50'],
 //            'user_id' => ['sometimes', 'exists:users,id'],
 //            'personal_team' => ['sometimes', 'boolean'],
-//            'default_team' => ['sometimes', 'boolean'],
+//            'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($payload, $current_user = null)
     {
-        TeamAggregate::retrieve($data['id'])->update($data, $current_user->id ?? 'Auto Generated')->persist();
-        $team = Team::findOrFail($data['id']);
+        TeamAggregate::retrieve($payload['id'])->update($payload, $current_user->id ?? 'Auto Generated')->persist();
+        $team = Team::findOrFail($payload['id']);
 
         $client_id = $team->client->id;
 
         if ($client_id) {
-            ClientAggregate::retrieve($client_id)->updateTeam($data, $current_user->id ?? 'Auto Generated')->persist();
+            ClientAggregate::retrieve($client_id)->updateTeam($payload, $current_user->id ?? 'Auto Generated')->persist();
         }
 
         return $team;

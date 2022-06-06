@@ -69,7 +69,7 @@ class CreateUser implements CreatesNewUsers
             'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
-            'role_id' => ['required', 'integer', 'exists:roles,id'],
+            'role_id' => ['sometimes', 'integer', 'exists:roles,id'],
             'classification_id' => ['sometimes', 'nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
@@ -78,28 +78,26 @@ class CreateUser implements CreatesNewUsers
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($payload, $current_user = null)
     {
         if ($current_user) {
             $client_id = $current_user->currentClientId();
         } else {
-            $client_id = $data['client_id'];
+            $client_id = $payload['client_id'];
         }
 
-        if (array_key_exists('password', $data)) {
-            $data['password'] = bcrypt($data['password']);
+        if (array_key_exists('password', $payload)) {
+            $payload['password'] = bcrypt($payload['password']);
         }
-
-        $data['role'] = $data['role_id'];
 
 //        $id = Uuid::new();//we should use uuid here, but then we'd have to change all the bouncer tables to use uuid instead of bigint;
         $id = (User::max('id') ?? 0) + 1;
-        $data['id'] = $id;
+        $payload['id'] = $id;
 
         $user_aggy = UserAggregate::retrieve($id)
-            ->createUser($current_user->id ?? "Auto Generated", $data);
+            ->createUser($payload, $current_user);
 
-        $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
+        $user_teams = $payload['team_ids'] ?? (array_key_exists('team_id', $payload) ? [$payload['team_id']] : []);
         foreach ($user_teams as $i => $team_id) {
             // Since the user needs to have their team added in a single transaction in createUser
             // A projector won't get executed (for now) but an apply function will run on the next retrieval
@@ -111,12 +109,12 @@ class CreateUser implements CreatesNewUsers
 
         $user_aggy->persist();
         if ($client_id) {
-            ClientAggregate::retrieve($id)->createUser($current_user->id ?? "Auto Generated", $data)->persist();
+            ClientAggregate::retrieve($id)->createUser($payload, $current_user)->persist();
         }
 
         $created_user = User::findOrFail($id);
 
-        $should_send_welcome_email = $data['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
+        $should_send_welcome_email = $payload['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
         if ($should_send_welcome_email) {
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
@@ -156,11 +154,9 @@ class CreateUser implements CreatesNewUsers
         $team_id = 1;//capeandbay team
         if ($client) {
             // Get the client's default-team name in client_details
-            $client_model = Client::whereId($client)->with('default_team_name')->first();
-            $default_team_name = $client_model->default_team_name->value;
+            $client_model = Client::whereId($client)->first();
             // Use that to find the team record in teams to get its ID
-            $team_id = Team::find($default_team_name)->id;
-            //$team_id = Team::where('name', '=', $default_team_name)->first()->id;
+            $team_id = Team::find($client_model->home_team_id)->id;
         }
 
         $this->command->warn("Creating new {$role} {$first_name} @{$email} for client_id {$client}");

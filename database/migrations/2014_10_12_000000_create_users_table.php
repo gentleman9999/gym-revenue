@@ -36,6 +36,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('termination_date')->nullable();
             $table->uuid('classification_id')->nullable();
             $table->string('manager')->nullable();
+            $table->boolean('is_cape_and_bay_user')->default(false);
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();

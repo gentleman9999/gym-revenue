@@ -33,12 +33,16 @@ class UserProjector extends Projector
         //setup a transaction so we if we have errors, we don't get a half-baked user
         DB::transaction(function () use ($data, $event) {
             //get only the keys we care about (the ones marked as fillable)
+            $user = new User();
+
+            $user->id = $event->payload['id'];
+            $user->client_id = $event->payload['client_id'];
             $user_table_data = array_filter($data, function ($key) {
                 return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
+            $user->fill($user_table_data);
 
-            //create the entry in users table
-            $user = User::create($user_table_data);
+            $user->save();
 
             $details = [
                 'contact_preference' => $data['contact_preference'] ?? null,
@@ -55,7 +59,7 @@ class UserProjector extends Projector
             $notes = $data['notes'] ?? false;
             if ($notes) {
                 Note::create([
-                    'entity_id' => $data['id'],
+                    'entity_id' => $event->aggregateRootUuid(),
                     'entity_type' => User::class,
                     'title' => $notes['title'],
                     'note' => $notes['note'],
@@ -63,22 +67,22 @@ class UserProjector extends Projector
                 ]);
             }
 
-            if ($client_id) {
-                // Get the client's default-team name in client_details
-                $client_model = Client::whereId($client_id)->with('default_team_name')->first();
-                $default_team_name = $client_model->default_team_name->value;
-                // Use that to find the team record in teams to get its ID
-                $team = Team::find($default_team_name);
-                //$team = Team::where('name', '=', $default_team_name)->first();
-
-                // Set default_team to $client's default-team's team_id in user_details
-                UserDetails::create([
-                    'user_id' => $user->id,
-                    'name' => 'default_team',
-                    'value' => $team->id,
-                    'active' => 1,
-                ]);
-            }
+//            if ($client_id) {
+//                // Get the client's default-team name in client_details
+//                $client_model = Client::find($client_id);
+//                $default_team_name = $client_model->default_team_name->value;
+//                // Use that to find the team record in teams to get its ID
+//                $team = Team::find($default_team_name);
+//                //$team = Team::where('name', '=', $default_team_name)->first();
+//
+//                // Set default_team to $client's default-team's team_id in user_details
+//                UserDetails::create([
+//                    'user_id' => $user->id,
+//                    'name' => 'default_team',
+//                    'value' => $team->id,
+//                    'active' => 1,
+//                ]);
+//            }
 
             /** Users have:
              * A Role that contain abilities
@@ -86,13 +90,15 @@ class UserProjector extends Projector
              * These two declarations should never EVER be chained together.
              */
             $role = null;
-            if (array_key_exists('role', $data)) {
-                $role = Role::whereId($data['role'])->get();
+            if (array_key_exists('role_id', $data)) {
+                $role = Role::whereId($data['role_id'])->get();
             }
             if (array_key_exists('team_id', $data)) {
                 if ($data['team_id'] === 1 || $data['team_id'] === 10) {
                     //set role to admin for capeandbay
                     $role = Role::whereName('Admin')->firstOrFail();
+                    $user->is_cape_and_bay_user = true;
+                    $user->save();
                 }
             }
 
@@ -121,7 +127,7 @@ class UserProjector extends Projector
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data, $event) {
-            $user = User::with(['teams'])->findOrFail($data['id']);
+            $user = User::with(['teams'])->findOrFail($event->aggregateRootUuid());
             $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
             $user->updateOrFail($data);
@@ -139,7 +145,7 @@ class UserProjector extends Projector
             $notes = $data['notes'] ?? false;
             if ($notes) {
                 Note::create([
-                    'entity_id' => $data['id'],
+                    'entity_id' => $event->aggregateRootUuid(),
                     'entity_type' => User::class,
                     'title' => $notes['title'],
                     'note' => $notes['note'],
@@ -179,7 +185,7 @@ class UserProjector extends Projector
     public function onUserDeleted(UserDeleted $event)
     {
         // Get the uer we're gonna delete
-        $bad_user = User::findOrFail($event->payload['id']);
+        $bad_user = User::findOrFail($event->aggregateRootUuid());
         // @todo - add offboading logic here
 
         // starting with unassigning users from teams.

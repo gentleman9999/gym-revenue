@@ -84,11 +84,8 @@ class RenderRegisterPage
                                     $role = is_null($token_record->role) ? 'Account Owner' : $token_record->role;
 
                                     if (is_null($token_record->team_id)) {
-                                        $default_team = ClientDetail::whereClientId($token_record->client_id)
-                                            ->whereDetail('default-team')->whereActive(1)->first();
-
-                                        if (! is_null($default_team)) {
-                                            $team_record = Team::whereName($default_team->value)->first();
+                                        if (! is_null($client->home_team_id)) {
+                                            $team_record = Team::find($client->home_team_id);
 
                                             if (! is_null($team_record)) {
                                                 $passing_props['role'] = $role;

@@ -77,7 +77,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Bouncer Abilities');
         $this->call(BouncerAbilitiesSeeder::class);
 
-
         // User classifications
         VarDumper::dump('Running Classifications Seeder');
         $this->call(ClassificationsSeeder::class);

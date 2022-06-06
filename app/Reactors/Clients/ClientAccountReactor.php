@@ -10,6 +10,7 @@ use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplates;
+use App\Models\Team;
 use App\Models\User;
 use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
@@ -17,17 +18,19 @@ use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
-use App\StorableEvents\Clients\Teams\ClientTeamCreated;
+use App\StorableEvents\Clients\TeamAttachedToClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientAccountReactor extends Reactor implements ShouldQueue
 {
-    public function onTeamCreated(ClientTeamCreated $event)
+    public function onTeamAttachedToClient(TeamAttachedToClient $event)
     {
-        if ($event->payload['default_team'] ?? false) {
-            ClientAggregate::retrieve($event->client)
-                ->addCapeAndBayAdminsToTeam($event->payload['id'])
+        $team = Team::findOrFail($event->team);
+
+        if ($team->home_team) {
+            ClientAggregate::retrieve($event->aggregateRootUuid())
+                ->addCapeAndBayAdminsToTeam($event->team)
                 ->persist();
         }
     }

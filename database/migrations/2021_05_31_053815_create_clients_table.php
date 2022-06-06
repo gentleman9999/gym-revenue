@@ -14,10 +14,12 @@ class CreateClientsTable extends Migration
     public function up()
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->string('id')->primary()->unique();
+            $table->uuid('id')->primary()->unique();
             $table->string('name');
+            $table->json('services');
+            $table->string('prefix');
+            $table->string('home_team_id')->nullable();
             $table->boolean('active')->default(1);
-
             $table->string('created_at')->nullable();
             $table->string('updated_at')->nullable();
             $table->string('deleted_at')->nullable();

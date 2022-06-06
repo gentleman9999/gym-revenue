@@ -2,7 +2,9 @@
 
 namespace App\Projectors\Clients;
 
+use App\Actions\Jetstream\CreateTeam;
 use App\Aggregates\Users\UserAggregate;
+use App\Models\Clients\Client;
 use App\Models\Clients\ClientBillableActivity;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\AudienceDetails;
@@ -39,38 +41,73 @@ use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
+use App\StorableEvents\Clients\ClientCreated;
+use App\StorableEvents\Clients\ClientDeleted;
+use App\StorableEvents\Clients\ClientRestored;
+use App\StorableEvents\Clients\ClientTrashed;
+use App\StorableEvents\Clients\ClientUpdated;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\PrefixCreated;
-use App\StorableEvents\Clients\Teams\ClientTeamCreated;
+use App\StorableEvents\Clients\TeamAttachedToClient;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientAccountProjector extends Projector
 {
-    public function onClientTeamCreated(ClientTeamCreated $event)
+    public function onClientCreated(ClientCreated $event)
     {
-        $team = Team::findOrFail($event->payload['id']);
+        $client = new Client();
+        $client->forceFill($event->payload);
+        $client->id = $event->aggregateRootUuid();
 
-        $isDefaultTeam = $event->payload['default_team'] ?? false;
+        $default_team_name = $client->name . ' Home Office';
+        preg_match_all('/(?<=\s|^)[a-z]/i', $default_team_name, $matches);
+        $prefix = strtoupper(implode('', $matches[0]));
+        $prefix = (strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix;
+        $client->prefix = $prefix;
 
-        if ($isDefaultTeam) {
-            ClientDetail::create([
-                'client_id' => $event->client,
-                'detail' => 'default-team',
-                'value' => $team->id,
-            ]);
+        $client->save();
+
+
+        $home_team = CreateTeam::run(['name' => $default_team_name, 'client_id' => $client->id, 'home_team' => true]);
+        $client->home_team_id = $home_team->id;
+        $client->save();
+    }
+
+    public function onClientUpdated(ClientUpdated $event)
+    {
+        Client::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
+    }
+
+    public function onClientTrashed(ClientTrashed $event)
+    {
+        Client::withTrashed()->findOrFail($event->aggregateRootUuid())->delete();
+    }
+
+    public function onClientRestored(ClientRestored $event)
+    {
+        Client::withTrashed()->findOrFail($event->aggregateRootUuid())->restore();
+    }
+
+    public function onClientDeleted(ClientDeleted $event)
+    {
+        Client::withTrashed()->findOrFail($event->aggregateRootUuid())->forceDelete();
+    }
+
+    public function onTeamAttachedToClient(TeamAttachedToClient $event)
+    {
+        $team = Team::findOrFail($event->team);
+
+        if ($team->home_team) {
+            $team->client->home_team_id = $team->id;
+            $team->save();
         }
         foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
             TeamDetail::create(['team_id' => $team->id, 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
         }
-//        ClientDetail::create([
-//            'client_id' => $event->client,
-//            'detail' => 'team',
-//            'value' => $team->id,
-//        ]);
     }
 
     public function onPrefixCreated(PrefixCreated $event)

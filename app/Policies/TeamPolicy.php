@@ -44,7 +44,7 @@ class TeamPolicy
     {
         $can_create_new_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
 
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_create_new_teams_for_current_client;
+        return $user->isAccountOwner() || $user->is_cape_and_bay_user || $can_create_new_teams_for_current_client;
     }
 
     /**
@@ -59,7 +59,7 @@ class TeamPolicy
 //        return $user->ownsTeam($team);
         $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
 
-        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_update_teams_for_current_client;
+        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->is_cape_and_bay_user || $can_update_teams_for_current_client;
     }
 
     /**
@@ -74,7 +74,7 @@ class TeamPolicy
 //        return $user->ownsTeam($team);
         $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
 
-        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_update_teams_for_current_client;
+        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->is_cape_and_bay_user || $can_update_teams_for_current_client;
     }
 
     /**
@@ -89,7 +89,7 @@ class TeamPolicy
 //        return $user->ownsTeam($team);
         $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
 
-        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_update_teams_for_current_client;
+        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->is_cape_and_bay_user || $can_update_teams_for_current_client;
     }
 
     /**
@@ -104,7 +104,7 @@ class TeamPolicy
 //        return $user->ownsTeam($team);
         $can_remove_team_members_from_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
 
-        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_remove_team_members_from_current_client;
+        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->is_cape_and_bay_user || $can_remove_team_members_from_current_client;
     }
 
     /**
@@ -119,6 +119,6 @@ class TeamPolicy
 //        return $user->ownsTeam($team);
         $can_delete_team_from_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
 
-        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->isCapeAndBayUser() || $can_delete_team_from_current_client;
+        return $user->ownsTeam($team) || $user->isAccountOwner() || $user->is_cape_and_bay_user || $can_delete_team_from_current_client;
     }
 }

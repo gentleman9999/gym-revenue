@@ -30,9 +30,10 @@ class TeamAggregate extends AggregateRoot
         return $this;
     }
 
-    public function createTeam(array $payload, string $created_by_user_id = 'Auto Generated')
+    public function createTeam(array $payload, User | string | null $created_by_user = null)
     {
-        $this->recordThat(new TeamCreated($this->uuid(), $created_by_user_id, $payload));
+        $created_by_user_id = $created_by_user->id ?? null;
+        $this->recordThat(new TeamCreated($payload, $created_by_user_id));
 
         return $this;
     }

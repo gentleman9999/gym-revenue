@@ -5,10 +5,9 @@ namespace App\Aggregates\Clients\Traits\Actions;
 use App\Aggregates\Users\UserAggregate;
 use App\Exceptions\Clients\ClientAccountException;
 use App\Models\Team;
-use App\Models\UserDetails;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\PrefixCreated;
-use App\StorableEvents\Clients\Teams\ClientTeamCreated;
+use App\StorableEvents\Clients\TeamAttachedToClient;
 use App\StorableEvents\Clients\Teams\ClientTeamDeleted;
 use App\StorableEvents\Clients\Teams\ClientTeamUpdated;
 use App\StorableEvents\Clients\UserRemovedFromTeam;
@@ -19,7 +18,7 @@ trait ClientTeamActions
     public function createTeamPrefix(string $prefix)
     {
         if (! empty($this->team_prefix)) {
-            throw ClientAccountException::prefixAlreadyCreated($this->team_prefix, $this->default_team);
+            throw ClientAccountException::prefixAlreadyCreated($this->team_prefix, $this->home_team);
         } else {
             $this->recordThat(new PrefixCreated($this->uuid(), $prefix));
         }
@@ -27,14 +26,16 @@ trait ClientTeamActions
         return $this;
     }
 
-    public function createTeam(array $payload, string $created_by_user_id = 'Auto Generated')
+    public function attachTeamToClient(string $team, User | string | null $created_by_user = null)
     {
-        if (array_key_exists($payload['id'], $this->teams)) {
-            throw ClientAccountException::teamAlreadyAssigned($payload['name']);
+        if (array_key_exists($team, $this->teams)) {
+            throw ClientAccountException::teamAlreadyAssigned($team);
         }
         // @todo - make sure the team is not assigned to another client
 
-        $this->recordThat(new ClientTeamCreated($this->uuid(), $created_by_user_id, $payload));
+        $created_by_user_id = $created_by_user->id ?? null;
+
+        $this->recordThat(new TeamAttachedToClient($team, $created_by_user_id));
 
         return $this;
     }
@@ -56,15 +57,12 @@ trait ClientTeamActions
     public function addCapeAndBayAdminsToTeam(string $team_id)
     {
         $team = Team::find($team_id);
-        $users = UserDetails::select('user_id')
-            ->whereName('default_team')
-            ->whereValue(1)->get();
-
+        $users = Team::whereName('Cape & Bay Admin Team')->first()->users;
         if (count($users) > 0) {
             $payload = [];
             foreach ($users as $user) {
-                $payload[] = $user->user_id;
-                UserAggregate::retrieve($user->user_id)
+                $payload[] = $user->id;
+                UserAggregate::retrieve($user->id)
                     ->addUserToTeam($team_id, $team->name, $this->uuid())
                     ->persist();
             }

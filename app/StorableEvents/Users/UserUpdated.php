@@ -2,18 +2,8 @@
 
 namespace App\StorableEvents\Users;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\EntityUpdated;
 
-class UserUpdated extends ShouldBeStored
+class UserUpdated extends EntityUpdated
 {
-    public $id;
-    public $user;
-    public $payload;
-
-    public function __construct(string $id, string $user, array $payload)
-    {
-        $this->id = $id;
-        $this->user = $user;
-        $this->payload = $payload;
-    }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Clients\Locations;
 
-use App\Models\Clients\ClientDetail;
+use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -15,7 +15,7 @@ class GenerateGymRevenueId
     {
         $results = false;
 
-        $prefix = ClientDetail::whereClientId($client_id)->whereDetail('prefix')->pluck('value');
+        $prefix = Client::findOrFail($client_id)->prefix;
 
         if (! is_null($prefix)) {
             $iterations = Location::whereClientId($client_id)->pluck('gymrevenue_id');

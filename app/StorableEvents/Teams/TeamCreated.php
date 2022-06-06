@@ -2,19 +2,8 @@
 
 namespace App\StorableEvents\Teams;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\EntityCreated;
 
-class TeamCreated extends ShouldBeStored
+class TeamCreated extends EntityCreated
 {
-    //user = request's current_user
-    public $client;
-    public $user;
-    public $payload;
-
-    public function __construct(string $client, string $user, array $payload)
-    {
-        $this->client = $client;
-        $this->user = $user;
-        $this->payload = $payload;
-    }
 }

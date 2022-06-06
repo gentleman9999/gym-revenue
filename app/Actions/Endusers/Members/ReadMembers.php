@@ -63,13 +63,12 @@ class ReadMembers
 
         if ((! is_null($client_id))) {
             $current_team = Team::whereId(60)->first(); //request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::find($client_id);
 
-            $default_team_name = $client->default_team_name->value;
 
             $team_locations = [];
 
-            if ($current_team->id != $default_team_name) {
+            if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
 

@@ -2,6 +2,8 @@
 
 namespace App\Models\Clients;
 
+use App\Enums\ClientServiceEnum;
+use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
@@ -28,6 +30,11 @@ class Client extends Model
     protected $fillable = [
         'name',
         'active',
+        'services',
+    ];
+
+    protected $casts = [
+        'services' => 'array',
     ];
 
     public function locations()
@@ -65,9 +72,9 @@ class Client extends Model
         return $this->hasOne(ClientDetail::class);
     }
 
-    public function default_team_name()
+    public function home_team()
     {
-        return $this->detail()->where('detail', '=', 'default-team');
+        return $this->hasOne(Team::class, 'id', 'home_team_id');
     }
 
     public function teams()
@@ -80,8 +87,36 @@ class Client extends Model
         return $this->hasMany(User::class);
     }
 
-    public function services()
+    public function accountOwners()
     {
-        return $this->details()->whereDetail('service_slug')->whereActive(1);
+        return $this->users()->whereHas('roles', function ($query) {
+            $query->where('roles.scope', '=', $this->id)->whereGroup(SecurityGroupEnum::ACCOUNT_OWNER);
+        })->orderBy('created_at');
+    }
+
+    protected function firstName(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ucfirst($value),
+        );
+    }
+
+    public function setActiveAttribute(bool|int|string|null $val)
+    {
+        if (! isset($val) || ! $val || $val === 'false') {
+            $this->attributes['active'] = 0;
+
+            return;
+        }
+        $this->attributes['active'] = 1;
+    }
+
+    public function getServicesAttribute($value)
+    {
+        $services = collect(json_decode($value))->map(function ($service) {
+            return ClientServiceEnum::tryFrom($service);
+        })->filter()->toArray();
+
+        return $services;
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Clients\Client;
-use App\Models\Clients\ClientDetail;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Jetstream\Events\TeamCreated;
@@ -24,7 +23,7 @@ class Team extends JetstreamTeam
      */
     protected $casts = [
         'personal_team' => 'boolean',
-        'default_team' => 'boolean',
+        'home_team' => 'boolean',
     ];
 
     /**
@@ -37,7 +36,7 @@ class Team extends JetstreamTeam
         'user_id',
         'name',
         'personal_team',
-        'default_team',
+        'home_team',
         'client_id',
     ];
 
@@ -67,13 +66,6 @@ class Team extends JetstreamTeam
         return $this->details()->whereName('team-location');
     }
 
-    public function default_team_details()
-    {
-        return $this->hasOne(ClientDetail::class, 'value', 'id')
-            ->where('detail', '=', 'default-team')
-            ->with('client');
-    }
-
     public static function fetchTeamIDFromName(string $name)
     {
         $model = new self();
@@ -98,13 +90,6 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(TeamUser::class, 'team_id', 'id')
             ->with('user');
-    }
-
-    public function isClientsDefaultTeam()
-    {
-        $proof = $this->default_team_details()->first();
-
-        return (! is_null($proof));
     }
 
     public function scopeFilter($query, array $filters)
