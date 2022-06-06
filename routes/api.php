@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\EnsureTokenIsValid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +18,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware(EnsureTokenIsValid::class)->prefix('leads')->group(function () {
+Route::prefix('leads')->group(function () {
     Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class);
     Route::post('/', \App\Actions\Endusers\Leads\CreateLeadApi::class);
 });
 
-Route::middleware(EnsureTokenIsValid::class)->prefix('members')->group(function () {
+Route::prefix('members')->group(function () {
     Route::get('/', \App\Actions\Endusers\Members\ReadMembers::class);
     Route::post('/', \App\Actions\Endusers\Members\CreateMemberApi::class);
 });
