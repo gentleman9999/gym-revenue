@@ -30,7 +30,7 @@
                     'bg-neutral-500': taskType === 'completed_tasks',
                 }"
             >
-                Header
+                {{ headers[taskType] }}
             </div>
         </template>
     </gym-revenue-crud>
@@ -53,4 +53,10 @@ const props = defineProps({
         default: [],
     },
 });
+
+const headers = {
+    incomplete_tasks: "Today",
+    ovedue_tasks: "Overdue",
+    completed_tasks: "Completed",
+};
 </script>
