@@ -26,8 +26,14 @@ class TaskController extends Controller
             $request->merge(['end' => date('Y-m-d H:i:s', $endOfDay)]);
         } else {
             $date = date('Y-m-d', strtotime($request->get('start')));
-            $request->merge(['start' => DateTime::createFromFormat('Y-m-d H:i:s', (new DateTime())->format($date.' 00:00:00'))->getTimestamp()]);
-            $request->merge(['end' => DateTime::createFromFormat('Y-m-d H:i:s', (new DateTime())->format($date.' 23:59:59'))->getTimestamp()]);
+            $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format($date.' 00:00:00')
+            )->getTimestamp())]);
+            $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format($date.' 23:59:59')
+            )->getTimestamp())]);
         }
 
         $typeTaskForClient = CalendarEventType::whereClientId($client_id)
