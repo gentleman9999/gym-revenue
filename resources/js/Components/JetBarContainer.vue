@@ -1,6 +1,6 @@
 <template>
     <div
-        class="max-w-screen lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset jetbar-container"
+        class="max-w-screen lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset"
     >
         <slot />
     </div>
