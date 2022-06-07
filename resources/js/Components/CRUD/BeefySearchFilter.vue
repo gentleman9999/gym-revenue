@@ -35,6 +35,7 @@
                 <font-awesome-icon :icon="['fas', 'chevron-right']" size="lg" />
             </button>
             <div
+                id="filters-open"
                 v-if="visible"
                 class="w-full grid grid-cols-2 lg:block gap-4 col-span-3"
                 :class="{ 'filters-open': visible }"
@@ -42,7 +43,7 @@
                 <slot />
 
                 <button
-                    class="btn btn-sm btn-outline self-end"
+                    class="btn btn-sm btn-outline self-end mt-4"
                     type="button"
                     @click="$emit('clear-filters')"
                 >
@@ -61,9 +62,21 @@
     </teleport>
 </template>
 
+<style>
+.filter-drawer #filters-open {
+    .form-control {
+        @apply mt-2 !important;
+    }
+
+    label {
+        @apply text-base-content !important;
+    }
+}
+</style>
+
 <style scoped>
 label {
-    @apply label label-text py-0 text-xs text-white;
+    @apply label label-text py-0 text-xs text-white mt-2;
 }
 input {
     @apply input input-sm input-bordered;

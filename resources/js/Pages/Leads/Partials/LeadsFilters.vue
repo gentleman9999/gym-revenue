@@ -7,12 +7,7 @@
         @clear-search="clearSearch"
     >
         <div class="form-control">
-            <label
-                for="nameSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
-                Name Search:
-            </label>
+            <label for="nameSearch" class="py-1 text-xs"> Name Search: </label>
             <input
                 id="nameSearch"
                 v-model="form.nameSearch"
@@ -21,10 +16,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="phoneSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="phoneSearch" class="py-1 text-xs">
                 Phone Search:
             </label>
             <input
@@ -35,10 +27,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="emailSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="emailSearch" class="py-1 text-xs">
                 Email Search:
             </label>
             <input
@@ -49,10 +38,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="agreementSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="agreementSearch" class="py-1 text-xs">
                 Agreement Number Search:
             </label>
             <input
@@ -89,10 +75,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="leads_claimed"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="leads_claimed" class="py-1 text-xs">
                 Leads Claimed By:
             </label>
             <multiselect
@@ -113,12 +96,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="lead_type"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
-                Lead Type:
-            </label>
+            <label for="lead_type" class="py-1 text-xs"> Lead Type: </label>
             <multiselect
                 v-model="form.typeoflead"
                 class="py-2"
@@ -137,12 +115,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="location"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
-                Locations:
-            </label>
+            <label for="location" class="py-1 text-xs"> Locations: </label>
             <multiselect
                 v-model="form.grlocation"
                 class="py-2"
@@ -161,12 +134,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="lead_source"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
-                Source:
-            </label>
+            <label for="lead_source" class="py-1 text-xs"> Source: </label>
             <multiselect
                 v-model="form.leadsource"
                 class="py-2"
@@ -185,12 +153,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="opportunity"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
-                Opportunity:
-            </label>
+            <label for="opportunity" class="py-1 text-xs"> Opportunity: </label>
             <multiselect
                 v-model="form.opportunity"
                 class="py-2"
@@ -209,10 +172,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="date_of_birth"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="date_of_birth" class="py-1 text-xs">
                 Date of Birth:
             </label>
             <DatePicker
@@ -228,7 +188,7 @@
 
 <style scoped>
 label {
-    @apply label label-text py-0 text-xs text-gray-400;
+    @apply py-0 text-xs;
 }
 input {
     @apply input input-sm input-bordered;
