@@ -23,6 +23,7 @@ Route::middleware(EnsureTokenIsValid::class)->prefix('leads')->group(function ()
     Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class);
     Route::post('/create', \App\Actions\Endusers\Leads\CreateLeadApi::class);
     Route::post('/upsert', \App\Actions\Endusers\Leads\UpsertLeadApi::class);
+    Route::post('/batchupsert', \App\Actions\Endusers\Leads\BatchUpsertLeadApi::class);
 });
 
 Route::middleware(EnsureTokenIsValid::class)->prefix('members')->group(function () {
