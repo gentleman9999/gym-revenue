@@ -108,7 +108,7 @@ class User extends Authenticatable
 
     public function isClientUser()
     {
-        return $this->client !== null;
+        return $this->client_id !== null;
     }
 
     public function client()

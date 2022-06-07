@@ -247,7 +247,7 @@ import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
-import DatePicker from "vue3-date-time-picker";
+import DatePicker from "@vuepic/vue-datepicker";
 
 export default defineComponent({
     components: {

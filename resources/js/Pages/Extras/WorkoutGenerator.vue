@@ -34,13 +34,13 @@
             </div>
         </div>
     </app-layout>
-    <sweet-modal ref="sweet" blocking hide-close-button>
+    <daisy-modal id="generationModal" ref="generationModal">
         <font-awesome-icon :icon="['far', whichSmile]" size="8x" spin />
         <br />
         <div class="mt-6">
             <p>Generating your Workout Routine....</p>
         </div>
-    </sweet-modal>
+    </daisy-modal>
 </template>
 
 <script>
@@ -50,7 +50,7 @@ import AppLayout from "@/Layouts/AppLayout";
 import WorkoutForm from "@/Presenters/WorkoutGenerator/WorkoutForm";
 import GeneratedWorkout from "@/Presenters/WorkoutGenerator/GeneratedWorkout";
 
-import SweetModal from "../../Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSmile, faSmileWink } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -60,7 +60,7 @@ export default defineComponent({
     name: "WorkoutGenerator",
     components: {
         AppLayout,
-        SweetModal,
+        DaisyModal,
         WorkoutForm,
         FontAwesomeIcon,
         GeneratedWorkout,
@@ -70,10 +70,10 @@ export default defineComponent({
         showModal(flag) {
             if (flag) {
                 console.log("Showing form");
-                this.$refs.sweet.open();
+                this.$refs.generationModal.open();
                 let _this = this;
                 setTimeout(function () {
-                    _this.$refs.sweet.close();
+                    _this.$refs.generationModal.close();
                     _this.showRoutine = true;
                 }, 3500);
             }

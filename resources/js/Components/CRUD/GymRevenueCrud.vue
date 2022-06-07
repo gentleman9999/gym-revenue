@@ -55,7 +55,11 @@
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
-                />
+                >
+                    <template #title>
+                        <slot name="title"></slot>
+                    </template>
+                </component>
             </div>
             <div class="lg:hidden">
                 <component
@@ -63,7 +67,11 @@
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
-                />
+                >
+                    <template #title>
+                        <slot name="title"></slot>
+                    </template>
+                </component>
             </div>
         </template>
         <template v-else>

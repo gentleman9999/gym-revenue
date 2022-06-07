@@ -430,9 +430,9 @@ import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import DatePicker from "vue3-date-time-picker";
+import DatePicker from "@vuepic/vue-datepicker";
 
-import "vue3-date-time-picker/dist/main.css";
+import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";

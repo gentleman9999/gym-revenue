@@ -1,26 +1,40 @@
 <template>
     <app-layout :title="title">
         <page-toolbar-nav title="Tasks" :links="navLinks" />
-        <gym-revenue-crud
-            base-route="tasks"
-            model-name="Task"
-            model-key="task"
-            :fields="fields"
-            :resource="tasks"
-            :actions="{
-                edit: {
-                    label: 'Edit',
-                    handler: ({ data }) => editTask(data),
-                },
-                trash: false,
-                restore: false,
-                delete: {
-                    label: 'Delete',
-                    handler: ({ data }) => handleClickDelete(data),
-                },
-            }"
-            :top-actions="topActions"
-        />
+        <div class="flex flex-row">
+            <month-switcher class="pl-4" />
+            <div class="flex flex-col items-center">
+                <task-date-switcher
+                    :startOfTheWeek="startOfTheWeek"
+                    :setStartOfTheWeek="setStartOfTheWeek"
+                    :selectedDate="selectedDate"
+                    :setSelectedDate="setSelectedDate"
+                />
+                <task-list-view
+                    v-for="taskType in taskTypes"
+                    :key="taskType"
+                    :taskType="taskType"
+                    base-route="tasks"
+                    model-name="Task"
+                    model-key="task"
+                    :fields="fields"
+                    :resource="tasks"
+                    :actions="{
+                        edit: {
+                            label: 'Edit',
+                            handler: ({ data }) => editTask(data),
+                        },
+                        trash: false,
+                        restore: false,
+                        delete: {
+                            label: 'Delete',
+                            handler: ({ data }) => handleClickDelete(data),
+                        },
+                    }"
+                    :top-actions="topActions"
+                />
+            </div>
+        </div>
         <confirm
             title="Really Trash Task?"
             v-if="confirmDelete"
@@ -62,7 +76,7 @@
     </app-layout>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
@@ -72,6 +86,10 @@ import Button from "@/Components/Button";
 import JetBarContainer from "@/Components/JetBarContainer";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import PageToolbarNav from "@/Components/PageToolbarNav";
+import TaskDateSwitcher from "./components/TaskDateSwitcher";
+import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher";
+import TaskListView from "./components/TaskListView";
+import pickBy from "lodash/pickBy";
 
 export default defineComponent({
     components: {
@@ -83,6 +101,9 @@ export default defineComponent({
         Button,
         PageToolbarNav,
         CalendarEventForm,
+        TaskDateSwitcher,
+        MonthSwitcher,
+        TaskListView,
     },
     props: [
         "tasks",
@@ -108,7 +129,7 @@ export default defineComponent({
         };
 
         const editTask = (item) => {
-            console.log(item);
+            console.log(props.tasks);
             const id = item.id;
             selectedCalendarEvent.value = props.tasks.data.find(
                 (event) => event.id === id
@@ -130,6 +151,18 @@ export default defineComponent({
             confirmDelete.value = item;
         };
 
+        const selectedDate = ref(new Date());
+
+        let startDay = new Date();
+        let day = startDay.getDay() === 0 ? 7 : startDay.getDay();
+        startDay.setDate(startDay.getDate() - day + 1);
+        const startOfTheWeek = ref(startDay);
+        const setSelectedDate = (val) => {
+            selectedDate.value = val;
+        };
+        const setStartOfTheWeek = (val) => {
+            startOfTheWeek.value = val;
+        };
         const fields = [
             "title",
             "created_at",
@@ -169,6 +202,23 @@ export default defineComponent({
             },
         };
 
+        const taskTypes = [
+            "incomplete_tasks",
+            "ovedue_tasks",
+            "completed_tasks",
+        ];
+        const getData = function () {
+            let options = {
+                preserveState: true,
+                preserveScroll: true,
+            };
+            let query = {
+                created_at: selectedDate.value,
+            };
+            Inertia.get(route("tasks"), pickBy(query), options);
+        };
+        watch([selectedDate], getData, { deep: true });
+
         return {
             fields,
             confirmDelete,
@@ -187,6 +237,11 @@ export default defineComponent({
             selectedCalendarEvent,
             closeModals,
             topActions,
+            selectedDate,
+            setSelectedDate,
+            startOfTheWeek,
+            setStartOfTheWeek,
+            taskTypes,
         };
     },
 });
