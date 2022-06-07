@@ -61,7 +61,6 @@ import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
 import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder";
 import DaisyModal from "@/Components/DaisyModal";
 import usePage from "@/Components/InertiaModal/usePage";
@@ -74,7 +73,6 @@ export default {
         Button,
         JetFormSection,
         JetInputError,
-        SweetModal,
         DaisyModal,
     },
     props: ["clientId", "template", "canActivate", "topolApiKey"],
