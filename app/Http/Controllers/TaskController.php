@@ -19,11 +19,19 @@ class TaskController extends Controller
             return Redirect::route('dashboard');
         }
 
+        /** CHECKING THE PAGE REQUEST FOR START PARAMS
+         * If param 'start' doesn't exist, we get the start and end of today.
+         * If param 'start' exists, we get the start and end of that date
+         */
         if (! $request->has('start')) {
-            $beginOfDay = DateTime::createFromFormat('Y-m-d H:i:s', (new DateTime())->format('Y-m-d 00:00:00'))->getTimestamp();
-            $endOfDay = DateTime::createFromFormat('Y-m-d H:i:s', (new DateTime())->format('Y-m-d 23:59:59'))->getTimestamp();
-            $request->merge(['start' => date('Y-m-d H:i:s', $beginOfDay)]);
-            $request->merge(['end' => date('Y-m-d H:i:s', $endOfDay)]);
+            $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format('Y-m-d 00:00:00')
+            )->getTimestamp())]);
+            $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format('Y-m-d 23:59:59')
+            )->getTimestamp())]);
         } else {
             $date = date('Y-m-d', strtotime($request->get('start')));
             $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
