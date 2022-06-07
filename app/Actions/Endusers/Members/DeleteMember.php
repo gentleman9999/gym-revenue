@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Members;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\MemberAggregate;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -28,7 +28,7 @@ class DeleteMember
     public function handle($client_id, $id, $user = null)
     {
         $member = Member::findOrFail($id);
-        EndUserActivityAggregate::retrieve($client_id)->deleteMember($user->id ?? "Auto Generated", $id)->persist();
+        MemberAggregate::retrieve($client_id)->delete($user->id ?? "Auto Generated", $id)->persist();
 
         return $member;
     }

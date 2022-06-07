@@ -29,9 +29,9 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles'];
 
         //Populating Role Filter
-        $team_users = User::with(['teams', 'home_club', 'is_manager', 'roles'])->whereHas('detail', function ($query) use ($client_id) {
-            return $query->whereName('associated_client')->whereValue($client_id);
-        })->get();
+        $team_users = User::with(['teams', 'home_location', 'roles'])
+            ->whereClientId($client_id)
+            ->get();
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
@@ -46,9 +46,9 @@ class UsersController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams', 'home_club', 'is_manager', 'classification'])->whereHas('detail', function ($query) use ($client_id) {
-                    return $query->whereName('associated_client')->whereValue($client_id);
-                })->filter($request->only($filterKeys))->sort()
+                $users = User::with(['teams', 'home_location'])
+                    ->whereClientId($client_id)
+                    ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
             } else {
@@ -59,7 +59,7 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('id', $user_ids)
-                    ->with(['teams', 'home_club', 'is_manager', 'classification'])
+                    ->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))
                     ->sort()
                     ->paginate(10)
@@ -74,20 +74,10 @@ class UsersController extends Controller
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
-
-                //redneck join to find out classification name based on ID, will probably refactor this
-                if (! is_null($users[$idx]->classification->value)) {
-                    $users[$idx]->classification->value = Classification::whereId($users[$idx]->classification->value)->first()->title;
-                }
-
-                //This is phil's fault
-                if (! is_null($users[$idx]->home_club->value)) {
-                    $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
-                }
             }
         } else {
             //cb team selected
-            $users = User::with('is_manager')->whereHas('teams', function ($query) use ($request) {
+            $users = User::with('home_location')->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
             })->filter($request->only($filterKeys))->sort()
                 ->paginate(10)->appends(request()->except('page'));
@@ -172,10 +162,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = $me->with([
-                'details', 'altEmail', 'jobTitle', 'home_club','notes', 'start_date', 'end_date', 'termination_date',
-                'files', 'classification',
-            ])->findOrFail($id);
+        $user = $me->with(['details','notes','files'])->findOrFail($id);
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -186,9 +173,8 @@ class UsersController extends Controller
 
         $locations = null;
         if ($user->isClientUser()) {
-            $locations = Location::whereClientId($user->client()->first()->id)->get(['name', 'gymrevenue_id']);
-        }
-;
+            $locations = Location::whereClientId($user->client->id)->get(['name', 'gymrevenue_id']);
+        };
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
         $userData = $user->toArray();
@@ -219,18 +205,10 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = User::with('details', 'teams', 'phone_number', 'files', 'classification')->findOrFail($id); //User we're peeking
+        $user = User::with('details', 'teams', 'files')->findOrFail($id); //User we're peeking
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRole();
-
-        if (! is_null($user->classification->value)) {
-            $data['classification']['value'] = Classification::whereId($data['classification']['value'])->first()->title;
-        }
-
-        if ($user->phone_number) { //Not totally sure this is necessary atm
-            $data['phone'] = $user->phone_number->value;
-        }
 
         $requesting_user_teams = $requesting_user->teams ?? [];
         $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
@@ -260,9 +238,8 @@ class UsersController extends Controller
             $is_default_team = $client->default_team_name->value == $current_team->id;
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams', 'home_club', 'is_manager', 'classification'])->whereHas('detail', function ($query) use ($client_id) {
-                    return $query->whereName('associated_client')->whereValue($client_id);
-                })->filter($request->only($filterKeys))
+                $users = User::with(['teams'])->whereClientId($client_id)
+                    ->filter($request->only($filterKeys))
                     ->get();
             } else {
                 // else - get the members of that team
@@ -272,7 +249,7 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('id', $user_ids)
-                    ->with(['teams', 'home_club', 'is_manager', 'classification'])
+                    ->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
             }
@@ -292,13 +269,13 @@ class UsersController extends Controller
                 }
 
                 //This is phil's fault
-                if (! is_null($users[$idx]->home_club->value)) {
-                    $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_club->value)->first()->name : null;
+                if (! is_null($users[$idx]->home_location_id)) {
+                    $users[$idx]->home_club_name = $users[$idx]->home_club ? Location::whereGymrevenueId($users[$idx]->home_location_id)->first()->name : null;
                 }
             }
         } else {
             //cb team selected
-            $users = User::with('is_manager')->whereHas('teams', function ($query) use ($request) {
+            $users = User::whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
             })->filter($request->only($filterKeys))
                 ->get();

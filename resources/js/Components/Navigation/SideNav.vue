@@ -29,7 +29,7 @@
         <!--             class="fixed inset-0 h-full w-full z-10" style="display: none;"></div>-->
 
         <!-- Sidebar Links -->
-        <nav class="flex-grow lg:block pb-4 lg:pb-0 overflow-y-auto">
+        <nav class="flex-grow lg:block pb-4 lg:pb-0 overflow-hidden">
             <!-- Searchbar
             <jet-bar-sidebar-search />
              End Searchbar -->

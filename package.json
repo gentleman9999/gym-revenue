@@ -50,6 +50,7 @@
         "@fullcalendar/vue3": "^5.11.1",
         "@topol.io/editor-vue": "^0.0.0-beta.11",
         "@vueform/multiselect": "^2.3.1",
+        "@vuepic/vue-datepicker": "^3.2.1",
         "canvg": "^3.0.9",
         "daisyui": "^1.21.0",
         "dompurify": "^2.3.3",
@@ -60,11 +61,9 @@
         "prettier": "^2.5.0",
         "pretty-bytes": "^5.6.0",
         "puppeteer": "^14.1.2",
-        "sweet-modal-vue": "^2.0.0",
         "vue-composable": "1.0.0-beta.24",
         "vue-json-pretty": "^2.0.6",
         "vue-slide-up-down": "^2.0.1",
-        "vue3-date-time-picker": "^2.4.4",
         "vue3-slide-up-down": "^1.2.3"
     }
 }

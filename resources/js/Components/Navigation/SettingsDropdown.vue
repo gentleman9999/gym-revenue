@@ -126,7 +126,7 @@
             </ul>
         </template>
     </jet-dropdown>
-    <impersonation-modal
+    <daisy-modal
         title="Impersonation Mode"
         width="45%"
         overlayTheme="dark"
@@ -138,21 +138,21 @@
             v-if="impVars.showModal"
             @close="impVars.closeModal()"
         ></list-of-users-to-impersonate>
-    </impersonation-modal>
+    </daisy-modal>
 </template>
 
 <script>
 import { defineComponent, computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import JetDropdown from "@/Components/Dropdown";
-import ImpersonationModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
 import { Inertia } from "@inertiajs/inertia";
 
 export default defineComponent({
     components: {
         JetDropdown,
-        ImpersonationModal,
+        DaisyModal,
         ListOfUsersToImpersonate,
     },
     props: {

@@ -25,9 +25,25 @@ class Lead extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'client_id', 'first_name', 'last_name', 'gender', 'email',
+        'id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender', 'email',
         'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address',
         'lead_type_id', 'membership_type_id', 'lead_source_id', 'agreement_number',
+        'unsubscribed_comms', 'date_of_birth', 'opportunity', 'external_id', 'misc',
+    ];
+
+    protected $casts = [
+        'profile_picture' => 'array',
+        'unsubscribed_comms' => 'boolean',
+        'misc' => 'array',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'name',
     ];
 
     public function details()
@@ -106,21 +122,6 @@ class Lead extends Model
         return $this->detail()->whereField('middle_name')->whereActive(1);
     }
 
-    public function dob()
-    {
-        return $this->detail()->whereField('dob')->whereActive(1);
-    }
-
-    public function opportunity()
-    {
-        return $this->detail()->whereField('opportunity')->whereActive(1);
-    }
-
-    public function agreementNumber()
-    {
-        return $this->detail()->whereField('agreement_number')->whereActive(1);
-    }
-
     public function last_updated()
     {
         return $this->detail()->whereField('updated')->whereActive(1)
@@ -146,9 +147,6 @@ class Lead extends Model
                     ->orWhere('agreement_number', 'like', '%' . $search . '%')
                     ->orWhereHas('location', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('agreementNumber', function ($query) use ($search) {
-                        $query->where('value', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('client', function ($query) use ($search) {
                         $query->where('name', 'like', '%' . $search . '%');
@@ -178,18 +176,13 @@ class Lead extends Model
 
             /* Filter for Lead Sources */
         })->when($filters['opportunity'] ?? null, function ($query, $opportunity) {
-            $query->whereHas('opportunity', function ($query) use ($opportunity) {
-                $query->whereIn('value',  $opportunity);
-                //$query->where('value', '=', $opportunity); <- for single select
-            });
+            $query->whereIn('opportunity',  $opportunity);
         })->when($filters['leadsclaimed'] ?? null, function ($query, $leadsclaimed) {
             $query->whereHas('leadsclaimed', function ($query) use ($leadsclaimed) {
                 $query->whereIn('value',  $leadsclaimed);
             });
-        })->when($filters['dob'] ?? null, function ($query, $dob) {
-            $query->whereHas('dob', function ($query) use ($dob) {
-                $query->whereBetween('value', $dob);
-            });
+        })->when($filters['date_of_birth'] ?? null, function ($query, $dob) {
+            $query->whereBetween('date_of_birth', $dob);
         })->when($filters['lastupdated'] ?? null, function ($query, $search) {
             $query->orderBy('updated_at', $search);
 

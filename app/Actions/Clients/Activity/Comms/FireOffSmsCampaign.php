@@ -50,25 +50,25 @@ class FireOffSmsCampaign
         foreach ($audience_members as $audience_member_breakdown) {
             foreach ($audience_member_breakdown as $audience_member) {
                 $sent_to = [];
-                $member = null;
+                $entity = null;
                 switch ($audience_member->entity_type) {
                     case 'user':
-                        $member = User::with('phone')->find($audience_member->entity_id);
+                        $entity = User::with('phone')->find($audience_member->entity_id);
 
                         break;
                     default:
                         //todo:report error - unknown entity_Type
                         break;
                 }
-                if ($member) {
-                    if ($member->phone) {
+                if ($entity) {
+                    if ($entity->phone) {
                         //TODO: we need to scrutinize phone format here
                         if (! AppState::isSimuationMode()) {
                             foreach ($markups as $markup) {
                                 $sent_to[] = [
                                     'entity_type' => $audience_member->entity_type,
                                     'entity_id' => $audience_member->entity_id,
-                                    'phone' => $member->phone->value,
+                                    'phone' => $entity->phone->value,
                                     'gateway' => $gateway,
                                 ];
                                 $client_aggy->smsSent($sms_campaign_id, $sent_to, Carbon::now(), true)->persist();

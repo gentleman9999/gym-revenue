@@ -62,7 +62,6 @@
                     id="middle_name"
                     type="text"
                     v-model="form['middle_name']"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors['middle_name']"
@@ -71,12 +70,7 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="last_name" value="Last Name" />
-                <input
-                    id="last_name"
-                    type="text"
-                    v-model="form['last_name']"
-                    autofocus
-                />
+                <input id="last_name" type="text" v-model="form['last_name']" />
                 <jet-input-error
                     :message="form.errors['last_name']"
                     class="mt-2"
@@ -84,7 +78,7 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="email" value="Email" />
-                <input id="email" type="email" v-model="form.email" autofocus />
+                <input id="email" type="email" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
             <div class="form-control col-span-2">
@@ -93,7 +87,6 @@
                     id="primary_phone"
                     type="tel"
                     v-model="form['primary_phone']"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.primary_phone"
@@ -106,7 +99,6 @@
                     id="alternate_phone"
                     type="tel"
                     v-model="form['alternate_phone']"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.alternate_phone"
@@ -124,27 +116,50 @@
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
             <div class="form-control col-span-2">
-                <jet-label for="dob" value="Date of Birth" />
+                <jet-label for="date_of_birth" value="Date of Birth" />
                 <date-picker
-                    v-model="form['dob']"
+                    v-model="form['date_of_birth']"
                     dark
                     :month-change-on-scroll="false"
                     :auto-apply="true"
                     :close-on-scroll="true"
                 />
-                <jet-input-error :message="form.errors.dob" class="mt-2" />
+                <jet-input-error
+                    :message="form.errors.date_of_birth"
+                    class="mt-2"
+                />
             </div>
             <div
                 class="form-control col-span-2"
-                v-if="form['agreement_number']"
+                v-if="lead['agreement_number']"
             >
-                <jet-label for="first_name" value="Agreement Number" />
+                <jet-label for="agreement_number" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
-                    v-model="form['agreement_number']"
+                    v-model="lead['agreement_number']"
                     autofocus
                     class="opacity-70"
+                    id="agreement_number"
+                />
+            </div>
+
+            <div class="form-control col-span-2" v-if="lead?.misc">
+                <jet-label for="json_viewer" value="Additional Data" />
+                <vue-json-pretty
+                    :data="lead.misc"
+                    id="json_viewer"
+                    class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
+                />
+            </div>
+            <div class="form-control col-span-2" v-if="lead['external_id']">
+                <jet-label for="external_id" value="External ID" />
+                <input
+                    disabled
+                    type="text"
+                    v-model="lead['external_id']"
+                    class="opacity-70"
+                    id="external_id"
                 />
             </div>
 
@@ -228,12 +243,7 @@
 
             <div class="form-control col-span-2">
                 <jet-label for="lead_owner" value="Lead Status" />
-                <select
-                    class=""
-                    v-model="form['lead_status']"
-                    required
-                    id="lead_status"
-                >
+                <select class="" v-model="form['lead_status']" id="lead_status">
                     <option value="">Select a Lead Status</option>
                     <option
                         v-for="(status, idx) in lead_statuses"
@@ -392,8 +402,9 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import { useGoBack } from "@/utils";
-import DatePicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/dist/main.css";
+import DatePicker from "@vuepic/vue-datepicker";
+import VueJsonPretty from "vue-json-pretty";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 library.add(faUserCircle);
 
@@ -406,6 +417,7 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
+        VueJsonPretty,
     },
     props: [
         "userId",
@@ -466,7 +478,7 @@ export default {
                 lead_source_id: null,
                 profile_picture: null,
                 gender: "",
-                dob: "",
+                date_of_birth: "",
                 opportunity: "",
                 lead_owner: props.userId,
                 lead_status: "",
@@ -488,30 +500,11 @@ export default {
                 lead_source_id: lead.lead_source_id,
                 profile_picture: null,
                 gender: lead.gender,
+                agreement_number: lead.agreement_number,
+                date_of_birth: lead.date_of_birth,
+                opportunity: lead.opportunity,
                 notes: { title: "", note: "" },
             };
-            //         leadData.notes = "";
-
-            console.log("Lead Owner", lead);
-
-            leadData.agreement_number = lead.agreement_number;
-            leadData.middle_name =
-                "middle_name" in lead && lead.middle_name !== null
-                    ? lead.middle_name.value
-                    : null;
-            leadData.dob =
-                "dob" in lead && lead.dob !== null ? lead.dob.value : null;
-            leadData.opportunity =
-                "opportunity" in lead && lead.opportunity !== null
-                    ? lead.opportunity.value
-                    : null;
-
-            // leadData["last_updated"] =
-            //     "last_updated" in lead && lead.last_updated
-            //         ? `Last Updated by ${lead.last_updated.value} at ${new Date(
-            //               lead.last_updated.updated_at
-            //           ).toLocaleDateString("en-US")}`
-            //         : "This lead has never been updated";
 
             leadData["lead_owner"] =
                 "lead_owner" in lead && lead.lead_owner !== null

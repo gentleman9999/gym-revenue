@@ -2,9 +2,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-.sweet-modal-overlay {
-    @apply mt-16;
-}
 .no-scroll {
     overflow: hidden;
 }
@@ -86,4 +83,21 @@
     --fc-event-border-color: theme("colors.neutral.500");
     --fc-border-color: hsla(var(--bc) / var(--tw-bg-opacity, 0.3));
     --fc-today-bg-color: hsla(var(--p) / var(--tw-bg-opacity, 0.3));
+}
+
+::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+}
+
+::-webkit-scrollbar-track {
+    @apply border border-solid border-secondary rounded-lg;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply border rounded-lg bg-neutral-300 border-neutral-500;
+}
+
+.tabledata .badge {
+    @apply max-w-full block overflow-hidden overflow-ellipsis mx-auto my-2;
 }

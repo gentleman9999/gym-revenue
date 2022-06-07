@@ -75,6 +75,13 @@
                             />
                         </div>
 
+                        <!-- <jet-nav-link
+                            :href="route('reports.page', 'Kpi')"
+                            :active="route().current('reports.pages')"
+                        >
+                            Reporting Dashboard
+                        </jet-nav-link> -->
+
                         <jet-nav-link
                             href="#"
                             :active="route().current('data.conversions')"
@@ -251,6 +258,7 @@ export default defineComponent({
                 timeout: 7500,
             }).show();
         };
+
         const logout = () => {
             Inertia.post(route("logout"));
         };

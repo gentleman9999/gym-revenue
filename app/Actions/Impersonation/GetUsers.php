@@ -4,7 +4,6 @@ namespace App\Actions\Impersonation;
 
 use App\Enums\SecurityGroupEnum;
 use App\Models\User;
-use App\Models\UserDetails;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetUsers
@@ -68,15 +67,12 @@ class GetUsers
             } else {
                 // This is a client team
                 $client = $current_team->client;
-                $user_details = UserDetails::where('name', '=', 'associated_client')
-                    ->whereValue($client->id)->with('user')->whereActive(1)
-                    ->get();
 
-                if (count($user_details) > 0) {
-                    foreach ($user_details as $user_detail) {
-                        if (! is_null($user_detail->user)) {
-                            $results[] = $user_detail->user;
-                        }
+                $client_users = $current_team->client->users;
+
+                if (count($client_users) > 0) {
+                    foreach ($client_users as $client_user) {
+                        $results[] = $client_user;
                     }
                 }
             }

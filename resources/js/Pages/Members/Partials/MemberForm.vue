@@ -62,7 +62,6 @@
                     id="middle_name"
                     type="text"
                     v-model="form['middle_name']"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors['middle_name']"
@@ -71,12 +70,7 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="last_name" value="Last Name" />
-                <input
-                    id="last_name"
-                    type="text"
-                    v-model="form['last_name']"
-                    autofocus
-                />
+                <input id="last_name" type="text" v-model="form['last_name']" />
                 <jet-input-error
                     :message="form.errors['last_name']"
                     class="mt-2"
@@ -84,7 +78,7 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="email" value="Email" />
-                <input id="email" type="email" v-model="form.email" autofocus />
+                <input id="email" type="email" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
             <div class="form-control col-span-2">
@@ -93,7 +87,6 @@
                     id="primary_phone"
                     type="tel"
                     v-model="form['primary_phone']"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.primary_phone"
@@ -106,7 +99,6 @@
                     id="alternate_phone"
                     type="tel"
                     v-model="form['alternate_phone']"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.alternate_phone"
@@ -138,15 +130,34 @@
             </div>
             <div
                 class="form-control col-span-2"
-                v-if="form['agreement_number']"
+                v-if="member['agreement_number']"
             >
-                <jet-label for="first_name" value="Agreement Number" />
+                <jet-label for="agreement_number" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
-                    v-model="form['agreement_number']"
-                    autofocus
+                    v-model="member['agreement_number']"
                     class="opacity-70"
+                    id="agreement_number"
+                />
+            </div>
+
+            <div class="form-control col-span-2" v-if="member['external_id']">
+                <jet-label for="external_id" value="External ID" />
+                <input
+                    disabled
+                    type="text"
+                    v-model="member['external_id']"
+                    class="opacity-70"
+                    id="external_id"
+                />
+            </div>
+            <div class="form-control col-span-2" v-if="member?.misc">
+                <jet-label for="json_viewer" value="Additional Data" />
+                <vue-json-pretty
+                    :data="member.misc"
+                    id="json_viewer"
+                    class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
                 />
             </div>
 
@@ -297,8 +308,8 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import { useGoBack } from "@/utils";
-import DatePicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/dist/main.css";
+import DatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 library.add(faUserCircle);
 

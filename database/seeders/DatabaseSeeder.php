@@ -117,7 +117,6 @@ class DatabaseSeeder extends Seeder
 
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
         VarDumper::dump('Running Client Users Seeder');
-        //$this->call(SecondaryClientUsersSeeder::class);
         $this->call(NewClientSeeder::class);
 
         // This seeder generates dummy leads for each client

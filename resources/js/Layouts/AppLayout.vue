@@ -1,6 +1,6 @@
 <template>
     <Head :title="title" />
-    <div class="w-100vw">
+    <div class="w-100vw bg-neutral-800">
         <jet-banner />
         <div class="font-sans antialiased">
             <top-nav @toggle-side-nav="toggleSideNav" />

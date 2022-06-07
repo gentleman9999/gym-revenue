@@ -2,7 +2,7 @@
 
 namespace App\Actions\Endusers\Leads;
 
-use App\Aggregates\Endusers\EndUserActivityAggregate;
+use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -28,7 +28,7 @@ class RestoreLead
 
     public function handle($id, $current_user)
     {
-        EndUserActivityAggregate::retrieve($id)->restoreLead($current_user->id ?? "Auto Generated")->persist();
+        LeadAggregate::retrieve($id)->restore($current_user->id ?? "Auto Generated")->persist();
 
         return Lead::findOrFail($id);
     }

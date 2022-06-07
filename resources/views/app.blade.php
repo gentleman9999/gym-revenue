@@ -20,13 +20,13 @@
         <script src="{{ mix('js/app.js') }}" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     </head>
-    <body class="font-sans antialiased flex flex-col min-h-100vh">
-    <div class="flex flex-1">
-        <div class="flex-1">
-          @inertia
+    <body class="font-sans antialiased flex flex-col min-h-screen">
+        <div class="flex flex-1">
+            <div class="flex-1">
+              @inertia
 
+            </div>
         </div>
-    </div>
 
         <footer class="bg-base-200 p-2 text-gray-400 w-full">
 

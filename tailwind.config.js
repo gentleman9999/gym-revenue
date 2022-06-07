@@ -50,6 +50,14 @@ const colors = {
         800: "#406800",
         900: "#2A4400",
     },
+    neutral: {
+        100: "#F0F0F0",
+        300: "#D4D4D4",
+        450: "#868686",
+        500: "#6A6A6A",
+        800: "#242424",
+        900: "#1C1C1C"
+    }
 };
 
 module.exports = {
@@ -91,6 +99,9 @@ module.exports = {
                     `<svg viewBox="0 0 320 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z"></path></svg>`
                 )}")`,
             }),
+            zIndex: {
+                '1': '1',
+            }
         },
     },
 
@@ -137,14 +148,11 @@ module.exports = {
                     "accent-focus": colors.accent[600],
                     "accent-content": "#ffffff",
                     neutral: "#1c1c1c",
-                    "neutral-focus": colors.primary[500],
+                    "neutral-focus": colors.primary[900],
                     "neutral-content": "#ffffff",
                     "base-100": "#242424",
                     "base-200": "#202020",
                     "base-300": "#1c1c1c",
-                    // 'base-100': '#232D38',
-                    // 'base-200': '#192028',
-                    // 'base-300': '#0F1318',
                     "base-content": "#ffffff",
                     info: "#2094f3",
                     success: "#01B481",

@@ -1,0 +1,74 @@
+<template>
+    <sales-card-wrapper class="md:w-full">
+        <sales-card class="w-full">
+            <data-table :columns="columns" :data="data" />
+            <div class="flex flex-row space-x-4 justify-end py-6">
+                <Button secondary size="xs">Print</Button>
+                <Button secondary size="xs">Close</Button>
+            </div>
+        </sales-card>
+    </sales-card-wrapper>
+</template>
+<script setup>
+import SalesCardWrapper from "../SalesCardWrapper";
+import SalesCard from "@/Components/Card";
+import Button from "@/Components/Button";
+import DataTable from "@/Components/DataTable";
+
+const columns = [
+    {
+        field: "club",
+        label: "Club (1)",
+    },
+    {
+        field: "transaction_cnt",
+        label: "Transaction Count",
+    },
+    {
+        field: "quantity",
+        label: "Quantity",
+    },
+    {
+        field: "extended_price",
+        label: "Extended Price",
+    },
+    {
+        field: "total_discount",
+        label: "Total Discounts",
+    },
+    {
+        field: "sub_total",
+        label: "Sub Total",
+    },
+    {
+        field: "tax",
+        label: "Tax",
+    },
+    {
+        field: "grand_total",
+        label: "Grand Total",
+    },
+];
+const data = [
+    {
+        club: "Location 1",
+        transaction_cnt: 4,
+        quantity: 13,
+        extended_price: "$282.76",
+        total_discount: "$8.39",
+        sub_total: "$274.37",
+        tax: "$2.41",
+        grand_total: "$276.78",
+    },
+    {
+        club: "Total",
+        transaction_cnt: 4,
+        quantity: 13,
+        extended_price: "$282.76",
+        total_discount: "$8.39",
+        sub_total: "$274.37",
+        tax: "$2.41",
+        grand_total: "$276.78",
+    },
+];
+</script>

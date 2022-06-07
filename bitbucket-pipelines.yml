@@ -46,6 +46,7 @@ pipelines:
     staging:
       - step:
           name: Deploy To Staging
+          size: 2x
           caches:
             - cposer
             - node
@@ -67,6 +68,7 @@ pipelines:
     develop:
       - step:
           name: Deploy To Develop
+          size: 2x
           caches:
             - cposer
             - node

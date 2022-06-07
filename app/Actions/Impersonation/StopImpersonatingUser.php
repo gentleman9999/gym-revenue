@@ -40,9 +40,8 @@ class StopImpersonatingUser
             UserAggregate::retrieve($liberated->id)->deactivatePossessionMode($coward_id)->persist();
 
             // rat on this user to the paying customer - the client (aggy)
-            $associated_client = $liberated->associated_client()->first();
-            if (! is_null($associated_client)) {
-                ClientAggregate::retrieve($associated_client->value)
+            if (! is_null($liberated->client->id)) {
+                ClientAggregate::retrieve($liberated->client->id)
                     ->logImpersonationModeDeactivation($liberated->id, $coward_id)->persist();
             }
         }

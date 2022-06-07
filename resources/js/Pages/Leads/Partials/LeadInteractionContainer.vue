@@ -22,7 +22,7 @@
                             {{ lastName }}
                         </h1>
                         <div class="badge badge-success mt-4">
-                            Agreement #: {{ agreementNum }}
+                            Agreement #: {{ agreementNumber }}
                         </div>
                         <div
                             class="badge badge-info mt-4"
@@ -97,13 +97,9 @@
                 >
                     <CommsHistory :details="details" ref="commsHistoryRef" />
                 </div>
-                <sweet-modal
-                    :title="modalTitle"
-                    width="85%"
+                <daisy-modal
+                    id="showViewModal"
                     ref="showViewModal"
-                    overlayTheme="dark"
-                    modal-theme="dark"
-                    enable-mobile-fullscreen
                     @close="activeContactMethod = ''"
                 >
                     <div
@@ -116,7 +112,7 @@
                             @done="$refs.showViewModal.close()"
                         />
                     </div>
-                </sweet-modal>
+                </daisy-modal>
             </div>
         </div>
     </div>
@@ -131,7 +127,7 @@ import CommsActions from "./CommsActions";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 
 library.add(faUserCircle);
 
@@ -144,7 +140,7 @@ export default defineComponent({
         Button,
         FormSection,
         FontAwesomeIcon,
-        SweetModal,
+        DaisyModal,
     },
     props: [
         "userId",
@@ -158,6 +154,7 @@ export default defineComponent({
         "trialMemberships",
         "trialMembershipTypes",
         "interactionCount",
+        "agreementNumber",
     ],
     data() {
         return {
@@ -212,11 +209,6 @@ export default defineComponent({
                 case "sms":
                     return "Text Lead";
             }
-        },
-        agreementNum() {
-            return this.details.find(
-                (detail) => detail.field === "agreement_number"
-            ).value;
         },
     },
     methods: {

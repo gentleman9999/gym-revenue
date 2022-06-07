@@ -5,32 +5,38 @@
         @dblclick.prevent.stop="handleDoubleClick"
     >
         <td v-for="(field, index) in fields" class="col-span-3 truncate">
-            <render-field
-                :field="field"
-                :data="data"
-                :base-route="modelName"
-                v-bind="$props"
-            />
+            <div class="tabledata">
+                <render-field
+                    :field="field"
+                    :data="data"
+                    :base-route="modelName"
+                    v-bind="$props"
+                />
+            </div>
         </td>
         <td
+            class="actions"
             v-if="
                 actions &&
                 (Object.values(actions).length === 0 ||
                     Object.values(actions).filter((action) => action).length)
             "
         >
-            <slot name="actions">
-                <crud-actions
-                    :actions="actions"
-                    :data="data"
-                    :base-route="baseRoute"
-                    :has-preview-component="hasPreviewComponent"
-                    :model-name="modelName"
-                    :model-key="modelKey"
-                />
-            </slot>
+            <div class="tabledata actions">
+                <slot name="actions">
+                    <crud-actions
+                        :actions="actions"
+                        :data="data"
+                        :base-route="baseRoute"
+                        :has-preview-component="hasPreviewComponent"
+                        :model-name="modelName"
+                        :model-key="modelKey"
+                    />
+                </slot>
+            </div>
         </td>
     </tr>
+    <span aria-hidden="true" class="spacer" />
 </template>
 
 <script>
@@ -136,3 +142,47 @@ export default defineComponent({
     },
 });
 </script>
+
+<style scoped>
+td {
+    @apply text-center bg-black text-white my-2 mx-8 whitespace-nowrap overflow-hidden text-ellipsis py-4;
+
+    div.tabledata {
+        @apply p-2 whitespace-nowrap overflow-hidden text-ellipsis;
+    }
+
+    div.actions {
+        @apply !overflow-visible;
+    }
+}
+
+td.actions {
+    @apply !overflow-visible;
+}
+
+td:first-of-type {
+    @apply border-l border-secondary;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+td:last-of-type {
+    @apply border-r border-secondary;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+td:not(:last-of-type) {
+    div.tabledata {
+        @apply border-r-2 border-secondary;
+    }
+}
+
+td {
+    @apply border-t border-b border-secondary;
+}
+
+span.spacer {
+    @apply block h-3;
+}
+</style>

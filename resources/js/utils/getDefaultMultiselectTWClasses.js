@@ -34,7 +34,7 @@ export const getDefaultMultiselectTWClasses = () => ({
     spinner:
         "bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 mr-3.5 animate-spin flex-shrink-0 flex-grow-0",
     dropdown:
-        "max-h-60 absolute -left-px -right-px bottom-0 transform translate-y-full border border-gray-300 -mt-px overflow-y-scroll z-50 bg-base-100 flex flex-col rounded-b",
+        "max-h-60 absolute -left-px -right-px bottom-0 transform translate-y-full border border-gray-300 -mt-px overflow-y-scroll z-50 bg-base-content text-base-100 flex flex-col rounded-b",
     dropdownTop:
         "-translate-y-full top-px bottom-auto flex-col-reverse rounded-b-none rounded-t",
     dropdownHidden: "hidden",

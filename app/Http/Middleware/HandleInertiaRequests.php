@@ -59,7 +59,7 @@ class HandleInertiaRequests extends Middleware
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
-                'user.has_api_token' => (! is_null($user->api_token()->first())),
+                'user.has_api_token' => (! is_null($user->access_token)),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
                 'user.column_config' => $user->column_config->mapWithKeys(function ($item, $key) {
                     return [$item['value'] => $item['misc']];

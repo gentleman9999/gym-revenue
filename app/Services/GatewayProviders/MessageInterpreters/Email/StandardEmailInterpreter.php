@@ -12,14 +12,14 @@ class StandardEmailInterpreter extends MessageInterpreterService
         '%last_name%' => 'last_name',
         '%name%' => 'name',
         '%email%' => 'email',
-        '%altEmail%' => 'altEmail',
+        '%alternate_email%' => 'alternate_email',
         '%address1%' => 'address1',
         '%address2%' => 'address2',
         '%city%' => 'city',
         '%state%' => 'state',
         '%zip%' => 'zip',
         '%phone%' => 'phone',
-        '%jobTitle%' => 'job_title',
+        '%job_title%' => 'job_title',
     ];
 
     public function __construct($user_id)
