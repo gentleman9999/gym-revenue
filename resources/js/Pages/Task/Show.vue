@@ -1,8 +1,9 @@
 <template>
     <app-layout :title="title">
         <page-toolbar-nav title="Tasks" :links="navLinks" />
-        <div class="flex flex-row">
-            <month-switcher class="pl-4" />
+        <div class="flex flex-row justify-center">
+            <!--            hide month switcher until it does something-->
+            <!--            <month-switcher class="pl-4" />-->
             <div class="flex flex-col items-center">
                 <task-date-switcher
                     :startOfTheWeek="startOfTheWeek"
