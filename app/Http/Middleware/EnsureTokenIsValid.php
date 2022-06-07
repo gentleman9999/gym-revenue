@@ -54,7 +54,7 @@ class EnsureTokenIsValid
     {
         $body = $request->all();
 
-        if (count($body) <= 1) {
+        if (count($body) == count($body, COUNT_RECURSIVE)) {
             $request->merge(['client_id' => $client_id]);
 
             return $request;
