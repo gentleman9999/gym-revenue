@@ -213,7 +213,7 @@ export default defineComponent({
                 preserveScroll: true,
             };
             let query = {
-                created_at: selectedDate.value,
+                start: selectedDate.value,
             };
             Inertia.get(route("tasks"), pickBy(query), options);
         };
