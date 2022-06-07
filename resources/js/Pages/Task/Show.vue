@@ -23,7 +23,7 @@
                     :actions="{
                         edit: {
                             label: 'Edit',
-                            handler: ({ data }) => editTask(data),
+                            handler: ({ data }) => editTask(data, taskType),
                         },
                         trash: false,
                         restore: false,
@@ -125,14 +125,15 @@ export default defineComponent({
         const resetEditEventModal = () =>
             createCalendarEventForm.value?.form?.reset();
         const closeModals = () => {
-            createEventModal.value.close();
-            editEventModal.value.close();
+            createEventModal.value?.close();
+            editEventModal.value?.close();
         };
 
-        const editTask = (item) => {
+        const editTask = (item, taskType) => {
             console.log(props.tasks);
             const id = item.id;
-            selectedCalendarEvent.value = props.tasks.data.find(
+            const taskData = getTaskData(taskType);
+            selectedCalendarEvent.value = taskData.data.find(
                 (event) => event.id === id
             );
             editEventModal.value.open();
