@@ -18,7 +18,7 @@
                     model-name="Task"
                     model-key="task"
                     :fields="fields"
-                    :resource="tasks"
+                    :resource="getTaskData(taskType)"
                     :actions="{
                         edit: {
                             label: 'Edit',
@@ -76,7 +76,7 @@
     </app-layout>
 </template>
 <script>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, computed } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
@@ -153,6 +153,18 @@ export default defineComponent({
 
         const selectedDate = ref(new Date());
 
+        const transformDate = (date) => {
+            if (!date.value?.toISOString) {
+                return date;
+            }
+
+            return date.value.toISOString().slice(0, 10);
+        };
+
+        const selectedDateFormatted = computed(() =>
+            transformDate(selectedDate)
+        );
+
         let startDay = new Date();
         let day = startDay.getDay() === 0 ? 7 : startDay.getDay();
         startDay.setDate(startDay.getDate() - day + 1);
@@ -213,11 +225,22 @@ export default defineComponent({
                 preserveScroll: true,
             };
             let query = {
-                start: selectedDate.value,
+                start: selectedDateFormatted.value,
             };
             Inertia.get(route("tasks"), pickBy(query), options);
         };
         watch([selectedDate], getData, { deep: true });
+
+        const getTaskData = (taskType) => {
+            switch (taskType) {
+                case "incomplete_tasks":
+                    return props.incomplete_tasks;
+                case "ovedue_tasks":
+                    return props.overdue_tasks;
+                case "completed_tasks":
+                    return props.completed_tasks;
+            }
+        };
 
         return {
             fields,
@@ -242,6 +265,8 @@ export default defineComponent({
             startOfTheWeek,
             setStartOfTheWeek,
             taskTypes,
+            selectedDateFormatted,
+            getTaskData,
         };
     },
 });
