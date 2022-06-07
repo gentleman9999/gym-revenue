@@ -16,7 +16,7 @@ class BatchUpsertMemberApi
      */
     public function rules()
     {
-        return [ /*
+        return [
             '*.first_name' => ['required', 'max:50'],
             '*.middle_name' => ['string', 'max:50', 'nullable'],
             '*.last_name' => ['required', 'max:30'],
@@ -32,7 +32,8 @@ class BatchUpsertMemberApi
             '*.profile_picture.bucket' => 'sometimes|required|string',
             '*.gender' => 'string|required',
             '*.date_of_birth' => 'required',
-            '*.notes' => 'nullable|array', */
+            '*.notes' => 'nullable|array',
+            '*.external_id' => 'required',
         ];
     }
 
@@ -40,9 +41,13 @@ class BatchUpsertMemberApi
     {
         $response = [];
 
-        unset($data['client_id']);
+        //unset($data['client_id']);
         foreach ($data as $item) {
-            $response[] = UpsertMemberApi::run($item);
+            try {
+                $response[] = UpsertMemberApi::run($item);
+            } catch (\Exception $e) {
+                $response[] = $e;
+            }
         }
 
         return $response;
@@ -51,7 +56,7 @@ class BatchUpsertMemberApi
     public function asController(ActionRequest $request)
     {
         $member = $this->handle(
-            $request->all(),
+            $request->validated(),
         );
 
         return $member;

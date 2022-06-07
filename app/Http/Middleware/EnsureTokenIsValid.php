@@ -6,10 +6,11 @@ use App\Models\Clients\Client;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class EnsureTokenIsValid
 {
+    private string $client_header = 'GR-Client';
+
     /**
      * Handle an incoming request.
      *
@@ -19,24 +20,53 @@ class EnsureTokenIsValid
      */
     public function handle(Request $request, Closure $next)
     {
-        $header = $request->header('Authorization', '');
-        if (Str::startsWith($header, 'Bearer ')) {
-            $token = Str::substr($header, 7); // Splice token out of header
-            $user = User::whereAccessToken($token)
-                ->firstOrFail(); //Find user, if it fails, it will 404.
+        $token = $request->bearerToken();
+        if (! $token) {
+            return response()->json(['error' => 'You must provide a Bearer Token.'], 401);
+        }
+        //TODO: cache this
+        $user = User::whereAccessToken($token)
+            ->first();
+        if (! $user) {
+            return response()->json(['error' => 'Invalid Bearer Token.'], 403);
+        }
 
-            if ($user->isClientUser()) {
-                $request->merge(['client_id' => $user->client_id]);
-            } elseif ($user->isCapeAndBayUser()) {
-                $client_id = $request->header('Client');
-                Client::whereId($client_id)
-                    ->firstOrfail(); //Find client, if it fails, it will 404.
-                $request->merge(['client_id' => $client_id]); //Merge client_id into request.
+        if ($user->isClientUser()) {
+            $this->addClientIdToRequest($request, $user->client_id);
+        } elseif ($user->isCapeAndBayUser()) {
+            $client_id = $request->header($this->client_header);
+            if (! $client_id) {
+                return response()->json(['error' => "You must provide a Client Id via the '{$this->client_header}' header"], 400);
             }
-        } else {
-            abort(403);
+            //TODO: cache this
+            $client = Client::whereId($client_id)
+                ->first();
+            if (! $client) {
+                return response()->json(['error' => "Incorrect Client Id specified through '{$this->client_header}'"], 400);
+            }
+            $this->addClientIdToRequest($request, $client_id);
         }
 
         return $next($request);
+    }
+
+    protected function addClientIdToRequest($request, $client_id)
+    {
+        $body = $request->all();
+
+        if (count($body) <= 1) {
+            $request->merge(['client_id' => $client_id]);
+
+            return $request;
+        }
+
+        foreach ($body as $idx => $object) {
+            $object['client_id'] = $client_id;
+            $body[$idx] = $object;
+        }
+
+        $request->merge($body);
+
+        return $request;
     }
 }
