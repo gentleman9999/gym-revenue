@@ -52,6 +52,14 @@ const customOptions = {
     },
     disableAlerts: true,
     windowBar: ["fullscreen", "close"],
+    topBarOptions: [
+        "undoRedo",
+        "changePreview",
+        "previewSize",
+        // "previewTestMail",
+        "save",
+        // "saveAndClose",
+    ],
     // callbacks: {
     //     // onClose: ()=>emit("close"),
     //     onClose: () => {

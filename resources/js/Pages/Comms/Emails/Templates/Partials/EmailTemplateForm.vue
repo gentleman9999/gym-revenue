@@ -155,7 +155,7 @@ export default {
                 inertiaModal.value?.close();
             } else {
                 //go back
-                Inertia.visit(route("email-templates"));
+                Inertia.visit(route("comms.email-templates"));
             }
         };
 
