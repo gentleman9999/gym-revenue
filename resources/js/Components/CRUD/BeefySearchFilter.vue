@@ -37,7 +37,6 @@
             <div
                 id="filters-open"
                 v-if="visible"
-                class="w-full grid grid-cols-2 lg:block gap-4 col-span-3"
                 :class="{ 'filters-open': visible }"
             >
                 <slot />
@@ -65,7 +64,7 @@
 <style>
 .filter-drawer #filters-open {
     .form-control {
-        @apply mt-2 !important;
+        @apply mt-2;
     }
 
     label {
@@ -76,7 +75,7 @@
 
 <style scoped>
 label {
-    @apply label label-text py-0 text-xs text-white mt-2;
+    @apply label label-text py-0 text-xs mt-2;
 }
 input {
     @apply input input-sm input-bordered;
@@ -85,9 +84,8 @@ select {
     @apply select select-sm select-bordered;
 }
 
-/** Default */
 .filter-drawer {
-    @apply w-[18rem] h-full absolute top-[1rem] left-0 bg-white rounded-r-lg transition-all whitespace-nowrap;
+    @apply w-[18rem] h-full absolute top-[1rem] left-0 bg-base-content rounded-r-lg transition-all whitespace-nowrap;
     grid-column: 1;
     grid-row: 1;
 
@@ -96,7 +94,7 @@ select {
     }
 
     button.toggle-filters {
-        @apply h-8 w-8 bg-white text-primary-200 rounded-3xl absolute right-[-0.75rem] top-[5rem] z-50 transition-all;
+        @apply h-8 w-8 bg-base-content text-primary-200 rounded-3xl absolute right-[-0.75rem] top-[5rem] z-50 transition-all;
 
         > svg {
             @apply ml-2;
@@ -108,12 +106,11 @@ select {
     }
 }
 
-/** Hovered  */
 .filter-drawer-hovered {
-    @apply w-6 rounded-r-lg transition-all bg-gray-200 !important;
+    @apply w-6 rounded-r-lg transition-all !important;
 
     button.toggle-filters {
-        @apply h-16 rounded-md bg-gray-200 right-[-1.25rem] top-[4rem] transition-all;
+        @apply h-16 rounded-md right-[-1.25rem] top-[4rem] transition-all;
 
         span.hover-text {
             @apply opacity-100;
@@ -123,15 +120,15 @@ select {
 
 .filter-closed-container {
     @apply w-4 rounded-r-lg;
+    @apply hover:bg-base-content hover:opacity-80;
 }
 
-/** Open */
 .filter-drawer-open {
     @apply bg-transparent rounded-none;
 }
 
 button.filter-on {
-    @apply absolute bg-secondary right-[0.75rem] top-[0.5rem] rotate-180 text-white !important;
+    @apply absolute bg-secondary right-[0.75rem] top-[0.5rem] rotate-180 text-base-content !important;
 }
 </style>
 
