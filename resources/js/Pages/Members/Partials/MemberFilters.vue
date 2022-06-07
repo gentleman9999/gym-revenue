@@ -7,10 +7,7 @@
         @clear-search="clearSearch"
     >
         <div class="form-control">
-            <label
-                for="nameSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="nameSearch" class="label label-text py-1 text-xs">
                 Name Search:
             </label>
             <input
@@ -21,10 +18,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="phoneSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="phoneSearch" class="label label-text py-1 text-xs">
                 Phone Search:
             </label>
             <input
@@ -35,10 +29,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="emailSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="emailSearch" class="label label-text py-1 text-xs">
                 Email Search:
             </label>
             <input
@@ -49,10 +40,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="agreementSearch"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="agreementSearch" class="label label-text py-1 text-xs">
                 Agreement Number Search:
             </label>
             <input
@@ -89,10 +77,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="location"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="location" class="label label-text py-1 text-xs">
                 Locations:
             </label>
             <multiselect
@@ -113,10 +98,7 @@
         </div>
 
         <div class="form-control">
-            <label
-                for="date_of_birth"
-                class="label label-text py-1 text-xs text-gray-400"
-            >
+            <label for="date_of_birth" class="label label-text py-1 text-xs">
                 Date of Birth:
             </label>
             <DatePicker
@@ -132,7 +114,7 @@
 
 <style scoped>
 label {
-    @apply label label-text py-0 text-xs text-gray-400;
+    @apply label label-text py-0 text-xs;
 }
 input {
     @apply input input-sm input-bordered;

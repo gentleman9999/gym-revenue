@@ -23,7 +23,7 @@
                     <div class="form-control">
                         <label
                             for="users"
-                            class="label label-text py-1 text-xs text-gray-400"
+                            class="label label-text py-1 text-xs"
                         >
                             Users:
                         </label>
@@ -45,10 +45,7 @@
                     </div>
 
                     <div class="form-control" v-if="clubs?.length">
-                        <label
-                            for="club"
-                            class="label label-text py-1 text-xs text-gray-400"
-                        >
+                        <label for="club" class="label label-text py-1 text-xs">
                             Club
                         </label>
                         <select

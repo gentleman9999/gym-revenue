@@ -21,10 +21,7 @@
                     @clear-search="clearSearch"
                 >
                     <div class="form-control" v-if="clubs?.length">
-                        <label
-                            for="club"
-                            class="label label-text py-1 text-xs text-gray-400"
-                        >
+                        <label for="club" class="label label-text py-1 text-xs">
                             Club
                         </label>
                         <select
@@ -42,10 +39,7 @@
                         </select>
                     </div>
                     <div class="form-control" v-if="teams?.length">
-                        <label
-                            for="team"
-                            class="label label-text py-1 text-xs text-gray-400"
-                        >
+                        <label for="team" class="label label-text py-1 text-xs">
                             Team
                         </label>
                         <select
@@ -63,7 +57,7 @@
                     <div class="form-control">
                         <label
                             for="roles"
-                            class="label label-text py-1 text-xs text-gray-400"
+                            class="label label-text py-1 text-xs"
                         >
                             Security Role:
                         </label>
