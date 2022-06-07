@@ -166,6 +166,7 @@ const handleOnLoaded = (args) => {
 };
 const handleOnClose = (args) => {
     console.log("handleOnClose", args);
+    emit("onClose", args);
 };
 // onMounted(()=>{
 //

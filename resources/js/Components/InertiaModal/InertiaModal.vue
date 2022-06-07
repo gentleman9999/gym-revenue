@@ -54,7 +54,9 @@ const telRef = provider();
 provide(injectIsModal, modal);
 
 const close = () => {
+    console.log("Inertia Modal Close called", modal.value);
     if (modal.value) {
+        console.log("entered block in InertiaModal::Close", modal.value);
         if (!modal.value.loading) {
             // remove the 'x-inertia-modal' and 'x-inertia-modal-redirect-back' headers for future requests
             modal.value.removeBeforeEventListener();
@@ -64,17 +66,31 @@ const close = () => {
             Axios.interceptors.response.eject(modal.value.interceptor);
         }
         if (modal.value.cancelToken.value) {
+            console.log("InertiaModal::close::before cancel token cancelled");
             modal.value.cancelToken.value.cancel("Modal closed");
+            console.log("InertiaModal::close::after cancel token cancelled");
         }
         if ("onClose" in modal.value && modal.value.onClose) {
+            console.log("InertiaModal::close before calling onClose");
             modal.value.onClose(modal.value);
+            console.log("InertiaModal::close after calling onClose");
         }
         if ("reloadOnClose" in modal.value && modal.value.reloadOnClose) {
+            console.log(
+                "InertiaModal::close  - reloadOnClose set - about to Inertiareload"
+            );
             Inertia.reload();
+            console.log("InertiaModal::close after calling InertiaReload");
         }
     }
+    console.log(
+        "InertiaModal::close before dispatching custom event inertia:modal-closed"
+    );
     document.dispatchEvent(
         new CustomEvent("inertia:modal-closed", { detail: modal.value })
+    );
+    console.log(
+        "InertiaModal::close after dispatching custom event inertia:modal-closed"
     );
     modal.value = null;
 };
@@ -98,7 +114,9 @@ const visitInModal = (url, options = {}) => {
     let lastVisit = null;
 
     const interceptor = Axios.interceptors.response.use((response) => {
+        console.log("top level intercept entered");
         if (response.headers[modalHeader.toLowerCase()] === currentId) {
+            console.log("reponse modal id = currentid", currentId);
             const page = response.data;
             page.url = hrefToUrl(page.url);
             if (
@@ -115,15 +133,21 @@ const visitInModal = (url, options = {}) => {
 
             Promise.resolve(Inertia.resolveComponent(page.component))
                 .then((component) => {
+                    console.log("resolved an inertia component", component);
+
                     const errors = page.props.errors || {};
                     if (Object.keys(errors).length > 0) {
                         const scopedErrors = errorBag
                             ? errors[errorBag] || {}
                             : errors;
+                        console.log("before fire error event");
                         fireErrorEvent(scopedErrors);
+                        console.log("after fire error event");
                         if (onError) onError(scopedErrors);
                     } else {
+                        console.log("before fire success event");
                         fireSuccessEvent(page);
+                        console.log("after fire success event");
                         if (onSuccess) onSuccess(page);
                     }
                     return component;
@@ -135,6 +159,7 @@ const visitInModal = (url, options = {}) => {
                         modal.value &&
                         "removeBeforeEventListener" in modal.value
                     ) {
+                        console.log("removing inertia before event listerener");
                         modal.value.removeBeforeEventListener();
                     }
                     const removeBeforeEventListener = Inertia.on(
@@ -152,6 +177,11 @@ const visitInModal = (url, options = {}) => {
                                 lastPage = page;
                                 const reqInterceptor =
                                     Axios.interceptors.request.use((config) => {
+                                        console.log(
+                                            "setting up axios interceoptor in default interceptor",
+                                            config
+                                        );
+
                                         if (
                                             config.headers[modalHeader] ===
                                             currentId
@@ -168,7 +198,9 @@ const visitInModal = (url, options = {}) => {
                             } else if (
                                 modalRedirect in event.detail.visit.headers
                             ) {
-                                console.log("redirect is modalable");
+                                console.log(
+                                    "modalRedirect in event.detail.visit.headers"
+                                );
                                 //check if we wanted a redirect in the modal
                                 event.detail.visit.headers[modalHeader] =
                                     currentId;
@@ -176,6 +208,10 @@ const visitInModal = (url, options = {}) => {
                                 lastPage = page;
                                 const reqInterceptor =
                                     Axios.interceptors.request.use((config) => {
+                                        console.log(
+                                            "setting up axios interceoptor in modalRedirect",
+                                            config
+                                        );
                                         if (
                                             config.headers[modalHeader] ===
                                             currentId
@@ -190,6 +226,9 @@ const visitInModal = (url, options = {}) => {
                                         return config;
                                     });
                             } else if (opts.redirectBack) {
+                                console.log(
+                                    "visitInModal = opts.redirectBack===true"
+                                );
                                 event.detail.visit.headers[modalRedirectBack] =
                                     "true";
                                 if (typeof opts.redirectBack === "function") {
@@ -216,10 +255,13 @@ const visitInModal = (url, options = {}) => {
                         close,
                     };
                 });
+            console.log("before rejecting prmoise with axios cancel");
             return Promise.reject(new axios.Cancel());
         }
         return response;
     });
+    console.log("Calling Inertia.Visit from IneritaModal:visitInModal");
+
     Inertia.visit(url, {
         ...opts,
         onCancelToken: (token) => {
@@ -233,6 +275,7 @@ const visitInModal = (url, options = {}) => {
 watch(
     () => props.modalKey,
     (key) => {
+        console.log("setting up VisitInModal");
         const fn = `visitInModal${key}`;
         Inertia[fn] = visitInModal;
     },

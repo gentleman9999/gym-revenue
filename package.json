@@ -48,7 +48,7 @@
         "@fullcalendar/list": "^5.11.0",
         "@fullcalendar/timegrid": "^5.11.0",
         "@fullcalendar/vue3": "^5.11.1",
-        "@topol.io/editor-vue": "^0.0.0-beta.10",
+        "@topol.io/editor-vue": "^0.0.0-beta.11",
         "@vueform/multiselect": "^2.3.1",
         "canvg": "^3.0.9",
         "daisyui": "^1.21.0",

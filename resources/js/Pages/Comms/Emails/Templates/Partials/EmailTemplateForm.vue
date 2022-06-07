@@ -2,6 +2,7 @@
     <email-builder
         @onSave="handleOnSave"
         @onSaveAndClose="handleOnSaveAndClose"
+        @onClose="handleOnClose"
         :json="template?.json || null"
         :title="template?.name || undefined"
         :api-key="topolApiKey"
@@ -55,6 +56,7 @@
 <script>
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -108,7 +110,7 @@ export default {
                                 closeAfterSave.value,
                                 inertiaModal.value
                             );
-                            inertiaModal.value.close();
+                            handleOnClose();
                         }
                     },
                 });
@@ -122,8 +124,7 @@ export default {
                         onSuccess: () => {
                             console.log("onSuccess-Create!");
                             if (closeAfterSave.value) {
-                                console.log("close the modal now!");
-                                inertiaModal.value.close();
+                                handleOnClose();
                             }
                         },
                     });
@@ -149,6 +150,15 @@ export default {
             handleOnSave({ html, json });
         };
 
+        const handleOnClose = () => {
+            if (inertiaModal.value?.close) {
+                inertiaModal.value?.close();
+            } else {
+                //go back
+                Inertia.visit(route("email-templates"));
+            }
+        };
+
         return {
             form,
             buttonText: operation,
@@ -156,6 +166,7 @@ export default {
             nameModal,
             handleOnSave,
             handleOnSaveAndClose,
+            handleOnClose,
         };
     },
 };

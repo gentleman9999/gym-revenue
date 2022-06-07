@@ -46,6 +46,7 @@ class EmailTemplateSeeder extends Seeder
                 'active' => 1,
                 'markup' => $default_markup,
                 'json' => $default_json,
+                'subject' => 'We should remove subject from templates and add it to the campaign/event',
             ]);
 
             $template->active = 1;
