@@ -11,6 +11,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "goldspecdigital/laravel-eloquent-uuid": "^8.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "hammerstone/sidecar": "^0.3.12",
         "inertiajs/inertia-laravel": "^0.4.3",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/framework": "^8.54",
