@@ -22,6 +22,8 @@ class EmailTemplateReactor extends Reactor implements ShouldQueue
 
     public function generateThumbnail($id, $html)
     {
-        GenerateEmailTemplateThumbnail::dispatch($id, $html);
+        if (env('GENERATE_THUMBNAILS', true)) {
+            GenerateEmailTemplateThumbnail::dispatch($id, $html);
+        }
     }
 }
