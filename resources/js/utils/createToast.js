@@ -12,7 +12,7 @@ const opt = (added) => Object.assign(defaults, added);
 
 /**
  *
- * @param {string} kind type of toast with a default if 'info'
+ * @param {string} kind type of toast with a default of 'info'
  * @param {string} text message supplied to toast window with a default if supplied value is nullish
  * @param {object?} opts override default options
  */
