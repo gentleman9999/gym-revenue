@@ -41,7 +41,7 @@ class UpsertLeadApi
             'lead_owner' => 'sometimes|required|exists:users,id',
             'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
             'notes' => 'nullable|array',
-            'external_id' => 'required',
+            'external_id' => ['sometimes', 'nullable'],
         ];
     }
 
@@ -50,10 +50,14 @@ class UpsertLeadApi
         $id = Uuid::new();//we should use uuid here
         $data['id'] = $id;
 
-        $lead = Lead::whereEmail($data['email'])
-            ->orWhere('external_id', $data['external_id'])
-            ->first();
-
+        if (array_key_exists('external_id', $data)) {
+            $lead = Lead::whereEmail($data['email'])
+                ->orWhere('external_id', $data['external_id'])
+                ->first();
+        } else {
+            $lead = Lead::whereEmail($data['email'])
+                ->first();
+        }
         if (is_null($lead)) {
             $aggy = LeadAggregate::retrieve($data['id']);
             $aggy->create($data, $current_user->id ?? 'Auto Generated');
