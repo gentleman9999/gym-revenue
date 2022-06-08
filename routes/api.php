@@ -21,12 +21,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware(EnsureTokenIsValid::class)->prefix('leads')->group(function () {
     Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class);
-    Route::post('/', \App\Actions\Endusers\Leads\CreateLeadApi::class);
+    Route::post('/create', \App\Actions\Endusers\Leads\CreateLeadApi::class);
+    Route::post('/upsert', \App\Actions\Endusers\Leads\UpsertLeadApi::class);
+    Route::post('/batchupsert', \App\Actions\Endusers\Leads\BatchUpsertLeadApi::class);
 });
 
 Route::middleware(EnsureTokenIsValid::class)->prefix('members')->group(function () {
     Route::get('/', \App\Actions\Endusers\Members\ReadMembers::class);
-    Route::post('/', \App\Actions\Endusers\Members\CreateMemberApi::class);
+    Route::post('/create', \App\Actions\Endusers\Members\CreateMemberApi::class);
+    Route::post('/upsert', \App\Actions\Endusers\Members\UpsertMemberApi::class);
+    Route::post('/batchupsert', \App\Actions\Endusers\Members\BatchUpsertMemberApi::class);
 });
 
 Route::post('/plans', \App\Actions\Clients\GetPlans::class);
