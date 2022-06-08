@@ -1,8 +1,10 @@
 require("./bootstrap");
+import "vue-toastification/dist/index.css";
 
 import { createApp, h } from "vue";
 import { createInertiaApp, Link } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
+import Toast from "vue-toastification";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -13,6 +15,7 @@ createInertiaApp({
     setup({ el, app, props, plugin }) {
         return createApp({ render: () => h(app, props) })
             .use(plugin)
+            .use(Toast)
             .component("inertia-link", Link)
             .mixin({ methods: { route } })
             .mount(el);

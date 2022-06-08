@@ -1,8 +1,10 @@
+import { useToast } from "vue-toastification";
+
 export const comingSoon = () => {
-    return new Noty({
-        type: "warning",
-        theme: "sunset",
-        text: "Feature Coming Soon!",
+    const toast = useToast();
+    return toast.info("Feature Coming Soon!", {
         timeout: 7500,
-    }).show();
+        pauseOnHover: false,
+        closeOnClick: true,
+    });
 };
