@@ -408,7 +408,7 @@
 
 <script>
 import { defineComponent, ref, watchEffect, onMounted } from "vue";
-import { comingSoon } from "@/utils/comingSoon.js";
+import { comingSoon } from "@/utils/comingSoon";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks";
 import JetNavLink from "@/Jetstream/NavLink";
 import { useLockScroll } from "vue-composable";

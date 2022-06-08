@@ -1,10 +1,5 @@
-import { useToast } from "vue-toastification";
+import { toastInfo } from "./createToast";
 
 export const comingSoon = () => {
-    const toast = useToast();
-    return toast.info("Feature Coming Soon!", {
-        timeout: 7500,
-        pauseOnHover: false,
-        closeOnClick: true,
-    });
+    return toastInfo("Feature Coming Soon!", { pauseOnHover: true });
 };
