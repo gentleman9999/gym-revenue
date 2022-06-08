@@ -4,9 +4,12 @@ namespace App\Console;
 
 use App\Actions\Clients\Activity\Comms\CheckQueuedEmailCampaigns;
 use App\Actions\Clients\Activity\Comms\CheckQueuedSmsCampaigns;
+use App\Actions\Simulation\GenerateRandomLeads;
+use App\Actions\Simulation\GenerateRandomMembers;
 use App\Actions\Users\Reminders\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\App;
 
 class Kernel extends ConsoleKernel
 {
@@ -32,6 +35,10 @@ class Kernel extends ConsoleKernel
         $schedule->job(new CheckQueuedEmailCampaigns())->everyMinute();
         $schedule->job(new CheckQueuedSmsCampaigns())->everyMinute();
         $schedule->job(new CheckReminders())->everyMinute();
+        if (App::environment(['local', 'develop', 'staging'])) {
+            $schedule->job(new GenerateRandomLeads())->everyFiveMinutes();
+            $schedule->job(new GenerateRandomMembers())->everyFifteenMinutes();
+        }
     }
 
     /**

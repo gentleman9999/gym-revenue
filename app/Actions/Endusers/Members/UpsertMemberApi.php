@@ -35,9 +35,8 @@ class UpsertMemberApi
             'profile_picture.bucket' => 'sometimes|required|string',
             'gender' => 'string|required',
             'date_of_birth' => 'required',
-//            'agreement_number'          => ['required', 'string'],
             'notes' => 'nullable|array',
-            'external_id' => 'required',
+            'external_id' => ['sometimes', 'nullable'],
         ];
     }
 
@@ -46,10 +45,14 @@ class UpsertMemberApi
         $id = Uuid::new();
         $data['id'] = $id;
 
-        $member = Member::whereEmail($data['email'])
-            ->orWhere('external_id', $data['external_id'])
-            ->first();
-
+        if (array_key_exists('external_id', $data)) {
+            $member = Member::whereEmail($data['email'])
+                ->orWhere('external_id', $data['external_id'])
+                ->first();
+        } else {
+            $member = Member::whereEmail($data['email'])
+                ->first();
+        }
         if (is_null($member)) { //if no records of the member exist, create one
             MemberAggregate::retrieve($data['client_id'])
                 ->create($user->id ?? "Auto Generated", $data)
