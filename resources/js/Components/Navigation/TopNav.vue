@@ -201,6 +201,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
+import { comingSoon } from "@/utils/comingSoon.js";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -249,15 +250,6 @@ export default defineComponent({
         const showingSidebar = ref(false);
         const showingNavigationDropdown = ref(false);
         const showingNotificationDropdown = ref(false);
-
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
 
         const logout = () => {
             Inertia.post(route("logout"));

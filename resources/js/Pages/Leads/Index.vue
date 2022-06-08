@@ -44,6 +44,7 @@
 
 <script>
 import { computed, defineComponent, ref } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
@@ -84,14 +85,6 @@ export default defineComponent({
         "nameSearch",
     ],
     setup(props) {
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
         const badgeClasses = (lead_type_id) => {
             if (!lead_type_id) {
                 console.log("no lead type id!");

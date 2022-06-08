@@ -408,6 +408,7 @@
 
 <script>
 import { defineComponent, ref, watchEffect, onMounted } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks";
 import JetNavLink from "@/Jetstream/NavLink";
 import { useLockScroll } from "vue-composable";
@@ -478,14 +479,6 @@ export default defineComponent({
             }
         });
 
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
         const toggle = () => {
             expanded.value = !expanded.value;
             console.log({ expanded: expanded.value });
