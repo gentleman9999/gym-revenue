@@ -2,13 +2,7 @@ import { useFlash } from "./useFlash";
 import { ref, watch, watchEffect, onBeforeUnmount } from "vue";
 import { useUser } from "@/utils/useUser";
 import { useNotifications } from "@/utils/useNotifications";
-import {
-    toastInfo,
-    toastError,
-    toastSuccess,
-    toastWarning,
-    generateToast,
-} from "@/utils/createToast";
+import { generateToast } from "@/utils/createToast";
 import { parseNotificationResponse } from "@/utils";
 
 export const useNotificationAlertEmitter = () => {
