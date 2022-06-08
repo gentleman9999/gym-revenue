@@ -22,6 +22,7 @@
                 'filter-closed-container': !visible,
                 'filter-drawer-hovered': !visible && isHovered,
                 'filter-drawer-open': visible,
+                'filter-in-use': !visible && filtersOn,
             }"
             @mouseenter="isHovered = true"
             @mouseleave="isHovered = false"
@@ -29,7 +30,7 @@
         >
             <button
                 v-if="visible"
-                class="filter-on"
+                class="filter-open"
                 @click="toggleFilterDrawer"
             >
                 <font-awesome-icon :icon="['fas', 'chevron-right']" size="lg" />
@@ -118,6 +119,10 @@ select {
     }
 }
 
+.filter-in-use {
+    @apply bg-red-500 !important;
+}
+
 .filter-closed-container {
     @apply w-4 rounded-r-lg;
     @apply hover:bg-base-content hover:opacity-80;
@@ -127,13 +132,13 @@ select {
     @apply bg-transparent rounded-none;
 }
 
-button.filter-on {
+button.filter-open {
     @apply absolute bg-secondary right-[0.75rem] top-[0.5rem] rotate-180 text-base-content !important;
 }
 </style>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faChevronUp, faChevronRight } from "@fortawesome/pro-solid-svg-icons";
@@ -149,17 +154,30 @@ export default defineComponent({
             type: Number,
             default: 300,
         },
+        filtersActive: {
+            type: Boolean,
+            default: false,
+        },
     },
 
-    setup() {
+    setup(props) {
         const visible = ref(false);
         const isHovered = ref(false);
+
+        const filtersOn = computed(() => {
+            return props.filtersActive;
+        });
 
         const toggleFilterDrawer = () => {
             visible.value = !visible.value;
         };
 
-        return { visible, isHovered, toggleFilterDrawer };
+        return {
+            visible,
+            isHovered,
+            toggleFilterDrawer,
+            filtersOn,
+        };
     },
 });
 </script>

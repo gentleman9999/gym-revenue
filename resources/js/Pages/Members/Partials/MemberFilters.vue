@@ -1,6 +1,7 @@
 <template>
     <beefy-search-filter
         v-model:modelValue="form.search"
+        :filtersActive="filtersActive"
         class="w-full max-w-md mr-4"
         @reset="reset"
         @clear-filters="clearFilters"
@@ -148,14 +149,14 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            props.baseRoute
-        );
+        const { form, reset, clearFilters, clearSearch, filtersActive } =
+            useSearchFilter(props.baseRoute);
         return {
             form,
             reset,
             clearFilters,
             clearSearch,
+            filtersActive,
             multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },

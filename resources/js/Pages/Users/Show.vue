@@ -15,6 +15,7 @@
             <template #filter>
                 <beefy-search-filter
                     v-model:modelValue="form.search"
+                    :filtersActive="filtersActive"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
                     @clear-filters="clearFilters"
@@ -143,13 +144,11 @@ export default defineComponent({
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
 
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            "users",
-            {
+        const { form, reset, clearFilters, clearSearch, filtersActive } =
+            useSearchFilter("users", {
                 team: null,
                 club: null,
-            }
-        );
+            });
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -285,6 +284,7 @@ export default defineComponent({
             handleClickImport,
             importUser,
             closeModals,
+            filtersActive,
         };
     },
 });

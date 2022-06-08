@@ -2,6 +2,7 @@
     <beefy-search-filter
         v-model:modelValue="form.search"
         class="w-full max-w-md mr-4"
+        :filtersActive="filtersActive"
         @reset="reset"
         @clear-filters="clearFilters"
         @clear-search="clearSearch"
@@ -222,11 +223,11 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            props.baseRoute
-        );
+        const { form, reset, clearFilters, clearSearch, filtersActive } =
+            useSearchFilter(props.baseRoute);
         return {
             form,
+            filtersActive,
             reset,
             clearFilters,
             clearSearch,
