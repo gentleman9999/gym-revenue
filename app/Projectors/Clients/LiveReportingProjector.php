@@ -12,6 +12,7 @@ class LiveReportingProjector extends Projector
 {
     public function onLeadCreated(LeadCreated $event)
     {
+        $test = 0;
         $record = LiveReportsByDay::firstOrCreate(
             [
                 'client_id' => $event->data['client_id'],
@@ -21,20 +22,21 @@ class LiveReportingProjector extends Projector
             ]
         );
 
-        $record->updateOrFail(['value' => $record->value + 1]);
+        $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 
     public function onMemberCreated(MemberCreated $event)
     {
+        $test = 0;
         $record = LiveReportsByDay::firstOrCreate(
             [
                 'client_id' => $event->data['client_id'],
                 'location_id' => $event->data['location_id'],
-                'entity' => 'members',
+                'entity' => 'member',
                 'date' => $event->createdAt(),
             ]
         );
-        $record->updateOrFail(['value' => $record->value + 1]);
+        $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 
     public function onLeadUpdated(LeadUpdated $event)

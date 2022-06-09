@@ -46,7 +46,7 @@ class CreateMember
     {
         $id = Uuid::new();
         $data['id'] = $id;
-
+        $data['location_id'] = $data['gr_location_id'];
         MemberAggregate::retrieve($data['client_id'])
             ->create($user->id ?? "Auto Generated", $data)
             ->persist();
@@ -67,10 +67,6 @@ class CreateMember
             $request->validated(),
             $request->user()
         );
-
-        if (! $request->wantsJson()) {
-            return $member;
-        }
 
         Alert::success("Member'{$member->name}' was created")->flash();
 

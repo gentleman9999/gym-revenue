@@ -13,7 +13,9 @@ class LiveReportsByDay extends Model
 
     protected $keyType = 'string';
 
-    public $incrementing = false;
+    protected $fillable = ['id', 'client_id', 'location_id', 'date', 'entity', 'value'];
 
-    protected $fillable = ['id', 'client_id', 'location_id', 'entity', 'value'];
+    protected $casts = [
+        'value' => 'float',
+    ];
 }

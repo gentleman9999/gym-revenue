@@ -130,7 +130,7 @@
             </div>
             <div
                 class="form-control col-span-2"
-                v-if="member['agreement_number']"
+                v-if="member?.agreement_number"
             >
                 <jet-label for="agreement_number" value="Agreement Number" />
                 <input
@@ -142,7 +142,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-2" v-if="member['external_id']">
+            <div class="form-control col-span-2" v-if="member?.external_id">
                 <jet-label for="external_id" value="External ID" />
                 <input
                     disabled
