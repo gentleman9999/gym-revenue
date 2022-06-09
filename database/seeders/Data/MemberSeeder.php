@@ -42,6 +42,7 @@ class MemberSeeder extends Seeder
                         VarDumper::dump('Generating Members for '.$client->name);
                         foreach ($members as $member) {
                             $member_data = $member->toArray();
+                            $member_data['location_id'] = $location->gymrevenue_id;
                             CreateMember::run($member_data);
                         }
                     }

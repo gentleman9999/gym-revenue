@@ -60,7 +60,7 @@ class LeadProspectSeeder extends Seeder
                             try {
                                 //sometimes seeder creates duplicate lead name/emails
 
-
+                                $prospect_data['location_id'] = $location->gymrevenue_id;
                                 $lead = CreateLead::run($prospect_data);
                                 $aggy = LeadAggregate::retrieve($lead->id);
 
