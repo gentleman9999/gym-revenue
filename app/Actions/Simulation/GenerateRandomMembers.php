@@ -27,11 +27,9 @@ class GenerateRandomMembers
             ->get();
         foreach ($clients as $client) {
             VarDumper::dump($client->name);
-            // For each client, get all the locations
             if (count($client->locations) > 0) {
                 foreach ($client->locations as $idx => $location) {
                     $members = Member::factory()->count(random_int(1, 5))
-                        // over ride the client id and gr id from the factory
                         ->client_id($client->id)
                         ->gr_location_id($location->gymrevenue_id ?? '')
                         ->make();
@@ -41,17 +39,13 @@ class GenerateRandomMembers
                         ->get();
 
                     $lead_data = $leads->toArray();
-
                     $lead = $lead_data[random_int(0, count($lead_data) - 1)];
 
-                    //VarDumper::dump('Generating Members for '.$client->name);
                     foreach ($members as $member) {
                         $member_data = $member->toArray();
-                        $member_data['first_name'] = $lead['first_name'];
-                        $member_data['last_name'] = $lead['last_name'];
-                        $member_data['email'] = $lead['email'];
-                        $member_data['primary_phone'] = $lead['primary_phone'];
-                        $member_data['gender'] = $lead['gender'];
+                        foreach ($member_data as $key => $item) {
+                            $member_data[$key] = $lead[$key];
+                        }
                         UpsertMemberApi::run($member_data);
                     }
                 }
