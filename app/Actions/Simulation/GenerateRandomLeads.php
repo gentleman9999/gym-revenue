@@ -60,20 +60,13 @@ class GenerateRandomLeads
         return $prospects;
     }
 
-    public function authorize(ActionRequest $request): bool
-    {
-        $current_user = $request->user();
-
-        return $current_user->can('access_token.create', Location::class);
-    }
-
     public function asController(ActionRequest $request)
     {
         $this->handle(
             $request->user(),
         );
 
-        Alert::success("Access Token Generated & granted.")->flash();
+        Alert::success("Leads Randomly Generated.")->flash();
 
         return Redirect::back();
     }

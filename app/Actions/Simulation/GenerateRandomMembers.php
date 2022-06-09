@@ -4,7 +4,6 @@ namespace App\Actions\Simulation;
 
 use App\Actions\Endusers\Members\UpsertMemberApi;
 use App\Models\Clients\Client;
-use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use Illuminate\Console\Command;
@@ -55,20 +54,13 @@ class GenerateRandomMembers
         return $members;
     }
 
-    public function authorize(ActionRequest $request): bool
-    {
-        $current_user = $request->user();
-
-        return $current_user->can('access_token.create', Location::class);
-    }
-
     public function asController(ActionRequest $request)
     {
         $this->handle(
             $request->user(),
         );
 
-        Alert::success("Access Token Generated & granted.")->flash();
+        Alert::success("Members Randomly Generated")->flash();
 
         return Redirect::back();
     }
