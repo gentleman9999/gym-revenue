@@ -29,9 +29,7 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles'];
 
         //Populating Role Filter
-        $team_users = User::with(['teams', 'home_location', 'roles'])
-            ->whereClientId($client_id)
-            ->get();
+        $team_users = User::with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
@@ -47,7 +45,6 @@ class UsersController extends Controller
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
                 $users = User::with(['teams', 'home_location', 'classification'])
-                    ->whereClientId($client_id)
                     ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
@@ -59,7 +56,6 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('users.id', $user_ids)
-                    ->whereClientId($client->id)
                     ->with(['teams', 'home_location', 'classification'])
                     ->filter($request->only($filterKeys))
                     ->sort()
@@ -239,7 +235,7 @@ class UsersController extends Controller
             $is_default_team = $client->home_team_id === $current_team->id;
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams'])->whereClientId($client_id)
+                $users = User::with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
             } else {
@@ -250,7 +246,6 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('users.id', $user_ids)
-                    ->whereClientId($client->id)
                     ->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();

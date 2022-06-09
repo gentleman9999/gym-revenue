@@ -20,26 +20,14 @@ class TeamController extends Controller
     {
         $current_user = $request->user();
         $client_id = $current_user->currentClientId();
-        $current_team = request()->user()->currentTeam()->first();
         //   $users = $current_team->team_users()->get();
-        $users = User::with(['teams', 'home_location'])->whereClientId($client_id)->get();
+        $users = User::with(['teams', 'home_location'])->get();
 
-        if ($client_id) {
-            $client = Client::with('teams')->find($client_id);
-            $team_ids = $client->teams()->pluck('id');
-            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs = Location::whereClientId($client_id)->get();
-        } elseif ($current_user->is_cape_and_bay_user) {
-            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs = [];
-        }
+        $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
+        $clubs = Location::whereClientId($client_id)->get();
 
 
         return Inertia::render('Teams/List', [
-//            'teams' => Team::filter($request->only('search', 'club', 'team', 'users'))
-//                ->sort()
-//                ->paginate(10)
-//                ->appends(request()->except('page')),
             'filters' => $request->all('search', 'club', 'team', 'users'),
             'clubs' => $clubs ?? null,
             'teams' => $teams ?? null,
@@ -87,16 +75,16 @@ class TeamController extends Controller
         $availableLocations = [];
         $users = $team->users;
 
+        $availableUsers = User::get();
+
         if ($client_id) {
-            $availableUsers = User::whereClientId($client_id)->get();
             if ($current_user->is_cape_and_bay_user) {
                 //if cape and bay user, add all the non client associated capeandbay users
-                $availableUsers = $availableUsers->merge(User::whereClientId(null)->where('email', 'like', '%@capeandbay.com')->get());
+                $availableUsers = $availableUsers->merge(User::whereClientId(null)->get());
             }
             $availableLocations = $team->home_team ? [] : Location::whereClientId($client_id)->get();
         } elseif ($current_user->is_cape_and_bay_user) {
             //look for users that aren't client users
-            $availableUsers = User::whereClientId(null)->get();
         }
 
         return Jetstream::inertia()->render($request, 'Teams/Edit', [
@@ -154,17 +142,7 @@ class TeamController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
-        $current_user = $request->user();
-        $client_id = $current_user->currentClientId();
-        $current_team = request()->user()->currentTeam()->first();
-
-        if ($client_id) {
-            $client = Client::with('teams')->find($client_id);
-            $team_ids = $client->teams()->pluck('id');
-            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->get();
-        } elseif ($current_user->is_cape_and_bay_user) {
-            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->get();
-        }
+        $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
 
         return $teams;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Actions\Users;
 
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Location;

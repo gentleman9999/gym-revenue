@@ -8,11 +8,7 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 //         IS IN PROD.  OLD EVENTS WILL BE INCOMPATIBLE AND WILL BREAK
 abstract class EntityDeleted extends ShouldBeStored
 {
-    //the user who initiated the event. null = system generated
-    public $user;
-
-    public function __construct(string | null $user = null)
+    public function __construct()
     {
-        $this->user = $user;
     }
 }

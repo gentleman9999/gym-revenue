@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Jetstream;
+namespace App\Actions\Teams;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\TeamAggregate;
@@ -24,22 +24,21 @@ class UpdateTeam
         return [
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'name' => ['required', 'max:50'],
-//            'user_id' => ['sometimes', 'exists:users,id'],
-//            'personal_team' => ['sometimes', 'boolean'],
 //            'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],
         ];
     }
 
-    public function handle($payload, $current_user = null)
+    public function handle(Team $team, array $payload)
     {
-        TeamAggregate::retrieve($payload['id'])->update($payload, $current_user->id ?? 'Auto Generated')->persist();
-        $team = Team::findOrFail($payload['id']);
+        TeamAggregate::retrieve($team->id)->update($payload)->persist();
+        $team = Team::findOrFail($id);
 
         $client_id = $team->client->id;
 
+        //TODO:this could be changed to an AttachTeamtoClient event, and fire it off here
         if ($client_id) {
-            ClientAggregate::retrieve($client_id)->updateTeam($payload, $current_user->id ?? 'Auto Generated')->persist();
+            ClientAggregate::retrieve($client_id)->updateTeam($payload)->persist();
         }
 
         return $team;
@@ -52,30 +51,17 @@ class UpdateTeam
         return $current_user->can('teams.update', Team::class);
     }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request, Team $team)
     {
         $data = $request->validated();
-        $data['id'] = $id;
 
         $team = $this->handle(
-            $data,
-            $request->user(),
+            $team,
+            $data
         );
 
         Alert::success("Team '{$team->name}' was updated")->flash();
 
         return Redirect::back();
-    }
-
-    /**
-     * Delete the given team.
-     *
-     * @param  mixed  $team
-     * @return void
-     */
-    public function delete($team)
-    {
-//        $team->purge();
-        return $this->handle($team->id);
     }
 }

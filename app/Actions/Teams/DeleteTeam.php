@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Actions\Jetstream;
+namespace App\Actions\Teams;
 
+use function app;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\TeamAggregate;
 use App\Models\Team;
@@ -12,21 +13,22 @@ use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+use function request;
 
 class DeleteTeam implements DeletesTeams
 {
     use AsAction;
 
-    public function handle($id, $current_user = null)
+    public function handle($id)
     {
         $team = Team::findOrFail($id);
 
-        TeamAggregate::retrieve($id)->delete($id, $current_user->id ?? 'Auto Generated')->persist();
+        TeamAggregate::retrieve($id)->delete($id)->persist();
 
         $client_id = $team->client->id;
 
         if ($client_id) {
-            ClientAggregate::retrieve($client_id)->deleteTeam($id, $current_user->id ?? 'Auto Generated')->persist();
+            ClientAggregate::retrieve($client_id)->deleteTeam($id)->persist();
         }
 
         return $team;
@@ -50,8 +52,7 @@ class DeleteTeam implements DeletesTeams
 //        $deleter->delete($team);
 
         $team = $this->handle(
-            $request->validated(),
-            $request->user(),
+            $request->validated()
         );
 
         Alert::success("Team '{$team->name}' was deleted")->flash();

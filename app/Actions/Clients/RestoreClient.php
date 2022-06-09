@@ -30,9 +30,9 @@ class RestoreClient
         ];
     }
 
-    public function handle(string $id, $current_user = null)
+    public function handle(string $id)
     {
-        ClientAggregate::retrieve($id)->restore($id, $current_user)->persist();
+        ClientAggregate::retrieve($id)->restore()->persist();
 
         return Client::withTrashed()->findOrFail($id);
     }
@@ -48,7 +48,6 @@ class RestoreClient
     {
         $client = $this->handle(
             $id,
-            $request->user(),
         );
 
         Alert::success("Client '{$client->name}' was restored")->flash();

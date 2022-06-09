@@ -4,7 +4,6 @@ namespace App\Actions\Clients;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Client;
-use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -27,9 +26,9 @@ class UpdateClient
         ];
     }
 
-    public function handle(string $id, array $payload, User $current_user = null)
+    public function handle(string $id, array $payload)
     {
-        ClientAggregate::retrieve($id)->update($payload, $current_user)->persist();
+        ClientAggregate::retrieve($id)->update($payload)->persist();
 
         return Client::findOrFail($id);
     }
@@ -41,11 +40,11 @@ class UpdateClient
         return $current_user->can('*');
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, Client $client)
     {
         $client = $this->handle(
-            $request->validated(),
-            $request->user(),
+            $client->id,
+            $request->validated()
         );
 
         Alert::success("Client '{$client->name}' was updated")->flash();

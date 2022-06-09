@@ -6,7 +6,6 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Enums\ClientServiceEnum;
 use App\Helpers\Uuid;
 use App\Models\Clients\Client;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -34,7 +33,7 @@ class CreateClient
         ];
     }
 
-    public function handle(array $payload, User $current_user = null)
+    public function handle(array $payload)
     {
         $id = Uuid::new();
         $payload['id'] = $id;
@@ -42,7 +41,7 @@ class CreateClient
         $aggy = ClientAggregate::retrieve($id);
 
 
-        $aggy->create($payload, $current_user)
+        $aggy->create($payload)
             ->createAudience("{$payload['name']} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
             ->createAudience("{$payload['name']} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto');
 //            ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
@@ -68,8 +67,7 @@ class CreateClient
     public function asController(ActionRequest $request)
     {
         $client = $this->handle(
-            $request->validated(),
-            $request->user(),
+            $request->validated()
         );
 
         Alert::success("Client '{$client->name}' was created")->flash();

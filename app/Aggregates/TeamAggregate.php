@@ -14,40 +14,41 @@ class TeamAggregate extends AggregateRoot
     {
         $this->teams[$event->team] = [
             'team_id' => $event->team,
-            'team_name' => $event->name,
             'client_id' => $event->client,
+            'user_id' => $event->user,
         ];
     }
 
-    public function addUserToTeam(string $team_id, $team_name, $client_id = null)
+    public function addUserToTeam(User | string | null $user, $client_id = null)
     {
-        if (array_key_exists($team_id, $this->teams)) {
+        $user_id = $user->id ?? $user ?? null;
+        if (array_key_exists($user_id, $this->teams)) {
             // @todo - make an exception to throw here that the user is already a member
         }
 
-        $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name, $client_id));
+        $this->recordThat(new UserAddedToTeam($this->uuid(), $user_id, $client_id));
 
         return $this;
     }
 
-    public function createTeam(array $payload, User | string | null $created_by_user = null)
+    public function create(array $payload)
     {
-        $created_by_user_id = $created_by_user->id ?? null;
-        $this->recordThat(new TeamCreated($payload, $created_by_user_id));
+        $this->recordThat(new TeamCreated($payload));
 
         return $this;
     }
 
-    public function delete($id, string $deleted_by_user_id)
+    public function delete()
     {
-        $this->recordThat(new TeamDeleted($this->uuid(), $deleted_by_user_id, $id));
+        $this->recordThat(new TeamDeleted());
 
         return $this;
     }
 
-    public function update(array $payload, string $updated_by_user_id)
+    public function update(array $payload)
     {
-        $this->recordThat(new TeamUpdated($this->uuid(), $updated_by_user_id, $payload));
+        $updated_by_user_id = $updated_by_user->id ?? $updated_by_user ?? null;
+        $this->recordThat(new TeamUpdated($payload, $updated_by_user_id));
 
         return $this;
     }

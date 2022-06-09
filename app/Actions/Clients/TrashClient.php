@@ -30,9 +30,9 @@ class TrashClient
         ];
     }
 
-    public function handle(string $id, $current_user = null)
+    public function handle(string $id)
     {
-        ClientAggregate::retrieve($id)->trash($id, $current_user)->persist();
+        ClientAggregate::retrieve($id)->trash()->persist();
 
         return Client::withTrashed()->findOrFail($id);
     }
@@ -48,7 +48,6 @@ class TrashClient
     {
         $client = $this->handle(
             $id,
-            $request->user(),
         );
 
         Alert::success("Client '{$client->name}' was trashed")->flash();

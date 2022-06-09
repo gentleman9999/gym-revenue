@@ -2,7 +2,7 @@
 
 namespace App\Projectors\Clients;
 
-use App\Actions\Jetstream\CreateTeam;
+use App\Actions\Teams\CreateTeam;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\Clients\Client;
 use App\Models\Clients\ClientBillableActivity;

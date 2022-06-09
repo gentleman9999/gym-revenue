@@ -1,16 +1,19 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Actions\Users;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\User;
+use function bcrypt;
+use function dd;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+use function request;
 
 class UpdateUser implements UpdatesUserProfileInformation
 {
@@ -25,7 +28,6 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function rules()
     {
         return [
-            'id' => ['required', 'integer', 'exists:users,id'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.request()->id],
@@ -51,7 +53,7 @@ class UpdateUser implements UpdatesUserProfileInformation
         ];
     }
 
-    public function handle($payload, $current_user = null)
+    public function handle($id, array $payload, $current_user = null)
     {
         $client_id = $current_user->currentClientId();
 
@@ -64,7 +66,7 @@ class UpdateUser implements UpdatesUserProfileInformation
         }
 
 
-        UserAggregate::retrieve($payload['id'])->updateUser($current_user->id ?? "Auto Generated", $payload)->persist();
+        UserAggregate::retrieve($id)->updateUser($payload, $current_user)->persist();
         if ($client_id) {
             ClientAggregate::retrieve($client_id)->updateUser($current_user->id, $payload)->persist();
         }
@@ -79,9 +81,11 @@ class UpdateUser implements UpdatesUserProfileInformation
         return $current_user->can('users.update', User::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, User $user)
     {
+        dd(123);
         $user = $this->handle(
+            $user->id,
             $request->validated(),
             $request->user(),
         );

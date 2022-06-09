@@ -101,7 +101,6 @@ class UserAggregate extends AggregateRoot
     {
         $this->teams[$event->team] = [
             'team_id' => $event->team,
-            'team_name' => $event->name,
             'client_id' => $event->client,
         ];
     }

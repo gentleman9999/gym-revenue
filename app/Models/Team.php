@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Clients\Client;
 use App\Models\Traits\Sortable;
+use App\Scopes\ClientScope;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
@@ -15,6 +17,13 @@ class Team extends JetstreamTeam
 {
     use HasFactory;
     use Sortable;
+    use Uuid;
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     /**
      * The attributes that should be cast.
@@ -22,7 +31,6 @@ class Team extends JetstreamTeam
      * @var array
      */
     protected $casts = [
-        'personal_team' => 'boolean',
         'home_team' => 'boolean',
     ];
 
@@ -32,12 +40,8 @@ class Team extends JetstreamTeam
      * @var string[]
      */
     protected $fillable = [
-        'id',
-        'user_id',
         'name',
-        'personal_team',
         'home_team',
-        'client_id',
     ];
 
     /**
@@ -50,6 +54,16 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ClientScope());
+    }
 
     public function details()
     {
@@ -104,7 +118,7 @@ class Team extends JetstreamTeam
             });
         })->when($filters['users'] ?? null, function ($query, $user) {
             return $query->whereHas('team_users', function ($query) use ($user) {
-                $query->whereIn('user_id',  $user);
+                $query->whereIn('user_id', $user);
             });
         });
     }
@@ -151,5 +165,20 @@ class Team extends JetstreamTeam
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public static function getGymRevAdminTeams()
+    {
+        return self::withoutGlobalScopes()->whereClientId(null)->get();
+    }
+
+    /**
+     * Get the owner of the team. (Client)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function owner()
+    {
+        return $this->belongsTo(Client::class, 'client__id');
     }
 }

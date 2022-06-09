@@ -10,12 +10,9 @@ abstract class EntityCreated extends ShouldBeStored
 {
     //the data/payload associated with the creation event
     public $payload;
-    //the user who initiated the event. null = system generated
-    public $user;
 
-    public function __construct(array $payload, string | null $user = null)
+    public function __construct(array $payload)
     {
         $this->payload = $payload;
-        $this->user = $user;
     }
 }

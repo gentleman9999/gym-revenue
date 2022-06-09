@@ -70,7 +70,6 @@ export default defineComponent({
             form: this.$inertia.form({
                 name: "",
                 user_id: this.$page.props.user.id,
-                personal_team: false,
             }),
         };
     },

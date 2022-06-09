@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/sales-slideshow', \App\Ht
 Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\Http\Controllers\WorkoutGeneratorController::class . '@index')->name('payment-gateways');
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/current-team', \App\Actions\Teams\SwitchTeam::class)->name('current-team.update');
 //@todo: need to add in ACL/middleware for CnB users
 Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
     Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
@@ -48,7 +49,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
     Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
-    Route::post('/tokens', \App\Actions\Fortify\GrantAccessToken::class)->name('api-tokens.store');
+    Route::post('/tokens', \App\Actions\Users\GrantAccessToken::class)->name('api-tokens.store');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
@@ -173,12 +174,12 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
-    Route::post('/', \App\Actions\Fortify\CreateUser::class)->name('users.store');
-    Route::post('/import', \App\Actions\Fortify\ImportUsers::class)->name('users.import');
+    Route::post('/', \App\Actions\Users\CreateUser::class)->name('users.store');
+    Route::post('/import', \App\Actions\Users\ImportUsers::class)->name('users.import');
     Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit')->where(['id' => '[0-9]+']);
     Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view')->where(['id' => '[0-9]+']);
-    Route::put('/{id}', \App\Actions\Fortify\UpdateUser::class)->name('users.update')->where(['id' => '[0-9]+']);
-    Route::delete('/{id}', \App\Actions\Jetstream\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
+    Route::put('/{user}', \App\Actions\Users\UpdateUser::class)->name('users.update');
+    Route::delete('/{user}', \App\Actions\Users\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
     Route::post('/{id}/documents', \App\Actions\Jetstream\UploadDocForUser::class . '@upload')->name('users.documents.create')->where(['id' => '[0-9]+']);
     Route::get('/export', \App\Http\Controllers\UsersController::class . '@export')->name('users.export');
 });
@@ -186,14 +187,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
     Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
-    Route::post('/', \App\Actions\Jetstream\CreateTeam::class)->name('teams.store');
+    Route::post('/', \App\Actions\Teams\CreateTeam::class)->name('teams.store');
     Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
     Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
     //Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
-    Route::put('/update/{id}', \App\Actions\Jetstream\UpdateTeam::class)->name('team.update');
-    Route::delete('/{id}', \App\Actions\Jetstream\DeleteTeam::class)->name('teams.delete');
+    Route::put('/update/{team}', \App\Actions\Teams\UpdateTeam::class)->name('team.update');
+    Route::delete('/{id}', \App\Actions\Teams\DeleteTeam::class)->name('teams.delete');
     Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
@@ -240,7 +241,7 @@ Route::prefix('impersonation')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('note')->group(function () {
-    Route::post('/', \App\Actions\Fortify\MarkNoteAsRead::class)->name('note.seen');
+    Route::post('/', \App\Actions\Notes\MarkNoteAsRead::class)->name('note.seen');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function () {
     Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');

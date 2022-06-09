@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Actions\Users;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
@@ -9,6 +9,7 @@ use App\Models\Clients\Location;
 use App\Models\Role;
 use App\Models\Team;
 use App\Models\User;
+use function bcrypt;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Fortify\Contracts\CreatesNewUsers;

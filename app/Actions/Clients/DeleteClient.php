@@ -30,10 +30,10 @@ class DeleteClient
         ];
     }
 
-    public function handle(string $id, $current_user = null)
+    public function handle(string $id)
     {
         $client = Client::withTrashed()->findOrFail($id);
-        ClientAggregate::retrieve($id)->delete($id, $current_user)->persist();
+        ClientAggregate::retrieve($id)->delete()->persist();
 
         return $client;
     }
@@ -49,7 +49,6 @@ class DeleteClient
     {
         $client = $this->handle(
             $id,
-            $request->user(),
         );
 
         Alert::success("Client '{$client->name}' was deleted")->flash();

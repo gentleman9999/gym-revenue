@@ -40,16 +40,16 @@ trait ClientTeamActions
         return $this;
     }
 
-    public function deleteTeam($id, string $deleted_by_user_id)
+    public function deleteTeam()
     {
-        $this->recordThat(new ClientTeamDeleted($this->uuid(), $deleted_by_user_id, $id));
+        $this->recordThat(new ClientTeamDeleted());
 
         return $this;
     }
 
-    public function updateTeam(array $payload, string $updated_by_user_id)
+    public function updateTeam(array $payload)
     {
-        $this->recordThat(new ClientTeamUpdated($this->uuid(), $updated_by_user_id, $payload));
+        $this->recordThat(new ClientTeamUpdated($payload));
 
         return $this;
     }

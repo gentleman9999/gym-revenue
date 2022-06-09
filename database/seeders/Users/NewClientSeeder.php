@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Users;
 
-use App\Actions\Fortify\CreateUser;
+use App\Actions\Users\CreateUser;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Team;

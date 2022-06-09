@@ -32,8 +32,8 @@ class EnsureTokenIsValid
         }
 
         if ($user->isClientUser()) {
-            $request->merge(['client_id' => $user->client_id]);
-        } elseif ($user->isCapeAndBayUser()) {
+            $this->addClientIdToRequest($request, $user->client_id);
+        } elseif ($user->is_cape_and_bay_user) {
             $client_id = $request->header($this->client_header);
             if (! $client_id) {
                 return response()->json(['error' => "You must provide a Client Id via the '{$this->client_header}' header"], 400);
@@ -44,9 +44,29 @@ class EnsureTokenIsValid
             if (! $client) {
                 return response()->json(['error' => "Incorrect Client Id specified through '{$this->client_header}'"], 400);
             }
-            $request->merge(['client_id' => $client_id]); //Merge client_id into request.
+            $this->addClientIdToRequest($request, $client_id);
         }
 
         return $next($request);
+    }
+
+    protected function addClientIdToRequest($request, $client_id)
+    {
+        $body = $request->all();
+
+        if (count($body) <= 1) {
+            $request->merge(['client_id' => $client_id]);
+
+            return $request;
+        }
+
+        foreach ($body as $idx => $object) {
+            $object['client_id'] = $client_id;
+            $body[$idx] = $object;
+        }
+
+        $request->merge($body);
+
+        return $request;
     }
 }

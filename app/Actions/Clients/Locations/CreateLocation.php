@@ -37,6 +37,7 @@ class CreateLocation
             'location_no' => ['required', 'max:50'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
+            'shouldCreateTeam' => ['sometimes', 'boolean'],
         ];
     }
 
