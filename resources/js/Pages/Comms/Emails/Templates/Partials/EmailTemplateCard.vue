@@ -5,8 +5,8 @@
             @click="actions.edit.handler({ data: template })"
         >
             <img
-                :src="template.thumbnail"
-                v-if="template?.thumbnail"
+                :src="template.thumbnail.url"
+                v-if="template?.thumbnail?.url"
                 alt="thumbnail"
             />
             <div

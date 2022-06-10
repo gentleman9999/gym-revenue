@@ -24,9 +24,9 @@ trait ClientEmailTemplateActions
         return $this;
     }
 
-    public function setEmailTemplateThumbnail(string $id, string $thumbnail)
+    public function setEmailTemplateThumbnail(string $id, string $key, string $url)
     {
-        $this->recordThat(new EmailTemplateThumbnailUpdated($this->uuid(), $id,  $thumbnail));
+        $this->recordThat(new EmailTemplateThumbnailUpdated($this->uuid(), $id, $key,  $url));
 
         return $this;
     }
