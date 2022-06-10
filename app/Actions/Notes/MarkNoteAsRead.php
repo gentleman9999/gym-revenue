@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Actions\Notes;
 
 use App\Aggregates\Clients\NoteAggregate;
 use Lorisleiva\Actions\ActionRequest;

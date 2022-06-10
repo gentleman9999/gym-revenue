@@ -24,7 +24,7 @@ class GetDashboardWidgets
             $num_ecs = 0;
             $num_scs = 0;
             $last_widget_count = 0;
-            if ($team->isClientsDefaultTeam()) {
+            if ($team->home_team) {
                 $num_locs = Location::whereClientId($team->client_id)->whereActive(1)->count();
                 $num_ecs = EmailCampaigns::whereClientId($team->client_id)->count();
                 $num_scs = SmsCampaigns::whereClientId($team->client_id)->count();

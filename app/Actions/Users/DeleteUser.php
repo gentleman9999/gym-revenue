@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Actions\Jetstream;
+namespace App\Actions\Users;
 
-use App\Actions\Fortify\PasswordValidationRules;
 use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Enums\SecurityGroupEnum;
 use App\Models\User;
+use function collect;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+use function request;
 
 class DeleteUser implements DeletesUsers
 {
@@ -31,16 +32,16 @@ class DeleteUser implements DeletesUsers
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle(User|int $user)
     {
-        $client_id = $current_user->currentClientId();
+        $user_id = $user->id ?? $user;
 
-        UserAggregate::retrieve($data['id'])->deleteUser($current_user->id ?? "Auto Generated", $data)->persist();
-        if ($client_id) {
-            ClientAggregate::retrieve($client_id)->deleteUser($current_user->id || "Auto Generated", $data)->persist();
+        UserAggregate::retrieve($user_id)->deleteUser()->persist();
+        if ($user->client_id) {
+            ClientAggregate::retrieve($client_id)->deleteUser()->persist();
         } else {
             //CapeAndBay User
-            CapeAndBayUserAggregate::retrieve($data['team_id'])->deleteUser($current_user->id ?? "Auto Generated", $data)->persist();
+            CapeAndBayUserAggregate::retrieve($data['team_id'])->deleteUser($$data)->persist();
         };
     }
 
@@ -51,10 +52,9 @@ class DeleteUser implements DeletesUsers
         return $current_user->can('users.delete', User::class);
     }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request, User $user)
     {
         $me = request()->user();
-        $user = User::findOrFail($id);
         $userData = $user->toArray();
         $userData['team_id'] = $request->user()->current_team_id;
 
@@ -67,15 +67,16 @@ class DeleteUser implements DeletesUsers
                 $non_admins[] = $team_user->id;
             }
         }
-
-        if (count($non_admins) < 1) {
-            Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
-
-            return Redirect::back();
-        }
+//
+//        if (count($non_admins) < 1) {
+//            Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
+//
+//            return Redirect::back();
+//        }
 
         $this->handle(
-            $userData,
+            $user,
+//            $userData,
             $request->user(),
         );
 

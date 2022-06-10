@@ -2,19 +2,8 @@
 
 namespace App\StorableEvents\Teams;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\EntityDeleted;
 
-class TeamDeleted extends ShouldBeStored
+class TeamDeleted extends EntityDeleted
 {
-    //user = request's current_user
-    public $client;
-    public $user;
-    public $id;
-
-    public function __construct(string $client, string $user, string $id)
-    {
-        $this->client = $client;
-        $this->user = $user;
-        $this->id = $id;
-    }
 }

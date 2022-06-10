@@ -8,14 +8,12 @@ class UserAddedToTeam extends ShouldBeStored
 {
     public $user;
     public $team;
-    public $name;
     public $client;
 
-    public function __construct(string $user, string $team, string $name, $client = null)
+    public function __construct($team, $user, $client = null)
     {
         $this->user = $user;
         $this->team = $team;
-        $this->name = $name;
         $this->client = $client;
     }
 }

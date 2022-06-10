@@ -17,7 +17,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.view', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.view', User::class);
     }
 
     /**
@@ -44,7 +44,7 @@ class UserPolicy
     // is correct.
     public function create(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.create', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.create', User::class);
     }
 
     /**
@@ -59,7 +59,7 @@ class UserPolicy
     {
         return $user->can('users.update', $user->currentTeam()->first());
 
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.update', $user->currentTeam()->first());
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.update', $user->currentTeam()->first());
     }
 
     /**
@@ -72,7 +72,7 @@ class UserPolicy
 //    public function delete(User $user, User $model)
     public function delete(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.trash', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.trash', User::class);
     }
 
     /**
@@ -85,7 +85,7 @@ class UserPolicy
 //    public function restore(User $user, User $model)
     public function restore(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.restore', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.restore', User::class);
     }
 
     /**
@@ -97,7 +97,7 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.delete', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.delete', User::class);
     }
 
     /**

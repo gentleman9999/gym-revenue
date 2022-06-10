@@ -18,7 +18,7 @@ class CreateRegisterTokensTable extends Migration
             $table->string('name');
             $table->string('client_id')->nullable(); //NULL == 'Cape & Bay'
             $table->string('role')->nullable(); // NULL == 'Account Owner' or 'Admin'
-            $table->string('team_id')->nullable(); // Null == default Account Owner or Admin Team
+            $table->uuid('team_id')->nullable(); // Null == default Account Owner or Admin Team
 
             $table->integer('uses')->default(-1); // -1 Means Unlimited
             $table->boolean('active')->default(1); // When no active, nothing else matters.

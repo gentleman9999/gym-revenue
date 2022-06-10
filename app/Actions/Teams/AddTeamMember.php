@@ -1,17 +1,63 @@
 <?php
 
-namespace App\Actions\Jetstream;
+namespace App\Actions\Teams;
 
+use function __;
+use App\Actions\Jetstream\User;
+use App\Models\Team;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
 use Laravel\Jetstream\Events\AddingTeamMember;
 use Laravel\Jetstream\Events\TeamMemberAdded;
 use Laravel\Jetstream\Jetstream;
-use Laravel\Jetstream\Rules\Role;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class AddTeamMember implements AddsTeamMembers
 {
+    use AsAction;
+
+    /**
+     * Get the validation rules for adding a team member.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return array_filter([
+            'email' => ['required', 'email', 'exists:users'],
+//            'role' => Jetstream::hasRoles()
+//                            ? ['required', 'string', new Role()]
+//                            : null,
+        ]);
+    }
+
+    public function handle(Team $team, User $user)
+    {
+//        Gate::forUser($user)->authorize('addTeamMember', $team);
+
+        $this->validate($team, $email, $role);
+
+        $newTeamMember = Jetstream::findUserByEmailOrFail($email);
+
+        AddingTeamMember::dispatch($team, $newTeamMember);
+
+        $team->users()->attach(
+            $newTeamMember,
+//            ['role' => $role]
+        );
+
+        TeamMemberAdded::dispatch($team, $newTeamMember);
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+
+        return $current_user->can('teams.update', Team::class);
+    }
+
     /**
      * Add a new team member to the given team.
      *
@@ -47,7 +93,8 @@ class AddTeamMember implements AddsTeamMembers
      * @param  string|null  $role
      * @return void
      */
-    protected function validate($team, string $email, ?string $role)
+//    protected function validate($team, string $email, ?string $role)
+    protected function validate($team, string $email)
     {
         Validator::make([
             'email' => $email,
@@ -57,21 +104,6 @@ class AddTeamMember implements AddsTeamMembers
         ])->after(
             $this->ensureUserIsNotAlreadyOnTeam($team, $email)
         )->validateWithBag('addTeamMember');
-    }
-
-    /**
-     * Get the validation rules for adding a team member.
-     *
-     * @return array
-     */
-    protected function rules()
-    {
-        return array_filter([
-            'email' => ['required', 'email', 'exists:users'],
-//            'role' => Jetstream::hasRoles()
-//                            ? ['required', 'string', new Role()]
-//                            : null,
-        ]);
     }
 
     /**

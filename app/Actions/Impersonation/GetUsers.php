@@ -55,7 +55,7 @@ class GetUsers
         $current_team = $user->currentTeam()->first();
 
         // If the team is a default_team, then get all users for that client
-        if ($current_team->default_team) {
+        if ($current_team->home_team) {
             if (is_null($current_team->client)) {
                 // This is a CnB Team
                 $imp_users = User::all();

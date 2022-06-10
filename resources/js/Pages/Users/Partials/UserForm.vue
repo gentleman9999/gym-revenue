@@ -1,8 +1,8 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <template #title> User Profile </template>
+        <template #title> User Profile</template>
 
-        <template #description> Information about the user. </template>
+        <template #description> Information about the user.</template>
         <template #form>
             <!-- First Name -->
             <div class="form-control col-span-2">
@@ -351,9 +351,9 @@
         </template>
     </jet-form-section>
     <jet-form-section v-if="clientId && user?.files" class="mt-16">
-        <template #title> Documents </template>
+        <template #title> Documents</template>
 
-        <template #description> Documents attached to the user. </template>
+        <template #description> Documents attached to the user.</template>
         <template #form>
             <!-- Files -->
             <div class="col-span-6">
@@ -476,7 +476,9 @@ export default {
 
         let operation = "Update";
         if (user) {
-            user.role_id = user["role_id"];
+            if (user.client_id) {
+                user.role_id = user["role_id"];
+            }
             user.classification_id = user.classification_id;
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
@@ -500,7 +502,6 @@ export default {
                 last_name: "",
                 email: "",
                 alternate_email: "",
-                role_id: 0,
                 classification_id: "",
                 contact_preference: null,
                 phone: "",
@@ -525,6 +526,7 @@ export default {
                 user.start_date = null;
                 user.end_date = null;
                 user.termination_date = null;
+                user.role_id = null;
             }
             operation = "Create";
         }

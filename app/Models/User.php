@@ -36,8 +36,8 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'id', 'email', 'alternate_email', 'password', 'first_name', 'last_name',
-        'address1', 'address2', 'city', 'state', 'zip', 'phone', 'client_id',
+        'email', 'alternate_email', 'password', 'first_name', 'last_name',
+        'address1', 'address2', 'city', 'state', 'zip', 'phone',
         'manager', 'classification_id', 'home_location_id', 'start_date', 'end_date',
         'termination_date', 'job_title', 'access_token',
     ];
@@ -61,6 +61,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_cape_and_bay_user' => 'boolean',
     ];
 
     /**
@@ -79,7 +80,7 @@ class User extends Authenticatable
      */
     public function currentTeam()
     {
-        if (is_null($this->current_team_id) && $this->id) {
+        if (is_null($this->current_team_id)) {
             $default_team = $this->default_team()->first();
             $team_record = Team::find($default_team->value);
             $this->switchTeam($team_record);
@@ -87,6 +88,56 @@ class User extends Authenticatable
         }
 
         return $this->belongsTo(Jetstream::teamModel(), 'current_team_id');
+    }
+
+    /**
+     * Switch the user's context to the given team.
+     *
+     * @param mixed $team
+     * @return bool
+     */
+    public function switchTeam(Team $team)
+    {
+        if (! $this->belongsToTeam($team)) {
+            return false;
+        }
+
+        $this->forceFill([
+            'current_team_id' => $team->id,
+        ])->save();
+
+        $this->setRelation('currentTeam', $team);
+
+        session([
+            'current_team' => [
+                'id' => $team->id,
+                'name' => $team->name,
+                'client_id' => $team->client_id,
+            ],
+        ]);
+        session(['current_client_id' => $team->client_id]);
+
+        return true;
+    }
+
+    /**
+     * Determine if the user belongs to the given team.
+     *
+     * @param  mixed  $team
+     * @return bool
+     */
+    public function belongsToTeam($team)
+    {
+        if (is_null($team)) {
+            return false;
+        }
+
+//        if($this->ownsTeam($team)){
+//            return true;
+//        }
+        return $this->teams->contains(function ($t) use ($team) {
+            return $t->id === $team->id;
+        });
     }
 
     public function allLocations()
@@ -103,12 +154,7 @@ class User extends Authenticatable
 
     public function currentClientId()
     {
-        return is_null($this->currentTeam->client) ? null : $this->currentTeam->client->id;
-    }
-
-    public function isClientUser()
-    {
-        return $this->client_id !== null;
+        return $this->client_id ?? $this->currentTeam->client->id ?? null;
     }
 
     public function client()
@@ -116,21 +162,39 @@ class User extends Authenticatable
         return $this->belongsTo(Client::class);
     }
 
-    public function isCapeAndBayUser()
-    {
-        return $this->teams()->get()->contains('id', 1);//ID1 = CapeAndBayAdminTeam
-    }
-
     /**
      * If user is AccountOwner of the currentTeam
      * @return bool
      */
+//    public function isAccountOwner()
+//    {
+//        $current_team_id = $this->currentTeam()->first()->id ?? null;
+//        $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
+//
+//        return $current_team ? $current_team->pivot->role === 'Account Owner' : false;
+//    }
+
+    public function isClientUser()
+    {
+        return $this->client_id !== null;
+    }
+
+    /**
+     * If user is an AccountOwner of the currentClient
+     * @return bool
+     */
     public function isAccountOwner()
     {
-        $current_team_id = $this->currentTeam()->first()->id ?? null;
-        $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
+        return $this->inSecurityGroup(SecurityGroupEnum::ACCOUNT_OWNER);
+    }
 
-        return $current_team ? $current_team->pivot->role === 'Account Owner' : false;
+    /**
+     * If user is an AccountOwner of the currentClient
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->inSecurityGroup(SecurityGroupEnum::ADMIN);
     }
 
     public function details()
@@ -160,7 +224,12 @@ class User extends Authenticatable
 
     public function teams()
     {
-        return $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
+        $teams = $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
+        if (! $this->client_id) {
+            $teams = $teams->withoutGlobalScopes();
+        }
+
+        return $teams;
     }
 
     public function default_team()
@@ -182,7 +251,8 @@ class User extends Authenticatable
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('phone', 'like', '%' . $search . '%')
                     ->orWhere('address1', 'like', '%' . $search . '%')
@@ -260,11 +330,25 @@ class User extends Authenticatable
 
     public function getNameAttribute()
     {
-        return $this->first_name.' '.$this->last_name;
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getIsManagerAttribute()
     {
         return $this->manager !== null && $this->manager !== '';
+    }
+
+    /**
+
+     * Get all of the teams the user owns or belongs to.
+
+     *
+
+     * @return \Illuminate\Support\Collection
+
+     */
+    public function allTeams()
+    {
+        return $this->teams->sortBy('name');
     }
 }

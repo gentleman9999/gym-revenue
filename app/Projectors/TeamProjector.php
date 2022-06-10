@@ -17,11 +17,14 @@ class TeamProjector extends Projector
         $team_table_data = array_filter($event->payload, function ($key) {
             return in_array($key, (new Team())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
-        //TODO: lookup an account owner instead of using Angel's hardcoded id
-        if (! array_key_exists('user_id', $team_table_data)) {
-            $team_table_data['user_id'] = 1;
+        $team = new Team();
+        $team->fill($team_table_data);
+        $team->id = $event->aggregateRootUuid();
+        $team->client_id = $event->payload['client_id'] ?? null;
+        $team->save();
+        foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
+            TeamDetail::create(['team_id' => $event->aggregateRootUuid(), 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
         }
-        $team = Team::create($team_table_data);
     }
 
     public function onTeamDeleted(TeamDeleted $event)

@@ -149,11 +149,11 @@ class LocationsController extends Controller
 
         if ((! is_null($client_id))) {
             $current_team = request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
-            $default_team_name = $client->default_team_name->value;
+            $client = Client::find($client_id);
+
 
             // The active_team is the current client's default_team (gets all the client's locations)
-            if ($current_team->id == $default_team_name) {
+            if ($current_team->id == $client->home_team_id) {
                 $results = Location::whereClientId($client_id);
             } else {
                 // The active_team is not the current client's default_team

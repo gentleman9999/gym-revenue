@@ -2,14 +2,18 @@
 
 namespace App\Providers;
 
-use App\Actions\Jetstream\AddTeamMember;
-use App\Actions\Jetstream\CreateTeam;
-use App\Actions\Jetstream\DeleteTeam;
-use App\Actions\Jetstream\DeleteUser;
-use App\Actions\Jetstream\InviteTeamMember;
-use App\Actions\Jetstream\RemoveTeamMember;
-use App\Actions\Jetstream\UpdateTeamName;
+use App\Actions\Teams\AddTeamMember;
+use App\Actions\Teams\CreateTeam;
+use App\Actions\Teams\DeleteTeam;
+use App\Actions\Teams\InviteTeamMember;
+use App\Actions\Teams\RemoveTeamMember;
+use App\Actions\Teams\UpdateTeamName;
+use App\Actions\Users\DeleteUser;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
 use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -40,6 +44,23 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::removeTeamMembersUsing(RemoveTeamMember::class);
         Jetstream::deleteTeamsUsing(DeleteTeam::class);
         Jetstream::deleteUsersUsing(DeleteUser::class);
+        Fortify::authenticateUsing(function (Request $request) {
+            //Call withoutGlobalScopes so we don't try to apply client_id on login
+            $user = User::withoutGlobalScopes()->where('email', $request->email)->first();
+
+            if ($user &&
+                Hash::check($request->password, $user->password)) {
+                //Successfull CRM Auth -
+                //Let's set some info in our cookie session so we
+                // can use it in middleware / global scopes
+                // without having to hit the db
+                session(['user_id' => $user->id]);
+                session(['client_id' => $user->client_id]);
+                session(['current_client_id' => $user->currentClientId()]);
+
+                return $user;
+            }
+        });
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Clients\Traits\Actions;
 
+use App\Models\User;
 use App\StorableEvents\Clients\Activity\Users\ClientUserStoppedBeingImpersonated;
 use App\StorableEvents\Clients\Activity\Users\ClientUserWasImpersonated;
 use App\StorableEvents\Clients\Users\UserCreated;
@@ -10,9 +11,10 @@ use App\StorableEvents\Clients\Users\UserUpdated;
 
 trait ClientUserActions
 {
-    public function createUser(string $created_by_user_id, array $payload)
+    public function createUser(array $payload, User | string | null $created_by_user)
     {
-        $this->recordThat(new UserCreated($this->uuid(), $created_by_user_id, $payload));
+        $created_by_user_id = $created_by_user->id ?? $created_by_user;
+        $this->recordThat(new UserCreated($payload, $created_by_user_id));
 
         return $this;
     }

@@ -7,43 +7,6 @@
         </template>
 
         <template #form>
-            <div class="col-span-6">
-                <jet-label value="Team Owner" />
-
-                <div class="flex items-center mt-2">
-                    <img
-                        class="object-cover w-12 h-12 rounded-full"
-                        :src="
-                            operation === 'Create'
-                                ? $page.props.user.profile_photo_url
-                                : team.owner.profile_photo_url
-                        "
-                        :alt="
-                            operation === 'Create'
-                                ? $page.props.user.name
-                                : team.owner.name
-                        "
-                    />
-
-                    <div class="ml-4 leading-tight">
-                        <div>
-                            {{
-                                operation === "Create"
-                                    ? $page.props.user.name
-                                    : team.owner.name
-                            }}
-                        </div>
-                        <div class="text-sm">
-                            {{
-                                operation === "Create"
-                                    ? $page.props.user.email
-                                    : team.owner.email
-                            }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Team Name" />
                 <input
@@ -130,8 +93,6 @@ export default defineComponent({
             team = {
                 client_id: page.props.value.user?.current_client_id,
                 name: "",
-                user_id: page.props.value.user.id,
-                personal_team: false,
                 locations: [],
             };
             operation = "Create";

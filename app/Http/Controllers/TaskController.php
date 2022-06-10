@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
+use App\Models\Endusers\Lead;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
@@ -73,7 +74,7 @@ class TaskController extends Controller
             'tasks' => $tasks,
             'client_id' => $client_id,
             'client_users' => [],
-            'lead_users' => [],
+            'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,

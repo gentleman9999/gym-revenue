@@ -1,16 +1,19 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Actions\Users;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Models\User;
+use function bcrypt;
+use function dd;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+use function request;
 
 class UpdateUser implements UpdatesUserProfileInformation
 {
@@ -25,7 +28,6 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function rules()
     {
         return [
-            'id' => ['required', 'integer', 'exists:users,id'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.request()->id],
@@ -51,25 +53,25 @@ class UpdateUser implements UpdatesUserProfileInformation
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle($id, array $payload, $current_user = null)
     {
         $client_id = $current_user->currentClientId();
 
-        if (array_key_exists('password', $data)) {
-            $data['password'] = bcrypt($data['password']);
+        if (array_key_exists('password', $payload)) {
+            $payload['password'] = bcrypt($payload['password']);
         }
 
-        if (array_key_exists('role_id', $data)) {
-            $data['role'] = $data['role_id'];
+        if (array_key_exists('role_id', $payload)) {
+            $payload['role'] = $payload['role_id'];
         }
 
 
-        UserAggregate::retrieve($data['id'])->updateUser($current_user->id ?? "Auto Generated", $data)->persist();
+        UserAggregate::retrieve($id)->updateUser($payload, $current_user)->persist();
         if ($client_id) {
-            ClientAggregate::retrieve($client_id)->updateUser($current_user->id, $data)->persist();
+            ClientAggregate::retrieve($client_id)->updateUser($current_user->id, $payload)->persist();
         }
 
-        return User::find($data['id']);
+        return User::find($payload['id']);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -79,9 +81,11 @@ class UpdateUser implements UpdatesUserProfileInformation
         return $current_user->can('users.update', User::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, User $user)
     {
+        dd(123);
         $user = $this->handle(
+            $user->id,
             $request->validated(),
             $request->user(),
         );

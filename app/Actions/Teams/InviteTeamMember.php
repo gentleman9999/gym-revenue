@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Actions\Jetstream;
+namespace App\Actions\Teams;
 
+use function __;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;

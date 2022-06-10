@@ -101,7 +101,6 @@ class UserAggregate extends AggregateRoot
     {
         $this->teams[$event->team] = [
             'team_id' => $event->team,
-            'team_name' => $event->name,
             'client_id' => $event->client,
         ];
     }
@@ -222,9 +221,10 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function createUser(string $created_by_user_id, array $payload)
+    public function createUser(array $payload, User | string | null $created_by_user)
     {
-        $this->recordThat(new UserCreated($this->uuid(), $created_by_user_id, $payload));
+        $created_by_user_id = $created_by_user->id ?? $created_by_user;
+        $this->recordThat(new UserCreated($payload, $created_by_user_id));
 
         return $this;
     }

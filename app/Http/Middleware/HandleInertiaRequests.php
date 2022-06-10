@@ -66,7 +66,6 @@ class HandleInertiaRequests extends Middleware
                 }),
 
             ];
-
             if (session()->has(config('laravel-impersonate.session_key'))) {
                 $shared['user.is_being_impersonated'] = session()->get(config('laravel-impersonate.session_key'));
             }

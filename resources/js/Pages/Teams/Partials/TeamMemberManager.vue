@@ -120,7 +120,7 @@
                         <div
                             class="flex items-center justify-between"
                             v-for="user in team.users.filter(
-                                (user) => user.id !== team.owner.id
+                                (user) => user.id !== team.owner?.id
                             )"
                             :key="user.id"
                         >
@@ -490,9 +490,7 @@ export default defineComponent({
             //now remove team users and account owner from availableUsers;
             const availableUsersToJoinTeam =
                 this.availableUsers?.filter(
-                    (user) =>
-                        !this.userIds.includes(user.id) &&
-                        user.id !== this.team.owner.id
+                    (user) => !this.userIds.includes(user.id)
                 ) || [];
             return availableUsersToJoinTeam || [];
         },

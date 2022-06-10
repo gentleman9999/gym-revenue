@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Actions\Fortify\CreateUser;
+use App\Actions\Users\CreateUser;
 use App\Models\Clients\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

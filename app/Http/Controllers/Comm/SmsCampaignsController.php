@@ -24,7 +24,7 @@ class SmsCampaignsController extends Controller
         if ((! is_null($client_id))) {
             // Get the current client or its cape and bay
             $current_team = request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::find($client_id);
 
             // Get the correct Model
             $campaign_model = ($type == 'email') ? new EmailCampaigns() : new SmsCampaigns();
