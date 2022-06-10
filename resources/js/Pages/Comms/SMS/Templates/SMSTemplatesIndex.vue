@@ -57,7 +57,6 @@ import { Inertia } from "@inertiajs/inertia";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
-import ConfirmSendModal from "@/Components/SweetModal3/SweetModal";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 
@@ -77,7 +76,6 @@ export default defineComponent({
         FontAwesomeIcon,
         Confirm,
         GymRevenueCrud,
-        ConfirmSendModal,
         ConfirmSendForm,
     },
     props: ["title", "filters", "templates"],

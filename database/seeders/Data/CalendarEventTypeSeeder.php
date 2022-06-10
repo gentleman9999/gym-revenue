@@ -38,7 +38,7 @@ class CalendarEventTypeSeeder extends Seeder
                     foreach ($types as $type) {
                         $payload = [
                             'client_id' => $client->id,
-                            'name' => $type['name'].' Event Type for '.$client->name,
+                            'name' => $type['name'],
                             'description' => $type['name'].' Event Type for '.$client->name,
                             'type' => $type['name'],
                             'color' => $type['color'],

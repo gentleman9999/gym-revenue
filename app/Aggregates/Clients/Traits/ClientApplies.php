@@ -123,11 +123,11 @@ trait ClientApplies
     {
         $history = [
             'type' => 'Email Template Created',
-            'template_id' => $event->template,
+            'template_id' => $event->data['id'],
             'model' => EmailTemplates::class,
             'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
         ];
-        $history['by'] = ($event->created == 'auto') ? 'Auto Generated' : $event->created;
+        $history['by'] = $event->user;
         $this->comm_history[] = $history;
     }
 
@@ -135,11 +135,11 @@ trait ClientApplies
     {
         $history = [
             'type' => 'Email Template Updated',
-            'template_id' => $event->template,
+            'template_id' => $event->data['id'],
             'model' => EmailTemplates::class,
             'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
         ];
-        $history['by'] = $event->updated;
+        $history['by'] = $event->user;
         $this->comm_history[] = $history;
     }
 

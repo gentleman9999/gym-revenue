@@ -1,6 +1,7 @@
 <template>
     <div class="wrapper">
         <slot name="pre" />
+        <slot name="title"></slot>
         <div class="tablehead">
             <table>
                 <thead>

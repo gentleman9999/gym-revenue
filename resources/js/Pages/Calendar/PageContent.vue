@@ -8,7 +8,13 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-row items-center gap-4 mb-4">
                 <h1 class="text text-xl mr-8">Calendar</h1>
-                <h2 class="text text-xl font-bold">{{ title }}</h2>
+                <h2
+                    class="text text-xl font-bold cursor-pointer flex flex-row"
+                    @click="showDateSelectModal"
+                >
+                    {{ title }}
+                    <arrow-icon direction="right" class="ml-2 items-center" />
+                </h2>
                 <div class="flex-grow" />
                 <!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
                 <!--                    New Event-->
@@ -40,6 +46,7 @@
                         <option
                             v-for="{ name, id } in client_users"
                             :value="id"
+                            :key="id"
                         >
                             {{ name }}
                         </option>
@@ -58,6 +65,7 @@
                         <option
                             v-for="{ name, id } in calendar_event_types"
                             :value="id"
+                            :key="id"
                         >
                             {{ name }}
                         </option>
@@ -78,6 +86,32 @@
                 </simple-search-filter>
             </div>
 
+            <daisy-modal
+                ref="dateSelect"
+                id="dateSelect"
+                class="bg-base-300 rounded-lg"
+            >
+                <div class="flex flex-col space-y-4">
+                    <h1 class="text text-base-content text-xl pb-2">
+                        Pick a Date
+                    </h1>
+                    <date-picker
+                        dark
+                        :weekPicker="currentView === 'timeGridWeek'"
+                        :monthPicker="currentView === 'dayGridMonth'"
+                        :auto-apply="true"
+                        :modelValue="selectedDate"
+                        @update:modelValue="onSelectDate"
+                    />
+                    <Button
+                        class="self-end"
+                        size="xs"
+                        secondary
+                        @click="hideDateSelectModal"
+                        >Close</Button
+                    >
+                </div>
+            </daisy-modal>
             <FullCalendar :options="calendarOptions" ref="calendar" />
         </div>
     </app-layout>
@@ -87,7 +121,7 @@
 import { computed, defineComponent, ref, watchEffect } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import { Inertia } from "@inertiajs/inertia";
 import "@fullcalendar/core/vdom"; // solves problem with Vite
 import FullCalendar from "@fullcalendar/vue3";
@@ -99,6 +133,10 @@ import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
+import ArrowIcon from "@/Components/Icons/Arrow";
+import DatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import Button from "@/Components/Button";
 
 export default defineComponent({
     components: {
@@ -106,9 +144,13 @@ export default defineComponent({
         CalendarEventForm,
         AppLayout,
         GymRevenueCrud,
-        SweetModal,
+        DaisyModal,
         FullCalendar,
         PageToolbarNav,
+        DaisyModal,
+        DatePicker,
+        ArrowIcon,
+        Button,
     },
     props: [
         "sessions",
@@ -134,13 +176,19 @@ export default defineComponent({
         const currentView = ref("timeGridWeek");
         const start = ref(null);
         const end = ref(null);
+        const selectedDate = ref(null);
 
-        const title = computed(() =>
-            start.value?.toLocaleString("default", {
-                month: "long",
+        const title = computed(() => {
+            let option = {
                 year: "numeric",
-            })
-        );
+                month: "long",
+            };
+            if (currentView.value === "timeGridDay") {
+                option["day"] = "numeric";
+            }
+
+            return start.value?.toLocaleString("default", option);
+        });
 
         const handleClickNewEvent = () => {
             props.toggleSwitch();
@@ -236,6 +284,27 @@ export default defineComponent({
             },
         ];
 
+        const dateSelect = ref();
+        const showDateSelectModal = () => {
+            if (currentView.value !== "timeGridWeek") {
+                selectedDate.value = start.value;
+            }
+            dateSelect.value.open();
+        };
+        const hideDateSelectModal = () => {
+            dateSelect.value.close();
+        };
+        const onSelectDate = (modelData) => {
+            selectedDate.value = modelData;
+            if (currentView.value !== "timeGridWeek") {
+                start.value = modelData;
+                calendar.value.getApi().gotoDate(start.value);
+            } else {
+                console.log(modelData[0]);
+                start.value = modelData[0];
+                calendar.value.getApi().gotoDate(start.value);
+            }
+        };
         return {
             Inertia,
             calendarOptions: {
@@ -411,6 +480,12 @@ export default defineComponent({
             currentView,
             handleChangeView,
             title,
+            start,
+            dateSelect,
+            showDateSelectModal,
+            selectedDate,
+            onSelectDate,
+            hideDateSelectModal,
         };
     },
 });

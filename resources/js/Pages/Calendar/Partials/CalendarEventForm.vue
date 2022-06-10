@@ -22,7 +22,14 @@
                 />
                 <jet-input-error :message="form.errors.start" class="mt-2" />
             </div>
-            <div>Project Status</div>
+            <div v-if="calendar_event?.event_completion == null">
+                Project Status:
+                <div class="badge badge-error gap-2">incomplete</div>
+            </div>
+            <div v-else>
+                Project Status:
+                <div class="badge badge-success gap-2">complete</div>
+            </div>
         </div>
         <div class="flex flex-col">
             <jet-label
@@ -315,8 +322,8 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import DatePicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/dist/main.css";
+import DatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
 import FilesForm from "@/Pages/Calendar/Partials/FilesForm";

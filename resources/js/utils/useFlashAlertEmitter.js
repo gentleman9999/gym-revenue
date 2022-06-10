@@ -7,14 +7,10 @@ export const useFlashAlertEmitter = () => {
 
     const alerts = ref(flash.value.alerts);
 
-    //we compare json here to prevent double display of the alert
+    //we compare json here to try and prevent double display of the alert. but it doesn't work.
     watchEffect(() => {
         const newAlert = flash.value.alerts;
         if (JSON.stringify(alerts.value) !== JSON.stringify(newAlert)) {
-            console.log({
-                oldAlert: JSON.stringify(alerts.value),
-                newAlert: JSON.stringify(newAlert),
-            });
             alerts.value = newAlert;
         }
     });
