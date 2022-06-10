@@ -51,7 +51,7 @@
                 </button>
             </div>
             <button
-                v-if="!visible"
+                :disabled="visible"
                 class="toggle-filters"
                 @click="toggleFilterDrawer"
             >
@@ -64,6 +64,8 @@
 
 <style>
 .filter-drawer #filters-open {
+    @apply h-full overflow-hidden overflow-y-scroll;
+
     .form-control {
         @apply mt-2;
     }
@@ -130,6 +132,10 @@ select {
 
 .filter-drawer-open {
     @apply bg-transparent rounded-none;
+
+    button.toggle-filters {
+        @apply opacity-0 transition-all;
+    }
 }
 
 button.filter-open {
