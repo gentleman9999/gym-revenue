@@ -52,8 +52,6 @@ class ReadLeads
             $request->validated(),
         );
 
-        if ($request->wantsJson()) {
-            return $leads;
-        }
+        return $leads;
     }
 }

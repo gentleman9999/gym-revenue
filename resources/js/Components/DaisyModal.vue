@@ -10,13 +10,13 @@
                     type="button"
                     class="btn btn-ghost absolute top-2 right-2"
                     @click="close"
-                    v-if="closable"
+                    v-if="closable && showCloseButton"
                 >
                     x
                 </button>
 
                 <slot />
-                <template v-if="$slots.footer">
+                <template v-if="$slots?.actions">
                     <div class="modal-action">
                         <slot name="actions"></slot>
                     </div>
@@ -27,15 +27,17 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, onMounted } from "vue";
+import {
+    defineComponent,
+    ref,
+    watchEffect,
+    onMounted,
+    onBeforeUnmount,
+} from "vue";
 import { useLockScroll } from "vue-composable";
 
 export default defineComponent({
     props: {
-        id: {
-            type: String,
-            required: true,
-        },
         open: {
             type: Boolean,
             default: false,
@@ -44,10 +46,18 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        showCloseButton: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props, { emit }) {
         const { locked, lock, unlock } = useLockScroll("body", "no-scroll");
-        onMounted(unlock); //todo: use another package or roll pour own lock scroll. we shouldn't have to call unlock on mount
+        onMounted(() => {
+            if (!props.open) {
+                unlock();
+            }
+        }); //todo: use another package or roll pour own lock scroll. we shouldn't have to call unlock on mount
 
         const isOpen = ref(!!props.open);
 
@@ -72,6 +82,7 @@ export default defineComponent({
                 open();
             } else {
                 close();
+                emit("close");
             }
         });
 
@@ -83,7 +94,12 @@ export default defineComponent({
             }
         });
 
+        onBeforeUnmount(() => {
+            unlock();
+        });
+
         return { isOpen, close, open };
     },
+    emits: ["close", "open"],
 });
 </script>

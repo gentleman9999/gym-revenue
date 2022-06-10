@@ -9,7 +9,7 @@ use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 
 trait ClientSMSTemplateActions
 {
-    public function createNewSMSTemplate(string $template_id, string $created_by = null)
+    public function createSMSTemplate(string $template_id, string $created_by = null)
     {
         $this->recordThat(new SMSTemplateCreated($this->uuid(), $template_id, $created_by));
 

@@ -2,17 +2,14 @@
 
 namespace App\Models\Comms;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Traits\Sortable;
 use App\Models\User;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
 
 class EmailTemplates extends Model
 {
-    use Notifiable;
     use SoftDeletes;
     use Uuid;
     use Sortable;
@@ -23,34 +20,24 @@ class EmailTemplates extends Model
 
     public $incrementing = false;
 
-    protected $fillable = [ 'client_id',
-        'name', 'markup', 'subject', 'active', 'team_id', 'created_by_user_id',
+    protected $fillable = [
+        'id', 'client_id', 'name', 'markup', 'subject',
+        'json', 'active', 'team_id', 'created_by_user_id',
+        'thumbnail',
     ];
 
-    // @todo - model boot created - aggy to set in client_details and email_template_details that it was auto generated ('auto' created_by_user_id)
+    protected $casts = [
+        'json' => 'array',
+    ];
+
     protected static function booted()
     {
-        static::created(function ($template) {
-            if (! is_null($template->client_id)) {
-                ClientAggregate::retrieve($template->client_id)
-                    ->createNewEmailTemplate($template->id, $template->created_by_user_id)
-                    ->persist();
-            } else {
-                $detail = EmailTemplateDetails::create([
-                    'email_template_id' => $template->id,
-                    'detail' => 'created',
-                    'value' => $template->created_by_user_id,
-                ]);
-                if ($template->created_by_user_id == 'auto') {
-                    $detail->misc = ['msg' => 'Template was auto-generated'];
-                } else {
-                    $user = User::find($template->created_by_user_id);
-                    $detail->misc = ['msg' => 'Template was created by '.$user->name.' on '.date('Y-m-d')];
-                }
+        static::updating(function ($model) {
+            if ($model->getOriginal()['markup'] !== $model->markup) {
+                //markup changed, so reset the thumbnail
+                $model->thumbnail = null;
             }
         });
-
-        // @todo - model boot updated - aggy to set in client_details and email_template_details that it was auto generated ('auto' created_by_user_id)
     }
 
     public function scopeFilter($query, array $filters)

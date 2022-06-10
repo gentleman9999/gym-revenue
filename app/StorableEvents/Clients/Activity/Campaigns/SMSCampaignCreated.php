@@ -2,8 +2,8 @@
 
 namespace App\StorableEvents\Clients\Activity\Campaigns;
 
-use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 
-class SMSCampaignCreated extends EmailTemplateCreated
+class SMSCampaignCreated extends SMSTemplateCreated
 {
 }

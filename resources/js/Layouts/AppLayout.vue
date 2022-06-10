@@ -56,6 +56,17 @@
             </div>
         </div>
     </div>
+    <InertiaModal>
+        <template #default="{ close, props }">
+            <DaisyModal
+                v-bind="props /* props contains the modalProps option */"
+                :open="true"
+                @close="close"
+            >
+                <ModalSlot />
+            </DaisyModal>
+        </template>
+    </InertiaModal>
 </template>
 
 <style>
@@ -82,6 +93,8 @@ import SideNav from "@/Components/Navigation/SideNav";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 import NotyBell from "@/Components/NotyBell";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
+import DaisyModal from "@/Components/DaisyModal";
+import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 // import tailwindConfig from '../../../tailwind.config.js'
 // import {
 //     setBreakpointTailwindCSS,
@@ -90,6 +103,7 @@ import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 
 export default defineComponent({
     components: {
+        DaisyModal,
         Head,
         Link,
         JetBarNavigationMenu,
@@ -100,6 +114,8 @@ export default defineComponent({
         NotyBell,
         TopNav,
         SideNav,
+        InertiaModal,
+        ModalSlot,
     },
     props: {
         title: String,

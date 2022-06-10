@@ -1,43 +1,30 @@
 <template>
-    <sweet-modal
-        :title="title"
-        :width="width"
-        overlayTheme="dark"
-        modal-theme="dark"
-        hideCloseButton
-        ref="modal"
-    >
+    <daisy-modal id="confirmModal" ref="confirmModal" :closable="false">
         <slot />
-        <template #button>
-            <slot name="cancelButton">
-                <button
-                    @click="
-                        emit('cancel');
-                        modal.close();
-                    "
-                    class="btn btn-error hover:text-white"
-                >
-                    Cancel
-                </button>
-            </slot>
-            <slot name="confirmButton">
-                <button
-                    @click="
-                        emit('confirm');
-                        modal.close();
-                    "
-                    class="btn btn-success hover:text-white ml-2"
-                >
-                    Confirm
-                </button>
-            </slot>
-        </template>
-    </sweet-modal>
+
+        <div class="flex w-full justify-between mt-8">
+            <button
+                @click="handleClickCancel"
+                class="btn btn-error hover:text-white"
+            >
+                Cancel
+            </button>
+
+            <button
+                @click="handleClickConfirm"
+                class="btn btn-success hover:text-white ml-2"
+            >
+                Confirm
+            </button>
+        </div>
+    </daisy-modal>
 </template>
 <script>
 import { defineComponent, ref, onMounted } from "vue";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
+
 export default defineComponent({
+    components: { DaisyModal },
     props: {
         title: {
             type: String,
@@ -49,14 +36,36 @@ export default defineComponent({
             default: "85%",
         },
     },
-    emits: ["confirm"],
-    components: { SweetModal },
     setup(props, { emit }) {
-        const modal = ref(null);
+        const confirmModal = ref(null);
+
+        const handleModalClosed = () => {
+            emit("cancel");
+            console.log("CLOSE ME!");
+        };
+
+        const handleClickCancel = () => {
+            confirmModal.value?.close();
+            emit("cancel");
+        };
+
+        const handleClickConfirm = () => {
+            confirmModal.value.close();
+            emit("confirm");
+        };
+
         onMounted(() => {
-            modal.value.open();
+            confirmModal.value.open();
         });
-        return { modal, emit };
+
+        return {
+            confirmModal,
+            emit,
+            handleClickCancel,
+            handleClickConfirm,
+            handleModalClosed,
+        };
     },
+    emits: ["confirm"],
 });
 </script>

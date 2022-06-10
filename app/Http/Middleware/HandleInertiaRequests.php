@@ -3,9 +3,11 @@
 namespace App\Http\Middleware;
 
 use App\Models\Utility\AppState;
+use Closure;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Prologue\Alerts\Facades\Alert;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -94,5 +96,22 @@ class HandleInertiaRequests extends Middleware
 ////        $shared[ 'flash'] = ['selectedLeadDetailIndex'=>$request->session()->get('selectedLeadDetailIndex')];
 //        $shared['flash']['foo'] = 'bar';
 //        return array_merge(parent::share($request), $shared);
+    }
+
+    //This code makes redirects worth with inertia modals
+    public function handle(Request $request, Closure $next)
+    {
+        $response = parent::handle($request, $next);
+
+        if ($response instanceof RedirectResponse && $request->hasHeader('X-Inertia-Modal-Redirect-Back')) {
+//            dd($response);
+            return back(303);
+        }
+
+        if ($request->hasHeader('X-Inertia-Modal')) {
+            $response->headers->set('X-Inertia-Modal', $request->header('X-Inertia-Modal'));
+        }
+
+        return $response;
     }
 }

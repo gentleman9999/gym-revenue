@@ -35,21 +35,17 @@
                 },
             }"
         />
-        <sweet-modal
-            title="Rename File"
-            width="85%"
-            overlayTheme="dark"
-            modal-theme="dark"
-            enable-mobile-fullscreen
-            ref="modal"
+        <daisy-modal
+            id="filenameModal"
+            ref="filenameModal"
             @close="selectedFile = null"
         >
             <file-form
                 :file="selectedFile"
                 v-if="selectedFile"
-                @success="modal.close"
+                @success="filenameModal.close"
             />
-        </sweet-modal>
+        </daisy-modal>
 
         <daisy-modal
             ref="permissionsModal"
@@ -78,7 +74,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import FileForm from "./Partials/FileForm";
 import PermissionsForm from "./Partials/PermissionsForm";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
 import FileDataCard from "./Partials/FileDataCard";
 import FilenameField from "./Partials/FilenameField";
 import { Inertia } from "@inertiajs/inertia";
@@ -88,7 +83,6 @@ export default defineComponent({
     components: {
         AppLayout,
         GymRevenueCrud,
-        SweetModal,
         FileForm,
         DaisyModal,
         PermissionsForm,
@@ -97,11 +91,13 @@ export default defineComponent({
     setup() {
         const selectedFile = ref(null);
         const selectedFilePermissions = ref(null);
-        const modal = ref(null);
+
+        const filenameModal = ref(null);
         const permissionsModal = ref(null);
+
         watchEffect(() => {
             if (selectedFile.value) {
-                modal.value.open();
+                filenameModal.value.open();
             }
             if (selectedFilePermissions.value) {
                 permissionsModal.value.open();
@@ -115,7 +111,7 @@ export default defineComponent({
             "updated_at",
         ];
         return {
-            modal,
+            filenameModal,
             selectedFile,
             permissionsModal,
             selectedFilePermissions,

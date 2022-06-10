@@ -11,8 +11,6 @@ use App\Models\Clients\Features\EmailCampaignDetails;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaignDetails;
 use App\Models\Clients\Features\SmsCampaigns;
-use App\Models\Comms\EmailTemplateDetails;
-use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplateDetails;
@@ -40,8 +38,6 @@ use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampai
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
-use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
-use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\PrefixCreated;
@@ -98,65 +94,6 @@ class ClientAccountProjector extends Projector
                 ->addUserToTeam($team->id, $team->name, $team_client_id)
                 ->persist();
         }
-    }
-
-    public function onEmailTemplateCreated(EmailTemplateCreated $event)
-    {
-        // Make Email Details Record
-        $template = EmailTemplates::find($event->template);
-        $detail = EmailTemplateDetails::create([
-            'email_template_id' => $event->template,
-            'client_id' => $event->client,
-            'detail' => 'created',
-            'value' => $event->created,
-        ]);
-        if ($event->created == 'auto') {
-            $detail->misc = ['msg' => 'Template was auto-generated'];
-        } else {
-            $user = User::find($event->created);
-            $detail->misc = ['msg' => 'Template was created by ' . $user->name . ' on ' . date('Y-m-d')];
-        }
-
-        // also set the email provider gateway slug
-        EmailTemplateDetails::create([
-            'email_template_id' => $event->template,
-            'client_id' => $event->client,
-            'detail' => 'email_gateway',
-            'value' => 'default_cnb',
-            'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.'],
-        ]);
-
-        // make client_details record
-        ClientDetail::create([
-            'client_id' => $event->client,
-            'detail' => 'email_template',
-            'value' => $template->id,
-        ]);
-
-        /*
-        ClientDetail::create([
-            'client_id' => $event->client,
-            'detail' => 'email_gateway',
-            'value' => 'default_cnb',
-            'misc' => ['msg' => 'The Email Provider was set to CnB Mailgun and will be billed.']
-        ]);
-        */
-    }
-
-    public function onEmailTemplateUpdated(EmailTemplateUpdated $event)
-    {
-        $user = User::find($event->updated);
-        EmailTemplateDetails::create([
-            'email_template_id' => $event->template,
-            'client_id' => $event->client,
-            'detail' => 'updated',
-            'value' => $event->updated,
-            'misc' => [
-                'old' => $event->old,
-                'new' => $event->new,
-                'msg' => 'Template was updated by ' . $user->name . ' on ' . date('Y-m-d'),
-            ],
-        ]);
     }
 
     public function onEmailCampaignCreated(EmailCampaignCreated $event)

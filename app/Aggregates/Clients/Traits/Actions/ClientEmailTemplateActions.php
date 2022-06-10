@@ -5,20 +5,28 @@ namespace App\Aggregates\Clients\Traits\Actions;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailTemplateUnAssignedFromEmailCampaign;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use App\StorableEvents\Clients\Comms\EmailTemplateThumbnailUpdated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 
 trait ClientEmailTemplateActions
 {
-    public function createNewEmailTemplate(string $template_id, string $created_by = null)
+    public function createEmailTemplate(string $created_by_user_id, array $payload)
     {
-        $this->recordThat(new EmailTemplateCreated($this->uuid(), $template_id, $created_by));
+        $this->recordThat(new EmailTemplateCreated($this->uuid(), $created_by_user_id, $payload));
 
         return $this;
     }
 
-    public function updateEmailTemplate(string $template_id, string $updated_by, array $old_vals, array $new_vals)
+    public function updateEmailTemplate(string $updated_by_user_id, array $payload)
     {
-        $this->recordThat(new EmailTemplateUpdated($this->uuid(), $template_id, $updated_by, $old_vals, $new_vals));
+        $this->recordThat(new EmailTemplateUpdated($this->uuid(), $updated_by_user_id, $payload));
+
+        return $this;
+    }
+
+    public function setEmailTemplateThumbnail(string $id, string $thumbnail)
+    {
+        $this->recordThat(new EmailTemplateThumbnailUpdated($this->uuid(), $id,  $thumbnail));
 
         return $this;
     }
