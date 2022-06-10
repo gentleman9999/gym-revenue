@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Clients\Client;
+use App\Models\Clients\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
@@ -80,6 +81,13 @@ class Team extends JetstreamTeam
         return $this->details()->whereName('team-location');
     }
 
+    public function default_team_details()
+    {
+        return $this->hasOne(ClientDetail::class, 'value', 'id')
+            ->where('detail', '=', 'default-team')
+            ->with('client');
+    }
+
     public static function fetchTeamIDFromName(string $name)
     {
         $model = new self();
@@ -93,7 +101,7 @@ class Team extends JetstreamTeam
 
         $record = $this->select('id')->where('name', '=', $name)->first();
 
-        if (! is_null($record)) {
+        if ($record != null) {
             $results = $record->id;
         }
 
@@ -104,6 +112,13 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(TeamUser::class, 'team_id', 'id')
             ->with('user');
+    }
+
+    public function isClientsDefaultTeam()
+    {
+        $proof = $this->default_team_details()->first();
+
+        return (! is_null($proof));
     }
 
     public function scopeFilter($query, array $filters)
@@ -129,7 +144,7 @@ class Team extends JetstreamTeam
 
         $model = self::select('name')->whereId($team_id)->first();
 
-        if (! is_null($model)) {
+        if ($model !== null) {
             $results = $model->name;
         }
 
@@ -142,7 +157,7 @@ class Team extends JetstreamTeam
 
         $model = self::select('name')->whereId($team_id)->first();
 
-        if (! is_null($model)) {
+        if ($model != null) {
             $results = $model->client_id;
         }
 

@@ -2,13 +2,11 @@
 
 namespace App\Actions\Teams;
 
-use function abort;
 use App\Models\Team;
 use App\Models\User;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use function redirect;
 
 class SwitchTeam
 {

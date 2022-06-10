@@ -29,14 +29,13 @@ class UpdateTeam
         ];
     }
 
-    public function handle(Team $team, array $payload)
+    public function handle($id, $payload)
     {
-        TeamAggregate::retrieve($team->id)->update($payload)->persist();
+        TeamAggregate::retrieve($id)->update($payload)->persist();
         $team = Team::findOrFail($id);
 
         $client_id = $team->client->id;
 
-        //TODO:this could be changed to an AttachTeamtoClient event, and fire it off here
         if ($client_id) {
             ClientAggregate::retrieve($client_id)->updateTeam($payload)->persist();
         }
@@ -54,14 +53,27 @@ class UpdateTeam
     public function asController(ActionRequest $request, Team $team)
     {
         $data = $request->validated();
+        $data['id'] = $team->id;
 
         $team = $this->handle(
-            $team,
+            $team->id,
             $data
         );
 
         Alert::success("Team '{$team->name}' was updated")->flash();
 
         return Redirect::back();
+    }
+
+    /**
+     * Delete the given team.
+     *
+     * @param  mixed  $team
+     * @return void
+     */
+    public function delete($team)
+    {
+//        $team->purge();
+        return $this->handle($team->id);
     }
 }

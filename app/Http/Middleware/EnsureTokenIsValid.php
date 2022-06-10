@@ -33,7 +33,7 @@ class EnsureTokenIsValid
 
         if ($user->isClientUser()) {
             $this->addClientIdToRequest($request, $user->client_id);
-        } elseif ($user->isCapeAndBayUser()) {
+        } elseif ($user->is_cape_and_bay_user) {
             $client_id = $request->header($this->client_header);
             if (! $client_id) {
                 return response()->json(['error' => "You must provide a Client Id via the '{$this->client_header}' header"], 400);
