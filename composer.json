@@ -31,7 +31,8 @@
         "spatie/browsershot": "^3.54",
         "spatie/laravel-event-sourcing": "^5.0",
         "tightenco/ziggy": "^1.0",
-        "twilio/sdk": "^6.31"
+        "twilio/sdk": "^6.31",
+        "wnx/sidecar-browsershot": "^1.1"
     },
     "require-dev": {
         "arielmejiadev/jetbar": "^2.0",

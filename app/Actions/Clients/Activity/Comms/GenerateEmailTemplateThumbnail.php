@@ -6,7 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Comms\EmailTemplates;
 use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Spatie\Browsershot\Browsershot;
+use Wnx\SidecarBrowsershot\BrowsershotLambda;
 
 class GenerateEmailTemplateThumbnail
 {
@@ -20,7 +20,7 @@ class GenerateEmailTemplateThumbnail
         }
         //idea - use static beforeupdate to check if html is diff, and if so, go ahead and set to null the thumbnail.
         //then, we know whether or not we need to regenerate by checking if its null
-        $thumbnail = Browsershot::html($html)
+        $thumbnail = BrowsershotLambda::html($html)
             ->setDelay(3000)//give it time to load
             ->setScreenshotType('jpeg', 90)
             ->screenshot();
