@@ -103,6 +103,9 @@
     @apply max-w-full block overflow-hidden overflow-ellipsis mx-auto my-2;
 }
 
+/**
+ * Vue Toastification Styles
+ */
 .Vue-Toastification__toast--success {
     @apply bg-success text-primary-content;
 }
