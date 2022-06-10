@@ -1,5 +1,4 @@
 require("./bootstrap");
-import "vue-toastification/dist/index.css";
 
 import { createApp, h } from "vue";
 import { createInertiaApp, Link } from "@inertiajs/inertia-vue3";

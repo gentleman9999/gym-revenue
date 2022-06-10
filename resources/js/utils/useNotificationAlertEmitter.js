@@ -31,6 +31,7 @@ export const useNotificationAlertEmitter = () => {
             timeout,
         });
 
+        // didn't delete in case above doesn't work and need to fix it (cant test yet)
         // let alert = {
         //     type: state || "info",
         //     theme: "sunset",
