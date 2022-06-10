@@ -2,6 +2,7 @@
 
 namespace App\Actions\Simulation;
 
+use App\Actions\Endusers\Leads\BatchUpsertLeadApi;
 use App\Actions\Endusers\Leads\UpsertLeadApi;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
@@ -44,15 +45,18 @@ class GenerateRandomLeads
                         $prospect->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
                         $prospect->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
                         $prospect->lead_source_id = $client->lead_sources[random_int(1, count($client->lead_sources) - 1)]->id;
-                        $prospect_data = $prospect->toArray();
 
-                        try {
-                            $lead = UpsertLeadApi::run($prospect_data);
-                            //VarDumper::dump('Success '.$client->name.'!');
-                        } catch (\Exception $e) {
-                            //VarDumper::dump('Failed: '.$e);
-                        }
+                        //test single upsert
+//                        try {
+//                            $lead = UpsertLeadApi::run($prospect->toArray());
+//                            VarDumper::dump('Success '.$client->name.'!');
+//                        } catch (\Exception $e) {
+//                            VarDumper::dump('Failed: '.$e);
+//                        }
                     }
+                    //use batch insert so we  are testing with something youfit will be using
+//
+                    BatchUpsertLeadApi::run($prospects->toArray());
                 }
             }
         }

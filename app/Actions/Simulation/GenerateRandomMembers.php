@@ -2,6 +2,7 @@
 
 namespace App\Actions\Simulation;
 
+use App\Actions\Endusers\Members\BatchUpsertMemberApi;
 use App\Actions\Endusers\Members\UpsertMemberApi;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
@@ -28,25 +29,43 @@ class GenerateRandomMembers
             VarDumper::dump($client->name);
             if (count($client->locations) > 0) {
                 foreach ($client->locations as $idx => $location) {
+                    //doing this entire block for every location is slow. let's just pick a random 50% of locations.
+                    if (rand(0, 1) > 0.5) {
+                        break;
+                    }
                     $members = Member::factory()->count(random_int(1, 5))
                         ->client_id($client->id)
                         ->gr_location_id($location->gymrevenue_id ?? '')
                         ->make();
 
+                    //this grabs all leads, no good once we have 5000  records plus per location
+//                    $leads = Lead::whereClientId($client->id)
+//                        ->whereGrLocationId($location->gymrevenue_id)
+//                        ->get();
+                    //so just grab a few random
                     $leads = Lead::whereClientId($client->id)
                         ->whereGrLocationId($location->gymrevenue_id)
+                        ->inRandomOrder()
+                        ->limit(rand(1, 3))
                         ->get();
 
                     $lead_data = $leads->toArray();
-                    $lead = $lead_data[random_int(0, count($lead_data) - 1)];
 
+                    $members_with_conversions = $lead_data;
                     foreach ($members as $member) {
                         $member_data = $member->toArray();
-                        foreach ($member_data as $key => $item) {
-                            $member_data[$key] = $lead[$key];
-                        }
-                        UpsertMemberApi::run($member_data);
+                        //this makes every single member a lead conversion.
+                        //the ticket said some, not all.
+//                        foreach ($member_data as $key => $item) {
+//                            $member_data[$key] = $lead[$key];
+//                        }
+                        //run single api upsert
+//                        UpsertMemberApi::run($member_data);
+                        $members_with_conversions[] = $member_data;
                     }
+                    //run batch insert since that what youfit will use
+//                    dd($members_with_conversions);
+                    BatchUpsertMemberApi::run($members_with_conversions);
                 }
             }
         }
