@@ -3,7 +3,6 @@
 namespace App\Actions\Simulation;
 
 use App\Actions\Endusers\Leads\BatchUpsertLeadApi;
-use App\Actions\Endusers\Leads\UpsertLeadApi;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
@@ -29,39 +28,30 @@ class GenerateRandomLeads
             ->with('trial_membership_types')
             ->get();
         foreach ($clients as $client) {
-            VarDumper::dump($client->name);
             // For each client, get all the locations
             if (count($client->locations) > 0) {
                 foreach ($client->locations as $idx => $location) {
                     // For each location, MAKE 25 users, don't create
-                    $prospects = Lead::factory()->count(random_int(1, 5))
+                    $leads = Lead::factory()->count(random_int(1, 5))
                         // over ride the client id and gr id from the factory
                         ->client_id($client->id)
                         ->gr_location_id($location->gymrevenue_id ?? '')
                         ->make();
 
                     //VarDumper::dump('Generating Leads for '.$client->name.'!');
-                    foreach ($prospects as $prospect) {
-                        $prospect->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
-                        $prospect->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
-                        $prospect->lead_source_id = $client->lead_sources[random_int(1, count($client->lead_sources) - 1)]->id;
-
-                        //test single upsert
-//                        try {
-//                            $lead = UpsertLeadApi::run($prospect->toArray());
-//                            VarDumper::dump('Success '.$client->name.'!');
-//                        } catch (\Exception $e) {
-//                            VarDumper::dump('Failed: '.$e);
-//                        }
+                    foreach ($leads as $lead) {
+                        $lead->lead_type_id = $client->lead_types[random_int(1, count($client->lead_types) - 1)]->id;
+                        $lead->membership_type_id = $client->membership_types[random_int(1, count($client->membership_types) - 1)]->id;
+                        $lead->lead_source_id = $client->lead_sources[random_int(1, count($client->lead_sources) - 1)]->id;
                     }
-                    //use batch insert so we  are testing with something youfit will be using
-//
-                    BatchUpsertLeadApi::run($prospects->toArray());
+                    BatchUpsertLeadApi::run($leads->toArray());
+                    $num_leads = count($leads);
+                    VarDumper::dump("Generated {$num_leads} Random Leads for $client->name at $location->name");
                 }
             }
         }
 
-        return $prospects;
+        return $leads;
     }
 
     public function asController(ActionRequest $request)

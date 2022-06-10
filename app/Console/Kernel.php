@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new CheckReminders())->everyMinute();
         if (App::environment(['local', 'develop', 'staging'])) {
             $schedule->job(new GenerateRandomLeads())->everyFiveMinutes();
-            $schedule->job(new GenerateRandomMembers())->everyFifteenMinutes();
+            $schedule->job(new GenerateRandomMembers())->everyTenMinutes();
         }
     }
 
