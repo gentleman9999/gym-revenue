@@ -12,7 +12,7 @@ class UserReceivedEmail extends ShouldBeStored
     public $response;
     public $client;
 
-    public function __construct($user, $subject, $template, $response, $client = null)
+    public function __construct(string $user, string $subject, string $template, string $response, $client = null)
     {
         $this->user = $user;
         $this->subject = $subject;

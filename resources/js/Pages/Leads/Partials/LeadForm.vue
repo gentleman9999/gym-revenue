@@ -253,7 +253,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors['lead_statuses']"
+                    :message="form.errors['lead_status']"
                     class="mt-2"
                 />
             </div>

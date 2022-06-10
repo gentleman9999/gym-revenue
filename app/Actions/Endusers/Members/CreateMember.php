@@ -68,7 +68,7 @@ class CreateMember
             $request->user()
         );
 
-        if (! $request->wantsJson()) {
+        if ($request->wantsJson()) {
             return $member;
         }
 

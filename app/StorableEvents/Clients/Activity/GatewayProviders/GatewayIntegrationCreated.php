@@ -12,7 +12,7 @@ class GatewayIntegrationCreated extends ShouldBeStored
     public $nickname;
     public $user;
 
-    public function __construct(string $client, string $type, $slug, $nickname, $user)
+    public function __construct(string $client, string $type, string $slug, string $nickname, string $user)
     {
         $this->client = $client;
         $this->type = $type;

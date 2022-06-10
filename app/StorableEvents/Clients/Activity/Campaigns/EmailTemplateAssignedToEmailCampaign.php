@@ -11,7 +11,7 @@ class EmailTemplateAssignedToEmailCampaign extends ShouldBeStored
     public $campaign;
     public $user;
 
-    public function __construct($client, $template, $campaign, $user)
+    public function __construct(string $client, string $template, string $campaign, string $user)
     {
         $this->client = $client;
         $this->template = $template;

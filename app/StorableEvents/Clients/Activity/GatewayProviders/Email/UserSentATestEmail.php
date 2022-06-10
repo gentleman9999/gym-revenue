@@ -11,7 +11,7 @@ class UserSentATestEmail extends ShouldBeStored
     public $subject;
     public $template;
 
-    public function __construct($client, $user, $subject, $template)
+    public function __construct(string $client, string $user, string $subject, string $template)
     {
         $this->client = $client;
         $this->user = $user;

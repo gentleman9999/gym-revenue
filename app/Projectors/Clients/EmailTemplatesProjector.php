@@ -26,13 +26,13 @@ class EmailTemplatesProjector extends Projector
         $msg = 'Template was auto-generated';
         if ($event->user !== 'Auto Generated') {
             $user = User::find($event->user);
-            $msg = 'Template was created by ' . $user->name . ' on ' . $event->metaData()['created-at']->format('Y-m-d');
+            $msg = 'Template was created by ' . $user->name . ' on ' . $event->createdAt()->format('Y-m-d');
         }
         $detail = EmailTemplateDetails::create([
             'email_template_id' => $event->data['id'],
             'client_id' => $event->client,
             'detail' => 'created',
-            'value' => $event->metaData()['created-at'],
+            'value' => $event->createdAt(),
             'misc' => ['msg' => $msg],
         ]);
 
@@ -51,7 +51,7 @@ class EmailTemplatesProjector extends Projector
         EmailTemplates::findOrFail($event->data['id'])->updateOrFail($event->data);
         if ($event->user !== 'Auto Generated') {
             $user = User::find($event->user);
-            $msg = 'Template was updated by ' . $user->name . ' on ' . $event->metaData()['created-at']->format('Y-m-d');
+            $msg = 'Template was updated by ' . $user->name . ' on ' . $event->createdAt()->format('Y-m-d');
             EmailTemplateDetails::create([
                 'email_template_id' => $event->data['id'],
                 'client_id' => $event->client,
