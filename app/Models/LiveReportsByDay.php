@@ -17,5 +17,6 @@ class LiveReportsByDay extends Model
 
     protected $casts = [
         'value' => 'float',
+        'date' => 'date',
     ];
 }
