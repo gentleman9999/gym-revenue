@@ -23,14 +23,14 @@ trait ClientSMSTemplateActions
         return $this;
     }
 
-    public function assignSmsTemplateToCampaign($template_id, $campaign_id, $created_by_user_id)
+    public function assignSmsTemplateToCampaign(string $template_id, string $campaign_id, int $created_by_user_id)
     {
         $this->recordThat(new SMSTemplateAssignedToSMSCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
 
         return $this;
     }
 
-    public function unassignSmsTemplateFromCampaign($template_id, $campaign_id, $created_by_user_id)
+    public function unassignSmsTemplateFromCampaign(string $template_id, string $campaign_id, int $created_by_user_id)
     {
         $this->recordThat(new SMSTemplateUnAssignedFromSMSCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
 

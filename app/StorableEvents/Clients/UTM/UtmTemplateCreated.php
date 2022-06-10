@@ -10,7 +10,7 @@ class UtmTemplateCreated extends ShouldBeStored
     public $user;
     public $payload;
 
-    public function __construct(string $client, array $payload, $user)
+    public function __construct(string $client, array $payload, string $user)
     {
         $this->client = $client;
         $this->payload = $payload;
