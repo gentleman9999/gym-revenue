@@ -12,30 +12,44 @@ class LiveReportingProjector extends Projector
 {
     public function onLeadCreated(LeadCreated $event)
     {
-        $test = 0;
-        $record = LiveReportsByDay::firstOrCreate(
-            [
-                'client_id' => $event->data['client_id'],
-                'location_id' => $event->data['location_id'],
-                'entity' => 'lead',
-                'date' => $event->createdAt(),
-            ]
-        );
+        $record = LiveReportsByDay::whereClientId($event->data['client_id'])
+            ->whereLocationId($event->data['location_id'])
+            ->whereEntity('lead')
+            ->whereDate('date', '=', $event->createdAt())
+            ->first();
+
+        if ($record === null) {
+            $record = LiveReportsByDay::create(
+                [
+                    'client_id' => $event->data['client_id'],
+                    'location_id' => $event->data['location_id'],
+                    'entity' => 'lead',
+                    'date' => $event->createdAt(),
+                ]
+            );
+        }
 
         $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 
     public function onMemberCreated(MemberCreated $event)
     {
-        $test = 0;
-        $record = LiveReportsByDay::firstOrCreate(
-            [
-                'client_id' => $event->data['client_id'],
-                'location_id' => $event->data['location_id'],
-                'entity' => 'member',
-                'date' => $event->createdAt(),
-            ]
-        );
+        $record = LiveReportsByDay::whereClientId($event->data['client_id'])
+            ->whereLocationId($event->data['location_id'])
+            ->whereEntity('member')
+            ->whereDate('date', '=', $event->createdAt())
+            ->first();
+
+        if ($record === null) {
+            $record = LiveReportsByDay::create(
+                [
+                    'client_id' => $event->data['client_id'],
+                    'location_id' => $event->data['location_id'],
+                    'entity' => 'member',
+                    'date' => $event->createdAt(),
+                ]
+            );
+        }
         $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 

@@ -3,6 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Endusers\Members\CreateMember;
+use App\Actions\Endusers\Members\UpsertMemberApi;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Member;
 use Illuminate\Database\Seeder;
@@ -42,7 +43,7 @@ class MemberSeeder extends Seeder
                             $member_data = $member->toArray();
                             $member_data['location_id'] = $location->gymrevenue_id;
                             CreateMember::run($member_data);
-                            UpsertMemberApi::run($member_data);
+                            //UpsertMemberApi::run($member_data);
                         }
                     }
                 }
