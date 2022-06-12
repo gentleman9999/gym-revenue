@@ -11,7 +11,7 @@ class UserReceivedTextMsg extends ShouldBeStored
     public $response;
     public $client;
 
-    public function __construct($user, $template, $response, $client = null)
+    public function __construct(string $user, string $template, string $response, $client = null)
     {
         $this->user = $user;
         $this->template = $template;

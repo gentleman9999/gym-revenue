@@ -194,7 +194,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors.classification"
+                    :message="form.errors.classification_id"
                     class="mt-2"
                 />
             </div>

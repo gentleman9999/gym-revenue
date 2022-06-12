@@ -24,7 +24,7 @@ class FileAggregate extends AggregateRoot
         return $this;
     }
 
-    public function updatePermissions(string $userId, $data)
+    public function updatePermissions(string $userId, array $data)
     {
         $this->recordThat(new FilePermissionsUpdated($userId, $data));
 

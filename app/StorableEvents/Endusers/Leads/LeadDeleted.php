@@ -10,7 +10,7 @@ class LeadDeleted extends ShouldBeStored
     public $id;
     public $data;
 
-    public function __construct(string $user, string $id, $data)
+    public function __construct(string $user, string $id, array $data)
     {
         $this->user = $user;
         $this->id = $id;

@@ -24,21 +24,21 @@ trait ClientEmailTemplateActions
         return $this;
     }
 
-    public function setEmailTemplateThumbnail(string $id, string $thumbnail)
+    public function setEmailTemplateThumbnail(string $id, string $key, string $url)
     {
-        $this->recordThat(new EmailTemplateThumbnailUpdated($this->uuid(), $id,  $thumbnail));
+        $this->recordThat(new EmailTemplateThumbnailUpdated($this->uuid(), $id, $key,  $url));
 
         return $this;
     }
 
-    public function assignEmailTemplateToCampaign($template_id, $campaign_id, $created_by_user_id)
+    public function assignEmailTemplateToCampaign(string $template_id, string $campaign_id, string $created_by_user_id)
     {
         $this->recordThat(new EmailTemplateAssignedToEmailCampaign($this->uuid(), $template_id, $campaign_id, $created_by_user_id));
 
         return $this;
     }
 
-    public function unassignEmailTemplateFromCampaign($template_id, $campaign_id, $updated_by_user_id)
+    public function unassignEmailTemplateFromCampaign(string $template_id, string $campaign_id, string $updated_by_user_id)
     {
         $this->recordThat(new EmailTemplateUnAssignedFromEmailCampaign($this->uuid(), $template_id, $campaign_id, $updated_by_user_id));
 

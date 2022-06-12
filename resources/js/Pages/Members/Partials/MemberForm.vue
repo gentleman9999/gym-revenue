@@ -136,7 +136,7 @@
                 <input
                     disabled
                     type="text"
-                    v-model="member['agreement_number']"
+                    v-model="member.agreement_number"
                     class="opacity-70"
                     id="agreement_number"
                 />
@@ -147,7 +147,7 @@
                 <input
                     disabled
                     type="text"
-                    v-model="member['external_id']"
+                    v-model="member.external_id"
                     class="opacity-70"
                     id="external_id"
                 />

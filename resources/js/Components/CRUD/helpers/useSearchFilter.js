@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import throttle from "lodash/throttle";
 import { Inertia } from "@inertiajs/inertia";
 import pickBy from "lodash/pickBy";
@@ -24,6 +24,18 @@ export const useSearchFilter = (
 
     const form = ref({ ...initialState, ...search });
 
+    const filtersActive = computed(() => {
+        let hasActive = false;
+
+        for (let field of Object.keys(form.value)) {
+            if (!!form.value[field]) {
+                hasActive = true;
+            }
+        }
+
+        return hasActive;
+    });
+
     const formHandler = throttle(function () {
         console.log("formchange", {
             form: form.value,
@@ -47,7 +59,7 @@ export const useSearchFilter = (
         form.value.search = null;
     };
 
-    return { form, reset, clearFilters, clearSearch };
+    return { form, reset, clearFilters, clearSearch, filtersActive };
 };
 
 const paramsToObject = (entries) => {

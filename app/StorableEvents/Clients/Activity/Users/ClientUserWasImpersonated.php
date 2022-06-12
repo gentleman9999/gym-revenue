@@ -11,7 +11,7 @@ class ClientUserWasImpersonated extends ShouldBeStored
     public $invader;
     public $date;
 
-    public function __construct($client, $employee, $invader, $date)
+    public function __construct(string $client, string $employee, string $invader, string $date)
     {
         $this->client = $client;
         $this->employee = $employee;

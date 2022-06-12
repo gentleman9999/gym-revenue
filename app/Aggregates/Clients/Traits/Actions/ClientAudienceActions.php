@@ -17,28 +17,28 @@ trait ClientAudienceActions
         return $this;
     }
 
-    public function assignAudienceToEmailCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    public function assignAudienceToEmailCampaign(string $audience_id, string $campaign_id, string $updated_by_user_id)
     {
         $this->recordThat(new AudienceAssignedToEmailCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
 
         return $this;
     }
 
-    public function assignAudienceToSMSCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    public function assignAudienceToSMSCampaign(string $audience_id, string $campaign_id, string $updated_by_user_id)
     {
         $this->recordThat(new AudienceAssignedToSmsCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
 
         return $this;
     }
 
-    public function unassignAudienceFromEmailCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    public function unassignAudienceFromEmailCampaign(string $audience_id, string $campaign_id, string $updated_by_user_id)
     {
         $this->recordThat(new AudienceUnAssignedFromEmailCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
 
         return $this;
     }
 
-    public function unassignAudienceFromSMSCampaign($audience_id, $campaign_id, $updated_by_user_id)
+    public function unassignAudienceFromSMSCampaign(string $audience_id, string $campaign_id, string $updated_by_user_id)
     {
         $this->recordThat(new AudienceUnAssignedFromSmsCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
 
