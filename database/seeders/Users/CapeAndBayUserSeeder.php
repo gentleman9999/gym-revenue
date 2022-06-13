@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Users;
 
-use App\Actions\Teams\CreateTeam;
-use App\Actions\Users\CreateUser;
+use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Users\Actions\CreateUser;
 
 class CapeAndBayUserSeeder extends UserSeeder
 {

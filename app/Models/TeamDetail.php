@@ -25,6 +25,6 @@ class TeamDetail extends Model
 
     public function team()
     {
-        return $this->belongsTo('App\Models\Team', 'team_id', 'id');
+        return $this->belongsTo('App\Domain\Teams\Models\Team', 'team_id', 'id');
     }
 }

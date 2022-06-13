@@ -3,7 +3,7 @@
 namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Locations\UpdateLocation;
-use App\Actions\Teams\CreateTeam;
+use App\Domain\Teams\Actions\CreateTeam;
 use App\Imports\LocationsImport;
 use App\Imports\LocationsImportWithHeader;
 use App\Models\Clients\Location;

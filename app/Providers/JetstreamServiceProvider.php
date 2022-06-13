@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Actions\Teams\AddTeamMember;
-use App\Actions\Teams\CreateTeam;
-use App\Actions\Teams\DeleteTeam;
 use App\Actions\Teams\InviteTeamMember;
 use App\Actions\Teams\RemoveTeamMember;
-use App\Actions\Teams\UpdateTeamName;
-use App\Actions\Users\DeleteUser;
+use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Teams\Actions\DeleteTeam;
+use App\Domain\Teams\Actions\UpdateTeamName;
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\Models\TeamInvitation;
+use App\Domain\Users\Actions\DeleteUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +38,10 @@ class JetstreamServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configurePermissions();
+
+//        Jetstream::useUserModel(User::class);
+        Jetstream::useTeamModel(Team::class);
+        Jetstream::useTeamInvitationModel(TeamInvitation::class);
 
         Jetstream::createTeamsUsing(CreateTeam::class);
         Jetstream::updateTeamNamesUsing(UpdateTeamName::class);

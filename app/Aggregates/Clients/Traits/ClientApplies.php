@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Clients\Traits;
 
+use App\Domain\Teams\Events\TeamCreated;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
@@ -32,7 +33,6 @@ use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
 use App\StorableEvents\Clients\PrefixCreated;
-use App\StorableEvents\Teams\TeamCreated;
 
 trait ClientApplies
 {

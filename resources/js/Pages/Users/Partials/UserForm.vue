@@ -179,7 +179,7 @@
             </div>
 
             <!-- Classifications -->
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="classification" value="Classification" />
                 <select
                     id="classification"
@@ -200,7 +200,7 @@
             </div>
 
             <!-- Security Role -->
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
@@ -215,7 +215,7 @@
             </div>
 
             <!-- Home Club -->
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="home_location_id" value="Home Club" />
                 <select
                     id="home_location_id"
@@ -350,7 +350,7 @@
             </Button>
         </template>
     </jet-form-section>
-    <jet-form-section v-if="clientId && user?.files" class="mt-16">
+    <jet-form-section v-if="isClientUser && user?.files" class="mt-16">
         <template #title> Documents</template>
 
         <template #description> Documents attached to the user.</template>
@@ -390,7 +390,6 @@
             >
                 <file-manager
                     ref="fileManager"
-                    :client-id="clientId"
                     :user="user"
                     :form-submit-options="{ preserveScroll: true }"
                     @submitted="closeFileManagerModal"
@@ -454,13 +453,12 @@ export default {
         DaisyModal,
         FileManager,
     },
-    props: ["clientId", "user", "clientName"],
+    props: ["user", "clientName", "isClientUser"],
     emits: ["success"],
     setup(props, { emit }) {
         function notesExpanded(note) {
             console.error(props.user.all_notes);
             axios.post(route("note.seen"), {
-                client_id: props.user.clientId,
                 note: note,
             });
         }
@@ -476,7 +474,7 @@ export default {
 
         let operation = "Update";
         if (user) {
-            if (user.client_id) {
+            if (props.isClientUser) {
                 user.role_id = user["role_id"];
             }
             user.classification_id = user.classification_id;
@@ -516,11 +514,9 @@ export default {
                 state: "",
                 zip: "",
                 job_title: "",
-                client_id: props.clientId,
             };
-            //only add clientId when applicable to make user validation rules work better
-            if (props.clientId) {
-                user.client_id = props.clientId;
+            //only add client specific when applicable to make user validation rules work better
+            if (props.isClientUser) {
                 user.home_location_id = null;
                 user.notes = { title: "", note: "" };
                 user.start_date = null;

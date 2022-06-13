@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\Users;
 
-use App\Models\Clients\Client;
-use App\Models\Team;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Console\Command;

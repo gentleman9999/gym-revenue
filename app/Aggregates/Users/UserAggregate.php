@@ -2,8 +2,7 @@
 
 namespace App\Aggregates\Users;
 
-use App\Models\Clients\Client;
-use App\Models\User;
+use App\Domain\Clients\Models\Client;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\StorableEvents\Clients\Tasks\TaskDeleted;
 use App\StorableEvents\Clients\Tasks\TaskMarkedComplete;
@@ -25,12 +24,6 @@ use App\StorableEvents\Users\Reminder\ReminderDeleted;
 use App\StorableEvents\Users\Reminder\ReminderTriggered;
 use App\StorableEvents\Users\Reminder\ReminderUpdated;
 use App\StorableEvents\Users\UserAddedToTeam;
-use App\StorableEvents\Users\UserCreated;
-use App\StorableEvents\Users\UserDeleted;
-use App\StorableEvents\Users\UserSetCustomCrudColumns;
-use App\StorableEvents\Users\UsersImported;
-use App\StorableEvents\Users\UserUpdated;
-use App\StorableEvents\Users\WelcomeEmailSent;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class UserAggregate extends AggregateRoot
@@ -62,7 +55,7 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function applyNewUser(UserCreated $event)
+    public function applyNewUser(\App\Domain\Users\Events\UserCreated $event)
     {
         if (array_key_exists('name', $event->payload)) {
             $this->name = $event->payload['name'];
@@ -80,7 +73,7 @@ class UserAggregate extends AggregateRoot
         // @todo - put something useful here
     }
 
-    public function applyUserUpdated(UserUpdated $event)
+    public function applyUserUpdated(\App\Domain\Users\Events\UserUpdated $event)
     {
         if (array_key_exists('name', $event->payload)) {
             $this->name = $event->payload['name'];
@@ -217,61 +210,6 @@ class UserAggregate extends AggregateRoot
     public function markTaskAsIncomplete(string $updated_by_user_id, TaskMarkedIncomplete $event)
     {
         $this->recordThat(new TaskMarkedIncomplete($this->uuid()), $updated_by_user_id, $event);
-
-        return $this;
-    }
-
-    public function createUser(array $payload, User | string | null $created_by_user)
-    {
-        $created_by_user_id = $created_by_user->id ?? $created_by_user;
-        $this->recordThat(new UserCreated($payload, $created_by_user_id));
-
-        return $this;
-    }
-
-    public function importUsers(string $created_by_user_id, string $key, string $client)
-    {
-        $this->recordThat(new UsersImported($this->uuid(), $created_by_user_id, $key, $client));
-
-        return $this;
-    }
-
-    public function deleteUser(string $deleted_by_user_id, array $payload)
-    {
-        $this->recordThat(new UserDeleted($this->uuid(), $deleted_by_user_id, $payload));
-
-        return $this;
-    }
-
-    public function updateUser(string $updated_by_user_id, array $payload)
-    {
-        $this->recordThat(new UserUpdated($this->uuid(), $updated_by_user_id, $payload));
-
-        return $this;
-    }
-
-    public function sendWelcomeEmail()
-    {
-        // @todo - logic to throw an exception if the user is active
-        $this->recordThat(new WelcomeEmailSent($this->uuid()));
-
-        return $this;
-    }
-
-    public function addUserToTeam(string $team_id, string $team_name, string $client_id = null)
-    {
-        if (array_key_exists($team_id, $this->teams)) {
-            // @todo - make an exception to throw here that the user is already a member
-        }
-
-        $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name, $client_id));
-
-        return $this;
-    }
-
-    public function setCustomCrudColumns(string $table, array $field_ids)
-    {
-        $this->recordThat(new UserSetCustomCrudColumns($this->uuid(), $table, $field_ids));
 
         return $this;
     }

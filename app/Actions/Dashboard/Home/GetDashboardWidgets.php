@@ -2,7 +2,7 @@
 
 namespace App\Actions\Dashboard\Home;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Clients\Location;

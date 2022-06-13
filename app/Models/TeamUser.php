@@ -27,7 +27,7 @@ class TeamUser extends Model
 
     public function teams()
     {
-        return $this->hasMany('App\Models\Team', 'team_id', 'id');
+        return $this->hasMany('App\Domain\Teams\Models\Team', 'team_id', 'id');
     }
 
     public function user()

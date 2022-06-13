@@ -15,6 +15,7 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
+            - 'php artisan event-sourcing:cache-event-handlers'
             - 'npm ci && npm run prod && rm -rf node_modules'
     staging:
         domain: grp-stage.capeandbay.com
@@ -31,6 +32,7 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
+            - 'php artisan event-sourcing:cache-event-handlers'
             - 'npm ci && npm run dev && rm -rf node_modules'
     develop:
         domain: grp-dev.capeandbay.com
@@ -47,4 +49,5 @@ environments:
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
+            - 'php artisan event-sourcing:cache-event-handlers'
             - 'npm ci && npm run dev && rm -rf node_modules'

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\AccessControl;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Lead;
 use App\Models\User;
 use Bouncer;

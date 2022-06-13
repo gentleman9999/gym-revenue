@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Actions\Users\CreateUser;
+use App\Domain\Users\Actions\CreateUser;
 use App\Models\Clients\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;

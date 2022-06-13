@@ -9,7 +9,9 @@
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <user-form
-                    :client-id="$page.props.user['current_client_id']"
+                    :is-client-user="
+                        $page.props.user.current_team?.isClientTeam
+                    "
                     :user="selectedUser"
                 />
             </div>

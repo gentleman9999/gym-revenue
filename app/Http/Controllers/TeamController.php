@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Actions\Clients\CreateClient;
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\Actions\CreateClient;
 use App\Enums\ClientServiceEnum;
 use Illuminate\Database\Seeder;
 

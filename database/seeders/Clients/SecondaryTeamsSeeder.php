@@ -2,9 +2,8 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Actions\Teams\CreateTeam;
-use App\Aggregates\Users\UserAggregate;
-use App\Models\Clients\Client;
+use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Users\UserAggregate;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -48,7 +47,7 @@ class SecondaryTeamsSeeder extends Seeder
                     $user = User::whereEmail($email)->first();
                     $new_team->users()->attach($user);
                     UserAggregate::retrieve($user->id)
-                        ->addUserToTeam($new_team->id, $new_team->name, null)
+                        ->addToTeam($new_team->id, $new_team->name)
                         ->persist();
                 }
             }
@@ -62,7 +61,7 @@ class SecondaryTeamsSeeder extends Seeder
         $scifi_owner = User::whereEmail('agabla@scifipurplegyms.com')->first();
         $ifit_owner = User::whereEmail('sherri@ifit.com')->first();
 
-        $clients = Client::all()->keyBy('name');
+        $clients = \App\Domain\Clients\Models\Client::all()->keyBy('name');
 
         $client_teams = [
             // The Kalamazoo

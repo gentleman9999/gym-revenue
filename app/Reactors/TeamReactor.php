@@ -3,8 +3,8 @@
 namespace App\Reactors;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Models\Team;
-use App\StorableEvents\Teams\TeamCreated;
+use App\Domain\Teams\Events\TeamCreated;
+use App\Domain\Teams\Models\Team;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class TeamReactor extends Reactor

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Data;
 
 use App\Aggregates\Endusers\LeadAggregate;
+use App\Domain\Clients\Models\Client;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Member;

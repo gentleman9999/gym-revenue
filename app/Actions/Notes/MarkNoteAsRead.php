@@ -3,6 +3,7 @@
 namespace App\Actions\Notes;
 
 use App\Aggregates\Clients\NoteAggregate;
+use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -33,6 +34,11 @@ class MarkNoteAsRead
                 ->persist();
 
         return true;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

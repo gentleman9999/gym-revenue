@@ -2,7 +2,7 @@
 
 namespace App\Actions\Teams;
 
-use App\Models\Team;
+use App\Domain\Teams\Models\Team;
 use App\Models\User;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -28,7 +28,7 @@ class SwitchTeam
     {
         $team = null;
         if ($current_user->client_id) {
-            $team = Team::findOrFail($team_id)[0];
+            $team = \App\Domain\Teams\Models\Team::findOrFail($team_id)[0];
         } else {
             //capeandbay user
             $team = Team::withoutGlobalScopes()->findOrFail($team_id)[0];

@@ -27,7 +27,7 @@ use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
-use Database\Seeders\Users\NewClientSeeder;
+use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -116,7 +116,7 @@ class DatabaseSeeder extends Seeder
 
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
         VarDumper::dump('Running Client Users Seeder');
-        $this->call(NewClientSeeder::class);
+        $this->call(ClientUserSeeder::class);
 
         // This seeder generates dummy leads for each client
         VarDumper::dump('Running Leads Dummy Data Seeder');

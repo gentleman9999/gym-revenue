@@ -57,8 +57,6 @@ class UserPolicy
 //    public function update(User $user, User $model)
     public function update(User $user)
     {
-        return $user->can('users.update', $user->currentTeam()->first());
-
         return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.update', $user->currentTeam()->first());
     }
 

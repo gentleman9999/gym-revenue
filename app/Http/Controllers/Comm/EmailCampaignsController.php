@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Comm;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\Models\Client;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;

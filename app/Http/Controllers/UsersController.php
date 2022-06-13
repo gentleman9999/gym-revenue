@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Models\Clients\Classification;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\ReadReceipt;
-use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -147,7 +147,7 @@ class UsersController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
         $me = request()->user();
 
@@ -159,7 +159,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = $me->with(['details','notes','files'])->findOrFail($id);
+        $user->load('details', 'notes', 'files');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -193,7 +193,7 @@ class UsersController extends Controller
         ]);
     }
 
-    public function view($id)
+    public function view(User $user)
     {
         $requesting_user = request()->user(); //Who's driving
         if ($requesting_user->cannot('users.read', User::class)) {
@@ -201,8 +201,7 @@ class UsersController extends Controller
 
             return Redirect::back();
         }
-
-        $user = User::with('details', 'teams', 'files')->findOrFail($id); //User we're peeking
+        $user->load('details', 'teams', 'files');//TODO: get rid of loading all details here.
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRole();

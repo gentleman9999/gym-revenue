@@ -3,13 +3,11 @@
 namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\Aggregates\Users\UserAggregate;
+use App\Domain\Teams\Models\Team;
 use App\Exceptions\Clients\ClientAccountException;
-use App\Models\Team;
 use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\PrefixCreated;
 use App\StorableEvents\Clients\TeamAttachedToClient;
-use App\StorableEvents\Clients\Teams\ClientTeamDeleted;
-use App\StorableEvents\Clients\Teams\ClientTeamUpdated;
 use App\StorableEvents\Clients\UserRemovedFromTeam;
 use App\StorableEvents\Clients\UserRoleOnTeamUpdated;
 
@@ -36,20 +34,6 @@ trait ClientTeamActions
         $created_by_user_id = $created_by_user->id ?? null;
 
         $this->recordThat(new TeamAttachedToClient($team, $created_by_user_id));
-
-        return $this;
-    }
-
-    public function deleteTeam()
-    {
-        $this->recordThat(new ClientTeamDeleted());
-
-        return $this;
-    }
-
-    public function updateTeam(array $payload)
-    {
-        $this->recordThat(new ClientTeamUpdated($payload));
 
         return $this;
     }

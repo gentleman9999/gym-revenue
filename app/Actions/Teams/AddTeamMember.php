@@ -4,7 +4,6 @@ namespace App\Actions\Teams;
 
 use function __;
 use App\Actions\Jetstream\User;
-use App\Models\Team;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
@@ -33,7 +32,7 @@ class AddTeamMember implements AddsTeamMembers
         ]);
     }
 
-    public function handle(Team $team, User $user)
+    public function handle(\App\Domain\Teams\Models\Team $team, User $user)
     {
 //        Gate::forUser($user)->authorize('addTeamMember', $team);
 
@@ -55,7 +54,7 @@ class AddTeamMember implements AddsTeamMembers
     {
         $current_user = $request->user();
 
-        return $current_user->can('teams.update', Team::class);
+        return $current_user->can('teams.update', \App\Domain\Teams\Models\Team::class);
     }
 
     /**

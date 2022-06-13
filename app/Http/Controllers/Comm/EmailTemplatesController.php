@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Comm;
 
+use App\Domain\Clients\Models\Client;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use Illuminate\Http\Request;

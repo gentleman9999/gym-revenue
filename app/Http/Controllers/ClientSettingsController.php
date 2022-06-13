@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Features\ClientService;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;

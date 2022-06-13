@@ -67,7 +67,7 @@ class UserFactory extends Factory
     {
         return $this->afterMaking(function (User $user) {
             $user->email = strtolower($user->first_name). '.' .strtolower($user->last_name). '@' . str_replace(' ', '-', strtolower($user->client)) . '.com';
-
+//            dd($user->email);
             return $user;
         });
     }

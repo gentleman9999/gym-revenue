@@ -8,7 +8,6 @@ use App\Mail\Users\NewUserWelcomeEmail;
 use App\Models\User;
 use App\Notifications\GymRevNotification;
 use App\StorableEvents\Users\Notifications\NotificationCreated;
-use App\StorableEvents\Users\UsersImported;
 use App\StorableEvents\Users\WelcomeEmailSent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
@@ -35,7 +34,7 @@ class UserReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onUserImported(UsersImported $event)
+    public function onUserImported(\App\Domain\Users\Events\UsersImported $event)
     {
         $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         if (in_array($headings[0][0][0], (new User())->getFillable())) {

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Clients\Locations;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Location;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;

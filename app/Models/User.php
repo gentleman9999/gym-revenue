@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Classification;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,6 +53,8 @@ class User extends Authenticatable
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'access_token',
+        'client_id',
     ];
 
     /**
@@ -98,7 +101,7 @@ class User extends Authenticatable
      */
     public function switchTeam(Team $team)
     {
-        if (! $this->belongsToTeam($team)) {
+        if (! $this->belongsToTeam($team) && ! $this->isAdmin()) {
             return false;
         }
 
@@ -224,7 +227,7 @@ class User extends Authenticatable
 
     public function teams()
     {
-        $teams = $this->belongsToMany('App\Models\Team', 'team_user', 'user_id', 'team_id');
+        $teams = $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
         if (! $this->client_id) {
             $teams = $teams->withoutGlobalScopes();
         }
@@ -349,6 +352,11 @@ class User extends Authenticatable
      */
     public function allTeams()
     {
+        if ($this->isAdmin()) {
+//            dd();
+            return $this->teams->keyBy('id')->merge(Team::withoutGlobalScopes()->whereHomeTeam(true)->get()->keyBy('id'));
+        }
+
         return $this->teams->sortBy('name');
     }
 }

@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Comm;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\Models\Client;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
-use function Aws\filter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;

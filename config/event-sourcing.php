@@ -1,7 +1,7 @@
 <?php
 
-use App\StorableEvents\CustomStoredEvent;
+use App\StorableEvents\GymRevStoredEvent;
 
 return [
-    'stored_event_model' => CustomStoredEvent::class,
+    'stored_event_model' => GymRevStoredEvent::class,
 ];

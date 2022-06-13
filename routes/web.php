@@ -49,7 +49,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
     Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
-    Route::post('/tokens', \App\Actions\Users\GrantAccessToken::class)->name('api-tokens.store');
+    Route::post('/tokens', \App\Domain\Users\Actions\GrantAccessToken::class)->name('api-tokens.store');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
@@ -174,27 +174,26 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
-    Route::post('/', \App\Actions\Users\CreateUser::class)->name('users.store');
-    Route::post('/import', \App\Actions\Users\ImportUsers::class)->name('users.import');
-    Route::get('/edit/{id}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit')->where(['id' => '[0-9]+']);
-    Route::get('/view/{id}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view')->where(['id' => '[0-9]+']);
-    Route::put('/{user}', \App\Actions\Users\UpdateUser::class)->name('users.update');
-    Route::delete('/{user}', \App\Actions\Users\DeleteUser::class)->name('users.delete')->where(['id' => '[0-9]+']);
-    Route::post('/{id}/documents', \App\Actions\Jetstream\UploadDocForUser::class . '@upload')->name('users.documents.create')->where(['id' => '[0-9]+']);
+    Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('users.store');
+    Route::post('/import', \App\Domain\Users\Actions\ImportUsers::class)->name('users.import');
+    Route::get('/edit/{user}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
+    Route::get('/view/{user}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');
+    Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('users.update');
+    Route::delete('/{user}', \App\Domain\Users\Actions\DeleteUser::class)->name('users.delete');
+    Route::post('/{user}/documents', \App\Actions\Teams\UploadDocForUser::class . '@upload')->name('users.documents.create');
     Route::get('/export', \App\Http\Controllers\UsersController::class . '@export')->name('users.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
     Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
-    Route::post('/', \App\Actions\Teams\CreateTeam::class)->name('teams.store');
+    Route::post('/', \App\Domain\Teams\Actions\CreateTeam::class)->name('teams.store');
     Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
     Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
-    //Route::put('/{id}', \App\Http\Controllers\TeamsController::class . '@update')->name('team.update');
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
-    Route::put('/update/{team}', \App\Actions\Teams\UpdateTeam::class)->name('team.update');
-    Route::delete('/{id}', \App\Actions\Teams\DeleteTeam::class)->name('teams.delete');
+    Route::put('/update/{team}', \App\Domain\Teams\Actions\UpdateTeam::class)->name('team.update');
+    Route::delete('/{team}', \App\Domain\Teams\Actions\DeleteTeam::class)->name('teams.delete');
     Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {

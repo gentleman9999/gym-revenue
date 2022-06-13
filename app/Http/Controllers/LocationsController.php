@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
 use App\Models\TeamDetail;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;

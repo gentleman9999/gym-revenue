@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -33,7 +33,7 @@ class EnsureTokenIsValid
 
         if ($user->isClientUser()) {
             $this->addClientIdToRequest($request, $user->client_id);
-        } elseif ($user->is_cape_and_bay_user) {
+        } elseif ($user->isAdmin()) {
             $client_id = $request->header($this->client_header);
             if (! $client_id) {
                 return response()->json(['error' => "You must provide a Client Id via the '{$this->client_header}' header"], 400);

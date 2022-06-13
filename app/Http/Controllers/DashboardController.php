@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Client;
 use App\Services\Dashboard\HomeDashboardService;
 use Inertia\Inertia;
 
@@ -55,9 +55,8 @@ class DashboardController extends Controller
 
             // Check if this is the CnB Default team.
             // If so the vue will be AdminDashboard. else DeveloperDashboard
-            $vue = ($team->default_team) ? 'Dashboards/AdminDashboard' : 'Dashboards/DeveloperDashboard';
-            $aggy = UserAggregate::retrieve($user->id);
-            $teams = $aggy->getTeams();
+            $vue = ($team->home_team) ? 'Dashboards/AdminDashboard' : 'Dashboards/DeveloperDashboard';
+            $teams = Team::all();
 
             if (count($clients) > 0) {
                 $clients = $clients->toArray();

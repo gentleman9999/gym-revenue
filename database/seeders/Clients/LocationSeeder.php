@@ -3,9 +3,8 @@
 namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Locations\CreateLocation;
-use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Actions\Clients\Locations\ImportLocations;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -397,7 +396,7 @@ class LocationSeeder extends Seeder
         ];
 
         foreach ($locations as $idx => $location) {
-            $client = Client::whereName($location['client'])->first();
+            $client = \App\Domain\Clients\Models\Client::whereName($location['client'])->first();
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
@@ -419,16 +418,19 @@ class LocationSeeder extends Seeder
         }
 
         ///now do trufit csv import
-        VarDumper::dump("Adding TruFit Locations from CSV");
-        $key = 'tmp/trufit-clubs';
-        $csv = file_get_contents('database/data/trufit-clubs.csv');
-        Storage::disk('s3')->put($key, $csv);
-        ImportLocations::run([
-            [
-                'key' => $key,
-                'extension' => 'csv',
-                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
-            ],
-        ]);
+        //TODO:fix trufit csv seeder
+        VarDumper::dump("Don't forget you disabled the TrufitCsv import to work past a seeder fatal!");
+
+//        VarDumper::dump("Adding TruFit Locations from CSV");
+//        $key = 'tmp/trufit-clubs';
+//        $csv = file_get_contents('database/data/trufit-clubs.csv');
+//        Storage::disk('s3')->put($key, $csv);
+//        ImportLocations::run([
+//            [
+//                'key' => $key,
+//                'extension' => 'csv',
+//                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
+//            ],
+//        ]);
     }
 }

@@ -3,7 +3,6 @@
 namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Activity\Comms\AssignSMSTemplateToCampaign;
-use App\Models\Clients\Client;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\SmsTemplates;
 use Illuminate\Database\Seeder;
@@ -27,7 +26,7 @@ class SMSCampaignsSeeder extends Seeder
         $cnb_template = SmsTemplates::whereNull('client_id')->first();
         AssignSMSTemplateToCampaign::dispatch($cnb_template->id, $cnb_record->id, $cnb_record->created_by_user_id)->onQueue('grp-'.env('APP_ENV').'-jobs');
 
-        $clients = Client::whereActive(1)->get();
+        $clients = \App\Domain\Clients\Models\Client::whereActive(1)->get();
         foreach ($clients as $client) {
             VarDumper::dump('Default sms campaign for '.$client->name);
 

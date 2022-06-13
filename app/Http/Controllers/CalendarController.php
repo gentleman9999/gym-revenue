@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Reminder;
 use App\Models\TeamUser;

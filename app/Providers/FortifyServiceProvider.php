@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Actions\Auth\RenderRegisterPage;
-use App\Actions\Users\CreateUser;
 use App\Actions\Users\ResetUserPassword;
-use App\Actions\Users\UpdateUser;
-use App\Actions\Users\UpdateUserPassword;
+use App\Domain\Users\Actions\CreateUser;
+use App\Domain\Users\Actions\UpdateUser;
+use App\Domain\Users\Actions\UpdateUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;

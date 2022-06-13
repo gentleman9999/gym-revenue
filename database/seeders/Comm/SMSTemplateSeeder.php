@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Comm;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Comms\SmsTemplates;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;

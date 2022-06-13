@@ -43,9 +43,10 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $abilities = $request->user()->getAbilities()->filter(function ($ability) use ($request) {
+            //todo: cache or move to session
+            $abilities = $user->getAbilities()->filter(function ($ability) use ($user) {
                 if (! is_null($ability->entity_id)) {
-                    $r = $ability->entity_id === $request->user()->current_team_id;
+                    $r = $ability->entity_id === $user->current_team_id;
                 } elseif ($ability->title == 'All abilities') {
                     $r = true;
                 } else {
@@ -57,6 +58,8 @@ class HandleInertiaRequests extends Middleware
             $shared = [
                 'user.id' => $user->id,
                 'user.all_locations' => $user->allLocations(),
+                'user.current_team.isClientTeam' => $user->currentClientId() !== null,
+                //TODO:should be able to remove client_id and current_client_id from most of client stuff once middleware is in place
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
                 'user.has_api_token' => (! is_null($user->access_token)),

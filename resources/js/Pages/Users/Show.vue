@@ -185,7 +185,7 @@ export default defineComponent({
             },
             "home_team",
         ];
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             fields = [
                 "name",
                 "email",
@@ -242,7 +242,7 @@ export default defineComponent({
             },
         ];
 
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
                 label: "Roles",
                 href: route("roles"),
@@ -250,7 +250,7 @@ export default defineComponent({
                 active: false,
             });
         }
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
                 label: "Classification",
                 href: route("classifications"),

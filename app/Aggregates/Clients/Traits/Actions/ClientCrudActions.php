@@ -2,11 +2,11 @@
 
 namespace App\Aggregates\Clients\Traits\Actions;
 
-use App\StorableEvents\Clients\ClientCreated;
-use App\StorableEvents\Clients\ClientDeleted;
-use App\StorableEvents\Clients\ClientRestored;
-use App\StorableEvents\Clients\ClientTrashed;
-use App\StorableEvents\Clients\ClientUpdated;
+use App\Domain\Clients\Events\ClientCreated;
+use App\Domain\Clients\Events\ClientDeleted;
+use App\Domain\Clients\Events\ClientRestored;
+use App\Domain\Clients\Events\ClientTrashed;
+use App\Domain\Clients\Events\ClientUpdated;
 
 trait ClientCrudActions
 {

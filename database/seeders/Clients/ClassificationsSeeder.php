@@ -3,7 +3,7 @@
 namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Classifications\CreateClassification;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 

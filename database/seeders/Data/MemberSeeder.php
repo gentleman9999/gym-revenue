@@ -3,7 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Endusers\Members\UpsertMemberApi;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Member;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;

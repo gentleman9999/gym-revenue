@@ -3,7 +3,7 @@
 namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Activity\Comms\AssignEmailTemplateToCampaign;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Comms\EmailTemplates;
 use Illuminate\Database\Seeder;
