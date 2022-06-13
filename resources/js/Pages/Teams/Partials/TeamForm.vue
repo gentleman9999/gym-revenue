@@ -91,7 +91,6 @@ export default defineComponent({
         let team = props.team;
         if (!team) {
             team = {
-                client_id: page.props.value.user?.current_client_id,
                 name: "",
                 locations: [],
             };
@@ -100,8 +99,6 @@ export default defineComponent({
             team.locations = page.props.value.locations.map(
                 (detail) => detail.value
             );
-            team.client_id = page.props.value.user?.current_client_id;
-            console.log("team.locations", team.locations);
         }
         const form = useForm(team);
 

@@ -2,10 +2,10 @@
 
 namespace App\Reactors\Clients;
 
-use App\Actions\Users\Notifications\CreateNotification;
-use App\Models\Reminder;
+use App\Domain\Notifications\Actions\CreateNotification;
+use App\Domain\Reminders\Events\ReminderTriggered;
+use App\Domain\Reminders\Reminder;
 use App\Models\User;
-use App\StorableEvents\Users\Reminder\ReminderTriggered;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 

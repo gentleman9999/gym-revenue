@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Actions;
 
-use App\Actions\Users\PasswordValidationRules;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Clients\Location;

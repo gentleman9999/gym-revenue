@@ -3,18 +3,16 @@
 namespace App\Domain\Users;
 
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Events\AccessTokenGranted;
+use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Note;
-use App\Models\Notification;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\StorableEvents\Users\Notifications\NotificationCreated;
-use App\StorableEvents\Users\Notifications\NotificationDismissed;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -30,6 +28,7 @@ class UserProjector extends Projector
 
             $user->id = $event->aggregateRootUuid();
             $user->client_id = $event->payload['client_id'];
+            $user->password = $event->payload['password'];
             $user_table_data = array_filter($data, function ($key) {
                 return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
@@ -206,17 +205,20 @@ class UserProjector extends Projector
         ])->update(['misc' => $event->fields]);
     }
 
-    public function onNotificationCreated(NotificationCreated $event)
+    public function onAccessTokenGranted(AccessTokenGranted $event)
     {
-        Log::debug($event->data);
-        Notification::create(array_merge($event->data, ['user_id' => $event->user]));
+        $user = User::findOrFail($event->aggregateRootUuid());
+        $user->tokens()->delete();
+        $token = $user->createToken($user->email)->plainTextToken;
+        $user = User::findOrFail($user->id);
+        $user->forceFill(['access_token' => base64_encode($token)]);
+        $user->save();
     }
 
-    public function onNotificationDismissed(NotificationDismissed $event)
+    public function onUserPasswordUpdated(UserPasswordUpdated $event)
     {
-        //TODO:check if event->createdAt is preserved after replays.  If not,
-        //we just need to track "dismissed_at" in the NotificationDismissed event itself
-        Notification::findOrFail($event->id)->updateOrFail(['dismissed_at' => $event->createdAt()]);
+        $user = User::findOrFail($event->aggregateRootUuid());
+        $user->forceFill(['password' => $event->password]);
+        $user->save();
     }
-    //TODO: Move Task stuff in here or no?
 }

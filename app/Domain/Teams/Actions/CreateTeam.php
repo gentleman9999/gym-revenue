@@ -5,6 +5,7 @@ namespace App\Domain\Teams\Actions;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use App\Helpers\Uuid;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\CreatesTeams;
@@ -38,6 +39,11 @@ class CreateTeam implements CreatesTeams
             'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],
         ];
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

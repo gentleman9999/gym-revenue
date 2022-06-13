@@ -2,8 +2,8 @@
 
 namespace App\Projectors\Clients;
 
-use App\Actions\Users\Reminders\CreateReminder;
-use App\Actions\Users\Reminders\DeleteReminderWithoutID;
+use App\Domain\Reminders\Actions\CreateReminder;
+use App\Domain\Reminders\Actions\DeleteReminderWithoutID;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\User;

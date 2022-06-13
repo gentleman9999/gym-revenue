@@ -25,6 +25,15 @@ class Team extends JetstreamTeam
 
     public $incrementing = false;
 
+    protected $guarded = [
+        'id',
+        'client_id',
+    ];
+
+    protected $hidden = [
+        'client_id',
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -199,6 +208,20 @@ class Team extends JetstreamTeam
     public function owner()
     {
         return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    /**
+
+     * Get all of the team's users including its owner.
+
+     *
+
+     * @return \Illuminate\Support\Collection
+
+     */
+    public function allUsers()
+    {
+        return $this->users;
     }
 
     public function getGymRevTeamAttribute()

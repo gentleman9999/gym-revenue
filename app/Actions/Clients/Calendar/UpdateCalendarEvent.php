@@ -4,11 +4,11 @@ namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
 use App\Aggregates\Users\UserAggregate;
+use App\Domain\Reminders\Reminder;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
-use App\Models\Reminder;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;

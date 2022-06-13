@@ -51,7 +51,11 @@ class CreateCalendarEvent
         if (! is_null($data['user_attendees'])) {
             $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
             foreach ($data['user_attendees'] as $user) {
-                $user = User::findOrFail($user);
+
+                //TODO:below should be findOrFail, but it breaks GR Admins from being able to make cal events.
+                //TODO: which make since in a real world scenario. we probably don't want GR admins making client
+                //TODO: calendar events.  But it makes testing harder.  switch to findOrFail when we go live.
+                $user = User::find($user);
                 if ($user) {
                     CalendarAggregate::retrieve($data['client_id'])
                         ->addCalendarAttendee(

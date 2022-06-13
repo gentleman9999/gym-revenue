@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Actions\Auth\RenderRegisterPage;
-use App\Actions\Users\ResetUserPassword;
 use App\Domain\Users\Actions\CreateUser;
+use App\Domain\Users\Actions\ResetUserPassword;
 use App\Domain\Users\Actions\UpdateUser;
 use App\Domain\Users\Actions\UpdateUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;

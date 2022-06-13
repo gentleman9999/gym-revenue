@@ -3,26 +3,26 @@
 namespace App\Domain\Users;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Notifications\Events\NotificationCreated;
+use App\Domain\Notifications\Events\NotificationDismissed;
+use App\Domain\Reminders\Events\ReminderCreated;
+use App\Domain\Reminders\Events\ReminderDeleted;
+use App\Domain\Reminders\Events\ReminderTriggered;
+use App\Domain\Reminders\Events\ReminderUpdated;
+use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
+use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserRestored;
 use App\Domain\Users\Events\UsersImported;
 use App\Domain\Users\Events\UserTrashed;
 use App\Domain\Users\Events\UserUpdated;
-use App\Models\User;
-use App\StorableEvents\Users\Activity\API\AccessTokenGranted;
 use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
 use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
 use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
-use App\StorableEvents\Users\Notifications\NotificationCreated;
-use App\StorableEvents\Users\Notifications\NotificationDismissed;
-use App\StorableEvents\Users\Reminder\ReminderCreated;
-use App\StorableEvents\Users\Reminder\ReminderDeleted;
-use App\StorableEvents\Users\Reminder\ReminderTriggered;
-use App\StorableEvents\Users\Reminder\ReminderUpdated;
 use App\StorableEvents\Users\UserAddedToTeam;
 use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use App\StorableEvents\Users\WelcomeEmailSent;
@@ -52,7 +52,14 @@ class UserAggregate extends AggregateRoot
 
     public function grantAccessToken()
     {
-        $this->recordThat(new AccessTokenGranted($this->uuid()));
+        $this->recordThat(new AccessTokenGranted());
+
+        return $this;
+    }
+
+    public function updatePassword(string $password)
+    {
+        $this->recordThat(new UserPasswordUpdated($password));
 
         return $this;
     }
@@ -310,42 +317,42 @@ class UserAggregate extends AggregateRoot
 
     public function createNotification(array $data)
     {
-        $this->recordThat(new NotificationCreated($this->uuid(), $data));
+        $this->recordThat(new NotificationCreated($data));
 
         return $this;
     }
 
     public function dismissNotification(string $id)
     {
-        $this->recordThat(new NotificationDismissed($this->uuid(), $id));
+        $this->recordThat(new NotificationDismissed($id));
 
         return $this;
     }
 
-    public function createReminder(string $user_id, array $payload)
+    public function createReminder(array $payload)
     {
-        $this->recordThat(new ReminderCreated($user_id, $payload));
+        $this->recordThat(new ReminderCreated($payload));
 
         return $this;
     }
 
-    public function updateReminder(string $user_id, array $payload)
+    public function updateReminder(array $payload)
     {
-        $this->recordThat(new ReminderUpdated($user_id, $payload));
+        $this->recordThat(new ReminderUpdated($payload));
 
         return $this;
     }
 
-    public function deleteReminder(string $user_id, string $id)
+    public function deleteReminder(string $id)
     {
-        $this->recordThat(new ReminderDeleted($user_id, $id));
+        $this->recordThat(new ReminderDeleted($id));
 
         return $this;
     }
 
     public function triggerReminder(string $id)
     {
-        $this->recordThat(new ReminderTriggered($this->uuid(), $id));
+        $this->recordThat(new ReminderTriggered($id));
 
         return $this;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Users\Actions;
 
-use App\Actions\Users\PasswordValidationRules;
+use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\User;
@@ -25,8 +25,6 @@ class UpdateUser implements UpdatesUserProfileInformation
 
     public function handle(string $id, array $payload): User
     {
-        $client_id = $payload['client_id'];
-
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
         }
@@ -64,12 +62,11 @@ class UpdateUser implements UpdatesUserProfileInformation
             'end_date' => ['sometimes'],
             'termination_date' => ['sometimes'],
             'notes' => ['sometimes'],
-            'client_id' => ['sometimes', 'nullable', 'string', 'max:255', 'exists:clients,id'],
             'team_id' => ['sometimes', 'required', 'string', 'exists:teams,id'],
             'role_id' => ['sometimes', 'required', 'integer'],
             'classification_id' => ['sometimes', 'required'],
             'contact_preference' => ['nullable'],
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : 'sometimes',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_location_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?
         ];

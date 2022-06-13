@@ -2,7 +2,6 @@
 
 namespace App\Domain\Teams\Actions;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use Illuminate\Http\RedirectResponse;
@@ -20,12 +19,6 @@ class UpdateTeam
         TeamAggregate::retrieve($id)->update($payload)->persist();
         $team = Team::findOrFail($id);
 
-        $client_id = $team->client->id ?? null;
-
-        if ($client_id) {
-            ClientAggregate::retrieve($client_id)->updateTeam($payload)->persist();
-        }
-
         return $team;
     }
 
@@ -37,7 +30,6 @@ class UpdateTeam
     public function rules(): array
     {
         return [
-            'client_id' => ['sometimes', 'nullable', 'string', 'max:255', 'exists:clients,id'],
             'name' => ['required', 'max:50'],
 //            'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],

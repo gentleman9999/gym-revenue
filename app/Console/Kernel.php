@@ -6,7 +6,7 @@ use App\Actions\Clients\Activity\Comms\CheckQueuedEmailCampaigns;
 use App\Actions\Clients\Activity\Comms\CheckQueuedSmsCampaigns;
 use App\Actions\Simulation\GenerateRandomLeads;
 use App\Actions\Simulation\GenerateRandomMembers;
-use App\Actions\Users\Reminders\CheckReminders;
+use App\Domain\Reminders\Actions\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\App;

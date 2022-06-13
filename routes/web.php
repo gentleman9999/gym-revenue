@@ -32,7 +32,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/sales-slideshow', \App\Ht
 Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\Http\Controllers\WorkoutGeneratorController::class . '@index')->name('payment-gateways');
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
-Route::middleware(['auth:sanctum', 'verified'])->put('/current-team', \App\Actions\Teams\SwitchTeam::class)->name('current-team.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/current-team', \App\Domain\Users\Actions\SwitchTeam::class)->name('current-team.update');
 //@todo: need to add in ACL/middleware for CnB users
 Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
     Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
@@ -156,8 +156,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
-    Route::delete('/reminder/delete/{id}', \App\Actions\Users\Reminders\DeleteReminder::class)->name('calendar.reminder.delete');
-    Route::put('/reminder/create/{id}', \App\Actions\Users\Reminders\CreateReminderFromCalendarEvent::class)->name('calendar.reminder.create');
+    Route::delete('/reminder/delete/{id}', \App\Domain\Reminders\Actions\DeleteReminder::class)->name('calendar.reminder.delete');
+    Route::put('/reminder/create/{id}', \App\Domain\Reminders\Actions\CreateReminderFromCalendarEvent::class)->name('calendar.reminder.create');
     Route::post('/upload', \App\Actions\Clients\Calendar\UploadFile::class)->name('calendar.upload');
     Route::prefix('event_types')->group(function () {
         Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
@@ -252,9 +252,9 @@ Route::prefix('invite')->group(function () {
     Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(function () {
-    Route::get('/', \App\Actions\Users\Notifications\GetNotifications::class)->name('notifications');
-    Route::get('/unread', \App\Actions\Users\Notifications\GetUnreadNotificationCount::class)->name('notifications.unread');
-    Route::post('/{id}', \App\Actions\Users\Notifications\DismissNotification::class)->name('notifications.dismiss');
+    Route::get('/', \App\Domain\Notifications\Actions\GetNotifications::class)->name('notifications');
+    Route::get('/unread', \App\Domain\Notifications\Actions\GetUnreadNotificationCount::class)->name('notifications.unread');
+    Route::post('/{id}', \App\Domain\Notifications\Actions\DismissNotification::class)->name('notifications.dismiss');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('reports')->group(function () {
     Route::get('/', \App\Http\Controllers\ReportsDashboardController::class . '@index')->name('reports.dashboard');

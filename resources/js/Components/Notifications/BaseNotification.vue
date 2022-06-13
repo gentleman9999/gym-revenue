@@ -3,8 +3,8 @@
         href="#"
         class="flex flex-row gap-2 items-center px-4 py-3 hover:bg-base-100 -mx-2 text-sm"
         :class="{
-            'bg-opacity-[20%]': !notification.dismissed_at,
-            'bg-primary': !notification.dismissed_at,
+            'bg-opacity-[20%]': !notification.deleted_at,
+            'bg-primary': !notification.deleted_at,
         }"
         @click.prevent="handleClick"
     >

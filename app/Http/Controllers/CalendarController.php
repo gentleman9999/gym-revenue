@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Reminders\Reminder;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
-use App\Models\Reminder;
 use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;

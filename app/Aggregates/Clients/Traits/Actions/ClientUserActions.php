@@ -20,4 +20,11 @@ trait ClientUserActions
 
         return $this;
     }
+
+    public function importUsers(string $created_by_user_id, string $key, string $client)
+    {
+        $this->recordThat(new UsersImported($this->uuid(), $created_by_user_id, $key, $client));
+
+        return $this;
+    }
 }

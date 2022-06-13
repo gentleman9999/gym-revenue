@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Data;
 
-use App\Actions\Endusers\Members\UpsertMemberApi;
+use App\Actions\Endusers\Members\CreateMember;
 use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Member;
 use Illuminate\Database\Seeder;
@@ -34,7 +34,7 @@ class MemberSeeder extends Seeder
                         VarDumper::dump('Generating Members for '.$client->name);
                         foreach ($members as $member) {
                             $member_data = $member->toArray();
-                            UpsertMemberApi::run($member_data);
+                            CreateMember::run($member_data);
                         }
                     }
                 }

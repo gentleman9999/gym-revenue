@@ -18,7 +18,7 @@ class DeleteUser implements DeletesUsers
 {
     use AsAction;
 
-    public function handle(User|int $user): User
+    public function handle(User $user): User
     {
         $user_id = $user->id ?? $user;
         if (is_int($user)) {

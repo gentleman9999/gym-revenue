@@ -54,12 +54,12 @@ class EnsureTokenIsValid
     {
         $body = $request->all();
 
-        if (count($body) == count($body, COUNT_RECURSIVE)) {
+        if ($this->isStringKeyedArray($body)) {
             $request->merge(['client_id' => $client_id]);
 
             return $request;
         }
-
+        //is an array of objects
         foreach ($body as $idx => $object) {
             $object['client_id'] = $client_id;
             $body[$idx] = $object;
@@ -68,5 +68,14 @@ class EnsureTokenIsValid
         $request->merge($body);
 
         return $request;
+    }
+
+    protected function isStringKeyedArray(array $arr)
+    {
+        if ([] === $arr) {
+            return false;
+        }
+
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }

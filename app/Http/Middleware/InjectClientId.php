@@ -30,7 +30,28 @@ class InjectClientId
     protected function addClientIdToRequest($request, $client_id)
     {
         $body = $request->all();
-        $body['client_id'] = $client_id;
+        if ($this->isStringKeyedArray($body)) {
+            $request->merge(['client_id' => $client_id]);
+
+            return $request;
+        }
+        //is an array of objects
+        foreach ($body as $idx => $object) {
+            $object['client_id'] = $client_id;
+            $body[$idx] = $object;
+        }
+
         $request->merge($body);
+
+        return $request;
+    }
+
+    protected function isStringKeyedArray(array $arr)
+    {
+        if ([] === $arr) {
+            return false;
+        }
+
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }

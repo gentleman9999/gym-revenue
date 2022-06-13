@@ -2,7 +2,7 @@
 
 namespace App\Domain\Users\Actions;
 
-use App\Domain\Users\UserAggregate;
+use App\Aggregates\Clients\ClientAggregate;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -14,12 +14,12 @@ class ImportUsers
 {
     use AsAction;
 
-    public function handle($data)
+    public function handle(array $data, string $client_id)
     {
         $result = false;
         foreach ($data as $item) {
             if ($item['extension'] === 'csv') {
-                UserAggregate::retrieve($current_user->id)->importUsers($item['key'], $current_user->currentClientId())->persist();
+                ClientAggregate::retrieve($client_id)->importUsers($item['key'], $client_id)->persist();
                 $result = true;
             } else {
                 Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
@@ -40,7 +40,7 @@ class ImportUsers
     {
         return $this->handle(
             $request->all(),
-            $request->user(),
+            $request->user()->currentClientId()
         );
     }
 
