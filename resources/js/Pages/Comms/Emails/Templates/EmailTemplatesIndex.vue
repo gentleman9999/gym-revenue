@@ -192,14 +192,6 @@ export default defineComponent({
             },
         };
 
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
         return {
             fields,
             actions,

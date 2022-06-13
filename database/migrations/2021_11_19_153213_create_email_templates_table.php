@@ -18,7 +18,7 @@ class CreateEmailTemplatesTable extends Migration
             $table->string('name');
             $table->longText('markup')->nullable();
             $table->longText('json')->nullable();
-            $table->longText('thumbnail')->nullable();
+            $table->json('thumbnail')->nullable();
             $table->boolean('active')->default(1);
             $table->uuid('client_id')->nullable();
             $table->uuid('team_id')->nullable();

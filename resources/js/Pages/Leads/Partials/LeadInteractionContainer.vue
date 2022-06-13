@@ -219,14 +219,6 @@ export default defineComponent({
         fetchLeadInfo() {
             this.dynamicDetails = this.details;
         },
-        comingSoon() {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        },
     },
     watch: {
         activeContactMethod(val) {

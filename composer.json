@@ -11,6 +11,10 @@
         "fruitcake/laravel-cors": "^2.0",
         "goldspecdigital/laravel-eloquent-uuid": "^9.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "hammerstone/sidecar": "^0.3.12",
+        "inertiajs/inertia-laravel": "^0.4.3",
+        "lab404/laravel-impersonate": "^1.7",
+        "laravel/framework": "^8.54",
         "inertiajs/inertia-laravel": "^0.6.2",
         "lab404/laravel-impersonate": "^1.7.3",
         "laravel/framework": "^9.0",
@@ -32,7 +36,8 @@
         "symfony/http-client": "^6.1",
         "symfony/mailgun-mailer": "^6.1",
         "tightenco/ziggy": "^1.0",
-        "twilio/sdk": "^6.31"
+        "twilio/sdk": "^6.31",
+        "wnx/sidecar-browsershot": "^1.1"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",

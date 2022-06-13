@@ -16,7 +16,10 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
+            - 'php artisan sidecar:deploy --env=production'
             - 'npm ci && npm run prod && rm -rf node_modules'
+        deploy:
+          - 'php artisan sidecar:activate'
     staging:
         domain: grp-stage.capeandbay.com
         memory: 1024
@@ -24,7 +27,7 @@ environments:
         database: mango
         cache: gr-prototype
         cli-timeout: 900
-        storage: gymrevenue-dev
+        storage: gymrevenue-stage
         runtime: docker
         queues:
             - grp-staging-events
@@ -34,6 +37,10 @@ environments:
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'npm ci && npm run dev && rm -rf node_modules'
+            - 'php artisan sidecar:deploy --env=production'
+            - 'npm ci && npm run prod && rm -rf node_modules'
+        deploy:
+          - 'php artisan sidecar:activate'
     develop:
         domain: grp-dev.capeandbay.com
         memory: 1024
@@ -50,4 +57,7 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
+            - 'php artisan sidecar:deploy'
             - 'npm ci && npm run dev && rm -rf node_modules'
+        deploy:
+          - 'php artisan sidecar:activate'

@@ -66,6 +66,6 @@ class EmailTemplatesProjector extends Projector
 
     public function onEmailTemplateThumbnailUpdated(EmailTemplateThumbnailUpdated $event)
     {
-        EmailTemplates::findOrFail($event->id)->updateOrFail(['thumbnail' => $event->thumbnail]);
+        EmailTemplates::findOrFail($event->id)->updateOrFail(['thumbnail' => ['key' => $event->key, 'url' => $event->url]]);
     }
 }

@@ -1,6 +1,7 @@
 import { useFlash } from "./useFlash";
 import { ref, watch, watchEffect } from "vue";
 import { useUser } from "@/utils/useUser";
+import { generateToast } from "@/utils/createToast";
 
 export const useFlashAlertEmitter = () => {
     const flash = useFlash();
@@ -23,15 +24,11 @@ export const useFlashAlertEmitter = () => {
                 console.log({ type, messages });
 
                 messages.forEach(function (text) {
-                    let alert = {
-                        type: "warning",
-                        theme: "sunset",
-                        text: "Feature Coming Soon!",
-                        timeout: 6500,
-                    };
-                    alert["type"] = type;
-                    alert["text"] = text;
-                    new Noty(alert).show();
+                    let toastText =
+                        typeof text === "string" && text.length > 0
+                            ? text
+                            : "Feature Coming Soon!";
+                    generateToast(type, toastText);
                 });
             });
         },

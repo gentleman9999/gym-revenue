@@ -46,6 +46,7 @@
 
 <script>
 import { computed, defineComponent, ref } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
 
@@ -70,15 +71,6 @@ export default defineComponent({
     },
     props: ["title", "filters", "campaigns"],
     setup(props) {
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
-
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;

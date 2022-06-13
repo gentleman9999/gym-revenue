@@ -8,12 +8,14 @@ class EmailTemplateThumbnailUpdated extends ShouldBeStored
 {
     public $client;
     public $id;
-    public $thumbnail;
+    public $key;
+    public $url;
 
-    public function __construct(string $client, string $id, string $thumbnail)
+    public function __construct(string $client, string $id, string $key, string $url)
     {
         $this->client = $client;
         $this->id = $id;
-        $this->thumbnail = $thumbnail;
+        $this->key = $key;
+        $this->url = $url;
     }
 }

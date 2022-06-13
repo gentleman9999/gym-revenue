@@ -511,7 +511,11 @@ export default {
             handleClickUpload,
             handleReminderDelete,
             handleReminderCreate,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
+            multiselectClasses: {
+                ...getDefaultMultiselectTWClasses(),
+                dropdown:
+                    "max-h-60 absolute -left-px -right-px bottom-0 transform translate-y-full border border-gray-300 -mt-px overflow-y-scroll z-50 bg-base-content text-base-100 flex flex-col rounded-b",
+            },
         };
     },
 };

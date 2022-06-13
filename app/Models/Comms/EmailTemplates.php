@@ -7,6 +7,7 @@ use App\Models\User;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class EmailTemplates extends Model
 {
@@ -28,14 +29,22 @@ class EmailTemplates extends Model
 
     protected $casts = [
         'json' => 'array',
+        'thumbnail' => 'array',
     ];
 
     protected static function booted()
     {
         static::updating(function ($model) {
             if ($model->getOriginal()['markup'] !== $model->markup) {
-                //markup changed, so reset the thumbnail
-                $model->thumbnail = null;
+                //markup changed, so reset the thumbnail if exists
+                if ($model->thumbnail !== null) {
+                    $thumbnail = $model->thumbnail;
+                    $thumbnail['url'] = null;
+                    $model->thumbnail = $thumbnail;
+                    if ($thumbnail['key'] !== null) {
+                        Storage::disk('s3')->delete($thumbnail['key']);
+                    }
+                }
             }
         });
     }
