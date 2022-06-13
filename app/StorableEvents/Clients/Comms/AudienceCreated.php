@@ -13,7 +13,7 @@ class AudienceCreated extends ShouldBeStored
     public $from;
     public $user;
 
-    public function __construct($client, $name, $slug, /*$email, $from,*/ $user)
+    public function __construct(string $client, string $name, string $slug, /*$email, $from,*/ string $user)
     {
         $this->client = $client;
         $this->name = $name;

@@ -48,14 +48,14 @@ class MemberAggregate extends AggregateRoot
         return $this;
     }
 
-    public function subscribeToComms($subscribed_at)
+    public function subscribeToComms(DateTime $subscribed_at)
     {
         $this->recordThat(new MemberSubscribedToComms($this->uuid(), $subscribed_at));
 
         return $this;
     }
 
-    public function unsubscribeFromComms($unsubscribed_at)
+    public function unsubscribeFromComms(DateTime $unsubscribed_at)
     {
         $this->recordThat(new MemberUnsubscribedFromComms($this->uuid(), $unsubscribed_at));
 

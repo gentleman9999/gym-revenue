@@ -3,7 +3,7 @@
 </template>
 <script setup>
 import SelectBox from "@/Components/SelectBox";
-let items = [
+const items = [
     "January",
     "February",
     "March",

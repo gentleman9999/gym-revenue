@@ -22,7 +22,14 @@
                 />
                 <jet-input-error :message="form.errors.start" class="mt-2" />
             </div>
-            <div>Project Status</div>
+            <div v-if="calendar_event?.event_completion == null">
+                Project Status:
+                <div class="badge badge-error gap-2">incomplete</div>
+            </div>
+            <div v-else>
+                Project Status:
+                <div class="badge badge-success gap-2">complete</div>
+            </div>
         </div>
         <div class="flex flex-col">
             <jet-label
@@ -504,7 +511,11 @@ export default {
             handleClickUpload,
             handleReminderDelete,
             handleReminderCreate,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
+            multiselectClasses: {
+                ...getDefaultMultiselectTWClasses(),
+                dropdown:
+                    "max-h-60 absolute -left-px -right-px bottom-0 transform translate-y-full border border-gray-300 -mt-px overflow-y-scroll z-50 bg-base-content text-base-100 flex flex-col rounded-b",
+            },
         };
     },
 };

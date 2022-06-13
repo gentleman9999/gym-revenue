@@ -8,12 +8,10 @@ class UserWasImpersonated extends ShouldBeStored
 {
     public $victim;
     public $invader;
-    public $date;
 
-    public function __construct($victim, $invader, $date)
+    public function __construct(string $victim, string $invader)
     {
         $this->victim = $victim;
         $this->invader = $invader;
-        $this->date = $date;
     }
 }

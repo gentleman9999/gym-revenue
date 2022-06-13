@@ -125,7 +125,7 @@ class LeadAggregate extends AggregateRoot
         return $this;
     }
 
-    public function update($data, $old_data, string $userId = 'Auto Generated')
+    public function update(array $data, array $old_data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadUpdated($userId, $data, $old_data));
 
@@ -153,14 +153,14 @@ class LeadAggregate extends AggregateRoot
         return $this;
     }
 
-    public function subscribeToComms($subscribed_at)
+    public function subscribeToComms(string $subscribed_at)
     {
         $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadSubscribedToComms($this->uuid(), $subscribed_at));
 
         return $this;
     }
 
-    public function unsubscribeFromComms($unsubscribed_at)
+    public function unsubscribeFromComms(string $unsubscribed_at)
     {
         $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadUnsubscribedFromComms($this->uuid(), $unsubscribed_at));
 

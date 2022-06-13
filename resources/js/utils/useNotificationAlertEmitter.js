@@ -51,14 +51,18 @@ export const useNotificationAlertEmitter = () => {
     };
     onBeforeUnmount(() => {
         //cleanup old listeners
-        Echo.leave(channel.value.name);
+        if (channel.value?.name) {
+            Echo.leave(channel.value.name);
+        }
     });
     watchEffect(() => {
         const privateUserChannel = `private-App.Models.User.${user?.value?.id}`;
         if (channel.value?.name && channel.value?.name !== privateUserChannel) {
             console.log("leaving channel:", privateUserChannel);
             //leave channel when we log out
-            Echo.leave(channel.value.name);
+            if (channel.value?.name) {
+                Echo.leave(channel.value.name);
+            }
         }
 
         if (

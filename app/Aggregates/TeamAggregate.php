@@ -19,7 +19,7 @@ class TeamAggregate extends AggregateRoot
         ];
     }
 
-    public function addUserToTeam(string $team_id, $team_name, $client_id = null)
+    public function addUserToTeam(string $team_id, string $team_name, $client_id = null)
     {
         if (array_key_exists($team_id, $this->teams)) {
             // @todo - make an exception to throw here that the user is already a member
@@ -37,7 +37,7 @@ class TeamAggregate extends AggregateRoot
         return $this;
     }
 
-    public function delete($id, string $deleted_by_user_id)
+    public function delete(string  $id, string $deleted_by_user_id)
     {
         $this->recordThat(new TeamDeleted($this->uuid(), $deleted_by_user_id, $id));
 

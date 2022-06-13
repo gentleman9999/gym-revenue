@@ -92,8 +92,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('comms.email-templates.create');
         Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('comms.email-templates.export');
         Route::get('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('comms.email-templates.edit');
-        Route::post('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@store')->name('comms.email-templates.store');
-        Route::put('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@update')->name('comms.email-templates.update');
+        Route::post('/', \App\Actions\Clients\Activity\Comms\CreateEmailTemplate::class)->name('comms.email-templates.store');
+        Route::put('/{id}', \App\Actions\Clients\Activity\Comms\UpdateEmailTemplate::class)->name('comms.email-templates.update');
         Route::delete('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@trash')->name('comms.email-templates.trash');
         Route::post('/{id}/restore', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@restore')->name('comms.email-templates.restore');
         Route::post('/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');

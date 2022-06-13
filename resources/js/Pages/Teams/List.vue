@@ -15,6 +15,7 @@
             <template #filter>
                 <beefy-search-filter
                     v-model:modelValue="form.search"
+                    :filtersActive="filtersActive"
                     class="w-full max-w-md mr-4"
                     @reset="reset"
                     @clear-filters="clearFilters"
@@ -23,7 +24,7 @@
                     <div class="form-control">
                         <label
                             for="users"
-                            class="label label-text py-1 text-xs text-gray-400"
+                            class="label label-text py-1 text-xs"
                         >
                             Users:
                         </label>
@@ -45,10 +46,7 @@
                     </div>
 
                     <div class="form-control" v-if="clubs?.length">
-                        <label
-                            for="club"
-                            class="label label-text py-1 text-xs text-gray-400"
-                        >
+                        <label for="club" class="label label-text py-1 text-xs">
                             Club
                         </label>
                         <select
@@ -107,12 +105,10 @@ export default defineComponent({
         const baseRoute = "teams";
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            "teams",
-            {
+        const { form, reset, clearFilters, clearSearch, filtersActive } =
+            useSearchFilter("teams", {
                 club: null,
-            }
-        );
+            });
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -157,6 +153,7 @@ export default defineComponent({
             baseRoute,
             clearFilters,
             clearSearch,
+            filtersActive,
             multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },

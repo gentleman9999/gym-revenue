@@ -2,8 +2,9 @@
 
 namespace Database\Seeders\Comm;
 
+use App\Actions\Clients\Activity\Comms\CreateEmailTemplate;
+use App\Actions\Clients\Activity\Comms\UpdateEmailTemplate;
 use App\Models\Clients\Client;
-use App\Models\Comms\EmailTemplates;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -16,32 +17,41 @@ class EmailTemplateSeeder extends Seeder
      */
     public function run()
     {
-        $default_markup = "<html><body>Hello, %name%!<br/> Have a great day!<br /><br /><br /><span>Sincerely,</span><br/><br/><br/><br/>GymmieBot</body></html>";
-        // For Cape & Bay
-        VarDumper::dump('Default email template for Cape & Bay');
-        $cnb_record = EmailTemplates::firstOrCreate([
-            'name' => "Baby's First Email Template (;",
-            'active' => 1,
-            'created_by_user_id' => 'auto',
-        ]);
-        $cnb_record->markup = $default_markup;
-        $cnb_record->save();
+        //TODO: could create more pregenerated ones, and loop over directory
+        $template = json_decode(file_get_contents('database/data/templates/email/basic.json'));
 
+        $default_markup = $template->markup;
+        $default_json = $template->json;
+//        // For Cape & Bay
+//        VarDumper::dump('Default email template for Cape & Bay');
+//        $template = CreateEmailTemplate::run([
+//            'name' => "Baby's First Email Template (;",
+//            'active' => 1,
+//            'markup' => $default_markup,
+//            'json' => ''//TODO:
+//        ]);
+//
+//        $template->active = 1;
+//
+//        UpdateEmailTemplate::run($template->toArray());
+//
         $clients = Client::whereActive(1)->get();
         // For each client
         foreach ($clients as $client) {
             VarDumper::dump('Default email template for '.$client->name);
             // Create an email template record
-            $record = EmailTemplates::firstOrCreate([
+            $template = CreateEmailTemplate::run([
                 'name' => $client->name."'s First Email Template (;",
                 'client_id' => $client->id,
                 'active' => 1,
-                'created_by_user_id' => 'auto',
+                'markup' => $default_markup,
+                'json' => $default_json,
+                'subject' => 'We should remove subject from templates and add it to the campaign/event',
             ]);
-            // Mark sure markup is stupid simple with %name% token and base64 encoded
-            //$record->markup = base64_encode($default_markup);
-            $record->markup = $default_markup;
-            $record->save();
+
+            $template->active = 1;
+
+            UpdateEmailTemplate::run($template->toArray());
         }
     }
 }

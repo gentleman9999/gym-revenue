@@ -1,8 +1,9 @@
 <template>
     <app-layout :title="title">
         <page-toolbar-nav title="Tasks" :links="navLinks" />
-        <div class="flex flex-row">
-            <month-switcher class="pl-4" />
+        <div class="flex flex-row justify-center">
+            <!--            hide month switcher until it does something-->
+            <!--            <month-switcher class="pl-4" />-->
             <div class="flex flex-col items-center">
                 <task-date-switcher
                     :startOfTheWeek="startOfTheWeek"
@@ -18,11 +19,11 @@
                     model-name="Task"
                     model-key="task"
                     :fields="fields"
-                    :resource="tasks"
+                    :resource="getTaskData(taskType)"
                     :actions="{
                         edit: {
                             label: 'Edit',
-                            handler: ({ data }) => editTask(data),
+                            handler: ({ data }) => editTask(data, taskType),
                         },
                         trash: false,
                         restore: false,
@@ -76,7 +77,7 @@
     </app-layout>
 </template>
 <script>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, computed } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
@@ -105,7 +106,13 @@ export default defineComponent({
         MonthSwitcher,
         TaskListView,
     },
-    props: ["tasks", "filters"],
+    props: [
+        "tasks",
+        "filters",
+        "incomplete_tasks",
+        "overdue_tasks",
+        "completed_tasks",
+    ],
     setup(props) {
         const createEventModal = ref();
         const editEventModal = ref();
@@ -118,14 +125,15 @@ export default defineComponent({
         const resetEditEventModal = () =>
             createCalendarEventForm.value?.form?.reset();
         const closeModals = () => {
-            createEventModal.value.close();
-            editEventModal.value.close();
+            createEventModal.value?.close();
+            editEventModal.value?.close();
         };
 
-        const editTask = (item) => {
+        const editTask = (item, taskType) => {
             console.log(props.tasks);
             const id = item.id;
-            selectedCalendarEvent.value = props.tasks.data.find(
+            const taskData = getTaskData(taskType);
+            selectedCalendarEvent.value = taskData.data.find(
                 (event) => event.id === id
             );
             editEventModal.value.open();
@@ -146,6 +154,18 @@ export default defineComponent({
         };
 
         const selectedDate = ref(new Date());
+
+        const transformDate = (date) => {
+            if (!date.value?.toISOString) {
+                return date;
+            }
+
+            return date.value.toISOString().slice(0, 10);
+        };
+
+        const selectedDateFormatted = computed(() =>
+            transformDate(selectedDate)
+        );
 
         let startDay = new Date();
         let day = startDay.getDay() === 0 ? 7 : startDay.getDay();
@@ -207,11 +227,22 @@ export default defineComponent({
                 preserveScroll: true,
             };
             let query = {
-                created_at: selectedDate.value,
+                start: selectedDateFormatted.value,
             };
             Inertia.get(route("tasks"), pickBy(query), options);
         };
         watch([selectedDate], getData, { deep: true });
+
+        const getTaskData = (taskType) => {
+            switch (taskType) {
+                case "incomplete_tasks":
+                    return props.incomplete_tasks;
+                case "ovedue_tasks":
+                    return props.overdue_tasks;
+                case "completed_tasks":
+                    return props.completed_tasks;
+            }
+        };
 
         return {
             fields,
@@ -236,6 +267,8 @@ export default defineComponent({
             startOfTheWeek,
             setStartOfTheWeek,
             taskTypes,
+            selectedDateFormatted,
+            getTaskData,
         };
     },
 });

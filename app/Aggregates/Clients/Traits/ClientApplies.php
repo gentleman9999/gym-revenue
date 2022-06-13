@@ -57,7 +57,7 @@ trait ClientApplies
             'type' => 'Audience Created',
             'name' => $event->name,
             'slug' => $event->slug,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -71,7 +71,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => CommAudience::class,
             'assign_model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -85,7 +85,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => CommAudience::class,
             'assign_model' => SmsCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -99,7 +99,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => CommAudience::class,
             'assign_model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -113,7 +113,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => CommAudience::class,
             'assign_model' => SmsCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -123,11 +123,11 @@ trait ClientApplies
     {
         $history = [
             'type' => 'Email Template Created',
-            'template_id' => $event->template,
+            'template_id' => $event->data['id'],
             'model' => EmailTemplates::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
-        $history['by'] = ($event->created == 'auto') ? 'Auto Generated' : $event->created;
+        $history['by'] = $event->user;
         $this->comm_history[] = $history;
     }
 
@@ -135,11 +135,11 @@ trait ClientApplies
     {
         $history = [
             'type' => 'Email Template Updated',
-            'template_id' => $event->template,
+            'template_id' => $event->data['id'],
             'model' => EmailTemplates::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
-        $history['by'] = $event->updated;
+        $history['by'] = $event->user;
         $this->comm_history[] = $history;
     }
 
@@ -149,7 +149,7 @@ trait ClientApplies
             'type' => 'Email Campaign Created',
             'template_id' => $event->template,
             'model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->created == 'auto') ? 'Auto Generated' : $event->created;
         $this->comm_history[] = $history;
@@ -164,7 +164,7 @@ trait ClientApplies
             'field' => $event->field,
             'old_value' => $event->old,
             'new_value' => $event->new,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->updated == 'auto') ? 'Auto Generated' : $event->updated;
         $this->comm_history[] = $history;
@@ -178,7 +178,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => EmailTemplates::class,
             'assign_model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -192,7 +192,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => EmailTemplates::class,
             'assign_model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -204,7 +204,7 @@ trait ClientApplies
             'type' => 'Email Campaign Launched',
             'campaign_id' => $event->campaign,
             'model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -216,7 +216,7 @@ trait ClientApplies
             'type' => 'Email Campaign Completed',
             'campaign_id' => $event->campaign,
             'model' => EmailCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = 'Auto Generated';
         $this->comm_history[] = $history;
@@ -228,7 +228,7 @@ trait ClientApplies
             'type' => 'SMS Template Created',
             'template_id' => $event->template,
             'model' => SmsTemplates::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->created == 'auto') ? 'Auto Generated' : $event->created;
         $this->comm_history[] = $history;
@@ -240,7 +240,7 @@ trait ClientApplies
             'type' => 'SMS Template Updated',
             'template_id' => $event->template,
             'model' => SmsTemplates::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = $event->updated;
         $this->comm_history[] = $history;
@@ -252,7 +252,7 @@ trait ClientApplies
             'type' => 'SMS Campaign Created',
             'template_id' => $event->template,
             'model' => SmsCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->created == 'auto') ? 'Auto Generated' : $event->created;
         $this->comm_history[] = $history;
@@ -267,7 +267,7 @@ trait ClientApplies
             'field' => $event->field,
             'old_value' => $event->old,
             'new_value' => $event->new,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->updated == 'auto') ? 'Auto Generated' : $event->updated;
         $this->comm_history[] = $history;
@@ -281,7 +281,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => SmsTemplates::class,
             'assign_model' => SmsCampaigns::class,
-            'date' => $event->metaData()['created-at'],
+            'date' => $event->createdAt(),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -295,7 +295,7 @@ trait ClientApplies
             'campaign_id' => $event->campaign,
             'model' => SmsTemplates::class,
             'assign_model' => SmsCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -307,7 +307,7 @@ trait ClientApplies
             'type' => 'SMS Campaign Launched',
             'campaign_id' => $event->campaign,
             'model' => SmsCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->comm_history[] = $history;
@@ -319,7 +319,7 @@ trait ClientApplies
             'type' => 'SMS Campaign Completed',
             'campaign_id' => $event->campaign,
             'model' => SmsCampaigns::class,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = 'Auto Generated';
         $this->comm_history[] = $history;
@@ -331,7 +331,7 @@ trait ClientApplies
             'activity' => 'Gateway Integration Created',
             'type' => $event->type,
             'gateway_slug' => $event->slug,
-            'date' => date($this->date_format, strtotime($event->metaData()['created-at'])),
+            'date' => date($this->date_format, strtotime($event->createdAt())),
         ];
         $history['by'] = ($event->user == 'auto') ? 'Auto Generated' : $event->user;
         $this->provider_history[] = $history;

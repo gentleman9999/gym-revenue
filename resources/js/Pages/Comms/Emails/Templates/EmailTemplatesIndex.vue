@@ -13,13 +13,13 @@
                     class="btn justify-self-end"
                     :href="route('comms.dashboard')"
                 >
-                    <span
-                        ><font-awesome-icon
+                    <span>
+                        <font-awesome-icon
                             :icon="['far', 'chevron-double-left']"
                             size="sm"
                         />
-                        Back</span
-                    >
+                        Back
+                    </span>
                 </inertia-link>
             </div>
         </template>
@@ -31,7 +31,9 @@
             :fields="fields"
             :resource="templates"
             :actions="actions"
-            :top-actions="{ create: { label: 'New Template' } }"
+            :top-actions="topActions"
+            :table-component="false"
+            :card-component="EmailTemplateCard"
         />
 
         <confirm
@@ -65,10 +67,11 @@ import {
     faChevronDoubleLeft,
     faEllipsisH,
 } from "@fortawesome/pro-regular-svg-icons";
+import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail";
-
-library.add(faChevronDoubleLeft, faEllipsisH);
+import EmailTemplateCard from "./Partials/EmailTemplateCard";
+library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 export default defineComponent({
     name: "EmailTemplatesIndex",
@@ -141,6 +144,23 @@ export default defineComponent({
 
         const actions = computed(() => {
             return {
+                edit: {
+                    handler: ({ data }) => {
+                        Inertia.visitInModal(
+                            route("comms.email-templates.edit", data.id),
+                            {
+                                redirectBack: (e) => {
+                                    console.log("redirect-back", e);
+                                },
+                                modalProps: {
+                                    class: "max-w-[90vw] h-[90vh] p-0",
+                                    showCloseButton: false,
+                                },
+                                // reloadOnClose: true,
+                            }
+                        );
+                    },
+                },
                 selfSend: {
                     label: "Send You a Test Email",
                     handler: ({ data }) => handleOpenSendModal(data),
@@ -150,6 +170,27 @@ export default defineComponent({
                 },
             };
         });
+
+        const topActions = {
+            create: {
+                label: "New Template",
+                handler: () => {
+                    Inertia.visitInModal(
+                        route("comms.email-templates.create"),
+                        {
+                            // redirectBack: (e) => {
+                            //     console.log("redirect-back-after-create", e);
+                            // },
+                            modalProps: {
+                                class: "max-w-[90vw] h-[90vh] p-0",
+                                showCloseButton: false,
+                            },
+                            reloadOnClose: true,
+                        }
+                    );
+                },
+            },
+        };
 
         return {
             fields,
@@ -161,6 +202,8 @@ export default defineComponent({
             handleCloseTextModal,
             confirmSend,
             sendVars,
+            topActions,
+            EmailTemplateCard,
         };
     },
 });

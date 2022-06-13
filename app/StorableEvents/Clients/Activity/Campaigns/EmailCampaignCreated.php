@@ -2,8 +2,18 @@
 
 namespace App\StorableEvents\Clients\Activity\Campaigns;
 
-use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
+use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class EmailCampaignCreated extends EmailTemplateCreated
+class EmailCampaignCreated extends ShouldBeStored
 {
+    public $client;
+    public $template;
+    public $created;
+
+    public function __construct(string $client, string $template, string $created)
+    {
+        $this->client = $client;
+        $this->template = $template;
+        $this->created = $created;
+    }
 }
