@@ -88,9 +88,7 @@ select {
 }
 
 .filter-drawer {
-    @apply w-[18rem] h-full absolute top-[1rem] left-0 bg-base-content rounded-r-lg transition-all whitespace-nowrap;
-    grid-column: 1;
-    grid-row: 1;
+    @apply w-[18rem] h-full absolute top-[1rem] left-0 rounded-r-lg transition-all whitespace-nowrap;
 
     .filters-open {
         @apply rounded-r-lg p-8 bg-secondary;
@@ -126,12 +124,13 @@ select {
 }
 
 .filter-closed-container {
+    @apply bg-base-content transition-all;
     @apply w-4 rounded-r-lg;
     @apply hover:bg-base-content hover:opacity-80;
 }
 
 .filter-drawer-open {
-    @apply bg-transparent rounded-none;
+    @apply bg-secondary rounded-r-lg transition-all;
 
     button.toggle-filters {
         @apply opacity-0 transition-all;
@@ -139,7 +138,7 @@ select {
 }
 
 button.filter-open {
-    @apply absolute bg-secondary right-[0.75rem] top-[0.5rem] rotate-180 text-base-content !important;
+    @apply absolute bg-secondary right-[0.75rem] top-[0.5rem] rotate-180 text-base-content transition-all !important;
 }
 </style>
 
