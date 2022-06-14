@@ -28,7 +28,7 @@ class MarkLeadConverted
 
     public function handle($data)
     {
-        LeadAggregate::retrieve($data['id'])->convert($data);
+        LeadAggregate::retrieve($data['id'])->convert($data)->persist();
 
         return Lead::findOrFail($data['id']);
     }
