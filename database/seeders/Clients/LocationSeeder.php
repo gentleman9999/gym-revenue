@@ -418,19 +418,16 @@ class LocationSeeder extends Seeder
         }
 
         ///now do trufit csv import
-        //TODO:fix trufit csv seeder
-        VarDumper::dump("Don't forget you disabled the TrufitCsv import to work past a seeder fatal!");
-
-//        VarDumper::dump("Adding TruFit Locations from CSV");
-//        $key = 'tmp/trufit-clubs';
-//        $csv = file_get_contents('database/data/trufit-clubs.csv');
-//        Storage::disk('s3')->put($key, $csv);
-//        ImportLocations::run([
-//            [
-//                'key' => $key,
-//                'extension' => 'csv',
-//                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
-//            ],
-//        ]);
+        VarDumper::dump("Adding TruFit Locations from CSV");
+        $key = 'tmp/trufit-clubs';
+        $csv = file_get_contents('database/data/trufit-clubs.csv');
+        Storage::disk('s3')->put($key, $csv);
+        ImportLocations::run([
+            [
+                'key' => $key,
+                'extension' => 'csv',
+                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
+            ],
+        ]);
     }
 }

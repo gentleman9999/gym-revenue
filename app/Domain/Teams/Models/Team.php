@@ -25,11 +25,6 @@ class Team extends JetstreamTeam
 
     public $incrementing = false;
 
-    protected $guarded = [
-        'id',
-        'client_id',
-    ];
-
     protected $hidden = [
         'client_id',
     ];

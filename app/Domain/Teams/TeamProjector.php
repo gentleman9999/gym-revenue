@@ -18,15 +18,14 @@ class TeamProjector extends Projector
     public function onTeamCreated(TeamCreated $event): void
     {
         $team = new Team();
-        $team->fill($event->payload);
+        //get only the keys we care about (the ones marked as fillable)
+        $team_fillable_data = array_filter($event->payload, function ($key) {
+            return in_array($key, (new Team())->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+        $team->fill($team_fillable_data);
         $team->id = $event->aggregateRootUuid();
         $team->client_id = $event->payload['client_id'] ?? null;
         $team->save();
-        //TODO: make sure creating clients sets them up a home team;
-//        if ($team->home_team) {
-//            $team->client->home_team_id = $team->id;
-//            $team->save();
-//        }
         //TODO:just use a team_location pivot table
         foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
             TeamDetail::create(['team_id' => $event->aggregateRootUuid(), 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
