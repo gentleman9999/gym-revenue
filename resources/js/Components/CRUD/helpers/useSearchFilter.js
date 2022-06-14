@@ -28,6 +28,7 @@ export const useSearchFilter = (
         let hasActive = false;
 
         for (let field of Object.keys(form.value)) {
+            if (field === "page") continue;
             if (!!form.value[field]) {
                 hasActive = true;
             }
@@ -52,7 +53,18 @@ export const useSearchFilter = (
 
     const clearFilters = () => {
         const { search, ...filters } = form.value;
-        form.value = { ...mapValues(filters, () => null), search };
+
+        let newFilters = {};
+
+        for (const field of Object.keys(filters)) {
+            if (field === "page") {
+                newFilters["page"] = filters["page"];
+                continue;
+            }
+            newFilters[field] = null;
+        }
+
+        form.value = { ...newFilters, search };
     };
 
     const clearSearch = () => {
