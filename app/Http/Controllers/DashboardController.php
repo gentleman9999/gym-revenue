@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $team_name = $team->name;
         $vue = 'Dashboard';
 
-        if (! is_null($client)) {
+        if ($client !== null) {
             $clients = collect([$client]);
             $account = $client->name;
             $widgets = $this->service->getDashboardWidgets();
@@ -56,7 +56,7 @@ class DashboardController extends Controller
             // Check if this is the CnB Default team.
             // If so the vue will be AdminDashboard. else DeveloperDashboard
             $vue = ($team->home_team) ? 'Dashboards/AdminDashboard' : 'Dashboards/DeveloperDashboard';
-            $teams = Team::all();
+            $teams = $user->allTeams()->load('client');
 
             if (count($clients) > 0) {
                 $clients = $clients->toArray();
