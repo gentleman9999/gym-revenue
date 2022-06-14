@@ -30,12 +30,6 @@ class CreateClient
 //            ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
         $aggy->persist();
 
-        $client_id = $payload['client_id'] ?? null;
-
-        if ($client_id) {
-            ClientAggregate::retrieve($payload['client_id'])->attachTeamToClient($id)->persist();
-        }
-
         return Client::findOrFail($id);
     }
 

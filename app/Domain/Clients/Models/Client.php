@@ -13,16 +13,14 @@ use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
 use function collect;
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Spatie\EventSourcing\Projections\Projection;
 
-class Client extends Model
+class Client extends Projection
 {
     use Notifiable;
     use SoftDeletes;
-    use Uuid;
 
     protected $primaryKey = 'id';
 
@@ -39,6 +37,11 @@ class Client extends Model
     protected $casts = [
         'services' => 'array',
     ];
+
+    public function getKeyName()
+    {
+        return 'id';
+    }
 
     public function locations()
     {
