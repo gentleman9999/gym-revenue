@@ -1,26 +1,31 @@
 <template>
-    <app-layout title="Edit SMS Template">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">
-                Configure & Modify SMS Campaign
-            </h2>
-            <small>{{ campaign.name }}</small>
-        </template>
+    <ModalableWrapper>
+        <app-layout title="Edit SMS Template">
+            <template #header>
+                <h2 class="font-semibold text-xl leading-tight">
+                    Configure & Modify SMS Campaign
+                </h2>
+                <small>{{ campaign.name }}</small>
+            </template>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <sms-template-form
-                    :client-id="$page.props.user.current_client_id"
-                    :campaign="campaign"
-                    :can-activate="true"
-                    :templates="templates"
-                    :audiences="audiences"
-                    :assigned-template="assignedTemplate"
-                    :assigned-audience="assignedAudience"
-                />
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
             </div>
-        </div>
-    </app-layout>
+        </app-layout>
+        <template #modal>
+            <sms-template-form
+                :client-id="$page.props.user.current_client_id"
+                :campaign="campaign"
+                :can-activate="true"
+                :templates="templates"
+                :audiences="audiences"
+                :assigned-template="assignedTemplate"
+                :assigned-audience="assignedAudience"
+            />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -33,6 +38,7 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
 import SmsTemplateForm from "./Partials/SmsCampaignForm";
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default {
     name: "EditSmsCampaign",
@@ -44,6 +50,8 @@ export default {
         JetInputError,
         JetLabel,
         SmsTemplateForm,
+        ModalableWrapper,
+        ModalSlot,
     },
     props: {
         campaign: {

@@ -1,28 +1,33 @@
 <template>
-    <app-layout title="Create User">
-        <template #header>
-            <div class="flex flex-row ml-4">
-                <Button
-                    type="button"
-                    @click="$inertia.visit(route('users'))"
-                    info
-                    outline
-                >
-                    Back
-                </Button>
+    <ModalableWrapper>
+        <app-layout title="Create User">
+            <template #header>
+                <div class="flex flex-row ml-4">
+                    <Button
+                        type="button"
+                        @click="$inertia.visit(route('users'))"
+                        info
+                        outline
+                    >
+                        Back
+                    </Button>
 
-                <h2 class="font-semibold text-xl leading-tight ml-4">
-                    Create A New {{ $page.props.clientName }} User
-                </h2>
+                    <h2 class="font-semibold text-xl leading-tight ml-4">
+                        Create A New {{ $page.props.clientName }} User
+                    </h2>
+                </div>
+            </template>
+
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
             </div>
+        </app-layout>
+        <template #modal>
+            <user-form :client-id="$page.props.user.current_client_id" />
         </template>
-
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <user-form :client-id="$page.props.user.current_client_id" />
-            </div>
-        </div>
-    </app-layout>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -35,6 +40,7 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
 import UserForm from "@/Pages/Users/Partials/UserForm";
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
@@ -44,6 +50,8 @@ export default defineComponent({
         JetInputError,
         JetLabel,
         UserForm,
+        ModalableWrapper,
+        ModalSlot,
     },
 });
 </script>

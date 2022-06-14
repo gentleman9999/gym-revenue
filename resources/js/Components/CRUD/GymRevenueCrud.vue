@@ -264,7 +264,7 @@ export default defineComponent({
             create: {
                 label: `Create ${props.modelName}`,
                 handler: () => {
-                    Inertia.visit(route(`${props.baseRoute}.create`));
+                    Inertia.visitInModal(route(`${props.baseRoute}.create`));
                 },
                 class: ["btn-primary"],
             },

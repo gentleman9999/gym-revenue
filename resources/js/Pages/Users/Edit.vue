@@ -1,20 +1,25 @@
 <template>
-    <app-layout title="Edit User">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">
-                Edit User {{ $page.props.selectedUser.name }}
-            </h2>
-        </template>
+    <ModalableWrapper>
+        <app-layout title="Edit User">
+            <template #header>
+                <h2 class="font-semibold text-xl leading-tight">
+                    Edit User {{ $page.props.selectedUser.name }}
+                </h2>
+            </template>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <user-form
-                    :client-id="$page.props.user['current_client_id']"
-                    :user="selectedUser"
-                />
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
             </div>
-        </div>
-    </app-layout>
+        </app-layout>
+        <template #modal>
+            <user-form
+                :client-id="$page.props.user['current_client_id']"
+                :user="selectedUser"
+            />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -28,6 +33,8 @@ import JetLabel from "@/Jetstream/Label";
 
 import UserForm from "@/Pages/Users/Partials/UserForm";
 
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
+
 export default defineComponent({
     components: {
         AppLayout,
@@ -36,6 +43,8 @@ export default defineComponent({
         JetInputError,
         JetLabel,
         UserForm,
+        ModalableWrapper,
+        ModalSlot,
     },
     props: ["selectedUser"],
 });
