@@ -3,10 +3,10 @@
 namespace App\Actions\Dashboard\Home;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Models\Clients\Features\EmailCampaigns;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Clients\Location;
-use App\Models\TeamDetail;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetDashboardWidgets

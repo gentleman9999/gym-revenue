@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Data;
 
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\Models\ReadReceipt;
-use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;

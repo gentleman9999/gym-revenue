@@ -9,7 +9,7 @@ use App\Domain\Teams\Events\TeamMemberInvited;
 use App\Domain\Teams\Events\TeamMemberRemoved;
 use App\Domain\Teams\Events\TeamUpdated;
 use App\Domain\Teams\Models\Team;
-use App\Models\TeamDetail;
+use App\Domain\Teams\Models\TeamDetail;
 use Laravel\Jetstream\Jetstream;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 

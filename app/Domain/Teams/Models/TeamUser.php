@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Domain\Teams\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Jetstream\Events\TeamCreated;

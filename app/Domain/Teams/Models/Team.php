@@ -4,7 +4,6 @@ namespace App\Domain\Teams\Models;
 
 use App\Domain\Clients\Models\Client;
 use App\Models\Clients\ClientDetail;
-use App\Models\TeamUser;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -76,12 +75,12 @@ class Team extends JetstreamTeam
 
     public function details()
     {
-        return $this->hasMany('App\Models\TeamDetail', 'team_id', 'id');
+        return $this->hasMany('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
     }
 
     public function detail()
     {
-        return $this->hasOne('App\Models\TeamDetail', 'team_id', 'id');
+        return $this->hasOne('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
     }
 
     public function locations()

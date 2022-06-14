@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
-use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
