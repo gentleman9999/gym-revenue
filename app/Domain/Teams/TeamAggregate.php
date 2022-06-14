@@ -5,6 +5,8 @@ namespace App\Domain\Teams;
 use App\Aggregates\User;
 use App\Domain\Teams\Events\TeamCreated;
 use App\Domain\Teams\Events\TeamDeleted;
+use App\Domain\Teams\Events\TeamMemberAdded;
+use App\Domain\Teams\Events\TeamMemberRemoved;
 use App\Domain\Teams\Events\TeamRestored;
 use App\Domain\Teams\Events\TeamTrashed;
 use App\Domain\Teams\Events\TeamUpdated;
@@ -65,6 +67,27 @@ class TeamAggregate extends AggregateRoot
     public function update(array $payload): static
     {
         $this->recordThat(new TeamUpdated($payload));
+
+        return $this;
+    }
+
+    public function inviteMember(string $email): static
+    {
+        $this->recordThat(new TeamMemberInvited($email));
+
+        return $this;
+    }
+
+    public function addMember(string $email): static
+    {
+        $this->recordThat(new TeamMemberAdded($email));
+
+        return $this;
+    }
+
+    public function removeMember(string $email): static
+    {
+        $this->recordThat(new TeamMemberRemoved($email));
 
         return $this;
     }

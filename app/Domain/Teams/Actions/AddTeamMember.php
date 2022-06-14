@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Actions\Teams;
+namespace App\Domain\Teams\Actions;
 
 use function __;
 use App\Actions\Jetstream\User;
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\TeamAggregate;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
-use Laravel\Jetstream\Events\AddingTeamMember;
 use Laravel\Jetstream\Events\TeamMemberAdded;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,29 +33,24 @@ class AddTeamMember implements AddsTeamMembers
         ]);
     }
 
-    public function handle(\App\Domain\Teams\Models\Team $team, User $user)
+    public function handle(Team $team, string $email)
     {
 //        Gate::forUser($user)->authorize('addTeamMember', $team);
 
         $this->validate($team, $email);
 
-        $newTeamMember = Jetstream::findUserByEmailOrFail($email);
+        TeamAggregate::retrieve($team->id)->addMember($email)->persist();
 
-        AddingTeamMember::dispatch($team, $newTeamMember);
-
-        $team->users()->attach(
-            $newTeamMember,
-//            ['role' => $role]
-        );
-
-        TeamMemberAdded::dispatch($team, $newTeamMember);
+//        TeamMemberAdded::dispatch($team, $newTeamMember);
     }
 
     public function authorize(ActionRequest $request): bool
     {
+//        Gate::forUser($user)->authorize('addTeamMember', $team);
+
         $current_user = $request->user();
 
-        return $current_user->can('teams.update', \App\Domain\Teams\Models\Team::class);
+        return $current_user->can('teams.update', Team::class);
     }
 
     /**
@@ -68,20 +64,7 @@ class AddTeamMember implements AddsTeamMembers
      */
     public function add($user, $team, string $email, string $role = null)
     {
-        Gate::forUser($user)->authorize('addTeamMember', $team);
-
-        $this->validate($team, $email, $role);
-
-        $newTeamMember = Jetstream::findUserByEmailOrFail($email);
-
-        AddingTeamMember::dispatch($team, $newTeamMember);
-
-        $team->users()->attach(
-            $newTeamMember,
-//            ['role' => $role]
-        );
-
-        TeamMemberAdded::dispatch($team, $newTeamMember);
+        $this->handle($team, $email);
     }
 
     /**

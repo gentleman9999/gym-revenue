@@ -4,13 +4,11 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Domain\Clients\Actions\UpdateClient;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Actions\CreateTeam;
-use App\Domain\Teams\Models\Team;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Comms\QueuedSmsCampaign;
@@ -22,7 +20,6 @@ use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignLaunched;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
-use App\StorableEvents\Clients\TeamAttachedToClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
@@ -35,16 +32,6 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
         $home_team = CreateTeam::run(['name' => $default_team_name, 'client_id' => $event->aggregateRootUuid(), 'home_team' => true]);
         UpdateClient::run($client->id, ['home_team_id' => $home_team->id]);
     }
-//    public function onTeamAttachedToClient(TeamAttachedToClient $event)
-//    {
-//        $team = Team::findOrFail($event->team);
-//
-//        if ($team->home_team) {
-//            ClientAggregate::retrieve($event->aggregateRootUuid())
-//                ->addCapeAndBayAdminsToTeam($event->team)
-//                ->persist();
-//        }
-//    }
 
     public function onEmailCampaignLaunched(EmailCampaignLaunched $event)
     {

@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Actions\Teams\AddTeamMember;
-use App\Actions\Teams\InviteTeamMember;
-use App\Actions\Teams\RemoveTeamMember;
+use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Teams\Actions\DeleteTeam;
+use App\Domain\Teams\Actions\InviteTeamMember;
+use App\Domain\Teams\Actions\RemoveTeamMember;
 use App\Domain\Teams\Actions\UpdateTeamName;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamInvitation;

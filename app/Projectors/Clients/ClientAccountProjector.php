@@ -16,7 +16,6 @@ use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplateDetails;
 use App\Models\Comms\SmsTemplates;
-use App\Models\TeamDetail;
 use App\Models\User;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToEmailCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\AudienceAssignedToSmsCampaign;
@@ -40,24 +39,10 @@ use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTea
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
-use App\StorableEvents\Clients\TeamAttachedToClient;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientAccountProjector extends Projector
 {
-    public function onTeamAttachedToClient(TeamAttachedToClient $event)
-    {
-        $team = Team::findOrFail($event->team);
-
-        if ($team->home_team) {
-            $team->client->home_team_id = $team->id;
-            $team->save();
-        }
-        foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
-            TeamDetail::create(['team_id' => $team->id, 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
-        }
-    }
-
     public function onCapeAndBayUsersAssociatedWithClientsNewDefaultTeam(CapeAndBayUsersAssociatedWithClientsNewDefaultTeam $event)
     {
         $users = User::whereIn('id', $event->payload)->get();
