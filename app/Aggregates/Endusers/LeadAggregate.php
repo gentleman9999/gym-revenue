@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Endusers;
 
+use App\StorableEvents\Endusers\Leads\LeadConverted;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadRestored;
 use App\StorableEvents\Endusers\Leads\LeadTrashed;
@@ -121,6 +122,13 @@ class LeadAggregate extends AggregateRoot
     public function create(array $data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadCreated($userId, $data));
+
+        return $this;
+    }
+
+    public function convert(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadConverted($userId, $data));
 
         return $this;
     }
