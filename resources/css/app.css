@@ -101,3 +101,7 @@
 .tabledata .badge {
     @apply max-w-full block overflow-hidden overflow-ellipsis mx-auto my-2;
 }
+
+.apexcharts-tooltip * {
+    @apply text-neutral-focus;
+}
