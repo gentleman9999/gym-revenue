@@ -248,6 +248,7 @@
 <script>
 import { ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
+import { toastWarning } from "@/utils/createToast";
 import DaisyModal from "@/Components/DaisyModal";
 import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
 export default {
@@ -295,12 +296,7 @@ export default {
                 impVars.showModal = true;
                 impModal.value.open();
             } else {
-                new Noty({
-                    type: "warning",
-                    theme: "sunset",
-                    text: "You Cant Do That!",
-                    timeout: 7500,
-                }).show();
+                toastWarning();
             }
         };
 

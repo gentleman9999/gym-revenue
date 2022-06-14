@@ -153,6 +153,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 import AppLayout from "@/Layouts/AppLayout";
 import JetDropdown from "@/Components/Dropdown";
 import JetBarContainer from "@/Components/JetBarContainer";
@@ -190,25 +191,16 @@ export default defineComponent({
             { name: "by", sortable: false },
         ];
 
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
-
         const topActions = {
             create: false,
             email: {
                 label: "+ New Email",
-                handler: comingSoon,
+                handler: () => comingSoon(),
                 class: "btn-primary",
             },
             sms: {
                 label: "+ New Sms",
-                handler: comingSoon,
+                handler: () => comingSoon(),
                 class: "btn-primary",
             },
         };
