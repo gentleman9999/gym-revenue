@@ -22,6 +22,7 @@ class MarkLeadConverted
     {
         return [
             'member_id' => 'required|int',
+            'id' => 'required|int',
         ];
     }
 
