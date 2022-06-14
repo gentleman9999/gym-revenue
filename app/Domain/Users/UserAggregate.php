@@ -13,19 +13,19 @@ use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserPasswordUpdated;
+use App\Domain\Users\Events\UserReceivedEmail;
+use App\Domain\Users\Events\UserReceivedTextMsg;
 use App\Domain\Users\Events\UserRestored;
+use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UsersImported;
 use App\Domain\Users\Events\UserTrashed;
 use App\Domain\Users\Events\UserUpdated;
-use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
+use App\Domain\Users\Events\UserWelcomeEmailSent;
 use App\StorableEvents\Users\Activity\Impersonation\UserImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedBeingImpersonated;
 use App\StorableEvents\Users\Activity\Impersonation\UserStoppedImpersonatedAnother;
 use App\StorableEvents\Users\Activity\Impersonation\UserWasImpersonated;
-use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use App\StorableEvents\Users\UserAddedToTeam;
-use App\StorableEvents\Users\UserSetCustomCrudColumns;
-use App\StorableEvents\Users\WelcomeEmailSent;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class UserAggregate extends AggregateRoot
@@ -174,70 +174,70 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function import(string $created_by_user_id, string $key, string $client)
+    public function import(string $created_by_user_id, string $key, string $client): static
     {
         $this->recordThat(new UsersImported($this->uuid(), $created_by_user_id, $key, $client));
 
         return $this;
     }
 
-    public function create(array $payload)
+    public function create(array $payload): static
     {
         $this->recordThat(new UserCreated($payload));
 
         return $this;
     }
 
-    public function update(array $payload)
+    public function update(array $payload): static
     {
         $this->recordThat(new UserUpdated($payload));
 
         return $this;
     }
 
-    public function trash()
+    public function trash(): static
     {
         $this->recordThat(new UserTrashed());
 
         return $this;
     }
 
-    public function restore()
+    public function restore(): static
     {
         $this->recordThat(new UserRestored());
 
         return $this;
     }
 
-    public function delete()
+    public function delete(): static
     {
         $this->recordThat(new UserDeleted());
 
         return $this;
     }
 
-    public function sendWelcomeEmail()
+    public function sendWelcomeEmail(): static
     {
         // @todo - logic to throw an exception if the user is active
-        $this->recordThat(new WelcomeEmailSent($this->uuid()));
+        $this->recordThat(new UserWelcomeEmailSent($this->uuid()));
 
         return $this;
     }
+    //TODO: delete
+//    public function addToTeam(string $team_id, string $team_name): static
+//    {
+//        if (array_key_exists($team_id, $this->teams)) {
+//            // @todo - make an exception to throw here that the user is already a member
+//        }
+//
+//        $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name));
+//
+//        return $this;
+//    }
 
-    public function addToTeam(string $team_id, string $team_name)
+    public function setCustomCrudColumns(string $table, array $field_ids): static
     {
-        if (array_key_exists($team_id, $this->teams)) {
-            // @todo - make an exception to throw here that the user is already a member
-        }
-
-        $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name));
-
-        return $this;
-    }
-
-    public function setCustomCrudColumns(string $table, array $field_ids)
-    {
-        $this->recordThat(new UserSetCustomCrudColumns($this->uuid(), $table, $field_ids));
+        $this->recordThat(new UserSetCustomCrudColumns($table, $field_ids));
 
         return $this;
     }

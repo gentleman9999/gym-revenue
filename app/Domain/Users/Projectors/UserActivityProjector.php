@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Projectors\Users;
+namespace App\Domain\Users\Projectors;
 
+use App\Domain\Users\Events\UserReceivedEmail;
+use App\Domain\Users\Events\UserReceivedTextMsg;
 use App\Models\UserDetails;
-use App\StorableEvents\Users\Activity\Email\UserReceivedEmail;
-use App\StorableEvents\Users\Activity\SMS\UserReceivedTextMsg;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class UserActivityProjector extends Projector

@@ -14,14 +14,12 @@ use App\Aggregates\Clients\Traits\Actions\ClientRoleActions;
 use App\Aggregates\Clients\Traits\Actions\ClientServicesActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSCampaignActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSTemplateActions;
-use App\Aggregates\Clients\Traits\Actions\ClientTeamActions;
 use App\Aggregates\Clients\Traits\Actions\ClientTrialMembershipActions;
 use App\Aggregates\Clients\Traits\Actions\ClientUserActions;
 
 trait ClientActions
 {
     use ClientCrudActions;
-    use ClientTeamActions;
     use ClientSMSTemplateActions;
     use ClientSMSCampaignActions;
     use ClientEmailTemplateActions;

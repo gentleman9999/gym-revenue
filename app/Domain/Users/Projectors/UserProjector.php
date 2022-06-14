@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Domain\Users;
+namespace App\Domain\Users\Projectors;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\UserPasswordUpdated;
+use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UserUpdated;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Note;
 use App\Models\User;
 use App\Models\UserDetails;
-use App\StorableEvents\Users\UserSetCustomCrudColumns;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\Role;
@@ -109,8 +109,8 @@ class UserProjector extends Projector
                     UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $team_id]);
                 }
 
-                $team = Team::findOrFail($team_id);
-                $team->users()->attach($user);
+//                $team = Team::findOrFail($team_id);
+//                $team->users()->attach($user);
             }
         });
     }
@@ -199,7 +199,7 @@ class UserProjector extends Projector
     public function onUserSetCustomCrudColumns(UserSetCustomCrudColumns $event)
     {
         UserDetails::firstOrCreate([
-            'user_id' => $event->userId(),
+            'user_id' => $event->aggregateRootUuid(),
             'name' => "column-config",
             'value' => $event->table,
         ])->update(['misc' => $event->fields]);

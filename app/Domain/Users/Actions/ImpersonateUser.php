@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Actions\Impersonation;
+namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Users\UserAggregate;
 use App\Models\User;
+use function auth;
 use Lorisleiva\Actions\Concerns\AsAction;
+use function redirect;
+use function request;
+use function response;
 
 class ImpersonateUser
 {

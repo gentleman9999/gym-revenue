@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\UserAggregate;
 use App\Models\User;
@@ -44,11 +45,13 @@ class SecondaryTeamsSeeder extends Seeder
 
             if (count($members) > 0) {
                 foreach ($members as $idx => $email) {
-                    $user = User::whereEmail($email)->first();
-                    $new_team->users()->attach($user);
-                    UserAggregate::retrieve($user->id)
-                        ->addToTeam($new_team->id, $new_team->name)
-                        ->persist();
+                    AddTeamMember::run($new_team, $email);
+
+//                    $user = User::whereEmail($email)->first();
+//                    $new_team->users()->attach($user);
+//                    UserAggregate::retrieve($user->id)
+//                        ->addToTeam($new_team->id, $new_team->name)
+//                        ->persist();
                 }
             }
         }

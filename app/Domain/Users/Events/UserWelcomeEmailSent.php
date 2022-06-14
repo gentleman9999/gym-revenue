@@ -1,10 +1,10 @@
 <?php
 
-namespace App\StorableEvents\Users;
+namespace App\Domain\Users\Events;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class WelcomeEmailSent extends ShouldBeStored
+class UserWelcomeEmailSent extends ShouldBeStored
 {
     public $user;
 

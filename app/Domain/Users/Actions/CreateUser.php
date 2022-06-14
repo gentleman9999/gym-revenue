@@ -3,6 +3,7 @@
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
@@ -58,21 +59,22 @@ class CreateUser implements CreatesNewUsers
         $id = (User::withoutGlobalScopes()->max('id') ?? 0) + 1;
 
         $user_aggy = UserAggregate::retrieve($id)
-            ->create($payload);
+            ->create($payload)->persist();
+
+        $created_user = User::findOrFail($id);
+
 
         $user_teams = $payload['team_ids'] ?? (array_key_exists('team_id', $payload) ? [$payload['team_id']] : []);
         foreach ($user_teams as $i => $team_id) {
             // Since the user needs to have their team added in a single transaction in createUser
             // A projector won't get executed (for now) but an apply function will run on the next retrieval
-            $team_name = Team::getTeamName($team_id);
-            $team_client = Team::getClientFromTeamId($team_id);
-            $team_client_id = ($team_client) ? $team_client->id : null;
-            $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
+//            $team_name = Team::getTeamName($team_id);
+            AddTeamMember::run(Team::findOrFail($team_id), $created_user->email);
+//            $team_client = Team::getClientFromTeamId($team_id);
+//            $team_client_id = ($team_client) ? $team_client->id : null;
+//            $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
         }
 
-        $user_aggy->persist();
-
-        $created_user = User::findOrFail($id);
 
         $should_send_welcome_email = $payload['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
         if ($should_send_welcome_email) {

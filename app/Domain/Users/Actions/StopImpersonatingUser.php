@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Actions\Impersonation;
+namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Users\UserAggregate;
 use App\Models\User;
+use function auth;
+use function config;
 use Lorisleiva\Actions\Concerns\AsAction;
+use function redirect;
+use function response;
+use function session;
 
 class StopImpersonatingUser
 {
@@ -23,7 +28,7 @@ class StopImpersonatingUser
         $results = false;
 
         if (session()->has(config('laravel-impersonate.session_key'))) {
-            $coward = User::find(session()->get(config('laravel-impersonate.session_key')));
+            $coward = User::withoutGlobalScopes()->findOrFail(session()->get(config('laravel-impersonate.session_key')));
             $coward_id = $coward->id;
             $liberated = auth()->user();
 
@@ -40,7 +45,7 @@ class StopImpersonatingUser
             UserAggregate::retrieve($liberated->id)->deactivatePossessionMode($coward_id)->persist();
 
             // rat on this user to the paying customer - the client (aggy)
-            if (! is_null($liberated->client->id)) {
+            if (! is_null($liberated->client->id ?? null)) {
                 ClientAggregate::retrieve($liberated->client->id)
                     ->logImpersonationModeDeactivation($liberated->id, $coward_id)->persist();
             }

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Actions\Clients;
+namespace App\Domain\Users\Actions;
 
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Users\UserAggregate;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -25,9 +27,11 @@ class SetCustomUserCrudColumns
         ];
     }
 
-    public function handle($data, $user = null)
+    public function handle(array $data, User $user): User
     {
         UserAggregate::retrieve($user->id)->setCustomCrudColumns($data['table'], $data['columns'])->persist();
+
+        return $user->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -36,16 +40,19 @@ class SetCustomUserCrudColumns
         return true;
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): User
     {
         $data = $request->validated();
 
-        $this->handle(
+        return $this->handle(
             $data,
             $request->user()
         );
+    }
 
-        Alert::success("CRUD columns updated for '{$data['table']}'")->flash();
+    public function htmlResponse(User $user): RedirectResponse
+    {
+        Alert::success("CRUD columns updated")->flash();
 
         return Redirect::back();
     }

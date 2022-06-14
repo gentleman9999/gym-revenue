@@ -232,18 +232,18 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
-    Route::post('/users', \App\Actions\Impersonation\GetUsers::class)->name('impersonation.users');
+    Route::post('/users', \App\Domain\Users\Actions\GetUsersToImpersonate::class)->name('impersonation.users');
 });
 Route::prefix('impersonation')->group(function () {
-    Route::post('/on', \App\Actions\Impersonation\ImpersonateUser::class)->name('impersonation.start');
-    Route::post('/off', \App\Actions\Impersonation\StopImpersonatingUser::class)->name('impersonation.stop');
+    Route::post('/on', \App\Domain\Users\Actions\ImpersonateUser::class)->name('impersonation.start');
+    Route::post('/off', \App\Domain\Users\Actions\StopImpersonatingUser::class)->name('impersonation.stop');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('note')->group(function () {
     Route::post('/', \App\Actions\Notes\MarkNoteAsRead::class)->name('note.seen');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function () {
-    Route::post('/', \App\Actions\Clients\SetCustomUserCrudColumns::class)->name('crud-customize');
+    Route::post('/', \App\Domain\Users\Actions\SetCustomUserCrudColumns::class)->name('crud-customize');
 });
 
 Route::prefix('invite')->group(function () {

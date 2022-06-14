@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Actions\Impersonation;
+namespace App\Domain\Users\Actions;
 
 use App\Enums\SecurityGroupEnum;
 use App\Models\User;
+use function auth;
 use Lorisleiva\Actions\Concerns\AsAction;
+use function request;
+use function response;
 
-class GetUsers
+class GetUsersToImpersonate
 {
     use AsAction {
         __invoke as protected invokeFromLaravelActions;

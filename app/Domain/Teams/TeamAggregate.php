@@ -2,7 +2,6 @@
 
 namespace App\Domain\Teams;
 
-use App\Aggregates\User;
 use App\Domain\Teams\Events\TeamCreated;
 use App\Domain\Teams\Events\TeamDeleted;
 use App\Domain\Teams\Events\TeamMemberAdded;
@@ -10,31 +9,11 @@ use App\Domain\Teams\Events\TeamMemberRemoved;
 use App\Domain\Teams\Events\TeamRestored;
 use App\Domain\Teams\Events\TeamTrashed;
 use App\Domain\Teams\Events\TeamUpdated;
-use App\StorableEvents\Users\UserAddedToTeam;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class TeamAggregate extends AggregateRoot
 {
-    public function applyUserAddedToTeam(UserAddedToTeam $event)
-    {
-        $this->teams[$event->team] = [
-            'team_id' => $event->team,
-            'client_id' => $event->client,
-            'user_id' => $event->user,
-        ];
-    }
-
-    public function addUserToTeam(User | string | null $user, $client_id = null): static
-    {
-        $user_id = $user->id ?? $user ?? null;
-        if (array_key_exists($user_id, $this->teams)) {
-            // @todo - make an exception to throw here that the user is already a member
-        }
-
-        $this->recordThat(new UserAddedToTeam($this->uuid(), $user_id, $client_id));
-
-        return $this;
-    }
+    public $members = [];
 
     public function create(array $payload): static
     {
@@ -91,4 +70,25 @@ class TeamAggregate extends AggregateRoot
 
         return $this;
     }
+//
+//    public function addCapeAndBayAdminsToTeam(string $team_id)
+//    {
+//        $team = Team::find($team_id);
+//        $users = Team::whereName('Cape & Bay Admin Team')->first()->users;
+//        if (count($users) > 0) {
+//            $payload = [];
+//            foreach ($users as $user) {
+//                $payload[] = $user->id;
+//                UserAggregate::retrieve($user->id)
+//                    ->addUserToTeam($team_id, $team->name, $this->uuid())
+//                    ->persist();
+//            }
+//
+//            $this->recordThat(new CapeAndBayUsersAssociatedWithClientsNewDefaultTeam($this->uuid(), $team_id, $payload));
+//        } else {
+//            throw ClientAccountException::noCapeAndBayUsersAssigned();
+//        }
+//
+//        return $this;
+//    }
 }

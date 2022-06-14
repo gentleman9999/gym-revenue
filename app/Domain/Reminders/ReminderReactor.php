@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Reactors\Clients;
+namespace App\Domain\Reminders;
 
 use App\Domain\Notifications\Actions\CreateNotification;
 use App\Domain\Reminders\Events\ReminderTriggered;
-use App\Domain\Reminders\Reminder;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
