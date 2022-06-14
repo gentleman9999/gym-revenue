@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Endusers;
 
+use App\StorableEvents\Endusers\Leads\LeadConverted;
 use App\StorableEvents\Endusers\Members\MemberCreated;
 use App\StorableEvents\Endusers\Members\MemberDeleted;
 use App\StorableEvents\Endusers\Members\MemberRestored;
@@ -58,6 +59,13 @@ class MemberAggregate extends AggregateRoot
     public function unsubscribeFromComms(DateTime $unsubscribed_at)
     {
         $this->recordThat(new MemberUnsubscribedFromComms($this->uuid(), $unsubscribed_at));
+
+        return $this;
+    }
+
+    public function convert(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadConverted($userId, $data));
 
         return $this;
     }
