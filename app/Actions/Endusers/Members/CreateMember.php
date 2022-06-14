@@ -51,6 +51,12 @@ class CreateMember
             ->create($user->id ?? "Auto Generated", $data)
             ->persist();
 
+        //This is
+        CheckIfMemberWasLead::run([
+            'member_id' => $id,
+            'email' => $data['email'],
+        ]);
+
         return Member::findOrFail($id);
     }
 

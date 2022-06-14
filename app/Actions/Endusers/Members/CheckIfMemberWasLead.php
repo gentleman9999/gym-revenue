@@ -3,7 +3,7 @@
 namespace App\Actions\Endusers\Members;
 
 use App\Actions\Endusers\Leads\MarkLeadConverted;
-use App\Aggregates\Endusers\MemberAggregate;
+
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
@@ -11,7 +11,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateMember
+class CheckIfMemberWasLead
 {
     use AsAction;
 
@@ -29,9 +29,8 @@ class UpdateMember
         ];
     }
 
-    public function handle($data, $user = null)
+    public function handle($data)
     {
-
         if (array_key_exists('external_id', $data)) {
             $lead = Lead::whereEmail($data['email'])
                 ->orWhere('external_id', $data['external_id'])
@@ -41,11 +40,14 @@ class UpdateMember
                 ->first();
         }
 
-        if (!is_null($lead)) {
-            MarkLeadConverted::run(['member_id' => $data['member_id']])
+        if (! is_null($lead)) {
+            MarkLeadConverted::run([
+                'member_id' => $data['member_id'],
+                'id' => $lead->id,
+                ]);
         }
 
-            return Member::findOrFail($data['id']);
+        return true;
     }
 
     public function authorize(ActionRequest $request): bool
