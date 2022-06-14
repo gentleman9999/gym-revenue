@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Events;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\GymRevShouldBeStored;
 
-class AccessTokenGranted extends ShouldBeStored
+class AccessTokenGranted extends GymRevShouldBeStored
 {
     public function __construct()
     {

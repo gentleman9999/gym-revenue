@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Events;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\GymRevShouldBeStored;
 
-class UserPasswordUpdated extends ShouldBeStored
+class UserPasswordUpdated extends GymRevShouldBeStored
 {
     public $password;
 

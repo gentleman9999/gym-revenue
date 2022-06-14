@@ -19,7 +19,7 @@ class ImportUsers
         $result = false;
         foreach ($data as $item) {
             if ($item['extension'] === 'csv') {
-                ClientAggregate::retrieve($client_id)->importUsers($item['key'], $client_id)->persist();
+                ClientAggregate::retrieve($client_id)->importUsers($item['key'])->persist();
                 $result = true;
             } else {
                 Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
@@ -44,10 +44,9 @@ class ImportUsers
         );
     }
 
-    public function htmlResponse(array $users): RedirectResponse
+    public function htmlResponse(bool $success): RedirectResponse
     {
-        $num_users = count($users);
-        Alert::success("{$num_users} users imported")->flash();
+        Alert::success("Users successfully imported")->flash();
 
         return Redirect::route('users');
     }

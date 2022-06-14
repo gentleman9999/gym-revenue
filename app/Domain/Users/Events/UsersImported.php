@@ -2,19 +2,15 @@
 
 namespace App\Domain\Users\Events;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\GymRevShouldBeStored;
 
-class UsersImported extends ShouldBeStored
+class UsersImported extends GymRevShouldBeStored
 {
-    public $id;
-    public $user;
     public $key;
     public $client;
 
-    public function __construct(string $id, string $user, string $key, string $client)
+    public function __construct(string $key, string $client)
     {
-        $this->id = $id;
-        $this->user = $user;
         $this->key = $key;
         $this->client = $client;
     }

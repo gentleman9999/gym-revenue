@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Clients\Traits\Actions;
 
+use App\Domain\Users\Events\UsersImported;
 use App\StorableEvents\Clients\Activity\Users\ClientUserStoppedBeingImpersonated;
 use App\StorableEvents\Clients\Activity\Users\ClientUserWasImpersonated;
 
@@ -21,9 +22,9 @@ trait ClientUserActions
         return $this;
     }
 
-    public function importUsers(string $created_by_user_id, string $key, string $client)
+    public function importUsers(string $key)
     {
-        $this->recordThat(new UsersImported($this->uuid(), $created_by_user_id, $key, $client));
+        $this->recordThat(new UsersImported($key, $this->uuid()));
 
         return $this;
     }

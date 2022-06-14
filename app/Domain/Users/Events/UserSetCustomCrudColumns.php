@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Events;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\GymRevShouldBeStored;
 
-class UserSetCustomCrudColumns extends ShouldBeStored
+class UserSetCustomCrudColumns extends GymRevShouldBeStored
 {
     public $table;
     public $fields;

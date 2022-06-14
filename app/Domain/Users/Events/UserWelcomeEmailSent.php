@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Events;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\GymRevShouldBeStored;
 
-class UserWelcomeEmailSent extends ShouldBeStored
+class UserWelcomeEmailSent extends GymRevShouldBeStored
 {
     public $user;
 

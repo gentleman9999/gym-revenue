@@ -2,8 +2,6 @@
 
 namespace App\Projectors\Clients;
 
-use App\Aggregates\Users\UserAggregate;
-use App\Domain\Teams\Models\Team;
 use App\Models\Clients\ClientBillableActivity;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\AudienceDetails;
@@ -35,7 +33,6 @@ use App\StorableEvents\Clients\Activity\Campaigns\SmsCampaignUpdated;
 use App\StorableEvents\Clients\Activity\Campaigns\SmsSent;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateAssignedToSMSCampaign;
 use App\StorableEvents\Clients\Activity\Campaigns\SMSTemplateUnAssignedFromSMSCampaign;
-use App\StorableEvents\Clients\CapeAndBayUsersAssociatedWithClientsNewDefaultTeam;
 use App\StorableEvents\Clients\Comms\AudienceCreated;
 use App\StorableEvents\Clients\Comms\SMSTemplateCreated;
 use App\StorableEvents\Clients\Comms\SmsTemplateUpdated;
@@ -43,24 +40,6 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientAccountProjector extends Projector
 {
-    public function onCapeAndBayUsersAssociatedWithClientsNewDefaultTeam(CapeAndBayUsersAssociatedWithClientsNewDefaultTeam $event)
-    {
-        $users = User::whereIn('id', $event->payload)->get();
-        $team = Team::find($event->team);
-
-        foreach ($users as $newTeamMember) {
-            $team->users()->attach($newTeamMember);
-            $team_client = Team::getClientFromTeamId($team->id);
-            $team_client_id = ($team_client) ? $team_client->id : null;
-
-            // Since the user needs to have their team added in a single transaction in createUser
-            // A projector won't get executed (for now) but an apply function will run on the next retrieval
-            UserAggregate::retrieve($newTeamMember->id)
-                ->addUserToTeam($team->id, $team->name, $team_client_id)
-                ->persist();
-        }
-    }
-
     public function onEmailCampaignCreated(EmailCampaignCreated $event)
     {
         // Make Email Details Record

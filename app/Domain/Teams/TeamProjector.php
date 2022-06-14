@@ -70,4 +70,22 @@ class TeamProjector extends Projector
     {
         Team::findOrFail($event->aggregateRootUuid())->removeUser(User::findOrFail($event->id));
     }
+
+//    public function onCapeAndBayUsersAssociatedWithClientsNewDefaultTeam(CapeAndBayUsersAssociatedWithClientsNewDefaultTeam $event)
+//    {
+//        $users = User::whereIn('id', $event->payload)->get();
+//        $team = Team::find($event->team);
+//
+//        foreach ($users as $newTeamMember) {
+//            $team->users()->attach($newTeamMember);
+//            $team_client = Team::getClientFromTeamId($team->id);
+//            $team_client_id = ($team_client) ? $team_client->id : null;
+//
+//            // Since the user needs to have their team added in a single transaction in createUser
+//            // A projector won't get executed (for now) but an apply function will run on the next retrieval
+//            UserAggregate::retrieve($newTeamMember->id)
+//                ->addUserToTeam($team->id, $team->name, $team_client_id)
+//                ->persist();
+//        }
+//    }
 }
