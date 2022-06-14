@@ -75,7 +75,10 @@
                         </div>
                     </div>
 
-                    <div class="card bg-base-100 shadow-2xl">
+                    <div
+                        class="card bg-base-100 shadow-2xl"
+                        v-if="announcements?.length"
+                    >
                         <div class="card-body">
                             <h2 class="card-title">Recent Announcements!</h2>
                             <div class="divider mt-0"></div>
