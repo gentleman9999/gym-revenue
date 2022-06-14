@@ -89,6 +89,11 @@ class CapeAndBayUserSeeder extends UserSeeder
                 'last_name' => 'Duncan',
                 'email' => 'david@capeandbay.com',
             ],
+            [
+                'first_name' => 'Larry',
+                'last_name' => 'Herrod',
+                'email' => 'larry@capeandbay.com',
+            ],
         ];
     }
 
