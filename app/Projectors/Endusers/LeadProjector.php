@@ -2,6 +2,7 @@
 
 namespace App\Projectors\Endusers;
 
+use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\AudienceMember;
@@ -9,7 +10,6 @@ use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Note;
-use App\Models\User;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadDeleted;
 use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;

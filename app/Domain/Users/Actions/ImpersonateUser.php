@@ -3,10 +3,11 @@
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Models\User;
 use function auth;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 use function redirect;
 use function request;
 use function response;
@@ -78,12 +79,12 @@ class ImpersonateUser
     public function htmlResponse($result)
     {
         if ($result) {
-            \Alert::info('You are now in impersonation mode! Disable it in the name dropdown or the bottom of the screen!')->flash();
+            Alert::info('You are now in impersonation mode! Disable it in the name dropdown or the bottom of the screen!')->flash();
 
             return redirect()->route('dashboard');
         }
 
-        \Alert::error('Error. Impersonation mode not active.')->flash();
+        Alert::error('Error. Impersonation mode not active.')->flash();
 
         return redirect()->back();
     }

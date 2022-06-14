@@ -3,8 +3,8 @@
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Users\Models\User;
 use App\Models\Endusers\Lead;
-use App\Models\User;
 use Bouncer;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;

@@ -3,7 +3,7 @@
 namespace App\Domain\Notifications;
 
 use App\Domain\Notifications\Events\NotificationCreated;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use App\Notifications\GymRevNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;

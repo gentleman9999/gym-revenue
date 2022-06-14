@@ -3,7 +3,7 @@
 namespace App\Aggregates\Clients\Traits;
 
 use App\Aggregates\Clients\ClientGatewayActivityAggregate;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 
 trait ClientGetters
 {

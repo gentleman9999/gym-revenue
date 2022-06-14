@@ -24,9 +24,9 @@ trait ClientAudienceActions
         return $this;
     }
 
-    public function assignAudienceToSMSCampaign(string $audience_id, string $campaign_id, string $updated_by_user_id)
+    public function assignAudienceToSMSCampaign(array $audiences, string $campaign_id, string $updated_by_user_id)
     {
-        $this->recordThat(new AudienceAssignedToSmsCampaign($this->uuid(), $audience_id, $campaign_id, $updated_by_user_id));
+        $this->recordThat(new AudienceAssignedToSmsCampaign($this->uuid(), $audiences, $campaign_id, $updated_by_user_id));
 
         return $this;
     }

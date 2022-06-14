@@ -3,16 +3,15 @@
 namespace App\Domain\Clients\Models;
 
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\User;
 use App\Enums\ClientServiceEnum;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Attribute;
 use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
-use App\Models\User;
 use function collect;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
@@ -96,13 +95,6 @@ class Client extends Model
         return $this->users()->whereHas('roles', function ($query) {
             $query->where('roles.scope', '=', $this->id)->whereGroup(SecurityGroupEnum::ACCOUNT_OWNER);
         })->orderBy('created_at');
-    }
-
-    protected function firstName(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => ucfirst($value),
-        );
     }
 
     public function setActiveAttribute(bool|int|string|null $val)

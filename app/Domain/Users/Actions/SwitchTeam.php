@@ -4,7 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use function abort;
 use App\Domain\Teams\Models\Team;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

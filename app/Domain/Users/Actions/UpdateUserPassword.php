@@ -3,9 +3,9 @@
 namespace App\Domain\Users\Actions;
 
 use function __;
+use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -41,9 +41,9 @@ class UpdateUserPassword implements UpdatesUserPasswords
         return $current_user->can('users.update', User::class);
     }
 
-    public function asController(ActionRequest $request, User $user): User
+    public function asController(ActionRequest $request, User $user): void
     {
-        return $this->handle(
+        $this->handle(
             $user->id,
             $request->validated(),
         );

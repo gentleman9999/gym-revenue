@@ -3,11 +3,12 @@
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Models\User;
 use function auth;
 use function config;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 use function redirect;
 use function response;
 use function session;
@@ -70,12 +71,12 @@ class StopImpersonatingUser
     public function htmlResponse($result)
     {
         if ($result) {
-            \Alert::info('Welcome back to the real world!')->flash();
+            Alert::info('Welcome back to the real world!')->flash();
 
             return redirect()->route('dashboard');
         }
 
-        \Alert::error('Error. Impersonation mode not active.')->flash();
+        Alert::error('Error. Impersonation mode not active.')->flash();
 
         return redirect()->back();
     }

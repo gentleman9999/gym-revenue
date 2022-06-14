@@ -4,9 +4,9 @@ namespace App\Projectors\Clients;
 
 use App\Domain\Reminders\Actions\CreateReminder;
 use App\Domain\Reminders\Actions\DeleteReminderWithoutID;
+use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
-use App\Models\User;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
 use App\StorableEvents\Clients\Calendar\CalendarAttendeeDeleted;
 use App\StorableEvents\Clients\Calendar\CalendarInviteAccepted;

@@ -12,7 +12,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="attendee in form.attendees" :key="attendee.id">
-                        <th v-if="attendee.entity_type == 'App\\Models\\User'">
+                        <th
+                            v-if="
+                                attendee.entity_type ===
+                                'App\\Domain\\Users\\Models\\User'
+                            "
+                        >
                             <img
                                 class="object-cover w-6 h-6 rounded-full"
                                 :src="attendee.entity_data.profile_photo_url"
@@ -23,7 +28,7 @@
 
                         <td
                             v-if="
-                                attendee.entity_type ==
+                                attendee.entity_type ===
                                 'App\\Models\\Endusers\\Lead'
                             "
                         >
@@ -81,17 +86,15 @@ label {
 </style>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+import { watchEffect } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
-import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
 
 export default {
     components: {

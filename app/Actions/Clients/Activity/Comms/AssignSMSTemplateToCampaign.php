@@ -3,8 +3,8 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\SmsCampaignDetails;
-use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class AssignSMSTemplateToCampaign

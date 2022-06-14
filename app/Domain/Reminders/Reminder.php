@@ -2,7 +2,7 @@
 
 namespace App\Domain\Reminders;
 
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

@@ -2,10 +2,10 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
-use App\Models\User;
 use function bcrypt;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

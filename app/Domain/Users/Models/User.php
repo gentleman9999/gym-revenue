@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Domain\Users\Models;
 
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
+use App\Models\File;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,6 +18,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
+use function session;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class User extends Authenticatable
@@ -202,12 +204,12 @@ class User extends Authenticatable
 
     public function details()
     {
-        return $this->hasMany('App\Models\UserDetails', 'user_id', 'id');
+        return $this->hasMany('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
     }
 
     public function detail()
     {
-        return $this->hasOne('App\Models\UserDetails', 'user_id', 'id');
+        return $this->hasOne('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
     }
 
     public function files()

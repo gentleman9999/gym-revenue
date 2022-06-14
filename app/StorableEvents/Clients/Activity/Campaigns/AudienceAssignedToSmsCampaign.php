@@ -9,7 +9,7 @@ class AudienceAssignedToSmsCampaign extends AudienceAssignedToEmailCampaign
     public $campaign;
     public $user;
 
-    public function __construct(string $client, string $audience, string $campaign, string $user)
+    public function __construct(string $client, array $audience, string $campaign, string $user)
     {
         $this->client = $client;
         $this->audience = $audience;

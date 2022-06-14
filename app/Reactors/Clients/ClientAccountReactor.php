@@ -4,16 +4,16 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
-use App\Aggregates\Users\UserAggregate;
 use App\Domain\Clients\Actions\UpdateClient;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Users\Models\User;
+use App\Domain\Users\UserAggregate;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Comms\QueuedSmsCampaign;
 use App\Models\Comms\SmsTemplates;
-use App\Models\User;
 use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;

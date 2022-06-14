@@ -2,9 +2,8 @@
 
 namespace App\Domain\Users\Actions;
 
-use App\Aggregates\CapeAndBay\CapeAndBayUserAggregate;
+use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Models\User;
 use function collect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -27,11 +26,6 @@ class DeleteUser implements DeletesUsers
 
         UserAggregate::retrieve($user_id)->delete()->persist();
 
-        //TODO:this is complete ass
-//        else {
-//            //CapeAndBay User
-//            CapeAndBayUserAggregate::retrieve($data['team_id'])->deleteUser($$data)->persist();
-//        };
         return $user;
     }
 

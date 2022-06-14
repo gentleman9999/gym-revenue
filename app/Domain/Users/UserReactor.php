@@ -3,9 +3,9 @@
 namespace App\Domain\Users;
 
 use App\Domain\Users\Events\UsersImported;
+use App\Domain\Users\Models\User;
 use App\Imports\UsersImport;
 use App\Imports\UsersImportWithHeader;
-use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;

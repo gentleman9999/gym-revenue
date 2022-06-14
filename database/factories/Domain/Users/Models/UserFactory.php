@@ -1,9 +1,11 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Domain\Users\Models;
 
-use App\Models\User;
+use App\Domain\Users\Models\User;
+use function bcrypt;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use function now;
 
 class UserFactory extends Factory
 {
@@ -28,7 +30,7 @@ class UserFactory extends Factory
         $domain = $this->faker->freeEmailDomain;
         $alternate_email = "{$username}@{$domain}";
         $phone = preg_replace('/[^0-9]+/', '', $this->faker->phoneNumber);
-        if (str_starts_with("1", $phone)) {
+        if (str($phone)->startsWith("1")) {
             $phone = substr($phone, 1);
         }
 

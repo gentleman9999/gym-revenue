@@ -3,7 +3,7 @@
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;

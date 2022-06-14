@@ -4,14 +4,13 @@ namespace App\Projectors\Endusers;
 
 use App\Models\Endusers\Member;
 use App\Models\Note;
-use App\Models\User;
 use App\StorableEvents\Endusers\Members\MemberCreated;
+use App\StorableEvents\Endusers\Members\MemberDeleted;
 use App\StorableEvents\Endusers\Members\MemberRestored;
 use App\StorableEvents\Endusers\Members\MemberSubscribedToComms;
 use App\StorableEvents\Endusers\Members\MemberTrashed;
 use App\StorableEvents\Endusers\Members\MemberUnsubscribedFromComms;
 use App\StorableEvents\Endusers\Members\MemberUpdated;
-use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class MemberProjector extends Projector

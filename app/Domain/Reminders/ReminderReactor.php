@@ -4,7 +4,7 @@ namespace App\Domain\Reminders;
 
 use App\Domain\Notifications\Actions\CreateNotification;
 use App\Domain\Reminders\Events\ReminderTriggered;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 

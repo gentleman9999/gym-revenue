@@ -2,8 +2,8 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
-use App\Models\User;
 use function auth;
 use Lorisleiva\Actions\Concerns\AsAction;
 use function request;

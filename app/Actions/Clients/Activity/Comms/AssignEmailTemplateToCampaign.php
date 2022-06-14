@@ -3,10 +3,8 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\EmailCampaignDetails;
-use App\Models\Clients\Features\EmailCampaigns;
-use App\Models\Comms\EmailTemplates;
-use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class AssignEmailTemplateToCampaign

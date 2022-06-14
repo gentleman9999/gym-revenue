@@ -2,9 +2,10 @@
 
 namespace App\Actions\Clients\Tasks;
 
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Users\Models\User;
+use App\Domain\Users\UserAggregate;
 use App\Helpers\Uuid;
-use App\Models\User;
+use App\Models\Calendar\CalendarEvent;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -40,7 +41,7 @@ class CreateTask
             ->createTask($user->id ?? "Auto Generated", $data)
             ->persist();
 
-        return Task::findOrFail($id);
+        return CalendarEvent::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool

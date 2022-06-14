@@ -5,12 +5,12 @@ namespace App\Domain\Users\Actions;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Clients\Location;
 use App\Models\Role;
-use App\Models\User;
 use function bcrypt;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
@@ -285,10 +285,10 @@ class CreateUser implements CreatesNewUsers
      * Create a newly registered user  (fortify contract).
      *
      * @param array $input
-     * @return \App\Models\User
+     * @return User
      */
     public function create(array $input)
     {
-        $this->run($input);
+        return $this->handle($input);
     }
 }

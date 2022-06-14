@@ -11,7 +11,7 @@ use App\Domain\Teams\Actions\UpdateTeamName;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamInvitation;
 use App\Domain\Users\Actions\DeleteUser;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
@@ -39,7 +39,7 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
 
-//        Jetstream::useUserModel(User::class);
+        Jetstream::useUserModel(User::class);
         Jetstream::useTeamModel(Team::class);
         Jetstream::useTeamInvitationModel(TeamInvitation::class);
 

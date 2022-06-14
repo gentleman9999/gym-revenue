@@ -2,11 +2,12 @@
 
 namespace App\Console\Commands\Endusers;
 
+use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Endusers\AudienceMember;
-use App\Models\User;
 use Illuminate\Console\Command;
 
+//TODO: figure out if we need this. if so, convert to event sourcing. if not, delete.
 /**
  * Adds the specified deets as an audience member for every client so
  * it's easy to test email functionality end-to-end.  Make sure you wipe

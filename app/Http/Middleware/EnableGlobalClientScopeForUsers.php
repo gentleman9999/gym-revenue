@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use App\Scopes\ClientScope;
 use Closure;
 

@@ -19,8 +19,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //Any Actions defined in App/Actions/**/* with well defined
-        //signatures will get auto registered. Don't add them here.
+        //Any Actions defined in App/Actions/**/* or App/Domain/*/Actions/*
+        //with well defined signatures will get auto registered. Don't add them here.
     ];
 
     /**

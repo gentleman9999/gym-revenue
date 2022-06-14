@@ -2,8 +2,8 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;

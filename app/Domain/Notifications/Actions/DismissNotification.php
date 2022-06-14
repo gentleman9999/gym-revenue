@@ -3,8 +3,8 @@
 namespace App\Domain\Notifications\Actions;
 
 use App\Domain\Notifications\Notification;
+use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

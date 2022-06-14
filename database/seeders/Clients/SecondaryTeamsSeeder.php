@@ -4,8 +4,7 @@ namespace Database\Seeders\Clients;
 
 use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Actions\CreateTeam;
-use App\Domain\Users\UserAggregate;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 

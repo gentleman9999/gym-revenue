@@ -2,7 +2,7 @@
 
 namespace App\StorableEvents;
 
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
 abstract class GymRevShouldBeStored extends ShouldBeStored

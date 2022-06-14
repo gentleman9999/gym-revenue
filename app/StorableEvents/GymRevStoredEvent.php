@@ -2,8 +2,9 @@
 
 namespace App\StorableEvents;
 
+use App\Domain\Clients\Models\Client;
 use App\Domain\Clients\Projections\ClientActivity;
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Log;
 use Spatie\EventSourcing\Enums\MetaData;

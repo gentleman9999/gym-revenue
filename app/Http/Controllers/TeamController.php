@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Location;
-use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -52,7 +53,7 @@ class TeamController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $teamId
-     * @return \Inertia\Response
+     * @return \Inertia\Response | RedirectResponse
      */
     public function edit(Request $request, $teamId)
     {
