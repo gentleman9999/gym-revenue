@@ -8,7 +8,7 @@ class WelcomeEmailSent extends ShouldBeStored
 {
     public $user;
 
-    public function __construct($user)
+    public function __construct(string $user)
     {
         $this->user = $user;
     }

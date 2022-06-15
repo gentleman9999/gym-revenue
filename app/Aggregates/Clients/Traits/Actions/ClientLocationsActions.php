@@ -18,7 +18,7 @@ trait ClientLocationsActions
         return $this;
     }
 
-    public function importLocations(string $created_by_user_id, $key)
+    public function importLocations(string $created_by_user_id, string $key)
     {
         $this->recordThat(new LocationsImported($this->uuid(), $created_by_user_id, $key));
 

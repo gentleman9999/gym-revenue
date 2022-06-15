@@ -1,5 +1,5 @@
 <template>
-    <sales-card-wrapper class="lg:w-1/4">
+    <sales-card-wrapper>
         <sales-card class="w-full">
             <template #cardTitle>
                 <div
@@ -19,7 +19,7 @@
                 <div class="flex flex-row justify-between my-8">
                     <span class="text-secondary">Amount: </span>
                     <input
-                        class="border border-secondary rounded outline-none bg-transparent"
+                        class="border border-secondary rounded outline-none bg-transparent w-full ml-2"
                     />
                 </div>
                 <div>
@@ -31,7 +31,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import DatePicker from "vue3-date-time-picker";
+import DatePicker from "@vuepic/vue-datepicker";
 import SalesCardWrapper from "../SalesCardWrapper";
 import SalesCard from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";

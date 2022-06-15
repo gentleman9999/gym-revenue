@@ -1,24 +1,16 @@
 <template>
-    <sweet-modal
-        :title="`${modelName.toUpperCase()} PREVIEW`"
-        width="50%"
-        overlayTheme="dark"
-        modal-theme="dark"
-        enable-mobile-fullscreen
-        ref="modal"
-        @close="close"
-    >
+    <daisy-modal id="previewModal" ref="previewModal" @close="close">
         <component
             v-if="previewData"
             :is="previewComponent"
             v-bind="{ [modelKey]: previewData }"
             :data="previewData"
         />
-    </sweet-modal>
+    </daisy-modal>
 </template>
 
 <script>
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 import { ref, watchEffect, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import {
@@ -27,7 +19,7 @@ import {
 } from "@/Components/CRUD/helpers/previewData";
 
 export default {
-    components: { SweetModal },
+    components: { DaisyModal },
     props: {
         previewComponent: {
             required: true,
@@ -43,10 +35,10 @@ export default {
     },
     setup() {
         const page = usePage();
-        const modal = ref();
+        const previewModal = ref();
 
         function open() {
-            modal?.value?.open();
+            previewModal?.value?.open();
         }
 
         function close() {
@@ -64,7 +56,7 @@ export default {
         onUnmounted(() => {
             clearPreviewData();
         });
-        return { close, modal, previewData };
+        return { close, previewModal, previewData };
     },
 };
 </script>

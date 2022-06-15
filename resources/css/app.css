@@ -1,10 +1,8 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "vue-toastification/dist/index.css";
 
-.sweet-modal-overlay {
-    @apply mt-16;
-}
 .no-scroll {
     overflow: hidden;
 }
@@ -99,4 +97,27 @@
 
 ::-webkit-scrollbar-thumb {
     @apply border rounded-lg bg-neutral-300 border-neutral-500;
+}
+
+.tabledata .badge {
+    @apply max-w-full block overflow-hidden overflow-ellipsis mx-auto my-2;
+}
+
+/**
+ * Vue Toastification Styles
+ */
+.Vue-Toastification__toast--success {
+    @apply bg-success text-primary-content;
+}
+
+.Vue-Toastification__toast--info {
+    @apply bg-info text-primary-content;
+}
+
+.Vue-Toastification__toast--warning {
+    @apply bg-warning text-primary-content;
+}
+
+.Vue-Toastification__toast--error {
+    @apply bg-error text-primary-content;
 }

@@ -1,16 +1,22 @@
 <template>
-    <daisy-modal ref="modal">
-        <h1 class="text text-secondary text-2xl">{{ title }}</h1>
+    <daisy-modal ref="modal" class="rounded-lg max-w-fit">
+        <h1 class="text text-secondary text-2xl pb-2">{{ title }}</h1>
         <slot />
-        <inertia-link
-            class="btn btn-secondary mt-8"
-            :href="route('reports.page', pageRoute)"
-            v-if="pageRoute"
-            >View More</inertia-link
-        >
+        <div class="dashboard-modal-action bottom-[-25px]">
+            <inertia-link
+                class="btn btn-secondary mt-8 btn-sm rounded"
+                :href="route('reports.page', pageRoute)"
+                v-if="pageRoute"
+                >View More</inertia-link
+            >
+        </div>
     </daisy-modal>
 </template>
-
+<style scoped>
+.dashboard-modal-action {
+    @apply w-full flex justify-end sticky pb-8 bg-base-200 z-20 pr-3;
+}
+</style>
 <script>
 import { ref, defineComponent } from "vue";
 import DaisyModal from "@/Components/DaisyModal";

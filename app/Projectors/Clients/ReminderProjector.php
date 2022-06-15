@@ -28,6 +28,6 @@ class ReminderProjector extends Projector
 
     public function onReminderTriggered(ReminderTriggered $event)
     {
-        Reminder::findOrFail($event->id)->update(['triggered_at' => $event->metaData()['created-at']]);
+        Reminder::findOrFail($event->id)->update(['triggered_at' => $event->createdAt()]);
     }
 }

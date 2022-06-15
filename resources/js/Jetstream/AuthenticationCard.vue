@@ -35,6 +35,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 
 import Button from "../Components/Button";
 
@@ -75,14 +76,6 @@ export default defineComponent({
                 .post(this.route("login"), {
                     onFinish: () => this.form.reset("password"),
                 });
-        },
-        comingSoon() {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
         },
     },
 });

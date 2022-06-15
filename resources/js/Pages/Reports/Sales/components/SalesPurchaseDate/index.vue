@@ -32,7 +32,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import DatePicker from "vue3-date-time-picker";
+import DatePicker from "@vuepic/vue-datepicker";
 import SalesCard from "@/Components/Card";
 import CalendarIcon from "@/Components/Icons/Calendar";
 import Button from "@/Components/Button";

@@ -97,13 +97,9 @@
                 >
                     <CommsHistory :details="details" ref="commsHistoryRef" />
                 </div>
-                <sweet-modal
-                    :title="modalTitle"
-                    width="85%"
+                <daisy-modal
+                    id="showViewModal"
                     ref="showViewModal"
-                    overlayTheme="dark"
-                    modal-theme="dark"
-                    enable-mobile-fullscreen
                     @close="activeContactMethod = ''"
                 >
                     <div
@@ -116,7 +112,7 @@
                             @done="$refs.showViewModal.close()"
                         />
                     </div>
-                </sweet-modal>
+                </daisy-modal>
             </div>
         </div>
     </div>
@@ -131,7 +127,7 @@ import CommsActions from "./CommsActions";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import SweetModal from "@/Components/SweetModal3/SweetModal";
+import DaisyModal from "@/Components/DaisyModal";
 
 library.add(faUserCircle);
 
@@ -144,7 +140,7 @@ export default defineComponent({
         Button,
         FormSection,
         FontAwesomeIcon,
-        SweetModal,
+        DaisyModal,
     },
     props: [
         "userId",
@@ -222,14 +218,6 @@ export default defineComponent({
         },
         fetchLeadInfo() {
             this.dynamicDetails = this.details;
-        },
-        comingSoon() {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
         },
     },
     watch: {

@@ -23,7 +23,9 @@
                     <div :class="item.class"></div>
                     <div>{{ item.label }} ({{ item.percent }}%)</div>
                 </div>
-                <Button size="xs" secondary class="self-end mt-6">View</Button>
+                <Button size="xs" secondary class="self-end mt-6 btn-action"
+                    >View</Button
+                >
             </div>
         </div>
     </Card>
@@ -31,6 +33,9 @@
 <style scoped>
 .badge {
     @apply w-4 h-5 rounded-full;
+}
+.no-action .btn-action {
+    @apply hidden;
 }
 </style>
 <script setup>

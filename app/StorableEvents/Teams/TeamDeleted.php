@@ -11,7 +11,7 @@ class TeamDeleted extends ShouldBeStored
     public $user;
     public $id;
 
-    public function __construct(string $client, string $user, $id)
+    public function __construct(string $client, string $user, string $id)
     {
         $this->client = $client;
         $this->user = $user;

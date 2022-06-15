@@ -231,6 +231,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import { toastInfo, toastError, toastSuccess } from "@/utils/createToast";
 import SlideUpDown from "vue3-slide-up-down";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -305,25 +306,14 @@ export default defineComponent({
         nextQuestion() {
             if (this.validateQuestion()) {
                 if (this.currentQuestion < 6) {
-                    new Noty({
-                        type: "info",
-                        killer: true,
-                        theme: "sunset",
-                        text: `Awesome! Moving on to question ${
-                            this.currentQuestion + 1
-                        } of 6`,
-                        timeout: 7500,
-                    }).show();
-
+                    const toastText = `Awesome! Moving on to question ${
+                        this.currentQuestion + 1
+                    } of 6`;
+                    toastInfo(toastText);
                     this.currentQuestion++;
                 }
             } else {
-                new Noty({
-                    type: "error",
-                    theme: "sunset",
-                    text: "Please complete the question before continuing.",
-                    timeout: 7500,
-                }).show();
+                toastError("Please complete the question before continuing.");
             }
         },
         prevQuestion() {
@@ -342,20 +332,13 @@ export default defineComponent({
                     selectedRest: this.selectedRest,
                 });
 
-                new Noty({
-                    type: "success",
-                    killer: true,
-                    theme: "sunset",
-                    text: `Great! Generating A workout for you now!`,
+                toastSuccess(`Great! Generating A workout for you now!`, {
                     timeout: 5000,
-                }).show();
+                });
             } else {
-                new Noty({
-                    type: "error",
-                    theme: "sunset",
-                    text: "Complete the whole form before continuing.",
+                toastError("Complete the whole form before continuing.", {
                     timeout: 10000,
-                }).show();
+                });
             }
         },
         validateQuestion() {

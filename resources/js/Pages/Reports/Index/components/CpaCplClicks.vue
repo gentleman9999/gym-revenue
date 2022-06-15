@@ -5,21 +5,23 @@
             favorite: true,
             collapse: true,
         }"
-        class="h-full pb-0"
+        class="flex flex-col h-full pb-0"
     >
         <template #cardTitle>
             <div class="text-base-content text-xl pr-8">CPA, CPL, Clicks</div>
         </template>
-        <div class="mx-2 border border-base-content rounded px-2">
-            <data-table
-                :data="data"
-                :columns="columns"
-                noHeader
-                class="overflow-hidden"
-            />
-        </div>
-        <div class="flex flex-row justify-end">
-            <Button secondary size="xs" class="mt-2">View</Button>
+        <div class="flex flex-col h-full justify-around">
+            <div class="mx-2 border border-base-content rounded px-2">
+                <data-table
+                    :data="data"
+                    :columns="columns"
+                    noHeader
+                    class="overflow-hidden"
+                />
+            </div>
+            <div class="flex flex-row justify-end">
+                <Button secondary size="xs" class="mt-2">View</Button>
+            </div>
         </div>
     </Card>
 </template>
