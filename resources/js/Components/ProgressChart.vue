@@ -1,7 +1,7 @@
 <template>
     <apex-charts
         type="radialBar"
-        height="200"
+        :height="height"
         :options="options"
         :series="props.data"
     ></apex-charts>
@@ -13,6 +13,10 @@ const props = defineProps({
     data: {
         type: Array,
         default: [],
+    },
+    height: {
+        type: Number,
+        default: 200,
     },
 });
 
