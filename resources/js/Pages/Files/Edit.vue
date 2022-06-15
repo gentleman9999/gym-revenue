@@ -1,19 +1,24 @@
 <template>
-    <app-layout title="Rename File">
-        <template #header>
-            <jet-bar-icon type="g0back" fill />
-            <h2 class="font-semibold text-xl leading-tight">Rename File</h2>
-        </template>
+    <ModalableWrapper>
+        <app-layout title="Rename File">
+            <template #header>
+                <jet-bar-icon type="g0back" fill />
+                <h2 class="font-semibold text-xl leading-tight">Rename File</h2>
+            </template>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <file-form
-                    :client-id="this.$page.props.user.current_client_id"
-                    :file="file"
-                />
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
             </div>
-        </div>
-    </app-layout>
+        </app-layout>
+        <template #modal>
+            <file-form
+                :client-id="this.$page.props.user.current_client_id"
+                :file="file"
+            />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -28,6 +33,8 @@ import JetBarIcon from "@/Components/JetBarIcon";
 import FileForm from "@/Pages/Files/Partials/FileForm";
 import { defineComponent } from "vue";
 
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
+
 export default defineComponent({
     components: {
         AppLayout,
@@ -38,6 +45,8 @@ export default defineComponent({
         JetLabel,
         JetBarIcon,
         FileForm,
+        ModalableWrapper,
+        ModalSlot,
     },
     props: ["file"],
 });

@@ -1,15 +1,22 @@
 <template>
-    <app-layout title="Upload Files">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Upload Files</h2>
-        </template>
+    <ModalableWrapper>
+        <app-layout title="Upload Files">
+            <template #header>
+                <h2 class="font-semibold text-xl leading-tight">
+                    Upload Files
+                </h2>
+            </template>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <file-manager :client-id="$page.props.user.current_client_id" />
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
             </div>
-        </div>
-    </app-layout>
+        </app-layout>
+        <template #modal>
+            <file-manager :client-id="$page.props.user.current_client_id" />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -22,6 +29,8 @@ import JetLabel from "@/Jetstream/Label.vue";
 import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
 import FileManager from "./Partials/FileManager";
 
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
+
 export default defineComponent({
     components: {
         FileManager,
@@ -30,6 +39,8 @@ export default defineComponent({
         JetInputError,
         JetLabel,
         LocationForm,
+        ModalableWrapper,
+        ModalSlot,
     },
 });
 </script>
