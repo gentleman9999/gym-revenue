@@ -16,7 +16,6 @@ use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
 use App\StorableEvents\Endusers\Leads\LeadRestored;
 use App\StorableEvents\Endusers\Leads\LeadSubscribedToComms;
 use App\StorableEvents\Endusers\Leads\LeadTrashed;
-use App\StorableEvents\Endusers\Leads\LeadUnsubscribedFromComms;
 use App\StorableEvents\Endusers\Leads\LeadUpdated;
 use App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\Leads\SubscribedToAudience;
@@ -317,13 +316,8 @@ class LeadProjector extends Projector
         }
     }
 
-    public function onLeadUnsubscribedFromComms(LeadUnsubscribedFromComms $event)
-    {
-        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_email' => true, 'unsubscribed_sms' => true]);
-    }
-
     public function onLeadSubscribedToComms(LeadSubscribedToComms $event)
     {
-        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_email' => false, 'unsubscribed_sms' => false]);
+        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms]);
     }
 }

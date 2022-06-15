@@ -6,11 +6,9 @@ use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Redirect;
-use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class SubscribeLeadToComms
+class UpdateSubscribeLeadToComms
 {
     use AsAction;
 
@@ -27,25 +25,18 @@ class SubscribeLeadToComms
         ];
     }
 
-    public function handle($id)
+    public function handle($id, $data)
     {
-        LeadAggregate::retrieve($id)->subscribeToComms(Carbon::now())->persist();
+        LeadAggregate::retrieve($id)->subscribeToComms($data['email'], $data['sms'], Carbon::now())->persist();
 
         return Lead::findOrFail($id);
     }
-
-//    public function authorize(ActionRequest $request): bool
-//    {
-//        $current_user = $request->user();
-//
-//        return $current_user->can('leads.delete', Lead::class);
-//    }
 
     public function asController(Request $request, $id)
     {
         $this->handle(
             $id,
+            $request->validated(),
         );
-//        return Redirect::back();
     }
 }

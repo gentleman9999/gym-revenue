@@ -27,24 +27,30 @@
 
                 @if ($success ?? false)
                     <div class="alert alert-success mt-8">
-                        @if ($lead->unsubscribed_comms)
-                            You have been unsubscribed from emails and SMS from {{$client->name}}
-                        @else
-                            You are now subscribed to emails and SMS from {{$client->name}}
-                        @endif
+                        Your emails and SMS preferences have been updated for {{$client->name}}
                     </div>
                 @endif
 
-                <form class="space-y-8 mt-8" method="POST" action="{{route('comms-prefs.update', $lead->id)}}">
+                <form class="space-y-8 mt-8" method="POST" action="{{route('comms-prefs-lead.update', $lead->id)}}">
                     @csrf
                     <div class="form-control flex-row">
-                        <label for="subscribe" class="label space-x-2">
-                            <input type="checkbox" name="subscribe" id="subscribe"
+                        <label for="subscribe_sms" class="label space-x-2">
+                            <input type="checkbox" name="subscribe_sms" id="subscribe_sms"
                                 @if (!$lead->unsubscribed_sms)
                                     checked
                                  @endif
                                 />
-                            <span class="label-text">Subscribe me to emails and SMS updates from {{$client->name}}</span>
+                            <span class="label-text">Subscribe me to SMS updates from {{$client->name}}</span>
+                        </label>
+                    </div>
+                    <div class="form-control flex-row">
+                        <label for="subscribe_email" class="label space-x-2">
+                            <input type="checkbox" name="subscribe_email" id="subscribe_email"
+                                   @if (!$lead->unsubscribed_email)
+                                       checked
+                                @endif
+                            />
+                            <span class="label-text">Subscribe me to emails  updates from {{$client->name}}</span>
                         </label>
                     </div>
                     <button type="submit" class="btn btn-primary w-full xl:w-auto">Save</button>

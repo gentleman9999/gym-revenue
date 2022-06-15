@@ -267,6 +267,10 @@ Route::prefix('s')->group(function () {
 
 //since this is for endusers to opt in/out of communications, we don't want to load up the CRM App bundle
 Route::prefix('/communication-preferences')->group(function () {
-    Route::get('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@communicationPreferences')->name('comms-prefs');
-    Route::post('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateCommunicationPreferences')->name('comms-prefs.update');
+    Route::get('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@leadCommunicationPreferences')->name('comms-prefs-lead');
+    Route::post('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateLeadCommunicationPreferences')->name('comms-prefs-lead.update');
+});
+Route::prefix('/member-communication-preferences')->group(function () {
+    Route::get('/{member}', \App\Http\Controllers\Data\LeadsController::class . '@memberCommunicationPreferences')->name('comms-prefs-member');
+    Route::post('/{member}', \App\Http\Controllers\Data\LeadsController::class . '@updateMemberCommunicationPreferences')->name('comms-prefs-member.update');
 });

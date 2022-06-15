@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Actions\Endusers\Leads\SubscribeLeadToComms;
-use App\Actions\Endusers\Leads\UnsubscribeLeadFromComms;
+use App\Actions\Endusers\Leads\UpdateSubscribeLeadToComms;
+use App\Actions\Endusers\Members\UpdateSubscribeMemberToComms;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Http\Controllers\Controller;
@@ -15,6 +15,7 @@ use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
+use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use App\Models\TeamDetail;
@@ -711,19 +712,34 @@ class LeadsController extends Controller
         return $prospects;
     }
 
-    public function communicationPreferences(Request $request, Lead $lead)
+    public function leadCommunicationPreferences(Request $request, Lead $lead)
     {
-        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead]);
+        return view('comms-prefs-lead', ['client' => $lead->client, 'lead' => $lead]);
     }
 
-    public function updateCommunicationPreferences(Request $request, Lead $lead)
+    public function memberCommunicationPreferences(Request $request, Member $member)
     {
-        if ($request->subscribe) {
-            $lead = SubscribeLeadToComms::run($lead->id);
-        } else {
-            $lead = UnsubscribeLeadFromComms::run($lead->id);
-        }
+        return view('comms-prefs-member', ['client' => $member->client, 'member' => $member]);
+    }
 
-        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
+    public function updateLeadCommunicationPreferences(Request $request, Lead $lead)
+    {
+        $lead = UpdateSubscribeLeadToComms::run($lead->id, [
+                'email' => $request->subscribe_sms ?? false,
+                'sms' => $request->subscribe_email ?? false,
+            ]);
+
+
+        return view('comms-prefs-lead', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
+    }
+
+    public function updateMemberCommunicationPreferences(Request $request, Member $member)
+    {
+        $lead = UpdateSubscribeMemberToComms::run($member->id, [
+            'email' => $request->subscribe_sms ?? false,
+            'sms' => $request->subscribe_email ?? false,
+        ]);
+
+        return view('comms-prefs-member', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
     }
 }
