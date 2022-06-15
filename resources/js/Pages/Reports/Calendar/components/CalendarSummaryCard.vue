@@ -12,7 +12,7 @@
             </div>
         </template>
         <div class="flex flex-col">
-            <img :src="diagram" class="px-5" />
+            <progress-chart :data="progress" />
             <Button v-if="showAction" size="xs" secondary class="self-end"
                 >Detail</Button
             >
@@ -22,14 +22,16 @@
 <script setup>
 import Card from "@/Components/Card";
 import Button from "@/Components/Button";
+
+import ProgressChart from "./Charts/ProgressChart";
 const props = defineProps({
     title: {
         type: String,
         default: "",
     },
-    diagram: {
-        type: String,
-        default: "",
+    progress: {
+        type: Array,
+        default: [],
     },
     favorite: {
         type: Boolean,

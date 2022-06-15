@@ -13,7 +13,6 @@ const props = defineProps({
 
 const options = {
     chart: {
-        height: 350,
         type: "spline",
         toolbar: {
             show: false,
@@ -22,7 +21,28 @@ const options = {
     annotations: {
         xaxis: [
             {
-                x: 2,
+                x: 1,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+            },
+            {
+                x: 3,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+            },
+            {
+                x: 5,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+            },
+            {
+                x: 7,
                 strokeDashArray: 0,
                 style: {
                     color: "hsl(var(--bc))",

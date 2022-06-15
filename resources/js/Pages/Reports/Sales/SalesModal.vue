@@ -19,7 +19,7 @@
                     </div>
                 </template>
                 <div class="flex h-full items-center">
-                    <img src="/img/mocks/sales_page_4.png" />
+                    <percent2-goal-chart :data="[80]" />
                 </div>
             </card>
         </div>
@@ -31,6 +31,7 @@ import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal"
 import Card from "@/Components/Card";
 import SalesAnnualFees from "./components/SalesAnnualFees";
 import SalesPercent2Goal from "./components/SalesPercent2Goal";
+import Percent2GoalChart from "./components/Charts/Percent2GoalChart";
 
 export default defineComponent({
     components: {
@@ -38,6 +39,7 @@ export default defineComponent({
         Card,
         SalesAnnualFees,
         SalesPercent2Goal,
+        Percent2GoalChart,
     },
     setup() {
         const modal = ref();
