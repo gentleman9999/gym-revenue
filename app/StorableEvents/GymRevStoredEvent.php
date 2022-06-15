@@ -23,12 +23,29 @@ class GymRevStoredEvent extends EloquentStoredEvent
                 if (session('user_id')) {
                     $user_id = session('user_id');
                 }
+                $client_id = null;
+                if (session('client_id')) {
+                    $client_id = session('client_id');
+                } elseif (session('current_client_id')) {
+                    $client_id = session('current_client_id');
+                }
                 $access_token = request()->bearerToken() ?? null;
                 $ip = request()->ip() ?? null;
-                $api_user_id = $access_token !== null ? User::whereAccessToken($access_token)->firstOrFail()->id : null;
-
+                $api_user = $access_token !== null ? User::whereAccessToken($access_token)->first() : null;
+                $api_user_id = $api_user->id ?? null;
+                if (! $client_id && $api_user && $api_user->client_id) {
+                    $client_id = $api_user->client_id;
+                }
+                if (! $client_id) {
+                    if (array_key_exists('client', $storedEvent->event_properties)) {
+                        $client_id = $storedEvent->event_properties['client'];
+                    } elseif (array_key_exists('payload', $storedEvent->event_properties) && array_key_exists('client_id', $storedEvent->event_properties['payload'])) {
+                        $client_id = $storedEvent->event_properties['payload']['client_id'];
+                    }
+                }
                 $auto_generated = $user_id === null && $access_token === null;
 
+                $storedEvent->meta_data['client_id'] = $client_id;
                 $storedEvent->meta_data['user_id'] = $user_id;
                 $storedEvent->meta_data['api_user_id'] = $api_user_id;
                 $storedEvent->meta_data['access_token'] = $access_token;
@@ -104,7 +121,19 @@ class GymRevStoredEvent extends EloquentStoredEvent
             return $this->entityId();
         }
 
-        return $this->meta_data['client_id'] ?? $this->event_properties['payload']['client_id'] ?? null;
+        return $this->meta_data['client_id'];
+    }
+
+    //we could potentially use attributes instead of function for clientId, and then in turn
+    //setup a relation with Client using that attribute.
+    public function client(): ?Client
+    {
+        $clientId = $this->clientId();
+        if (! $clientId) {
+            return null;
+        }
+
+        return Client::find($clientId);
     }
 
     public function user(): ?User
