@@ -49,6 +49,8 @@ class CreateLeadAndMembersTables extends Migration
         $table->string('external_id')->nullable();
         $table->jsonb('misc')->nullable();
         $table->unique(['client_id', 'email'], 'client_email_unqiue');
+        $table->boolean('unsubscribed_email')->default(false);
+        $table->boolean('unsubscribed_sms')->default(false);
     }
 
     /**

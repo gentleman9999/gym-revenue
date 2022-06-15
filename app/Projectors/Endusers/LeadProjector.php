@@ -319,11 +319,11 @@ class LeadProjector extends Projector
 
     public function onLeadUnsubscribedFromComms(LeadUnsubscribedFromComms $event)
     {
-        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_comms' => true]);
+        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_email' => true, 'unsubscribed_sms' => true]);
     }
 
     public function onLeadSubscribedToComms(LeadSubscribedToComms $event)
     {
-        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_comms' => false]);
+        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_email' => false, 'unsubscribed_sms' => false]);
     }
 }

@@ -40,10 +40,10 @@
                     <div class="form-control flex-row">
                         <label for="subscribe" class="label space-x-2">
                             <input type="checkbox" name="subscribe" id="subscribe"
-                                   @if (!$lead->unsubscribed_comms)
-                                       checked
-                                    @endif
-                                   />
+                                @if (!$lead->unsubscribed_sms)
+                                    checked
+                                 @endif
+                                />
                             <span class="label-text">Subscribe me to emails and SMS updates from {{$client->name}}</span>
                         </label>
                     </div>

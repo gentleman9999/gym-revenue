@@ -28,12 +28,12 @@ class Lead extends Model
         'id', 'client_id', 'first_name', 'middle_name', 'last_name', 'gender', 'email',
         'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address',
         'lead_type_id', 'membership_type_id', 'lead_source_id', 'agreement_number',
-        'unsubscribed_comms', 'date_of_birth', 'opportunity', 'external_id', 'misc',
+        'date_of_birth', 'opportunity', 'external_id', 'misc',
+        'unsubscribed_sms', 'unsubscribed_email',
     ];
 
     protected $casts = [
         'profile_picture' => 'array',
-        'unsubscribed_comms' => 'boolean',
         'misc' => 'array',
     ];
 

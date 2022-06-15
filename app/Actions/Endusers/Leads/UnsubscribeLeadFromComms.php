@@ -22,7 +22,8 @@ class UnsubscribeLeadFromComms
     public function rules()
     {
         return [
-            //no rules since we only accept an id route param, which is validated in the route definition
+            'email' => ['required', 'boolean'],
+            'sms' => ['required', 'boolean'],
         ];
     }
 

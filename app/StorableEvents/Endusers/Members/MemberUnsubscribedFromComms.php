@@ -7,11 +7,15 @@ use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 class MemberUnsubscribedFromComms extends ShouldBeStored
 {
     public $member;
+    public $email;
+    public $sms;
     public $date;
 
-    public function __construct(string $member, string $date)
+    public function __construct(string $member, bool $email, bool $sms, string $date)
     {
         $this->member = $member;
+        $this->email = $email;
+        $this->sms = $sms;
         $this->date = $date;
     }
 }
