@@ -4,7 +4,6 @@ namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Models\Endusers\Lead;
-use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -33,13 +32,6 @@ class MarkLeadConverted
         return Lead::findOrFail($data['id']);
     }
 
-    public function authorize(ActionRequest $request): bool
-    {
-        $current_user = $request->user();
-
-        return $current_user->can('leads.edit', Lead::class);
-    }
-
     public function asController(ActionRequest $request)
     {
         $lead = $this->handle(
@@ -47,7 +39,5 @@ class MarkLeadConverted
         );
 
         Alert::success("Lead '{$lead->name}' was converted")->flash();
-
-        return Redirect::route('data.leads');
     }
 }

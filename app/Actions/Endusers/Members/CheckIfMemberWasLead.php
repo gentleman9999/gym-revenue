@@ -5,11 +5,8 @@ namespace App\Actions\Endusers\Members;
 use App\Actions\Endusers\Leads\MarkLeadConverted;
 
 use App\Models\Endusers\Lead;
-use App\Models\Endusers\Member;
-use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Prologue\Alerts\Facades\Alert;
 
 class CheckIfMemberWasLead
 {
@@ -50,13 +47,6 @@ class CheckIfMemberWasLead
         return true;
     }
 
-    public function authorize(ActionRequest $request): bool
-    {
-        $current_user = $request->user();
-
-        return $current_user->can('members.update', Member::class);
-    }
-
     public function asController(ActionRequest $request, $id)
     {
         $data = $request->validated();
@@ -64,9 +54,5 @@ class CheckIfMemberWasLead
         $member = $this->handle(
             $data
         );
-
-        Alert::success("Member '{$member->name}' was updated")->flash();
-
-        return Redirect::back();
     }
 }
