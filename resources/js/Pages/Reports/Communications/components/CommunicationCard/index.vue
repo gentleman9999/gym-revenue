@@ -28,7 +28,7 @@
 import Card from "@/Components/Card";
 import Button from "@/Components/Button";
 
-import ProgressChart from "../Charts/ProgressChart";
+import ProgressChart from "@/Components/ProgressChart";
 const props = defineProps({
     title: {
         type: String,
