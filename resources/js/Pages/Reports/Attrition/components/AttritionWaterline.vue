@@ -12,19 +12,8 @@
                 ><div class="text-base-content">Waterline</div></template
             >
             <div class="flex flex-col">
-                <img
-                    src="/img/mocks/attrition_page_2.png"
-                    class="pt-4 w-fit m-auto"
-                />
-                <div class="flex flex-row mt-4 pl-5 space-x-8">
-                    <div class="flex flex-row space-x-3">
-                        <rectangle-icon class="text-secondary-600" />
-                        <span class="text-xs">New Members</span>
-                    </div>
-                    <div class="flex flex-row space-x-3">
-                        <rectangle-icon class="text-secondary-700" />
-                        <span class="text-xs">Renewals</span>
-                    </div>
+                <div class="w-full">
+                    <waterline-chart :data="mock" />
                 </div>
             </div>
         </Card>
@@ -34,6 +23,18 @@
 import Card from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";
 import RectangleIcon from "@/Components/Icons/Rectangle";
+import WaterlineChart from "./Charts/WaterlineChart";
 
 const items = ["$ Lost", "Units Gained", "Units Lost"];
+
+const mock = [
+    {
+        name: "New Members",
+        data: [31, 40, 28, 51, 42, 109, 100],
+    },
+    {
+        name: "Renewals",
+        data: [11, 32, 45, 32, 34, 52, 41],
+    },
+];
 </script>
