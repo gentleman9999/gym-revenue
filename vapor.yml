@@ -16,7 +16,7 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
-            - 'php artisan sidecar:deploy --env=production'
+            - 'php artisan sidecar:deploy'
             - 'npm ci && npm run prod && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
@@ -36,8 +36,7 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
-            - 'npm ci && npm run dev && rm -rf node_modules'
-            - 'php artisan sidecar:deploy --env=production'
+            - 'php artisan sidecar:deploy'
             - 'npm ci && npm run prod && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
