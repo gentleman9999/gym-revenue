@@ -9,7 +9,7 @@
         <div class="switcher-week">{{ dayOfWeek }}</div>
     </div>
 </template>
-<style lang="scss" scoped>
+<style scoped>
 .date-switcher-card {
     &.active {
         @apply bg-secondary text-base-content;

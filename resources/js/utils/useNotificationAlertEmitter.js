@@ -2,6 +2,7 @@ import { useFlash } from "./useFlash";
 import { ref, watch, watchEffect, onBeforeUnmount } from "vue";
 import { useUser } from "@/utils/useUser";
 import { useNotifications } from "@/utils/useNotifications";
+import { generateToast } from "@/utils/createToast";
 import { parseNotificationResponse } from "@/utils";
 
 export const useNotificationAlertEmitter = () => {
@@ -18,22 +19,35 @@ export const useNotificationAlertEmitter = () => {
         console.log({ e });
         incrementUnreadCount();
         const { text, state, timeout } = parseNotificationResponse(e);
-        let alert = {
-            type: state || "info",
-            theme: "sunset",
-            text,
-            timeout: timeout || false,
-            callbacks: {
-                onClose: async () => {
-                    console.log(
-                        "we can figure out how to route based on event type here!"
-                    );
-                    // axios.post(route('notifications.dismiss', e.notification_id));
-                    await dismissNotification(e.notification_id);
-                },
+
+        generateToast(state, text, {
+            onClose: async () => {
+                console.log(
+                    "we can figure out how to route based on event type here!"
+                );
+                // axios.post(route('notifications.dismiss', e.notification_id));
+                await dismissNotification(e.notification_id);
             },
-        };
-        new Noty(alert).show();
+            timeout,
+        });
+
+        // didn't delete in case above doesn't work and need to fix it (cant test yet)
+        // let alert = {
+        //     type: state || "info",
+        //     theme: "sunset",
+        //     text,
+        //     timeout: timeout || false,
+        //     callbacks: {
+        //         onClose: async () => {
+        //             console.log(
+        //                 "we can figure out how to route based on event type here!"
+        //             );
+        //             // axios.post(route('notifications.dismiss', e.notification_id));
+        //             await dismissNotification(e.notification_id);
+        //         },
+        //     },
+        // };
+        // new Noty(alert).show();
     };
     onBeforeUnmount(() => {
         //cleanup old listeners

@@ -143,6 +143,7 @@
 
 <script>
 import { defineComponent, computed, ref } from "vue";
+import { toastWarning } from "@/utils/createToast";
 import { usePage } from "@inertiajs/inertia-vue3";
 import JetDropdown from "@/Components/Dropdown";
 import DaisyModal from "@/Components/DaisyModal";
@@ -177,12 +178,7 @@ export default defineComponent({
                 impVars.showModal = true;
                 impModal.value.open();
             } else {
-                new Noty({
-                    type: "warning",
-                    theme: "sunset",
-                    text: "You Cant Do That!",
-                    timeout: 7500,
-                }).show();
+                toastWarning();
             }
         };
 

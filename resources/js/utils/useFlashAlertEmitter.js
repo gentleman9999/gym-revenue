@@ -1,6 +1,7 @@
 import { useFlash } from "./useFlash";
 import { ref, watch, watchEffect } from "vue";
 import { useUser } from "@/utils/useUser";
+import { generateToast } from "@/utils/createToast";
 
 export const useFlashAlertEmitter = () => {
     const flash = useFlash();
@@ -15,23 +16,21 @@ export const useFlashAlertEmitter = () => {
         }
     });
 
-    watchEffect(
-        () => {
-            // console.log(alerts.value, 'alert changed');
+    watch(
+        alerts,
+        (newAlerts) => {
+            console.log("new alerts", newAlerts);
             Object.keys(alerts.value).forEach((type) => {
                 let messages = new Set(alerts.value[type]);
+
                 console.log({ type, messages });
 
                 messages.forEach(function (text) {
-                    let alert = {
-                        type: "warning",
-                        theme: "sunset",
-                        text: "Feature Coming Soon!",
-                        timeout: 6500,
-                    };
-                    alert["type"] = type;
-                    alert["text"] = text;
-                    new Noty(alert).show();
+                    let toastText =
+                        typeof text === "string" && text.length > 0
+                            ? text
+                            : "Feature Coming Soon!";
+                    generateToast(type, toastText);
                 });
             });
         },

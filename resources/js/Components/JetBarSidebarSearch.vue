@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { comingSoon } from "@/utils/comingSoon.js";
+
 export default {
     name: "JetBarSidebarSearch",
     data() {
@@ -34,15 +36,7 @@ export default {
     methods: {
         validateInput() {
             console.log(`Derp ${this.searchInput}`);
-            this.comingSoon();
-        },
-        comingSoon() {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
+            comingSoon();
         },
     },
 };
