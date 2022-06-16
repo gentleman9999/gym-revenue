@@ -182,6 +182,24 @@
             </button>
         </div>
 
+        <div
+            class="flex flex-row space-x-2 items-center"
+            v-if="calendar_event?.event_completion == null"
+        >
+            <jet-label for="complete_event" value="Event Completion" />
+            <Button
+                @click.prevent="handleReminderCreate(calendar_event.id)"
+                secondary
+                size="sm"
+            >
+                Complete Event
+            </Button>
+            <jet-input-error
+                :message="form.errors.complete_event"
+                class="mt-2"
+            />
+        </div>
+
         <template v-if="calendar_event?.im_attending">
             <div class="col-span-6 space-x-2">
                 <div class="divider divider-horizontal">

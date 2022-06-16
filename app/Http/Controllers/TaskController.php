@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
+use App\Models\Reminder;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
@@ -48,21 +49,53 @@ class TaskController extends Controller
             ->whereType('Task')
             ->first();
 
+        //page won't load if no events type: task exist. The below fixes that.
+        if (! is_null($typeTaskForClient)) {
+            $tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->with('type')
+                ->filter($request->only('search', 'start', 'end'))
+                ->paginate(10);
 
-        $tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
-            ->with('type')
-            ->filter($request->only('search', 'start', 'end'))
-            ->paginate(10);
+            $incomplete_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereNull('event_completion')
+                ->with('type')
+                ->paginate(10);
 
-        $incomplete_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
-            ->whereNull('event_completion')
-            ->with('type')
-            ->paginate(10);
+            $completed_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereNotNull('event_completion')
+                ->with('type')
+                ->paginate(10);
 
-        $completed_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
-            ->whereNotNull('event_completion')
-            ->with('type')
-            ->paginate(10);
+            $overdue_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereNull('event_completion')
+                ->whereDate('start', '<', date('Y-m-d H:i:s'))
+                ->with('type')
+                ->get();
+
+            foreach ($tasks as $key => $event) {
+                $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
+
+                if ($event->attendees) {
+                    foreach ($event->attendees as $attendee) {
+                        if ($attendee->entity_type == User::class) {
+                            if (request()->user()->id == $attendee->entity_id) {
+                                $tasks[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
+                                    ->whereEntityId($event['id'])
+                                    ->whereUserId($attendee->entity_id)
+                                    ->first();
+
+                                $tasks[$key]['im_attending'] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $tasks = [];
+            $incomplete_tasks = [];
+            $completed_tasks = [];
+            $overdue_tasks = [];
+        }
 
 
         foreach ($tasks as $key => $event) {
@@ -77,11 +110,7 @@ class TaskController extends Controller
             'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
-            'overdue_tasks' => CalendarEvent::whereEventTypeId($typeTaskForClient->id)
-                ->whereNull('event_completion')
-                ->whereDate('start', '<', date('Y-m-d H:i:s'))
-                ->with('type')
-                ->get(),
+            'overdue_tasks' => $overdue_tasks,
             'completed_tasks' => $completed_tasks,
         ]);
     }
