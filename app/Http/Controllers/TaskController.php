@@ -73,10 +73,10 @@ class TaskController extends Controller
                 ->with('type')
                 ->paginate(10);
 
-            $tasks = $this->modifyLeadArray($tasks);
-            $incomplete_tasks = $this->modifyLeadArray($incomplete_tasks);
-            $completed_tasks = $this->modifyLeadArray($completed_tasks);
-            $overdue_tasks = $this->modifyLeadArray($overdue_tasks);
+            $tasks = $this->modifyEventArray($tasks);
+            $incomplete_tasks = $this->modifyEventArray($incomplete_tasks);
+            $completed_tasks = $this->modifyEventArray($completed_tasks);
+            $overdue_tasks = $this->modifyEventArray($overdue_tasks);
         } else {
             $tasks = [];
             $incomplete_tasks = [];
@@ -102,7 +102,7 @@ class TaskController extends Controller
         ]);
     }
 
-    public function modifyLeadArray($array)
+    public function modifyEventArray($array)
     {
         foreach ($array as $key => $event) {
             $array[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
