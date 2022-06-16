@@ -1,0 +1,12 @@
+export { default as AddIcon } from "./Add.vue";
+export { default as ToDoIcon } from "./ToDo.vue";
+export { default as CalendarIcon } from "./Calendar.vue";
+export { default as FileIcon } from "./File.vue";
+export { default as LocationIcon } from "./Location.vue";
+export { default as BarsIcon } from "./Bars.vue";
+export { default as MassComIcon } from "./MassCom.vue";
+export { default as UserIcon } from "./User.vue";
+export { default as TeamIcon } from "./Team.vue";
+export { default as ReportIcon } from "./Report.vue";
+export { default as LeadsIcon } from "./Leads.vue";
+export { default as SettingIcon } from "./Setting.vue";
