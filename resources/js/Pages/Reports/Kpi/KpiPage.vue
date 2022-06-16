@@ -18,9 +18,9 @@
             </reports-title>
         </template>
         <div class="flex flex-row flex-wrap w-full">
-            <kpi-revenue-per-member-overall />
+            <kpi-revenue-per-member-overall class="no-more md:w-1/2 lg:w-1/3" />
             <kpi-membership-revenue-per-member />
-            <kpi-personal-training />
+            <kpi-personal-training class="no-more md:w-1/2 lg:w-1/3" />
             <kpi-retail-revenue-per-member />
             <kpi-membership />
             <kpi-other-services />

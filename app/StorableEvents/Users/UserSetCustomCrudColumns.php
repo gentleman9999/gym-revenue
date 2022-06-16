@@ -10,7 +10,7 @@ class UserSetCustomCrudColumns extends ShouldBeStored
     public $table;
     public $fields;
 
-    public function __construct($user, string $table, array $fields)
+    public function __construct(string $user, string $table, array $fields)
     {
         $this->user = $user;
         $this->table = $table;

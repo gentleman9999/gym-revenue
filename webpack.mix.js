@@ -1,5 +1,5 @@
-const mix = require('laravel-mix');
-const {alias} = require("laravel-mix");
+const mix = require("laravel-mix");
+const { alias } = require("laravel-mix");
 
 /*
  |--------------------------------------------------------------------------
@@ -12,11 +12,11 @@ const {alias} = require("laravel-mix");
  |
  */
 
-const postCssPlugins =[
-    require('postcss-import'),
-    require('tailwindcss/nesting'),
-    require('tailwindcss'),
-    require('autoprefixer'),
+const postCssPlugins = [
+    require("postcss-import"),
+    require("tailwindcss/nesting"),
+    require("tailwindcss"),
+    require("autoprefixer"),
     //TODO: optimize via cssnano only on prod build
     // require('cssnano')({
     //     "preset": [
@@ -26,20 +26,18 @@ const postCssPlugins =[
     //         }
     //     ]
     // }),
-]
+];
 
-mix.js('resources/js/app.js', 'public/js').vue()
-    .postCss('resources/css/app.css', 'public/css', postCssPlugins)
-    .sass('resources/sass/app.scss', 'public/sass')
-    .webpackConfig(require('./webpack.config'))
+mix.js("resources/js/app.js", "public/js")
+    .vue()
+    .postCss("resources/css/app.css", "public/css", postCssPlugins)
+    .webpackConfig(require("./webpack.config"))
     .sourceMaps();
-
-
 
 //https://github.com/laravel-mix/laravel-mix/issues/2778
 mix.options({
-    postCss: postCssPlugins
-})
+    postCss: postCssPlugins,
+});
 
 if (mix.inProduction()) {
     mix.version();

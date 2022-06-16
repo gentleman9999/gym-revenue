@@ -28,14 +28,14 @@ class ClientGatewayActivityAggregate extends AggregateRoot
         ];
     }
 
-    public function sendATestSMSMessage(string $templateId, $user_id)
+    public function sendATestSMSMessage(string $templateId, string $user_id)
     {
         $this->recordThat(new UserSentATestSMS($this->uuid(), $user_id, $templateId));
 
         return $this;
     }
 
-    public function sendATestEmailMessage(string $subject, $templateId, $user_id)
+    public function sendATestEmailMessage(string $subject, string $templateId, string $user_id)
     {
         $this->recordThat(new UserSentATestEmail($this->uuid(), $user_id, $subject, $templateId));
 

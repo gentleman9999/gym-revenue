@@ -232,7 +232,7 @@ class LeadProjector extends Projector
             'lead_id' => $lead->id,
             'client_id' => $lead->client_id,
             'field' => 'updated',
-            'value' => $user->email,
+            'value' => $user->email ?? 'GR-API-GENERATED@none.com',
         ]);
 
         //TODO: see if we are still using this. I feel like we got rid of it.

@@ -32,7 +32,7 @@ class SmsTemplates extends Model
         static::created(function ($template) {
             if (! is_null($template->client_id)) {
                 ClientAggregate::retrieve($template->client_id)
-                    ->createNewSMSTemplate($template->id, $template->created_by_user_id)
+                    ->createSMSTemplate($template->id, $template->created_by_user_id)
                     ->persist();
             } else {
                 $detail = SmsTemplateDetails::create([

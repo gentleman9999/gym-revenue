@@ -88,8 +88,8 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import DatePicker from "vue3-date-time-picker";
-import "vue3-date-time-picker/dist/main.css";
+import DatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
 

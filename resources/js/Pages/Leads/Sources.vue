@@ -57,6 +57,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 import { useForm } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
@@ -78,14 +79,6 @@ export default defineComponent({
         PageToolbarNav,
     },
     setup(props) {
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
         const inputs = ref([]);
         const setItemRef = (el) => {
             if (el) {

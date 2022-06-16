@@ -34,6 +34,8 @@ class ImpersonateUser
         $victim = User::find($data['victimId']);
 
         if ($invader->can('users.impersonate', User::class)) {
+            //TODO:I don't like the side effect of changing the victim's current_team.
+            //TODO: on second thought, I think current_team should be session based anyways
             $victim->current_team_id = $invader->current_team_id;
             $invader->current_team_id = $victim->current_team_id;
             $victim->save();

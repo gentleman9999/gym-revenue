@@ -365,5 +365,35 @@ class AppStateSeeder extends Seeder
                 ],
             ],
         ]);
+
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 06-15-2022',
+            'value' => '2022-06-15',
+            'misc' => [
+                'buildno' => '20220615',
+                'version' => '0.20.01',
+                'notes' => [
+                    'API - Implement Token Authorization for API Routes.',
+                    'API - Test Create/Update/Upsert for Lead & Member endpoints.',
+                    'API - Create Upsert Actions for Lead/Members.',
+                    'API - Create Batch Upsert Actions for Lead/Members.',
+                    'API - Simulate Member/Lead Inserts.',
+                    'Tasks - Implement desgins for Tassk/Todo Page.',
+                    'Reporting - Build out live reporting for Leads/Members.',
+                    'Reporting - Implementation of Designs for Reporting modules.',
+                    'Calendar/Tasks - Implement Month/Week/Day switcher.',
+                    'MASS-COMMS - Email Template Drag And Drop Builder.',
+                    'Redesign - CRUD Models implemented from designs.',
+                    'Redesign - Side Drawers across entire application',
+                    'Infrastructure Upgrade - Vapor instance now configured for Browsershot Sidecar.',
+                    'Technical Debt - Removal of noty & sweet-modal packages.',
+                    'Technical Debt - Select Boxes Through Out the application are now white on white.',
+                    'UPGRADE - Upgraded to Laravel 9.',
+                ],
+            ],
+        ]);
     }
 }

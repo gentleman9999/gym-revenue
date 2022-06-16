@@ -44,6 +44,7 @@
 
 <script>
 import { computed, defineComponent, ref } from "vue";
+import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Confirm from "@/Components/Confirm";
@@ -79,15 +80,6 @@ export default defineComponent({
         "nameSearch",
     ],
     setup(props) {
-        const comingSoon = () => {
-            new Noty({
-                type: "warning",
-                theme: "sunset",
-                text: "Feature Coming Soon!",
-                timeout: 7500,
-            }).show();
-        };
-
         const fields = [
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },

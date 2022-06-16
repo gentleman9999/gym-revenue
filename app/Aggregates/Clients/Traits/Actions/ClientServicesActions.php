@@ -29,7 +29,7 @@ trait ClientServicesActions
         return $this;
     }
 
-    public function setClientServices(array $service_slugs, $user_id)
+    public function setClientServices(array $service_slugs, int $user_id)
     {
         $this->recordThat(new ClientServicesSet($this->uuid(), $service_slugs, $user_id));
 

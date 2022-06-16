@@ -26,18 +26,22 @@
                     <communication-card
                         title="Deliver Rate"
                         progress="/img/mocks/clalendar_page_1.png"
+                        class="md:w-1/4"
                     />
                     <communication-card
-                        title="Deliver Rate"
-                        progress="/img/mocks/clalendar_page_1.png"
+                        title="Open Rate"
+                        progress="/img/mocks/clalendar_page_2.png"
+                        class="md:w-1/4"
                     />
                     <communication-card
-                        title="Deliver Rate"
-                        progress="/img/mocks/clalendar_page_1.png"
+                        title="Click Rate"
+                        progress="/img/mocks/clalendar_page_3.png"
+                        class="md:w-1/4"
                     />
                     <communication-card
-                        title="Deliver Rate"
+                        title="Opt-Out Rate"
                         progress="/img/mocks/clalendar_page_1.png"
+                        class="md:w-1/4"
                     />
                 </div>
                 <mass-call-records />

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Comm;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Client;
 use App\Models\Comms\EmailTemplates;
@@ -85,7 +84,10 @@ class EmailTemplatesController extends Controller
 
     public function create()
     {
-        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', []);
+        return Inertia::render('Comms/Emails/Templates/CreateEmailTemplate', [
+            'topolApiKey' => env('TOPOL_API_KEY'),
+            'plansUrl' => env('APP_URL') . "/api/plans",
+        ]);
     }
 
     public function edit($id)
@@ -101,70 +103,9 @@ class EmailTemplatesController extends Controller
 
         return Inertia::render('Comms/Emails/Templates/EditEmailTemplate', [
             'template' => $template,
+            'topolApiKey' => env('TOPOL_API_KEY'),
+            'plansUrl' => env('APP_URL') . "/api/plans",
         ]);
-    }
-
-    public function store(Request $request)
-    {
-        $template = $request->validate(
-            [
-                'name' => 'required',
-                'subject' => 'required',
-                'markup' => 'required',
-            ]
-        );
-
-        $client_id = request()->user()->currentClientId();
-        // @todo - this could come in handy
-        //$is_client_user = request()->user()->isClientUser();
-        try {
-            $template['active'] = '0';
-            $template['client_id'] = $client_id;
-            $template['created_by_user_id'] = $request->user()->id;
-            $new_template = EmailTemplates::create($template);
-            Alert::info("New Template {$template['name']} was created")->flash();
-        } catch (\Exception $e) {
-            Alert::error("New Template {$template['name']} could not be created")->flash();
-
-            return redirect()->back();
-        }
-
-//        return Redirect::route('comms.email-templates');
-        return Redirect::route('comms.email-templates.edit', ['id' => $new_template->id]);
-    }
-
-    public function update(Request $request)
-    {
-        $data = $request->validate(
-            [
-                'id' => 'required|exists:email_templates,id',
-                'name' => 'required',
-                'subject' => 'required',
-                'markup' => 'required',
-                'active' => 'sometimes',
-                'client_id' => 'required|exists:clients,id',
-                'created_by_user_id' => 'required',
-            ]
-        );
-
-        $template = EmailTemplates::find($data['id']);
-        $old_values = $template->toArray();
-        $template->name = ($template->name == $data['name']) ? $template->name : $data['name'];
-        $template->subject = ($template->subject == $data['subject']) ? $template->subject : $data['subject'];
-        $template->markup = ($template->markup == $data['markup']) ? $template->markup : $data['markup'];
-        $template->active = ($template->active == $data['active']) ? $template->active : $data['active'];
-        $template->save();
-
-        ClientAggregate::retrieve($data['client_id'])
-            ->updateEmailTemplate($template->id, request()->user()->id, $old_values, $template->toArray())
-            ->persist();
-        /*
-
-        */
-//        $template['created_by_user_id'] = $request->user()->id;
-//        SmsTemplates::create($template);
-        return Redirect::route('comms.email-templates');
-//        return Redirect::route('comms.email-templates.edit', $template->id);
     }
 
     public function trash($id)
