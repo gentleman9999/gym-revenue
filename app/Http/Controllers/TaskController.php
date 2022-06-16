@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
+use App\Models\Endusers\Lead;
 use App\Models\Reminder;
 use App\Models\User;
 use DateTime;
@@ -70,11 +71,13 @@ class TaskController extends Controller
                 ->whereNull('event_completion')
                 ->whereDate('start', '<', date('Y-m-d H:i:s'))
                 ->with('type')
-                ->get();
+                ->paginate(10);
 
             foreach ($tasks as $key => $event) {
                 $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
 
+                $user_attendees = [];
+                $lead_attendees = [];
                 if ($event->attendees) {
                     foreach ($event->attendees as $attendee) {
                         if ($attendee->entity_type == User::class) {
@@ -86,9 +89,23 @@ class TaskController extends Controller
 
                                 $tasks[$key]['im_attending'] = true;
                             }
+                            $user_attendees[] = [
+                                'id' => (int)$attendee->entity_id,
+                                'reminder' => Reminder::whereEntityType(CalendarEvent::class)
+                                        ->whereEntityId($event['id'])
+                                        ->whereUserId($attendee->entity_id)
+                                        ->first() ?? null,
+                            ];
+                        }
+                        if ($attendee->entity_type == Lead::class) {
+                            $lead_attendees[]['id'] = $attendee->entity_id;
                         }
                     }
                 }
+                $tasks[$key]->user_attendees = $user_attendees;
+                $tasks[$key]->lead_attendees = $lead_attendees;
+
+                $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
             }
         } else {
             $tasks = [];
