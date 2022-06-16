@@ -6,6 +6,7 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use App\Models\Reminder;
 use App\Models\TeamUser;
 use App\Models\User;
@@ -93,6 +94,7 @@ class CalendarController extends Controller
             'client_id' => $client_id,
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
+            'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
         ]);
     }
 
