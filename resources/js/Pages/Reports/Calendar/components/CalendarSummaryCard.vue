@@ -12,7 +12,9 @@
             </div>
         </template>
         <div class="flex flex-col">
-            <progress-chart :data="progress" />
+            <div class="w-48">
+                <progress-chart :data="progress" />
+            </div>
             <Button v-if="showAction" size="xs" secondary class="self-end"
                 >Detail</Button
             >

@@ -24,7 +24,7 @@
 import Card from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";
 
-import RunningTotalChart from "./Charts/RunningTotalChart";
+import RunningTotalChart from "./RunningTotalChart";
 
 const mock = [
     {

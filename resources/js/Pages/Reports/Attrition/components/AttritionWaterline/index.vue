@@ -23,7 +23,7 @@
 import Card from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";
 import RectangleIcon from "@/Components/Icons/Rectangle";
-import WaterlineChart from "./Charts/WaterlineChart";
+import WaterlineChart from "./WaterlineChart";
 
 const items = ["$ Lost", "Units Gained", "Units Lost"];
 

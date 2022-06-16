@@ -31,7 +31,7 @@ import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal"
 import Card from "@/Components/Card";
 import SalesAnnualFees from "./components/SalesAnnualFees";
 import SalesPercent2Goal from "./components/SalesPercent2Goal";
-import Percent2GoalChart from "./components/Charts/Percent2GoalChart";
+import Percent2GoalChart from "./components/SalesPercent2Goal/Percent2GoalChart";
 
 export default defineComponent({
     components: {

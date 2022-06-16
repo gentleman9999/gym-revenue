@@ -22,7 +22,7 @@
 import SalesCard from "@/Components/Card";
 import Button from "@/Components/Button";
 
-import DraftRelatedChart from "../Charts/DraftRelatedChart";
+import DraftRelatedChart from "./DraftRelatedChart";
 
 const barMock = [
     {

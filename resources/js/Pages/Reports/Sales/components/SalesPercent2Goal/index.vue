@@ -22,5 +22,5 @@
 import SalesCard from "@/Components/Card";
 import Button from "@/Components/Button";
 
-import Percent2GoalChart from "../Charts/Percent2GoalChart";
+import Percent2GoalChart from "./Percent2GoalChart";
 </script>

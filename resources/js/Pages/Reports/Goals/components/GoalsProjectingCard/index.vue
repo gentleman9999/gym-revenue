@@ -8,8 +8,8 @@
                 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
                 diam nonumy eirmod tempor
             </div>
-            <div>
-                <img src="/img/mocks/goals_projecting.png" />
+            <div class="w-fit">
+                <projecting-chart :data="data" :height="250" />
             </div>
         </div>
     </card>
@@ -17,4 +17,7 @@
 
 <script setup>
 import Card from "@/Components/Card";
+import ProjectingChart from "./ProjectingChart";
+
+const data = [82, 70, 75, 40, 25];
 </script>

@@ -21,7 +21,7 @@
 import SalesCard from "@/Components/Card";
 import Button from "@/Components/Button";
 
-import ShowRatioChart from "../Charts/ShowRatioChart";
+import ShowRatioChart from "./ShowRatioChart";
 
 const barMock = [
     {

@@ -76,6 +76,14 @@ const options = {
     },
     legend: {
         show: true,
+        markers: {
+            height: 20,
+            radius: 0,
+            width: 20,
+        },
+        labels: {
+            colors: "hsl(var(--bc))",
+        },
     },
     stroke: {
         curve: "smooth",

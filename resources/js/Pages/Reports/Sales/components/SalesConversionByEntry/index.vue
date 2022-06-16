@@ -22,7 +22,7 @@
 import SalesCard from "@/Components/Card";
 import Button from "@/Components/Button";
 
-import ConversionByEntryChart from "../Charts/ConversionByEntryChart";
+import ConversionByEntryChart from "./ConversionByEntryChart";
 const mock = [
     {
         data: [73.3, 59.6, 58.3, 42.5, 13.8, 9.7, 5.5, 1.6, 0, 0],
