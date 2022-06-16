@@ -2,6 +2,7 @@
 
 namespace App\Projectors\Users;
 
+use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Client;
 use App\Models\Note;
 use App\Models\Notification;
@@ -10,6 +11,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
+use App\StorableEvents\Clients\Tasks\TaskMarkedComplete;
 use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
 use App\StorableEvents\Clients\Tasks\TaskUpdated;
@@ -240,7 +242,7 @@ class UserProjector extends Projector
 
     public function onTaskMarkedComplete(TaskMarkedComplete $event)
     {
-        Tasks::findOrFail($event->data['id'])->update(['completed_at' => $event->created_at]);
+        CalendarEvent::findOrFail($event->id)->update(['event_completion' => date('Y-m-d H:i:s')]);
     }
 
     public function onTaskMarkedIncomplete(TaskMarkedIncomplete $event)

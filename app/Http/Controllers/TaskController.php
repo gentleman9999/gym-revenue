@@ -55,21 +55,25 @@ class TaskController extends Controller
         //page won't load if no events type: task exist. The below fixes that.
         if (! is_null($typeTaskForClient)) {
             $tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereOwnerId(request()->user()->id)
                 ->with('type')
                 ->filter($request->only('search', 'start', 'end'))
                 ->paginate(10);
 
             $incomplete_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereOwnerId(request()->user()->id)
                 ->whereNull('event_completion')
                 ->with('type')
                 ->paginate(10);
 
             $completed_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereOwnerId(request()->user()->id)
                 ->whereNotNull('event_completion')
                 ->with('type')
                 ->paginate(10);
 
             $overdue_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+                ->whereOwnerId(request()->user()->id)
                 ->whereNull('event_completion')
                 ->whereDate('start', '<', date('Y-m-d H:i:s'))
                 ->with('type')
@@ -85,7 +89,6 @@ class TaskController extends Controller
             $completed_tasks = [];
             $overdue_tasks = [];
         }
-
 
         foreach ($tasks as $key => $event) {
             $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;

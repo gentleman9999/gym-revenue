@@ -190,7 +190,11 @@
             "
         >
             <jet-label for="complete_event" value="Event Completion" />
-            <Button @click.prevent="" secondary size="sm">
+            <Button
+                @click.prevent="handleCompleteTask(calendar_event.id)"
+                secondary
+                size="sm"
+            >
                 Complete Task
             </Button>
             <jet-input-error
@@ -380,6 +384,11 @@ export default {
             emit("submitted");
         };
 
+        const handleCompleteTask = (id) => {
+            Inertia.put(route("calendar.complete_event", id));
+            emit("submitted");
+        };
+
         const calendar_event = props.calendar_event;
 
         let calendarEvent = props.calendar_event;
@@ -528,6 +537,7 @@ export default {
             handleClickUpload,
             handleReminderDelete,
             handleReminderCreate,
+            handleCompleteTask,
             multiselectClasses: {
                 ...getDefaultMultiselectTWClasses(),
                 dropdown:

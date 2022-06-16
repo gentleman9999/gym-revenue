@@ -157,6 +157,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
     Route::delete('/reminder/delete/{id}', \App\Actions\Users\Reminders\DeleteReminder::class)->name('calendar.reminder.delete');
     Route::put('/reminder/create/{id}', \App\Actions\Users\Reminders\CreateReminderFromCalendarEvent::class)->name('calendar.reminder.create');
+    Route::put('/complete_task/{id}', \App\Actions\Clients\Tasks\MarkTaskComplete::class)->name('calendar.complete_event');
     Route::post('/upload', \App\Actions\Clients\Calendar\UploadFile::class)->name('calendar.upload');
     Route::prefix('event_types')->group(function () {
         Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
