@@ -184,15 +184,14 @@
 
         <div
             class="flex flex-row space-x-2 items-center"
-            v-if="calendar_event?.event_completion == null"
+            v-if="
+                calendar_event?.event_completion == null &&
+                calendar_event?.type.type == 'Task'
+            "
         >
             <jet-label for="complete_event" value="Event Completion" />
-            <Button
-                @click.prevent="handleReminderCreate(calendar_event.id)"
-                secondary
-                size="sm"
-            >
-                Complete Event
+            <Button @click.prevent="" secondary size="sm">
+                Complete Task
             </Button>
             <jet-input-error
                 :message="form.errors.complete_event"
