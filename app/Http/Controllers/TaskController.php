@@ -73,40 +73,10 @@ class TaskController extends Controller
                 ->with('type')
                 ->paginate(10);
 
-            foreach ($tasks as $key => $event) {
-                $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
-
-                $user_attendees = [];
-                $lead_attendees = [];
-                if ($event->attendees) {
-                    foreach ($event->attendees as $attendee) {
-                        if ($attendee->entity_type == User::class) {
-                            if (request()->user()->id == $attendee->entity_id) {
-                                $tasks[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
-                                    ->whereEntityId($event['id'])
-                                    ->whereUserId($attendee->entity_id)
-                                    ->first();
-
-                                $tasks[$key]['im_attending'] = true;
-                            }
-                            $user_attendees[] = [
-                                'id' => (int)$attendee->entity_id,
-                                'reminder' => Reminder::whereEntityType(CalendarEvent::class)
-                                        ->whereEntityId($event['id'])
-                                        ->whereUserId($attendee->entity_id)
-                                        ->first() ?? null,
-                            ];
-                        }
-                        if ($attendee->entity_type == Lead::class) {
-                            $lead_attendees[]['id'] = $attendee->entity_id;
-                        }
-                    }
-                }
-                $tasks[$key]->user_attendees = $user_attendees;
-                $tasks[$key]->lead_attendees = $lead_attendees;
-
-                $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
-            }
+            $tasks = $this->modifyLeadArray($tasks);
+            $incomplete_tasks = $this->modifyLeadArray($incomplete_tasks);
+            $completed_tasks = $this->modifyLeadArray($completed_tasks);
+            $overdue_tasks = $this->modifyLeadArray($overdue_tasks);
         } else {
             $tasks = [];
             $incomplete_tasks = [];
@@ -130,5 +100,45 @@ class TaskController extends Controller
             'overdue_tasks' => $overdue_tasks,
             'completed_tasks' => $completed_tasks,
         ]);
+    }
+
+    public function modifyLeadArray($array)
+    {
+        foreach ($array as $key => $event) {
+            $array[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
+
+            $user_attendees = [];
+            $lead_attendees = [];
+            if ($event->attendees) {
+                foreach ($event->attendees as $attendee) {
+                    if ($attendee->entity_type == User::class) {
+                        if (request()->user()->id == $attendee->entity_id) {
+                            $array[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
+                                ->whereEntityId($event['id'])
+                                ->whereUserId($attendee->entity_id)
+                                ->first();
+
+                            $array[$key]['im_attending'] = true;
+                        }
+                        $user_attendees[] = [
+                            'id' => (int)$attendee->entity_id,
+                            'reminder' => Reminder::whereEntityType(CalendarEvent::class)
+                                    ->whereEntityId($event['id'])
+                                    ->whereUserId($attendee->entity_id)
+                                    ->first() ?? null,
+                        ];
+                    }
+                    if ($attendee->entity_type == Lead::class) {
+                        $lead_attendees[]['id'] = $attendee->entity_id;
+                    }
+                }
+            }
+            $array[$key]->user_attendees = $user_attendees;
+            $array[$key]->lead_attendees = $lead_attendees;
+
+            $array[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
+        }
+
+        return $array;
     }
 }
