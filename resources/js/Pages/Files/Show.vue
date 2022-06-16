@@ -30,7 +30,7 @@
                 create: {
                     label: 'Upload',
                     handler: () => {
-                        Inertia.visit(route('files.upload'));
+                        Inertia.visitInModal(route('files.upload'));
                     },
                 },
             }"

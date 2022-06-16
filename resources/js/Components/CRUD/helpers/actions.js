@@ -7,7 +7,7 @@ export const defaults = Object.freeze({
     edit: {
         label: "Edit",
         handler: ({ baseRoute, data }) =>
-            Inertia.visit(route(`${baseRoute}.edit`, data.id)),
+            Inertia.visitInModal(route(`${baseRoute}.edit`, data.id)),
     },
     trash: {
         label: "Trash",

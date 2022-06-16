@@ -1,19 +1,24 @@
 <template>
-    <app-layout title="Calendar Event Types">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">
-                Create Event Type
-            </h2>
-        </template>
+    <ModalableWrapper>
+        <app-layout title="Calendar Event Types">
+            <template #header>
+                <h2 class="font-semibold text-xl leading-tight">
+                    Create Event Type
+                </h2>
+            </template>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <calendar-event-type-form
-                    :client-id="$page.props.user.current_client_id"
-                />
+            <div>
+                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                    <ModalSlot />
+                </div>
             </div>
-        </div>
-    </app-layout>
+        </app-layout>
+        <template #modal>
+            <calendar-event-type-form
+                :client-id="$page.props.user.current_client_id"
+            />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
@@ -26,6 +31,8 @@ import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import CalendarEventTypeForm from "@/Pages/Calendar/EventTypes/Partials/CalendarEventTypeForm";
 
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
+
 export default defineComponent({
     components: {
         CalendarEventTypeForm,
@@ -34,6 +41,8 @@ export default defineComponent({
         JetFormSection,
         JetInputError,
         JetLabel,
+        ModalableWrapper,
+        ModalSlot,
     },
     props: {},
 });
