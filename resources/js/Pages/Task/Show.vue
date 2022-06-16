@@ -112,6 +112,7 @@ export default defineComponent({
         "incomplete_tasks",
         "overdue_tasks",
         "completed_tasks",
+        "lead_users",
     ],
     setup(props) {
         const createEventModal = ref();

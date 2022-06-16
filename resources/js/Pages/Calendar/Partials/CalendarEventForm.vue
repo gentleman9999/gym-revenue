@@ -139,7 +139,7 @@
         </div>
         <div class="col-span-6"></div>
 
-        <div class="col-span-3">
+        <div class="col-span-3" v-if="form?.lead_attendees?.length">
             <jet-label for="lead_attendees" value="Select Lead Attendees" />
             <multiselect
                 v-model="form.lead_attendees"
