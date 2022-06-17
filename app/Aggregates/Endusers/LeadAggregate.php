@@ -153,16 +153,9 @@ class LeadAggregate extends AggregateRoot
         return $this;
     }
 
-    public function subscribeToComms(bool $email, bool $sms, string $subscribed_at)
+    public function updateCommunicationPreferences(bool $email, bool $sms, string $subscribed_at)
     {
-        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadSubscribedToComms($this->uuid(), $email, $sms, $subscribed_at));
-
-        return $this;
-    }
-
-    public function unsubscribeFromComms(bool $email, bool $sms, string $unsubscribed_at)
-    {
-        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadUnsubscribedFromComms($this->uuid(), $email, $sms, $unsubscribed_at));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadUpdatedCommunicationPreferences($this->uuid(), $email, $sms, $subscribed_at));
 
         return $this;
     }

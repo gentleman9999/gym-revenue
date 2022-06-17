@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UpdateSubscribeMemberToComms
+class UpdateMemberCommunicationPreferences
 {
     use AsAction;
 
@@ -26,7 +26,7 @@ class UpdateSubscribeMemberToComms
 
     public function handle($id, $data)
     {
-        MemberAggregate::retrieve($id)->subscribeToComms($data['email'], $data['sms'], Carbon::now())->persist();
+        MemberAggregate::retrieve($id)->updateCommunicationPreferences($data['email'], $data['sms'], Carbon::now())->persist();
     }
 
     public function asController(Request $request, $id)

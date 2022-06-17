@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Actions\Endusers\Leads\UpdateSubscribeLeadToComms;
-use App\Actions\Endusers\Members\UpdateSubscribeMemberToComms;
+use App\Actions\Endusers\Leads\UpdateLeadCommunicationPreferences;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Http\Controllers\Controller;
@@ -15,7 +14,6 @@ use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
-use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use App\Models\TeamDetail;
@@ -714,32 +712,17 @@ class LeadsController extends Controller
 
     public function leadCommunicationPreferences(Request $request, Lead $lead)
     {
-        return view('comms-prefs-lead', ['client' => $lead->client, 'lead' => $lead]);
-    }
-
-    public function memberCommunicationPreferences(Request $request, Member $member)
-    {
-        return view('comms-prefs-member', ['client' => $member->client, 'member' => $member]);
+        return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead']);
     }
 
     public function updateLeadCommunicationPreferences(Request $request, Lead $lead)
     {
-        $lead = UpdateSubscribeLeadToComms::run($lead->id, [
+        $lead = UpdateLeadCommunicationPreferences::run($lead->id, [
                 'email' => $request->subscribe_sms ?? false,
                 'sms' => $request->subscribe_email ?? false,
             ]);
 
 
-        return view('comms-prefs-lead', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
-    }
-
-    public function updateMemberCommunicationPreferences(Request $request, Member $member)
-    {
-        $lead = UpdateSubscribeMemberToComms::run($member->id, [
-            'email' => $request->subscribe_sms ?? false,
-            'sms' => $request->subscribe_email ?? false,
-        ]);
-
-        return view('comms-prefs-member', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
+        return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead', 'success' => true]);
     }
 }

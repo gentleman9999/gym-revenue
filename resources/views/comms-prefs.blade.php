@@ -27,16 +27,16 @@
 
                 @if ($success ?? false)
                     <div class="alert alert-success mt-8">
-                        Your emails and SMS preferences have been updated for {{$client->name}}
+                            Your emails and SMS preferences have been updated for {{$client->name}}
                     </div>
                 @endif
 
-                <form class="space-y-8 mt-8" method="POST" action="{{route('comms-prefs-lead.update', $lead->id)}}">
+                <form class="space-y-8 mt-8" method="POST" action='{{route("comms-prefs.{$entity_type}.update", $entity->id)}}">
                     @csrf
                     <div class="form-control flex-row">
                         <label for="subscribe_sms" class="label space-x-2">
                             <input type="checkbox" name="subscribe_sms" id="subscribe_sms"
-                                @if (!$lead->unsubscribed_sms)
+                                @if (!$entity->unsubscribed_sms)
                                     checked
                                  @endif
                                 />
@@ -46,7 +46,7 @@
                     <div class="form-control flex-row">
                         <label for="subscribe_email" class="label space-x-2">
                             <input type="checkbox" name="subscribe_email" id="subscribe_email"
-                                   @if (!$lead->unsubscribed_email)
+                                   @if (!$entity->unsubscribed_email)
                                        checked
                                 @endif
                             />

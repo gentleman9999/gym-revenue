@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UpdateSubscribeLeadToComms
+class UpdateLeadCommunicationPreferences
 {
     use AsAction;
 
@@ -27,7 +27,7 @@ class UpdateSubscribeLeadToComms
 
     public function handle($id, $data)
     {
-        LeadAggregate::retrieve($id)->subscribeToComms($data['email'], $data['sms'], Carbon::now())->persist();
+        LeadAggregate::retrieve($id)->updateCommunicationPreferences($data['email'], $data['sms'], Carbon::now())->persist();
 
         return Lead::findOrFail($id);
     }

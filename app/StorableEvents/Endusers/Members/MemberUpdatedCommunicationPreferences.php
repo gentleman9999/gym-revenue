@@ -4,7 +4,7 @@ namespace App\StorableEvents\Endusers\Members;
 
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class MemberUnsubscribedFromComms extends ShouldBeStored
+class MemberUpdatedCommunicationPreferences extends ShouldBeStored
 {
     public $member;
     public $email;

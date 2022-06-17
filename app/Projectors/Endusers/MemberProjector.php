@@ -7,7 +7,6 @@ use App\Models\Note;
 use App\Models\User;
 use App\StorableEvents\Endusers\Members\MemberCreated;
 use App\StorableEvents\Endusers\Members\MemberRestored;
-use App\StorableEvents\Endusers\Members\MemberSubscribedToComms;
 use App\StorableEvents\Endusers\Members\MemberTrashed;
 use App\StorableEvents\Endusers\Members\MemberUpdated;
 use Carbon\Carbon;
@@ -140,7 +139,7 @@ class MemberProjector extends Projector
 //        }
     }
 
-    public function onLeadSubscribedToComms(MemberSubscribedToComms $event)
+    public function onLeadSubscribedToComms(onMemberSubscribedToComms $event)
     {
         Member::withTrashed()->findOrFail($event->member)->update(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms]);
     }
