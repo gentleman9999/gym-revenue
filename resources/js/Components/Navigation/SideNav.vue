@@ -126,9 +126,12 @@ export default defineComponent({
                 {
                     key: "nav-team",
                     icon: TeamIcon,
-                    route: "data.conversions",
+                    route: "teams",
                     label: "Team Management",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("users.read") ||
+                        user.abilities.includes("*") ||
+                        default_permission,
                 },
                 {
                     key: "nav-repoting",
