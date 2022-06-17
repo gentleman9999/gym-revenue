@@ -242,7 +242,7 @@ class UserProjector extends Projector
 
     public function onTaskMarkedComplete(TaskMarkedComplete $event)
     {
-        CalendarEvent::findOrFail($event->id)->update(['event_completion' => date('Y-m-d H:i:s')]);
+        CalendarEvent::findOrFail($event->id)->update(['event_completion' => $event->createdAt()]);
     }
 
     public function onTaskMarkedIncomplete(TaskMarkedIncomplete $event)
