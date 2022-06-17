@@ -26,8 +26,8 @@ class CalendarSeeder extends Seeder
         $clients = Client::whereActive(1)->get();
 
         /** Modify the below date range to change when the calendar events will populate for testing since time doesn't stand still. */
-        $datestart = strtotime('2022-03-01');
-        $dateend = strtotime('2022-05-31');
+        $datestart = strtotime('2022-05-01');
+        $dateend = strtotime('2022-07-31');
         $daystep = 86400;
 
         if (count($clients) > 0) {
