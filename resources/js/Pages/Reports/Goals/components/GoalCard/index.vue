@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="goal-card-actions">
-            <select-box label="Goal Type" size="xs" />
+            <select-box label="Goal Type" size="xs" :items="goal_types" />
             <Button secondary size="xs">Edit</Button>
         </div>
     </div>
@@ -41,6 +41,8 @@ const props = defineProps({
         default: {},
     },
 });
+
+const goal_types = ["Company", "DMA", "Location", "Employee"];
 </script>
 <style scoped>
 .goal-card-wrapper {
