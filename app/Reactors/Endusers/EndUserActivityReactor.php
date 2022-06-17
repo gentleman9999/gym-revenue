@@ -2,6 +2,7 @@
 
 namespace App\Reactors\Endusers;
 
+use App\Actions\Endusers\Members\CheckIfMemberWasLead;
 use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Mail\EndUser\EmailFromRep;
@@ -10,6 +11,7 @@ use App\Models\Utility\AppState;
 use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
 use App\StorableEvents\Endusers\Leads\LeadUpdated;
 use App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep;
+use App\StorableEvents\Endusers\Members\MemberCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -64,6 +66,14 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
     public function onOldLeadProfilePictureDeleted(\App\StorableEvents\Endusers\Leads\OldLeadProfilePictureDeleted $event)
     {
         Storage::disk('s3')->delete($event->file['key']);
+    }
+
+    public function onMemberCreated(MemberCreated $event)
+    {
+        CheckIfMemberWasLead::run([
+            'member_id' => $event->data['id'],
+            'email' => $event->data['email'],
+        ]);
     }
 
     protected function maybeMoveProfilePicture($lead_id, $data, $oldData = null)
