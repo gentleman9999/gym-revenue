@@ -181,9 +181,15 @@ export default defineComponent({
             startOfTheWeek.value = val;
         };
         const fields = [
-            "title",
-            "created_at",
-            "updated_at",
+            "Title",
+            {
+                name: "start",
+                label: "Due At",
+            },
+            {
+                name: "created_at",
+                label: "Created At",
+            },
             {
                 name: "event_completion",
                 label: "Completed At",
