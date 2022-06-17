@@ -9,6 +9,7 @@ use App\StorableEvents\Endusers\Members\MemberCreated;
 use App\StorableEvents\Endusers\Members\MemberRestored;
 use App\StorableEvents\Endusers\Members\MemberTrashed;
 use App\StorableEvents\Endusers\Members\MemberUpdated;
+use App\StorableEvents\Endusers\Members\MemberUpdatedCommunicationPreferences;
 use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -139,7 +140,7 @@ class MemberProjector extends Projector
 //        }
     }
 
-    public function onMemberSubscribedToComms(onMemberSubscribedToComms $event)
+    public function onMemberUpdatedCommunicationPreferences(MemberUpdatedCommunicationPreferences $event)
     {
         Member::withTrashed()->findOrFail($event->member)->update(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms]);
     }

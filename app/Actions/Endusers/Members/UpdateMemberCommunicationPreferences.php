@@ -3,6 +3,7 @@
 namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\MemberAggregate;
+use App\Models\Endusers\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -27,6 +28,8 @@ class UpdateMemberCommunicationPreferences
     public function handle($id, $data)
     {
         MemberAggregate::retrieve($id)->updateCommunicationPreferences($data['email'], $data['sms'], Carbon::now())->persist();
+
+        return Member::findOrFail($id);
     }
 
     public function asController(Request $request, $id)

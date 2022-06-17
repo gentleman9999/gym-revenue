@@ -488,11 +488,11 @@ class MembersController extends Controller
 
     public function updateMemberCommunicationPreferences(Request $request, Member $member)
     {
-        $lead = updateMemberCommunicationPreferences::run($member->id, [
+        $member = UpdateMemberCommunicationPreferences::run($member->id, [
             'email' => $request->subscribe_sms ?? false,
             'sms' => $request->subscribe_email ?? false,
         ]);
 
-        return view('comms-prefs', ['client' => $lead->client, 'entity' => $member, 'entity_type' => $member, 'success' => true]);
+        return view('comms-prefs', ['client' => $member->client, 'entity' => $member, 'entity_type' => 'member', 'success' => true]);
     }
 }

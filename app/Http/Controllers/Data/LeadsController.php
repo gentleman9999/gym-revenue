@@ -722,7 +722,6 @@ class LeadsController extends Controller
                 'sms' => $request->subscribe_email ?? false,
             ]);
 
-
         return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead', 'success' => true]);
     }
 }
