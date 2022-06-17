@@ -69,6 +69,7 @@
                 :key="selectedCalendarEvent"
                 :client_users="client_users"
                 :lead_users="lead_users"
+                :member_users="member_users"
                 :client_id="client_id"
                 @submitted="closeModals"
                 ref="editCalendarEventForm"
@@ -112,6 +113,8 @@ export default defineComponent({
         "incomplete_tasks",
         "overdue_tasks",
         "completed_tasks",
+        "lead_users",
+        "member_users",
     ],
     setup(props) {
         const createEventModal = ref();
@@ -178,9 +181,18 @@ export default defineComponent({
             startOfTheWeek.value = val;
         };
         const fields = [
-            "title",
-            "created_at",
-            "updated_at",
+            {
+                name: "title",
+                label: "Title",
+            },
+            {
+                name: "start",
+                label: "Due At",
+            },
+            {
+                name: "created_at",
+                label: "Created At",
+            },
             {
                 name: "event_completion",
                 label: "Completed At",

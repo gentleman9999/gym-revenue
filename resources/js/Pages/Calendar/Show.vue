@@ -34,6 +34,7 @@
                         :key="selectedEvent"
                         :client_users="client_users"
                         :lead_users="lead_users"
+                        :member_users="members_users"
                         :client_id="client_id"
                         @submitted="toggleSwitch"
                         ref="eventForm"
@@ -82,6 +83,10 @@ const props = defineProps({
         default: [],
     },
     lead_users: {
+        type: Array,
+        default: [],
+    },
+    members_users: {
         type: Array,
         default: [],
     },

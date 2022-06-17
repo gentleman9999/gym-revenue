@@ -155,7 +155,25 @@
                     }))
                 "
                 :classes="multiselectClasses"
-                :disabled="calendar_event?.type.type === 'Task'"
+            />
+        </div>
+
+        <div class="col-span-3">
+            <jet-label for="member_attendees" value="Select Member Attendees" />
+            <multiselect
+                v-model="form.member_attendees"
+                class="py-2 bg-neutral-100 text-neutral-900"
+                id="member_attendees"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                    this.$page.props.member_users.map((user) => ({
+                        label: user.first_name + ' ' + user.last_name,
+                        value: user.id,
+                    }))
+                "
+                :classes="multiselectClasses"
             />
         </div>
 
@@ -180,6 +198,27 @@
             <button @click.prevent="handleClickUpload">
                 <add-icon />
             </button>
+        </div>
+
+        <div
+            class="flex flex-row space-x-2 items-center"
+            v-if="
+                calendar_event?.event_completion == null &&
+                calendar_event?.type.type == 'Task'
+            "
+        >
+            <jet-label for="complete_event" value="Event Completion" />
+            <Button
+                @click.prevent="handleCompleteTask(calendar_event.id)"
+                secondary
+                size="sm"
+            >
+                Complete Task
+            </Button>
+            <jet-input-error
+                :message="form.errors.complete_event"
+                class="mt-2"
+            />
         </div>
 
         <template v-if="calendar_event?.im_attending">
@@ -350,7 +389,13 @@ export default {
         FileIcon,
         AddIcon,
     },
-    props: ["client_id", "calendar_event", "client_users", "lead_users"],
+    props: [
+        "client_id",
+        "calendar_event",
+        "client_users",
+        "lead_users",
+        "member_users",
+    ],
     setup(props, { emit }) {
         const page = usePage();
 
@@ -360,6 +405,11 @@ export default {
         };
         const handleReminderCreate = (id) => {
             Inertia.put(route("calendar.reminder.create", id));
+            emit("submitted");
+        };
+
+        const handleCompleteTask = (id) => {
+            Inertia.put(route("calendar.complete_event", id));
             emit("submitted");
         };
 
@@ -396,6 +446,7 @@ export default {
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
                 lead_attendees: null,
+                member_attendees: null,
                 my_reminder: null,
             };
             operation = "Create";
@@ -415,6 +466,10 @@ export default {
                 lead_attendees:
                     calendarEvent.lead_attendees?.map(
                         (lead_attendee) => lead_attendee.id
+                    ) || [],
+                member_attendees:
+                    calendarEvent.member_attendees?.map(
+                        (member_attendee) => member_attendee.id
                     ) || [],
                 my_reminder: calendar_event?.my_reminder?.remind_time,
             };
@@ -511,6 +566,7 @@ export default {
             handleClickUpload,
             handleReminderDelete,
             handleReminderCreate,
+            handleCompleteTask,
             multiselectClasses: {
                 ...getDefaultMultiselectTWClasses(),
                 dropdown:
