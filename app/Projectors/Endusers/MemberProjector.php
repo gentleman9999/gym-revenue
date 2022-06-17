@@ -139,7 +139,7 @@ class MemberProjector extends Projector
 //        }
     }
 
-    public function onLeadSubscribedToComms(onMemberSubscribedToComms $event)
+    public function onMemberSubscribedToComms(onMemberSubscribedToComms $event)
     {
         Member::withTrashed()->findOrFail($event->member)->update(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms]);
     }
