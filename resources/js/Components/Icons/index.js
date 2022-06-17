@@ -1,3 +1,4 @@
+export { default as BurgerIcon } from "./Burger.vue";
 export { default as AddIcon } from "./Add.vue";
 export { default as ToDoIcon } from "./ToDo.vue";
 export { default as CalendarIcon } from "./Calendar.vue";
@@ -9,4 +10,5 @@ export { default as UserIcon } from "./User.vue";
 export { default as TeamIcon } from "./Team.vue";
 export { default as ReportIcon } from "./Report.vue";
 export { default as LeadsIcon } from "./Leads.vue";
+export { default as MembersIcon } from "./Members.vue";
 export { default as SettingIcon } from "./Setting.vue";

@@ -14,8 +14,8 @@
                 v-if="$page.props.user.current_client_id"
             >
                 <button @click="toggle()" class="btn btn-ghost">
-                    <bars-icon class="mr-4 h-8" />
-                    Change User Sapce
+                    <burger-icon class="m-auto h-full mr-6" />
+                    Collapse Menu
                 </button>
             </div>
             <div
@@ -77,6 +77,9 @@ import {
     FileIcon,
     LocationIcon,
     SettingIcon,
+    LeadsIcon,
+    MembersIcon,
+    BurgerIcon,
 } from "@/Components/Icons";
 import { usePage } from "@inertiajs/inertia-vue3";
 
@@ -96,6 +99,7 @@ export default defineComponent({
         FileIcon,
         LocationIcon,
         SettingIcon,
+        BurgerIcon,
     },
     props: ["page"],
     computed: {
@@ -124,6 +128,7 @@ export default defineComponent({
                     icon: TeamIcon,
                     route: "data.conversions",
                     label: "Team Management",
+                    permission: default_permission,
                 },
                 {
                     key: "nav-repoting",
@@ -144,6 +149,20 @@ export default defineComponent({
                     icon: ToDoIcon,
                     route: "tasks",
                     label: "To Do's",
+                    permission: default_permission,
+                },
+                {
+                    key: "nav-leads",
+                    icon: LeadsIcon,
+                    route: "data.leads",
+                    label: "Leads",
+                    permission: default_permission,
+                },
+                {
+                    key: "nav-members",
+                    icon: MembersIcon,
+                    route: "data.members",
+                    label: "Members",
                     permission: default_permission,
                 },
                 {
