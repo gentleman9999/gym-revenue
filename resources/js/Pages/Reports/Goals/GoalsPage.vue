@@ -31,7 +31,10 @@
                     <goal-card :data="goal" />
                 </div>
             </div>
-            <goal-table />
+            <goal-table class="mb-16" />
+            <div class="flex justify-center">
+                <Button secondary size="xs">Edit All Goals</Button>
+            </div>
         </jet-bar-container>
     </app-layout>
 </template>
@@ -46,6 +49,7 @@ h3 {
 import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import JetBarContainer from "@/Components/JetBarContainer";
+import Button from "@/Components/Button";
 
 import GoalsActualCard from "./components/GoalsActualCard";
 import GoalsProjectingCard from "./components/GoalsProjectingCard";
