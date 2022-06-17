@@ -50,6 +50,7 @@ class CreateLead
     {
         $id = Uuid::new();//we should use uuid here
         $data['id'] = $id;
+        $data['location_id'] = $data['gr_location_id'];
         $aggy = LeadAggregate::retrieve($data['id']);
         $aggy->create($data, $current_user->id ?? 'Auto Generated');
         $aggy->joinAudience('leads', $data['client_id'], Lead::class);

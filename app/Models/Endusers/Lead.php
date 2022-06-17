@@ -29,7 +29,7 @@ class Lead extends Model
         'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address',
         'lead_type_id', 'membership_type_id', 'lead_source_id', 'agreement_number',
         'date_of_birth', 'opportunity', 'external_id', 'misc',
-        'unsubscribed_sms', 'unsubscribed_email',
+        'unsubscribed_sms', 'unsubscribed_email', 'converted_at', 'member_id',
     ];
 
     protected $casts = [

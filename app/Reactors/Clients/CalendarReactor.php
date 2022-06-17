@@ -14,9 +14,16 @@ class CalendarReactor extends Reactor implements ShouldQueue
 {
     public function onCalendarAttendeeAdded(CalendarAttendeeAdded $event)
     {
-        //TODO develop logic to determine user preference for being contacted
-        if (! AppState::isSimuationMode()) {
-            InviteAttendeeEmail::run($event);
+        if (array_key_exists('is_task', $event->data)) {
+            if (! $event->data['is_task']) {
+                if (! AppState::isSimuationMode()) {
+                    InviteAttendeeEmail::run($event);
+                }
+            }
+        } else {
+            if (! AppState::isSimuationMode()) {
+                InviteAttendeeEmail::run($event);
+            }
         }
     }
 

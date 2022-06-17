@@ -37,6 +37,22 @@
                                 </div>
                             </div>
                         </td>
+                        <td
+                            v-else-if="
+                                attendee.entity_type ==
+                                'App\\Models\\Endusers\\Member'
+                            "
+                        >
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="font-bold">
+                                        {{ attendee.entity_data.first_name }}
+                                        {{ attendee.entity_data.last_name }}
+                                    </div>
+                                    <div class="text-sm opacity-50">Member</div>
+                                </div>
+                            </div>
+                        </td>
                         <td v-else>
                             <div class="flex items-center space-x-3">
                                 <div>
