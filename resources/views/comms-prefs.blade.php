@@ -27,40 +27,34 @@
 
                 @if ($success ?? false)
                     <div class="alert alert-success mt-8">
-                            Your emails and SMS preferences have been updated for {{$client->name}}
+                        Your emails and SMS preferences have been updated for {{$client->name}}
                     </div>
                 @endif
 
-                <form class="space-y-8 mt-8" method="POST" action="{{route("comms-prefs.{$entity_type}.update", $entity->id)}}">
+                <form class="space-y-8 mt-8" method="POST"
+                      action="{{route("comms-prefs.{$entity_type}.update", $entity->id)}}">
                     @csrf
 
                     <div class="form-control flex-row">
                         <label for="subscribe_sms" class="label space-x-2">
-                            <input type="checkbox" name="subscribe_sms" id="subscribe_sms"
-                                @if ($entity->unsubscribed_sms || $entity->unsubscribed_email)
-                                    checked
-                                 @endif
-                                />
-                               
-                            <span class="label-text">Subscribe me to Communication updates from {{$client->name}} {{$client->name}}</span>
+                            <input type="checkbox" name="subscribe_sms" id="subscribe_sms" @checked(!$entity->unsubscribed_sms) />
+
+                            <span
+                                class="label-text">Subscribe me to SMS updates from {{$client->name}} {{$client->name}}</span>
                         </label>
                     </div>
 
-                     
-                    {{--LEAVING THIS CODE BLOCK BELOW JUST IN CASE MATCHING CODE--}} 
-                    {{--FROM ABOVE WILL NOT SUFFICE--}} 
 
-                    {{-- <div class="form-control flex-row">
-                        <label for="subscribe_sms" class="label space-x-2">
-                            <input type="checkbox" name="subscribe_sms" id="subscribe_sms"
-                                @if (!$entity->unsubscribed_sms)
-                                    checked
-                                 @endif
-                                />
-            
-                            <span class="label-text">Subscribe me to SMS updates from {{$client->name}}</span>
+                    {{--LEAVING THIS CODE BLOCK BELOW JUST IN CASE MATCHING CODE--}}
+                    {{--FROM ABOVE WILL NOT SUFFICE--}}
+
+                    <div class="form-control flex-row">
+                        <label for="subscribe_email" class="label space-x-2">
+                            <input type="checkbox" name="subscribe_email" id="subscribe_email"  @checked(!$entity->unsubscribed_email) />
+
+                            <span class="label-text">Subscribe me to Email updates from {{$client->name}}</span>
                         </label>
-                    </div> --}}
+                    </div>
                     <button type="submit" class="btn btn-primary w-full xl:w-auto">Save</button>
                 </form>
             </div>

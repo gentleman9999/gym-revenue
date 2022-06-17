@@ -718,8 +718,8 @@ class LeadsController extends Controller
     public function updateLeadCommunicationPreferences(Request $request, Lead $lead)
     {
         $lead = UpdateLeadCommunicationPreferences::run($lead->id, [
-                'email' => $request->subscribe_sms ?? false,
-                'sms' => $request->subscribe_email ?? false,
+            'email' => $request->subscribe_email === 'on' ? false : true,
+            'sms' => $request->subscribe_sms === 'on' ? false : true,
             ]);
 
         return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead', 'success' => true]);
