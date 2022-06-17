@@ -96,6 +96,7 @@ class UpdateCalendarEvent
                                             'entity_data' => $user,
                                             'calendar_event_id' => $data['id'],
                                             'invitation_status' => 'Invitation Pending',
+                                            'is_task' => CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task' ?? false,
                                         ]
                                     )->persist();
                         }
@@ -129,6 +130,7 @@ class UpdateCalendarEvent
                                             'entity_data' => $lead,
                                             'calendar_event_id' => $data['id'],
                                             'invitation_status' => 'Invitation Pending',
+                                            'is_task' => CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task' ?? false,
                                         ]
                                     )->persist();
                         }
@@ -162,6 +164,7 @@ class UpdateCalendarEvent
                                             'entity_data' => $member,
                                             'calendar_event_id' => $data['id'],
                                             'invitation_status' => 'Invitation Pending',
+                                            'is_task' => CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task' ?? false,
                                         ]
                                     )->persist();
                         }
