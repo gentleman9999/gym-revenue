@@ -225,8 +225,8 @@ class LeadProjector extends Projector
 
     public function onLeadConverted(LeadConverted $event)
     {
-        $record = lead::whereId($event->data['id'])->first();
-        $record->updateOrFail(['converted_at' => date('Y-m-d'), 'member_id' => $event->data['member_id']]);
+        $record = lead::withTrashed()->findOrFail($event->data['id']);
+        $record->updateOrFail(['converted_at' => $event->createdAt(), 'member_id' => $event->data['member_id']]);
     }
 
     public function onLeadUpdated(LeadUpdated $event)
