@@ -16,11 +16,13 @@ export const useFlashAlertEmitter = () => {
         }
     });
 
-    watchEffect(
-        () => {
-            // console.log(alerts.value, 'alert changed');
+    watch(
+        alerts,
+        (newAlerts) => {
+            console.log("new alerts", newAlerts);
             Object.keys(alerts.value).forEach((type) => {
                 let messages = new Set(alerts.value[type]);
+
                 console.log({ type, messages });
 
                 messages.forEach(function (text) {
