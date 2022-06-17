@@ -10,6 +10,7 @@ use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Note;
 use App\Models\User;
+use App\StorableEvents\Endusers\Leads\LeadConverted;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadDeleted;
 use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
@@ -220,6 +221,12 @@ class LeadProjector extends Projector
                 ]
             );
         }
+    }
+
+    public function onLeadConverted(LeadConverted $event)
+    {
+        $record = lead::withTrashed()->findOrFail($event->data['id']);
+        $record->updateOrFail(['converted_at' => $event->createdAt(), 'member_id' => $event->data['member_id']]);
     }
 
     public function onLeadUpdated(LeadUpdated $event)
