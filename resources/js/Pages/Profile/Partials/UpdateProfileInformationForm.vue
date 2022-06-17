@@ -277,9 +277,7 @@ export default defineComponent({
                 alternate_email: this.user.alternate_email,
                 phone: this.user.phone,
                 photo: null,
-                contact_preference: this.addlData
-                    ? this.addlData.contact_preference
-                    : "",
+                contact_preference: this.user.contact_preference?.value,
             }),
             photoPreview: null,
             multiselectClasses: getDefaultMultiselectTWClasses(),

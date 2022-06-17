@@ -56,6 +56,7 @@ class HandleInertiaRequests extends Middleware
             })->pluck('name');
             $shared = [
                 'user.id' => $user->id,
+                'user.contact_preference' => $user->contact_preference,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
