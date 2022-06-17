@@ -6,6 +6,7 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use App\Models\Reminder;
 use App\Models\TeamUser;
 use App\Models\User;
@@ -120,6 +121,7 @@ class TaskController extends Controller
             'client_id' => $client_id,
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
+            'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
@@ -135,6 +137,7 @@ class TaskController extends Controller
 
             $user_attendees = [];
             $lead_attendees = [];
+            $member_attendees = [];
             if ($event->attendees) {
                 foreach ($event->attendees as $attendee) {
                     if ($attendee->entity_type == User::class) {
@@ -157,10 +160,14 @@ class TaskController extends Controller
                     if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
                     }
+                    if ($attendee->entity_type == Member::class) {
+                        $member_attendees[]['id'] = $attendee->entity_id;
+                    }
                 }
             }
             $array[$key]->user_attendees = $user_attendees;
             $array[$key]->lead_attendees = $lead_attendees;
+            $array[$key]->member_attendees = $member_attendees;
 
             $array[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
         }

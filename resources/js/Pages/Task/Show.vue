@@ -69,6 +69,7 @@
                 :key="selectedCalendarEvent"
                 :client_users="client_users"
                 :lead_users="lead_users"
+                :member_users="member_users"
                 :client_id="client_id"
                 @submitted="closeModals"
                 ref="editCalendarEventForm"
@@ -113,6 +114,7 @@ export default defineComponent({
         "overdue_tasks",
         "completed_tasks",
         "lead_users",
+        "member_users",
     ],
     setup(props) {
         const createEventModal = ref();

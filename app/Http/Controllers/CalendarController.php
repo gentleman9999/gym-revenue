@@ -36,6 +36,7 @@ class CalendarController extends Controller
         foreach ($eventsForTeam as $key => $event) {
             $user_attendees = [];
             $lead_attendees = [];
+            $member_attendees = [];
             if ($event->attendees) {
                 foreach ($event->attendees as $attendee) {
                     if ($attendee->entity_type == User::class) {
@@ -58,10 +59,14 @@ class CalendarController extends Controller
                     if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
                     }
+                    if ($attendee->entity_type == Member::class) {
+                        $member_attendees[]['id'] = $attendee->entity_id;
+                    }
                 }
             }
             $eventsForTeam[$key]->user_attendees = $user_attendees;
             $eventsForTeam[$key]->lead_attendees = $lead_attendees;
+            $eventsForTeam[$key]->member_attendees = $member_attendees;
 
             $eventsForTeam[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
         }
