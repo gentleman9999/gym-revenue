@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\TeamDetail;
@@ -118,6 +119,7 @@ class MembersController extends Controller
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
         }
+
 
         return Inertia::render('Members/Index', [
             'leads' => $prospects,
@@ -473,6 +475,22 @@ class MembersController extends Controller
                 ->get();
         }
 
+
         return $members;
+    }
+
+    public function memberCommunicationPreferences(Request $request, Member $member)
+    {
+        return view('comms-prefs', ['client' => $member->client, 'entity_type' => 'member', 'entity' => $member]);
+    }
+
+    public function updateMemberCommunicationPreferences(Request $request, Member $member)
+    {
+        $member = UpdateMemberCommunicationPreferences::run($member->id, [
+            'email' => $request->subscribe_email === 'on' ? false : true,
+            'sms' => $request->subscribe_sms === 'on' ? false : true,
+        ]);
+
+        return view('comms-prefs', ['client' => $member->client, 'entity' => $member, 'entity_type' => 'member', 'success' => true]);
     }
 }

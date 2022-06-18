@@ -129,10 +129,7 @@
                     class="mt-2"
                 />
             </div>
-            <div
-                class="form-control col-span-2"
-                v-if="lead['agreement_number']"
-            >
+            <div class="form-control col-span-2" v-if="lead?.agreement_number">
                 <jet-label for="agreement_number" value="Agreement Number" />
                 <input
                     disabled
@@ -152,7 +149,7 @@
                     class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
                 />
             </div>
-            <div class="form-control col-span-2" v-if="lead['external_id']">
+            <div class="form-control col-span-2" v-if="lead?.external_id">
                 <jet-label for="external_id" value="External ID" />
                 <input
                     disabled
@@ -529,7 +526,15 @@ export default {
             if (!data.notes?.title) {
                 delete data.notes;
             }
+            data.date_of_birth = transformDate(data.date_of_birth);
             return data;
+        };
+        const transformDate = (date) => {
+            if (!date?.toISOString) {
+                return date;
+            }
+
+            return date.toISOString().slice(0, 19).replace("T", " ");
         };
 
         let handleSubmit = () =>

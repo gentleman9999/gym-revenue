@@ -26,7 +26,7 @@ class UsersController extends Controller
         $clubs = [];
         $teams = [];
         $clientName = 'Cape & Bay/GymRevenue';
-        $filterKeys = ['search', 'club', 'team', 'roles'];
+        $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
         $team_users = User::with(['teams', 'home_location', 'roles'])->get();

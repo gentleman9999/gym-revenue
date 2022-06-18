@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Users\Models\User;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\TeamUser;
-use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -35,6 +36,7 @@ class CalendarController extends Controller
         foreach ($eventsForTeam as $key => $event) {
             $user_attendees = [];
             $lead_attendees = [];
+            $member_attendees = [];
             if ($event->attendees) {
                 foreach ($event->attendees as $attendee) {
                     if ($attendee->entity_type == User::class) {
@@ -57,10 +59,14 @@ class CalendarController extends Controller
                     if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
                     }
+                    if ($attendee->entity_type == Member::class) {
+                        $member_attendees[]['id'] = $attendee->entity_id;
+                    }
                 }
             }
             $eventsForTeam[$key]->user_attendees = $user_attendees;
             $eventsForTeam[$key]->lead_attendees = $lead_attendees;
+            $eventsForTeam[$key]->member_attendees = $member_attendees;
 
             $eventsForTeam[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
         }
@@ -93,6 +99,7 @@ class CalendarController extends Controller
             'client_id' => $client_id,
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
+            'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
         ]);
     }
 

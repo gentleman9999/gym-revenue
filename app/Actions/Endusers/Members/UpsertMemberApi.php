@@ -64,6 +64,11 @@ class UpsertMemberApi
                     ->persist();
         }
 
+        CheckIfMemberWasLead::run([
+            'member_id' => $id,
+            'email' => $data['email'],
+        ]);
+
 
         return Member::findOrFail($id);
     }
