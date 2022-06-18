@@ -4,21 +4,15 @@ namespace App\Domain\Users\Projectors;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Events\AccessTokenGranted;
+use App\Domain\Users\Events\UserCreated;
+use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Client;
 use App\Models\Note;
-use App\Models\Notification;
-use App\StorableEvents\Users\Notifications\NotificationCreated;
-use App\StorableEvents\Users\Notifications\NotificationDismissed;
-use App\StorableEvents\Users\UserCreated;
-use App\StorableEvents\Users\UserDeleted;
-use App\StorableEvents\Users\UserSetCustomCrudColumns;
-use App\StorableEvents\Users\UserUpdated;
 use Bouncer;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Database\Role;
@@ -26,7 +20,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class UserProjector extends Projector
 {
-    public function onUserCreated(\App\Domain\Users\Events\UserCreated $event)
+    public function onUserCreated(UserCreated $event)
     {
         $data = $event->payload;
         //setup a transaction so we if we have errors, we don't get a half-baked user
@@ -54,7 +48,7 @@ class UserProjector extends Projector
                 UserDetails::createOrUpdateRecord($user->id, $detail, $value);
             }
 
-            $client_id = $data['client_id'] ?? null;
+//            $client_id = $data['client_id'] ?? null;
 
             $notes = $data['notes'] ?? false;
             if ($notes) {
@@ -91,7 +85,7 @@ class UserProjector extends Projector
              */
             $role = null;
             if (array_key_exists('role_id', $data)) {
-                $role = Role::whereId($data['role_id'])->get();
+                $role = Role::find($data['role_id']);
             }
             //if team_id is set, and its  non-client team, make the user's role an admin
             //TODO:change this to look at the current team.
@@ -104,8 +98,10 @@ class UserProjector extends Projector
                 }
             }
 
-            //let the bouncer know this $user is OG
-            Bouncer::assign($role)->to($user);
+            if ($role) {
+                //let the bouncer know this $user is OG
+                Bouncer::assign($role)->to($user);
+            }
 
             //attach the user to their teams
             $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
@@ -163,7 +159,7 @@ class UserProjector extends Projector
             if ($data['role'] ?? false) {
                 $old_role = $user->getRole();
 
-                $role = Role::whereId($data['role'])->get();
+                $role = Role::find($data['role']);
                 //let bouncer know their role has been changed
                 if ($old_role !== $role) {
                     Bouncer::retract($old_role)->from($user);
@@ -189,7 +185,7 @@ class UserProjector extends Projector
 //        User::withTrashed()->findOrFail($event->id)->restore();
 //    }
 
-    public function onUserDeleted(\App\Domain\Users\Events\UserDeleted $event)
+    public function onUserDeleted(UserDeleted $event)
     {
         // Get the uer we're gonna delete
         $bad_user = User::findOrFail($event->aggregateRootUuid());
