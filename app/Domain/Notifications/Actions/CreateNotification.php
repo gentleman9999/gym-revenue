@@ -4,7 +4,7 @@ namespace App\Domain\Notifications\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Helpers\Uuid;
+use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 

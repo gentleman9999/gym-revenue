@@ -3,8 +3,8 @@
 namespace App\Actions\Clients\Classifications;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Helpers\Uuid;
 use App\Models\Clients\Classification;
+use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

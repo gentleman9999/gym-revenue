@@ -54,7 +54,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files":  [
-            "app/Helpers/PaginateArray.php"
+            "bootstrap/helpers.php"
         ]
     },
     "autoload-dev": {

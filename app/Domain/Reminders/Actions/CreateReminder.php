@@ -4,7 +4,7 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\UserAggregate;
-use App\Helpers\Uuid;
+use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

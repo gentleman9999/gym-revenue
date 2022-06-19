@@ -3,9 +3,9 @@
 namespace App\Actions\Clients\Calendar\CalendarEventTypes;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Helpers\Uuid;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
+use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

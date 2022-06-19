@@ -2,6 +2,12 @@
 
 use Illuminate\Pagination\LengthAwarePaginator;
 
+/**
+ * Every function in here gets added globally.
+ * Run 'composer dumpa' to see changes after you alter.
+ */
+
+
 if (! function_exists('paginate_array')) {
     function paginate_array($request, $array, $per_page = 5): LengthAwarePaginator
     {
