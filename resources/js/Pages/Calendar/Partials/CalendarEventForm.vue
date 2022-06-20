@@ -395,6 +395,7 @@ export default {
         "client_users",
         "lead_users",
         "member_users",
+        "start_date",
     ],
     setup(props, { emit }) {
         const page = usePage();
@@ -440,8 +441,8 @@ export default {
                 title: null,
                 description: null,
                 full_day_event: false,
-                start: null,
-                end: null,
+                start: props.start_date,
+                end: props.start_date,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
@@ -478,8 +479,12 @@ export default {
         const form = useForm(calendarEventForm);
 
         watchEffect(() => {
+            const defaultValue = props.start_date;
+
             if (form.end) {
-                return;
+                form.start = defaultValue;
+                form.end = defaultValue;
+                // return;
             }
             let start = form.start;
 
