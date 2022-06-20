@@ -24,6 +24,11 @@ abstract class GymRevShouldBeStored extends ShouldBeStored
         return $this->metaData['access_token'] ?? null;
     }
 
+    public function impersonatorUserId(): ?int
+    {
+        return $this->metaData['impersonator_user_id'] ?? null;
+    }
+
     public function ipAddress(): ?string
     {
         return $this->metaData['ip-address'] ?? null;
@@ -47,5 +52,15 @@ abstract class GymRevShouldBeStored extends ShouldBeStored
         }
 
         return User::withoutGlobalScopes()->whereAccessToken($accessToken)->first();
+    }
+
+    public function impersonatorUser()
+    {
+        $impersonatorUserId = $this->impersonatorUserId();
+        if (! $impersonatorUserId) {
+            return null;
+        }
+
+        return User::withoutGlobalScopes()->find($impersonatorUserId)->first();
     }
 }

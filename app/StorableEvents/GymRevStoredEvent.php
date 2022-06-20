@@ -6,7 +6,6 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\Clients\Projections\ClientActivity;
 use App\Domain\Users\Models\User;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Log;
 use Spatie\EventSourcing\Enums\MetaData;
 use Spatie\EventSourcing\Facades\Projectionist;
 use Spatie\EventSourcing\StoredEvents\Models\EloquentStoredEvent;
@@ -43,6 +42,11 @@ class GymRevStoredEvent extends EloquentStoredEvent
                         $client_id = $storedEvent->event_properties['payload']['client_id'];
                     }
                 }
+
+                $impersonatorUserId = app('impersonate')->getImpersonatorId();
+                $storedEvent->meta_data['impersonator_user_id'] = $impersonatorUserId;
+
+
                 $auto_generated = $user_id === null && $access_token === null;
 
                 $storedEvent->meta_data['client_id'] = $client_id;
@@ -54,8 +58,6 @@ class GymRevStoredEvent extends EloquentStoredEvent
             }
         });
         static::created(function (GymRevStoredEvent $storedEvent) {
-            Log::info('client ' . $storedEvent->clientId());
-            Log::info('entity ' . $storedEvent->entity());
             if ($storedEvent->clientId() && $storedEvent->entity()) {
                 (new ClientActivity())->writeable()->create([
                     'stored_event_id' => $storedEvent->id,
@@ -122,6 +124,25 @@ class GymRevStoredEvent extends EloquentStoredEvent
         }
 
         return $this->meta_data['client_id'];
+    }
+
+    public function impersonatorUserId(): ?int
+    {
+        return $this->meta_data['impersonator_user_id'] ?? null;
+    }
+
+    public function impersonationActive(): bool
+    {
+        return $this->impersonatorUserId() !== null;
+    }
+
+    public function impersonatorUser(): ?User
+    {
+        if ($this->impersonationActive()) {
+            return User::withoutGlobalScopes()->find($this->impersonatorUserId());
+        }
+
+        return null;
     }
 
     //we could potentially use attributes instead of function for clientId, and then in turn
