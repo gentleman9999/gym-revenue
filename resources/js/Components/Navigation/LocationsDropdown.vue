@@ -41,7 +41,7 @@
                             )?.name
                         }}</small>
                     </div>
-                    <ul class="menu compact">
+                    <ul class="menu compact overflow-y-scroll max-h-60">
                         <li
                             v-for="location in $page.props.user.all_locations"
                             :key="location.id"
