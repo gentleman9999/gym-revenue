@@ -207,6 +207,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
@@ -266,14 +267,6 @@ export default {
             location.address1 = location.address1;
             location.address2 = location.address2;
         }
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
 
         const transformData = (data) => ({
             ...data,

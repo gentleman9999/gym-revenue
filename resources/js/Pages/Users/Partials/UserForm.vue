@@ -440,6 +440,7 @@ import Confirm from "@/Components/Confirm";
 import DaisyModal from "@/Components/DaisyModal";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
@@ -531,14 +532,6 @@ export default {
         const form = useForm(user);
         let upperCaseF = (text) => {
             form.state = text.toUpperCase();
-        };
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
         };
 
         const transformFormSubmission = (data) => {
