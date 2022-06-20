@@ -26,6 +26,9 @@
                         <recent-campaign />
                     </div>
                 </div>
+                <div class="text-secondary text-lg pt-6 pl-6 cursor-pointer">
+                    Load all activity
+                </div>
             </div>
         </jet-bar-container>
     </app-layout>
