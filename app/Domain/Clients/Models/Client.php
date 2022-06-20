@@ -12,12 +12,12 @@ use App\Models\Clients\Location;
 use App\Models\Endusers\LeadSource;
 use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
+use App\Models\GymRevProjection;
 use function collect;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Spatie\EventSourcing\Projections\Projection;
 
-class Client extends Projection
+class Client extends GymRevProjection
 {
     use Notifiable;
     use SoftDeletes;
@@ -37,11 +37,6 @@ class Client extends Projection
     protected $casts = [
         'services' => 'array',
     ];
-
-    public function getKeyName()
-    {
-        return 'id';
-    }
 
     public function locations()
     {

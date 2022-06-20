@@ -4,12 +4,12 @@ namespace App\Domain\Clients\Projections;
 
 use App\Domain\Clients\Models\Client;
 use App\Domain\Users\Models\User;
+use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Spatie\EventSourcing\Projections\Projection;
 
-class ClientActivity extends Projection
+class ClientActivity extends GymRevProjection
 {
     public $timestamps = false;
 
