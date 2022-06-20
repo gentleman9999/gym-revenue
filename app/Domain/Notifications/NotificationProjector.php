@@ -10,12 +10,17 @@ class NotificationProjector extends Projector
 {
     public function onNotificationCreated(NotificationCreated $event)
     {
-        (new Notification())->forceFill(array_merge($event->payload, ['user_id' => $event->aggregateRootUuid()]))->save();
-//        Notification::create(array_merge($event->payload, ['user_id' => $event->aggregateRootUuid()]));
+        $notification = (new Notification())->writeable();
+        $notification->id = $event->payload['id'];
+        $notification->user_id = $event->aggregateRootUuid();
+        $notification->fill($event->payload);
+        $notification->save();
     }
 
     public function onNotificationDismissed(NotificationDismissed $event)
     {
-        Notification::withTrashed($event->id)->forceFill(['deleted_at' => $event->createdAt()])->save();
+        $notification = Notification::find($event->id);
+        $notification->deleted_at = $event->createdAt();
+        $notification->save();
     }
 }
