@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             })->pluck('name');
             $shared = [
                 'user.id' => $user->id,
+                'user.contact_preference' => $user->contact_preference,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_team.isClientTeam' => $user->currentClientId() !== null,
                 //TODO:should be able to remove client_id and current_client_id from most of client stuff once middleware is in place
