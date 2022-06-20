@@ -25,7 +25,7 @@ import ConversionDataTable from "./ConversionDataTable";
     @apply flex flex-col mt-12;
 }
 .conversion-data-header {
-    @apply flex flex-row justify-between;
+    @apply flex flex-row justify-between pb-3;
 }
 .conversion-data-title {
     @apply text-xl font-bold;
