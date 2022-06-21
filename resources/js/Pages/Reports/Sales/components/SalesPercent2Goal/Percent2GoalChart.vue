@@ -11,7 +11,7 @@ import ApexCharts from "vue3-apexcharts";
 const props = defineProps({
     data: {
         type: Array,
-        default: [65],
+        default: [],
     },
 });
 const options = {

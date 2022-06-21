@@ -26,7 +26,6 @@ const options = {
                 style: {
                     color: "hsl(var(--bc))",
                 },
-                borderWidth: 3,
             },
             {
                 x: 3,
@@ -34,7 +33,6 @@ const options = {
                 style: {
                     color: "hsl(var(--bc))",
                 },
-                borderWidth: 3,
             },
             {
                 x: 5,
@@ -42,7 +40,6 @@ const options = {
                 style: {
                     color: "hsl(var(--bc))",
                 },
-                borderWidth: 3,
             },
             {
                 x: 7,
@@ -50,7 +47,6 @@ const options = {
                 style: {
                     color: "hsl(var(--bc))",
                 },
-                borderWidth: 3,
             },
         ],
     },
@@ -80,21 +76,20 @@ const options = {
         width: 1,
     },
     xaxis: {
+        min: 1,
+        max: 7,
         grid: false,
         tooltip: { enabled: false },
+        tickAmount: 3,
         axisBorder: {
             show: false,
         },
         axisTicks: {
             show: false,
         },
-        padding: {
-            left: 5,
-        },
-        tickAmount: 3,
     },
     yaxis: {
-        tickAmount: 5,
+        tickAmount: 4,
         labels: {
             style: {
                 colors: "hsl(var(--bc))",
