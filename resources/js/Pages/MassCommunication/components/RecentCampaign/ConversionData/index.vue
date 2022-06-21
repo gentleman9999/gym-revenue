@@ -7,6 +7,16 @@
         <div class="conversion-data-body">
             <div class="conversion-data-details w-2/3">
                 <div class="conversion-data-date">April</div>
+                <div class="flex flex-row justify-between mb-4">
+                    <div
+                        v-for="item in conversions"
+                        :key="item.label"
+                        class="flex flex-col items-center w-fit"
+                    >
+                        <progress-chart :data="[item.progress]" class="w-56" />
+                        <span class="mt-[-16px]">{{ item.label }}</span>
+                    </div>
+                </div>
                 <conversion-data-table />
             </div>
             <div class="w-1/3 pl-6">
@@ -19,6 +29,13 @@
 import ConversionFilters from "./ConversionFilters";
 import ConversionSummary from "./ConversionSummary";
 import ConversionDataTable from "./ConversionDataTable";
+import ProgressChart from "@/Components/ProgressChart";
+
+let conversions = [
+    { label: "Success", progress: 65 },
+    { label: "Bounced", progress: 25 },
+    { label: "Rescheduled", progress: 10 },
+];
 </script>
 <style scoped>
 .conversion-data-wrapper {

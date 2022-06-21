@@ -5,7 +5,18 @@
         :columns="columns"
         borderType="secondary"
         :collapsed="true"
-    />
+        noHeader
+    >
+        <template #thead>
+            <thead class="text-secondary bg-neutral-900">
+                <th></th>
+                <th>Name</th>
+                <th>Unit(s) Sold</th>
+                <th>Membership(s) Sold</th>
+                <th>Revenue</th>
+            </thead>
+        </template>
+    </data-table>
 </template>
 <script setup>
 import { h } from "vue";
