@@ -1,5 +1,10 @@
 <template>
-    <apex-charts type="area" :options="options" :series="data"></apex-charts>
+    <apex-charts
+        type="area"
+        :height="200"
+        :options="options"
+        :series="data"
+    ></apex-charts>
 </template>
 <script setup>
 import ApexCharts from "vue3-apexcharts";
@@ -24,37 +29,49 @@ const options = {
                 x: 1,
                 strokeDashArray: 0,
                 style: {
-                    color: "hsl(var(--bc))",
+                    color: "var(--color-neutral-500)",
                 },
-                borderWidth: 3,
             },
             {
                 x: 3,
                 strokeDashArray: 0,
                 style: {
-                    color: "hsl(var(--bc))",
+                    color: "var(--color-neutral-500)",
                 },
-                borderWidth: 3,
             },
             {
                 x: 5,
                 strokeDashArray: 0,
                 style: {
-                    color: "hsl(var(--bc))",
+                    color: "var(--color-neutral-500)",
                 },
-                borderWidth: 3,
             },
             {
                 x: 7,
                 strokeDashArray: 0,
                 style: {
-                    color: "hsl(var(--bc))",
+                    color: "var(--color-neutral-500)",
                 },
-                borderWidth: 3,
+            },
+        ],
+        yaxis: [
+            {
+                y: 0,
+                strokeDashArray: 0,
+                style: {
+                    color: "var(--color-neutral-500)",
+                },
+            },
+            {
+                y: 120,
+                strokeDashArray: 0,
+                style: {
+                    color: "var(--color-neutral-500)",
+                },
             },
         ],
     },
-    colors: ["hsl(var(--s))", "hsl(var(--su))"],
+    colors: ["hsl(var(--su))"],
     dataLabels: {
         enabled: false,
     },
@@ -80,21 +97,20 @@ const options = {
         width: 1,
     },
     xaxis: {
+        min: 1,
+        max: 7,
         grid: false,
         tooltip: { enabled: false },
+        tickAmount: 3,
         axisBorder: {
             show: false,
         },
         axisTicks: {
             show: false,
         },
-        padding: {
-            left: 5,
-        },
-        tickAmount: 3,
     },
     yaxis: {
-        tickAmount: 5,
+        tickAmount: 3,
         labels: {
             style: {
                 colors: "hsl(var(--bc))",

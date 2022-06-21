@@ -13,7 +13,7 @@
             </div>
         </template>
         <div class="flex flex-col">
-            <img src="/img/mocks/sales_page_4.png" />
+            <percent2-goal-chart :data="[80]" />
             <Button secondary size="xs" class="self-end mt-6">view</Button>
         </div>
     </sales-card>
@@ -21,4 +21,6 @@
 <script setup>
 import SalesCard from "@/Components/Card";
 import Button from "@/Components/Button";
+
+import Percent2GoalChart from "./Percent2GoalChart";
 </script>
