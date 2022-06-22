@@ -46,7 +46,7 @@
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
-                    class="mt-1 multiselect-search"
+                    class="mt-1 multiselect"
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
