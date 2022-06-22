@@ -169,20 +169,20 @@
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
 
-            <!-- State -->
-            <div class="col-span-2 sm:col-span-2">
-                <jet-label for="state" value="State" />
-                <multiselect
-                    id="state"
-                    class="mt-1 multiselect-search"
-                    v-model="form.state"
-                    :searchable="true"
-                    :create-option="true"
-                    :options="optionStates"
-                    :classes="multiselectClasses"
-                />
-                <jet-input-error :message="form.errors.state" class="mt-2" />
-            </div>
+            <!--             State-->
+            <!--            <div class="col-span-2 sm:col-span-2">-->
+            <!--                <jet-label for="state" value="State" />-->
+            <!--                <multiselect-->
+            <!--                    id="state"-->
+            <!--                    class="mt-1 multiselect-search"-->
+            <!--                    v-model="form.state"-->
+            <!--                    :searchable="true"-->
+            <!--                    :create-option="true"-->
+            <!--                    :options="optionStates"-->
+            <!--                    :classes="multiselectClasses"-->
+            <!--                />-->
+            <!--                <jet-input-error :message="form.errors.state" class="mt-2" />-->
+            <!--            </div>-->
 
             <!-- Zip -->
             <div class="col-span-2 sm:col-span-2">
