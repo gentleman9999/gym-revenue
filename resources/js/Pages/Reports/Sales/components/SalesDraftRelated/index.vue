@@ -13,7 +13,7 @@
             </div>
         </template>
         <div class="flex flex-col">
-            <img src="/img/mocks/sales_page_3.png" />
+            <draft-related-chart :data="barMock" />
             <Button secondary size="xs" class="self-end mt-6">view</Button>
         </div>
     </sales-card>
@@ -21,4 +21,13 @@
 <script setup>
 import SalesCard from "@/Components/Card";
 import Button from "@/Components/Button";
+
+import DraftRelatedChart from "./DraftRelatedChart";
+
+const barMock = [
+    {
+        name: "Net Profit",
+        data: [44, 55, 57, 56, 61],
+    },
+];
 </script>

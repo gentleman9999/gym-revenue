@@ -11,7 +11,7 @@
             }"
         >
             <div class="w-full">
-                <revenue-chart />
+                <revenue-chart :data="mock" />
             </div>
             <div class="card-footer">
                 <button-tabs
@@ -48,4 +48,15 @@ const setActive = (value) => {
 };
 
 const buttons = ["Membership", "Personal Training", "Retail Sales"];
+
+const mock = [
+    {
+        name: "series1",
+        data: [62, 80, 56, 102, 84, 24, 100],
+    },
+    {
+        name: "series2",
+        data: [11, 32, 45, 32, 34, 52, 41],
+    },
+];
 </script>
