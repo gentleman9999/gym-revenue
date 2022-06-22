@@ -173,13 +173,7 @@ export default defineComponent({
             if (this.isClientUser) {
                 return ["name", "city", "state", "active"];
             }
-            return [
-                { name: "client.name", label: "client" },
-                "name",
-                "city",
-                "state",
-                "active",
-            ];
+            return ["name", "city", "state", "active"];
         },
     },
 });
