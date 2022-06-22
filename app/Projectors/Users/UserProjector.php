@@ -43,7 +43,7 @@ class UserProjector extends Projector
             $user = User::create($user_table_data);
 
             $details = [
-                'contact_preference' => $data['contact_preference'] ?? null,
+                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
             ];
 
             // Go through the details and create them in the user_details via the
