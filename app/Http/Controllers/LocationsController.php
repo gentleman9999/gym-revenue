@@ -32,7 +32,7 @@ class LocationsController extends Controller
         }
 
         if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
-            $locations = $locations->with('client')
+            $locations = $locations
                 ->filter($request->only('search', 'trashed'))
                 ->sort()
                 ->paginate($page_count)
@@ -236,7 +236,7 @@ class LocationsController extends Controller
         }
 
         if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
-            $locations = $locations->with('client')
+            $locations = $locations
                 ->filter($request->only('search', 'trashed'))
                 ->get();
         }
