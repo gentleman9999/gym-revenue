@@ -63,9 +63,8 @@
             <!-- Contact Phone # -->
             <div class="form-control col-span-2">
                 <jet-label for="phone" value="Contact Phone" />
-                <input
+                <phone-input
                     id="phone"
-                    type="tel"
                     class="block w-full mt-1"
                     v-model="form.phone"
                 />
@@ -431,6 +430,7 @@ import Confirm from "@/Components/Confirm";
 import DaisyModal from "@/Components/DaisyModal";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager";
+import PhoneInput from "@/Components/PhoneInput";
 
 export default {
     components: {
@@ -444,6 +444,7 @@ export default {
         Confirm,
         DaisyModal,
         FileManager,
+        PhoneInput,
     },
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
@@ -617,10 +618,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }

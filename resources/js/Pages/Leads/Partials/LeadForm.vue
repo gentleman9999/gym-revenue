@@ -83,9 +83,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="primary_phone" value="Primary Phone" />
-                <input
+                <phone-input
                     id="primary_phone"
-                    type="tel"
                     v-model="form['primary_phone']"
                 />
                 <jet-input-error
@@ -95,9 +94,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
-                <input
+                <phone-input
                     id="alternate_phone"
-                    type="tel"
                     v-model="form['alternate_phone']"
                 />
                 <jet-input-error
@@ -401,6 +399,7 @@ import { useGoBack } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
+import PhoneInput from "@/Components/PhoneInput";
 
 library.add(faUserCircle);
 
@@ -414,6 +413,7 @@ export default {
         JetLabel,
         DatePicker,
         VueJsonPretty,
+        PhoneInput,
     },
     props: [
         "userId",
@@ -598,10 +598,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }
