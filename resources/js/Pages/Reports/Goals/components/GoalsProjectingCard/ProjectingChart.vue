@@ -1,52 +1,57 @@
 <template>
     <apex-charts
         type="radialBar"
-        height="350"
+        :height="height"
         :options="options"
-        :series="data"
+        :series="props.data"
     ></apex-charts>
 </template>
 <script setup>
 import ApexCharts from "vue3-apexcharts";
+
 const props = defineProps({
     data: {
         type: Array,
-        default: [65],
+        default: [],
+    },
+    height: {
+        type: Number,
+        default: 200,
     },
 });
+
 const options = {
     chart: {
         type: "radialBar",
-        offsetY: -20,
-        sparkline: {
-            enabled: true,
-        },
     },
     plotOptions: {
         radialBar: {
-            startAngle: -90,
-            endAngle: 90,
-            track: {
-                // background: "hsl(var(--b1))",
-                strokeWidth: "100%",
-                margin: 5, // margin is in pixels
-                dropShadow: {
-                    enabled: false,
-                },
+            inverseOrder: false,
+            startAngle: 0,
+            endAngle: 360,
+            hollow: {
+                size: "40%",
+                color: "white",
             },
             dataLabels: {
                 name: {
                     show: false,
                 },
                 value: {
-                    offsetY: -2,
+                    offsetY: 10,
                     fontSize: "22px",
                     color: "hsl(var(--bc))",
                 },
             },
         },
     },
+    stroke: {
+        lineCap: "round",
+    },
+    grid: {
+        show: true,
+    },
     colors: ["hsl(var(--s))"],
-    labels: ["Average Results"],
+    labels: [""],
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <Card
-        class="h-full"
+        class="h-full min-w-fit"
         :options="{
             collapse: true,
             borderedTitle: true,
@@ -13,7 +13,9 @@
             </div>
         </template>
         <div class="flex flex-row">
-            <img :src="progress" class="w-fit h-fit" />
+            <div class="w-40">
+                <completed-chart :height="150" />
+            </div>
             <div class="flex flex-col space-y-2.5">
                 <div
                     v-for="item in data"
@@ -41,11 +43,12 @@
 <script setup>
 import Card from "@/Components/Card";
 import Button from "@/Components/Button";
+import CompletedChart from "./CompletedChart";
 
 const props = defineProps({
     progress: {
-        stype: String,
-        default: "",
+        type: Array,
+        default: [34, 54, 16, 23],
     },
 });
 

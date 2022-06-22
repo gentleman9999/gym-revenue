@@ -1,5 +1,10 @@
 <template>
-    <apex-charts type="area" :options="options" :series="data"></apex-charts>
+    <apex-charts
+        type="area"
+        :height="250"
+        :options="options"
+        :series="data"
+    ></apex-charts>
 </template>
 <script setup>
 import ApexCharts from "vue3-apexcharts";
@@ -13,7 +18,7 @@ const props = defineProps({
 
 const options = {
     chart: {
-        type: "spline",
+        type: "area",
         toolbar: {
             show: false,
         },
@@ -21,65 +26,72 @@ const options = {
     annotations: {
         xaxis: [
             {
-                x: 1,
+                x: 0,
                 strokeDashArray: 0,
                 style: {
-                    color: "hsl(var(--bc))",
+                    color: "var(--color-neutral-500)",
                 },
-                borderWidth: 3,
-            },
-            {
-                x: 3,
-                strokeDashArray: 0,
-                style: {
-                    color: "hsl(var(--bc))",
-                },
-                borderWidth: 3,
-            },
-            {
-                x: 5,
-                strokeDashArray: 0,
-                style: {
-                    color: "hsl(var(--bc))",
-                },
-                borderWidth: 3,
             },
             {
                 x: 7,
                 strokeDashArray: 0,
                 style: {
-                    color: "hsl(var(--bc))",
+                    color: "var(--color-neutral-500)",
                 },
-                borderWidth: 3,
+            },
+        ],
+        yaxis: [
+            {
+                y: 0,
+                strokeDashArray: 0,
+                style: {
+                    color: "var(--color-neutral-500)",
+                },
+            },
+            {
+                y: 150,
+                strokeDashArray: 0,
+                style: {
+                    color: "var(--color-neutral-500)",
+                },
             },
         ],
     },
-    colors: ["hsl(var(--s))", "hsl(var(--su))"],
-    dataLabels: {
-        enabled: false,
-    },
+    colors: ["var(--color-secondary-500)", "var(--color-secondary-700)"],
     fill: {
-        opacity: 0.1,
         type: "gradient",
+        opacity: 0.7,
         gradient: {
             shadeIntensity: 1,
-            inverseColors: false,
-            opacityFrom: 0,
-            opacityTo: 0,
-            stops: [20, 100, 100, 100],
+            opacityFrom: 0.7,
+            opacityTo: 0.7,
+            stops: [100, 100, 100],
         },
+    },
+    dataLabels: {
+        enabled: false,
     },
     grid: {
         show: false,
     },
     legend: {
-        show: false,
+        show: true,
+        markers: {
+            height: 20,
+            radius: 0,
+            width: 20,
+        },
+        labels: {
+            colors: "hsl(var(--bc))",
+        },
     },
     stroke: {
         curve: "smooth",
         width: 1,
     },
     xaxis: {
+        min: 1,
+        max: 7,
         grid: false,
         tooltip: { enabled: false },
         axisBorder: {
@@ -88,17 +100,18 @@ const options = {
         axisTicks: {
             show: false,
         },
-        padding: {
-            left: 5,
-        },
-        tickAmount: 3,
-    },
-    yaxis: {
-        tickAmount: 5,
         labels: {
             style: {
-                colors: "hsl(var(--bc))",
+                colors: new Array(7).fill("transparent"),
             },
+        },
+    },
+    yaxis: {
+        min: 0,
+        max: 150,
+        tickAmount: 3,
+        labels: {
+            show: false,
         },
     },
 };

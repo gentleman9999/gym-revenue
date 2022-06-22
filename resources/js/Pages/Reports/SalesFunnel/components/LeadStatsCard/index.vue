@@ -5,7 +5,7 @@
             borderedTitle: true,
             favorite: true,
         }"
-        class="h-full"
+        class="h-full min-w-fit"
     >
         <template #cardTitle>
             <div class="text-base-content text-lg text-bold">Lead Stats</div>
@@ -30,8 +30,9 @@
                     {{ item.label }} ({{ item.percent }}%)
                 </div>
             </div>
-
-            <img :src="progress" class="h-fit w-fit" />
+            <div class="w-40">
+                <progress-chart :data="[progress]" :height="150" />
+            </div>
         </div>
     </Card>
 </template>
@@ -44,6 +45,7 @@ div::-webkit-scrollbar {
 
 <script setup>
 import Card from "@/Components/Card";
+import ProgressChart from "@/Components/ProgressChart";
 
 const props = defineProps({
     progress: {
