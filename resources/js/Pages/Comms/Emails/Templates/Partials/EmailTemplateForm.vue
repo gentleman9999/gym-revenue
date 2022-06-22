@@ -28,7 +28,6 @@
         <!--            <input-->
         <!--                type="checkbox"-->
         <!--                v-model="form.active"-->
-        <!--                autofocus-->
         <!--                id="active"-->
         <!--                class="mt-2"-->
         <!--                :value="true"-->

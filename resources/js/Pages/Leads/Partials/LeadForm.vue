@@ -135,7 +135,6 @@
                     disabled
                     type="text"
                     v-model="lead['agreement_number']"
-                    autofocus
                     class="opacity-70"
                     id="agreement_number"
                 />

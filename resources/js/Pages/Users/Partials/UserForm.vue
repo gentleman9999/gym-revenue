@@ -27,7 +27,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.last_name"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.first_name"
@@ -42,7 +41,6 @@
                     type="email"
                     class="block w-full mt-1"
                     v-model="form.email"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
@@ -55,7 +53,6 @@
                     type="email"
                     class="block w-full mt-1"
                     v-model="form.alternate_email"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.alternate_email"
@@ -71,7 +68,6 @@
                     type="tel"
                     class="block w-full mt-1"
                     v-model="form.phone"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
@@ -84,7 +80,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.address1"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.address1" class="mt-2" />
             </div>
@@ -96,7 +91,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.address2"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
@@ -108,7 +102,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.city"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
@@ -135,7 +128,6 @@
                     type="number"
                     class="block w-full mt-1"
                     v-model="form.zip"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
             </div>
@@ -150,7 +142,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.job_title"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.job_title"
