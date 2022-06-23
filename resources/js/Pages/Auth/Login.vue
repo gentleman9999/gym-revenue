@@ -27,10 +27,17 @@
 
             <div class="mt-4">
                 <jet-label for="password" value="Password*" />
-                <input
+                <!-- <input
                     id="password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
+                    v-model="form.password"
+                    required
+                    autocomplete="current-password"
+                /> -->
+                <password-input
+                    id="password"
+                    class="block w-full"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
@@ -72,6 +79,7 @@ import { comingSoon } from "@/utils/comingSoon.js";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
 import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
 import Button from "@/Components/Button";
+import PasswordInput from "@/Components/PasswordInput";
 
 import JetLabel from "@/Jetstream/Label";
 import JetValidationErrors from "@/Jetstream/ValidationErrors";
@@ -85,6 +93,7 @@ export default defineComponent({
         Button,
         JetLabel,
         JetValidationErrors,
+        PasswordInput,
     },
 
     props: {
@@ -104,6 +113,8 @@ export default defineComponent({
 
     methods: {
         submit() {
+            console.log("form");
+            console.log(this.form);
             this.form
                 .transform((data) => ({
                     ...data,

@@ -13,15 +13,15 @@
                 {{ content }}
 
                 <div class="mt-4">
-                    <input
-                        type="password"
-                        class="mt-1 block w-3/4"
-                        placeholder="Password"
-                        ref="password"
-                        v-model="form.password"
-                        @keyup.enter="confirmPassword"
-                    />
-
+                    <div class="w-3/4 mt-1">
+                        <password-input
+                            class="block w-full"
+                            placeholder="Password"
+                            ref="password"
+                            v-model="form.password"
+                            @keyup.enter="confirmPassword"
+                        />
+                    </div>
                     <jet-input-error :message="form.error" class="mt-2" />
                 </div>
             </template>
@@ -50,6 +50,7 @@ import Button from "@/Components/Button";
 import JetDialogModal from "./DialogModal";
 import JetInputError from "./InputError";
 import JetSecondaryButton from "./SecondaryButton";
+import PasswordInput from "@/Components/PasswordInput";
 
 export default defineComponent({
     emits: ["confirmed"],
@@ -73,6 +74,7 @@ export default defineComponent({
 
         JetInputError,
         JetSecondaryButton,
+        PasswordInput,
     },
 
     data() {
