@@ -95,7 +95,10 @@ export default defineComponent({
                 } else {
                     this.confirmingPassword = true;
 
-                    setTimeout(() => this.$refs.password.focus(), 250);
+                    setTimeout(
+                        () => this.$refs.password.$refs.input.focus(),
+                        250
+                    );
                 }
             });
         },
@@ -115,7 +118,7 @@ export default defineComponent({
                 .catch((error) => {
                     this.form.processing = false;
                     this.form.error = error.response.data.errors.password[0];
-                    this.$refs.password.focus();
+                    this.$refs.password.$refs.input.focus();
                 });
         },
 

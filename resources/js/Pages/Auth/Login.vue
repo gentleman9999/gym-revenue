@@ -27,14 +27,6 @@
 
             <div class="mt-4">
                 <jet-label for="password" value="Password*" />
-                <!-- <input
-                    id="password"
-                    type="password"
-                    class="block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                /> -->
                 <password-input
                     id="password"
                     class="block w-full"
@@ -113,8 +105,6 @@ export default defineComponent({
 
     methods: {
         submit() {
-            console.log("form");
-            console.log(this.form);
             this.form
                 .transform((data) => ({
                     ...data,
