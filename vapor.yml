@@ -2,13 +2,16 @@ id: 31991
 name: GymRevenue
 environments:
     production:
-        domain: grp.capeandbay.com
-        memory: 1024
+        domain: app.gymrevenue.com
+        memory: 2048
         cli-memory: 512
+        network: gymrevenue-vpc-network
+        database: gr-west
+        cache: gr-cache
+        cli-timeout: 900
+        storage: gymrevenue-west
         runtime: docker
-        cache: gr-prototype
-        storage: gymrevenue-p
-        database: gymrevenue
+        balancer: lb-gymrevenue
         queues:
             - grp-production-events
             - grp-production-jobs
