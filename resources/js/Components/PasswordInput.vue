@@ -9,7 +9,12 @@
                 v-model="localValue"
             />
             <span @click="toggleType" class="bg-secondary">
-                <font-awesome-icon icon="eye" size="sm" />
+                <font-awesome-icon
+                    v-if="type === 'password'"
+                    icon="eye"
+                    size="sm"
+                />
+                <font-awesome-icon v-else icon="eye-slash" size="sm" />
             </span>
         </label>
     </div>
@@ -17,7 +22,7 @@
 <style scoped></style>
 <script setup>
 import { ref, defineEmits, computed } from "vue";
-import { faEye } from "@fortawesome/pro-solid-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -29,6 +34,7 @@ const props = defineProps({
 });
 
 library.add(faEye);
+library.add(faEyeSlash);
 
 const type = ref("password");
 const toggleType = () => {
