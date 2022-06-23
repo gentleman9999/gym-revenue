@@ -20,14 +20,16 @@ environments:
         deploy:
           - 'php artisan sidecar:activate'
     staging:
-        domain: grp-stage.capeandbay.com
-        memory: 1024
+        domain: stage.gymrevenue.com
+        memory: 2048
         cli-memory: 512
-        database: mango
-        cache: gr-prototype
+        network: gymrevenue-vpc-network
+        database: gr-west-dev
+        cache: gr-cache
         cli-timeout: 900
-        storage: gymrevenue-stage
+        storage: gymrevenue-west-stage
         runtime: docker
+        balancer: lb-gymrevenue
         queues:
             - grp-staging-events
             - grp-staging-jobs
