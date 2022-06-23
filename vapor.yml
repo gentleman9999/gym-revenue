@@ -46,7 +46,7 @@ environments:
         database: gr-west-dev
         cache: gr-cache
         cli-timeout: 900
-        storage: gymrevenue-dev
+        storage: gymrevenue-west-dev
         runtime: docker
         balancer: lb-gymrevenue
         queues:
