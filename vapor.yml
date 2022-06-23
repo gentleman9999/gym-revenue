@@ -1,5 +1,5 @@
-id: 25286
-name: gr-prototype
+id: 31991
+name: GymRevenue
 environments:
     production:
         domain: grp.capeandbay.com
@@ -39,14 +39,16 @@ environments:
         deploy:
           - 'php artisan sidecar:activate'
     develop:
-        domain: grp-dev.capeandbay.com
-        memory: 1024
+        domain: dev.gymrevenue.com
+        memory: 2048
         cli-memory: 512
-        database: mango
-        cache: gr-prototype
+        network: gymrevenue-vpc-network
+        database: gr-west-dev
+        cache: gr-cache
         cli-timeout: 900
         storage: gymrevenue-dev
         runtime: docker
+        balancer: lb-gymrevenue
         queues:
             - grp-develop-events
             - grp-develop-jobs
