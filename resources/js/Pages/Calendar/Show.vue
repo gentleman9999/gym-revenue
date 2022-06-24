@@ -31,6 +31,7 @@
                 <template #eventForm>
                     <calendar-event-form
                         :calendar_event="selectedEvent"
+                        :start_date="startDate"
                         :key="selectedEvent"
                         :client_users="client_users"
                         :lead_users="lead_users"
@@ -101,15 +102,17 @@ const toggleSwitch = () => {
     drawerSwitch.value.click();
 };
 
+const startDate = ref("");
 const eventForm = ref(null);
 const updateCalendarEventForm = (updated) => {
     eventForm.value = {
         ...eventForm.value,
         form: {
             ...eventForm.value.form,
-            updated,
+            ...updated,
         },
     };
+    startDate.value = updated.start.toString();
 };
 const resetCalendarEventForm = () => {
     eventForm.value?.form?.reset();

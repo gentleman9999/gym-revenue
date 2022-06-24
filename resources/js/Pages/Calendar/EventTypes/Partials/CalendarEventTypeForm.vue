@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -122,12 +122,14 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm(calendarEventType);
+        const form = useGymRevForm(calendarEventType);
 
         let handleSubmit = () =>
-            form.put(
-                route("calendar.event_types.update", calendarEventType.id)
-            );
+            form
+                .dirty()
+                .put(
+                    route("calendar.event_types.update", calendarEventType.id)
+                );
         if (operation === "Create") {
             handleSubmit = () => form.post(route("calendar.event_types.store"));
         }

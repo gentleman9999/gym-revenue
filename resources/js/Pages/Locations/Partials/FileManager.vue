@@ -124,7 +124,7 @@
 
 <script setup>
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import FileUploadForm from "@/Pages/Files/Partials/FileUploadForm";
@@ -149,7 +149,7 @@ const uploadDragoverTracking = ref(false);
 const uploadDragoverEvent = ref(false);
 const uploadProgress = ref(null);
 
-const form = useForm({
+const form = useGymRevForm({
     files: [],
 });
 
