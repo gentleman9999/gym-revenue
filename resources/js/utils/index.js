@@ -5,4 +5,5 @@ export * from "./useFlash";
 export * from "./parseDate";
 export * from "./getDefaultMultiselectTWClasses";
 export * from "./useNotifications";
+export * from "./useGymRevForm";
 export * from "./parseNotificationResponse.js";

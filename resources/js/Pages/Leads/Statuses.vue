@@ -53,7 +53,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import AppLayout from "@/Layouts/AppLayout";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import Button from "@/Components/Button";
@@ -79,7 +79,7 @@ export default defineComponent({
                 inputs.value.push(el);
             }
         };
-        const form = useForm({ statuses: props.statuses });
+        const form = useGymRevForm({ statuses: props.statuses });
         const addNewStatus = () => {
             if (form.statuses[form.statuses.length - 1].status === "") {
                 focusLastInput();
@@ -95,7 +95,7 @@ export default defineComponent({
 
         const submitForm = () => {
             console.log("submitform", form.data());
-            form.post(route("data.leads.statuses.update"));
+            form.dirty().post(route("data.leads.statuses.update"));
         };
 
         const navLinks = [
