@@ -160,7 +160,7 @@ export default defineComponent({
         const selectedDate = ref(new Date());
 
         const selectedDateFormatted = computed(() =>
-            transformDate(selectedDate)
+            transformDate(selectedDate.value)
         );
 
         let startDay = new Date();
