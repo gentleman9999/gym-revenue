@@ -297,7 +297,7 @@
 
 <script>
 import { computed, watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
@@ -404,8 +404,8 @@ export default {
                   ).toLocaleDateString("en-US")}`
                 : "This member has never been updated"
         );
-        const form = useForm(memberData);
-        const fileForm = useForm({ file: null });
+        const form = useGymRevForm(memberData);
+        const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
             if (!data.notes?.title) {
@@ -417,6 +417,7 @@ export default {
 
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformFormSubmission)
                 .put(route("data.members.update", member.id), {
                     preserveState: false,

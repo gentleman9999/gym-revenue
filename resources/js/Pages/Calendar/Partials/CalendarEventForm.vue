@@ -354,8 +354,8 @@ label {
 </style>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch, ref } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { computed, watchEffect, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -367,7 +367,7 @@ import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
 import FilesForm from "@/Pages/Calendar/Partials/FilesForm";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 import FileManager from "./FileManager";
 import { Inertia } from "@inertiajs/inertia";
 import FileIcon from "@/Components/Icons/File";
@@ -475,7 +475,7 @@ export default {
             };
         }
 
-        const form = useForm(calendarEventForm);
+        const form = useGymRevForm(calendarEventForm);
 
         watchEffect(() => {
             if (form.end) {
@@ -516,6 +516,7 @@ export default {
 
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform((data) => ({
                     ...data,
                     start: transformDate(data.start),

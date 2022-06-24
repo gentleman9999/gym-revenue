@@ -422,7 +422,8 @@
 
 <script>
 import { ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -528,7 +529,7 @@ export default {
             }
             operation = "Create";
         }
-        const form = useForm(user);
+        const form = useGymRevForm(user);
         let upperCaseF = (text) => {
             form.state = text.toUpperCase();
         };
@@ -555,6 +556,7 @@ export default {
 
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformFormSubmission)
                 .put(route("users.update", user.id), {
                     onSuccess: () => (form.notes = { title: "", note: "" }),
@@ -562,6 +564,7 @@ export default {
         if (operation === "Create") {
             handleSubmit = () =>
                 form
+                    .dirty()
                     .transform(transformFormSubmission)
                     .post(route("users.store"), {
                         onSuccess: () => (form.notes = { title: "", note: "" }),

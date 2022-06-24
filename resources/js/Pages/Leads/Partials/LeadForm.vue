@@ -388,7 +388,6 @@
 
 <script>
 import { computed, watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
@@ -398,11 +397,10 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import { useGoBack } from "@/utils";
+import { useGoBack, useGymRevForm } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
-
 library.add(faUserCircle);
 
 export default {
@@ -519,8 +517,8 @@ export default {
                   ).toLocaleDateString("en-US")}`
                 : "This lead has never been updated"
         );
-        const form = useForm(leadData);
-        const fileForm = useForm({ file: null });
+        const form = useGymRevForm(leadData);
+        const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
             if (!data.notes?.title) {
@@ -537,16 +535,18 @@ export default {
             return date.toISOString().slice(0, 19).replace("T", " ");
         };
 
-        let handleSubmit = () =>
-            form
+        let handleSubmit = () => {
+            form.dirty()
                 .transform(transformFormSubmission)
                 .put(`/data/leads/${lead.id}`, {
                     preserveState: false,
                 });
+        };
 
         if (operation === "Create") {
             handleSubmit = () =>
                 form
+                    .dirty()
                     .transform(transformFormSubmission)
                     .post("/data/leads/create", {
                         onSuccess: () => (form.notes = { title: "", note: "" }),

@@ -198,7 +198,7 @@
 
 <script>
 import { computed, ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -208,7 +208,7 @@ import Confirm from "@/Components/Confirm";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
 
 export default {
     name: "EmailCampaignForm",
@@ -262,17 +262,21 @@ export default {
         }
 
         console.log("campaign Params", campaign);
-        const form = useForm(campaign);
+        const form = useGymRevForm(campaign);
 
         let handleSubmit = () => {
-            form.transform((data) => ({
-                ...data,
-                schedule_date: scheduleNow.value ? "now" : data.schedule_date,
-            })).put(route("comms.email-campaigns.update", campaign.id));
+            form.dirty()
+                .transform((data) => ({
+                    ...data,
+                    schedule_date: scheduleNow.value
+                        ? "now"
+                        : data.schedule_date,
+                }))
+                .put(route("comms.email-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
             handleSubmit = () =>
-                form.post(route("comms.email-campaigns.store"));
+                form.dirty().post(route("comms.email-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;

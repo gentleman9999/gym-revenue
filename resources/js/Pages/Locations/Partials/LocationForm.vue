@@ -195,7 +195,8 @@
 </template>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -281,17 +282,21 @@ export default {
             close_date: transformDate(data.close_date),
         });
 
-        const form = useForm(location);
+        const form = useGymRevForm(location);
         //
         //    form.put(`/locations/${location.id}`);
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformData)
                 .put(route("locations.update", location.id));
 
         if (operation === "Create") {
             handleSubmit = () =>
-                form.transform(transformData).post(route("locations.store"));
+                form
+                    .dirty()
+                    .transform(transformData)
+                    .post(route("locations.store"));
         }
 
         let optionsStates = [];

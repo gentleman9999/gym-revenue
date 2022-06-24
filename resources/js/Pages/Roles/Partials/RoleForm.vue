@@ -112,7 +112,7 @@
 
 <script>
 import { computed, ref } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -161,7 +161,7 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm({
+        const form = useGymRevForm({
             name: role.name,
             id: role.id,
             client_id: props.clientId,
@@ -177,9 +177,10 @@ export default {
             }
         }
 
-        let handleSubmit = () => form.put(route("roles.update", role.id));
+        let handleSubmit = () =>
+            form.dirty().put(route("roles.update", role.id));
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("roles.store"));
+            handleSubmit = () => form.dirty().post(route("roles.store"));
         }
 
         let groupedAvailableAbilities = computed(() => {

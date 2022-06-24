@@ -55,7 +55,7 @@
 
 <script>
 import { ref } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -93,31 +93,34 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm(template);
+        const form = useGymRevForm(template);
         const closeAfterSave = ref(false);
 
         let handleSubmit = () => {
             if (!form.processing) {
-                form.put(route("comms.email-templates.update", template.id), {
-                    // headers: { "X-Inertia-Modal-Redirect": true },
-                    headers: { "X-Inertia-Modal-CloseOnSuccess": true },
-                    onFinish: () => {
-                        if (closeAfterSave.value) {
-                            console.log(
-                                "closeAfterSave",
-                                closeAfterSave.value,
-                                inertiaModal.value
-                            );
-                            handleOnClose();
-                        }
-                    },
-                });
+                form.dirty().put(
+                    route("comms.email-templates.update", template.id),
+                    {
+                        // headers: { "X-Inertia-Modal-Redirect": true },
+                        headers: { "X-Inertia-Modal-CloseOnSuccess": true },
+                        onFinish: () => {
+                            if (closeAfterSave.value) {
+                                console.log(
+                                    "closeAfterSave",
+                                    closeAfterSave.value,
+                                    inertiaModal.value
+                                );
+                                handleOnClose();
+                            }
+                        },
+                    }
+                );
             }
         };
         if (operation === "Create") {
             handleSubmit = () => {
                 if (!form.processing) {
-                    form.post(route("comms.email-templates.store"), {
+                    form.dirty().post(route("comms.email-templates.store"), {
                         headers: { "X-Inertia-Modal-Redirect": true },
                         onSuccess: () => {
                             console.log("onSuccess-Create!");
