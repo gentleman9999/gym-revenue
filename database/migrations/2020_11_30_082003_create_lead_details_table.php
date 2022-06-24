@@ -20,7 +20,7 @@ class CreateLeadDetailsTable extends Migration
             $table->string('field');
             $table->string('value')->nullable();
             $table->mediumText('misc')->nullable();
-
+            $table->unique(['client_id', 'lead_id']);
             $table->boolean('active')->default(1);
             $table->timestamps();
             $table->softDeletes();

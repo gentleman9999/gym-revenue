@@ -15,11 +15,11 @@ class CreateNotesTable extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->uuid('entity_id');
+            $table->uuid('entity_id')->index();
             $table->string('entity_type');
             $table->mediumText('title')->nullable();
             $table->mediumText('note');
-            $table->foreignUuid('created_by_user_id');
+            $table->foreignUuid('created_by_user_id')->index();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

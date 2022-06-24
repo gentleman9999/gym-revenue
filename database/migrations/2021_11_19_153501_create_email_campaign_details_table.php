@@ -21,6 +21,7 @@ class CreateEmailCampaignDetailsTable extends Migration
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();
             $table->boolean('active')->default(1);
+            $table->index(['client_id', 'email_campaign_id']);
             $table->timestamps();
             $table->softDeletes();
         });

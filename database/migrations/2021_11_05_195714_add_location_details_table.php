@@ -26,6 +26,7 @@ class AddLocationDetailsTable extends Migration
             $table->string('created_at')->nullable();
             $table->string('updated_at')->nullable();
             $table->string('deleted_at')->nullable();
+            $table->index(['client_id', 'location_id']);
         });
     }
 

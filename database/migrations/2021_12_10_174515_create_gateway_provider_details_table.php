@@ -15,7 +15,7 @@ class CreateGatewayProviderDetailsTable extends Migration
     {
         Schema::create('gateway_provider_details', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('gateway_id');
+            $table->uuid('gateway_id')->index();
             $table->string('detail');
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();
