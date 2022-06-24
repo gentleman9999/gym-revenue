@@ -70,7 +70,6 @@
                             type="checkbox"
                             v-model="form.ability_names"
                             :value="availableAbility.name"
-                            autofocus
                         />
                         <jet-label
                             :for="`abilities${availableAbility.title}`"

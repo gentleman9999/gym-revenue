@@ -27,7 +27,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.last_name"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.first_name"
@@ -42,7 +41,6 @@
                     type="email"
                     class="block w-full mt-1"
                     v-model="form.email"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
@@ -55,7 +53,6 @@
                     type="email"
                     class="block w-full mt-1"
                     v-model="form.alternate_email"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.alternate_email"
@@ -66,12 +63,10 @@
             <!-- Contact Phone # -->
             <div class="form-control col-span-2">
                 <jet-label for="phone" value="Contact Phone" />
-                <input
+                <phone-input
                     id="phone"
-                    type="tel"
                     class="block w-full mt-1"
                     v-model="form.phone"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
@@ -84,7 +79,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.address1"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.address1" class="mt-2" />
             </div>
@@ -96,7 +90,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.address2"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
@@ -108,7 +101,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.city"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
@@ -135,7 +127,6 @@
                     type="number"
                     class="block w-full mt-1"
                     v-model="form.zip"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
             </div>
@@ -150,7 +141,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.job_title"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.job_title"
@@ -441,6 +431,7 @@ import Confirm from "@/Components/Confirm";
 import DaisyModal from "@/Components/DaisyModal";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager";
+import PhoneInput from "@/Components/PhoneInput";
 
 export default {
     components: {
@@ -454,6 +445,7 @@ export default {
         Confirm,
         DaisyModal,
         FileManager,
+        PhoneInput,
     },
     props: ["clientId", "user", "clientName"],
     emits: ["success"],
@@ -629,10 +621,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }
