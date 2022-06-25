@@ -99,12 +99,11 @@ import JetFormSection from "@/Jetstream/FormSection";
 import Multiselect from "@vueform/multiselect";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import { useForm } from "@inertiajs/inertia-vue3";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import "@vueform/multiselect/themes/default.css";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
 
 library.add(faPlus);
 
@@ -148,7 +147,7 @@ export default defineComponent({
                 trialLengthInputs.value.push(el);
             }
         };
-        const form = useForm({
+        const form = useGymRevForm({
             trialMembershipTypes: props.trialMembershipTypes.map(
                 (trialMembershipType) => ({
                     id: trialMembershipType.id,
@@ -160,7 +159,7 @@ export default defineComponent({
             ),
         });
         let handleSubmit = () =>
-            form.post(route("settings.trial-membership-types.update"));
+            form.dirty().post(route("settings.trial-membership-types.update"));
 
         const handleClickPlusIcon = () => {
             const lastTrialMembershipType =

@@ -39,12 +39,12 @@
 </template>
 
 <script>
-import { useForm } from "@inertiajs/inertia-vue3";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
+import { useGymRevForm } from "@/utils";
 
 export default {
     components: {
@@ -75,12 +75,13 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm(classification);
+        const form = useGymRevForm(classification);
 
         let handleSubmit = () =>
             form.put(route("classifications.update", classification.id));
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("classifications.store"));
+            handleSubmit = () =>
+                form.dirty().post(route("classifications.store"));
         }
 
         return {
