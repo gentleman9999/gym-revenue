@@ -29,7 +29,7 @@ class UserProfileController extends Controller
             'job_title' => '',
             'alternate_email' => '',
             'start_date' => '',
-            'communication_preference' => '',
+            'contact_preference' => '',
         ];
         $user = auth()->user();
 

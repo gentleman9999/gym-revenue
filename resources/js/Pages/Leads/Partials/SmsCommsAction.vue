@@ -23,7 +23,7 @@
 
 <script>
 import { computed, defineComponent } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import BaseCommsAction from "./BaseCommsAction";
 import SmsFormControl from "@/Components/SmsFormControl";
 
@@ -48,7 +48,7 @@ export default defineComponent({
     },
     emits: ["done"],
     setup(props, { emit }) {
-        const form = useForm({
+        const form = useGymRevForm({
             method: "sms",
             message: null,
         });

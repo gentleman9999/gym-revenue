@@ -106,14 +106,14 @@
                     devices.
 
                     <div class="mt-4">
-                        <input
-                            type="password"
-                            class="mt-1 block w-3/4"
-                            placeholder="Password"
-                            ref="password"
-                            v-model="form.password"
-                            @keyup.enter="logoutOtherBrowserSessions"
-                        />
+                        <div class="mt-1 block w-3/4">
+                            <password-input
+                                placeholder="Password"
+                                ref="password"
+                                v-model="form.password"
+                                @keyup.enter="logoutOtherBrowserSessions"
+                            />
+                        </div>
 
                         <jet-input-error
                             :message="form.errors.password"
@@ -150,6 +150,7 @@ import JetDialogModal from "@/Jetstream/DialogModal";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import PasswordInput from "@/Components/PasswordInput";
 
 export default defineComponent({
     props: ["sessions"],
@@ -162,6 +163,7 @@ export default defineComponent({
 
         JetInputError,
         JetSecondaryButton,
+        PasswordInput,
     },
 
     data() {
@@ -178,14 +180,14 @@ export default defineComponent({
         confirmLogout() {
             this.confirmingLogout = true;
 
-            setTimeout(() => this.$refs.password.focus(), 250);
+            setTimeout(() => this.$refs.password.$refs.input.focus(), 250);
         },
 
         logoutOtherBrowserSessions() {
             this.form.delete(route("other-browser-sessions.destroy"), {
                 preserveScroll: true,
                 onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.focus(),
+                onError: () => this.$refs.password.$refs.input.focus(),
                 onFinish: () => this.form.reset(),
             });
         },

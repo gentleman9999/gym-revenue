@@ -2,15 +2,15 @@
 
 namespace App\Projectors\Endusers;
 
+use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\Models\User;
 use App\StorableEvents\Endusers\Members\MemberCreated;
 use App\StorableEvents\Endusers\Members\MemberRestored;
-use App\StorableEvents\Endusers\Members\MemberSubscribedToComms;
 use App\StorableEvents\Endusers\Members\MemberTrashed;
-use App\StorableEvents\Endusers\Members\MemberUnsubscribedFromComms;
 use App\StorableEvents\Endusers\Members\MemberUpdated;
+use App\StorableEvents\Endusers\Members\MemberUpdatedCommunicationPreferences;
 use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -64,6 +64,13 @@ class MemberProjector extends Projector
             $event->data['profile_picture'] = $file;
         }
         $member->updateOrFail($event->data);
+
+        //If lead is attached to a member, we're going to also update the lead record with the updated information
+        $record = Lead::whereMemberId($event->data['id'])->first();
+        if (! is_null($record)) {
+            $record->updateOrFail($event->data);
+        }
+
 
 //        $user = User::find($event->user);
 //        MemberDetails::create([
@@ -141,13 +148,8 @@ class MemberProjector extends Projector
 //        }
     }
 
-    public function onLeadUnsubscribedFromComms(MemberUnsubscribedFromComms $event)
+    public function onMemberUpdatedCommunicationPreferences(MemberUpdatedCommunicationPreferences $event)
     {
-        Member::withTrashed()->findOrFail($event->member)->update(['unsubscribed_comms' => true]);
-    }
-
-    public function onLeadSubscribedToComms(MemberSubscribedToComms $event)
-    {
-        Member::withTrashed()->findOrFail($event->member)->update(['unsubscribed_comms' => false]);
+        Member::withTrashed()->findOrFail($event->member)->update(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms]);
     }
 }

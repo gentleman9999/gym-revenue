@@ -2,7 +2,7 @@
     <div :class="'overflow-y-auto max-w-[90vw] pr-2 ' + props.class">
         <table
             :class="{
-                'border-separate': rowBordered,
+                'border-separate': borderSeprated,
             }"
         >
             <table-header
@@ -10,6 +10,7 @@
                 :columns="columns"
                 :rowBordered="rowBordered"
             />
+            <slot name="thead"></slot>
             <table-body
                 :columns="columns"
                 :data="data"
@@ -56,6 +57,11 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    borderSeprated: {
+        type: Boolean,
+        default: true,
+    },
+
     interactive: {
         type: Boolean,
         default: false,

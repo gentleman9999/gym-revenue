@@ -46,7 +46,7 @@
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
-                    class="mt-1 multiselect-search"
+                    class="mt-1 multiselect"
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
@@ -195,7 +195,8 @@
 </template>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -207,6 +208,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
@@ -267,31 +269,27 @@ export default {
             location.address2 = location.address2;
         }
 
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
-
         const transformData = (data) => ({
             ...data,
             open_date: transformDate(data.open_date),
             close_date: transformDate(data.close_date),
         });
 
-        const form = useForm(location);
+        const form = useGymRevForm(location);
         //
         //    form.put(`/locations/${location.id}`);
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformData)
                 .put(route("locations.update", location.id));
 
         if (operation === "Create") {
             handleSubmit = () =>
-                form.transform(transformData).post(route("locations.store"));
+                form
+                    .dirty()
+                    .transform(transformData)
+                    .post(route("locations.store"));
         }
 
         let optionsStates = [];

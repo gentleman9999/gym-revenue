@@ -169,12 +169,12 @@
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
 
-            <!-- State -->
+            <!--State-->
             <div class="col-span-2 sm:col-span-2">
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
-                    class="mt-1 multiselect-search"
+                    class="mt-1 multiselect"
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
@@ -277,9 +277,7 @@ export default defineComponent({
                 alternate_email: this.user.alternate_email,
                 phone: this.user.phone,
                 photo: null,
-                contact_preference: this.addlData
-                    ? this.addlData.contact_preference
-                    : "",
+                contact_preference: this.user.contact_preference?.value,
             }),
             photoPreview: null,
             multiselectClasses: getDefaultMultiselectTWClasses(),

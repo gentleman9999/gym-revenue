@@ -4,17 +4,19 @@
             collapse: true,
             borderedTitle: true,
         }"
-        class="h-full"
+        class="h-full min-w-fit"
     >
         <template #cardTitle>
             <div class="text-base-content text-lg text-bold">Canceled</div>
         </template>
-        <img :src="progress" />
+        <div class="w-40">
+            <progress-chart :data="[progress]" :height="120" />
+        </div>
     </Card>
 </template>
 <script setup>
 import Card from "@/Components/Card";
-
+import ProgressChart from "@/Components/ProgressChart";
 const props = defineProps({
     progress: {
         stype: String,

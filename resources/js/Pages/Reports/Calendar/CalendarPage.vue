@@ -14,19 +14,19 @@
                     <div class="w-4/5 m-auto md:w-1/3 px-2">
                         <calendar-summary-card
                             title="Confirmed"
-                            diagram="/img/mocks/clalendar_page_1.png"
+                            :progress="[65]"
                         />
                     </div>
                     <div class="w-4/5 m-auto md:w-1/3 px-2">
                         <calendar-summary-card
                             title="Canceled"
-                            diagram="/img/mocks/clalendar_page_2.png"
+                            :progress="[25]"
                         />
                     </div>
                     <div class="w-4/5 m-auto md:w-1/3 px-2">
                         <calendar-summary-card
                             title="Rescheduled"
-                            diagram="/img/mocks/clalendar_page_3.png"
+                            :progress="[10]"
                         />
                     </div>
                 </div>

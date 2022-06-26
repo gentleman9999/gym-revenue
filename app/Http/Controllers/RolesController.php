@@ -32,7 +32,10 @@ class RolesController extends Controller
             return Redirect::back();
         }
 
-        $roles = Role::whereScope($client_id)->sort()->paginate(10)->appends(request()->except('page'));
+        $roles = Role::whereScope($client_id)
+            ->filter($request->only('search', 'trashed'))
+            ->sort()->paginate(10)
+            ->appends(request()->except('page'));
 
         return Inertia::render('Roles/Show', [
             'roles' => $roles,
