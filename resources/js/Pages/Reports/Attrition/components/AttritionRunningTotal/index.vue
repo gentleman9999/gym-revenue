@@ -13,10 +13,9 @@
             >
             <div class="flex flex-col">
                 <select-box :items="items" label="$ Gained" />
-                <img
-                    src="/img/mocks/attrition_page_1.png"
-                    class="px-4 pt-11 w-fit m-auto"
-                />
+                <div class="w-full">
+                    <running-total-chart :data="mock" />
+                </div>
             </div>
         </Card>
     </div>
@@ -25,5 +24,12 @@
 import Card from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";
 
+import RunningTotalChart from "./RunningTotalChart";
+
+const mock = [
+    {
+        data: [31, 40, 28, 51, 42, 109, 100],
+    },
+];
 const items = ["$ Lost", "Units Gained", "Units Lost"];
 </script>

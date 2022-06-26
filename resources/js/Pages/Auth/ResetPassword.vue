@@ -23,10 +23,9 @@
 
             <div class="mt-4">
                 <jet-label for="password" value="Password" />
-                <input
+                <password-input
                     id="password"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password"
                     required
                     autocomplete="new-password"
@@ -38,10 +37,9 @@
                     for="password_confirmation"
                     value="Confirm Password"
                 />
-                <input
+                <password-input
                     id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password_confirmation"
                     required
                     autocomplete="new-password"
@@ -69,6 +67,7 @@ import Button from "@/Components/Button";
 
 import JetLabel from "@/Jetstream/Label";
 import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import PasswordInput from "@/Components/PasswordInput";
 
 export default defineComponent({
     components: {
@@ -79,6 +78,7 @@ export default defineComponent({
 
         JetLabel,
         JetValidationErrors,
+        PasswordInput,
     },
 
     props: {

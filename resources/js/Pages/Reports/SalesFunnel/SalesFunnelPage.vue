@@ -34,14 +34,14 @@
         </div>
 
         <div class="flex flex-row px-20 pt-6 justify-between">
-            <div class="pl-2">
-                <cancel-card progress="/img/mocks/clalendar_page_1.png" />
+            <div>
+                <cancel-card progress="25" />
             </div>
             <div>
-                <completed-card progress="/img/mocks/clalendar_page_2.png" />
+                <completed-card :progress="[34, 54, 16, 23]" />
             </div>
-            <div class="pr-2">
-                <lead-stats-card progress="/img/mocks/clalendar_page_3.png" />
+            <div>
+                <lead-stats-card progress="73" />
             </div>
         </div>
         <attach-rate-membership />

@@ -60,7 +60,8 @@
 </template>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
@@ -82,10 +83,12 @@ export default {
     emits: ["success"],
     setup(props, { emit }) {
         let urlPrev = usePage().props.value.urlPrev;
-        const form = useForm({ permissions: props?.file?.permissions || [] });
+        const form = useGymRevForm({
+            permissions: props?.file?.permissions || [],
+        });
 
         let handleSubmit = async () => {
-            form.put(route("files.update", props.file.id));
+            form.dirty().put(route("files.update", props.file.id));
             emit("success");
         };
 
