@@ -83,9 +83,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="primary_phone" value="Primary Phone" />
-                <input
+                <phone-input
                     id="primary_phone"
-                    type="tel"
                     v-model="form['primary_phone']"
                 />
                 <jet-input-error
@@ -95,9 +94,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
-                <input
+                <phone-input
                     id="alternate_phone"
-                    type="tel"
                     v-model="form['alternate_phone']"
                 />
                 <jet-input-error
@@ -135,7 +133,6 @@
                     disabled
                     type="text"
                     v-model="lead['agreement_number']"
-                    autofocus
                     class="opacity-70"
                     id="agreement_number"
                 />
@@ -388,7 +385,6 @@
 
 <script>
 import { computed, watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
@@ -398,10 +394,12 @@ import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import { useGoBack } from "@/utils";
+import { useGoBack, useGymRevForm } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { transformDate } from "@/utils/transformDate";
+import PhoneInput from "@/Components/PhoneInput";
 
 library.add(faUserCircle);
 
@@ -415,6 +413,7 @@ export default {
         JetLabel,
         DatePicker,
         VueJsonPretty,
+        PhoneInput,
     },
     props: [
         "userId",
@@ -519,8 +518,8 @@ export default {
                   ).toLocaleDateString("en-US")}`
                 : "This lead has never been updated"
         );
-        const form = useForm(leadData);
-        const fileForm = useForm({ file: null });
+        const form = useGymRevForm(leadData);
+        const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
             if (!data.notes?.title) {
@@ -529,24 +528,19 @@ export default {
             data.date_of_birth = transformDate(data.date_of_birth);
             return data;
         };
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
 
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
-
-        let handleSubmit = () =>
-            form
+        let handleSubmit = () => {
+            form.dirty()
                 .transform(transformFormSubmission)
                 .put(`/data/leads/${lead.id}`, {
                     preserveState: false,
                 });
+        };
 
         if (operation === "Create") {
             handleSubmit = () =>
                 form
+                    .dirty()
                     .transform(transformFormSubmission)
                     .post("/data/leads/create", {
                         onSuccess: () => (form.notes = { title: "", note: "" }),
@@ -599,10 +593,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }

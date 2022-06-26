@@ -6,7 +6,7 @@
         page-route="Goals"
     >
         <div class="flex flex-row">
-            <goals-actual-card class="ml-2" />
+            <goals-actual-card class="mr-2" />
             <goals-projecting-card class="w-64" />
         </div>
     </dashboard-widget-modal>

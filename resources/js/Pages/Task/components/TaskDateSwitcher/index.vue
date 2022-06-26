@@ -2,11 +2,15 @@
     <div class="task-date-switcher">
         <week-switcher @on-update="changeWeek" direction="left" />
         <date-switcher-card
-            v-for="(date, ndx) in daysOfWeek"
+            v-for="(day, ndx) in daysOfWeek"
             :key="ndx"
-            :date="date"
+            :date="day.getDate()"
             :ndx="ndx"
-            :active="currentDate === date"
+            :active="
+                currentDate.getDate() === day.getDate() &&
+                currentDate.getMonth() === day.getMonth() &&
+                currentDate.getFullYear() === day.getFullYear()
+            "
             @click="() => handleCardClick(ndx)"
         />
         <week-switcher @on-update="changeWeek" direction="right" />
@@ -55,7 +59,7 @@ const daysOfWeek = computed({
         let week = [];
         let current = new Date(props.startOfTheWeek);
         for (var i = 0; i < 7; i++) {
-            week.push(new Date(current).getDate());
+            week.push(new Date(current));
             current.setDate(current.getDate() + 1);
         }
         return week;
@@ -64,7 +68,7 @@ const daysOfWeek = computed({
 
 const currentDate = computed({
     get() {
-        return props.selectedDate.getDate();
+        return props.selectedDate;
     },
 });
 </script>

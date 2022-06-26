@@ -97,8 +97,7 @@ label {
 </style>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch } from "vue";
+import { watchEffect } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -108,6 +107,7 @@ import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
+import { useGymRevForm } from "@/utils";
 
 export default {
     components: {
@@ -122,7 +122,7 @@ export default {
     setup(props, { emit }) {
         let calendarEvent = props.calendar_event;
 
-        const form = useForm(calendarEvent);
+        const form = useGymRevForm(calendarEvent);
         watchEffect(() => {});
         return {
             form,

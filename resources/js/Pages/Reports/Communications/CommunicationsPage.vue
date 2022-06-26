@@ -25,22 +25,22 @@
                 <div class="flex flex-row">
                     <communication-card
                         title="Deliver Rate"
-                        progress="/img/mocks/clalendar_page_1.png"
+                        :progress="75"
                         class="md:w-1/4"
                     />
                     <communication-card
                         title="Open Rate"
-                        progress="/img/mocks/clalendar_page_2.png"
+                        :progress="60"
                         class="md:w-1/4"
                     />
                     <communication-card
                         title="Click Rate"
-                        progress="/img/mocks/clalendar_page_3.png"
+                        :progress="55"
                         class="md:w-1/4"
                     />
                     <communication-card
                         title="Opt-Out Rate"
-                        progress="/img/mocks/clalendar_page_1.png"
+                        :progress="25"
                         class="md:w-1/4"
                     />
                 </div>

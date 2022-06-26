@@ -3,8 +3,8 @@
         <template #cardTitle>
             <div class="text-lg text-base-content">Actuals</div>
         </template>
-        <div class="flex flex-col">
-            <div class="flex flex-wrap text-sm">
+        <div class="flex flex-col justify-between">
+            <div class="flex flex-wrap text-sm pb-3">
                 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
                 diam nonumy eirmod tempor
             </div>
