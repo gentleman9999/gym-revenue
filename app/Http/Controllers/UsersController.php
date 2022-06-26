@@ -162,7 +162,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = $me->with(['details','notes','files'])->findOrFail($id);
+        $user = $me->with(['details','notes','files', 'contact_preference'])->findOrFail($id);
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');

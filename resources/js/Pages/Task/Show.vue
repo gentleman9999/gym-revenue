@@ -3,7 +3,7 @@
         <page-toolbar-nav title="Tasks" :links="navLinks" />
         <div class="flex flex-row justify-center">
             <!--            hide month switcher until it does something-->
-            <!--            <month-switcher class="pl-4" />-->
+            <month-switcher class="pl-4" :onChange="switchMonth" />
             <div class="flex flex-col items-center">
                 <task-date-switcher
                     :startOfTheWeek="startOfTheWeek"
@@ -173,6 +173,14 @@ export default defineComponent({
         const setStartOfTheWeek = (val) => {
             startOfTheWeek.value = val;
         };
+        const switchMonth = (month) => {
+            let start_date = new Date(
+                startOfTheWeek.value.getFullYear(),
+                month,
+                startOfTheWeek.value.getDate()
+            );
+            setStartOfTheWeek(start_date);
+        };
         const fields = [
             {
                 name: "title",
@@ -274,6 +282,7 @@ export default defineComponent({
             taskTypes,
             selectedDateFormatted,
             getTaskData,
+            switchMonth,
         };
     },
 });
