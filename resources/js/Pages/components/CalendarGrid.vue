@@ -1,7 +1,13 @@
 <template>
     <Card>
         <div class="grid-wrapper">
-            <date-picker inline autoApply dark :enableTimePicker="false" />
+            <date-picker
+                inline
+                autoApply
+                dark
+                :enableTimePicker="false"
+                :month-change-on-scroll="false"
+            />
         </div>
     </Card>
 </template>
