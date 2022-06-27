@@ -284,7 +284,7 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -338,18 +338,18 @@ export default {
         let memberData = null;
         if (!member) {
             memberData = {
-                first_name: null,
-                middle_name: null,
-                last_name: null,
-                email: null,
-                primary_phone: null,
-                alternate_phone: null,
-                club_id: null,
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                email: "",
+                primary_phone: "",
+                alternate_phone: "",
+                club_id: "",
                 client_id: props.clientId,
                 gr_location_id: null,
                 profile_picture: null,
                 gender: "",
-                date_of_birth: "",
+                date_of_birth: null,
                 notes: { title: "", note: "" },
             };
             operation = "Create";

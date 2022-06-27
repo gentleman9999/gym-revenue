@@ -51,6 +51,7 @@
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
+        <!-- can not accurately test button disabled because of error invalid date -->
         <template v-if="calendar_event?.type.type !== 'Task'">
             <div class="flex flex-col">
                 <jet-label for="end" value="Ends" />
@@ -292,7 +293,7 @@
                 @click="handleSubmit"
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 size="sm"
             >
@@ -439,17 +440,17 @@ export default {
         let operation = "Update";
         if (!calendarEvent) {
             calendarEventForm = {
-                title: null,
-                description: null,
-                full_day_event: false,
-                start: props.start_date,
-                end: props.start_date,
-                event_type_id: null,
+                title: "",
+                description: "",
+                full_day_event: "",
+                start: props.start_date ?? null,
+                end: props.start_date ?? null,
+                event_type_id: "",
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
-                lead_attendees: null,
-                member_attendees: null,
-                my_reminder: null,
+                lead_attendees: [] ?? "",
+                member_attendees: [],
+                my_reminder: "",
             };
             operation = "Create";
         } else {

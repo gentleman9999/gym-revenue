@@ -103,7 +103,7 @@
             <button
                 class="btn btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || formInvalid"
+                :disabled="form.processing || formInvalid || !form.isDirty"
                 :loading="form.processing"
             >
                 Save
