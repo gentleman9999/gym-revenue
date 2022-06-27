@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Clients\Client;
+use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Models\Reminder;
@@ -25,14 +26,12 @@ class CalendarController extends Controller
         }
 
         $team_users = [];
-        $current_team = request()->user()->currentTeam()->first();
-        foreach ($current_team->team_users()->get()->toArray() as $team_user) {
-            $team_users[] = $team_user['user_id'];
-        }
+
+        $currentLocationSelect = Location::findOrFail($request->user()->current_location_id);
 
         if ($request->get('start')) {
-            $eventsForTeam = CalendarEvent::whereClient_id($client_id)
-                ->whereIn('owner_id', $team_users)
+            $eventsForTeam = CalendarEvent::whereClientId($client_id)
+                ->whereLocationId($currentLocationSelect->id)
                 ->with('type', 'attendees', 'files')
                 ->filter($request->only('search', 'start', 'end', 'viewUser'))
                 ->get();
