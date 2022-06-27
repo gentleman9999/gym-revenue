@@ -180,7 +180,7 @@ export default {
         let handleSubmit = () =>
             form.dirty().put(route("roles.update", role.id));
         if (operation === "Create") {
-            handleSubmit = () => form.dirty().post(route("roles.store"));
+            handleSubmit = () => form.post(route("roles.store"));
         }
 
         let groupedAvailableAbilities = computed(() => {

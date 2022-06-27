@@ -546,7 +546,6 @@ export default {
         if (operation === "Create") {
             handleSubmit = () =>
                 form
-                    .dirty()
                     .transform(transformFormSubmission)
                     .post("/data/leads/create", {
                         onSuccess: () => (form.notes = { title: "", note: "" }),

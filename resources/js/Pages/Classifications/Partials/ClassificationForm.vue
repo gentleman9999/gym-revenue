@@ -78,10 +78,11 @@ export default {
         const form = useGymRevForm(classification);
 
         let handleSubmit = () =>
-            form.put(route("classifications.update", classification.id));
+            form
+                .dirty()
+                .put(route("classifications.update", classification.id));
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.dirty().post(route("classifications.store"));
+            handleSubmit = () => form.post(route("classifications.store"));
         }
 
         return {

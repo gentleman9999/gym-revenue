@@ -293,10 +293,7 @@ export default {
 
         if (operation === "Create") {
             handleSubmit = () =>
-                form
-                    .dirty()
-                    .transform(transformData)
-                    .post(route("locations.store"));
+                form.transform(transformData).post(route("locations.store"));
         }
 
         let optionsStates = [];

@@ -120,7 +120,7 @@ export default {
         if (operation === "Create") {
             handleSubmit = () => {
                 if (!form.processing) {
-                    form.dirty().post(route("comms.email-templates.store"), {
+                    form.post(route("comms.email-templates.store"), {
                         headers: { "X-Inertia-Modal-Redirect": true },
                         onSuccess: () => {
                             console.log("onSuccess-Create!");

@@ -148,7 +148,7 @@ export default defineComponent({
         let handleSubmit = () =>
             form.dirty().put(route("team.update", team.id));
         if (operation === "Create") {
-            handleSubmit = () => form.dirty().post(route("teams.store"));
+            handleSubmit = () => form.post(route("teams.store"));
         }
 
         return {

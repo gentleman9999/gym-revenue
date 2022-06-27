@@ -372,6 +372,7 @@ import FileManager from "./FileManager";
 import { Inertia } from "@inertiajs/inertia";
 import FileIcon from "@/Components/Icons/File";
 import AddIcon from "@/Components/Icons/Add";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
@@ -395,6 +396,7 @@ export default {
         "client_users",
         "lead_users",
         "member_users",
+        "start_date",
     ],
     setup(props, { emit }) {
         const page = usePage();
@@ -478,19 +480,27 @@ export default {
         const form = useGymRevForm(calendarEventForm);
 
         watchEffect(() => {
+            //set end datetmime if start provided but not end.
+            const defaultValue = props.start_date;
+
             if (form.end) {
+                //form.end is already set, bail.
+                console.log("form.end is set, doing nothing", form.end);
                 return;
             }
-            let start = form.start;
+            let start = defaultValue;
+            form.start = defaultValue;
 
-            let end = form.end;
+            let end = defaultValue;
             let tempEnd = false;
             if (typeof start === "string") {
+                //TODO: do we need to do something with UTC/time zones here?
                 start = new Date(Date.parse(start));
             }
 
             if (form.end) {
                 if (typeof end === "string") {
+                    //TODO: do we need to do something with UTC/time zones here?
                     end = new Date(Date.parse(form.end));
                     console.log({ end });
                 }
@@ -505,14 +515,6 @@ export default {
                 form.end = newEnd;
             }
         });
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
 
         let handleSubmit = () =>
             form

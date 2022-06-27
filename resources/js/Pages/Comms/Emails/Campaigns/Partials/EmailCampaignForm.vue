@@ -276,7 +276,7 @@ export default {
         };
         if (operation === "Create") {
             handleSubmit = () =>
-                form.dirty().post(route("comms.email-campaigns.store"));
+                form.post(route("comms.email-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;

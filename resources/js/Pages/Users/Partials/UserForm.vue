@@ -564,7 +564,6 @@ export default {
         if (operation === "Create") {
             handleSubmit = () =>
                 form
-                    .dirty()
                     .transform(transformFormSubmission)
                     .post(route("users.store"), {
                         onSuccess: () => (form.notes = { title: "", note: "" }),

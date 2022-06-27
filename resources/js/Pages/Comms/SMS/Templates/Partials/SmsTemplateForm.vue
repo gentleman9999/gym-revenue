@@ -102,8 +102,7 @@ export default {
         let handleSubmit = () =>
             form.dirty().put(route("comms.sms-templates.update", template.id));
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.dirty().post(route("comms.sms-templates.store"));
+            handleSubmit = () => form.post(route("comms.sms-templates.store"));
         }
 
         return { form, buttonText: operation, handleSubmit };
