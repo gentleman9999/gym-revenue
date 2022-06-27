@@ -15,8 +15,9 @@ class CreateMembershipTypesTable extends Migration
     {
         Schema::create('membership_types', function (Blueprint $table) {
             $table->id();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->string('name');
+            $table->index(['client_id', 'name']);
             $table->timestamps();
             $table->softDeletes();
         });

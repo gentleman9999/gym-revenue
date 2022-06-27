@@ -21,6 +21,11 @@ class CreateAudienceMembersTable extends Migration
             $table->uuid('entity_type')->nullable();
             $table->boolean('subscribed')->default(1);
             $table->longText('misc')->nullable();
+            $table->index([
+                'client_id',
+                'audience_id',
+                'entity_type',
+            ]);
             $table->timestamps();
             $table->softDeletes();
             $table->boolean('dnc')->default(0);
