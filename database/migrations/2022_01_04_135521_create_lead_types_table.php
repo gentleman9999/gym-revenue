@@ -15,8 +15,9 @@ class CreateLeadTypesTable extends Migration
     {
         Schema::create('lead_types', function (Blueprint $table) {
             $table->id();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->string('name');
+            $table->unique(['client_id', 'name']);
             $table->timestamps();
             $table->softDeletes();
         });

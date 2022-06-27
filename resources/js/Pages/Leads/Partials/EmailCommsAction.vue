@@ -32,7 +32,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import BaseCommsAction from "./BaseCommsAction";
 
 export default defineComponent({
@@ -58,7 +58,7 @@ export default defineComponent({
     },
     emits: ["done"],
     setup(props, { emit }) {
-        const form = useForm({
+        const form = useGymRevForm({
             method: "email",
             subject: props.subject,
             message: null,
