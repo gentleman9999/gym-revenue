@@ -71,6 +71,7 @@ pipelines:
           size: 2x
           caches:
             - cposer
+            - node
             - docker
           deployment: develop
           script:
