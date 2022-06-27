@@ -30,8 +30,9 @@
                     {{ item.label }} ({{ item.percent }}%)
                 </div>
             </div>
-
-            <img :src="progress" class="h-fit w-fit" />
+            <div class="w-48">
+                <progress-chart :data="progress" :height="180" />
+            </div>
         </div>
     </Card>
 </template>
@@ -44,11 +45,11 @@ div::-webkit-scrollbar {
 
 <script setup>
 import Card from "@/Components/Card";
-
+import ProgressChart from "@/Components/ProgressChart";
 const props = defineProps({
     progress: {
-        stype: String,
-        default: "/img/mocks/clalendar_page_1.png",
+        type: Array,
+        default: [73],
     },
 });
 

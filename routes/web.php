@@ -157,6 +157,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
     Route::delete('/reminder/delete/{id}', \App\Actions\Users\Reminders\DeleteReminder::class)->name('calendar.reminder.delete');
     Route::put('/reminder/create/{id}', \App\Actions\Users\Reminders\CreateReminderFromCalendarEvent::class)->name('calendar.reminder.create');
+    Route::put('/complete_task/{id}', \App\Actions\Clients\Tasks\MarkTaskComplete::class)->name('calendar.complete_event');
     Route::post('/upload', \App\Actions\Clients\Calendar\UploadFile::class)->name('calendar.upload');
     Route::prefix('event_types')->group(function () {
         Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
@@ -267,6 +268,8 @@ Route::prefix('s')->group(function () {
 
 //since this is for endusers to opt in/out of communications, we don't want to load up the CRM App bundle
 Route::prefix('/communication-preferences')->group(function () {
-    Route::get('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@communicationPreferences')->name('comms-prefs');
-    Route::post('/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateCommunicationPreferences')->name('comms-prefs.update');
+    Route::get('/l/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@leadCommunicationPreferences')->name('comms-prefs.lead');
+    Route::post('/l/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateLeadCommunicationPreferences')->name('comms-prefs.lead.update');
+    Route::get('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@memberCommunicationPreferences')->name('comms-prefs.member');
+    Route::post('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@updateMemberCommunicationPreferences')->name('comms-prefs.member.update');
 });

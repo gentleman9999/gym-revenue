@@ -9,14 +9,14 @@
         <template #form>
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="current_password" value="Current Password" />
-                <input
+                <password-input
                     id="current_password"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.current_password"
                     ref="current_password"
                     autocomplete="current-password"
                 />
+
                 <jet-input-error
                     :message="form.errors.current_password"
                     class="mt-2"
@@ -25,10 +25,9 @@
 
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="password" value="New Password" />
-                <input
+                <password-input
                     id="password"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password"
                     ref="password"
                     autocomplete="new-password"
@@ -41,10 +40,9 @@
                     for="password_confirmation"
                     value="Confirm Password"
                 />
-                <input
+                <password-input
                     id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password_confirmation"
                     autocomplete="new-password"
                 />
@@ -78,6 +76,7 @@ import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
+import PasswordInput from "@/Components/PasswordInput";
 
 export default defineComponent({
     components: {
@@ -87,6 +86,7 @@ export default defineComponent({
 
         JetInputError,
         JetLabel,
+        PasswordInput,
     },
 
     data() {
@@ -108,12 +108,12 @@ export default defineComponent({
                 onError: () => {
                     if (this.form.errors.password) {
                         this.form.reset("password", "password_confirmation");
-                        this.$refs.password.focus();
+                        this.$refs.password.$refs.input.focus();
                     }
 
                     if (this.form.errors.current_password) {
                         this.form.reset("current_password");
-                        this.$refs.current_password.focus();
+                        this.$refs.current_password.$refs.input.focus();
                     }
                 },
             });

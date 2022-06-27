@@ -18,7 +18,6 @@
                 <!--                        type="text"-->
                 <!--                        class="mt-1 block w-full"-->
                 <!--                        v-model="createApiTokenForm.name"-->
-                <!--                        autofocus-->
                 <!--                    />-->
                 <!--                    <jet-input-error-->
                 <!--                        :message="createApiTokenForm.errors.name"-->

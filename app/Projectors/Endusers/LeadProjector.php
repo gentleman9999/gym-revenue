@@ -10,14 +10,14 @@ use App\Models\Endusers\LeadDetails;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Note;
 use App\Models\User;
+use App\StorableEvents\Endusers\Leads\LeadConverted;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadDeleted;
 use App\StorableEvents\Endusers\Leads\LeadProfilePictureMoved;
 use App\StorableEvents\Endusers\Leads\LeadRestored;
-use App\StorableEvents\Endusers\Leads\LeadSubscribedToComms;
 use App\StorableEvents\Endusers\Leads\LeadTrashed;
-use App\StorableEvents\Endusers\Leads\LeadUnsubscribedFromComms;
 use App\StorableEvents\Endusers\Leads\LeadUpdated;
+use App\StorableEvents\Endusers\Leads\LeadUpdatedCommunicationPreferences;
 use App\StorableEvents\Endusers\Leads\LeadWasEmailedByRep;
 use App\StorableEvents\Endusers\Leads\SubscribedToAudience;
 use App\StorableEvents\Endusers\Leads\TrialMembershipAdded;
@@ -222,6 +222,12 @@ class LeadProjector extends Projector
         }
     }
 
+    public function onLeadConverted(LeadConverted $event)
+    {
+        $record = lead::withTrashed()->findOrFail($event->data['id']);
+        $record->updateOrFail(['converted_at' => $event->createdAt(), 'member_id' => $event->data['member_id']]);
+    }
+
     public function onLeadUpdated(LeadUpdated $event)
     {
         $lead = Lead::withTrashed()->findOrFail($event->data['id']);
@@ -317,13 +323,8 @@ class LeadProjector extends Projector
         }
     }
 
-    public function onLeadUnsubscribedFromComms(LeadUnsubscribedFromComms $event)
+    public function onLeadUpdatedCommunicationPreferences(LeadUpdatedCommunicationPreferences $event)
     {
-        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_comms' => true]);
-    }
-
-    public function onLeadSubscribedToComms(LeadSubscribedToComms $event)
-    {
-        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_comms' => false]);
+        Lead::withTrashed()->findOrFail($event->lead)->update(['unsubscribed_email' => $event->email, 'unsubscribed_sms' => $event->sms]);
     }
 }

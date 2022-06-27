@@ -180,44 +180,44 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function deleteTask(string $deleted_by_user_id, TaskDeleted $event)
+    public function deleteTask(string $deleted_by_user_id, string $event)
     {
         $this->recordThat(new TaskDeleted($this->uuid(), $deleted_by_user_id, $event));
 
         return $this;
     }
 
-    public function restoreTask(string $restored_by_user_id, TaskRestored $event)
+    public function restoreTask(string $restored_by_user_id, string $event)
     {
         $this->recordThat(new TaskRestored($this->uuid(), $restored_by_user_id, $event));
 
         return $this;
     }
 
-    public function trashTask(string $deleted_by_user_id, TaskTrashed $event)
+    public function trashTask(string $deleted_by_user_id, string $event)
     {
         $this->recordThat(new TaskTrashed($this->uuid(), $deleted_by_user_id, $event));
 
         return $this;
     }
 
-    public function updateTask(string $updated_by_user_id, TaskUpdated $event)
+    public function updateTask(string $updated_by_user_id, array $event)
     {
-        $this->recordThat(new TaskUpdated($this->uuid()), $updated_by_user_id, $event);
+        $this->recordThat(new TaskUpdated($this->uuid(), $updated_by_user_id, $event));
 
         return $this;
     }
 
-    public function markTaskAsComplete(string $updated_by_user_id, TaskMarkedComplete $event)
+    public function markTaskAsComplete(string $updated_by_user_id, string $id)
     {
-        $this->recordThat(new TaskMarkedComplete($this->uuid()), $updated_by_user_id, $event);
+        $this->recordThat(new TaskMarkedComplete($this->uuid(), $updated_by_user_id, $id));
 
         return $this;
     }
 
-    public function markTaskAsIncomplete(string $updated_by_user_id, TaskMarkedIncomplete $event)
+    public function markTaskAsIncomplete(string $updated_by_user_id, string $event)
     {
-        $this->recordThat(new TaskMarkedIncomplete($this->uuid()), $updated_by_user_id, $event);
+        $this->recordThat(new TaskMarkedIncomplete($this->uuid(), $updated_by_user_id, $event));
 
         return $this;
     }

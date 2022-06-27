@@ -46,7 +46,7 @@
                 </li>
                 <li v-if="showClientSettings">
                     <inertia-link :href="route('settings')">
-                        Settings
+                        Client Settings
                     </inertia-link>
                 </li>
                 <li>

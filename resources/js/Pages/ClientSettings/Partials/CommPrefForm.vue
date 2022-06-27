@@ -48,7 +48,7 @@ import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
 export default defineComponent({
     components: {
@@ -70,9 +70,9 @@ export default defineComponent({
     },
     setup(props) {
         let handleSubmit = () =>
-            form.post(route("settings.client-services.update"));
+            form.dirty().post(route("settings.client-services.update"));
 
-        const form = useForm({
+        const form = useGymRevForm({
             commPreferences: props.commPreferences.map(
                 (detail) => detail.value
             ),

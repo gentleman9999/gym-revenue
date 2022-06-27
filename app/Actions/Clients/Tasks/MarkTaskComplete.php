@@ -3,12 +3,11 @@
 namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
-use App\Models\Tasks;
+use App\Models\Calendar\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use Twilio\TwiML\Voice\Task;
 
 class MarkTaskComplete
 {
@@ -22,38 +21,32 @@ class MarkTaskComplete
     public function rules()
     {
         return [
-            'title' => ['required', 'string','max:50'],
-            'description' => ['string', 'nullable'],
-            'user_id' => ['sometimes'],
-            'due_at' => ['sometimes'],
-            'completed_at' => ['sometimes'],
-            ];
+            'id' => ['string', 'sometimes'],
+        ];
     }
 
-    public function handle($id, $user)
+    public function handle($data, $current_user)
     {
-        UserAggregate::retrieve($user->id)
-            ->markTaskAsComplete($user->id ?? "Auto Generated", $id)
-            ->persist();
+        UserAggregate::retrieve($current_user->id)->markTaskAsComplete($current_user->id, $data['id'])->persist();
 
-        return Task::find($id);
+        return CalendarEvent::findOrFail($data['id']);
     }
 
     public function authorize(ActionRequest $request): bool
     {
-        $current_user = $request->user();
-
-        return $current_user->can('task.update', Tasks::class);
+        return true;
     }
 
     public function asController(ActionRequest $request, $id)
     {
+        $data = $request->validated();
+        $data['id'] = $id;
         $task = $this->handle(
-            $id,
-            $request->user()
+            $data,
+            $request->user(),
         );
 
-        Alert::success("Task '{$task->title}' was updated")->flash();
+        Alert::success("Task '{$task->title}' marked complete!")->flash();
 
         return Redirect::back();
     }

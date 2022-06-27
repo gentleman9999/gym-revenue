@@ -5,10 +5,9 @@ namespace App\Aggregates\Endusers;
 use App\StorableEvents\Endusers\Members\MemberCreated;
 use App\StorableEvents\Endusers\Members\MemberDeleted;
 use App\StorableEvents\Endusers\Members\MemberRestored;
-use App\StorableEvents\Endusers\Members\MemberSubscribedToComms;
 use App\StorableEvents\Endusers\Members\MemberTrashed;
-use App\StorableEvents\Endusers\Members\MemberUnsubscribedFromComms;
 use App\StorableEvents\Endusers\Members\MemberUpdated;
+use App\StorableEvents\Endusers\Members\MemberUpdatedCommunicationPreferences;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class MemberAggregate extends AggregateRoot
@@ -48,16 +47,9 @@ class MemberAggregate extends AggregateRoot
         return $this;
     }
 
-    public function subscribeToComms(DateTime $subscribed_at)
+    public function updateCommunicationPreferences(bool $email, bool $sms, string $subscribed_at)
     {
-        $this->recordThat(new MemberSubscribedToComms($this->uuid(), $subscribed_at));
-
-        return $this;
-    }
-
-    public function unsubscribeFromComms(DateTime $unsubscribed_at)
-    {
-        $this->recordThat(new MemberUnsubscribedFromComms($this->uuid(), $unsubscribed_at));
+        $this->recordThat(new MemberUpdatedCommunicationPreferences($this->uuid(), $email, $sms, $subscribed_at));
 
         return $this;
     }
