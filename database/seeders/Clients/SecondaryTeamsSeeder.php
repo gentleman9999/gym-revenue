@@ -59,7 +59,6 @@ class SecondaryTeamsSeeder extends Seeder
         }
 
         $kalamazoo_owner = User::whereEmail('giraffe@kalamazoo.com')->first();
-        $bodies_owner = User::whereEmail('brett+bbb@capeandbay.com')->first();
         $truth_owner = User::whereEmail('monyahanb@clubtruth.com')->first();
         $theZ_owner = User::whereEmail('malaki@thezclubs.com')->first();
         $stencils_owner = User::whereEmail('bsmith@stencils.net')->first();
@@ -89,37 +88,6 @@ class SecondaryTeamsSeeder extends Seeder
                 'default_team' => 0,
                 'client_id' => Client::where('name', 'The Kalamazoo')->first()->id,
             ],
-
-            // Bodies By Brett
-            [
-                'user_id' => $bodies_owner->id ?? 1,
-                'name' => 'Sales Bodies',
-                'personal_team' => 0,
-                'default_team' => 0,
-                'client_id' => Client::where('name', 'Bodies By Brett')->first()->id,
-            ],
-            [
-                'user_id' => $bodies_owner->id ?? 1,
-                'name' => 'Tampa 1',
-                'personal_team' => 0,
-                'default_team' => 0,
-                'client_id' => Client::where('name', 'Bodies By Brett')->first()->id,
-            ],
-            [
-                'user_id' => $bodies_owner->id ?? 1,
-                'name' => 'Tampa 2',
-                'personal_team' => 0,
-                'default_team' => 0,
-                'client_id' => Client::where('name', 'Bodies By Brett')->first()->id,
-            ],
-            [
-                'user_id' => $bodies_owner->id ?? 1,
-                'name' => 'Tampa 3',
-                'personal_team' => 0,
-                'default_team' => 0,
-                'client_id' => Client::where('name', 'Bodies By Brett')->first()->id,
-            ],
-
             // Fitness Truth
             [
                 'user_id' => $truth_owner->id ?? 1,
