@@ -372,6 +372,7 @@ import FileManager from "./FileManager";
 import { Inertia } from "@inertiajs/inertia";
 import FileIcon from "@/Components/Icons/File";
 import AddIcon from "@/Components/Icons/Add";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
@@ -510,14 +511,6 @@ export default {
                 form.end = newEnd;
             }
         });
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
 
         let handleSubmit = () =>
             form

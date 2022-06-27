@@ -22,6 +22,9 @@ class CreateTrialMembershipsTable extends Migration
             $table->timestamp('expiry_date')->nullable();
             $table->uuid('club_id');
             $table->boolean('active')->default(0);
+            $table->index(['client_id', 'type_id']);
+            $table->index(['client_id', 'lead_id']);
+            $table->index(['client_id', 'club_id']);
             $table->timestamps();
             $table->softDeletes();
         });
