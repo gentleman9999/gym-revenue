@@ -173,7 +173,7 @@
             <div class="col-span-2 sm:col-span-2">
                 <jet-label for="state" value="State" />
                 <multiselect
-                    id="state"
+                    id="stat"
                     class="mt-1 multiselect"
                     v-model="form.state"
                     :searchable="true"
