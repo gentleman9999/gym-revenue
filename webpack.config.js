@@ -5,6 +5,7 @@ module.exports = {
         alias: {
             '@': path.resolve('resources/js'),
             'axios': path.resolve('node_modules/axios/dist/axios.js'),
+            'lodash': path.resolve('node_modules/lodash')
         },
     },
     externals: {
