@@ -21,7 +21,7 @@
 </template>
 <style scoped>
 .future-summary-wrapper {
-    @apply flex flex-col border border-secondary rounded p-5 w-full;
+    @apply flex flex-col border border-secondary rounded p-5 w-full mt-4 space-y-4;
 }
 .future-summary-title {
     @apply text-lg font-bold;
