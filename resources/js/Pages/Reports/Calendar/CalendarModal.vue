@@ -33,7 +33,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import CalendarSummaryCard from "./components/CalendarSummaryCard";
+import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard";
 
 export default defineComponent({
     components: {

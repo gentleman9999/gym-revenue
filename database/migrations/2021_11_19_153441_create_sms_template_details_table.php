@@ -21,6 +21,7 @@ class CreateSmsTemplateDetailsTable extends Migration
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();
             $table->boolean('active')->default(1);
+            $table->index(['client_id', 'sms_template_id']);
             $table->timestamps();
             $table->softDeletes();
         });

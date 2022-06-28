@@ -1,7 +1,7 @@
 <template>
-    <app-layout title="Settings">
+    <app-layout title="Client Settings">
         <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Settings</h2>
+            <h2 class="font-semibold text-xl leading-tight">Client Settings</h2>
         </template>
 
         <div>

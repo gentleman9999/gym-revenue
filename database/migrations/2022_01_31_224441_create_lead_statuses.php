@@ -15,7 +15,7 @@ class CreateLeadStatuses extends Migration
     {
         Schema::create('lead_statuses', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id');
+            $table->uuid('client_id')->index();
             $table->string('status');
             $table->integer('order');
             $table->boolean('active')->default(1);

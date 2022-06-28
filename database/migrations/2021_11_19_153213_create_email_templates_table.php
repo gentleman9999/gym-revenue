@@ -23,6 +23,8 @@ class CreateEmailTemplatesTable extends Migration
             $table->uuid('client_id')->nullable();
             $table->uuid('team_id')->nullable();
             $table->string('created_by_user_id');
+            $table->unique(['client_id','team_id']);
+            $table->unique(['client_id','created_by_user_id']);
             $table->timestamps();
             $table->softDeletes();
         });

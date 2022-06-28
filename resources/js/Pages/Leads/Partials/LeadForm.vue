@@ -398,6 +398,7 @@ import { useGoBack, useGymRevForm } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput";
 
 library.add(faUserCircle);
@@ -526,13 +527,6 @@ export default {
             }
             data.date_of_birth = transformDate(data.date_of_birth);
             return data;
-        };
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
         };
 
         let handleSubmit = () => {

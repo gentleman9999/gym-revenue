@@ -22,6 +22,8 @@ class CreateClientBillableActivitiesTable extends Migration
             $table->integer('units');
             $table->longText('misc');
             $table->string('triggered_by_user_id');
+            $table->index(['client_id', 'entity_id']);
+
             $table->timestamps();
             $table->softDeletes();
         });

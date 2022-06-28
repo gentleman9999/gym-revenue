@@ -20,6 +20,7 @@ class CreateTeamsTable extends Migration
             $table->string('name');
             $table->boolean('personal_team')->default(0);
             $table->boolean('default_team')->default(0);
+            $table->index(['client_id', 'name']);
             $table->timestamps();
         });
     }

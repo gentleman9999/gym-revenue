@@ -308,6 +308,7 @@ import JetLabel from "@/Jetstream/Label";
 import { useGoBack } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput";
 
 library.add(faUserCircle);
@@ -325,14 +326,6 @@ export default {
     },
     props: ["userId", "clientId", "member", "locations", "interactionCount"],
     setup(props, context) {
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
-
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
                 client_id: props.clientId,
