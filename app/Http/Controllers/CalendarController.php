@@ -9,6 +9,7 @@ use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Models\Reminder;
+use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,8 +26,7 @@ class CalendarController extends Controller
             return Redirect::route('dashboard');
         }
 
-        $team_users = [];
-
+        $locations = Location::whereClientId($client_id)->get();
         $currentLocationSelect = Location::findOrFail($request->user()->current_location_id);
 
         if ($request->get('start')) {
@@ -106,6 +106,7 @@ class CalendarController extends Controller
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
+            'locations' => $locations,
         ]);
     }
 

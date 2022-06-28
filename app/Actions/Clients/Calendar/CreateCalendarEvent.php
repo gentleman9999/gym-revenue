@@ -36,6 +36,7 @@ class CreateCalendarEvent
             'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
             'member_attendees' => ['sometimes'],
+            'location_id' => ['required'],
         ];
     }
 

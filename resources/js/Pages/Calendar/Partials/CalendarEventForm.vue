@@ -396,6 +396,7 @@ export default {
         "lead_users",
         "member_users",
         "start_date",
+        "locations",
     ],
     setup(props, { emit }) {
         const page = usePage();

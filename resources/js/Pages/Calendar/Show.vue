@@ -95,6 +95,10 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    locations: {
+        type: Array,
+        default: [],
+    },
 });
 
 const drawerSwitch = ref();
