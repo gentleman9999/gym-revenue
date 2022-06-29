@@ -29,38 +29,6 @@ class TeamLocationsSeeder extends Seeder
                 'name' => 'team-location',
                 'value' => 'TKH001',
             ],
-            // Bodies By Brett
-            [
-                'team_id' => Team::fetchTeamIDFromName('Sales Bodies'),
-                'name' => 'team-location',
-                'value' => 'BBB001',
-            ],
-            [
-                'team_id' => Team::fetchTeamIDFromName('Sales Bodies'),
-                'name' => 'team-location',
-                'value' => 'BBB002',
-            ],
-            [
-                'team_id' => Team::fetchTeamIDFromName('Sales Bodies'),
-                'name' => 'team-location',
-                'value' => 'BBB003',
-            ],
-            [
-                'team_id' => Team::fetchTeamIDFromName('Tampa 1'),
-                'name' => 'team-location',
-                'value' => 'BBB001',
-            ],
-            [
-                'team_id' => Team::fetchTeamIDFromName('Tampa 2'),
-                'name' => 'team-location',
-                'value' => 'BBB003',
-            ],
-            [
-                'team_id' => Team::fetchTeamIDFromName('Tampa 1'),
-                'name' => 'team-location',
-                'value' => 'BBB003',
-            ],
-
             // The Z
             // TruFit
             // Stencils
