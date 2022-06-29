@@ -43,10 +43,10 @@
 import { defineComponent } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import JetBarContainer from "@/Components/JetBarContainer";
-import CalendarTitle from "../components/CalendarTitle";
-import CalendarSummaryCard from "./components/CalendarSummaryCard";
-import CalendarGrid from "./components/CalendarGrid";
 import CalendarScheduleTable from "./components/CalendarScheduleTable";
+import CalendarTitle from "../components/CalendarTitle";
+import CalendarGrid from "@/Pages/components/CalendarGrid";
+import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard";
 
 const schedule = [
     {

@@ -442,8 +442,8 @@ export default {
                 title: null,
                 description: null,
                 full_day_event: false,
-                start: null,
-                end: null,
+                start: props.start_date,
+                end: props.start_date,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
@@ -483,11 +483,6 @@ export default {
             //set end datetmime if start provided but not end.
             const defaultValue = props.start_date;
 
-            if (form.end) {
-                //form.end is already set, bail.
-                console.log("form.end is set, doing nothing", form.end);
-                return;
-            }
             let start = defaultValue;
             form.start = defaultValue;
 

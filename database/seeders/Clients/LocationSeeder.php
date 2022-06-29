@@ -31,34 +31,6 @@ class LocationSeeder extends Seeder
                 'location_no' => '001',
                 //'gymrevenue_id' => 'TK12'
             ],
-            // Bodies By Brett
-            [
-                'client' => 'Bodies By Brett',
-                'name' => 'Tampa 1',
-                'state' => 'FL',
-                'city' => 'Tampa',
-                'zip' => '33607',
-                'location_no' => '001',
-                //'gymrevenue_id' => 'BB23'
-            ],
-            [
-                'client' => 'Bodies By Brett',
-                'name' => 'Tampa 2',
-                'state' => 'FL',
-                'city' => 'Tampa',
-                'zip' => '33607',
-                'location_no' => '002',
-                //'gymrevenue_id' => 'BB24'
-            ],
-            [
-                'client' => 'Bodies By Brett',
-                'name' => 'Tampa 3',
-                'state' => 'FL',
-                'city' => 'Tampa',
-                'zip' => '33607',
-                'location_no' => '003',
-                //'gymrevenue_id' => 'BB25'
-            ],
             // FitnessTruth
             [
                 'client' => 'FitnessTruth',
