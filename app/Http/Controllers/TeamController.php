@@ -36,10 +36,10 @@ class TeamController extends Controller
             $client = Client::with('teams')->find($client_id);
             $team_ids = $client->teams()->pluck('id');
             $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs = Location::whereClientId($client_id)->get();
+            $locations = Location::whereClientId($client_id)->get();
         } elseif ($current_user->isCapeAndBayUser()) {
             $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs = [];
+            $locations = [];
         }
 
 
@@ -49,7 +49,7 @@ class TeamController extends Controller
 //                ->paginate(10)
 //                ->appends(request()->except('page')),
             'filters' => $request->all('search', 'club', 'team', 'users'),
-            'clubs' => $clubs ?? null,
+            'clubs' => $locations ?? null,
             'teams' => $teams ?? null,
             'preview' => $request->preview ?? null,
             'potentialUsers' => $users,

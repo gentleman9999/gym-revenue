@@ -154,7 +154,7 @@ class LeadProjector extends Projector
             'lead_id' => $event->lead,
             'start_date' => $event->date,
             'expiry_date' => Carbon::instance(new \DateTime($event->date))->addDays($trial->trial_length),
-            'club_id' => $lead->gr_location_id,
+            'location_id' => $lead->gr_location_id,
             'active' => 1,
         ]);
         LeadDetails::create([
