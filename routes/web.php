@@ -273,3 +273,8 @@ Route::prefix('/communication-preferences')->group(function () {
     Route::get('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@memberCommunicationPreferences')->name('comms-prefs.member');
     Route::post('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@updateMemberCommunicationPreferences')->name('comms-prefs.member.update');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-com')->group(function () {
+    Route::get('/', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass_com.dashboard');
+    Route::get('/{type}', \App\Http\Controllers\MassCommunicationController::class . '@page')->name('mass_com.page');
+});
