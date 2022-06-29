@@ -184,6 +184,9 @@ export default defineComponent({
         previewComponent: {
             type: Object,
         },
+        onDoubleClick: {
+            type: Function,
+        },
     },
 
     setup(props) {

@@ -29,5 +29,11 @@ export default defineComponent({
         ModalableWrapper,
         ModalSlot,
     },
+    props: {
+        availableLocations: {
+            type: Array,
+            required: true,
+        },
+    },
 });
 </script>

@@ -16,6 +16,7 @@
                 class="mt-10 sm:mt-0"
                 :team="team"
                 :available-roles="availableRoles"
+                :available-users="availableUsers"
                 :user-permissions="permissions"
                 :users="users"
                 :availableUsers="availableUsers"
@@ -42,7 +43,14 @@ import TeamForm from "./Partials/TeamForm";
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
-    props: ["team", "availableRoles", "permissions", "users", "availableUsers"],
+    props: [
+        "team",
+        "availableRoles",
+        "permissions",
+        "users",
+        "availableUsers",
+        "availableLocations",
+    ],
 
     components: {
         LayoutHeader,

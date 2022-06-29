@@ -22,7 +22,13 @@
                     Object.values(actions).filter((action) => action).length)
             "
         >
-            <div class="tabledata actions">
+            <div
+                class="tabledata actions"
+                v-if="
+                    (actions && actions instanceof Array && actions.length) ||
+                    Object.entries(actions).length
+                "
+            >
                 <slot name="actions">
                     <crud-actions
                         :actions="actions"
@@ -131,11 +137,16 @@ export default defineComponent({
         const handleDoubleClick = () => {
             clearTimeout(timer);
             prevent = true;
+            if (props.onDoubleClick === false) {
+                return;
+            }
             if (props.onDoubleClick) {
                 props.onDoubleClick();
                 return;
             }
-            Inertia.visit(route(`${props.baseRoute}.edit`, props.data.id));
+            Inertia.visitInModal(
+                route(`${props.baseRoute}.edit`, props.data.id)
+            );
         };
 
         return { fields: customizedFields, handleClick, handleDoubleClick };

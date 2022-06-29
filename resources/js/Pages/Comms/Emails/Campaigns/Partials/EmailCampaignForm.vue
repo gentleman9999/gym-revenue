@@ -223,7 +223,8 @@ export default {
         "clientId",
         "campaign",
         "canActivate",
-        "templates",
+        "emailTemplates",
+        "audiences",
         "assignedTemplate",
         "assignedAudience",
     ],
@@ -250,12 +251,11 @@ export default {
             campaign["schedule_date"] = campaign.schedule_date?.value || "now";
             campaign["schedule"] = campaign.schedule?.value || "";
 
-            campaign["email_templates"] = page.props.value.emailTemplates.map(
-                (template_id) => template_id.value
-            );
-            campaign["audiences"] = page.props.value.audiences.map(
-                (audience_id) => audience_id.value
-            );
+            campaign["email_templates"] =
+                props.emailTemplates?.map((template_id) => template_id.value) ||
+                [];
+            campaign["audiences"] =
+                page.audiences?.map((audience_id) => audience_id.value) || [];
         }
 
         console.log("campaign Params", campaign);

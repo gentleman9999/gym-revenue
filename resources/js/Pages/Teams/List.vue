@@ -113,7 +113,7 @@ export default defineComponent({
         const shouldShowDelete = ({ data }) =>
             (abilities.value.includes("locations.delete") ||
                 abilities.value.includes("*")) &&
-            !data.default_team;
+            !data?.default_team;
 
         const fields = ["name", "created_at", "updated_at"];
 

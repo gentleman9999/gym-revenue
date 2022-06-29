@@ -8,7 +8,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <classification-form
                 :client-id="$page.props.user.current_client_id"
-                :classification="$page.props.classification"
+                :classification="classification"
             />
         </div>
     </div>

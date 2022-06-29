@@ -17,7 +17,7 @@
                 :client-id="$page.props.user.current_client_id"
                 :campaign="campaign"
                 :can-activate="true"
-                :templates="templates"
+                :templates="emailTemplates"
                 :audiences="audiences"
                 :assigned-template="assignedTemplate"
                 :assigned-audience="assignedAudience"
@@ -48,13 +48,15 @@ export default {
         JetInputError,
         JetLabel,
         EmailTemplateForm,
+        ModalableWrapper,
+        ModalSlot,
     },
     props: {
         campaign: {
             required: true,
             type: Object,
         },
-        templates: {
+        emailTemplates: {
             required: true,
             type: Array,
         },

@@ -66,6 +66,7 @@
             :actions="false"
             :base-route="baseRoute"
             title-field="type"
+            :on-double-click="false"
         >
             <template #filter>
                 <simple-search-filter

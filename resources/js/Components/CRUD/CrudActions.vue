@@ -62,7 +62,10 @@ export default defineComponent({
         FontAwesomeIcon,
     },
     setup(props) {
-        const actions = getActions(props);
+        let actions = props.actions;
+        if (!props instanceof Array) {
+            actions = getActions(props);
+        }
         return { actions };
     },
 });

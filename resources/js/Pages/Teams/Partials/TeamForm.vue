@@ -121,6 +121,15 @@ export default defineComponent({
         team: {
             type: Object,
         },
+        availableLocations: {
+            type: Array,
+            required: true,
+        },
+        locations: {
+            type: Array,
+            required: false,
+            default: [],
+        },
     },
 
     setup(props) {
@@ -137,9 +146,7 @@ export default defineComponent({
             };
             operation = "Create";
         } else {
-            team.locations = page.props.value.locations.map(
-                (detail) => detail.value
-            );
+            team.locations = props.locations.map((detail) => detail.value);
             team.client_id = page.props.value.user?.current_client_id;
             console.log("team.locations", team.locations);
         }
@@ -156,7 +163,6 @@ export default defineComponent({
             operation,
             handleSubmit,
             page,
-            availableLocations: page.props.value.availableLocations,
             multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },

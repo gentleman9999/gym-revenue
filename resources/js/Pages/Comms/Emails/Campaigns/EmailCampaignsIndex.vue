@@ -108,18 +108,18 @@ export default defineComponent({
             return {
                 edit: {
                     shouldRender: ({ data }) => {
-                        if (!data.active) {
+                        if (!data?.active) {
                             return true;
                         }
-                        if (!data.schedule_date?.value) {
+                        if (!data?.schedule_date?.value) {
                             return true;
                         }
-                        if (!parseDate(data.schedule_date.value)) {
-                            console.log({ date: data.schedule_date.value });
+                        if (!parseDate(data?.schedule_date?.value)) {
+                            console.log({ date: data?.schedule_date?.value });
                             return true;
                         }
                         return (
-                            new Date(`${data.schedule_date.value} UTC`) >=
+                            new Date(`${data?.schedule_date?.value} UTC`) >=
                             new Date()
                         );
                     },
@@ -127,8 +127,8 @@ export default defineComponent({
                 results: {
                     label: "Results",
                     shouldRender: ({ data }) =>
-                        data.active &&
-                        data.schedule_date &&
+                        data?.active &&
+                        data?.schedule_date &&
                         new Date(`${data.schedule_date.value} UTC`) <
                             new Date(),
                     handler: () => comingSoon(),

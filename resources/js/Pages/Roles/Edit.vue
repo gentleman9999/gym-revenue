@@ -9,7 +9,7 @@
             <security-role-form
                 :client-id="$page.props.user.current_client_id"
                 :availableAbilities="availableAbilities"
-                :role="$page.props.role"
+                :role="role"
                 :security-groups="securityGroups"
             />
         </div>

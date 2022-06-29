@@ -88,7 +88,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('roles'))"
+                @click="handleClickCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -118,6 +118,8 @@ import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
+import { Inertia } from "@inertiajs/inertia";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
@@ -214,6 +216,17 @@ export default {
             form.ability_names = [...merged];
         };
 
+        const modal = useModal();
+
+        const handleClickCancel = () => {
+            console.log("modal", modal.value);
+            if (modal.value.close) {
+                modal.value.close();
+            } else {
+                Inertia.visit(route("roles"));
+            }
+        };
+
         return {
             form,
             buttonText: operation,
@@ -221,6 +234,7 @@ export default {
             groupedAvailableAbilities,
             selectAll,
             clear,
+            handleClickCancel,
         };
     },
 };

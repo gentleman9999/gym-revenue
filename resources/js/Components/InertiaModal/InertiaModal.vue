@@ -128,8 +128,8 @@ const visitInModal = (url, options = {}) => {
         redirectBack: false,
         modalProps: {},
         pageProps: {},
-        reloadOnClose: false,
-        redirectInModal: false,
+        reloadOnClose: true,
+        redirectInModal: true,
         ...options,
     };
     const cancelToken = shallowRef(null);

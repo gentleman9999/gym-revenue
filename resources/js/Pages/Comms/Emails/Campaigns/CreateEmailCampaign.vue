@@ -15,6 +15,8 @@
             <email-campaign-form
                 :client-id="$page.props.user.current_client_id"
                 :can-activate="false"
+                :templates="emailTemplates"
+                :audiences="audiences"
             />
         </template>
     </ModalableWrapper>
@@ -35,6 +37,16 @@ import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default {
     name: "CreateEmailCampaign",
+    props: {
+        emailTemplates: {
+            required: true,
+            type: Array,
+        },
+        audiences: {
+            required: true,
+            type: Array,
+        },
+    },
     components: {
         LayoutHeader,
         Button,
