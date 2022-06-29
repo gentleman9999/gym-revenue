@@ -13,19 +13,16 @@ https://github.com/inertiajs/inertia/pull/642
             :props="modal.props"
         />
         <Teleport v-if="modal.component && telRef" :to="telRef">
-            <Component
-                is-modal
-                :is="modal.component"
-                v-bind="{ ...modal.page.props, ...modal.pageProps }"
-            />
+            <Component is-modal :is="modal.component" v-bind="componentProps" />
         </Teleport>
     </template>
 </template>
 
 <script setup>
 import { Inertia } from "@inertiajs/inertia";
+
 import Axios from "axios";
-import { provide, shallowRef, watch, watchEffect } from "vue";
+import { provide, shallowRef, watch, computed, watchEffect, ref } from "vue";
 import { fireErrorEvent, fireSuccessEvent } from "./events";
 import uniqueId from "./uniqueId";
 import {
@@ -227,7 +224,7 @@ const visitInModal = (url, options = {}) => {
                                 page.url.pathname
                             ) {
                                 console.log(
-                                    "event.detail.visit.url.pathname = page.url.pathname"
+                                    "[inertia-modal] event.detail.visit.url.pathname = page.url.pathname"
                                 );
                                 // make sure the backend knows we're requesting from within a modal
                                 event.detail.visit.headers[modalHeader] =
@@ -270,7 +267,7 @@ const visitInModal = (url, options = {}) => {
                                 modalRedirectBack in event.detail.visit.headers
                             ) {
                                 console.log(
-                                    "visitInModal = opts.redirectBack===true"
+                                    "[inertia-modal] visitInModal = opts.redirectBack===true"
                                 );
                                 lastVisit = event.detail.visit;
                                 lastPage = page;
@@ -324,7 +321,7 @@ const visitInModal = (url, options = {}) => {
                                 modalRedirect in event.detail.visit.headers
                             ) {
                                 console.log(
-                                    "modalRedirect in event.detail.visit.headers"
+                                    "[inertia-modal] modalRedirect in event.detail.visit.headers"
                                 );
                                 //check if we wanted a redirect in the modal
                                 event.detail.visit.headers[modalHeader] =
@@ -351,7 +348,7 @@ const visitInModal = (url, options = {}) => {
                                         return config;
                                     });
                             } else {
-                                console.log("no match,", event);
+                                console.log("[inertia-modal] no match,", event);
                             }
                         }
                     );
@@ -367,6 +364,7 @@ const visitInModal = (url, options = {}) => {
                         reloadOnClose: opts.reloadOnClose,
                         props: opts.modalProps,
                         pageProps: opts.pageProps,
+                        lastPage,
                         close,
                     };
                 });
@@ -401,6 +399,16 @@ watch(
     },
     { immediate: true }
 );
+const componentProps = computed(() => {
+    const hasErrors = !!Object.keys(modal.value?.page?.props?.errors).length;
+
+    if (hasErrors) {
+        const modalLastPageProps = modal.value?.lastPage?.props || {};
+        return { ...modalLastPageProps, ...modal.value.pageProps };
+    }
+    const modalPageProps = modal.value?.page?.props || {};
+    return { ...modalPageProps, ...modal.value.pageProps };
+});
 </script>
 
 <script>
