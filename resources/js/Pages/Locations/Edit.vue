@@ -17,7 +17,10 @@
         <template #modal>
             <location-form
                 :client-id="this.$page.props.user.current_client_id"
-                :location="$page.props.location"
+                :location="location"
+                :poc_first="poc_first"
+                :poc_last="poc_last"
+                :poc_phone="poc_phone"
             />
         </template>
     </ModalableWrapper>
@@ -49,6 +52,6 @@ export default defineComponent({
         ModalableWrapper,
         ModalSlot,
     },
-    props: ["locations"],
+    props: ["location", "poc_first", "poc_last", "poc_phone"],
 });
 </script>

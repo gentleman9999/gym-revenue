@@ -21,16 +21,15 @@ class UpdateLead
     public function rules()
     {
         return [
-            'first_name' => ['required', 'max:50'],
-            'middle_name' => [],
-            'last_name' => ['required', 'max:30'],
-            'email' => ['required', 'email:rfc,dns'],
+            'first_name' => ['sometimes', 'required', 'max:50'],
+            'middle_name' => ['sometimes', ],
+            'last_name' => ['sometimes', 'required', 'max:30'],
+            'email' => ['sometimes', 'required', 'email:rfc,dns'],
             'primary_phone' => ['sometimes'],
             'alternate_phone' => ['sometimes'],
-            'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
-            'lead_source_id' => ['required', 'exists:lead_sources,id'],
-            'lead_type_id' => ['required', 'exists:lead_types,id'],
-            'client_id' => 'required',
+            'gr_location_id' => ['sometimes', 'required', 'exists:locations,gymrevenue_id'],
+            'lead_source_id' => ['sometimes', 'required', 'exists:lead_sources,id'],
+            'lead_type_id' => ['sometimes', 'required', 'exists:lead_types,id'],
             'profile_picture' => 'sometimes',
             'profile_picture.uuid' => 'sometimes|required',
             'profile_picture.key' => 'sometimes|required',
@@ -41,7 +40,7 @@ class UpdateLead
             'opportunity' => 'sometimes|required',
             'lead_owner' => 'sometimes|required|exists:users,id',
             'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
-            'notes' => 'nullable|array',
+            'notes' => 'sometimes|nullable|array',
         ];
     }
 
@@ -73,6 +72,7 @@ class UpdateLead
     {
         $data = $request->validated();
         $data['id'] = $id;
+        $data['client_id'] = $request->user()->currentClientId();
         $lead = $this->handle(
             $data,
             $request->user(),
@@ -80,7 +80,7 @@ class UpdateLead
 
         Alert::success("Lead '{$lead->name}' was updated")->flash();
 
-//        return Redirect::route('data.leads');
-        return Redirect::back();
+        return Redirect::route('data.leads.edit', $lead->id);
+//        return Redirect::back();
     }
 }

@@ -220,7 +220,7 @@ const visitInModal = (url, options = {}) => {
                     const removeBeforeEventListener = Inertia.on(
                         "before",
                         (event) => {
-                            console.log("onBefore", { event });
+                            console.log("onBefore", { event, opts });
                             // Subsequent visit of the modal url will stay in the modal
                             if (
                                 event.detail.visit.url.pathname ===
@@ -320,8 +320,8 @@ const visitInModal = (url, options = {}) => {
                                     );
                                 }
                             } else if (
-                                modalRedirect in event.detail.visit.headers ||
-                                opts.redirectInModal
+                                opts.redirectInModal ||
+                                modalRedirect in event.detail.visit.headers
                             ) {
                                 console.log(
                                     "modalRedirect in event.detail.visit.headers"
@@ -375,7 +375,10 @@ const visitInModal = (url, options = {}) => {
         }
         return response;
     });
-    console.log("Calling Inertia.Visit from IneritaModal:visitInModal");
+    console.log("Calling Inertia.Visit from IneritaModal:visitInModal", {
+        url,
+        opts,
+    });
 
     Inertia.visit(url, {
         ...opts,

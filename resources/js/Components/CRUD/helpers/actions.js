@@ -19,7 +19,8 @@ export const defaults = Object.freeze({
         label: "Restore",
         handler: ({ baseRoute, data }) =>
             Inertia.post(route(`${baseRoute}.restore`, data.id)),
-        shouldRender: ({ data }) => data?.deleted_at !== null,
+        shouldRender: ({ data }) =>
+            data && "deleted_at" in data && data.deleted_at !== null,
     },
 });
 
@@ -50,20 +51,26 @@ export const getDefaults = ({ previewComponent }) => {
 export const getActions = (props) => {
     return computed(() => {
         if (!props.actions) {
-            console.log("returning []");
+            console.log("getActions returning []");
             return [];
         }
         if (typeof props.actions === "array" || props.actions[0]) {
             console.log("props.actions is array, returning");
             return props.actions;
         }
+
         const defaults = getDefaults(props);
+
         const merged = merge({ ...defaults }, { ...props.actions });
 
-        return Object.values(merged)
-            .filter((action) => action)
-            .filter((action) =>
-                action?.shouldRender ? action.shouldRender(props) : true
-            );
+        return merged;
     });
+};
+
+export const getRenderableActions = (props) => {
+    return Object.values(props.actions)
+        .filter((action) => action)
+        .filter((action) =>
+            action?.shouldRender ? action.shouldRender(props) : true
+        );
 };

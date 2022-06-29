@@ -54,6 +54,9 @@
         <calendar-event-form
             @submitted="closeModals"
             ref="createCalendarEventForm"
+            :duration="{
+                start: null,
+            }"
         />
     </daisy-modal>
     <daisy-modal
@@ -73,6 +76,10 @@
             :client_id="client_id"
             @submitted="closeModals"
             ref="editCalendarEventForm"
+            :duration="{
+                start: selectedCalendarEvent.start,
+                end: selectedCalendarEvent.end,
+            }"
         />
     </daisy-modal>
 </template>

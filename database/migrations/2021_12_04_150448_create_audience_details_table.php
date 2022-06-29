@@ -15,13 +15,12 @@ class CreateAudienceDetailsTable extends Migration
     {
         Schema::create('audience_details', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->uuid('audience_id')->nullable();
             $table->string('detail');
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();
             $table->boolean('active')->default(1);
-            $table->index(['client_id','audience_id']);
             $table->timestamps();
             $table->softDeletes();
         });

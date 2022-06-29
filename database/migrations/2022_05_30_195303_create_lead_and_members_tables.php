@@ -35,7 +35,7 @@ class CreateLeadAndMembersTables extends Migration
     public function getSharedFields($table)
     {
         $table->uuid('id')->primary()->unique();
-        $table->uuid('client_id');
+        $table->uuid('client_id')->index();
         $table->string('gr_location_id')->nullable();
         $table->string('first_name');
         $table->string('middle_name')->nullable();

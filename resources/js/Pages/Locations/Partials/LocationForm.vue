@@ -233,9 +233,9 @@ export default {
         const page = usePage();
 
         let location = props.location;
-        let poc_first = page.props.value.poc_first;
-        let poc_last = page.props.value.poc_last;
-        let poc_phone = page.props.value.poc_phone;
+        let poc_first = props.poc_first;
+        let poc_last = props.poc_last;
+        let poc_phone = props.poc_phone;
 
         let operation = "Update";
         if (!location) {

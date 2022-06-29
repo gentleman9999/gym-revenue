@@ -477,7 +477,6 @@ export default defineComponent({
                     // onSuccess: () => (this.teamMemberBeingRemoved = null),
                     onSuccess: () => {
                         this.teamMemberBeingRemoved = null;
-                        this.$inertia.reload();
                     },
                 }
             );

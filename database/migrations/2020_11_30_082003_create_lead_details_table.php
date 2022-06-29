@@ -15,12 +15,11 @@ class CreateLeadDetailsTable extends Migration
     {
         Schema::create('lead_details', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('client_id');
+            $table->string('client_id')->index();
             $table->string('lead_id');
             $table->string('field');
             $table->string('value')->nullable();
             $table->mediumText('misc')->nullable();
-            $table->unique(['client_id', 'lead_id']);
             $table->boolean('active')->default(1);
             $table->timestamps();
             $table->softDeletes();

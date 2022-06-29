@@ -2,11 +2,7 @@
     <div class="flex flex-col gap-4">
         <button
             class="flex flex-col hover:border-secondary hover:border-2 rounded flex-grow overflow-hidden"
-            @click="
-                actions
-                    .find((action) => action?.label === 'Edit')
-                    ?.handler({ ...props, data: template })
-            "
+            @click="actions.edit?.handler({ ...props, data: template })"
         >
             <img
                 :src="template.thumbnail.url"

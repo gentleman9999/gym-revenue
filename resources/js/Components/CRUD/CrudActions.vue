@@ -31,7 +31,7 @@ import { defineComponent, computed, ref } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisH } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { getActions } from "./helpers/actions";
+import { getActions, getRenderableActions } from "./helpers/actions";
 
 library.add(faEllipsisH);
 
@@ -66,6 +66,7 @@ export default defineComponent({
         if (!props instanceof Array) {
             actions = getActions(props);
         }
+        actions = getRenderableActions(props);
         return { actions };
     },
 });

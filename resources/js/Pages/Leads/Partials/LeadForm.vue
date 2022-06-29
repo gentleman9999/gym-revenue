@@ -500,14 +500,8 @@ export default {
                 notes: { title: "", note: "" },
             };
 
-            leadData["lead_owner"] =
-                "lead_owner" in lead && lead.lead_owner !== ""
-                    ? lead.lead_owner.value
-                    : "";
-            leadData["lead_status"] =
-                "lead_status" in lead && lead.lead_status !== ""
-                    ? lead.lead_status.value
-                    : "";
+            leadData["lead_owner"] = props.lead?.lead_owner?.value || "";
+            leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>
             "last_updated" in lead && lead.last_updated

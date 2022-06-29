@@ -216,9 +216,10 @@ export default defineComponent({
                     Inertia.visit(route("data.leads.show", data.id));
                 },
                 shouldRender: ({ data }) => {
-                    const claimed = data.details_desc.filter(
-                        (detail) => detail.field === "claimed"
-                    );
+                    const claimed =
+                        data?.details_desc?.filter(
+                            (detail) => detail.field === "claimed"
+                        ) || [];
                     console.log({ claimed, props });
                     const yours = claimed.filter(
                         (detail) =>

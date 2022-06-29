@@ -52,13 +52,13 @@ class CreateCalendarEventType
 
     public function asController(ActionRequest $request)
     {
-        $calendar = $this->handle(
+        $calendar_event_type = $this->handle(
             $request->validated(),
             $request->user()
         );
 
-        Alert::success("Calendar Event Type '{$calendar->name}' was created")->flash();
+        Alert::success("Calendar Event Type '{$calendar_event_type->name}' was created")->flash();
 
-        return Redirect::route('calendar.event_types.edit', $calendar->id);
+        return Redirect::route('calendar.event_types.edit', $calendar_event_type->id);
     }
 }
