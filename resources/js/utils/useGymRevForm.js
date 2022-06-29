@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/inertia-vue3";
 import { computed } from "vue";
-import cloneDeep from "lodash/clonedeep";
+import cloneDeep from "lodash.clonedeep";
 import omitBy from "lodash/omitBy";
 
 /**

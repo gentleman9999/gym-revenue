@@ -92,6 +92,7 @@ import TaskDateSwitcher from "./components/TaskDateSwitcher";
 import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher";
 import TaskListView from "./components/TaskListView";
 import pickBy from "lodash/pickBy";
+import { transformDate } from "@/utils/transformDate";
 
 export default defineComponent({
     components: {
@@ -158,16 +159,8 @@ export default defineComponent({
 
         const selectedDate = ref(new Date());
 
-        const transformDate = (date) => {
-            if (!date.value?.toISOString) {
-                return date;
-            }
-
-            return date.value.toISOString().slice(0, 10);
-        };
-
         const selectedDateFormatted = computed(() =>
-            transformDate(selectedDate)
+            transformDate(selectedDate.value)
         );
 
         let startDay = new Date();

@@ -15,8 +15,9 @@ class CreateLeadSourcesTable extends Migration
     {
         Schema::create('lead_sources', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->string('name');
+            $table->unique(['client_id', 'name']);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,9 +16,9 @@ class CreateRegisterTokensTable extends Migration
         Schema::create('register_tokens', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
             $table->string('name');
-            $table->string('client_id')->nullable(); //NULL == 'Cape & Bay'
-            $table->string('role')->nullable(); // NULL == 'Account Owner' or 'Admin'
-            $table->string('team_id')->nullable(); // Null == default Account Owner or Admin Team
+            $table->string('client_id')->nullable()->index(); //NULL == 'Cape & Bay'
+            $table->string('role')->nullable()->index(); // NULL == 'Account Owner' or 'Admin'
+            $table->string('team_id')->nullable()->index(); // Null == default Account Owner or Admin Team
 
             $table->integer('uses')->default(-1); // -1 Means Unlimited
             $table->boolean('active')->default(1); // When no active, nothing else matters.
