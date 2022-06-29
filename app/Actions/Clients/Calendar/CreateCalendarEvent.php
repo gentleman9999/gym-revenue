@@ -45,7 +45,7 @@ class CreateCalendarEvent
         $id = Uuid::new();
         $data['id'] = $id;
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
-        ; //Pulling eventType color for this table because that's how fullCalender.IO wants it
+        //Pulling eventType color for this table because that's how fullCalender.IO wants it
 
         if (isset($user->id)) {
             $data['user_attendees'][] = $user->id;

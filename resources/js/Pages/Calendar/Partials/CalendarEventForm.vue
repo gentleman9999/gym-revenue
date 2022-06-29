@@ -135,8 +135,25 @@
                     {{ name }}
                 </option>
             </select>
-            <jet-input-error :message="form.errors.type" class="mt-2" />
+            <jet-input-error
+                :message="form.errors.event_type_id"
+                class="mt-2"
+            />
         </div>
+
+        <div class="col-span-6">
+            <jet-label for="location_id" value="Event Location" />
+            <select
+                v-model="form.location_id"
+                class="bg-neutral-100 text-neutral-900"
+            >
+                <option v-for="{ id, name } in locations" :value="id">
+                    {{ name }}
+                </option>
+            </select>
+            <jet-input-error :message="form.errors.location_id" class="mt-2" />
+        </div>
+
         <div class="col-span-6"></div>
 
         <div class="col-span-3">
@@ -446,6 +463,7 @@ export default {
                 start: null, //props.start_date,
                 end: null, //props.start_date,
                 event_type_id: null,
+                location_id: null,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
                 lead_attendees: null,
@@ -461,6 +479,7 @@ export default {
                 start: calendarEvent.start,
                 end: calendarEvent.end,
                 event_type_id: calendarEvent.event_type_id,
+                location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees:
                     calendarEvent.user_attendees?.map(

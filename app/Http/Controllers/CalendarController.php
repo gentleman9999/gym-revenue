@@ -27,14 +27,21 @@ class CalendarController extends Controller
         }
 
         $locations = Location::whereClientId($client_id)->get();
-        $currentLocationSelect = Location::findOrFail($request->user()->current_location_id);
+        $currentLocationSelect = Location::find($request->user()->current_location_id);
 
         if ($request->get('start')) {
-            $eventsForTeam = CalendarEvent::whereClientId($client_id)
-                ->whereLocationId($currentLocationSelect->id)
-                ->with('type', 'attendees', 'files')
-                ->filter($request->only('search', 'start', 'end', 'viewUser'))
-                ->get();
+            if (is_null($currentLocationSelect)) {
+                $eventsForTeam = CalendarEvent::whereClientId($client_id)
+                    ->with('type', 'attendees', 'files')
+                    ->filter($request->only('search', 'start', 'end', 'viewUser'))
+                    ->get();
+            } else {
+                $eventsForTeam = CalendarEvent::whereClientId($client_id)
+                    ->whereLocationId($currentLocationSelect->id)
+                    ->with('type', 'attendees', 'files')
+                    ->filter($request->only('search', 'start', 'end', 'viewUser'))
+                    ->get();
+            }
         } else {
             $eventsForTeam = [];
         }

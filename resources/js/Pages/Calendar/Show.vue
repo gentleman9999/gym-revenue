@@ -36,6 +36,7 @@
                         :client_users="client_users"
                         :lead_users="lead_users"
                         :member_users="members_users"
+                        :locations="locations"
                         :client_id="client_id"
                         @submitted="toggleSwitch"
                         ref="eventForm"
