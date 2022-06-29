@@ -53,10 +53,7 @@
                     </div>
 
                     <ul class="menu compact overflow-y-scroll max-h-60">
-                        <li
-                            v-for="team in $page.props.user.all_teams"
-                            :key="team.id"
-                        >
+                        <li v-for="team in teams" :key="team.id">
                             <inertia-link
                                 href="#"
                                 @click="switchToTeam(team)"
@@ -90,15 +87,18 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import JetDropdown from "@/Components/Dropdown";
 import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
         JetDropdown,
     },
     setup(props) {
+        const page = usePage();
+        const teams = computed(() => page.props.value.user.all_teams);
         function switchToTeam(team) {
             Inertia.put(
                 route("current-team.update"),
@@ -110,7 +110,7 @@ export default defineComponent({
                 }
             );
         }
-        return { switchToTeam };
+        return { switchToTeam, teams };
     },
 });
 </script>

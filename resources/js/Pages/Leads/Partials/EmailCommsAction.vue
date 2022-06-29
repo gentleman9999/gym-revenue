@@ -3,6 +3,7 @@
         :lead-id="leadId"
         submit-text="Send"
         :form="form"
+        :disabled="form.processing || !form.isDirty"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">

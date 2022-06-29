@@ -27,7 +27,7 @@
 
             <Button
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Save
             </Button>
