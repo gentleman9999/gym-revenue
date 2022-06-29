@@ -129,7 +129,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
@@ -141,7 +140,6 @@ import Button from "@/Components/Button";
 export default defineComponent({
     components: {
         SimpleSearchFilter,
-        CalendarEventForm,
         AppLayout,
         GymRevenueCrud,
         DaisyModal,
@@ -322,7 +320,13 @@ export default defineComponent({
                     failureCallback
                 ) => {
                     updateStartEnd(startStr, endStr);
-                    successCallback(props.calendar_events);
+                    successCallback(
+                        props.calendar_events.map((data) => ({
+                            ...data,
+                            start: new Date(data.start + " UTC"),
+                            end: new Date(data.end + " UTC"),
+                        }))
+                    );
                 },
                 headerToolbar: {
                     left: "",

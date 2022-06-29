@@ -131,7 +131,11 @@
                 v-model="form.event_type_id"
                 class="bg-neutral-100 text-neutral-900"
             >
-                <option v-for="{ id, name } in calendarEventTypes" :value="id">
+                <option
+                    v-for="{ id, name } in calendarEventTypes"
+                    :value="id"
+                    :key="id"
+                >
                     {{ name }}
                 </option>
             </select>
@@ -300,7 +304,7 @@
             </Button>
         </div>
 
-        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal" @close="">
+        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal">
             <h1 class="font-bold mb-4">Attendees</h1>
             <attendees-form
                 @submitted="closeModals"
@@ -309,7 +313,7 @@
             />
         </daisy-modal>
 
-        <daisy-modal ref="showFilesModal" id="showFilesModal" @close="">
+        <daisy-modal ref="showFilesModal" id="showFilesModal">
             <h1 class="font-bold mb-4">File Attachments</h1>
             <files-form
                 @submitted="closeModals"
@@ -355,7 +359,7 @@ label {
 
 <script>
 import { usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, ref } from "vue";
+import { computed, watch, watchEffect, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
@@ -396,7 +400,7 @@ export default {
         "client_users",
         "lead_users",
         "member_users",
-        "start_date",
+        "duration",
     ],
     setup(props, { emit }) {
         const page = usePage();
@@ -442,8 +446,10 @@ export default {
                 title: null,
                 description: null,
                 full_day_event: false,
-                start: props.start_date,
-                end: props.start_date,
+                start: props.duration.start,
+                end: props.duration.end
+                    ? props.duration.end
+                    : props.duration.start,
                 event_type_id: null,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
@@ -457,8 +463,8 @@ export default {
                 title: calendarEvent.title,
                 description: calendarEvent.description,
                 full_day_event: calendarEvent.full_day_event,
-                start: calendarEvent.start,
-                end: calendarEvent.end,
+                start: calendarEvent.start + " UTC",
+                end: calendarEvent.end + " UTC",
                 event_type_id: calendarEvent.event_type_id,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees:
@@ -479,37 +485,19 @@ export default {
 
         const form = useGymRevForm(calendarEventForm);
 
-        watchEffect(() => {
-            //set end datetmime if start provided but not end.
-            const defaultValue = props.start_date;
-
-            let start = defaultValue;
-            form.start = defaultValue;
-
-            let end = defaultValue;
-            let tempEnd = false;
-            if (typeof start === "string") {
-                //TODO: do we need to do something with UTC/time zones here?
-                start = new Date(Date.parse(start));
-            }
-
-            if (form.end) {
-                if (typeof end === "string") {
-                    //TODO: do we need to do something with UTC/time zones here?
-                    end = new Date(Date.parse(form.end));
-                    console.log({ end });
+        watch(
+            () => props.duration,
+            (duration, oldDuration) => {
+                form.start = duration.start;
+                form.end = duration.end;
+                if (!form.end && form.start) {
+                    const newEnd = new Date(form.start.getTime());
+                    newEnd.setHours(form.start.getHours() + 1);
+                    form.end = newEnd;
                 }
-                console.log({ end: form.end, type: typeof end });
-                tempEnd = new Date(form.end).setHours(end.getHours() + 1);
-            }
-
-            if (start || (tempEnd && tempEnd < start)) {
-                const newEnd = new Date(start.getTime());
-                newEnd.setHours(start.getHours() + 1);
-                console.log({ start, newEnd });
-                form.end = newEnd;
-            }
-        });
+            },
+            { deep: true }
+        );
 
         let handleSubmit = () =>
             form
