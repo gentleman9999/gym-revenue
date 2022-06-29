@@ -161,7 +161,7 @@
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Cancel
             </Button>
@@ -271,8 +271,7 @@ export default {
                 .put(route("comms.sms-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.dirty().post(route("comms.sms-campaigns.store"));
+            handleSubmit = () => form.post(route("comms.sms-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;

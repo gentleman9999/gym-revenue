@@ -29,7 +29,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -66,7 +66,7 @@ export default {
         let operation = "Update";
         if (!classification) {
             classification = {
-                title: null,
+                title: "",
                 id: null,
                 client_id: props.clientId,
             };
@@ -76,10 +76,11 @@ export default {
         const form = useGymRevForm(classification);
 
         let handleSubmit = () =>
-            form.put(route("classifications.update", classification.id));
+            form
+                .dirty()
+                .put(route("classifications.update", classification.id));
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.dirty().post(route("classifications.store"));
+            handleSubmit = () => form.post(route("classifications.store"));
         }
 
         return {

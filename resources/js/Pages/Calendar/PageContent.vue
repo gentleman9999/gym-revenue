@@ -109,7 +109,7 @@
 
 <script>
 import { computed, defineComponent, ref, watchEffect } from "vue";
-import LayoutHeader from "@/Layouts/AppLayout.vue";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import DaisyModal from "@/Components/DaisyModal";
 import { Inertia } from "@inertiajs/inertia";
@@ -119,7 +119,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav";
@@ -131,10 +130,8 @@ import Button from "@/Components/Button";
 export default defineComponent({
     components: {
         SimpleSearchFilter,
-        CalendarEventForm,
         LayoutHeader,
         GymRevenueCrud,
-        DaisyModal,
         FullCalendar,
         PageToolbarNav,
         DaisyModal,
@@ -312,7 +309,13 @@ export default defineComponent({
                     failureCallback
                 ) => {
                     updateStartEnd(startStr, endStr);
-                    successCallback(props.calendar_events);
+                    successCallback(
+                        props.calendar_events.map((data) => ({
+                            ...data,
+                            start: new Date(data.start + " UTC"),
+                            end: new Date(data.end + " UTC"),
+                        }))
+                    );
                 },
                 headerToolbar: {
                     left: "",

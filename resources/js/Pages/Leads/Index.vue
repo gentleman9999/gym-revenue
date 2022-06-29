@@ -1,6 +1,29 @@
 <template>
     <LayoutHeader title="Leads" />
     <page-toolbar-nav title="Leads" :links="navLinks" />
+    <div
+        class="max-w-screen lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset relative"
+    >
+        <div class="flex flex-row space-x-2 flex-wrap">
+            <div class="flex w-full md:w-3/5 flex-wrap">
+                <div class="w-4/5 m-auto md:w-1/3 px-2">
+                    <calendar-summary-card title="Confirmed" :progress="[65]" />
+                </div>
+                <div class="w-4/5 m-auto md:w-1/3 px-2">
+                    <calendar-summary-card title="Canceled" :progress="[25]" />
+                </div>
+                <div class="w-4/5 m-auto md:w-1/3 px-2">
+                    <calendar-summary-card
+                        title="Rescheduled"
+                        :progress="[10]"
+                    />
+                </div>
+            </div>
+            <calendar-grid />
+        </div>
+        <calendar-schedule-table :data="schedule" />
+    </div>
+
     <gym-revenue-crud
         :resource="leads"
         model-key="lead"
@@ -21,12 +44,13 @@
         v-if="confirmTrash"
         @confirm="handleConfirmTrash"
         @cancel="confirmTrash = null"
+        :disabled="trashReason === null || trashReason === 'none'"
     >
         {{ firstName }} {{ lastName }} Are you sure you want to remove this
         lead?<br />
         Reason for Deleting:<br />
         <select name="reasonforremoving" v-model="trashReason">
-            <option>Select a reason</option>
+            <option value="none">Select a reason</option>
             <option value="duplicate">Is a duplicate</option>
             <option value="test-lead">Is a test lead</option>
             <option value="DNC">Lead requested DNC and data removal</option>
@@ -58,6 +82,9 @@ import PageToolbarNav from "@/Components/PageToolbarNav";
 import LeadsFilters from "@/Pages/Leads/Partials/LeadsFilters";
 import LeadPreview from "@/Pages/Leads/Partials/LeadPreview";
 
+import CalendarGrid from "@/Pages/components/CalendarGrid";
+import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard";
+
 export default defineComponent({
     components: {
         LeadsFilters,
@@ -69,6 +96,8 @@ export default defineComponent({
         JetBarContainer,
         LeadInteraction,
         LeadPreview,
+        CalendarGrid,
+        CalendarSummaryCard,
     },
     props: [
         "leads",

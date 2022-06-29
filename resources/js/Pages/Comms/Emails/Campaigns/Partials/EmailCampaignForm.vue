@@ -170,7 +170,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 type="button"
                 @click.prevent="
@@ -273,7 +273,7 @@ export default {
         };
         if (operation === "Create") {
             handleSubmit = () =>
-                form.dirty().post(route("comms.email-campaigns.store"));
+                form.post(route("comms.email-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;

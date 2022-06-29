@@ -21,6 +21,7 @@
         v-if="confirmTrash"
         @confirm="handleConfirmTrash"
         @cancel="confirmTrash = null"
+        :disabled="trashReason === null || trashReason === 'none'"
     >
         {{ firstName }} {{ lastName }} Are you sure you want to remove this
         lead?<br />

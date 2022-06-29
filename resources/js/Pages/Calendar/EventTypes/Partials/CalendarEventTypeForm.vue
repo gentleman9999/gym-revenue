@@ -27,7 +27,12 @@
             </div>
             <div class="col-span-6">
                 <jet-label for="type" value="Type" />
-                <select id="type" class="block w-full mt-1" v-model="form.type">
+                <select
+                    id="type"
+                    class="block w-full mt-1"
+                    @change="checkIfDirty"
+                    v-model="form.type"
+                >
                     <option>Sales Meeting</option>
                     <option>Training and Development</option>
                     <option>Tour</option>
@@ -73,7 +78,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -105,16 +110,17 @@ export default {
             type: Object,
         },
     },
+
     setup(props) {
         let calendarEventType = props.calendarEventType;
         let operation = "Update";
         if (!calendarEventType) {
             calendarEventType = {
                 id: null,
-                name: null,
-                description: null,
-                type: null,
-                color: null,
+                name: "",
+                description: "",
+                type: "",
+                color: "",
                 client_id: props.clientId,
             };
             operation = "Create";

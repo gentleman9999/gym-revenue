@@ -13,6 +13,7 @@
             <button
                 @click="handleClickConfirm"
                 class="btn btn-success hover:text-white ml-2"
+                :disabled="disabled"
             >
                 Confirm
             </button>
@@ -34,6 +35,10 @@ export default defineComponent({
             type: String,
             required: false,
             default: "85%",
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
         },
     },
     setup(props, { emit }) {

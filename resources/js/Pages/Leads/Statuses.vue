@@ -37,7 +37,7 @@
                 <Button
                     :class="{ 'opacity-25': form.processing }"
                     class="btn-primary"
-                    :disabled="form.processing"
+                    :disabled="form.processing || !form.isDirty"
                     :loading="form.processing"
                     type="button"
                     @click="submitForm"

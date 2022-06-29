@@ -100,7 +100,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -149,8 +149,8 @@ export default {
         let operation = "Update";
         if (!role) {
             role = {
-                name: null,
-                id: null,
+                name: "",
+                id: "",
                 client_id: props.clientId,
                 ability_names: [],
                 group: null,
@@ -177,7 +177,7 @@ export default {
         let handleSubmit = () =>
             form.dirty().put(route("roles.update", role.id));
         if (operation === "Create") {
-            handleSubmit = () => form.dirty().post(route("roles.store"));
+            handleSubmit = () => form.post(route("roles.store"));
         }
 
         let groupedAvailableAbilities = computed(() => {

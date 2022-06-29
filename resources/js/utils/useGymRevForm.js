@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/inertia-vue3";
 import { computed, watch } from "vue";
-import cloneDeep from "lodash/clonedeep";
+import cloneDeep from "lodash.clonedeep"; //TODO:figure out why using lodash/clonedeep breaks on dev
 import omitBy from "lodash/omitBy";
 import { useModalPage } from "@/Components/InertiaModal";
 

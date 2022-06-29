@@ -185,7 +185,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -240,19 +240,19 @@ export default {
         let operation = "Update";
         if (!location) {
             location = {
-                name: null,
-                city: null,
-                state: null,
-                address1: null,
-                address2: null,
-                zip: null,
-                phone: null,
-                poc_first: null,
-                poc_last: null,
-                poc_phone: null,
+                name: "",
+                city: "",
+                state: "",
+                address1: "",
+                address2: "",
+                zip: "",
+                phone: "",
+                poc_first: "",
+                poc_last: "",
+                poc_phone: "",
                 open_date: null,
                 close_date: null,
-                location_no: null,
+                location_no: "",
                 client_id: props.clientId,
             };
             operation = "Create";
@@ -284,10 +284,7 @@ export default {
 
         if (operation === "Create") {
             handleSubmit = () =>
-                form
-                    .dirty()
-                    .transform(transformData)
-                    .post(route("locations.store"));
+                form.transform(transformData).post(route("locations.store"));
         }
 
         let optionsStates = [];
