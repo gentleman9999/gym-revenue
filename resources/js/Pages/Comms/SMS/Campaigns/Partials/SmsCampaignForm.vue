@@ -161,7 +161,7 @@
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Cancel
             </Button>

@@ -1,5 +1,6 @@
 <template>
     <base-comms-action
+        :disabled="form.processing || !form.isDirty"
         :lead-id="leadId"
         submit-text="Send Message"
         :form="form"
