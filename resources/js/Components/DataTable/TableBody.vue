@@ -21,7 +21,7 @@
                 }"
             >
                 <div
-                    class="h-full"
+                    class="flex items-center justify-center h-full"
                     :class="{
                         'border-r':
                             !collapsed &&
