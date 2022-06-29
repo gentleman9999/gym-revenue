@@ -51,7 +51,10 @@
 
                     <Button
                         :class="{ 'opacity-25': addTeamMemberForm.processing }"
-                        :disabled="addTeamMemberForm.processing"
+                        :disabled="
+                            addTeamMemberForm.processing ||
+                            !addTeamMemberForm.isDirty
+                        "
                     >
                         Add
                     </Button>

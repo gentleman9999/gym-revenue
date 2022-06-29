@@ -100,7 +100,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -151,8 +151,8 @@ export default {
         let operation = "Update";
         if (!role) {
             role = {
-                name: null,
-                id: null,
+                name: "",
+                id: "",
                 client_id: props.clientId,
                 ability_names: [],
                 group: null,
