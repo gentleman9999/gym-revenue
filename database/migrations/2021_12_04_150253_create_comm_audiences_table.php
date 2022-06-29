@@ -21,6 +21,8 @@ class CreateCommAudiencesTable extends Migration
             $table->string('slug');
             $table->boolean('active')->default(1);
             $table->string('created_by_user_id');
+            $table->index(['client_id', 'team_id']);
+            $table->index(['client_id', 'created_by_user_id']);
             $table->timestamps();
             $table->softDeletes();
         });

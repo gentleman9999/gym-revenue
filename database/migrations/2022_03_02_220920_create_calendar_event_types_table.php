@@ -15,7 +15,7 @@ class CreateCalendarEventTypesTable extends Migration
     {
         Schema::create('calendar_event_types', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->foreignUuid('client_id');
+            $table->foreignUuid('client_id')->index();
             $table->string('name');
             $table->string('description');
             $table->string('type');
