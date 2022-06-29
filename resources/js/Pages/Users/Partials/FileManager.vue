@@ -102,7 +102,7 @@
                 class="btn btn-error"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Cancel
             </button>
@@ -110,7 +110,7 @@
             <button
                 class="btn btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || formInvalid"
+                :disabled="form.processing || formInvalid || !form.isDiry"
                 :loading="form.processing"
             >
                 Save

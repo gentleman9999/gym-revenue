@@ -22,6 +22,7 @@
                 <label :for="field.name">{{ field.label }}</label>
             </div>
             <button
+                :disabled="form.processing || !form.isDirty"
                 type="button"
                 @click="handleSubmit"
                 class="btn btn-primary mt-4"

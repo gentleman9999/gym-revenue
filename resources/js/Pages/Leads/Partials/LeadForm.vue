@@ -215,7 +215,7 @@
                     class="mt-2"
                 />
             </div>
-
+            <!-- lead owner dropdown will not disable if field is only unchanged field -->
             <div class="form-control col-span-2">
                 <jet-label for="lead_owner" value="Lead Owner" />
                 <select
@@ -374,7 +374,7 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -461,20 +461,20 @@ export default {
         let leadData = null;
         if (!lead) {
             leadData = {
-                first_name: null,
-                middle_name: null,
-                last_name: null,
-                email: null,
-                primary_phone: null,
-                alternate_phone: null,
-                club_id: null,
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                email: "",
+                primary_phone: "",
+                alternate_phone: "",
+                club_id: "",
                 client_id: props.clientId,
-                gr_location_id: null,
-                lead_type_id: null,
-                lead_source_id: null,
-                profile_picture: null,
+                gr_location_id: "",
+                lead_type_id: "",
+                lead_source_id: "",
+                profile_picture: "",
                 gender: "",
-                date_of_birth: "",
+                date_of_birth: null,
                 opportunity: "",
                 lead_owner: props.userId,
                 lead_status: "",
@@ -503,11 +503,11 @@ export default {
             };
 
             leadData["lead_owner"] =
-                "lead_owner" in lead && lead.lead_owner !== null
+                "lead_owner" in lead && lead.lead_owner !== ""
                     ? lead.lead_owner.value
                     : "";
             leadData["lead_status"] =
-                "lead_status" in lead && lead.lead_status !== null
+                "lead_status" in lead && lead.lead_status !== ""
                     ? lead.lead_status.value
                     : "";
         }

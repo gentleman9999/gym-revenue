@@ -225,7 +225,7 @@
 
             <Button
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Save
             </Button>
@@ -265,17 +265,17 @@ export default defineComponent({
             form: this.$inertia.form({
                 _method: "PUT",
                 id: this.user.id,
-                first_name: this.user["first_name"],
+                first_name: this.user["first_name"] ?? "",
                 last_name: this.user["last_name"],
-                address1: this.user["address1"],
-                address2: this.user["address2"],
-                city: this.user["city"],
-                state: this.user["state"],
-                zip: this.user["zip"],
+                address1: this.user["address1"] ?? "",
+                address2: this.user["address2"] ?? "",
+                city: this.user["city"] ?? "",
+                state: this.user["state"] ?? "",
+                zip: this.user["zip"] ?? "",
                 job_title: this.user["job_title"],
                 email: this.user.email,
-                alternate_email: this.user.alternate_email,
-                phone: this.user.phone,
+                alternate_email: this.user.alternate_email ?? "",
+                phone: this.user.phone ?? "",
                 photo: null,
                 contact_preference: this.user.contact_preference?.value,
             }),
