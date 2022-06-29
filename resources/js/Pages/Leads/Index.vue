@@ -50,12 +50,13 @@
             v-if="confirmTrash"
             @confirm="handleConfirmTrash"
             @cancel="confirmTrash = null"
+            :disabled="trashReason === null || trashReason === 'none'"
         >
             {{ firstName }} {{ lastName }} Are you sure you want to remove this
             lead?<br />
             Reason for Deleting:<br />
             <select name="reasonforremoving" v-model="trashReason">
-                <option>Select a reason</option>
+                <option value="none">Select a reason</option>
                 <option value="duplicate">Is a duplicate</option>
                 <option value="test-lead">Is a test lead</option>
                 <option value="DNC">Lead requested DNC and data removal</option>

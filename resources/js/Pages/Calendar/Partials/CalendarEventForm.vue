@@ -444,14 +444,14 @@ export default {
         let operation = "Update";
         if (!calendarEvent) {
             calendarEventForm = {
-                title: null,
-                description: null,
-                full_day_event: false,
-                start: props.duration.start,
+                title: "",
+                description: "",
+                full_day_event: "",
+                start: props.duration.start ?? null,
                 end: props.duration.end
                     ? props.duration.end
                     : props.duration.start,
-                event_type_id: null,
+                event_type_id: "",
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
                 lead_attendees: [] ?? "",
