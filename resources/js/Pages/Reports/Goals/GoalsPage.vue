@@ -1,42 +1,40 @@
 <template>
-    <app-layout>
-        <template #header> Goals </template>
-        <jet-bar-container>
-            <h3 class="pb-4">Report Fields</h3>
-            <div class="flex flex-row space-x-6">
-                <div>
-                    <goals-actual-card
-                        :options="{
-                            collapse: true,
-                            favorite: true,
-                        }"
-                        class="h-full"
-                    />
-                </div>
-                <div>
-                    <goals-projecting-card
-                        :options="{
-                            collapse: true,
-                            favorite: true,
-                        }"
-                        mode="normal"
-                        class="mb-0"
-                    />
-                </div>
+    <LayoutHeader title="Goals"> Goals </LayoutHeader>
+    <jet-bar-container>
+        <h3 class="pb-4">Report Fields</h3>
+        <div class="flex flex-row space-x-6">
+            <div>
+                <goals-actual-card
+                    :options="{
+                        collapse: true,
+                        favorite: true,
+                    }"
+                    class="h-full"
+                />
             </div>
-            <h3 class="mt-8">Goals</h3>
-            <goal-filters class="mb-9" />
-            <div class="flex flex-row mx-[-8px]">
-                <div class="md:w-1/4 px-2" v-for="goal in goals" :key="goal.id">
-                    <goal-card :data="goal" />
-                </div>
+            <div>
+                <goals-projecting-card
+                    :options="{
+                        collapse: true,
+                        favorite: true,
+                    }"
+                    mode="normal"
+                    class="mb-0"
+                />
             </div>
-            <goal-table class="mb-16" />
-            <div class="flex justify-center">
-                <Button secondary size="xs">Edit All Goals</Button>
+        </div>
+        <h3 class="mt-8">Goals</h3>
+        <goal-filters class="mb-9" />
+        <div class="flex flex-row mx-[-8px]">
+            <div class="md:w-1/4 px-2" v-for="goal in goals" :key="goal.id">
+                <goal-card :data="goal" />
             </div>
-        </jet-bar-container>
-    </app-layout>
+        </div>
+        <goal-table class="mb-16" />
+        <div class="flex justify-center">
+            <Button secondary size="xs">Edit All Goals</Button>
+        </div>
+    </jet-bar-container>
 </template>
 
 <style scoped>
@@ -47,7 +45,7 @@ h3 {
 
 <script setup>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetBarContainer from "@/Components/JetBarContainer";
 import Button from "@/Components/Button";
 

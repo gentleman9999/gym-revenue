@@ -199,7 +199,6 @@
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -212,7 +211,6 @@ import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
 export default {
     name: "EmailCampaignForm",
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,

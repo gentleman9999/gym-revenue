@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -48,7 +47,6 @@ import { useGymRevForm } from "@/utils";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,

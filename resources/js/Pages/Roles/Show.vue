@@ -1,36 +1,35 @@
 <template>
-    <app-layout :title="title">
-        <page-toolbar-nav title="Security Roles" :links="navLinks" />
-        <gym-revenue-crud
-            base-route="roles"
-            model-name="Role"
-            model-key="role"
-            :fields="fields"
-            :resource="roles"
-            :actions="{
-                trash: false,
-                restore: false,
-                delete: {
-                    label: 'Delete',
-                    handler: ({ data }) => handleClickDelete(data),
-                },
-            }"
-        />
-        <confirm
-            title="Really Trash Security Role?"
-            v-if="confirmDelete"
-            @confirm="handleConfirmDelete"
-            @cancel="confirmDelete = null"
-        >
-            Are you sure you want to delete Security Role '{{
-                confirmDelete.title
-            }}'
-        </confirm>
-    </app-layout>
+    <LayoutHeader title="Security Roles" />
+    <page-toolbar-nav title="Security Roles" :links="navLinks" />
+    <gym-revenue-crud
+        base-route="roles"
+        model-name="Role"
+        model-key="role"
+        :fields="fields"
+        :resource="roles"
+        :actions="{
+            trash: false,
+            restore: false,
+            delete: {
+                label: 'Delete',
+                handler: ({ data }) => handleClickDelete(data),
+            },
+        }"
+    />
+    <confirm
+        title="Really Trash Security Role?"
+        v-if="confirmDelete"
+        @confirm="handleConfirmDelete"
+        @cancel="confirmDelete = null"
+    >
+        Are you sure you want to delete Security Role '{{
+            confirmDelete.title
+        }}'
+    </confirm>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
@@ -41,7 +40,7 @@ import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         GymRevenueCrud,
         Confirm,
         JetBarContainer,

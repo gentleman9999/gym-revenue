@@ -189,6 +189,7 @@ export default defineComponent({
             });
         },
     },
+    layout: null,
     mounted() {
         let urlSearchParams = new URLSearchParams(window.location.search);
         let params = Object.fromEntries(urlSearchParams.entries());

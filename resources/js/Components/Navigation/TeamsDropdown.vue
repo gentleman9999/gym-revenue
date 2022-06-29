@@ -107,6 +107,9 @@ export default defineComponent({
                 },
                 {
                     preserveState: false,
+                    onSuccess: () => {
+                        document.activeElement.blur();
+                    },
                 }
             );
         }

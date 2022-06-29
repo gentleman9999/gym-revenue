@@ -102,7 +102,7 @@ export default defineComponent({
             }),
         };
     },
-
+    layout: null,
     methods: {
         submit() {
             this.form

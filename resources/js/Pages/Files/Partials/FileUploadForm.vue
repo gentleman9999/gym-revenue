@@ -77,7 +77,6 @@ progress::-webkit-progress-value {
 import { ref, computed, onMounted, watchEffect } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import FileExtensionIcon from "./FileExtensionIcon";

@@ -1,38 +1,41 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Create User">
-            <template #header>
-                <div class="flex flex-row ml-4">
-                    <Button
-                        type="button"
-                        @click="$inertia.visit(route('users'))"
-                        info
-                        outline
-                    >
-                        Back
-                    </Button>
+        <LayoutHeader title="Create User">
+            <div class="flex flex-row ml-4">
+                <Button
+                    type="button"
+                    @click="$inertia.visit(route('users'))"
+                    info
+                    outline
+                >
+                    Back
+                </Button>
 
-                    <h2 class="font-semibold text-xl leading-tight ml-4">
-                        Create A New {{ $page.props.clientName }} User
-                    </h2>
-                </div>
-            </template>
-
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+                <h2 class="font-semibold text-xl leading-tight ml-4">
+                    Create A New {{ $page.props.clientName }} User
+                </h2>
             </div>
-        </app-layout>
+        </LayoutHeader>
+
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
+            </div>
+        </div>
         <template #modal>
-            <user-form :client-id="$page.props.user.current_client_id" />
+            <user-form
+                :client-id="$page.props.user.current_client_id"
+                :roles="roles"
+                :classifications="classifications"
+                :locations="locations"
+            />
         </template>
     </ModalableWrapper>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -44,7 +47,7 @@ import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
         JetInputError,
@@ -52,6 +55,20 @@ export default defineComponent({
         UserForm,
         ModalableWrapper,
         ModalSlot,
+    },
+    props: {
+        locations: {
+            type: Array,
+            required: true,
+        },
+        roles: {
+            type: Array,
+            required: true,
+        },
+        classifications: {
+            type: Array,
+            required: true,
+        },
     },
 });
 </script>

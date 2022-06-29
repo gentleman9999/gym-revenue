@@ -1,19 +1,17 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Edit Email Template">
-            <template #header>
-                <h2 class="font-semibold text-xl leading-tight">
-                    Configure & Modify Email Campaign
-                </h2>
-                <small>{{ campaign.name }}</small>
-            </template>
+        <LayoutHeader title="Edit Email Campaign">
+            <h2 class="font-semibold text-xl leading-tight">
+                Configure & Modify Email Campaign
+            </h2>
+            <small>{{ campaign.name }}</small>
+        </LayoutHeader>
 
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
             </div>
-        </app-layout>
+        </div>
         <template #modal>
             <email-template-form
                 :client-id="$page.props.user.current_client_id"
@@ -30,7 +28,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -44,10 +42,9 @@ import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 export default {
     name: "EditEmailCampaign",
     components: {
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
         EmailTemplateForm,

@@ -69,14 +69,12 @@
 <script>
 import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,

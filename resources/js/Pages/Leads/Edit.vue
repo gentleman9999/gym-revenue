@@ -1,17 +1,15 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Edit Lead">
-            <template #header>
-                <jet-bar-icon type="g0back" fill />
-                <h2 class="font-semibold text-xl leading-tight">Edit Lead</h2>
-            </template>
+        <LayoutHeader title="Edit Lead">
+            <jet-bar-icon type="g0back" fill />
+            <h2 class="font-semibold text-xl leading-tight">Edit Lead</h2>
+        </LayoutHeader>
 
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
             </div>
-        </app-layout>
+        </div>
         <template #modal>
             <div class="badge badge-info" v-if="trialDates?.length">
                 Trial Uses: {{ trialDates?.length || 0 }}
@@ -44,7 +42,7 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -58,10 +56,9 @@ import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
         JetBarIcon,

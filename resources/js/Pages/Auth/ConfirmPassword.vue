@@ -69,7 +69,7 @@ export default defineComponent({
             }),
         };
     },
-
+    layout: null,
     methods: {
         submit() {
             this.form.post(this.route("password.confirm"), {

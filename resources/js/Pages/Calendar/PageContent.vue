@@ -1,125 +1,115 @@
 <template>
-    <app-layout :title="title">
-        <!--        <template #header>-->
-        <!--            <h2 class="font-semibold text-xl leading-tight">Calendar</h2>-->
-        <!--        </template>-->
-        <page-toolbar-nav title="Event Types" :links="navLinks" />
+    <LayoutHeader title="calendar">
+        <h2 class="font-semibold text-xl leading-tight">Calendar</h2>
+    </LayoutHeader>
+    <page-toolbar-nav title="Event Types" :links="navLinks" />
 
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="flex flex-row items-center gap-4 mb-4">
-                <h1 class="text text-xl mr-8">Calendar</h1>
-                <h2
-                    class="text text-xl font-bold cursor-pointer flex flex-row"
-                    @click="showDateSelectModal"
-                >
-                    {{ title }}
-                    <arrow-icon direction="right" class="ml-2 items-center" />
-                </h2>
-                <div class="flex-grow" />
-                <!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
-                <!--                    New Event-->
-                <!--                </button>-->
-                <div class="form-control">
-                    <select v-model="currentView" @change="handleChangeView">
-                        <option value="dayGridMonth">Month</option>
-                        <option value="timeGridWeek">Week</option>
-                        <option value="timeGridDay">Day</option>
-                    </select>
-                </div>
-                <simple-search-filter
-                    v-model:modelValue="form.search"
-                    class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
-                    @reset="reset"
-                    @clear-filters="clearFilters"
-                    @clear-search="clearSearch"
-                >
-                    <div
-                        class="block py-2 text-xs text-base-content text-opacity-80"
-                    >
-                        View User Calendar:
-                    </div>
-                    <select
-                        v-model="form.viewUser"
-                        class="mt-1 w-full form-select"
-                    >
-                        <option :value="null" />
-                        <option
-                            v-for="{ name, id } in client_users"
-                            :value="id"
-                            :key="id"
-                        >
-                            {{ name }}
-                        </option>
-                    </select>
-
-                    <div
-                        class="block py-2 text-xs text-base-content text-opacity-80"
-                    >
-                        Type:
-                    </div>
-                    <select
-                        v-model="form.calendar_event_type"
-                        class="mt-1 w-full form-select"
-                    >
-                        <option :value="null" />
-                        <option
-                            v-for="{ name, id } in calendar_event_types"
-                            :value="id"
-                            :key="id"
-                        >
-                            {{ name }}
-                        </option>
-                    </select>
-                    <div
-                        class="block py-2 text-xs text-base-content text-opacity-80"
-                    >
-                        Trashed:
-                    </div>
-                    <select
-                        v-model="form.trashed"
-                        class="mt-1 w-full form-select"
-                    >
-                        <option :value="null" />
-                        <option value="with">With Trashed</option>
-                        <option value="only">Only Trashed</option>
-                    </select>
-                </simple-search-filter>
-            </div>
-
-            <daisy-modal
-                ref="dateSelect"
-                id="dateSelect"
-                class="bg-base-300 rounded-lg"
+    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+        <div class="flex flex-row items-center gap-4 mb-4">
+            <h1 class="text text-xl mr-8">Calendar</h1>
+            <h2
+                class="text text-xl font-bold cursor-pointer flex flex-row"
+                @click="showDateSelectModal"
             >
-                <div class="flex flex-col space-y-4">
-                    <h1 class="text text-base-content text-xl pb-2">
-                        Pick a Date
-                    </h1>
-                    <date-picker
-                        dark
-                        :weekPicker="currentView === 'timeGridWeek'"
-                        :monthPicker="currentView === 'dayGridMonth'"
-                        :auto-apply="true"
-                        :modelValue="selectedDate"
-                        @update:modelValue="onSelectDate"
-                    />
-                    <Button
-                        class="self-end"
-                        size="xs"
-                        secondary
-                        @click="hideDateSelectModal"
-                        >Close</Button
-                    >
+                {{ title }}
+                <arrow-icon direction="right" class="ml-2 items-center" />
+            </h2>
+            <div class="flex-grow" />
+            <!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
+            <!--                    New Event-->
+            <!--                </button>-->
+            <div class="form-control">
+                <select v-model="currentView" @change="handleChangeView">
+                    <option value="dayGridMonth">Month</option>
+                    <option value="timeGridWeek">Week</option>
+                    <option value="timeGridDay">Day</option>
+                </select>
+            </div>
+            <simple-search-filter
+                v-model:modelValue="form.search"
+                class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
+                @reset="reset"
+                @clear-filters="clearFilters"
+                @clear-search="clearSearch"
+            >
+                <div
+                    class="block py-2 text-xs text-base-content text-opacity-80"
+                >
+                    View User Calendar:
                 </div>
-            </daisy-modal>
-            <FullCalendar :options="calendarOptions" ref="calendar" />
+                <select v-model="form.viewUser" class="mt-1 w-full form-select">
+                    <option :value="null" />
+                    <option
+                        v-for="{ name, id } in client_users"
+                        :value="id"
+                        :key="id"
+                    >
+                        {{ name }}
+                    </option>
+                </select>
+
+                <div
+                    class="block py-2 text-xs text-base-content text-opacity-80"
+                >
+                    Type:
+                </div>
+                <select
+                    v-model="form.calendar_event_type"
+                    class="mt-1 w-full form-select"
+                >
+                    <option :value="null" />
+                    <option
+                        v-for="{ name, id } in calendar_event_types"
+                        :value="id"
+                        :key="id"
+                    >
+                        {{ name }}
+                    </option>
+                </select>
+                <div
+                    class="block py-2 text-xs text-base-content text-opacity-80"
+                >
+                    Trashed:
+                </div>
+                <select v-model="form.trashed" class="mt-1 w-full form-select">
+                    <option :value="null" />
+                    <option value="with">With Trashed</option>
+                    <option value="only">Only Trashed</option>
+                </select>
+            </simple-search-filter>
         </div>
-    </app-layout>
+
+        <daisy-modal
+            ref="dateSelect"
+            id="dateSelect"
+            class="bg-base-300 rounded-lg"
+        >
+            <div class="flex flex-col space-y-4">
+                <h1 class="text text-base-content text-xl pb-2">Pick a Date</h1>
+                <date-picker
+                    dark
+                    :weekPicker="currentView === 'timeGridWeek'"
+                    :monthPicker="currentView === 'dayGridMonth'"
+                    :auto-apply="true"
+                    :modelValue="selectedDate"
+                    @update:modelValue="onSelectDate"
+                />
+                <Button
+                    class="self-end"
+                    size="xs"
+                    secondary
+                    @click="hideDateSelectModal"
+                    >Close</Button
+                >
+            </div>
+        </daisy-modal>
+        <FullCalendar :options="calendarOptions" ref="calendar" />
+    </div>
 </template>
 
 <script>
 import { computed, defineComponent, ref, watchEffect } from "vue";
-import AppLayout from "@/Layouts/AppLayout.vue";
+import LayoutHeader from "@/Layouts/AppLayout.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import DaisyModal from "@/Components/DaisyModal";
 import { Inertia } from "@inertiajs/inertia";
@@ -142,7 +132,7 @@ export default defineComponent({
     components: {
         SimpleSearchFilter,
         CalendarEventForm,
-        AppLayout,
+        LayoutHeader,
         GymRevenueCrud,
         DaisyModal,
         FullCalendar,

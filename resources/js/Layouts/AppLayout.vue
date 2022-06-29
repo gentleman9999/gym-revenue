@@ -1,5 +1,4 @@
 <template>
-    <Head :title="title" />
     <div class="w-100vw bg-neutral-800">
         <jet-banner />
         <div class="font-sans antialiased">
@@ -24,17 +23,9 @@
                             tabindex="0"
                         >
                             <div
-                                v-if="this.$slots.header"
-                                class="max-w-7xl mx-auto pt-3 px-4 sm:px-6 lg:px-8"
-                            >
-                                <!-- Title -->
-                                <h1
-                                    class="text-lg font-semibold tracking-widest uppercase dark-mode:text-white"
-                                >
-                                    <slot name="header"></slot>
-                                </h1>
-                                <!-- End Title -->
-                            </div>
+                                id="layout-header"
+                                class="max-w-7xl mx-auto pt-3 px-4 sm:px-6 lg:px-8 text-lg font-semibold tracking-widest uppercase"
+                            ></div>
                             <!-- Replace with your content -->
                             <div>
                                 <!-- Content -->
@@ -90,7 +81,7 @@ import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink";
 import JetBarNavigationMenu from "@/Components/JetBarNavigationMenu";
 import TopNav from "@/Components/Navigation/TopNav";
 import SideNav from "@/Components/Navigation/SideNav";
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 import NotyBell from "@/Components/NotyBell";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal";
@@ -104,7 +95,6 @@ import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 export default defineComponent({
     components: {
         DaisyModal,
-        Head,
         Link,
         JetBarNavigationMenu,
         JetApplicationMark,

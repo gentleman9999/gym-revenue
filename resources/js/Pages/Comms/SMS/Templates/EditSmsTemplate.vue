@@ -1,18 +1,16 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Edit SMS Template">
-            <template #header>
-                <h2 class="font-semibold text-xl leading-tight">
-                    Edit SMS Template
-                </h2>
-            </template>
+        <LayoutHeader title="Edit SMS Template">
+            <h2 class="font-semibold text-xl leading-tight">
+                Edit SMS Template
+            </h2>
+        </LayoutHeader>
 
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
             </div>
-        </app-layout>
+        </div>
         <template #modal>
             <sms-template-form
                 :client-id="$page.props.user.current_client_id"
@@ -25,7 +23,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -38,10 +36,9 @@ import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
         SmsTemplateForm,

@@ -1,16 +1,14 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Create Team">
-            <template #header>
-                <h2 class="font-semibold text-xl leading-tight">Create Team</h2>
-            </template>
+        <LayoutHeader>
+            <h2 class="font-semibold text-xl leading-tight">Create Team</h2>
+        </LayoutHeader>
 
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
             </div>
-        </app-layout>
+        </div>
         <template #modal>
             <team-form />
         </template>
@@ -19,14 +17,14 @@
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import TeamForm from "@/Pages/Teams/Partials/TeamForm";
 
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         TeamForm,
         ModalableWrapper,
         ModalSlot,

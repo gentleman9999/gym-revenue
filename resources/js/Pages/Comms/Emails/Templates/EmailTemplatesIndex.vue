@@ -1,64 +1,61 @@
 <template>
-    <app-layout :title="title">
-        <template #header>
-            <div class="text-center">
-                <h2 class="font-semibold text-xl leading-tight">
-                    Email Template Management
-                </h2>
-            </div>
-            <div
-                class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
-            >
-                <inertia-link
-                    class="btn justify-self-end"
-                    :href="route('comms.dashboard')"
-                >
-                    <span>
-                        <font-awesome-icon
-                            :icon="['far', 'chevron-double-left']"
-                            size="sm"
-                        />
-                        Back
-                    </span>
-                </inertia-link>
-            </div>
-        </template>
-
-        <gym-revenue-crud
-            base-route="comms.email-templates"
-            model-name="Email Template"
-            model-key="template"
-            :fields="fields"
-            :resource="templates"
-            :actions="actions"
-            :top-actions="{ create: { label: 'New Template' } }"
-            :table-component="false"
-            :card-component="EmailTemplateCard"
-        />
-
-        <confirm
-            title="Really Trash?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
+    <LayoutHeader title="Email Templates">
+        <div class="text-center">
+            <h2 class="font-semibold text-xl leading-tight">
+                Email Template Management
+            </h2>
+        </div>
+        <div
+            class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
         >
-            Are you sure you want to remove this template? It will be removed
-            from any assigned campaigns.
-        </confirm>
-        <confirm-send-form
-            v-if="confirmSend"
-            :template-id="sendVars.templateId"
-            :template-name="sendVars.templateName"
-            @close="handleCloseTextModal"
-        ></confirm-send-form>
-    </app-layout>
+            <inertia-link
+                class="btn justify-self-end"
+                :href="route('comms.dashboard')"
+            >
+                <span>
+                    <font-awesome-icon
+                        :icon="['far', 'chevron-double-left']"
+                        size="sm"
+                    />
+                    Back
+                </span>
+            </inertia-link>
+        </div>
+    </LayoutHeader>
+
+    <gym-revenue-crud
+        base-route="comms.email-templates"
+        model-name="Email Template"
+        model-key="template"
+        :fields="fields"
+        :resource="templates"
+        :actions="actions"
+        :top-actions="{ create: { label: 'New Template' } }"
+        :table-component="false"
+        :card-component="EmailTemplateCard"
+    />
+
+    <confirm
+        title="Really Trash?"
+        v-if="confirmTrash"
+        @confirm="handleConfirmTrash"
+        @cancel="confirmTrash = null"
+    >
+        Are you sure you want to remove this template? It will be removed from
+        any assigned campaigns.
+    </confirm>
+    <confirm-send-form
+        v-if="confirmSend"
+        :template-id="sendVars.templateId"
+        :template-name="sendVars.templateName"
+        @close="handleCloseTextModal"
+    ></confirm-send-form>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Confirm from "@/Components/Confirm";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 
@@ -77,7 +74,7 @@ export default defineComponent({
     name: "EmailTemplatesIndex",
     components: {
         FontAwesomeIcon,
-        AppLayout,
+        LayoutHeader,
         Confirm,
         GymRevenueCrud,
         ConfirmSendForm,

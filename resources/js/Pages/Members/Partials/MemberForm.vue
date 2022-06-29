@@ -300,7 +300,6 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -315,7 +314,6 @@ library.add(faUserCircle);
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         FontAwesomeIcon,

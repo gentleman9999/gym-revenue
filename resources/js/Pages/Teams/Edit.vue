@@ -1,18 +1,14 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Team Settings">
-            <template #header>
-                <h2 class="font-semibold text-xl leading-tight">
-                    Team Settings
-                </h2>
-            </template>
+        <LayoutHeader title="Team Settings">
+            <h2 class="font-semibold text-xl leading-tight">Team Settings</h2>
+        </LayoutHeader>
 
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
             </div>
-        </app-layout>
+        </div>
         <template #modal>
             <team-form :team="team" />
 
@@ -38,7 +34,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import TeamMemberManager from "@/Pages/Teams/Partials/TeamMemberManager";
 import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm";
@@ -49,7 +45,7 @@ export default defineComponent({
     props: ["team", "availableRoles", "permissions", "users", "availableUsers"],
 
     components: {
-        AppLayout,
+        LayoutHeader,
         JetSectionBorder,
         TeamMemberManager,
         UpdateTeamNameForm,

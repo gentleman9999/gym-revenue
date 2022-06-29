@@ -1,65 +1,63 @@
 <template>
-    <app-layout :title="title">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
-        </template>
-        <gym-revenue-crud
-            base-route="files"
-            model-name="File"
-            model-key="file"
-            :fields="fields"
-            :resource="files"
-            titleField="filename"
-            :card-component="FileDataCard"
-            :actions="{
-                edit: false,
-                rename: {
-                    label: 'Rename',
-                    handler: ({ data }) => {
-                        selectedFile = data;
-                    },
+    <LayoutHeader title="File Management">
+        <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
+    </LayoutHeader>
+    <gym-revenue-crud
+        base-route="files"
+        model-name="File"
+        model-key="file"
+        :fields="fields"
+        :resource="files"
+        titleField="filename"
+        :card-component="FileDataCard"
+        :actions="{
+            edit: false,
+            rename: {
+                label: 'Rename',
+                handler: ({ data }) => {
+                    selectedFile = data;
                 },
-                permissions: {
-                    label: 'Permissions',
-                    handler: ({ data }) => {
-                        selectedFilePermissions = data;
-                    },
+            },
+            permissions: {
+                label: 'Permissions',
+                handler: ({ data }) => {
+                    selectedFilePermissions = data;
                 },
-            }"
-            :top-actions="{
-                create: {
-                    label: 'Upload',
-                    handler: () => {
-                        Inertia.visitInModal(route('files.upload'));
-                    },
+            },
+        }"
+        :top-actions="{
+            create: {
+                label: 'Upload',
+                handler: () => {
+                    Inertia.visitInModal(route('files.upload'));
                 },
-            }"
+            },
+        }"
+    />
+    <daisy-modal
+        id="filenameModal"
+        ref="filenameModal"
+        @close="selectedFile = null"
+    >
+        <file-form
+            :file="selectedFile"
+            v-if="selectedFile"
+            @success="filenameModal.close"
         />
-        <daisy-modal
-            id="filenameModal"
-            ref="filenameModal"
-            @close="selectedFile = null"
-        >
-            <file-form
-                :file="selectedFile"
-                v-if="selectedFile"
-                @success="filenameModal.close"
-            />
-        </daisy-modal>
+    </daisy-modal>
 
-        <daisy-modal
-            ref="permissionsModal"
-            id="permissionsModal"
-            @close="selectedFilePermissions = null"
-        >
-            <h1 class="font-bold mb-4">Modify File Permissions</h1>
-            <Permissions-Form
-                :file="selectedFilePermissions"
-                v-if="selectedFilePermissions"
-                @success="permissionsModal.close"
-            />
-        </daisy-modal>
-    </app-layout>
+    <daisy-modal
+        ref="permissionsModal"
+        id="permissionsModal"
+        @close="selectedFilePermissions = null"
+    >
+        <h1 class="font-bold mb-4">Modify File Permissions</h1>
+        <Permissions-Form
+            :file="selectedFilePermissions"
+            v-if="selectedFilePermissions"
+            @success="permissionsModal.close"
+        />
+    </daisy-modal>
 </template>
 
 <style scoped>
@@ -70,7 +68,7 @@ td > div {
 
 <script>
 import { defineComponent, watchEffect, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout.vue";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import FileForm from "./Partials/FileForm";
 import PermissionsForm from "./Partials/PermissionsForm";
@@ -81,7 +79,7 @@ import DaisyModal from "@/Components/DaisyModal";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         GymRevenueCrud,
         FileForm,
         DaisyModal,
