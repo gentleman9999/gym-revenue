@@ -1,63 +1,58 @@
 <template>
+    <div class="text-secondary font-bold mb-2">Record Preview</div>
     <div class="grid grid-cols-6 gap-4">
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Name:</label>
-            <div class="data">
-                {{ data.member.first_name }}
-                {{ data.member.last_name }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Email:</label>
-            <div class="data">
-                {{ data.member.email }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Phone:</label>
-            <div class="data">
-                {{ data.member.primary_phone }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Phone secondary:</label>
-            <div class="data" v-if="data.member.alternate_phone">
-                {{ data.member.alternate_phone }}
-            </div>
-            <div class="data" v-if="!data.member.alternate_phone">
-                Not Available
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Gender:</label>
-            <div class="data" v-if="data.member.gender">
-                {{ data.member.gender }}
-            </div>
-        </div>
-        <div
+        <member-preview-item
             class="field col-span-6 lg:col-span-3"
-            v-if="data.member?.date_of_birth"
-        >
-            <label>Birthdate:</label>
-            <div class="data" v-if="data.member.date_of_birth">
-                {{
-                    new Date(data.member.date_of_birth).toLocaleDateString(
-                        "en-US"
-                    )
-                }}
-            </div>
-        </div>
+            label="Name"
+            :value="data.member.first_name + ' ' + data.member.last_name"
+        />
+        <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Email"
+            :value="data.member.email"
+        />
+        <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Phone 1"
+            :value="data.member.primary_phone"
+        />
+        <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Phone 2"
+            :value="data.member.alternate_phone"
+        />
+        <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Gender"
+            :value="data.member.gender"
+        />
+        <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Birthdate"
+            :value="
+                new Date(data.member.date_of_birth).toLocaleDateString('en-US')
+            "
+        />
+        <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Contact"
+            :value="data.member.gender"
+        />
+        <!-- <member-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Club/Location"
+            :value="data.club_location.name"
+        /> -->
         <div class="field col-span-6 lg:col-span-3">
-            <label>Contact:</label>
+            <label>Contact</label>
             <div class="data">
                 Called: {{ data.interactionCount.calledCount }} <br />
                 Emailed: {{ data.interactionCount.emailedCount }} <br />
                 Text: {{ data.interactionCount.smsCount }} <br />
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Club/Location:</label>
-            <div class="data">{{ data.club_location.name }}</div>
+        <div class="field col-span-6 lg:col-span-3 text-secondary">
+            <label>Club/ Location: {{ data.club_location.name }}</label>
         </div>
         <div
             class="collapse col-span-6"
@@ -85,12 +80,18 @@ input {
 }
 
 .field {
-    @apply flex flex-row gap-2;
+    @apply flex flex-col gap-2;
+}
+.data {
+    @apply border border-secondary rounded text-sm p-3;
 }
 </style>
 
-<script>
-export default {
-    props: ["data", "member", "club", "note", "notes"],
-};
+<script setup>
+import MemberPreviewItem from "./MemberPreviewItem";
+const props = defineProps({
+    data: {
+        type: Object,
+    },
+});
 </script>
