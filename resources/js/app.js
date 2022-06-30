@@ -1,6 +1,6 @@
-import AppLayout from "@/Layouts/AppLayout";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
-require("./bootstrap");
+import "./bootstrap";
 
 import { createApp, h } from "vue";
 import { createInertiaApp, Link, usePage } from "@inertiajs/inertia-vue3";
