@@ -489,6 +489,7 @@ export default {
                 start: calendarEvent.start + " UTC",
                 end: calendarEvent.end + " UTC",
                 event_type_id: calendarEvent.event_type_id,
+                location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees:
                     calendarEvent.user_attendees?.map(
