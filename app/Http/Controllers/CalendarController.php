@@ -127,15 +127,11 @@ class CalendarController extends Controller
         $eventsByLocation = [];
 
         foreach ($locations as $key => $location) {
-            if ($request->get('start')) {
-                $eventsForTeam = CalendarEvent::whereClientId($client_id)
+            $eventsForTeam = CalendarEvent::whereClientId($client_id)
                     ->whereLocationId($location->id)
                     ->with('type', 'attendees', 'files')
                     ->filter($request->only('search', 'start', 'end', 'viewUser'))
                     ->get();
-            } else {
-                $eventsForTeam = [];
-            }
             $eventsByLocation[$key] = $eventsForTeam;
         }
 
