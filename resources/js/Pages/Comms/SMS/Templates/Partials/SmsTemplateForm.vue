@@ -57,7 +57,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -69,14 +69,12 @@
 <script>
 import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -101,8 +99,7 @@ export default {
         let handleSubmit = () =>
             form.dirty().put(route("comms.sms-templates.update", template.id));
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.dirty().post(route("comms.sms-templates.store"));
+            handleSubmit = () => form.post(route("comms.sms-templates.store"));
         }
 
         return { form, buttonText: operation, handleSubmit };

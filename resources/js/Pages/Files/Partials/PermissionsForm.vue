@@ -63,7 +63,6 @@
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -73,7 +72,6 @@ import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,

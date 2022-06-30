@@ -185,7 +185,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -198,7 +198,6 @@
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -212,7 +211,6 @@ import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -235,26 +233,26 @@ export default {
         const page = usePage();
 
         let location = props.location;
-        let poc_first = page.props.value.poc_first;
-        let poc_last = page.props.value.poc_last;
-        let poc_phone = page.props.value.poc_phone;
+        let poc_first = props.poc_first;
+        let poc_last = props.poc_last;
+        let poc_phone = props.poc_phone;
 
         let operation = "Update";
         if (!location) {
             location = {
-                name: null,
-                city: null,
-                state: null,
-                address1: null,
-                address2: null,
-                zip: null,
-                phone: null,
-                poc_first: null,
-                poc_last: null,
-                poc_phone: null,
+                name: "",
+                city: "",
+                state: "",
+                address1: "",
+                address2: "",
+                zip: "",
+                phone: "",
+                poc_first: "",
+                poc_last: "",
+                poc_phone: "",
                 open_date: null,
                 close_date: null,
-                location_no: null,
+                location_no: "",
                 client_id: props.clientId,
             };
             operation = "Create";
@@ -286,10 +284,7 @@ export default {
 
         if (operation === "Create") {
             handleSubmit = () =>
-                form
-                    .dirty()
-                    .transform(transformData)
-                    .post(route("locations.store"));
+                form.transform(transformData).post(route("locations.store"));
         }
 
         let optionsStates = [];

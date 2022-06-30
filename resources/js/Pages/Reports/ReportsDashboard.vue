@@ -1,34 +1,30 @@
 <template>
-    <app-layout>
-        <template #header> Reporting </template>
+    <LayoutHeader title="Reporting Dashboard"> Reporting </LayoutHeader>
 
-        <jet-bar-container>
-            <dashboard-stats :widgets="widgets" />
+    <jet-bar-container>
+        <dashboard-stats :widgets="widgets" />
 
-            <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <!--                <h1 class="text-secondary font-md text-2xl py-2">Search Reports</h1>-->
-                <!-- Table For Reports Goes Here -->
+        <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <!--                <h1 class="text-secondary font-md text-2xl py-2">Search Reports</h1>-->
+            <!-- Table For Reports Goes Here -->
 
-                <h1 class="text-secondary font-md text-2xl py-2">
-                    Report Fields
-                </h1>
-                <div class="grid xl:grid-cols-4 gap-4">
-                    <sales-widget />
-                    <goals-widget />
-                    <calendar-widget />
-                    <attrition-widget />
-                    <communications-widget />
-                    <kpi-widget />
-                    <sales-funnel-widget />
-                    <index-widget />
-                </div>
+            <h1 class="text-secondary font-md text-2xl py-2">Report Fields</h1>
+            <div class="grid xl:grid-cols-4 gap-4">
+                <sales-widget />
+                <goals-widget />
+                <calendar-widget />
+                <attrition-widget />
+                <communications-widget />
+                <kpi-widget />
+                <sales-funnel-widget />
+                <index-widget />
             </div>
-        </jet-bar-container>
-    </app-layout>
+        </div>
+    </jet-bar-container>
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetBarContainer from "@/Components/JetBarContainer";
 import JetBarAlert from "@/Components/JetBarAlert";
 import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
@@ -83,7 +79,7 @@ export default {
         AttritionWidget,
         CalendarWidget,
         DashboardWidget,
-        AppLayout,
+        LayoutHeader,
         JetBarContainer,
         JetBarAlert,
         GymRevenueTable,

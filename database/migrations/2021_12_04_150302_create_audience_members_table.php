@@ -15,7 +15,7 @@ class CreateAudienceMembersTable extends Migration
     {
         Schema::create('audience_members', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->uuid('audience_id')->nullable();
             $table->uuid('entity_id')->nullable();
             $table->uuid('entity_type')->nullable();

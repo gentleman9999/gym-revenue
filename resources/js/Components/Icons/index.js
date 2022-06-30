@@ -12,3 +12,8 @@ export { default as ReportIcon } from "./Report.vue";
 export { default as LeadsIcon } from "./Leads.vue";
 export { default as MembersIcon } from "./Members.vue";
 export { default as SettingIcon } from "./Setting.vue";
+export { default as BarChartIcon } from "./BarChart.vue";
+export { default as ChatIcon } from "./Chat-24.vue";
+export { default as PhoneIcon } from "./Phone-24.vue";
+export { default as SmsIcon } from "./Sms-24.vue";
+export { default as ToDo24Icon } from "./ToDo-24.vue";

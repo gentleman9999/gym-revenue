@@ -215,7 +215,7 @@
                     class="mt-2"
                 />
             </div>
-
+            <!-- lead owner dropdown will not disable if field is only unchanged field -->
             <div class="form-control col-span-2">
                 <jet-label for="lead_owner" value="Lead Owner" />
                 <select
@@ -374,7 +374,7 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -389,7 +389,6 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -405,7 +404,6 @@ library.add(faUserCircle);
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         FontAwesomeIcon,
@@ -461,20 +459,20 @@ export default {
         let leadData = null;
         if (!lead) {
             leadData = {
-                first_name: null,
-                middle_name: null,
-                last_name: null,
-                email: null,
-                primary_phone: null,
-                alternate_phone: null,
-                club_id: null,
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                email: "",
+                primary_phone: "",
+                alternate_phone: "",
+                club_id: "",
                 client_id: props.clientId,
-                gr_location_id: null,
-                lead_type_id: null,
-                lead_source_id: null,
-                profile_picture: null,
+                gr_location_id: "",
+                lead_type_id: "",
+                lead_source_id: "",
+                profile_picture: "",
                 gender: "",
-                date_of_birth: "",
+                date_of_birth: null,
                 opportunity: "",
                 lead_owner: props.userId,
                 lead_status: "",
@@ -502,14 +500,8 @@ export default {
                 notes: { title: "", note: "" },
             };
 
-            leadData["lead_owner"] =
-                "lead_owner" in lead && lead.lead_owner !== null
-                    ? lead.lead_owner.value
-                    : "";
-            leadData["lead_status"] =
-                "lead_status" in lead && lead.lead_status !== null
-                    ? lead.lead_status.value
-                    : "";
+            leadData["lead_owner"] = props.lead?.lead_owner?.value || "";
+            leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>
             "last_updated" in lead && lead.last_updated
@@ -540,7 +532,6 @@ export default {
         if (operation === "Create") {
             handleSubmit = () =>
                 form
-                    .dirty()
                     .transform(transformFormSubmission)
                     .post("/data/leads/create", {
                         onSuccess: () => (form.notes = { title: "", note: "" }),

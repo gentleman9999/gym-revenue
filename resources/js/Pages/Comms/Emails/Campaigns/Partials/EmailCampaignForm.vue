@@ -170,7 +170,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 type="button"
                 @click.prevent="
@@ -199,7 +199,6 @@
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -212,7 +211,6 @@ import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
 export default {
     name: "EmailCampaignForm",
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -225,7 +223,8 @@ export default {
         "clientId",
         "campaign",
         "canActivate",
-        "templates",
+        "emailTemplates",
+        "audiences",
         "assignedTemplate",
         "assignedAudience",
     ],
@@ -252,12 +251,11 @@ export default {
             campaign["schedule_date"] = campaign.schedule_date?.value || "now";
             campaign["schedule"] = campaign.schedule?.value || "";
 
-            campaign["email_templates"] = page.props.value.emailTemplates.map(
-                (template_id) => template_id.value
-            );
-            campaign["audiences"] = page.props.value.audiences.map(
-                (audience_id) => audience_id.value
-            );
+            campaign["email_templates"] =
+                props.emailTemplates?.map((template_id) => template_id.value) ||
+                [];
+            campaign["audiences"] =
+                page.audiences?.map((audience_id) => audience_id.value) || [];
         }
 
         console.log("campaign Params", campaign);
@@ -275,7 +273,7 @@ export default {
         };
         if (operation === "Create") {
             handleSubmit = () =>
-                form.dirty().post(route("comms.email-campaigns.store"));
+                form.post(route("comms.email-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;

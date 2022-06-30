@@ -15,13 +15,12 @@ class CreateSmsTemplateDetailsTable extends Migration
     {
         Schema::create('sms_template_details', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->uuid('sms_template_id');
             $table->string('detail');
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();
             $table->boolean('active')->default(1);
-            $table->index(['client_id', 'sms_template_id']);
             $table->timestamps();
             $table->softDeletes();
         });

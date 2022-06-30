@@ -195,6 +195,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
     Route::put('/update/{id}', \App\Actions\Jetstream\UpdateTeam::class)->name('team.update');
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteTeam::class)->name('teams.delete');
+    Route::delete('/{team}/{teamMemberId}', \App\Actions\Jetstream\RemoveTeamMember::class)->name('team-members.destroy');
     Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
@@ -272,4 +273,9 @@ Route::prefix('/communication-preferences')->group(function () {
     Route::post('/l/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateLeadCommunicationPreferences')->name('comms-prefs.lead.update');
     Route::get('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@memberCommunicationPreferences')->name('comms-prefs.member');
     Route::post('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@updateMemberCommunicationPreferences')->name('comms-prefs.member.update');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-com')->group(function () {
+    Route::get('/', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass_com.dashboard');
+    Route::get('/{type}', \App\Http\Controllers\MassCommunicationController::class . '@page')->name('mass_com.page');
 });

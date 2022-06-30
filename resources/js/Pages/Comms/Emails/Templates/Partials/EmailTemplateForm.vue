@@ -42,7 +42,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 @click="handleSubmit"
             >
@@ -56,7 +56,6 @@
 import { ref } from "vue";
 import { useGymRevForm } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -68,7 +67,6 @@ import { useModal } from "@/Components/InertiaModal";
 export default {
     components: {
         EmailBuilder,
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -100,8 +98,8 @@ export default {
                 form.dirty().put(
                     route("comms.email-templates.update", template.id),
                     {
-                        // headers: { "X-Inertia-Modal-Redirect": true },
-                        headers: { "X-Inertia-Modal-CloseOnSuccess": true },
+                        headers: { "X-Inertia-Modal-Redirect": true },
+                        // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
                         onFinish: () => {
                             if (closeAfterSave.value) {
                                 console.log(
@@ -119,7 +117,7 @@ export default {
         if (operation === "Create") {
             handleSubmit = () => {
                 if (!form.processing) {
-                    form.dirty().post(route("comms.email-templates.store"), {
+                    form.post(route("comms.email-templates.store"), {
                         headers: { "X-Inertia-Modal-Redirect": true },
                         onSuccess: () => {
                             console.log("onSuccess-Create!");

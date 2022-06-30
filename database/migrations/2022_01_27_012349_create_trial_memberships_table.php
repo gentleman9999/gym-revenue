@@ -15,7 +15,7 @@ class CreateTrialMembershipsTable extends Migration
     {
         Schema::create('trial_memberships', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id');
+            $table->uuid('client_id')->index();
             $table->uuid('type_id');
             $table->uuid('lead_id');
             $table->timestamp('start_date')->nullable();

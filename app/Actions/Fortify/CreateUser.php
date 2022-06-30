@@ -142,7 +142,8 @@ class CreateUser implements CreatesNewUsers
 
         Alert::success("User '{$user->name}' was created")->flash();
 
-        return Redirect::route('users');
+//        return Redirect::route('users');
+        return Redirect::route('users.edit', $user->id);
     }
 
     public function asCommand(Command $command): void

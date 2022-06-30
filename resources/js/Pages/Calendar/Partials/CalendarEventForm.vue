@@ -51,6 +51,7 @@
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
+        <!-- can not accurately test button disabled because of error invalid date -->
         <template v-if="calendar_event?.type.type !== 'Task'">
             <div class="flex flex-col">
                 <jet-label for="end" value="Ends" />
@@ -131,10 +132,18 @@
                 v-model="form.event_type_id"
                 class="bg-neutral-100 text-neutral-900"
             >
-                <option v-for="{ id, name } in calendarEventTypes" :value="id">
+                <option
+                    v-for="{ id, name } in calendarEventTypes"
+                    :value="id"
+                    :key="id"
+                >
                     {{ name }}
                 </option>
             </select>
+            <jet-input-error
+                :message="form.errors.event_type_id"
+                class="mt-2"
+            />
             <jet-input-error
                 :message="form.errors.event_type_id"
                 class="mt-2"
@@ -309,7 +318,7 @@
                 @click="handleSubmit"
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 size="sm"
             >
@@ -317,7 +326,7 @@
             </Button>
         </div>
 
-        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal" @close="">
+        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal">
             <h1 class="font-bold mb-4">Attendees</h1>
             <attendees-form
                 @submitted="closeModals"
@@ -326,7 +335,7 @@
             />
         </daisy-modal>
 
-        <daisy-modal ref="showFilesModal" id="showFilesModal" @close="">
+        <daisy-modal ref="showFilesModal" id="showFilesModal">
             <h1 class="font-bold mb-4">File Attachments</h1>
             <files-form
                 @submitted="closeModals"
@@ -372,8 +381,7 @@ label {
 
 <script>
 import { usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import { computed, watch, watchEffect, ref } from "vue";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -393,7 +401,6 @@ import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -413,6 +420,7 @@ export default {
         "client_users",
         "lead_users",
         "member_users",
+        "duration",
         "start_date",
         "locations",
     ],
@@ -457,18 +465,20 @@ export default {
         let operation = "Update";
         if (!calendarEvent) {
             calendarEventForm = {
-                title: null,
-                description: null,
-                full_day_event: false,
-                start: null, //props.start_date,
-                end: null, //props.start_date,
-                event_type_id: null,
+                title: "",
+                description: "",
+                full_day_event: "",
+                start: props.duration.start ?? null,
+                end: props.duration.end
+                    ? props.duration.end
+                    : props.duration.start,
+                event_type_id: "",
                 location_id: null,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
-                lead_attendees: null,
-                member_attendees: null,
-                my_reminder: null,
+                lead_attendees: [] ?? "",
+                member_attendees: [],
+                my_reminder: "",
             };
             operation = "Create";
         } else {
@@ -476,10 +486,9 @@ export default {
                 title: calendarEvent.title,
                 description: calendarEvent.description,
                 full_day_event: calendarEvent.full_day_event,
-                start: calendarEvent.start,
-                end: calendarEvent.end,
+                start: calendarEvent.start + " UTC",
+                end: calendarEvent.end + " UTC",
                 event_type_id: calendarEvent.event_type_id,
-                location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees:
                     calendarEvent.user_attendees?.map(
@@ -499,38 +508,19 @@ export default {
 
         const form = useGymRevForm(calendarEventForm);
 
-        watchEffect(() => {
-            const defaultValue = props.start_date;
-
-            if (form.end) {
-                form.start = defaultValue;
-                form.end = defaultValue;
-                // return;
-            }
-            let start = form.start;
-
-            let end = form.end;
-            let tempEnd = false;
-            if (typeof start === "string") {
-                start = new Date(Date.parse(start));
-            }
-
-            if (form.end) {
-                if (typeof end === "string") {
-                    end = new Date(Date.parse(form.end));
-                    console.log({ end });
+        watch(
+            () => props.duration,
+            (duration, oldDuration) => {
+                form.start = duration.start;
+                form.end = duration.end;
+                if (!form.end && form.start) {
+                    const newEnd = new Date(form.start.getTime());
+                    newEnd.setHours(form.start.getHours() + 1);
+                    form.end = newEnd;
                 }
-                console.log({ end: form.end, type: typeof end });
-                tempEnd = new Date(form.end).setHours(end.getHours() + 1);
-            }
-
-            if (start || (tempEnd && tempEnd < start)) {
-                const newEnd = new Date(start.getTime());
-                newEnd.setHours(start.getHours() + 1);
-                console.log({ start, newEnd });
-                form.end = newEnd;
-            }
-        });
+            },
+            { deep: true }
+        );
 
         let handleSubmit = () =>
             form
@@ -555,6 +545,7 @@ export default {
                         ...data,
                         start: transformDate(data.start),
                         end: transformDate(data.end),
+                        full_day_event: !!data.full_day_event,
                     }))
                     .post(route("calendar.event.store"), {
                         preserveScroll: true,

@@ -63,6 +63,7 @@
                         :model-name-plural="modelNamePlural"
                         :base-route="baseRoute"
                         :has-preview-component="!!previewComponent"
+                        :on-double-click="onDoubleClick"
                     />
 
                     <tr v-if="!data?.length">
@@ -177,6 +178,9 @@ export default {
         },
         form: {
             type: Object,
+        },
+        onDoubleClick: {
+            type: Function,
         },
     },
     setup(props) {

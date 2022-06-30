@@ -1,25 +1,23 @@
 <template>
-    <app-layout title="Create Security Role">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Create Role</h2>
-        </template>
+    <LayoutHeader title="Create Security Role">
+        <h2 class="font-semibold text-xl leading-tight">Create Role</h2>
+    </LayoutHeader>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <security-role-form
-                    :client-id="$page.props.user.current_client_id"
-                    :available-roles="availableRoles"
-                    :available-abilities="availableAbilities"
-                    :security-groups="securityGroups"
-                />
-            </div>
+    <div>
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <security-role-form
+                :client-id="$page.props.user.current_client_id"
+                :available-roles="availableRoles"
+                :available-abilities="availableAbilities"
+                :security-groups="securityGroups"
+            />
         </div>
-    </app-layout>
+    </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -31,7 +29,7 @@ import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
 export default defineComponent({
     components: {
         SecurityRoleForm,
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
         JetInputError,

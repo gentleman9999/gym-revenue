@@ -88,7 +88,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('roles'))"
+                @click="handleClickCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -100,7 +100,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -113,16 +113,16 @@
 import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
+import { Inertia } from "@inertiajs/inertia";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
 
@@ -151,8 +151,8 @@ export default {
         let operation = "Update";
         if (!role) {
             role = {
-                name: null,
-                id: null,
+                name: "",
+                id: "",
                 client_id: props.clientId,
                 ability_names: [],
                 group: null,
@@ -179,7 +179,7 @@ export default {
         let handleSubmit = () =>
             form.dirty().put(route("roles.update", role.id));
         if (operation === "Create") {
-            handleSubmit = () => form.dirty().post(route("roles.store"));
+            handleSubmit = () => form.post(route("roles.store"));
         }
 
         let groupedAvailableAbilities = computed(() => {
@@ -216,6 +216,17 @@ export default {
             form.ability_names = [...merged];
         };
 
+        const modal = useModal();
+
+        const handleClickCancel = () => {
+            console.log("modal", modal.value);
+            if (modal.value.close) {
+                modal.value.close();
+            } else {
+                Inertia.visit(route("roles"));
+            }
+        };
+
         return {
             form,
             buttonText: operation,
@@ -223,6 +234,7 @@ export default {
             groupedAvailableAbilities,
             selectAll,
             clear,
+            handleClickCancel,
         };
     },
 };

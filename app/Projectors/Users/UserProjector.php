@@ -123,8 +123,8 @@ class UserProjector extends Projector
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data, $event) {
-            $user = User::with(['teams'])->findOrFail($data['id']);
-            $data['name'] = "{$data['first_name']} {$data['last_name']}";
+            $user = User::with(['teams'])->findOrFail($event->aggregateRootUuid());
+//            $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
             $user->updateOrFail($data);
 

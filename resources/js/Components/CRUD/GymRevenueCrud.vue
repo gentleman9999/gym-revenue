@@ -55,6 +55,7 @@
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
+                    :actions="actions"
                 >
                     <template #title>
                         <slot name="title"></slot>
@@ -67,6 +68,7 @@
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
+                    :actions="actions"
                 >
                     <template #title>
                         <slot name="title"></slot>
@@ -80,6 +82,7 @@
                 v-bind="$props"
                 @open-customizer="openCustomizationModal"
                 :form="form"
+                :actions="actions"
             />
         </template>
 
@@ -118,6 +121,7 @@ import { flattenObj } from "@/Components/CRUD/helpers/getData";
 import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
+import { getActions } from "@/Components/CRUD/helpers/actions";
 
 export default defineComponent({
     components: {
@@ -179,6 +183,9 @@ export default defineComponent({
         },
         previewComponent: {
             type: Object,
+        },
+        onDoubleClick: {
+            type: Function,
         },
     },
 
@@ -264,7 +271,7 @@ export default defineComponent({
             create: {
                 label: `Create ${props.modelName}`,
                 handler: () => {
-                    Inertia.visit(route(`${props.baseRoute}.create`));
+                    Inertia.visitInModal(route(`${props.baseRoute}.create`));
                 },
                 class: ["btn-primary"],
             },
@@ -303,6 +310,9 @@ export default defineComponent({
         }
         const customizationModal = ref(null);
         const openCustomizationModal = () => customizationModal.value.open();
+
+        const actions = getActions(props);
+        console.log({ actions });
         return {
             form,
             topActions,
@@ -311,6 +321,7 @@ export default defineComponent({
             clearSearch,
             customizationModal,
             openCustomizationModal,
+            actions,
         };
     },
 });

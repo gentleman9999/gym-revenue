@@ -1,35 +1,34 @@
 <template>
-    <app-layout title="View Leads">
-        <jet-bar-container>
-            <lead-interaction
-                :lead-id="lead.id"
-                :user-id="$page.props.user.id"
-                :first-name="lead.first_name"
-                :middle-name="$page.props.middle_name.value"
-                :last-name="lead.last_name"
-                :email="lead.email"
-                :phone="lead.primary_phone"
-                :details="lead['details_desc']"
-                ref="leadInteractionRef"
-                :selectedLeadDetailIndex="selectedLeadDetailIndex"
-                :trial-dates="trialDates"
-                :trial-memberships="lead.trial_memberships"
-                :interaction-count="interactionCount"
-                :agreement-number="lead.agreement_number"
-            />
-        </jet-bar-container>
-    </app-layout>
+    <LayoutHeader title="Leads" />
+    <jet-bar-container>
+        <lead-interaction
+            :lead-id="lead.id"
+            :user-id="$page.props.user.id"
+            :first-name="lead.first_name"
+            :middle-name="$page.props.middle_name.value"
+            :last-name="lead.last_name"
+            :email="lead.email"
+            :phone="lead.primary_phone"
+            :details="lead['details_desc']"
+            ref="leadInteractionRef"
+            :selectedLeadDetailIndex="selectedLeadDetailIndex"
+            :trial-dates="trialDates"
+            :trial-memberships="lead.trial_memberships"
+            :interaction-count="interactionCount"
+            :agreement-number="lead.agreement_number"
+        />
+    </jet-bar-container>
 </template>
 
 <script>
 import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetBarContainer from "@/Components/JetBarContainer";
 import LeadInteraction from "./Partials/LeadInteractionContainer";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         JetBarContainer,
         LeadInteraction,
     },

@@ -1,4 +1,5 @@
 <template>
+    <LayoutHeader title="File Manager"> Location Details </LayoutHeader>
     <jet-form-section @submitted="handleSubmit">
         <!--        <template #title>-->
         <!--            Location Details-->
@@ -137,7 +138,7 @@
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout.vue";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";

@@ -88,7 +88,7 @@
             </jet-action-message>
             <Button
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Save
             </Button>
@@ -121,6 +121,15 @@ export default defineComponent({
         team: {
             type: Object,
         },
+        availableLocations: {
+            type: Array,
+            required: true,
+        },
+        locations: {
+            type: Array,
+            required: false,
+            default: [],
+        },
     },
 
     setup(props) {
@@ -137,9 +146,7 @@ export default defineComponent({
             };
             operation = "Create";
         } else {
-            team.locations = page.props.value.locations.map(
-                (detail) => detail.value
-            );
+            team.locations = props.locations.map((detail) => detail.value);
             team.client_id = page.props.value.user?.current_client_id;
             console.log("team.locations", team.locations);
         }
@@ -148,7 +155,7 @@ export default defineComponent({
         let handleSubmit = () =>
             form.dirty().put(route("team.update", team.id));
         if (operation === "Create") {
-            handleSubmit = () => form.dirty().post(route("teams.store"));
+            handleSubmit = () => form.post(route("teams.store"));
         }
 
         return {
@@ -156,7 +163,6 @@ export default defineComponent({
             operation,
             handleSubmit,
             page,
-            availableLocations: page.props.value.availableLocations,
             multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },

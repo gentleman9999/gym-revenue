@@ -161,7 +161,7 @@
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Cancel
             </Button>
@@ -198,7 +198,6 @@
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -211,7 +210,6 @@ import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
 export default {
     name: "SmsCampaignForm",
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -273,8 +271,7 @@ export default {
                 .put(route("comms.sms-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.dirty().post(route("comms.sms-campaigns.store"));
+            handleSubmit = () => form.post(route("comms.sms-campaigns.store"));
         }
 
         // const canEditActiveInputs = !props.campaign?.schedule_date;
