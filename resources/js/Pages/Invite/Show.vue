@@ -52,7 +52,7 @@
 
 <script>
 import { defineComponent, watch, watchEffect, ref } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 export default defineComponent({
@@ -87,10 +87,7 @@ export default defineComponent({
 
 <style>
 .fc .fc-toolbar {
-    @apply flex-col gap-2;
-    @screen lg {
-        @apply flex-row;
-    }
+    @apply flex-col gap-2 lg:flex-row;
 }
 .fc .fc-daygrid-day-bottom {
     @apply text-xs;

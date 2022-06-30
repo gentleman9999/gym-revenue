@@ -32,8 +32,8 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard.vue";
 
 export default defineComponent({
     components: {

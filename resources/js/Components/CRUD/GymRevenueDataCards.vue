@@ -36,7 +36,7 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import AutoDataCard from "@/Components/CRUD/AutoDataCard";
+import AutoDataCard from "@/Components/CRUD/AutoDataCard.vue";
 
 library.add(faAlignLeft);
 

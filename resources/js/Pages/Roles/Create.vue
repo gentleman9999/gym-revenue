@@ -17,14 +17,14 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 
-import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
+import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
 
 export default defineComponent({
     components: {

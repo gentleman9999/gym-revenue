@@ -69,21 +69,21 @@
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import Confirm from "@/Components/Confirm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Confirm from "@/Components/Confirm.vue";
 
-import Button from "@/Components/Button";
-import JetBarContainer from "@/Components/JetBarContainer";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import LeadInteraction from "./Partials/LeadInteractionContainer";
-import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge";
-import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
-import PageToolbarNav from "@/Components/PageToolbarNav";
-import LeadsFilters from "@/Pages/Leads/Partials/LeadsFilters";
-import LeadPreview from "@/Pages/Leads/Partials/LeadPreview";
+import Button from "@/Components/Button.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
+import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge.vue";
+import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import LeadsFilters from "@/Pages/Leads/Partials/LeadsFilters.vue";
+import LeadPreview from "@/Pages/Leads/Partials/LeadPreview.vue";
 
-import CalendarGrid from "@/Pages/components/CalendarGrid";
-import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard";
+import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
+import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 
 export default defineComponent({
     components: {

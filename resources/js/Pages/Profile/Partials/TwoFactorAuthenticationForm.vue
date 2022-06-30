@@ -111,11 +111,11 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionSection from "@/Jetstream/ProfileActionSection";
-import Button from "@/Components/Button";
-import JetConfirmsPassword from "@/Jetstream/ConfirmsPassword";
+import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
+import Button from "@/Components/Button.vue";
+import JetConfirmsPassword from "@/Jetstream/ConfirmsPassword.vue";
 
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 
 export default defineComponent({
     components: {

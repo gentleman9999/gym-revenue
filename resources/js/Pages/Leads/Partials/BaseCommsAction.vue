@@ -24,7 +24,7 @@
 <script>
 import { computed, defineComponent } from "vue";
 
-import Button from "@/Components/Button";
+import Button from "@/Components/Button.vue";
 
 export default defineComponent({
     components: {

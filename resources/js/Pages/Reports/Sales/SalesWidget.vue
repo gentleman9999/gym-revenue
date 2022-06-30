@@ -24,9 +24,9 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import SalesModal from "@/Pages/Reports/Sales/SalesModal";
-import SalesWidgetChart from "./components/SalesWidgetChart";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import SalesModal from "@/Pages/Reports/Sales/SalesModal.vue";
+import SalesWidgetChart from "./components/SalesWidgetChart.vue";
 export default defineComponent({
     components: {
         DashboardWidget,

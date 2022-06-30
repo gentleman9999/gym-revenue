@@ -19,7 +19,7 @@
 </style>
 <script>
 import { ref, defineComponent } from "vue";
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 export default defineComponent({
     props: {

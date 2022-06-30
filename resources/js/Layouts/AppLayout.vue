@@ -1,4 +1,12 @@
 <template>
+    <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </Head>
     <div class="w-100vw bg-neutral-800">
         <jet-banner />
         <div class="font-sans antialiased">
@@ -74,17 +82,17 @@
 
 <script>
 import { defineComponent, ref, onMounted } from "vue";
-import JetApplicationMark from "@/Jetstream/ApplicationMark";
-import JetBanner from "@/Jetstream/Banner";
-import JetNavLink from "@/Jetstream/NavLink";
-import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink";
-import JetBarNavigationMenu from "@/Components/JetBarNavigationMenu";
-import TopNav from "@/Components/Navigation/TopNav";
-import SideNav from "@/Components/Navigation/SideNav";
+import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
+import JetBanner from "@/Jetstream/Banner.vue";
+import JetNavLink from "@/Jetstream/NavLink.vue";
+import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
+import JetBarNavigationMenu from "@/Components/JetBarNavigationMenu.vue";
+import TopNav from "@/Components/Navigation/TopNav.vue";
+import SideNav from "@/Components/Navigation/SideNav.vue";
 import { Link } from "@inertiajs/inertia-vue3";
-import NotyBell from "@/Components/NotyBell";
+import NotyBell from "@/Components/NotyBell.vue";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 // import tailwindConfig from '../../../tailwind.config.js'
 // import {

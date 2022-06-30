@@ -56,11 +56,11 @@
 import { ref } from "vue";
 import { useGymRevForm } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder";
-import DaisyModal from "@/Components/DaisyModal";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import usePage from "@/Components/InertiaModal/usePage";
 import { useModal } from "@/Components/InertiaModal";
 

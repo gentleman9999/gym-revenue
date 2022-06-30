@@ -249,8 +249,8 @@
 import { ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { toastWarning } from "@/utils/createToast";
-import DaisyModal from "@/Components/DaisyModal";
-import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate.vue";
 export default {
     name: "JetBarResponsiveLinks",
     data() {

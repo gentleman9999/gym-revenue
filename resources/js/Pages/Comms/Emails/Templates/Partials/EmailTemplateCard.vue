@@ -39,7 +39,7 @@
     </div>
 </template>
 <script setup>
-import CrudActions from "@/Components/CRUD/CrudActions";
+import CrudActions from "@/Components/CRUD/CrudActions.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faChevronDoubleLeft,

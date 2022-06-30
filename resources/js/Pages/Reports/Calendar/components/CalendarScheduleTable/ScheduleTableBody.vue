@@ -42,7 +42,7 @@ td:not(:nth-last-child(2)) > div {
 </style>
 <script setup>
 import SelectBox from "@/Components/SelectBox";
-import Button from "@/Components/Button";
+import Button from "@/Components/Button.vue";
 const props = defineProps({
     data: {
         type: Array,
