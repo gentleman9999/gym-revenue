@@ -42,6 +42,9 @@ export default defineConfig({
         }
     },
     server: detectServerConfig(host),
+    css:{
+        devSourcemap: true
+    }
 })
 
 function detectServerConfig(host) {
