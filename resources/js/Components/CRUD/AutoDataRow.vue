@@ -118,7 +118,7 @@ export default defineComponent({
         const handleClick = () => {
             timer = setTimeout(() => {
                 if (!prevent) {
-                    if (props.onClick) {
+                    if (props?.onClick) {
                         props.onClick();
                     } else {
                         openPreview();
@@ -140,7 +140,7 @@ export default defineComponent({
             if (props.onDoubleClick === false) {
                 return;
             }
-            if (props.onDoubleClick) {
+            if (props?.onDoubleClick) {
                 props.onDoubleClick();
                 return;
             }

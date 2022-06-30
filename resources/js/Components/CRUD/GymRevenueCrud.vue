@@ -187,6 +187,9 @@ export default defineComponent({
         onDoubleClick: {
             type: Function,
         },
+        onClick: {
+            type: Function,
+        },
     },
 
     setup(props) {

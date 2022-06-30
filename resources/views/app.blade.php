@@ -14,8 +14,7 @@
         <!-- Scripts -->
         @routes
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-{{--        @vite(['resources/js/app.js'])--}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+{{--        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>--}}
     </head>
     <body class="font-sans antialiased flex flex-col min-h-screen">
         <div class="flex flex-1">

@@ -64,6 +64,7 @@
                         :base-route="baseRoute"
                         :has-preview-component="!!previewComponent"
                         :on-double-click="onDoubleClick"
+                        :on-click="onClick"
                     />
 
                     <tr v-if="!data?.length">
@@ -180,6 +181,9 @@ export default {
             type: Object,
         },
         onDoubleClick: {
+            type: Function,
+        },
+        onClick: {
             type: Function,
         },
     },

@@ -3,10 +3,10 @@ import vue from '@vitejs/plugin-vue';
 import fs from 'fs';
 import laravel from 'laravel-vite-plugin'
 import {homedir} from 'os'
-import {resolve} from 'path'
+import path, {resolve} from 'path'
 
 
-let host = 'http://gr-prototype.test/'
+const host = process.env.APP_URL;
 
 export default defineConfig({
     plugins: [
@@ -36,7 +36,8 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': '/resources/js'
+            '@': '/resources/js',
+            'axios': path.resolve('node_modules/axios/dist/axios.js'),
         }
     },
     server: detectServerConfig(host),
