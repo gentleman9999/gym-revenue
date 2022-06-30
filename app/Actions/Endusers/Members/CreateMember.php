@@ -51,6 +51,7 @@ class CreateMember
             ->create($user->id ?? "Auto Generated", $data)
             ->persist();
 
+
         return Member::findOrFail($id);
     }
 

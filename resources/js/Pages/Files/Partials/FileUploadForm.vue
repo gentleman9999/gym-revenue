@@ -75,9 +75,8 @@ progress::-webkit-progress-value {
 </style>
 <script setup>
 import { ref, computed, onMounted, watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import FileExtensionIcon from "./FileExtensionIcon";
@@ -101,7 +100,7 @@ const emit = defineEmits(["remove"]);
 
 const uploadProgress = ref(null);
 
-const form = useForm({
+const form = useGymRevForm({
     id: null,
     key: null,
     extension: null,

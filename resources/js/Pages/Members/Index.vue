@@ -1,52 +1,52 @@
 <template>
-    <app-layout :title="title">
-        <page-toolbar-nav title="Member" :links="navLinks" />
-        <gym-revenue-crud
-            :resource="members"
-            model-key="member"
-            :fields="fields"
-            :base-route="baseRoute"
-            :top-actions="{
-                create: { label: 'Add Member' },
-            }"
-            :actions="actions"
-            :preview-component="MemberPreview"
-        >
-            <template #filter>
-                <member-filters :base-route="baseRoute" />
-            </template>
-        </gym-revenue-crud>
-        <confirm
-            title="Really Trash?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
-        >
-            {{ firstName }} {{ lastName }} Are you sure you want to remove this
-            lead?<br />
-            Reason for Deleting:<br />
-            <select name="reasonforremoving" v-model="trashReason">
-                <option>Select a reason</option>
-                <option value="duplicate">Is a duplicate</option>
-                <option value="test-lead">Is a test lead</option>
-                <option value="DNC">Lead requested DNC and data removal</option>
-                <option value="person-non-existing">
-                    This person does not exist
-                </option>
-                <option value="mistake-creating">
-                    I made a mistake creating this lead
-                </option>
-                <option value="other">Other</option>
-            </select>
-        </confirm>
-    </app-layout>
+    <LayoutHeader title="Members" />
+    <page-toolbar-nav title="Member" :links="navLinks" />
+    <gym-revenue-crud
+        :resource="members"
+        model-key="member"
+        :fields="fields"
+        :base-route="baseRoute"
+        :top-actions="{
+            create: { label: 'Add Member' },
+        }"
+        :actions="actions"
+        :preview-component="MemberPreview"
+    >
+        <template #filter>
+            <member-filters :base-route="baseRoute" />
+        </template>
+    </gym-revenue-crud>
+    <confirm
+        title="Really Trash?"
+        v-if="confirmTrash"
+        @confirm="handleConfirmTrash"
+        @cancel="confirmTrash = null"
+        :disabled="trashReason === null || trashReason === 'none'"
+    >
+        {{ firstName }} {{ lastName }} Are you sure you want to remove this
+        lead?<br />
+        Reason for Deleting:<br />
+        <select name="reasonforremoving" v-model="trashReason">
+            <option>Select a reason</option>
+            <option value="duplicate">Is a duplicate</option>
+            <option value="test-lead">Is a test lead</option>
+            <option value="DNC">Lead requested DNC and data removal</option>
+            <option value="person-non-existing">
+                This person does not exist
+            </option>
+            <option value="mistake-creating">
+                I made a mistake creating this lead
+            </option>
+            <option value="other">Other</option>
+        </select>
+    </confirm>
 </template>
 
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Confirm from "@/Components/Confirm";
 
 import Button from "@/Components/Button";
@@ -63,7 +63,7 @@ export default defineComponent({
         MemberFilters,
         PageToolbarNav,
         GymRevenueCrud,
-        AppLayout,
+        LayoutHeader,
         Confirm,
         Button,
         JetBarContainer,

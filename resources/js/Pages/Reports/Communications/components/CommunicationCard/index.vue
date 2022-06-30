@@ -8,7 +8,8 @@
                     {{ title }}
                 </div>
             </template>
-            <img :src="progress" class="w-fit m-auto mt-4.5" />
+            <progress-chart :data="[progress]" />
+            <!-- <img :src="progress" class="w-fit m-auto mt-4.5" /> -->
             <div class="btn-action">
                 <Button secondary size="xs">Detail</Button>
             </div>
@@ -26,14 +27,16 @@
 <script setup>
 import Card from "@/Components/Card";
 import Button from "@/Components/Button";
+
+import ProgressChart from "@/Components/ProgressChart";
 const props = defineProps({
     title: {
         type: String,
         default: "",
     },
     progress: {
-        title: String,
-        default: "",
+        type: Number,
+        default: 0,
     },
 });
 </script>

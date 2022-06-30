@@ -31,9 +31,11 @@
                 <template #eventForm>
                     <calendar-event-form
                         :calendar_event="selectedEvent"
+                        :duration="duration"
                         :key="selectedEvent"
                         :client_users="client_users"
                         :lead_users="lead_users"
+                        :member_users="members_users"
                         :client_id="client_id"
                         @submitted="toggleSwitch"
                         ref="eventForm"
@@ -85,6 +87,10 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    members_users: {
+        type: Array,
+        default: [],
+    },
     client_id: {
         type: String,
         default: "",
@@ -96,15 +102,17 @@ const toggleSwitch = () => {
     drawerSwitch.value.click();
 };
 
+const duration = ref({});
 const eventForm = ref(null);
 const updateCalendarEventForm = (updated) => {
     eventForm.value = {
         ...eventForm.value,
         form: {
             ...eventForm.value.form,
-            updated,
+            ...updated,
         },
     };
+    duration.value = updated;
 };
 const resetCalendarEventForm = () => {
     eventForm.value?.form?.reset();

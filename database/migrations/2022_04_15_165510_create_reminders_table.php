@@ -16,8 +16,8 @@ class CreateRemindersTable extends Migration
         Schema::create('reminders', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
             $table->string('entity_type');
-            $table->string('entity_id');
-            $table->integer('user_id');
+            $table->string('entity_id')->index();
+            $table->integer('user_id')->index();
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             //minutes before an event this should fire.

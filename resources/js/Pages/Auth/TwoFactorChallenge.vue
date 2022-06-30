@@ -115,7 +115,7 @@ export default defineComponent({
                 }
             });
         },
-
+        layout: null,
         submit() {
             this.form.post(this.route("two-factor.login"));
         },

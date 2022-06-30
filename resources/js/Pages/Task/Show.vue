@@ -1,84 +1,91 @@
 <template>
-    <app-layout :title="title">
-        <page-toolbar-nav title="Tasks" :links="navLinks" />
-        <div class="flex flex-row justify-center">
-            <!--            hide month switcher until it does something-->
-            <!--            <month-switcher class="pl-4" />-->
-            <div class="flex flex-col items-center">
-                <task-date-switcher
-                    :startOfTheWeek="startOfTheWeek"
-                    :setStartOfTheWeek="setStartOfTheWeek"
-                    :selectedDate="selectedDate"
-                    :setSelectedDate="setSelectedDate"
-                />
-                <task-list-view
-                    v-for="taskType in taskTypes"
-                    :key="taskType"
-                    :taskType="taskType"
-                    base-route="tasks"
-                    model-name="Task"
-                    model-key="task"
-                    :fields="fields"
-                    :resource="getTaskData(taskType)"
-                    :actions="{
-                        edit: {
-                            label: 'Edit',
-                            handler: ({ data }) => editTask(data, taskType),
-                        },
-                        trash: false,
-                        restore: false,
-                        delete: {
-                            label: 'Delete',
-                            handler: ({ data }) => handleClickDelete(data),
-                        },
-                    }"
-                    :top-actions="topActions"
-                />
-            </div>
+    <LayoutHeader title="Tasks" />
+    <page-toolbar-nav title="Tasks" :links="navLinks" />
+    <div class="flex flex-row justify-center">
+        <!--            hide month switcher until it does something-->
+        <month-switcher class="pl-4" :onChange="switchMonth" />
+        <div class="flex flex-col items-center">
+            <task-date-switcher
+                :startOfTheWeek="startOfTheWeek"
+                :setStartOfTheWeek="setStartOfTheWeek"
+                :selectedDate="selectedDate"
+                :setSelectedDate="setSelectedDate"
+            />
+            <task-list-view
+                v-for="taskType in taskTypes"
+                :key="taskType"
+                :taskType="taskType"
+                base-route="tasks"
+                model-name="Task"
+                model-key="task"
+                :fields="fields"
+                :resource="getTaskData(taskType)"
+                :actions="{
+                    edit: {
+                        label: 'Edit',
+                        handler: ({ data }) => editTask(data, taskType),
+                    },
+                    trash: false,
+                    restore: false,
+                    delete: {
+                        label: 'Delete',
+                        handler: ({ data }) => handleClickDelete(data),
+                    },
+                }"
+                :top-actions="topActions"
+            />
         </div>
-        <confirm
-            title="Really Trash Task?"
-            v-if="confirmDelete"
-            @confirm="handleConfirmDelete"
-            @cancel="confirmDelete = null"
-        >
-            Are you sure you want to delete task'{{ confirmDelete.title }}'
-        </confirm>
+    </div>
+    <confirm
+        title="Really Trash Task?"
+        v-if="confirmDelete"
+        @confirm="handleConfirmDelete"
+        @cancel="confirmDelete = null"
+    >
+        Are you sure you want to delete task'{{ confirmDelete.title }}'
+    </confirm>
 
-        <daisy-modal
-            ref="createEventModal"
-            id="createEventModal"
-            @close="resetCreateEventModal"
-        >
-            <h1 class="font-bold mb-4">Create Event</h1>
-            <calendar-event-form
-                @submitted="closeModals"
-                ref="createCalendarEventForm"
-            />
-        </daisy-modal>
-        <daisy-modal
-            ref="editEventModal"
-            id="editEventModal"
-            @close="resetEditEventModal"
-            class="max-w-screen lg:max-w-[800px]"
-        >
-            <h1 class="font-bold mb-4">Edit Event</h1>
-            <calendar-event-form
-                v-if="selectedCalendarEvent"
-                :calendar_event="selectedCalendarEvent"
-                :key="selectedCalendarEvent"
-                :client_users="client_users"
-                :lead_users="lead_users"
-                :client_id="client_id"
-                @submitted="closeModals"
-                ref="editCalendarEventForm"
-            />
-        </daisy-modal>
-    </app-layout>
+    <daisy-modal
+        ref="createEventModal"
+        id="createEventModal"
+        @close="resetCreateEventModal"
+    >
+        <h1 class="font-bold mb-4">Create Event</h1>
+        <calendar-event-form
+            @submitted="closeModals"
+            ref="createCalendarEventForm"
+            :duration="{
+                start: null,
+            }"
+        />
+    </daisy-modal>
+    <daisy-modal
+        ref="editEventModal"
+        id="editEventModal"
+        @close="resetEditEventModal"
+        class="max-w-screen lg:max-w-[800px]"
+    >
+        <h1 class="font-bold mb-4">Edit Event</h1>
+        <calendar-event-form
+            v-if="selectedCalendarEvent"
+            :calendar_event="selectedCalendarEvent"
+            :key="selectedCalendarEvent"
+            :client_users="client_users"
+            :lead_users="lead_users"
+            :member_users="member_users"
+            :client_id="client_id"
+            @submitted="closeModals"
+            ref="editCalendarEventForm"
+            :duration="{
+                start: selectedCalendarEvent.start,
+                end: selectedCalendarEvent.end,
+            }"
+        />
+    </daisy-modal>
 </template>
 <script>
 import { defineComponent, ref, watch, computed } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
@@ -91,10 +98,11 @@ import TaskDateSwitcher from "./components/TaskDateSwitcher";
 import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher";
 import TaskListView from "./components/TaskListView";
 import pickBy from "lodash/pickBy";
+import { transformDate } from "@/utils/transformDate";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         GymRevenueCrud,
         Confirm,
         DaisyModal,
@@ -112,6 +120,8 @@ export default defineComponent({
         "incomplete_tasks",
         "overdue_tasks",
         "completed_tasks",
+        "lead_users",
+        "member_users",
     ],
     setup(props) {
         const createEventModal = ref();
@@ -155,16 +165,8 @@ export default defineComponent({
 
         const selectedDate = ref(new Date());
 
-        const transformDate = (date) => {
-            if (!date.value?.toISOString) {
-                return date;
-            }
-
-            return date.value.toISOString().slice(0, 10);
-        };
-
         const selectedDateFormatted = computed(() =>
-            transformDate(selectedDate)
+            transformDate(selectedDate.value)
         );
 
         let startDay = new Date();
@@ -177,10 +179,27 @@ export default defineComponent({
         const setStartOfTheWeek = (val) => {
             startOfTheWeek.value = val;
         };
+        const switchMonth = (month) => {
+            let start_date = new Date(
+                startOfTheWeek.value.getFullYear(),
+                month,
+                startOfTheWeek.value.getDate()
+            );
+            setStartOfTheWeek(start_date);
+        };
         const fields = [
-            "title",
-            "created_at",
-            "updated_at",
+            {
+                name: "title",
+                label: "Title",
+            },
+            {
+                name: "start",
+                label: "Due At",
+            },
+            {
+                name: "created_at",
+                label: "Created At",
+            },
             {
                 name: "event_completion",
                 label: "Completed At",
@@ -269,6 +288,7 @@ export default defineComponent({
             taskTypes,
             selectedDateFormatted,
             getTaskData,
+            switchMonth,
         };
     },
 });

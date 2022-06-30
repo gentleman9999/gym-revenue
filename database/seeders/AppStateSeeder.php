@@ -370,5 +370,48 @@ class AppStateSeeder extends Seeder
                 ],
             ],
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 06-29-2022',
+            'value' => '2022-06-29',
+            'misc' => [
+                'buildno' => '20220629',
+                'version' => '0.21.01',
+                'notes' => [
+                    'Calendar - Start and End fields should auto-populate.',
+                    'Calendar - Member Attendees for Calendar Events / Tasks.',
+                    'Profile - Change "Settings" to "Client Settings".',
+                    'My Profile - Contact Preferences Not Saving.',
+                    'Database - Create Indexes.',
+                    'MASS COMM - External Facing webpage for Member Enduser Communication Preferences.',
+                    'MASS COMM - Granular EndUser Communication Preferences.',
+                    'MASS COMM - New Mass Comms Dashboard.',
+                    'REPORTING - Implement real charting/graphing lib for all reporting widgets.',
+                    'Leads List View - Add Reporting Widgets.',
+                    'On New Member - Mark Lead as Converted.',
+                    'Password / Phone number inputs components added.',
+                    'TASKS - Scoped to you.',
+                    'TASKS - month switcher.',
+                    'TASKS - BUG - Werent displaying properly.',
+                    'SECURITY ROLES - BUG - search not working.',
+                    'Convert GymRevenueCruds to use Modals.',
+                    'Default Client Communication Prefs Fix.',
+                    'EmailBuilder - Sync Daisy color palette.',
+                    'Inertia Forms - disable submit button if form.isDirty is false (prevent submitting unchanged data).',
+                    'Inertia Forms - Get dirty fields.',
+                    'Lead / Member CRUD - Delete - Reason.',
+                    'BACKEND - Extract transformDate into utils.',
+                    'BUG - Switching from anything to my profile caused a white screen - fixed.',
+                    'BUG - Locations Page Doesnt need client field.',
+                    'BUG - User List Club filter broke.n',
+                    'Remove unused form fields on updates.',
+                    'Form clean up - remove extra "autofocus" attributes.',
+                    'Cleanup - SIDENAV, Bodies By Brett Team, Impersonation Mode Bugs/Fixes.',
+
+                ],
+            ],
+        ]);
     }
 }

@@ -37,6 +37,22 @@
                                 </div>
                             </div>
                         </td>
+                        <td
+                            v-else-if="
+                                attendee.entity_type ==
+                                'App\\Models\\Endusers\\Member'
+                            "
+                        >
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="font-bold">
+                                        {{ attendee.entity_data.first_name }}
+                                        {{ attendee.entity_data.last_name }}
+                                    </div>
+                                    <div class="text-sm opacity-50">Member</div>
+                                </div>
+                            </div>
+                        </td>
                         <td v-else>
                             <div class="flex items-center space-x-3">
                                 <div>
@@ -81,9 +97,7 @@ label {
 </style>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import { watchEffect } from "vue";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -92,10 +106,10 @@ import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
+import { useGymRevForm } from "@/utils";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -106,7 +120,7 @@ export default {
     setup(props, { emit }) {
         let calendarEvent = props.calendar_event;
 
-        const form = useForm(calendarEvent);
+        const form = useGymRevForm(calendarEvent);
         watchEffect(() => {});
         return {
             form,

@@ -23,7 +23,7 @@
                     />
                 </div>
                 <div>
-                    <img src="/img/mocks/sales_page_1.png" />
+                    <annual-fee-chart :data="splineMock" />
                 </div>
             </div>
         </sales-card>
@@ -35,10 +35,21 @@ import DatePicker from "@vuepic/vue-datepicker";
 import SalesCardWrapper from "../SalesCardWrapper";
 import SalesCard from "@/Components/Card";
 import SelectBox from "@/Components/SelectBox";
+import AnnualFeeChart from "./AnnualFeeChart";
 
 const payMethod = ref("");
 const setPayMethod = (value) => {
     payMethod.value = value;
 };
 const payOptions = ["Credit", "Debit", "Cash"];
+const splineMock = [
+    {
+        name: "series1",
+        data: [31, 40, 28, 51, 42, 109, 100],
+    },
+    {
+        name: "series2",
+        data: [11, 32, 45, 32, 34, 52, 41],
+    },
+];
 </script>

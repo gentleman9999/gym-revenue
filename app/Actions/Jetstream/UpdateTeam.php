@@ -65,7 +65,7 @@ class UpdateTeam implements DeletesTeams
 
         Alert::success("Team '{$team->name}' was updated")->flash();
 
-        return Redirect::back();
+        return Redirect::route('teams.edit', $team->id);
     }
 
     /**

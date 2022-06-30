@@ -15,7 +15,7 @@ class CreateLiveReportsByDaysTable extends Migration
     {
         Schema::create('live_reports_by_days', function (Blueprint $table) {
             $table->id();
-            $table->uuid('client_id');
+            $table->uuid('client_id')->index();
             $table->string('location_id');
             $table->date('date');
             $table->string('entity');

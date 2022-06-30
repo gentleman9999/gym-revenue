@@ -27,10 +27,9 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.last_name"
-                    autofocus
                 />
                 <jet-input-error
-                    :message="form.errors.first_name"
+                    :message="form.errors.last_name"
                     class="mt-2"
                 />
             </div>
@@ -42,7 +41,6 @@
                     type="email"
                     class="block w-full mt-1"
                     v-model="form.email"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
@@ -55,7 +53,6 @@
                     type="email"
                     class="block w-full mt-1"
                     v-model="form.alternate_email"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.alternate_email"
@@ -66,12 +63,10 @@
             <!-- Contact Phone # -->
             <div class="form-control col-span-2">
                 <jet-label for="phone" value="Contact Phone" />
-                <input
+                <phone-input
                     id="phone"
-                    type="tel"
                     class="block w-full mt-1"
                     v-model="form.phone"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
@@ -84,7 +79,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.address1"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.address1" class="mt-2" />
             </div>
@@ -96,7 +90,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.address2"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
@@ -108,7 +101,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.city"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
@@ -117,7 +109,7 @@
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
-                    class="mt-1 multiselect-search"
+                    class="mt-1 multiselect"
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
@@ -135,7 +127,6 @@
                     type="number"
                     class="block w-full mt-1"
                     v-model="form.zip"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
             </div>
@@ -150,7 +141,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.job_title"
-                    autofocus
                 />
                 <jet-input-error
                     :message="form.errors.job_title"
@@ -331,7 +321,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('users'))"
+                @click="handleClickCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -343,7 +333,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -422,9 +412,9 @@
 
 <script>
 import { ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -440,10 +430,12 @@ import Confirm from "@/Components/Confirm";
 import DaisyModal from "@/Components/DaisyModal";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager";
+import { transformDate } from "@/utils/transformDate";
+import PhoneInput from "@/Components/PhoneInput";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -453,8 +445,16 @@ export default {
         Confirm,
         DaisyModal,
         FileManager,
+        PhoneInput,
     },
-    props: ["clientId", "user", "clientName"],
+    props: [
+        "clientId",
+        "user",
+        "clientName",
+        "roles",
+        "classifications",
+        "locations",
+    ],
     emits: ["success"],
     setup(props, { emit }) {
         function notesExpanded(note) {
@@ -468,9 +468,6 @@ export default {
         const wantsToDeleteFile = ref(null);
         const page = usePage();
         let user = props.user;
-        const roles = page.props.value.roles;
-        const classifications = page.props.value.classifications;
-        const locations = page.props.value.locations;
 
         const team_id = page.props.value.user.current_team_id;
 
@@ -528,17 +525,9 @@ export default {
             }
             operation = "Create";
         }
-        const form = useForm(user);
+        const form = useGymRevForm(user);
         let upperCaseF = (text) => {
             form.state = text.toUpperCase();
-        };
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
         };
 
         const transformFormSubmission = (data) => {
@@ -553,8 +542,11 @@ export default {
             return data;
         };
 
+        const modal = useModal();
+
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformFormSubmission)
                 .put(route("users.update", user.id), {
                     onSuccess: () => (form.notes = { title: "", note: "" }),
@@ -564,6 +556,7 @@ export default {
                 form
                     .transform(transformFormSubmission)
                     .post(route("users.store"), {
+                        headers: { "X-Inertia-Modal-Redirect": true },
                         onSuccess: () => (form.notes = { title: "", note: "" }),
                     });
         }
@@ -598,15 +591,22 @@ export default {
             optionsStates.push(states[x].abbreviation);
         }
 
+        const handleClickCancel = () => {
+            console.log("modal", modal.value);
+            if (modal.value.close) {
+                console.log("closing modal");
+                modal.value.close();
+            } else {
+                Inertia.visit(route("users"));
+            }
+        };
+
         return {
             form,
             buttonText: operation,
             operation,
             handleSubmit,
-            roles,
-            classifications,
             upperCaseF,
-            locations,
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             wantsToDeleteFile,
@@ -615,6 +615,7 @@ export default {
             fileManager,
             closeFileManagerModal,
             notesExpanded,
+            handleClickCancel,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()
@@ -626,10 +627,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }

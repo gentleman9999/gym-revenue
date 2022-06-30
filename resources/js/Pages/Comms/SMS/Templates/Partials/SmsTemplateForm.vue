@@ -28,7 +28,6 @@
                 <input
                     type="checkbox"
                     v-model="form.active"
-                    autofocus
                     id="active"
                     class="mt-2"
                     :value="true"
@@ -58,7 +57,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -68,16 +67,14 @@
 </template>
 
 <script>
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -97,10 +94,10 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm(template);
+        const form = useGymRevForm(template);
 
         let handleSubmit = () =>
-            form.put(route("comms.sms-templates.update", template.id));
+            form.dirty().put(route("comms.sms-templates.update", template.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("comms.sms-templates.store"));
         }

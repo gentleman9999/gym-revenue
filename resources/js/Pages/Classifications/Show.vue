@@ -1,33 +1,32 @@
 <template>
-    <app-layout :title="Classifications">
-        <page-toolbar-nav title="Classifications" :links="navLinks" />
-        <gym-revenue-crud
-            base-route="classifications"
-            model-name="Classification"
-            model-key="classification"
-            :fields="fields"
-            :resource="classifications"
-            :actions="{
-                trash: {
-                    handler: ({ data }) => handleClickTrash(data),
-                },
-            }"
-        />
-        <confirm
-            title="Really Trash Classification?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
-        >
-            Are you sure you want to move Classification '{{
-                confirmTrash.title
-            }}' to the trash?<BR />
-        </confirm>
-    </app-layout>
+    <LayoutHeader title="Classifications" />
+    <page-toolbar-nav title="Classifications" :links="navLinks" />
+    <gym-revenue-crud
+        base-route="classifications"
+        model-name="Classification"
+        model-key="classification"
+        :fields="fields"
+        :resource="classifications"
+        :actions="{
+            trash: {
+                handler: ({ data }) => handleClickTrash(data),
+            },
+        }"
+    />
+    <confirm
+        title="Really Trash Classification?"
+        v-if="confirmTrash"
+        @confirm="handleConfirmTrash"
+        @cancel="confirmTrash = null"
+    >
+        Are you sure you want to move Classification '{{ confirmTrash.title }}'
+        to the trash?<BR />
+    </confirm>
 </template>
+
 <script>
 import { defineComponent, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm";
@@ -38,7 +37,7 @@ import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         GymRevenueCrud,
         Confirm,
         JetBarContainer,

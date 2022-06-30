@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Actions\Endusers\Leads\SubscribeLeadToComms;
-use App\Actions\Endusers\Leads\UnsubscribeLeadFromComms;
+use App\Actions\Endusers\Leads\UpdateLeadCommunicationPreferences;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\LeadAggregate;
 use App\Http\Controllers\Controller;
@@ -69,6 +68,7 @@ class LeadsController extends Controller
                     'agreementSearch',
                     'lastupdated'
                 ))
+                ->whereNull('converted_at')
                 ->orderBy('created_at', 'desc')
                 ->sort()
                 ->paginate($page_count)
@@ -711,19 +711,18 @@ class LeadsController extends Controller
         return $prospects;
     }
 
-    public function communicationPreferences(Request $request, Lead $lead)
+    public function leadCommunicationPreferences(Request $request, Lead $lead)
     {
-        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead]);
+        return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead']);
     }
 
-    public function updateCommunicationPreferences(Request $request, Lead $lead)
+    public function updateLeadCommunicationPreferences(Request $request, Lead $lead)
     {
-        if ($request->subscribe) {
-            $lead = SubscribeLeadToComms::run($lead->id);
-        } else {
-            $lead = UnsubscribeLeadFromComms::run($lead->id);
-        }
+        $lead = UpdateLeadCommunicationPreferences::run($lead->id, [
+            'email' => $request->subscribe_email === 'on' ? false : true,
+            'sms' => $request->subscribe_sms === 'on' ? false : true,
+            ]);
 
-        return view('comms-prefs', ['client' => $lead->client, 'lead' => $lead, 'success' => true]);
+        return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead', 'success' => true]);
     }
 }

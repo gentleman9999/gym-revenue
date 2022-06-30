@@ -15,7 +15,7 @@ class CreateAudienceDetailsTable extends Migration
     {
         Schema::create('audience_details', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->uuid('audience_id')->nullable();
             $table->string('detail');
             $table->longText('value')->nullable();

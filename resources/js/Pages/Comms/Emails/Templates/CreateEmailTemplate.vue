@@ -1,18 +1,16 @@
 <template>
     <ModalableWrapper>
-        <app-layout title="Create Email Template">
-            <template #header>
-                <h2 class="font-semibold text-xl leading-tight">
-                    Create Email Template
-                </h2>
-            </template>
+        <LayoutHeader title="Create Email Template">
+            <h2 class="font-semibold text-xl leading-tight">
+                Create Email Template
+            </h2>
+        </LayoutHeader>
 
-            <div>
-                <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    <ModalSlot />
-                </div>
+        <div>
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                <ModalSlot />
             </div>
-        </app-layout>
+        </div>
         <template #modal>
             <email-template-form
                 :client-id="$page.props.user.current_client_id"
@@ -26,7 +24,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -49,7 +47,7 @@ export default defineComponent({
         },
     },
     components: {
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
         JetInputError,

@@ -16,6 +16,7 @@
                     :data="data"
                     :columns="columns"
                     noHeader
+                    :borderSeprated="false"
                     class="overflow-hidden"
                 />
             </div>

@@ -102,7 +102,7 @@
                 class="btn btn-error"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Cancel
             </button>
@@ -110,7 +110,7 @@
             <button
                 class="btn btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || formInvalid"
+                :disabled="form.processing || formInvalid || !form.isDiry"
                 :loading="form.processing"
             >
                 Save
@@ -121,7 +121,7 @@
 
 <script setup>
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import FileUploadForm from "@/Pages/Files/Partials/FileUploadForm";
@@ -146,7 +146,7 @@ const uploadDragoverTracking = ref(false);
 const uploadDragoverEvent = ref(false);
 const uploadProgress = ref(null);
 
-const form = useForm({
+const form = useGymRevForm({
     files: [],
 });
 

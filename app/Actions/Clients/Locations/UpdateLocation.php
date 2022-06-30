@@ -22,19 +22,19 @@ class UpdateLocation
     {
         return [
             'poc_last' => ['sometimes'],
-            'name' => ['required', 'max:50'],
-            'city' => ['required', 'max:30'],
-            'state' => ['required', 'size:2'],
-            'client_id' => ['required', 'exists:clients,id'],
-            'address1' => ['required','max:200'],
+            'name' => ['sometimes', 'required', 'max:50'],
+            'city' => ['sometimes', 'required', 'max:30'],
+            'state' => ['sometimes', 'required', 'size:2'],
+//            'client_id' => ['sometimes', 'required', 'exists:clients,id'],
+            'address1' => ['sometimes', 'required','max:200'],
             'address2' => [],
-            'zip' => ['required', 'size:5'],
-            'phone' => [],
-            'poc_first' => [],
-            'poc_phone' => [],
-            'open_date' => [],
-            'close_date' => [],
-            'location_no' => ['required', 'max:50', 'exists:locations,location_no'],
+            'zip' => ['sometimes', 'required', 'size:5'],
+            'phone' => ['sometimes', ],
+            'poc_first' => ['sometimes', ],
+            'poc_phone' => ['sometimes', ],
+            'open_date' => ['sometimes', ],
+            'close_date' => ['sometimes', ],
+            'location_no' => ['sometimes', 'required', 'max:50', 'exists:locations,location_no'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
         ];
@@ -58,6 +58,8 @@ class UpdateLocation
     {
         $data = $request->validated();
         $data['id'] = $id;
+        $data['client_id'] = $request->user()->currentClientId();
+
         $location = $this->handle(
             $data,
             $request->user(),
@@ -65,7 +67,7 @@ class UpdateLocation
 
         Alert::success("Location '{$location->name}' was updated")->flash();
 
-//        return Redirect::route('users');
-        return Redirect::back();
+        return Redirect::route('locations.edit', $location->id);
+//        return Redirect::back();
     }
 }

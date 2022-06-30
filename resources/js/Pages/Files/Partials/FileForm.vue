@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -73,7 +73,6 @@ import JetLabel from "@/Jetstream/Label";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
 
@@ -86,10 +85,10 @@ export default {
         let urlPrev = usePage().props.value.urlPrev;
         let file = props.file;
 
-        const form = useForm(file);
+        const form = useGymRevForm(file);
 
         let handleSubmit = async () => {
-            await form.put(route("files.rename", file.id));
+            await form.dirty().put(route("files.rename", file.id));
             emit("success");
         };
 

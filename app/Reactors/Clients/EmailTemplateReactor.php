@@ -17,7 +17,9 @@ class EmailTemplateReactor extends Reactor implements ShouldQueue
 
     public function onEmailTemplateUpdated(EmailTemplateUpdated $event)
     {
-        $this->generateThumbnail($event->data['id'], $event->data['markup']);
+        if (array_key_exists('markup', $event->data)) {
+            $this->generateThumbnail($event->data['id'], $event->data['markup']);
+        }
     }
 
     public function generateThumbnail($id, $html)

@@ -83,9 +83,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="primary_phone" value="Primary Phone" />
-                <input
+                <phone-input
                     id="primary_phone"
-                    type="tel"
                     v-model="form['primary_phone']"
                 />
                 <jet-input-error
@@ -95,9 +94,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
-                <input
+                <phone-input
                     id="alternate_phone"
-                    type="tel"
                     v-model="form['alternate_phone']"
                 />
                 <jet-input-error
@@ -129,16 +127,12 @@
                     class="mt-2"
                 />
             </div>
-            <div
-                class="form-control col-span-2"
-                v-if="lead['agreement_number']"
-            >
+            <div class="form-control col-span-2" v-if="lead?.agreement_number">
                 <jet-label for="agreement_number" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
                     v-model="lead['agreement_number']"
-                    autofocus
                     class="opacity-70"
                     id="agreement_number"
                 />
@@ -152,7 +146,7 @@
                     class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
                 />
             </div>
-            <div class="form-control col-span-2" v-if="lead['external_id']">
+            <div class="form-control col-span-2" v-if="lead?.external_id">
                 <jet-label for="external_id" value="External ID" />
                 <input
                     disabled
@@ -221,7 +215,7 @@
                     class="mt-2"
                 />
             </div>
-
+            <!-- lead owner dropdown will not disable if field is only unchanged field -->
             <div class="form-control col-span-2">
                 <jet-label for="lead_owner" value="Lead Owner" />
                 <select
@@ -380,7 +374,7 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -391,26 +385,25 @@
 
 <script>
 import { computed, watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
-import { useGoBack } from "@/utils";
+import { useGoBack, useGymRevForm } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { transformDate } from "@/utils/transformDate";
+import PhoneInput from "@/Components/PhoneInput";
 
 library.add(faUserCircle);
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         FontAwesomeIcon,
@@ -418,6 +411,7 @@ export default {
         JetLabel,
         DatePicker,
         VueJsonPretty,
+        PhoneInput,
     },
     props: [
         "userId",
@@ -465,20 +459,20 @@ export default {
         let leadData = null;
         if (!lead) {
             leadData = {
-                first_name: null,
-                middle_name: null,
-                last_name: null,
-                email: null,
-                primary_phone: null,
-                alternate_phone: null,
-                club_id: null,
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                email: "",
+                primary_phone: "",
+                alternate_phone: "",
+                club_id: "",
                 client_id: props.clientId,
-                gr_location_id: null,
-                lead_type_id: null,
-                lead_source_id: null,
-                profile_picture: null,
+                gr_location_id: "",
+                lead_type_id: "",
+                lead_source_id: "",
+                profile_picture: "",
                 gender: "",
-                date_of_birth: "",
+                date_of_birth: null,
                 opportunity: "",
                 lead_owner: props.userId,
                 lead_status: "",
@@ -506,14 +500,8 @@ export default {
                 notes: { title: "", note: "" },
             };
 
-            leadData["lead_owner"] =
-                "lead_owner" in lead && lead.lead_owner !== null
-                    ? lead.lead_owner.value
-                    : "";
-            leadData["lead_status"] =
-                "lead_status" in lead && lead.lead_status !== null
-                    ? lead.lead_status.value
-                    : "";
+            leadData["lead_owner"] = props.lead?.lead_owner?.value || "";
+            leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>
             "last_updated" in lead && lead.last_updated
@@ -522,22 +510,24 @@ export default {
                   ).toLocaleDateString("en-US")}`
                 : "This lead has never been updated"
         );
-        const form = useForm(leadData);
-        const fileForm = useForm({ file: null });
+        const form = useGymRevForm(leadData);
+        const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
             if (!data.notes?.title) {
                 delete data.notes;
             }
+            data.date_of_birth = transformDate(data.date_of_birth);
             return data;
         };
 
-        let handleSubmit = () =>
-            form
+        let handleSubmit = () => {
+            form.dirty()
                 .transform(transformFormSubmission)
                 .put(`/data/leads/${lead.id}`, {
                     preserveState: false,
                 });
+        };
 
         if (operation === "Create") {
             handleSubmit = () =>
@@ -594,10 +584,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }

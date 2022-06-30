@@ -51,7 +51,10 @@
 
                     <Button
                         :class="{ 'opacity-25': addTeamMemberForm.processing }"
-                        :disabled="addTeamMemberForm.processing"
+                        :disabled="
+                            addTeamMemberForm.processing ||
+                            !addTeamMemberForm.isDirty
+                        "
                     >
                         Add
                     </Button>
@@ -365,6 +368,10 @@ export default defineComponent({
             type: Array,
             default: [],
         },
+        availableUsers: {
+            type: Array,
+            default: [],
+        },
         userPermissions: {
             type: Array,
             default: [],
@@ -453,6 +460,7 @@ export default defineComponent({
         },
 
         confirmTeamMemberRemoval(teamMember) {
+            console.log({ teamMember });
             this.teamMemberBeingRemoved = teamMember;
         },
 
@@ -469,7 +477,6 @@ export default defineComponent({
                     // onSuccess: () => (this.teamMemberBeingRemoved = null),
                     onSuccess: () => {
                         this.teamMemberBeingRemoved = null;
-                        this.$inertia.reload();
                     },
                 }
             );
@@ -480,9 +487,6 @@ export default defineComponent({
         },
     },
     computed: {
-        availableUsers() {
-            return this.$inertia.page.props?.availableUsers || [];
-        },
         userIds() {
             return this.users?.map((user) => user.id) || [];
         },
