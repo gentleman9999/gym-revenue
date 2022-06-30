@@ -6,7 +6,6 @@ import {homedir} from 'os'
 import path, {resolve} from 'path'
 import { ViteWebfontDownload } from 'vite-plugin-webfont-dl';
 
-
 const host = process.env.APP_URL;
 
 export default defineConfig({
@@ -66,3 +65,6 @@ function detectServerConfig(host) {
         },
     }
 }
+
+//If we ever need client-side image optimization:
+//https://github.com/ElMassimo/vite-plugin-image-presets
