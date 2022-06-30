@@ -4,6 +4,7 @@ import fs from 'fs';
 import laravel from 'laravel-vite-plugin'
 import {homedir} from 'os'
 import path, {resolve} from 'path'
+import { ViteWebfontDownload } from 'vite-plugin-webfont-dl';
 
 
 const host = process.env.APP_URL;
@@ -32,7 +33,8 @@ export default defineConfig({
                     });
                 }
             },
-        }
+        },
+        ViteWebfontDownload(),
     ],
     resolve: {
         alias: {
