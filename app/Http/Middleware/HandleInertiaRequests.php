@@ -56,6 +56,7 @@ class HandleInertiaRequests extends Middleware
             })->pluck('name');
             $shared = [
                 'user.id' => $user->id,
+                'user.contact_preference' => $user->contact_preference,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
@@ -103,13 +104,13 @@ class HandleInertiaRequests extends Middleware
     {
         $response = parent::handle($request, $next);
 
-        if ($response instanceof RedirectResponse && $request->hasHeader('X-Inertia-Modal-Redirect-Back')) {
-//            dd($response);
-            return back(303);
-        }
-
         if ($request->hasHeader('X-Inertia-Modal')) {
             $response->headers->set('X-Inertia-Modal', $request->header('X-Inertia-Modal'));
+        }
+
+        if ($response instanceof RedirectResponse && ($request->hasHeader('X-Inertia-Modal-Redirect-Back'))) {
+//            dd($response);
+            return back(303);
         }
 
         return $response;

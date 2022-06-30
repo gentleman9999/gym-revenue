@@ -1,24 +1,22 @@
 <template>
-    <app-layout title="Create Security Role">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">
-                Create Classification
-            </h2>
-        </template>
+    <LayoutHeader title="Create Security Role">
+        <h2 class="font-semibold text-xl leading-tight">
+            Create Classification
+        </h2>
+    </LayoutHeader>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <classification-form
-                    :client-id="$page.props.user.current_client_id"
-                />
-            </div>
+    <div>
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <classification-form
+                :client-id="$page.props.user.current_client_id"
+            />
         </div>
-    </app-layout>
+    </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 
@@ -30,7 +28,7 @@ import ClassificationForm from "@/Pages/Classifications/Partials/ClassificationF
 export default defineComponent({
     components: {
         ClassificationForm,
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
         JetInputError,

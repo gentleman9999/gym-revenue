@@ -15,7 +15,7 @@ class CreateClientServices extends Migration
     {
         Schema::create('client_services', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->string('feature_name');
             $table->string('slug');
             $table->boolean('active')->default(0);

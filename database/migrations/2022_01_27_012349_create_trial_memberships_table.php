@@ -15,13 +15,16 @@ class CreateTrialMembershipsTable extends Migration
     {
         Schema::create('trial_memberships', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('client_id');
+            $table->uuid('client_id')->index();
             $table->uuid('type_id');
             $table->uuid('lead_id');
             $table->timestamp('start_date')->nullable();
             $table->timestamp('expiry_date')->nullable();
             $table->uuid('club_id');
             $table->boolean('active')->default(0);
+            $table->index(['client_id', 'type_id']);
+            $table->index(['client_id', 'lead_id']);
+            $table->index(['client_id', 'club_id']);
             $table->timestamps();
             $table->softDeletes();
         });

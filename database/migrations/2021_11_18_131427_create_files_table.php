@@ -27,6 +27,7 @@ class CreateFilesTable extends Migration
             $table->string('permissions')->default('[]');
             $table->string('entity_type')->nullable();
             $table->string('entity_id')->nullable();
+            $table->index(['client_id', 'user_id']);
             $table->softDeletes();
             $table->timestamps();
         });

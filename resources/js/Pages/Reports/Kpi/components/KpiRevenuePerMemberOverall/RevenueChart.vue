@@ -1,7 +1,105 @@
 <template>
-    <div class="flex border border-secondary rounded-lg">
-        <img src="/img/mocks/kpi_revenue.png" class="w-full" />
-    </div>
+    <apex-charts type="area" :options="options" :series="data"></apex-charts>
 </template>
-<style scope></style>
-<script></script>
+<script setup>
+import ApexCharts from "vue3-apexcharts";
+
+const props = defineProps({
+    data: {
+        type: Array,
+        default: [],
+    },
+});
+
+const options = {
+    chart: {
+        type: "spline",
+        toolbar: {
+            show: false,
+        },
+    },
+    annotations: {
+        xaxis: [
+            {
+                x: 1,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+                borderWidth: 3,
+            },
+            {
+                x: 3,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+                borderWidth: 3,
+            },
+            {
+                x: 5,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+                borderWidth: 3,
+            },
+            {
+                x: 7,
+                strokeDashArray: 0,
+                style: {
+                    color: "hsl(var(--bc))",
+                },
+                borderWidth: 3,
+            },
+        ],
+    },
+    colors: ["hsl(var(--s))", "hsl(var(--su))"],
+    dataLabels: {
+        enabled: false,
+    },
+    fill: {
+        opacity: 0.1,
+        type: "gradient",
+        gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0,
+            opacityTo: 0,
+            stops: [20, 100, 100, 100],
+        },
+    },
+    grid: {
+        show: false,
+    },
+    legend: {
+        show: false,
+    },
+    stroke: {
+        curve: "smooth",
+        width: 1,
+    },
+    xaxis: {
+        grid: false,
+        tooltip: { enabled: false },
+        axisBorder: {
+            show: false,
+        },
+        axisTicks: {
+            show: false,
+        },
+        padding: {
+            left: 5,
+        },
+        tickAmount: 3,
+    },
+    yaxis: {
+        tickAmount: 5,
+        labels: {
+            style: {
+                colors: "hsl(var(--bc))",
+            },
+        },
+    },
+};
+</script>

@@ -15,13 +15,15 @@ class CreateClientBillableActivitiesTable extends Migration
     {
         Schema::create('client_billable_activities', function (Blueprint $table) {
             $table->id();
-            $table->uuid('client_id');
+            $table->uuid('client_id')->index();
             $table->string('desc')->nullable();
             $table->string('entity_type');
             $table->string('entity_id');
             $table->integer('units');
             $table->longText('misc');
             $table->string('triggered_by_user_id');
+            $table->index(['client_id', 'entity_id']);
+
             $table->timestamps();
             $table->softDeletes();
         });

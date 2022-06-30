@@ -46,7 +46,7 @@
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
-                    class="mt-1 multiselect-search"
+                    class="mt-1 multiselect"
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
@@ -185,7 +185,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -195,9 +195,9 @@
 </template>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -207,10 +207,10 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -233,26 +233,26 @@ export default {
         const page = usePage();
 
         let location = props.location;
-        let poc_first = page.props.value.poc_first;
-        let poc_last = page.props.value.poc_last;
-        let poc_phone = page.props.value.poc_phone;
+        let poc_first = props.poc_first;
+        let poc_last = props.poc_last;
+        let poc_phone = props.poc_phone;
 
         let operation = "Update";
         if (!location) {
             location = {
-                name: null,
-                city: null,
-                state: null,
-                address1: null,
-                address2: null,
-                zip: null,
-                phone: null,
-                poc_first: null,
-                poc_last: null,
-                poc_phone: null,
+                name: "",
+                city: "",
+                state: "",
+                address1: "",
+                address2: "",
+                zip: "",
+                phone: "",
+                poc_first: "",
+                poc_last: "",
+                poc_phone: "",
                 open_date: null,
                 close_date: null,
-                location_no: null,
+                location_no: "",
                 client_id: props.clientId,
             };
             operation = "Create";
@@ -267,25 +267,18 @@ export default {
             location.address2 = location.address2;
         }
 
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
-
         const transformData = (data) => ({
             ...data,
             open_date: transformDate(data.open_date),
             close_date: transformDate(data.close_date),
         });
 
-        const form = useForm(location);
+        const form = useGymRevForm(location);
         //
         //    form.put(`/locations/${location.id}`);
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformData)
                 .put(route("locations.update", location.id));
 

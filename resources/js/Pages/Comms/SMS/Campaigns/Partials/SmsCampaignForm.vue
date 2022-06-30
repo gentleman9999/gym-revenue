@@ -14,7 +14,6 @@
                 <input
                     type="checkbox"
                     v-model="form.active"
-                    autofocus
                     id="active"
                     class="mt-2"
                 />
@@ -162,7 +161,7 @@
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Cancel
             </Button>
@@ -197,9 +196,8 @@
 
 <script>
 import { computed, ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
 import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -207,12 +205,11 @@ import Confirm from "@/Components/Confirm";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
 
 export default {
     name: "SmsCampaignForm",
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -261,13 +258,17 @@ export default {
         }
 
         console.log("campaign Params", campaign);
-        const form = useForm(campaign);
+        const form = useGymRevForm(campaign);
 
         let handleSubmit = () => {
-            form.transform((data) => ({
-                ...data,
-                schedule_date: scheduleNow.value ? "now" : data.schedule_date,
-            })).put(route("comms.sms-campaigns.update", campaign.id));
+            form.dirty()
+                .transform((data) => ({
+                    ...data,
+                    schedule_date: scheduleNow.value
+                        ? "now"
+                        : data.schedule_date,
+                }))
+                .put(route("comms.sms-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
             handleSubmit = () => form.post(route("comms.sms-campaigns.store"));

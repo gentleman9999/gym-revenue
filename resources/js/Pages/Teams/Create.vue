@@ -1,26 +1,39 @@
 <template>
-    <app-layout title="Create Team">
-        <template #header>
+    <ModalableWrapper>
+        <LayoutHeader>
             <h2 class="font-semibold text-xl leading-tight">Create Team</h2>
-        </template>
+        </LayoutHeader>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <team-form />
+                <ModalSlot />
             </div>
         </div>
-    </app-layout>
+        <template #modal>
+            <team-form />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import TeamForm from "@/Pages/Teams/Partials/TeamForm";
+
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         TeamForm,
+        ModalableWrapper,
+        ModalSlot,
+    },
+    props: {
+        availableLocations: {
+            type: Array,
+            required: true,
+        },
     },
 });
 </script>

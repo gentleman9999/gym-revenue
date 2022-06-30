@@ -1,4 +1,5 @@
 <template>
+    <LayoutHeader title="File Manager"> Location Details </LayoutHeader>
     <jet-form-section @submitted="handleSubmit">
         <!--        <template #title>-->
         <!--            Location Details-->
@@ -135,9 +136,9 @@
 
 <script setup>
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout.vue";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
@@ -165,7 +166,7 @@ const uploadDragoverTracking = ref(false);
 const uploadDragoverEvent = ref(false);
 const uploadProgress = ref(null);
 
-const form = useForm({
+const form = useGymRevForm({
     files: [],
 });
 

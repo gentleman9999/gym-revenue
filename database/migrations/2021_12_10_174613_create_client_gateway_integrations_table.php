@@ -17,10 +17,11 @@ class CreateClientGatewayIntegrationsTable extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuid('gateway_id');
             $table->string('gateway_slug');
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->uuid('provider_type')->nullable();
             $table->string('nickname');
             $table->boolean('active')->default(1);
+            $table->index(['client_id', 'gateway_id']);
             $table->timestamps();
             $table->softDeletes();
         });

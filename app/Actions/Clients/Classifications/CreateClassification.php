@@ -57,6 +57,6 @@ class CreateClassification
 
         Alert::success("Classification '{$classification->title}' was created")->flash();
 
-        return Redirect::route('classifications');
+        return Redirect::route('classifications.edit', $classification->id);
     }
 }

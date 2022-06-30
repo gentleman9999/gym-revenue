@@ -71,7 +71,7 @@ export default defineComponent({
             this.form.post(this.route("verification.send"));
         },
     },
-
+    layout: null,
     computed: {
         verificationLinkSent() {
             return this.status === "verification-link-sent";

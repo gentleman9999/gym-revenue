@@ -26,7 +26,7 @@ class UsersController extends Controller
         $clubs = [];
         $teams = [];
         $clientName = 'Cape & Bay/GymRevenue';
-        $filterKeys = ['search', 'club', 'team', 'roles'];
+        $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
         $team_users = User::with(['teams', 'home_location', 'roles'])
@@ -162,7 +162,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = $me->with(['details','notes','files'])->findOrFail($id);
+        $user = $me->with(['details','notes','files', 'contact_preference'])->findOrFail($id);
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');

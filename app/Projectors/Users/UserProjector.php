@@ -2,6 +2,7 @@
 
 namespace App\Projectors\Users;
 
+use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Client;
 use App\Models\Note;
 use App\Models\Notification;
@@ -10,6 +11,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\UserDetails;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
+use App\StorableEvents\Clients\Tasks\TaskMarkedComplete;
 use App\StorableEvents\Clients\Tasks\TaskMarkedIncomplete;
 use App\StorableEvents\Clients\Tasks\TaskTrashed;
 use App\StorableEvents\Clients\Tasks\TaskUpdated;
@@ -41,7 +43,7 @@ class UserProjector extends Projector
             $user = User::create($user_table_data);
 
             $details = [
-                'contact_preference' => $data['contact_preference'] ?? null,
+                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
             ];
 
             // Go through the details and create them in the user_details via the
@@ -121,8 +123,8 @@ class UserProjector extends Projector
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data, $event) {
-            $user = User::with(['teams'])->findOrFail($data['id']);
-            $data['name'] = "{$data['first_name']} {$data['last_name']}";
+            $user = User::with(['teams'])->findOrFail($event->aggregateRootUuid());
+//            $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
             $user->updateOrFail($data);
 
@@ -240,7 +242,7 @@ class UserProjector extends Projector
 
     public function onTaskMarkedComplete(TaskMarkedComplete $event)
     {
-        Tasks::findOrFail($event->data['id'])->update(['completed_at' => $event->created_at]);
+        CalendarEvent::findOrFail($event->id)->update(['event_completion' => $event->createdAt()]);
     }
 
     public function onTaskMarkedIncomplete(TaskMarkedIncomplete $event)

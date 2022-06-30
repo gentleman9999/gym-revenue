@@ -182,7 +182,8 @@ class User extends Authenticatable
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('phone', 'like', '%' . $search . '%')
                     ->orWhere('address1', 'like', '%' . $search . '%')
@@ -192,10 +193,14 @@ class User extends Authenticatable
                     ->orWhere('zip', 'like', '%' . $search . '%');
             });
         })->when($filters['club'] ?? null, function ($query, $club_id) {
-            $query->whereHas('teams', function ($query) use ($club_id) {
+            /*$query->whereHas('teams', function ($query) use ($club_id) {
                 return $query->whereHas('detail', function ($query) use ($club_id) {
                     return $query->whereName('team-location')->whereValue($club_id);
                 });
+            });*/
+            //This returns home club location instead of the above clubs a user is a part of.
+            $query->where(function ($query) use ($club_id) {
+                $query->where('home_location_id', '=', $club_id);
             });
         })->when($filters['team'] ?? null, function ($query, $team_id) {
             $query->whereHas('teams', function ($query) use ($team_id) {

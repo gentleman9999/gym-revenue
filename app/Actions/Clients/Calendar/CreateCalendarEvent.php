@@ -7,6 +7,7 @@ use App\Helpers\Uuid;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -34,6 +35,7 @@ class CreateCalendarEvent
             'client_id' => ['required', 'exists:clients,id'],
             'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
+            'member_attendees' => ['sometimes'],
         ];
     }
 
@@ -88,8 +90,29 @@ class CreateCalendarEvent
             }
         }
 
+        if (! empty($data['member_attendees'])) {
+            $data['member_attendees'] = array_values(array_unique($data['member_attendees'])); //This will dupe check and then re-index the array.
+            foreach ($data['member_attendees'] as $member) {
+                $member = Member::whereId($member)->select('id', 'first_name', 'last_name', 'email')->first();
+                if ($member) {
+                    CalendarAggregate::retrieve($data['client_id'])
+                        ->addCalendarAttendee(
+                            $user->id ?? "Auto Generated",
+                            [
+                                'entity_type' => Member::class,
+                                'entity_id' => $member->id,
+                                'entity_data' => $member,
+                                'calendar_event_id' => $data['id'],
+                                'invitation_status' => 'Invitation Pending',
+                            ]
+                        )->persist();
+                }
+            }
+        }
+
         unset($data['user_attendees']);
         unset($data['lead_attendees']);
+        unset($data['member_attendees']);
 
         if ($user) {
             $data['owner_id'] = $user->id;

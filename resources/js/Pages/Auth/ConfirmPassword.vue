@@ -16,10 +16,9 @@
         <form @submit.prevent="submit">
             <div>
                 <jet-label for="password" value="Password" />
-                <input
+                <password-input
                     id="password"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
@@ -49,6 +48,7 @@ import Button from "@/Components/Button";
 
 import JetLabel from "@/Jetstream/Label";
 import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import PasswordInput from "@/Components/PasswordInput";
 
 export default defineComponent({
     components: {
@@ -59,6 +59,7 @@ export default defineComponent({
 
         JetLabel,
         JetValidationErrors,
+        PasswordInput,
     },
 
     data() {
@@ -68,7 +69,7 @@ export default defineComponent({
             }),
         };
     },
-
+    layout: null,
     methods: {
         submit() {
             this.form.post(this.route("password.confirm"), {

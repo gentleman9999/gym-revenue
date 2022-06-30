@@ -51,6 +51,7 @@
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
+        <!-- can not accurately test button disabled because of error invalid date -->
         <template v-if="calendar_event?.type.type !== 'Task'">
             <div class="flex flex-col">
                 <jet-label for="end" value="Ends" />
@@ -131,11 +132,18 @@
                 v-model="form.event_type_id"
                 class="bg-neutral-100 text-neutral-900"
             >
-                <option v-for="{ id, name } in calendarEventTypes" :value="id">
+                <option
+                    v-for="{ id, name } in calendarEventTypes"
+                    :value="id"
+                    :key="id"
+                >
                     {{ name }}
                 </option>
             </select>
-            <jet-input-error :message="form.errors.type" class="mt-2" />
+            <jet-input-error
+                :message="form.errors.event_type_id"
+                class="mt-2"
+            />
         </div>
         <div class="col-span-6"></div>
 
@@ -155,7 +163,25 @@
                     }))
                 "
                 :classes="multiselectClasses"
-                :disabled="calendar_event?.type.type === 'Task'"
+            />
+        </div>
+
+        <div class="col-span-3">
+            <jet-label for="member_attendees" value="Select Member Attendees" />
+            <multiselect
+                v-model="form.member_attendees"
+                class="py-2 bg-neutral-100 text-neutral-900"
+                id="member_attendees"
+                mode="tags"
+                :close-on-select="false"
+                :create-option="true"
+                :options="
+                    this.$page.props.member_users.map((user) => ({
+                        label: user.first_name + ' ' + user.last_name,
+                        value: user.id,
+                    }))
+                "
+                :classes="multiselectClasses"
             />
         </div>
 
@@ -180,6 +206,27 @@
             <button @click.prevent="handleClickUpload">
                 <add-icon />
             </button>
+        </div>
+
+        <div
+            class="flex flex-row space-x-2 items-center"
+            v-if="
+                calendar_event?.event_completion == null &&
+                calendar_event?.type.type == 'Task'
+            "
+        >
+            <jet-label for="complete_event" value="Event Completion" />
+            <Button
+                @click.prevent="handleCompleteTask(calendar_event.id)"
+                secondary
+                size="sm"
+            >
+                Complete Task
+            </Button>
+            <jet-input-error
+                :message="form.errors.complete_event"
+                class="mt-2"
+            />
         </div>
 
         <template v-if="calendar_event?.im_attending">
@@ -253,7 +300,7 @@
                 @click="handleSubmit"
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 size="sm"
             >
@@ -261,7 +308,7 @@
             </Button>
         </div>
 
-        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal" @close="">
+        <daisy-modal ref="showAttendeesModal" id="showAttendeesModal">
             <h1 class="font-bold mb-4">Attendees</h1>
             <attendees-form
                 @submitted="closeModals"
@@ -270,7 +317,7 @@
             />
         </daisy-modal>
 
-        <daisy-modal ref="showFilesModal" id="showFilesModal" @close="">
+        <daisy-modal ref="showFilesModal" id="showFilesModal">
             <h1 class="font-bold mb-4">File Attachments</h1>
             <files-form
                 @submitted="closeModals"
@@ -315,9 +362,8 @@ label {
 </style>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { computed, watch, watchEffect, ref } from "vue";
 import Button from "@/Components/Button";
 import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
@@ -328,15 +374,15 @@ import DaisyModal from "@/Components/DaisyModal";
 import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
 import FilesForm from "@/Pages/Calendar/Partials/FilesForm";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 import FileManager from "./FileManager";
 import { Inertia } from "@inertiajs/inertia";
 import FileIcon from "@/Components/Icons/File";
 import AddIcon from "@/Components/Icons/Add";
+import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -350,7 +396,14 @@ export default {
         FileIcon,
         AddIcon,
     },
-    props: ["client_id", "calendar_event", "client_users", "lead_users"],
+    props: [
+        "client_id",
+        "calendar_event",
+        "client_users",
+        "lead_users",
+        "member_users",
+        "duration",
+    ],
     setup(props, { emit }) {
         const page = usePage();
 
@@ -360,6 +413,11 @@ export default {
         };
         const handleReminderCreate = (id) => {
             Inertia.put(route("calendar.reminder.create", id));
+            emit("submitted");
+        };
+
+        const handleCompleteTask = (id) => {
+            Inertia.put(route("calendar.complete_event", id));
             emit("submitted");
         };
 
@@ -387,16 +445,19 @@ export default {
         let operation = "Update";
         if (!calendarEvent) {
             calendarEventForm = {
-                title: null,
-                description: null,
-                full_day_event: false,
-                start: null,
-                end: null,
-                event_type_id: null,
+                title: "",
+                description: "",
+                full_day_event: "",
+                start: props.duration.start ?? null,
+                end: props.duration.end
+                    ? props.duration.end
+                    : props.duration.start,
+                event_type_id: "",
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
-                lead_attendees: null,
-                my_reminder: null,
+                lead_attendees: [] ?? "",
+                member_attendees: [],
+                my_reminder: "",
             };
             operation = "Create";
         } else {
@@ -404,8 +465,8 @@ export default {
                 title: calendarEvent.title,
                 description: calendarEvent.description,
                 full_day_event: calendarEvent.full_day_event,
-                start: calendarEvent.start,
-                end: calendarEvent.end,
+                start: calendarEvent.start + " UTC",
+                end: calendarEvent.end + " UTC",
                 event_type_id: calendarEvent.event_type_id,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees:
@@ -416,51 +477,33 @@ export default {
                     calendarEvent.lead_attendees?.map(
                         (lead_attendee) => lead_attendee.id
                     ) || [],
+                member_attendees:
+                    calendarEvent.member_attendees?.map(
+                        (member_attendee) => member_attendee.id
+                    ) || [],
                 my_reminder: calendar_event?.my_reminder?.remind_time,
             };
         }
 
-        const form = useForm(calendarEventForm);
+        const form = useGymRevForm(calendarEventForm);
 
-        watchEffect(() => {
-            if (form.end) {
-                return;
-            }
-            let start = form.start;
-
-            let end = form.end;
-            let tempEnd = false;
-            if (typeof start === "string") {
-                start = new Date(Date.parse(start));
-            }
-
-            if (form.end) {
-                if (typeof end === "string") {
-                    end = new Date(Date.parse(form.end));
-                    console.log({ end });
+        watch(
+            () => props.duration,
+            (duration, oldDuration) => {
+                form.start = duration.start;
+                form.end = duration.end;
+                if (!form.end && form.start) {
+                    const newEnd = new Date(form.start.getTime());
+                    newEnd.setHours(form.start.getHours() + 1);
+                    form.end = newEnd;
                 }
-                console.log({ end: form.end, type: typeof end });
-                tempEnd = new Date(form.end).setHours(end.getHours() + 1);
-            }
-
-            if (start || (tempEnd && tempEnd < start)) {
-                const newEnd = new Date(start.getTime());
-                newEnd.setHours(start.getHours() + 1);
-                console.log({ start, newEnd });
-                form.end = newEnd;
-            }
-        });
-
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
+            },
+            { deep: true }
+        );
 
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform((data) => ({
                     ...data,
                     start: transformDate(data.start),
@@ -481,6 +524,7 @@ export default {
                         ...data,
                         start: transformDate(data.start),
                         end: transformDate(data.end),
+                        full_day_event: !!data.full_day_event,
                     }))
                     .post(route("calendar.event.store"), {
                         preserveScroll: true,
@@ -511,6 +555,7 @@ export default {
             handleClickUpload,
             handleReminderDelete,
             handleReminderCreate,
+            handleCompleteTask,
             multiselectClasses: {
                 ...getDefaultMultiselectTWClasses(),
                 dropdown:

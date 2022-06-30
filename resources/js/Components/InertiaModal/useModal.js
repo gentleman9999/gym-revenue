@@ -2,7 +2,11 @@ import { ref, watchEffect } from "vue";
 
 const modal = ref(null);
 
-export default () => modal;
+// export default () => modal;
+export default () => {
+    console.log("calling use modal");
+    return modal;
+};
 
 //trying to get the "x" on top right of modal to fire off onClose
 // watchEffect(() => {

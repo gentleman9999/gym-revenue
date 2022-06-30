@@ -1,60 +1,59 @@
 <template>
-    <app-layout title="Lead Statuses">
-        <page-toolbar-nav title="Lead Statuses" :links="navLinks" />
+    <LayoutHeader title="Lead Statuses" />
+    <page-toolbar-nav title="Lead Statuses" :links="navLinks" />
 
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="max-w-md space-y-2">
-                <div v-for="(source, index) in form.statuses">
-                    <input
-                        type="text"
-                        v-model="form.statuses[index].status"
-                        :ref="setItemRef"
-                        class="w-full"
+    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+        <div class="max-w-md space-y-2">
+            <div v-for="(source, index) in form.statuses">
+                <input
+                    type="text"
+                    v-model="form.statuses[index].status"
+                    :ref="setItemRef"
+                    class="w-full"
+                />
+            </div>
+            <div class="flex flex-row justify-center py-2">
+                <button type="button" @click="addNewStatus">
+                    <font-awesome-icon
+                        icon="plus"
+                        size="2x"
+                        class="opacity-50 hover:opacity-100 transition-opacity"
                     />
-                </div>
-                <div class="flex flex-row justify-center py-2">
-                    <button type="button" @click="addNewStatus">
-                        <font-awesome-icon
-                            icon="plus"
-                            size="2x"
-                            class="opacity-50 hover:opacity-100 transition-opacity"
-                        />
-                    </button>
-                </div>
-                <jet-section-border />
-                <div class="flex flex-row">
-                    <Button
-                        type="button"
-                        @click="$inertia.visit(route('data.leads'))"
-                        :class="{ 'opacity-25': form.processing }"
-                        error
-                        outline
-                        :disabled="form.processing"
-                    >
-                        Cancel
-                    </Button>
-                    <div class="flex-grow" />
-                    <Button
-                        :class="{ 'opacity-25': form.processing }"
-                        class="btn-primary"
-                        :disabled="form.processing"
-                        :loading="form.processing"
-                        type="button"
-                        @click="submitForm"
-                    >
-                        Save
-                    </Button>
-                </div>
+                </button>
+            </div>
+            <jet-section-border />
+            <div class="flex flex-row">
+                <Button
+                    type="button"
+                    @click="$inertia.visit(route('data.leads'))"
+                    :class="{ 'opacity-25': form.processing }"
+                    error
+                    outline
+                    :disabled="form.processing"
+                >
+                    Cancel
+                </Button>
+                <div class="flex-grow" />
+                <Button
+                    :class="{ 'opacity-25': form.processing }"
+                    class="btn-primary"
+                    :disabled="form.processing || !form.isDirty"
+                    :loading="form.processing"
+                    type="button"
+                    @click="submitForm"
+                >
+                    Save
+                </Button>
             </div>
         </div>
-    </app-layout>
+    </div>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
-import { useForm } from "@inertiajs/inertia-vue3";
-import AppLayout from "@/Layouts/AppLayout";
+import { useGymRevForm } from "@/utils";
+import LayoutHeader from "@/Layouts/LayoutHeader";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import Button from "@/Components/Button";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -66,7 +65,7 @@ export default defineComponent({
     props: ["statuses"],
 
     components: {
-        AppLayout,
+        LayoutHeader,
         JetSectionBorder,
         Button,
         FontAwesomeIcon,
@@ -79,7 +78,7 @@ export default defineComponent({
                 inputs.value.push(el);
             }
         };
-        const form = useForm({ statuses: props.statuses });
+        const form = useGymRevForm({ statuses: props.statuses });
         const addNewStatus = () => {
             if (form.statuses[form.statuses.length - 1].status === "") {
                 focusLastInput();
@@ -95,7 +94,7 @@ export default defineComponent({
 
         const submitForm = () => {
             console.log("submitform", form.data());
-            form.post(route("data.leads.statuses.update"));
+            form.dirty().post(route("data.leads.statuses.update"));
         };
 
         const navLinks = [

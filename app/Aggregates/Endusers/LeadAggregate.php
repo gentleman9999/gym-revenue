@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Endusers;
 
+use App\StorableEvents\Endusers\Leads\LeadConverted;
 use App\StorableEvents\Endusers\Leads\LeadCreated;
 use App\StorableEvents\Endusers\Leads\LeadRestored;
 use App\StorableEvents\Endusers\Leads\LeadTrashed;
@@ -125,6 +126,13 @@ class LeadAggregate extends AggregateRoot
         return $this;
     }
 
+    public function convert(array $data, string $userId = 'Auto Generated')
+    {
+        $this->recordThat(new LeadConverted($userId, $data));
+
+        return $this;
+    }
+
     public function update(array $data, array $old_data, string $userId = 'Auto Generated')
     {
         $this->recordThat(new LeadUpdated($userId, $data, $old_data));
@@ -153,16 +161,9 @@ class LeadAggregate extends AggregateRoot
         return $this;
     }
 
-    public function subscribeToComms(string $subscribed_at)
+    public function updateCommunicationPreferences(bool $email, bool $sms, string $subscribed_at)
     {
-        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadSubscribedToComms($this->uuid(), $subscribed_at));
-
-        return $this;
-    }
-
-    public function unsubscribeFromComms(string $unsubscribed_at)
-    {
-        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadUnsubscribedFromComms($this->uuid(), $unsubscribed_at));
+        $this->recordThat(new \App\StorableEvents\Endusers\Leads\LeadUpdatedCommunicationPreferences($this->uuid(), $email, $sms, $subscribed_at));
 
         return $this;
     }
