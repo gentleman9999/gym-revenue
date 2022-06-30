@@ -1,102 +1,107 @@
 <template>
-    <LayoutHeader title="Reminders Management">
-        <h2 class="font-semibold text-xl leading-tight">Reminders Manager</h2>
-    </LayoutHeader>
+    <LayoutHeader title="Reminders" />
+    <page-toolbar-nav title="Reminders" :links="navLinks" />
     <gym-revenue-crud
         base-route="reminders"
-        model-name="Reminder"
-        model-key="reminder"
+        model-name="Role"
+        model-key="role"
         :fields="fields"
         :resource="reminders"
-        titleField="remindername"
-        :card-component="ReminderDataCard"
         :actions="{
-            edit: false,
-            rename: {
-                label: 'Rename',
-                handler: ({ data }) => {
-                    selectedReminder = data;
-                },
-            },
-            permissions: {
-                label: 'Permissions',
-                handler: ({ data }) => {
-                    selectedReminderPermissions = data;
-                },
-            },
-        }"
-        :top-actions="{
-            create: {
-                label: 'Create',
-                handler: () => {
-                    Inertia.visitInModal(route('reminders.create'));
-                },
+            trash: false,
+            restore: false,
+            delete: {
+                label: 'Delete',
+                handler: ({ data }) => handleClickDelete(data),
             },
         }"
     />
-    <daisy-modal
-        id="filenameModal"
-        ref="filenameModal"
-        @close="selectedFile = null"
+    <confirm
+        title="Really Trash Security Role?"
+        v-if="confirmDelete"
+        @confirm="handleConfirmDelete"
+        @cancel="confirmDelete = null"
     >
-        <file-form
-            :file="selectedFile"
-            v-if="selectedFile"
-            @success="filenameModal.close"
-        />
-    </daisy-modal>
-
-    <daisy-modal
-        ref="permissionsModal"
-        id="permissionsModal"
-        @close="selectedFilePermissions = null"
-    >
-        <h1 class="font-bold mb-4">Modify File Permissions</h1>
-        <Permissions-Form
-            :file="selectedFilePermissions"
-            v-if="selectedFilePermissions"
-            @success="permissionsModal.close"
-        />
-    </daisy-modal>
+        Are you sure you want to delete Security Role '{{
+            confirmDelete.title
+        }}'
+    </confirm>
 </template>
-
-<style scoped>
-td > div {
-    @apply h-16;
-}
-</style>
-
 <script>
-import { defineComponent, watchEffect, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import ReminderForm from "./Partials/ReminderForm";
-import PermissionsForm from "./Partials/PermissionsForm";
-import ReminderDataCard from "./Partials/ReminderDataCard";
 import { Inertia } from "@inertiajs/inertia";
-import DaisyModal from "@/Components/DaisyModal";
-import RemindernameField from "@/Pages/Reminders/Partials/RemindernameField";
+import Confirm from "@/Components/Confirm";
+
+import Button from "@/Components/Button";
+import JetBarContainer from "@/Components/JetBarContainer";
+import PageToolbarNav from "@/Components/PageToolbarNav";
 
 export default defineComponent({
     components: {
         LayoutHeader,
         GymRevenueCrud,
-        ReminderForm,
-        DaisyModal,
-        PermissionsForm,
+        Confirm,
+        JetBarContainer,
+        Button,
+        PageToolbarNav,
     },
-    props: ["reminders"],
-    setup() {
+    props: ["reminders", "filters"],
+    setup(props) {
+        const confirmDelete = ref(null);
+        const handleClickDelete = (item) => {
+            console.log("click delete", item);
+            confirmDelete.value = item;
+        };
+
+        const handleConfirmDelete = () => {
+            Inertia.delete(route("reminders.delete", confirmDelete.value));
+            confirmDelete.value = null;
+        };
+
         const fields = [
-            { name: "Name", component: RemindernameField },
-            "Description",
-            "Reminder Time",
-            "Triggered",
+            "name",
+            "description",
+            "remind_time",
+            "created_at",
+            "updated_at",
         ];
+
+        let navLinks = [
+            {
+                label: "Calendar",
+                href: route("calendar"),
+                onClick: null,
+                active: false,
+            },
+            {
+                label: "Event Types",
+                href: route("calendar.event_types"),
+                onClick: null,
+                active: false,
+            },
+            {
+                label: "Tasks",
+                href: route("tasks"),
+                onClick: null,
+                active: false,
+            },
+            {
+                label: "Reminders",
+                href: route("reminders"),
+                onClick: null,
+                active: true,
+            },
+        ];
+
         return {
             fields,
-            ReminderDataCard,
+            confirmDelete,
+            handleConfirmDelete,
+            handleClickDelete,
             Inertia,
+            navLinks,
         };
     },
 });

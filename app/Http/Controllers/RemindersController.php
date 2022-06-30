@@ -19,37 +19,12 @@ class RemindersController extends Controller
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
-
         $page_count = 10;
-        $roles = request()->user()->getRoles();
-        $security_group = request()->user()->securityGroup();
-
-        if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
-            $reminders = Reminder::with('client')
-//                ->whereClientId($client_id)
-//                ->whereUserId(!null)
-//                ->whereEntityType(!null)
-//                ->filter($request->only('search', 'trashed'))
-//                ->sort()
-//                ->paginate($page_count)
-//                ->appends(request()->except('page'))
-                ;
-        } else {
-            $reminders = Reminder::with('client')
-//                ->whereClientId($client_id)
-                ->whereUserId($user_id)
-//                ->whereEntityType(!null)
-//                ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
-//                ->filter($request->only('search', 'trashed'))
-//                ->sort()
-//                ->paginate($page_count)
-//                ->appends(request()->except('page'))
-                  ;
-        }
-        $test = $reminders->get();
+        $reminders = Reminder::with('client')
+                ->whereUserId($user_id);
 
         return Inertia::render('Reminders/Show', [
-            'reminders' => $reminders->get(),
+            'reminders' => $reminders->paginate($page_count),
         ]);
     }
 
