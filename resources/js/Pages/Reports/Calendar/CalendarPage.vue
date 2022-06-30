@@ -33,12 +33,12 @@
 
 <script setup>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import CalendarScheduleTable from "./components/CalendarScheduleTable";
-import CalendarTitle from "../components/CalendarTitle";
-import CalendarGrid from "@/Pages/components/CalendarGrid";
-import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import CalendarScheduleTable from "./components/CalendarScheduleTable/CalendarScheduleTable.vue";
+import CalendarTitle from "../components/CalendarTitle.vue";
+import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
+import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard.vue";
 
 const schedule = [
     {

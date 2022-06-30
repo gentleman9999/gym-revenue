@@ -5,11 +5,13 @@ import laravel from 'laravel-vite-plugin'
 import {homedir} from 'os'
 import {resolve} from 'path'
 
+
 let host = 'http://gr-prototype.test/'
 
 export default defineConfig({
     plugins: [
         laravel([
+            'resources/css/app.css',
             'resources/js/app.js',
         ]),
         vue({
@@ -20,7 +22,6 @@ export default defineConfig({
                 },
             },
         }),
-
     ],
     resolve: {
         alias: {

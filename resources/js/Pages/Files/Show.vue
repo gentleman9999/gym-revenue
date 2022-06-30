@@ -68,14 +68,14 @@ td > div {
 
 <script>
 import { defineComponent, watchEffect, ref } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import FileForm from "./Partials/FileForm";
-import PermissionsForm from "./Partials/PermissionsForm";
-import FileDataCard from "./Partials/FileDataCard";
-import FilenameField from "./Partials/FilenameField";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import FileForm from "./Partials/FileForm.vue";
+import PermissionsForm from "./Partials/PermissionsForm.vue";
+import FileDataCard from "./Partials/FileDataCard.vue";
+import FilenameField from "./Partials/FilenameField.vue";
 import { Inertia } from "@inertiajs/inertia";
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 export default defineComponent({
     components: {

@@ -15,8 +15,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import IndexModal from "@/Pages/Reports/Index/IndexModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import IndexModal from "@/Pages/Reports/Index/IndexModal.vue";
 
 export default defineComponent({
     components: {

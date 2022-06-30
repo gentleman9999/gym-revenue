@@ -206,15 +206,15 @@
 </template>
 
 <script>
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import JetBarAlert from "@/Components/JetBarAlert";
-import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
-import JetBarStatCard from "@/Components/JetBarStatCard";
-import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
-import JetBarBadge from "@/Components/JetBarBadge";
-import JetBarIcon from "@/Components/JetBarIcon";
-import DaisyModal from "@/Components/DaisyModal";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import JetBarAlert from "@/Components/JetBarAlert.vue";
+import JetBarStatsContainer from "@/Components/JetBarStatsContainer.vue";
+import JetBarStatCard from "@/Components/JetBarStatCard.vue";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable.vue";
+import JetBarBadge from "@/Components/JetBarBadge.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 export default {
     components: {

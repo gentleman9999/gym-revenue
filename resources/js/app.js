@@ -15,8 +15,11 @@ const pageStore = usePage();
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: async (name) => {
-        const module = await import(`./Pages/${name}.vue`);
-        const page = module.default;
+        const comps = import.meta.glob("./Pages/**/*.vue");
+        const match = comps[`./Pages/${name}.vue`];
+        const page = (await match()).default;
+        // const module = await import(`./Pages/${name}.vue`);
+        // const page = module.default;
         console.log({ name, page });
         if (page.layout === undefined) {
             if (name.startsWith("Invite/Show")) {

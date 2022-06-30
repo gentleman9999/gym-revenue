@@ -34,8 +34,8 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import CommunicationCard from "./components/CommunicationCard";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import CommunicationCard from "./components/CommunicationCard.vue";
 
 export default defineComponent({
     components: {

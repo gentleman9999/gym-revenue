@@ -14,7 +14,7 @@
 <script setup>
 import { h } from "vue";
 import DataTable from "@/Components/DataTable";
-import Button from "@/Components/Button";
+import Button from "@/Components/Button.vue";
 
 const data = [
     {

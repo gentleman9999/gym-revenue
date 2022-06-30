@@ -19,8 +19,8 @@
 }
 </style>
 <script setup>
-import Card from "@/Components/Card";
-import ArrowIcon from "@/Components/Icons/Arrow";
+import Card from "@/Components/Card.vue";
+import ArrowIcon from "@/Components/Icons/Arrow.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 </script>

@@ -9,7 +9,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetApplicationMark from "@/Jetstream/ApplicationMark";
+import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
 
 export default defineComponent({
     components: {

@@ -47,10 +47,10 @@
 
 <script>
 import { defineComponent } from "vue";
-import DataCard from "./DataCard";
-import CrudActions from "./CrudActions";
+import DataCard from "./DataCard.vue";
+import CrudActions from "./CrudActions.vue";
 import { getFields } from "./helpers/getFields";
-import RenderField from "./RenderField";
+import RenderField from "./RenderField.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { preview } from "@/Components/CRUD/helpers/previewData";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";

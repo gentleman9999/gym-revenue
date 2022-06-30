@@ -45,9 +45,9 @@
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import Confirm from "@/Components/Confirm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import Confirm from "@/Components/Confirm.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faChevronDoubleLeft,

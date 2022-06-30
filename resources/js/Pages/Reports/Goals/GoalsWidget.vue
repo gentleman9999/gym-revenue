@@ -18,8 +18,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import GoalsModal from "@/Pages/Reports/Goals/GoalsModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import GoalsModal from "@/Pages/Reports/Goals/GoalsModal.vue";
 
 export default defineComponent({
     components: {

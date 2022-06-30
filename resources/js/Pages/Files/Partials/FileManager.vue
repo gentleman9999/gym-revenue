@@ -138,12 +138,12 @@
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import LayoutHeader from "@/Layouts/LayoutHeader";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import FileUploadForm from "./FileUploadForm";
-import UploadIcon from "./UploadIcon";
+import FileUploadForm from "./FileUploadForm.vue";
+import UploadIcon from "./UploadIcon.vue";
 
 import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";

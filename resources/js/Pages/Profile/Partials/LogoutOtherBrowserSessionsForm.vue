@@ -143,14 +143,14 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import JetActionSection from "@/Jetstream/ProfileActionSection";
-import Button from "@/Components/Button";
-import JetDialogModal from "@/Jetstream/DialogModal";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
+import Button from "@/Components/Button.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
-import PasswordInput from "@/Components/PasswordInput";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
 export default defineComponent({
     props: ["sessions"],

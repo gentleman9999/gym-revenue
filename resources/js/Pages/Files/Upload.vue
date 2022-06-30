@@ -17,13 +17,13 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 
 import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
-import FileManager from "./Partials/FileManager";
+import FileManager from "./Partials/FileManager.vue";
 
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 

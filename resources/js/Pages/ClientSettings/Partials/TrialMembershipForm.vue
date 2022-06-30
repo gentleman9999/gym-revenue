@@ -93,12 +93,12 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 import Multiselect from "@vueform/multiselect";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";

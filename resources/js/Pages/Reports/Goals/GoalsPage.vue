@@ -45,15 +45,15 @@ h3 {
 
 <script setup>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import Button from "@/Components/Button";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import Button from "@/Components/Button.vue";
 
-import GoalsActualCard from "./components/GoalsActualCard";
-import GoalsProjectingCard from "./components/GoalsProjectingCard";
-import GoalFilters from "./components/GoalFilters";
-import GoalCard from "./components/GoalCard";
-import GoalTable from "./components/GoalTable";
+import GoalsActualCard from "./components/GoalsActualCard.vue";
+import GoalsProjectingCard from "./components/GoalsProjectingCard/GoalsProjectingCard.vue";
+import GoalFilters from "./components/GoalFilters.vue";
+import GoalCard from "./components/GoalCard.vue";
+import GoalTable from "./components/GoalTable.vue";
 
 const goals = [
     {

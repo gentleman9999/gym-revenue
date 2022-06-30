@@ -1,4 +1,8 @@
-window._ = require("lodash");
+//TODO: what is requiring us to global import lodash?
+//TODO: lodash is fat, and we should be using specific
+//TODO: imports
+import lodash from "lodash";
+window._ = lodash;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -22,7 +26,7 @@ window.Pusher = pusher;
 
 window.Echo = new Echo({
     broadcaster: "pusher",
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     forceTLS: true,
 });

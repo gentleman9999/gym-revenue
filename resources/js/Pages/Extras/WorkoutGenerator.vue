@@ -41,12 +41,12 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 
-import WorkoutForm from "@/Presenters/WorkoutGenerator/WorkoutForm";
-import GeneratedWorkout from "@/Presenters/WorkoutGenerator/GeneratedWorkout";
+import WorkoutForm from "@/Presenters/WorkoutGenerator/WorkoutForm.vue";
+import GeneratedWorkout from "@/Presenters/WorkoutGenerator/GeneratedWorkout.vue";
 
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSmile, faSmileWink } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";

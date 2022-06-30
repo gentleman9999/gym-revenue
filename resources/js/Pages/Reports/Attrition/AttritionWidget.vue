@@ -8,8 +8,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import AttritionModal from "@/Pages/Reports/Attrition/AttritionModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import AttritionModal from "@/Pages/Reports/Attrition/AttritionModal.vue";
 
 export default defineComponent({
     components: {

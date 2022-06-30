@@ -118,10 +118,10 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject } from "lodash";
-import AutoDataRow from "@/Components/CRUD/AutoDataRow";
+import AutoDataRow from "@/Components/CRUD/AutoDataRow.vue";
 import { getFields } from "./helpers/getFields";
 import { getData } from "./helpers/getData";
-import SortableHeader from "@/Components/CRUD/SortableHeader";
+import SortableHeader from "@/Components/CRUD/SortableHeader.vue";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
 library.add(faAlignLeft);

@@ -41,18 +41,18 @@
 
 <script setup>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import ReportsTitle from "../components/ReportsTitle";
-import SalesClub from "./components/SalesClub";
-import SalesPurchaseDate from "./components/SalesPurchaseDate";
-import SalesPaymentMethods from "./components/SalesPaymentMethods";
-import SalesAnnualFees from "./components/SalesAnnualFees";
-import SalesClubTable from "./components/SalesClubTable";
-import SalesShowRatio from "./components/SalesShowRatio";
-import SalesDraftRelated from "./components/SalesDraftRelated";
-import SalesPercent2Goal from "./components/SalesPercent2Goal";
-import SalesConversionByEntry from "./components/SalesConversionByEntry";
-import SalesEmployeeBreak from "./components/SalesEmployeeBreak";
-import SalesMembership from "./components/SalesMembership";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
+import SalesClub from "./components/SalesClub/SalesClub.vue";
+import SalesPurchaseDate from "./components/SalesPurchaseDate.vue";
+import SalesPaymentMethods from "./components/SalesPaymentMethods.vue";
+import SalesAnnualFees from "./components/SalesAnnualFees/SalesAnnualFees.vue";
+import SalesClubTable from "./components/SalesClubTable.vue";
+import SalesShowRatio from "./components/SalesShowRatio/SalesShowRatio.vue";
+import SalesDraftRelated from "./components/SalesDraftRelated/SalesDraftRelated.vue";
+import SalesPercent2Goal from "./components/SalesPercent2Go/SalesPercent2Go.vue";
+import SalesConversionByEntry from "./components/SalesConversionByEntry/SalesConversionByEntry.vue";
+import SalesEmployeeBreak from "./components/SalesEmployeeBreak.vue";
+import SalesMembership from "./components/SalesMembership/SalesMembership.vue";
 </script>

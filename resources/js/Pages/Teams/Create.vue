@@ -17,8 +17,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import TeamForm from "@/Pages/Teams/Partials/TeamForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import TeamForm from "@/Pages/Teams/Partials/TeamForm.vue";
 
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 

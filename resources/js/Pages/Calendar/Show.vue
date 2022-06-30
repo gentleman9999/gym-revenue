@@ -49,10 +49,10 @@
 <script setup>
 import { ref } from "vue";
 
-import PageContent from "./PageContent";
-import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
-import DrawerLayout from "./components/DrawerLayout";
-import DrawerContent from "./components/DrawerContent";
+import PageContent from "./PageContent.vue";
+import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm.vue";
+import DrawerLayout from "./components/DrawerLayout.vue";
+import DrawerContent from "./components/DrawerContent.vue";
 
 const props = defineProps({
     sessions: {

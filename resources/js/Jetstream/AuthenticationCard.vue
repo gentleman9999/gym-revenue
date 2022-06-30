@@ -37,10 +37,10 @@
 import { defineComponent } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 
-import Button from "../Components/Button";
+import Button from "../Components/Button.vue";
 
-import JetLabel from "./Label";
-import JetValidationErrors from "./ValidationErrors";
+import JetLabel from "./Label.vue";
+import JetValidationErrors from "./ValidationErrors.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({

@@ -9,7 +9,7 @@
 
 <script>
 import { defineComponent, computed } from "vue";
-import BaseNotification from "@/Components/Notifications/BaseNotification";
+import BaseNotification from "@/Components/Notifications/BaseNotification.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCalendar } from "@fortawesome/pro-solid-svg-icons";

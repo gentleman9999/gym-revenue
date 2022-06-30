@@ -48,15 +48,15 @@
 
 <script setup>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import ReportsTitle from "../components/ReportsTitle";
-import StatusCardsWrapper from "./components/StatusCardsWrapper";
-import StatusFilter from "./components/StatusFilter";
-import CancelCard from "./components/CancelCard";
-import CompletedCard from "./components/CompletedCard";
-import LeadStatsCard from "./components/LeadStatsCard";
-import AttachRateMembership from "./components/AttachRateMembership";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
+import StatusCardsWrapper from "./components/StatusCardsWrapper.vue";
+import StatusFilter from "./components/StatusFilter.vue";
+import CancelCard from "./components/CancelCard.vue";
+import CompletedCard from "./components/CompletedCard/CompletedCard.vue";
+import LeadStatsCard from "./components/LeadStatsCard.vue";
+import AttachRateMembership from "./components/AttachRateMembership/AttachRateMembership.vue";
 const actual_status = [
     { status: "leads", count: 55 },
     { status: "booked", count: 23 },

@@ -32,12 +32,12 @@
 
 <script setup>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import ReportsTitle from "../components/ReportsTitle";
-import AttritionRunningTotal from "./components/AttritionRunningTotal";
-import AttritionWaterline from "./components/AttritionWaterline";
-import AttritionCard from "./components/AttritionCard";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
+import AttritionRunningTotal from "./components/AttritionRunningTotal/AttritionRunningTotal.vue";
+import AttritionWaterline from "./components/AttritionWaterline/AttritionWaterline.vue";
+import AttritionCard from "./components/AttritionCard.vue";
 
 const cancellations = [
     {

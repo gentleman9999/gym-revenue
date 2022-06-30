@@ -131,16 +131,16 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import LogoutOtherBrowserSessionsForm from "@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm";
-import TwoFactorAuthenticationForm from "@/Pages/Profile/Partials/TwoFactorAuthenticationForm";
-import UpdatePasswordForm from "@/Pages/Profile/Partials/UpdatePasswordForm";
-import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfileInformationForm";
-import JetFormSection from "@/Jetstream/FormSection";
-import ShowApiTokenForm from "@/Pages/Profile/Partials/ShowAPITokenForm";
-import ApiTokenManager from "@/Pages/Profile/Partials/ApiTokenManager";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import LogoutOtherBrowserSessionsForm from "@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue";
+import TwoFactorAuthenticationForm from "@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue";
+import UpdatePasswordForm from "@/Pages/Profile/Partials/UpdatePasswordForm.vue";
+import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfileInformationForm.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import ShowApiTokenForm from "@/Pages/Profile/Partials/ShowAPITokenForm.vue";
+import ApiTokenManager from "@/Pages/Profile/Partials/ApiTokenManager.vue";
 
 export default defineComponent({
     props: ["sessions", "addlData"],
