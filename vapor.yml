@@ -19,6 +19,7 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
             - 'php artisan event:cache'
             - 'php artisan sidecar:deploy'
+            - 'npm set-script prepare ""'
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
@@ -40,6 +41,7 @@ environments:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
             - 'php artisan sidecar:deploy'
+            - 'npm set-script prepare ""'
             - 'npm ci && npm run build:staging && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
