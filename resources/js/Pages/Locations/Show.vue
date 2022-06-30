@@ -78,17 +78,17 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import Button from "@/Components/Button";
-import JetBarContainer from "@/Components/JetBarContainer";
+import Confirm from "@/Components/Confirm.vue";
+import Button from "@/Components/Button.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import LocationPreview from "@/Pages/Locations/Partials/LocationPreview";
-import DaisyModal from "@/Components/DaisyModal";
-import FileManager from "./Partials/FileManager";
+import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import FileManager from "./Partials/FileManager.vue";
 
 export default defineComponent({
     components: {

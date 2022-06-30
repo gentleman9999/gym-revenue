@@ -10,8 +10,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import KpiModal from "@/Pages/Reports/Kpi/KpiModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import KpiModal from "@/Pages/Reports/Kpi/KpiModal.vue";
 
 export default defineComponent({
     components: {

@@ -24,15 +24,15 @@
 </template>
 
 <script>
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
-import JetBarIcon from "@/Components/JetBarIcon";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
 
-import MemberForm from "@/Pages/Members/Partials/MemberForm";
+import MemberForm from "@/Pages/Members/Partials/MemberForm.vue";
 import { defineComponent } from "vue";
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 

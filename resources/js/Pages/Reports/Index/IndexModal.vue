@@ -16,11 +16,11 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
 
-import EmailStatsCard from "./components/EmailStatsCard";
-import CpaCplClicks from "./components/CpaCplClicks";
-import ConversionRateCard from "./components/ConversionRateCard";
+import EmailStatsCard from "./components/EmailStatsCard.vue";
+import CpaCplClicks from "./components/CpaCplClicks.vue";
+import ConversionRateCard from "./components/ConversionRateCard/ConversionRateCard.vue";
 
 export default defineComponent({
     components: {

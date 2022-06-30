@@ -46,9 +46,9 @@
 
 <script>
 import { defineComponent, computed } from "vue";
-import DataCard from "./DataCard";
-import CrudActions from "./CrudActions";
-import RenderField from "./RenderField";
+import DataCard from "./DataCard.vue";
+import CrudActions from "./CrudActions.vue";
+import RenderField from "./RenderField.vue";
 import { getFields } from "./helpers/getFields";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 

@@ -33,8 +33,8 @@
 <script setup>
 import { ref } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import SearchInput from "@/Components/SearchInput";
-import Button from "@/Components/Button";
+import SearchInput from "@/Components/SearchInput.vue";
+import Button from "@/Components/Button.vue";
 import SelectBox from "@/Components/SelectBox";
 const props = defineProps({
     title: {

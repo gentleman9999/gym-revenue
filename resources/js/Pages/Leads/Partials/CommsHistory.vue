@@ -18,8 +18,8 @@
 </template>
 <script>
 import { ref } from "vue";
-import CommsHistoryStep from "./CommsHistoryStep";
-import CommsHistoryDetail from "./CommsHistoryDetail";
+import CommsHistoryStep from "./CommsHistoryStep.vue";
+import CommsHistoryDetail from "./CommsHistoryDetail.vue";
 
 export default {
     name: "CommsHistory",

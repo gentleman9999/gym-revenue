@@ -23,8 +23,8 @@
 </template>
 <script setup>
 import { h } from "vue";
-import KpiCardWrapper from "../KpiCardWrapper";
-import KpiCard from "@/Components/Card";
+import KpiCardWrapper from "../KpiCardWrapper.vue";
+import KpiCard from "@/Components/Card.vue";
 import DataTable from "@/Components/DataTable";
 
 const columns = [

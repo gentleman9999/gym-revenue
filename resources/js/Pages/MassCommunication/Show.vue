@@ -32,11 +32,11 @@
 </template>
 
 <script setup>
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import FutureCampaign from "./components/FutureCampaign";
-import CurrentCampaign from "./components/CurrentCampaign";
-import RecentCampaign from "./components/RecentCampaign";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import FutureCampaign from "./components/FutureCampaign/FutureCampaign.vue";
+import CurrentCampaign from "./components/CurrentCampaign/CurrentCampaign.vue";
+import RecentCampaign from "./components/RecentCampaign/RecentCampaign.vue";
 </script>
 
 <style scoped>

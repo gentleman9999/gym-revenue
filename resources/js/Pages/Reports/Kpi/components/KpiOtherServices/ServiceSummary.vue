@@ -29,8 +29,8 @@
     </kpi-card-wrapper>
 </template>
 <script setup>
-import KpiCardWrapper from "../KpiCardWrapper";
-import KpiCard from "@/Components/Card";
+import KpiCardWrapper from "../KpiCardWrapper.vue";
+import KpiCard from "@/Components/Card.vue";
 const summary = [
     {
         key: "avg_sold",

@@ -35,8 +35,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import CalendarModal from "@/Pages/Reports/Calendar/CalendarModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import CalendarModal from "@/Pages/Reports/Calendar/CalendarModal.vue";
 
 export default defineComponent({
     components: {

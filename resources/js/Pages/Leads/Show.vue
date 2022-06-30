@@ -22,9 +22,9 @@
 
 <script>
 import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import LeadInteraction from "./Partials/LeadInteractionContainer";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
 
 export default defineComponent({
     components: {

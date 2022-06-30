@@ -12,7 +12,7 @@
     </div>
 </template>
 <script setup>
-import Button from "@/Components/Button";
+import Button from "@/Components/Button.vue";
 import SelectBox from "@/Components/SelectBox";
 
 const categories = new Array(4).fill("Category");

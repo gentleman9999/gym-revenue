@@ -214,13 +214,13 @@ import {
 } from "@fortawesome/pro-solid-svg-icons";
 import { faFileMedical } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import JetApplicationMark from "@/Jetstream/ApplicationMark";
-import JetNavLink from "@/Jetstream/NavLink";
-import TeamsDropdown from "@/Components/Navigation/TeamsDropdown";
-import LocationsDropdown from "@/Components/Navigation/LocationsDropdown";
-import SettingsDropdown from "@/Components/Navigation/SettingsDropdown";
+import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
+import JetNavLink from "@/Jetstream/NavLink.vue";
+import TeamsDropdown from "@/Components/Navigation/TeamsDropdown.vue";
+import LocationsDropdown from "@/Components/Navigation/LocationsDropdown.vue";
+import SettingsDropdown from "@/Components/Navigation/SettingsDropdown.vue";
 import { Head } from "@inertiajs/inertia-vue3";
-import NotyBell from "@/Components/NotyBell";
+import NotyBell from "@/Components/NotyBell.vue";
 
 library.add(
     faBars,

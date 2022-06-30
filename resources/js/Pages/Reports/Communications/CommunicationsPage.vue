@@ -49,14 +49,14 @@
 
 <script setup>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import ReportsTitle from "../components/ReportsTitle";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
 import SelectBox from "@/Components/SelectBox";
-import Button from "@/Components/Button";
-import CallRecords from "./components/CallRecords";
-import CommunicationCard from "./components/CommunicationCard";
-import MassCallRecords from "./components/MassCallRecords";
+import Button from "@/Components/Button.vue";
+import CallRecords from "./components/CallRecords.vue";
+import CommunicationCard from "./components/CommunicationCard.vue";
+import MassCallRecords from "./components/MassCallRecords.vue";
 const locations = [
     "Location 1",
     "Location 2",

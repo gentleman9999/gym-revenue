@@ -32,11 +32,11 @@
 </template>
 
 <script setup>
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import ReportsTitle from "../components/ReportsTitle";
-import OverviewTable from "./components/OverviewTable";
-import EmailStatsCard from "./components/EmailStatsCard";
-import CpaCplClicks from "./components/CpaCplClicks";
-import ConversionRateCard from "./components/ConversionRateCard";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
+import OverviewTable from "./components/OverviewTable.vue";
+import EmailStatsCard from "./components/EmailStatsCard.vue";
+import CpaCplClicks from "./components/CpaCplClicks.vue";
+import ConversionRateCard from "./components/ConversionRateCard/ConversionRateCard.vue";
 </script>

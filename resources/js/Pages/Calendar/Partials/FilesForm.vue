@@ -75,13 +75,13 @@ label {
 
 <script>
 import { watchEffect } from "vue";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
-import DaisyModal from "@/Components/DaisyModal";
-import FileExtensionIcon from "@/Pages/Files/Partials/FileExtensionIcon";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import FileExtensionIcon from "@/Pages/Files/Partials/FileExtensionIcon.vue";
 import { useGymRevForm } from "@/utils";
 
 export default {

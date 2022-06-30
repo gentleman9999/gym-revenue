@@ -1,6 +1,6 @@
 <template>
     <Head :title="title" v-if="title" />
-    <teleport to="#layout-header" v-if="this.$slots.default">
+    <teleport to="#layout-header" v-if="$slots?.default">
         <slot />
     </teleport>
 </template>

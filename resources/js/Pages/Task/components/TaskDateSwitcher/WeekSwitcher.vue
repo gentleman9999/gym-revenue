@@ -12,7 +12,7 @@
 }
 </style>
 <script setup>
-import ArrowIcon from "@/Components/Icons/Arrow";
+import ArrowIcon from "@/Components/Icons/Arrow.vue";
 const props = defineProps({
     direction: {
         type: String,

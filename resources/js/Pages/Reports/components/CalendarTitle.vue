@@ -23,8 +23,8 @@
 </style>
 <script setup>
 import { ref } from "vue";
-import SearchInput from "@/Components/SearchInput";
-import Button from "@/Components/Button";
+import SearchInput from "@/Components/SearchInput.vue";
+import Button from "@/Components/Button.vue";
 
 const props = defineProps({
     title: {
