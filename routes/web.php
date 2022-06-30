@@ -151,6 +151,19 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
+    Route::get('/', \App\Http\Controllers\RemindersController::class . '@index')->name('reminders');
+//    Route::get('/upload', \App\Http\Controllers\RemindersController::class . '@upload')->name('reminders.upload');
+//    Route::post('/', \App\Actions\Clients\Reminders\CreateReminders::class)->name('reminders.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\RemindersController::class . '@edit')->name('reminders.edit');
+//    Route::put('/{id}/rename', \App\Actions\Clients\Reminders\RenameFile::class)->name('reminders.rename');
+//    Route::put('/{id}', \App\Actions\Clients\Reminders\UpdateFile::class)->name('reminders.update');
+//    Route::delete('/{id}', \App\Actions\Clients\Reminders\TrashFile::class)->name('reminders.trash');
+//    Route::delete('/{id}/force', \App\Actions\Clients\Reminders\DeleteFile::class)->name('reminders.delete');
+//    Route::post('/{id}/restore', \App\Actions\Clients\Reminders\RestoreFile::class)->name('reminders.restore');
+//    Route::get('/export', \App\Http\Controllers\RemindersController::class . '@export')->name('reminders.export');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
