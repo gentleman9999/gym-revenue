@@ -55,7 +55,6 @@ class CreateRole
 
         Alert::success("Role '{$role->name}' was created")->flash();
 
-//        return Redirect::route('roles');
-        return Redirect::route('roles.edit', $role->id);
+        return Redirect::route('roles');
     }
 }
