@@ -158,7 +158,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.email-campaigns'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -207,6 +207,7 @@ import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     name: "EmailCampaignForm",
@@ -357,6 +358,14 @@ export default {
         },
         closeModal() {
             this.$refs.modal.close();
+        },
+        handleCancel() {
+            const inertiaModal = useModal();
+            if (inertiaModal?.value?.close) {
+                inertiaModal.value.close();
+                return;
+            }
+            this.$inertia.visit(route("comms.email-campaigns"));
         },
     },
 };

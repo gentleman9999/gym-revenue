@@ -240,19 +240,22 @@ const handleSubmit = () => {
             form.reset();
             fileRefs.value.forEach((fileRef) => fileRef.form.reset());
         },
+        headers: {
+            "X-Inertia-Modal-Redirect-Back": "close",
+        },
         ...formSubmitOptions,
     });
 };
 
-const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
-    const { method } = visit;
-    if (method === "get" && numUploadedFiles.value) {
-        return confirm(
-            "You haven't yet saved your uploaded files.  Are you sure you want to navigate away?"
-        );
-    }
-});
+// const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
+//     const { method } = visit;
+//     if (method === "get" && numUploadedFiles.value) {
+//         return confirm(
+//             "You haven't yet saved your uploaded files.  Are you sure you want to navigate away?"
+//         );
+//     }
+// });
 defineExpose({ reset: form.reset });
 
-onUnmounted(removeRouteGuard);
+// onUnmounted(removeRouteGuard);
 </script>

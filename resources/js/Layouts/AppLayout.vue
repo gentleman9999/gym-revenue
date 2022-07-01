@@ -94,6 +94,8 @@ import NotyBell from "@/Components/NotyBell.vue";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
+import { Head } from "@inertiajs/inertia-vue3";
+
 // import tailwindConfig from '../../../tailwind.config.js'
 // import {
 //     setBreakpointTailwindCSS,
@@ -114,6 +116,7 @@ export default defineComponent({
         SideNav,
         InertiaModal,
         ModalSlot,
+        Head,
     },
     props: {
         title: String,
