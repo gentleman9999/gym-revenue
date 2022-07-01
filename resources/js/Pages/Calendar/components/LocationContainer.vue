@@ -1,5 +1,5 @@
 <template>
-    <inertia-link href="#" @click="switchTolocation(events)">
+    <inertia-link href="#" @click="switchTolocation(events.location_id)">
         <article
             class="bg-base-content bg-opacity-80 text-base-300 p-4 h-full rounded-md border border-secondary"
         >
@@ -55,7 +55,7 @@ li > div {
 import { defineComponent, ref, onMounted, computed } from "vue";
 
 import DayScroller from "./DayScroller.vue";
-
+import { Inertia } from "@inertiajs/inertia";
 export default defineComponent({
     components: { DayScroller },
     props: {
@@ -65,6 +65,12 @@ export default defineComponent({
     },
     setup(props) {
         console.log("event props", props.events);
+
+        function switchToLocation(location) {
+            Inertia.put(route("current-location.update"), {
+                location,
+            });
+        }
 
         const names_weekday = [
             "Sunday",
@@ -108,21 +114,6 @@ export default defineComponent({
             return `${today_weekday.value}, ${today_month.value} ${today_date.value}, ${today_year.value}`;
         };
 
-        function switchToLocation(location) {
-            Inertia.put(
-                route("current-location.update"),
-                {
-                    location_id: location.id,
-                },
-                {
-                    preserveState: false,
-                    headers: {
-                        Accept: "application/json",
-                        Test: "123",
-                    },
-                }
-            );
-        }
         const getWeek = (d) => {
             let weekday = today.value.getDay();
             console.log("weekday!", weekday, today_month);
