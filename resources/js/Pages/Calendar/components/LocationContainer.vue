@@ -1,43 +1,49 @@
 <template>
-    <article
+    <inertia-link
         v-if="events && events.length"
-        class="bg-base-content bg-opacity-80 text-base-300 p-4 rounded-md border border-secondary"
+        href="#"
+        @click="switchTolocation(events)"
     >
-        <h2 class="font-bold text-xl capitalize">{{ title }}</h2>
-        <span class="font-bold text-secondary">{{ getDateStr() }}</span>
-        <div>
-            <day-scroller day="2" :date="date" />
-        </div>
-        <ul>
-            <li v-for="e in events" class="flex items-center my-4">
-                {{ fmtTime(e.start) }}
-                <div
-                    class="w-full bg-base-content px-3 py-1 ml-2 rounded gridgrid-rows-1"
-                >
-                    <span
-                        class="whitespace-nowrap overflow-hidden overflow-ellipsis"
-                        >{{ e.title }}</span
+        <article
+            v-if="events && events.length"
+            class="bg-base-content bg-opacity-80 text-base-300 p-4 h-full rounded-md border border-secondary"
+        >
+            <h2 class="font-bold text-xl capitalize">Location {{ ix }}</h2>
+            <span class="font-bold text-secondary">{{ getDateStr() }}</span>
+            <div>
+                <day-scroller :date="date" />
+            </div>
+            <ul>
+                <li v-for="e in events" class="flex items-center my-4">
+                    {{ fmtTime(e.start) }}
+                    <div
+                        class="w-full bg-base-content px-3 py-1 ml-2 rounded gridgrid-rows-1"
                     >
-                    <svg
-                        class="inline-block flex-shrink-0"
-                        width="24"
-                        height="24"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <circle
-                            cx="12"
-                            cy="12"
-                            r="11"
-                            :stroke="e.color"
-                            :fill="e.color"
-                            stroke-width="1"
-                        />
-                    </svg>
-                </div>
-            </li>
-        </ul>
-    </article>
+                        <span
+                            class="whitespace-nowrap overflow-hidden overflow-ellipsis"
+                            >{{ e.title }}</span
+                        >
+                        <svg
+                            class="inline-block flex-shrink-0"
+                            width="24"
+                            height="24"
+                            version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="11"
+                                :stroke="e.color"
+                                :fill="e.color"
+                                stroke-width="1"
+                            />
+                        </svg>
+                    </div>
+                </li>
+            </ul>
+        </article>
+    </inertia-link>
 </template>
 
 <style scoped>
@@ -65,6 +71,9 @@ export default defineComponent({
         },
         events: {
             type: Array,
+        },
+        ix: {
+            type: Number,
         },
     },
     setup(props) {
