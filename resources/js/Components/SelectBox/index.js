@@ -1,1 +1,2 @@
-export default "./SelectBox.vue";
+import SelectBox from "./SelectBox.vue";
+export default SelectBox;
