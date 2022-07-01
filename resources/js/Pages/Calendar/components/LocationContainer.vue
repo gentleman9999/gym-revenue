@@ -18,7 +18,11 @@
                 <day-scroller :date="date" />
             </div>
             <ul>
-                <li v-for="e in events.events" class="flex items-center my-4">
+                <li
+                    v-if="events.events && events.events.length > 0"
+                    v-for="e in events.events"
+                    class="flex items-center my-4"
+                >
                     {{ fmtTime(e.start) }}
                     <div
                         class="w-full bg-base-content px-3 py-1 ml-2 rounded gridgrid-rows-1"
@@ -44,6 +48,13 @@
                             />
                         </svg>
                     </div>
+                </li>
+
+                <li
+                    v-if="events?.events?.length === 0"
+                    class="w-full text-center italic py-4 opacity-50"
+                >
+                    <span> No Events Today </span>
                 </li>
             </ul>
         </article>
