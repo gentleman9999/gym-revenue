@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Clients\Client;
 use App\Models\Utility\AppState;
 use Closure;
 use Illuminate\Http\Request;
@@ -54,6 +55,8 @@ class HandleInertiaRequests extends Middleware
 
                 return $r;
             })->pluck('name');
+
+            $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($user->currentClientId());
             $shared = [
                 'user.id' => $user->id,
                 'user.contact_preference' => $user->contact_preference,
@@ -62,6 +65,7 @@ class HandleInertiaRequests extends Middleware
                 'user.abilities' => $abilities,
                 'user.has_api_token' => (! is_null($user->access_token)),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
+                'client_services' => $client->services->pluck('value'),
                 'user.column_config' => $user->column_config->mapWithKeys(function ($item, $key) {
                     return [$item['value'] => $item['misc']];
                 }),

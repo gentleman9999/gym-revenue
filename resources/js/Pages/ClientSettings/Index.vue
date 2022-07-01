@@ -32,7 +32,7 @@
                     :locations="locations"
                     v-if="
                         services.filter(
-                            (detail) => detail.value === 'free-trial'
+                            (detail) => detail.value === 'FREE_TRIAL'
                         ).length
                     "
                 />

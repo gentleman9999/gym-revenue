@@ -4,6 +4,7 @@ namespace App\Aggregates\Clients\Traits\Actions;
 
 use App\StorableEvents\Clients\ClientServices\ClientServiceAdded;
 use App\StorableEvents\Clients\ClientServices\ClientServiceDisabled;
+use App\StorableEvents\Clients\ClientServices\ClientServiceEnabled;
 use App\StorableEvents\Clients\ClientServices\ClientServicesSet;
 
 trait ClientServicesActions

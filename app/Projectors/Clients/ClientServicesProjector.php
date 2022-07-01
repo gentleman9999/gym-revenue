@@ -30,7 +30,6 @@ class ClientServicesProjector extends Projector
     public function onClientServicesSet(ClientServicesSet $event)
     {
         ClientDetail::whereClientId($event->client)->whereDetail('service_slug')->delete();
-//        dd($event->services);
         foreach ($event->services as $service_slug) {
             ClientDetail::create(['client_id' => $event->client, 'detail' => 'service_slug', 'value' => $service_slug]);
         }
