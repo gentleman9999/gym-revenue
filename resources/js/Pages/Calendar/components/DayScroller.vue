@@ -40,9 +40,15 @@ export default defineComponent({
         day: {
             type: Number,
         },
+        date: {
+            type: String,
+        },
     },
     setup(props) {
         const week = ref([1, 2, 3, 4, 5, 6, 7]);
+
+        const todaysDate = new Date();
+
         return {
             week,
         };

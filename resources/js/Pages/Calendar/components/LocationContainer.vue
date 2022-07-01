@@ -4,9 +4,9 @@
         class="bg-base-content bg-opacity-80 text-base-300 p-4 rounded-md border border-secondary"
     >
         <h2 class="font-bold text-xl capitalize">{{ title }}</h2>
-        <span class="font-bold text-secondary">Today, {{ date }}</span>
+        <span class="font-bold text-secondary">{{ getDateStr() }}</span>
         <div>
-            <day-scroller day="2" />
+            <day-scroller day="2" :date="date" />
         </div>
         <ul>
             <li v-for="e in events" class="flex items-center my-4">
@@ -49,7 +49,7 @@ li > div {
 </style>
 
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 
 import DayScroller from "./DayScroller.vue";
 
@@ -68,13 +68,72 @@ export default defineComponent({
         },
     },
     setup(props) {
+        const names_weekday = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ];
+        const names_month = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ];
+
+        /** A reference for the current point in time */
+        const today = ref(new Date());
+        const today_month = ref(names_month[today.value.getMonth()]);
+        const today_weekday = ref(names_weekday[today.value.getDay()]);
+        const today_date = ref(today.value.getDate());
+        const today_year = ref(today.value.getFullYear());
+
+        /** For the currently selected date & to decide if we show the event or not */
+        const selected = ref(new Date());
+        const selected_month = ref(names_month[selected.value.getMonth()]);
+        const selected_weekday = ref(names_weekday[selected.value.getDay()]);
+        const selected_date = ref(selected.value.getDate());
+        const selected_year = ref(selected.value.getFullYear());
+
+        const getDateStr = () => {
+            return `${today_weekday.value}, ${today_month.value} ${today_date.value}, ${today_year.value}`;
+        };
+
+        const getWeek = (d) => {
+            let weekday = today.value.getDay();
+            console.log("weekday!", weekday, today_month);
+        };
+
         const fmtTime = (d) => {
             let t = d.split(" ")[1].split(":");
             return [t[0], t[1]].join(":");
         };
 
+        const getNewDateNow = () => {
+            return new Date();
+        };
+
+        const fmtWeek = (d) => {
+            let weekof = new Date(d).getDay;
+
+            let n = new Date();
+            n.setDate(n.getDate() - 5);
+        };
+
         return {
             fmtTime,
+            getDateStr,
         };
     },
 });
