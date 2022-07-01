@@ -1,76 +1,53 @@
 <template>
     <div class="grid grid-cols-6 gap-4">
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Name:</label>
-            <div class="data">
-                {{ data.lead.first_name }}
-                {{ data.lead.last_name }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Email:</label>
-            <div class="data">
-                {{ data.lead.email }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Phone:</label>
-            <div class="data">
-                {{ data.lead.primary_phone }}
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Phone secondary:</label>
-            <div class="data" v-if="data.lead.alternate_phone">
-                {{ data.lead.alternate_phone }}
-            </div>
-            <div class="data" v-if="!data.lead.alternate_phone">
-                Not Available
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Gender:</label>
-            <div class="data" v-if="data.lead.gender">
-                {{ data.lead.gender }}
-            </div>
-        </div>
-        <div
+        <lead-preview-item
             class="field col-span-6 lg:col-span-3"
-            v-if="data.lead?.date_of_birth"
-        >
-            <label>Birthdate:</label>
-            <div class="data" v-if="data.lead.date_of_birth">
-                {{
-                    new Date(data.lead.date_of_birth).toLocaleDateString(
-                        "en-US"
-                    )
-                }}
-            </div>
-        </div>
+            label="Name"
+            :value="data.lead.first_name + ' ' + data.lead.last_name"
+        />
+        <lead-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Email"
+            :value="data.lead.email"
+        />
+        <lead-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Phone 1"
+            :value="data.lead.primary_phone"
+        />
+        <lead-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Phone 2"
+            :value="data.lead.alternate_phone"
+        />
+        <lead-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Gender"
+            :value="data.lead.gender"
+        />
+        <lead-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Birthdate"
+            :value="
+                new Date(data.lead.date_of_birth).toLocaleDateString('en-US')
+            "
+        />
+        <lead-preview-item
+            class="field col-span-6 lg:col-span-3"
+            label="Lead Owner Email"
+            :value="
+                data.lead.lead_owner
+                    ? data.lead.lead_owner.misc.user_id
+                    : 'Not Yet Claimed'
+            "
+        />
         <div class="field col-span-6 lg:col-span-3">
-            <label>Lead Owner Email:</label>
-            <div class="data" v-if="data.lead.lead_owner">
-                <span class="badge badge-success badge-outline">{{
-                    data.lead.lead_owner.misc.user_id
-                }}</span>
-            </div>
-            <div class="data" v-if="!data.lead.lead_owner">
-                <span class="badge badge-error badge-outline"
-                    >Not Yet Claimed</span
-                >
-            </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Contact:</label>
+            <label>Contact</label>
             <div class="data">
                 Called: {{ data.interactionCount.calledCount }} <br />
                 Emailed: {{ data.interactionCount.emailedCount }} <br />
                 Text: {{ data.interactionCount.smsCount }} <br />
             </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3">
-            <label>Club/Location:</label>
-            <div class="data">{{ data.club_location.name }}</div>
         </div>
         <div
             class="collapse col-span-6"
@@ -82,12 +59,16 @@
             </div>
             <div class="flex flex-col gap-2 collapse-content">
                 <div
-                    v-for="note in data.preview_note"
+                    v-for="(note, ndx) in data.preview_note"
+                    :key="ndx"
                     class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
                 >
                     {{ note["note"] }}
                 </div>
             </div>
+        </div>
+        <div class="field col-span-6 lg:col-span-3 text-secondary">
+            <label>Club/ Location: {{ data.club_location.name }}</label>
         </div>
         <div class="field col-span-6 lg:col-span-6"></div>
     </div>
@@ -97,12 +78,18 @@ input {
     @apply input-xs;
 }
 .field {
-    @apply flex flex-row gap-2;
+    @apply flex flex-col gap-2;
+}
+.data {
+    @apply border border-secondary rounded text-sm p-3;
 }
 </style>
 
-<script>
-export default {
-    props: ["data", "lead", "club", "note", "notes"],
-};
+<script setup>
+import LeadPreviewItem from "./LeadPreviewItem.vue";
+const props = defineProps({
+    data: {
+        type: Object,
+    },
+});
 </script>
