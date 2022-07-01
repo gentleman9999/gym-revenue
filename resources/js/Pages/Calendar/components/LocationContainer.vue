@@ -119,6 +119,21 @@ export default defineComponent({
             return `${today_weekday.value}, ${today_month.value} ${today_date.value}, ${today_year.value}`;
         };
 
+        function switchToLocation(location) {
+            Inertia.put(
+                route("current-location.update"),
+                {
+                    location_id: location.id,
+                },
+                {
+                    preserveState: false,
+                    headers: {
+                        Accept: "application/json",
+                        Test: "123",
+                    },
+                }
+            );
+        }
         const getWeek = (d) => {
             let weekday = today.value.getDay();
             console.log("weekday!", weekday, today_month);
@@ -143,6 +158,7 @@ export default defineComponent({
         return {
             fmtTime,
             getDateStr,
+            switchToLocation,
         };
     },
 });

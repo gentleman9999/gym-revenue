@@ -31,10 +31,7 @@ class CalendarController extends Controller
 
         if ($request->get('start')) {
             if (is_null($currentLocationSelect)) {
-                $eventsForTeam = CalendarEvent::whereClientId($client_id)
-                    ->with('type', 'attendees', 'files')
-                    ->filter($request->only('search', 'start', 'end', 'viewUser'))
-                    ->get();
+                return Redirect::route('calendar.quickview');
             } else {
                 $eventsForTeam = CalendarEvent::whereClientId($client_id)
                     ->whereLocationId($currentLocationSelect->id)
@@ -132,7 +129,8 @@ class CalendarController extends Controller
                     ->with('type', 'attendees', 'files')
                     ->filter($request->only('search', 'start', 'end', 'viewUser'))
                     ->get();
-            $eventsByLocation[$key] = $eventsForTeam;
+            $eventsByLocation[$key]['location_name'] = $location->name;
+            $eventsByLocation[$key]['events'] = $eventsForTeam;
         }
 
         return Inertia::render('Calendar/QuickView', [
