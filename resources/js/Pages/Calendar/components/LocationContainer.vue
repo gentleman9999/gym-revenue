@@ -1,5 +1,6 @@
 <template>
     <article
+        v-if="events && events.length"
         class="bg-base-content bg-opacity-80 text-base-300 p-4 rounded-md border border-secondary"
     >
         <h2 class="font-bold text-xl capitalize">{{ title }}</h2>
