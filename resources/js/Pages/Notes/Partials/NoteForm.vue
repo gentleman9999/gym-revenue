@@ -1,0 +1,136 @@
+<template>
+    <jet-form-section @submitted="handleSubmit">
+        <template #form>
+            <div class="col-span-6">
+                <jet-label for="title" value="Name" />
+                <input
+                    id="title"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.title"
+                    :value="note.title"
+                    autofocus
+                />
+                <jet-input-error :message="form.errors.name" class="mt-2" />
+            </div>
+            <div class="col-span-6">
+                <jet-label for="note" value="Note" />
+                <input
+                    :id="note"
+                    type="text"
+                    v-model="form.note"
+                    :value="note.note"
+                />
+                <jet-input-error :message="form.errors.group" class="mt-2" />
+            </div>
+            <div class="col-span-6">
+                <jet-label for="active" value="Active" />
+                <input
+                    :id="active"
+                    type="checkbox"
+                    v-model="form.note"
+                    :value="note.active"
+                />
+                <jet-input-error :message="form.errors.group" class="mt-2" />
+            </div>
+
+            <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
+        </template>
+
+        <template #actions>
+            <Button
+                type="button"
+                @click="handleClickCancel"
+                :class="{ 'opacity-25': form.processing }"
+                error
+                outline
+                :disabled="form.processing"
+            >
+                Cancel
+            </Button>
+            <div class="flex-grow" />
+            <Button
+                class="btn-secondary"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing || !form.isDirty"
+                :loading="form.processing"
+            >
+                {{ buttonText }}
+            </Button>
+        </template>
+    </jet-form-section>
+</template>
+
+<script>
+import { computed, ref } from "vue";
+import { useGymRevForm } from "@/utils";
+
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import { Inertia } from "@inertiajs/inertia";
+import { useModal } from "@/Components/InertiaModal";
+
+export default {
+    components: {
+        Button,
+        JetFormSection,
+
+        JetInputError,
+        JetLabel,
+    },
+    props: {
+        clientId: {
+            type: String,
+            required: true,
+        },
+        note: {
+            type: Object,
+        },
+    },
+    setup(props, context) {
+        let note = props.note;
+        let operation = "Update";
+        if (!note) {
+            note = {
+                name: "",
+                id: "",
+                client_id: props.clientId,
+            };
+            operation = "Create";
+        }
+
+        const form = useGymRevForm({
+            name: note.name,
+            id: note.id,
+            client_id: props.clientId,
+        });
+
+        let handleSubmit = () =>
+            form.dirty().put(route("notes.update", note.id));
+        if (operation === "Create") {
+            handleSubmit = () => form.post(route("notes.create"));
+        }
+
+        const modal = useModal();
+
+        const handleClickCancel = () => {
+            console.log("modal", modal.value);
+            if (modal.value.close) {
+                modal.value.close();
+            } else {
+                Inertia.visit(route("notes"));
+            }
+        };
+
+        return {
+            form,
+            buttonText: operation,
+            handleSubmit,
+            handleClickCancel,
+        };
+    },
+};
+</script>

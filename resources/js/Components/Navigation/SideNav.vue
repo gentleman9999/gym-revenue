@@ -64,6 +64,7 @@ import { comingSoon } from "@/utils/comingSoon";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks.vue";
 import JetNavLink from "@/Jetstream/NavLink.vue";
 import { useLockScroll } from "vue-composable";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { useBreakpointTailwindCSS } from "vue-composable";
 import {
@@ -75,6 +76,7 @@ import {
     CalendarIcon,
     ToDoIcon,
     FileIcon,
+    NotesIcon,
     LocationIcon,
     SettingIcon,
     LeadsIcon,
@@ -95,11 +97,13 @@ export default defineComponent({
         TeamIcon,
         ReportIcon,
         CalendarIcon,
+        NotesIcon,
         ToDoIcon,
         FileIcon,
         LocationIcon,
         SettingIcon,
         BurgerIcon,
+        FontAwesomeIcon,
     },
     props: ["page"],
     computed: {
@@ -145,6 +149,13 @@ export default defineComponent({
                     icon: CalendarIcon,
                     route: "calendar",
                     label: "Calendar",
+                    permission: default_permission,
+                },
+                {
+                    key: "nav-notes",
+                    icon: NotesIcon,
+                    route: "notes",
+                    label: "Notes",
                     permission: default_permission,
                 },
                 {
