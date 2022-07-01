@@ -53,13 +53,13 @@
 import { defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { useGymRevForm } from "@/utils";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import Button from "@/Components/Button";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import Button from "@/Components/Button.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
-import PageToolbarNav from "@/Components/PageToolbarNav";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 library.add(faPlus);
 export default defineComponent({
     props: ["statuses"],

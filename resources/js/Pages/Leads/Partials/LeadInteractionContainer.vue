@@ -120,14 +120,14 @@
 
 <script>
 import { defineComponent } from "vue";
-import Button from "@/Components/Button";
-import FormSection from "@/Jetstream/FormSection";
-import CommsHistory from "./CommsHistory";
-import CommsActions from "./CommsActions";
+import Button from "@/Components/Button.vue";
+import FormSection from "@/Jetstream/FormSection.vue";
+import CommsHistory from "./CommsHistory.vue";
+import CommsActions from "./CommsActions.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 library.add(faUserCircle);
 

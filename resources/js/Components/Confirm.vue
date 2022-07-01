@@ -22,7 +22,7 @@
 </template>
 <script>
 import { defineComponent, ref, onMounted } from "vue";
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 export default defineComponent({
     components: { DaisyModal },

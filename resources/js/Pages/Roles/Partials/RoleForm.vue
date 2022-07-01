@@ -113,11 +113,11 @@
 import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useModal } from "@/Components/InertiaModal";
 

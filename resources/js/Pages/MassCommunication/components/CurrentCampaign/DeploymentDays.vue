@@ -8,7 +8,7 @@
 }
 </style>
 <script setup>
-import Button from "@/Components/Button";
+import Button from "@/Components/Button.vue";
 const props = defineProps({
     value: {
         type: Number,

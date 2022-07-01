@@ -1,0 +1,1 @@
+export default "./DataTable.vue";

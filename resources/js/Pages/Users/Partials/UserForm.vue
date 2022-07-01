@@ -415,23 +415,23 @@ import { ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import DaisyModal from "@/Components/DaisyModal";
+import Confirm from "@/Components/Confirm.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import states from "@/Pages/Comms/States/statesOfUnited";
-import FileManager from "@/Pages/Files/Partials/FileManager";
+import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
-import PhoneInput from "@/Components/PhoneInput";
+import PhoneInput from "@/Components/PhoneInput.vue";
 import { useModal } from "@/Components/InertiaModal";
 
 export default {

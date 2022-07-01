@@ -68,10 +68,10 @@
 
 <script>
 import { useGymRevForm } from "@/utils";
-import SmsFormControl from "@/Components/SmsFormControl";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
+import SmsFormControl from "@/Components/SmsFormControl.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
 
 export default {
     components: {

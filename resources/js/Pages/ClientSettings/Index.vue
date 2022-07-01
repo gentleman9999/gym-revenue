@@ -45,11 +45,11 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import ClientServicesForm from "./Partials/ClientServicesForm";
-import CommPrefForm from "./Partials/CommPrefForm";
-import TrialMembershipForm from "./Partials/TrialMembershipForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import ClientServicesForm from "./Partials/ClientServicesForm.vue";
+import CommPrefForm from "./Partials/CommPrefForm.vue";
+import TrialMembershipForm from "./Partials/TrialMembershipForm.vue";
 
 export default defineComponent({
     components: {

@@ -21,9 +21,9 @@
 
 <script>
 import { defineComponent } from "vue";
-import EmailCommsAction from "./EmailCommsAction";
-import PhoneCommsAction from "./PhoneCommsAction";
-import SmsCommsAction from "./SmsCommsAction";
+import EmailCommsAction from "./EmailCommsAction.vue";
+import PhoneCommsAction from "./PhoneCommsAction.vue";
+import SmsCommsAction from "./SmsCommsAction.vue";
 
 export default defineComponent({
     components: {

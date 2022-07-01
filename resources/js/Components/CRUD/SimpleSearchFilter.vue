@@ -82,7 +82,7 @@ select {
 </style>
 
 <script>
-import Dropdown from "@/Components/Dropdown";
+import Dropdown from "@/Components/Dropdown.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({

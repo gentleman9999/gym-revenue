@@ -55,9 +55,9 @@
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import Confirm from "@/Components/Confirm";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Confirm from "@/Components/Confirm.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -66,8 +66,8 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail";
-import EmailTemplateCard from "./Partials/EmailTemplateCard";
+import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail.vue";
+import EmailTemplateCard from "./Partials/EmailTemplateCard.vue";
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 export default defineComponent({

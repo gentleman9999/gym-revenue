@@ -12,8 +12,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardStat from "@/Pages/Dashboards/Partials/DashboardStat";
-import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
+import DashboardStat from "@/Pages/Dashboards/Partials/DashboardStat.vue";
+import JetBarStatsContainer from "@/Components/JetBarStatsContainer.vue";
 
 export default defineComponent({
     components: {

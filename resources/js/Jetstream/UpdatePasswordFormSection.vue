@@ -53,7 +53,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import JetSectionTitle from "./SectionTitle";
+import JetSectionTitle from "./SectionTitle.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faMinusSquare, faPlusSquare } from "@fortawesome/pro-solid-svg-icons";
