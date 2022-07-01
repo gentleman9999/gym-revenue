@@ -18,7 +18,7 @@ section {
 <script setup>
 import { ref } from "vue";
 
-import LocationContainer from "./components/LocationContainer";
+import LocationContainer from "./components/LocationContainer.vue";
 
 const props = defineProps({
     calendar_events_by_locations: {

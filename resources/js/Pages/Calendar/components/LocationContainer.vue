@@ -21,7 +21,7 @@
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 
-import DayScroller from "./DayScroller";
+import DayScroller from "./DayScroller.vue";
 
 export default defineComponent({
     components: { DayScroller },
