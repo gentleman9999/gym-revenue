@@ -64,6 +64,7 @@ import { comingSoon } from "@/utils/comingSoon";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks.vue";
 import JetNavLink from "@/Jetstream/NavLink.vue";
 import { useLockScroll } from "vue-composable";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { useBreakpointTailwindCSS } from "vue-composable";
 import {
@@ -100,8 +101,10 @@ export default defineComponent({
         FileIcon,
         ReminderIcon,
         LocationIcon,
+
         SettingIcon,
         BurgerIcon,
+        FontAwesomeIcon,
     },
     props: ["page"],
     computed: {
