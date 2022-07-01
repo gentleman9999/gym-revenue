@@ -84,8 +84,8 @@
 
 <script>
 import { useNotifications } from "@/utils";
-import CalendarEventNotification from "@/Components/Notifications/CalendarEventNotification";
-import BaseNotification from "@/Components/Notifications/BaseNotification";
+import CalendarEventNotification from "@/Components/Notifications/CalendarEventNotification.vue";
+import BaseNotification from "@/Components/Notifications/BaseNotification.vue";
 
 export default {
     name: "NotyBell",

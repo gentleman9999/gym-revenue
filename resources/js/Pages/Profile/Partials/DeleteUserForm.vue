@@ -67,12 +67,12 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionSection from "@/Jetstream/ProfileActionSection";
-import JetDialogModal from "@/Jetstream/DialogModal";
+import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
-import PasswordInput from "@/Components/PasswordInput";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
 export default defineComponent({
     components: {

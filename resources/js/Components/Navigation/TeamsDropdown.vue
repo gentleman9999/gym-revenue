@@ -88,7 +88,7 @@
 
 <script>
 import { defineComponent, computed } from "vue";
-import JetDropdown from "@/Components/Dropdown";
+import JetDropdown from "@/Components/Dropdown.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
 
@@ -107,6 +107,9 @@ export default defineComponent({
                 },
                 {
                     preserveState: false,
+                    onSuccess: () => {
+                        document.activeElement.blur();
+                    },
                 }
             );
         }

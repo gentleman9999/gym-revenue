@@ -17,7 +17,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetSectionTitle from "./SectionTitle";
+import JetSectionTitle from "./SectionTitle.vue";
 
 export default defineComponent({
     components: {

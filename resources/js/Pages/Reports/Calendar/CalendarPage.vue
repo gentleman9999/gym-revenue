@@ -1,52 +1,44 @@
 <template>
-    <app-layout>
-        <template #header>
-            <calendar-title>
-                <template #title>
-                    <h1>Calendar Reporting</h1>
-                </template>
-            </calendar-title>
-        </template>
-        <div class="px-10 flex flex-col">
-            <div class="text-secondary pl-9 text-xl">Client Activity</div>
-            <div class="flex flex-row space-x-2 flex-wrap">
-                <div class="flex w-full md:w-3/5 flex-wrap">
-                    <div class="w-4/5 m-auto md:w-1/3 px-2">
-                        <calendar-summary-card
-                            title="Confirmed"
-                            :progress="[65]"
-                        />
-                    </div>
-                    <div class="w-4/5 m-auto md:w-1/3 px-2">
-                        <calendar-summary-card
-                            title="Canceled"
-                            :progress="[25]"
-                        />
-                    </div>
-                    <div class="w-4/5 m-auto md:w-1/3 px-2">
-                        <calendar-summary-card
-                            title="Rescheduled"
-                            :progress="[10]"
-                        />
-                    </div>
+    <LayoutHeader title="Calendar Reporting">
+        <calendar-title>
+            <template #title>
+                <h1>Calendar Reporting</h1>
+            </template>
+        </calendar-title>
+    </LayoutHeader>
+    <div class="px-10 flex flex-col">
+        <div class="text-secondary pl-9 text-xl">Client Activity</div>
+        <div class="flex flex-row space-x-2 flex-wrap">
+            <div class="flex w-full md:w-3/5 flex-wrap">
+                <div class="w-4/5 m-auto md:w-1/3 px-2">
+                    <calendar-summary-card title="Confirmed" :progress="[65]" />
                 </div>
-                <calendar-grid />
+                <div class="w-4/5 m-auto md:w-1/3 px-2">
+                    <calendar-summary-card title="Canceled" :progress="[25]" />
+                </div>
+                <div class="w-4/5 m-auto md:w-1/3 px-2">
+                    <calendar-summary-card
+                        title="Rescheduled"
+                        :progress="[10]"
+                    />
+                </div>
             </div>
-
-            <calendar-schedule-table :data="schedule" />
+            <calendar-grid />
         </div>
-        <jet-bar-container> </jet-bar-container>
-    </app-layout>
+
+        <calendar-schedule-table :data="schedule" />
+    </div>
+    <jet-bar-container> </jet-bar-container>
 </template>
 
 <script setup>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import JetBarContainer from "@/Components/JetBarContainer";
-import CalendarScheduleTable from "./components/CalendarScheduleTable";
-import CalendarTitle from "../components/CalendarTitle";
-import CalendarGrid from "@/Pages/components/CalendarGrid";
-import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import CalendarScheduleTable from "./components/CalendarScheduleTable/CalendarScheduleTable.vue";
+import CalendarTitle from "../components/CalendarTitle.vue";
+import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
+import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard.vue";
 
 const schedule = [
     {

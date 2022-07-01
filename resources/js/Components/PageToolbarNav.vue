@@ -32,7 +32,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import JetBarContainer from "@/Components/JetBarContainer";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
 
 export default defineComponent({
     components: { JetBarContainer },

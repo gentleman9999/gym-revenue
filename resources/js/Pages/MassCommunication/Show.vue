@@ -1,45 +1,42 @@
 <template>
-    <app-layout>
-        <template #header> Dashboard </template>
-
-        <jet-bar-container>
-            <div class="flex flex-col">
-                <div class="campaign-wrapper">
-                    <div class="campaign-title">Future Campaigns</div>
-                    <div class="campaign-body flex-row">
-                        <future-campaign />
-                    </div>
-                </div>
-                <div class="campaign-wrapper">
-                    <div class="campaign-title">Current Campaigns</div>
-                    <div class="campaign-body flex-col">
-                        <div class="text-sm mb-4">
-                            Lorem ipsum dolor sit amet, consetetur sadipscing
-                            elitr, sed diam nonumy eirmod tempor
-                        </div>
-                        <current-campaign />
-                    </div>
-                </div>
-                <div class="campaign-wrapper">
-                    <div class="campaign-title">Recent campaigns</div>
-                    <div class="campaign-body flex-col">
-                        <recent-campaign />
-                    </div>
-                </div>
-                <div class="text-secondary text-lg pt-6 pl-6 cursor-pointer">
-                    Load all activity
+    <LayoutHeader title="Mass Communications Dashboard" />
+    <jet-bar-container>
+        <div class="flex flex-col">
+            <div class="campaign-wrapper">
+                <div class="campaign-title">Future Campaigns</div>
+                <div class="campaign-body flex-row">
+                    <future-campaign />
                 </div>
             </div>
-        </jet-bar-container>
-    </app-layout>
+            <div class="campaign-wrapper">
+                <div class="campaign-title">Current Campaigns</div>
+                <div class="campaign-body flex-col">
+                    <div class="text-sm mb-4">
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+                        sed diam nonumy eirmod tempor
+                    </div>
+                    <current-campaign />
+                </div>
+            </div>
+            <div class="campaign-wrapper">
+                <div class="campaign-title">Recent campaigns</div>
+                <div class="campaign-body flex-col">
+                    <recent-campaign />
+                </div>
+            </div>
+            <div class="text-secondary text-lg pt-6 pl-6 cursor-pointer">
+                Load all activity
+            </div>
+        </div>
+    </jet-bar-container>
 </template>
 
 <script setup>
-import AppLayout from "@/Layouts/AppLayout";
-import JetBarContainer from "@/Components/JetBarContainer";
-import FutureCampaign from "./components/FutureCampaign";
-import CurrentCampaign from "./components/CurrentCampaign";
-import RecentCampaign from "./components/RecentCampaign";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import FutureCampaign from "./components/FutureCampaign/FutureCampaign.vue";
+import CurrentCampaign from "./components/CurrentCampaign/CurrentCampaign.vue";
+import RecentCampaign from "./components/RecentCampaign/RecentCampaign.vue";
 </script>
 
 <style scoped>

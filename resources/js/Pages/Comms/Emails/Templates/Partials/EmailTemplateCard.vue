@@ -2,7 +2,7 @@
     <div class="flex flex-col gap-4">
         <button
             class="flex flex-col hover:border-secondary hover:border-2 rounded flex-grow overflow-hidden"
-            @click="actions.edit.handler({ data: template })"
+            @click="actions.edit?.handler({ ...props, data: template })"
         >
             <img
                 :src="template.thumbnail.url"
@@ -39,7 +39,7 @@
     </div>
 </template>
 <script setup>
-import CrudActions from "@/Components/CRUD/CrudActions";
+import CrudActions from "@/Components/CRUD/CrudActions.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faChevronDoubleLeft,
@@ -49,6 +49,7 @@ import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
+import { getActions } from "@/Components/CRUD/helpers/actions";
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 const props = defineProps({
@@ -95,5 +96,6 @@ const props = defineProps({
 });
 
 const fields = getFields(props);
+const actions = getActions(props);
 const customizedFields = getCustomizedFields(fields, props.modelKey);
 </script>

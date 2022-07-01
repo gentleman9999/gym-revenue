@@ -42,13 +42,13 @@
 <script>
 import { defineComponent } from "vue";
 import { Head } from "@inertiajs/inertia-vue3";
-import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
-import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
-import Button from "@/Components/Button";
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
+import Button from "@/Components/Button.vue";
 
-import JetLabel from "@/Jetstream/Label";
-import JetValidationErrors from "@/Jetstream/ValidationErrors";
-import PasswordInput from "@/Components/PasswordInput";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
 export default defineComponent({
     components: {
@@ -69,7 +69,7 @@ export default defineComponent({
             }),
         };
     },
-
+    layout: null,
     methods: {
         submit() {
             this.form.post(this.route("password.confirm"), {

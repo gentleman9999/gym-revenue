@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import StatusCard from "./StatusCard";
+import StatusCard from "./StatusCard.vue";
 const props = defineProps({
     title: {
         type: String,

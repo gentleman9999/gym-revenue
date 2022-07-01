@@ -75,27 +75,27 @@
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/Components/Confirm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Confirm from "@/Components/Confirm.vue";
 
-import Button from "@/Components/Button";
-import JetBarContainer from "@/Components/JetBarContainer";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-// import LeadInteraction from "./Partials/LeadInteractionContainer";
-import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
-import PageToolbarNav from "@/Components/PageToolbarNav";
-import MemberFilters from "@/Pages/Members/Partials/MemberFilters";
-import MemberPreview from "@/Pages/Members/Partials/MemberPreview";
+import Button from "@/Components/Button.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+// import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
+import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import MemberFilters from "@/Pages/Members/Partials/MemberFilters.vue";
+import MemberPreview from "@/Pages/Members/Partials/MemberPreview.vue";
 
-import CalendarGrid from "@/Pages/components/CalendarGrid";
-import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard";
+import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
+import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 
 export default defineComponent({
     components: {
         MemberFilters,
         PageToolbarNav,
         GymRevenueCrud,
-        AppLayout,
+        LayoutHeader,
         Confirm,
         Button,
         JetBarContainer,

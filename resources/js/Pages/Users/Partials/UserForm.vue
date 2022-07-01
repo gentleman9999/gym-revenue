@@ -29,7 +29,7 @@
                     v-model="form.last_name"
                 />
                 <jet-input-error
-                    :message="form.errors.first_name"
+                    :message="form.errors.last_name"
                     class="mt-2"
                 />
             </div>
@@ -321,7 +321,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('users'))"
+                @click="handleClickCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -415,28 +415,27 @@ import { ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import DaisyModal from "@/Components/DaisyModal";
+import Confirm from "@/Components/Confirm.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import states from "@/Pages/Comms/States/statesOfUnited";
-import FileManager from "@/Pages/Files/Partials/FileManager";
+import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
-import PhoneInput from "@/Components/PhoneInput";
+import PhoneInput from "@/Components/PhoneInput.vue";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -448,7 +447,14 @@ export default {
         FileManager,
         PhoneInput,
     },
-    props: ["clientId", "user", "clientName"],
+    props: [
+        "clientId",
+        "user",
+        "clientName",
+        "roles",
+        "classifications",
+        "locations",
+    ],
     emits: ["success"],
     setup(props, { emit }) {
         function notesExpanded(note) {
@@ -462,9 +468,6 @@ export default {
         const wantsToDeleteFile = ref(null);
         const page = usePage();
         let user = props.user;
-        const roles = page.props.value.roles;
-        const classifications = page.props.value.classifications;
-        const locations = page.props.value.locations;
 
         const team_id = page.props.value.user.current_team_id;
 
@@ -539,6 +542,8 @@ export default {
             return data;
         };
 
+        const modal = useModal();
+
         let handleSubmit = () =>
             form
                 .dirty()
@@ -551,6 +556,7 @@ export default {
                 form
                     .transform(transformFormSubmission)
                     .post(route("users.store"), {
+                        headers: { "X-Inertia-Modal-Redirect": true },
                         onSuccess: () => (form.notes = { title: "", note: "" }),
                     });
         }
@@ -585,15 +591,22 @@ export default {
             optionsStates.push(states[x].abbreviation);
         }
 
+        const handleClickCancel = () => {
+            console.log("modal", modal.value);
+            if (modal.value.close) {
+                console.log("closing modal");
+                modal.value.close();
+            } else {
+                Inertia.visit(route("users"));
+            }
+        };
+
         return {
             form,
             buttonText: operation,
             operation,
             handleSubmit,
-            roles,
-            classifications,
             upperCaseF,
-            locations,
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             wantsToDeleteFile,
@@ -602,6 +615,7 @@ export default {
             fileManager,
             closeFileManagerModal,
             notesExpanded,
+            handleClickCancel,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()

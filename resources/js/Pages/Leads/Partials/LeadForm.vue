@@ -389,23 +389,21 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import { useGoBack, useGymRevForm } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
-import PhoneInput from "@/Components/PhoneInput";
+import PhoneInput from "@/Components/PhoneInput.vue";
 
 library.add(faUserCircle);
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         FontAwesomeIcon,
@@ -502,14 +500,8 @@ export default {
                 notes: { title: "", note: "" },
             };
 
-            leadData["lead_owner"] =
-                "lead_owner" in lead && lead.lead_owner !== ""
-                    ? lead.lead_owner.value
-                    : "";
-            leadData["lead_status"] =
-                "lead_status" in lead && lead.lead_status !== ""
-                    ? lead.lead_status.value
-                    : "";
+            leadData["lead_owner"] = props.lead?.lead_owner?.value || "";
+            leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>
             "last_updated" in lead && lead.last_updated

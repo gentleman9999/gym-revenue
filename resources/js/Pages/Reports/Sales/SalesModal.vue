@@ -27,11 +27,11 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import Card from "@/Components/Card";
-import SalesAnnualFees from "./components/SalesAnnualFees";
-import SalesPercent2Goal from "./components/SalesPercent2Goal";
-import Percent2GoalChart from "./components/SalesPercent2Goal/Percent2GoalChart";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import Card from "@/Components/Card.vue";
+import SalesAnnualFees from "./components/SalesAnnualFees/SalesAnnualFees.vue";
+import SalesPercent2Goal from "./components/SalesPercent2Go/SalesPercent2Go.vue";
+import Percent2GoalChart from "./components/SalesPercent2Go/Percent2GoalChart.vue";
 
 export default defineComponent({
     components: {

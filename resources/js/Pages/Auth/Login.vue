@@ -68,13 +68,13 @@
 <script>
 import { defineComponent } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
-import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
-import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
-import Button from "@/Components/Button";
-import PasswordInput from "@/Components/PasswordInput";
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
+import Button from "@/Components/Button.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
-import JetLabel from "@/Jetstream/Label";
-import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
@@ -102,7 +102,7 @@ export default defineComponent({
             }),
         };
     },
-
+    layout: null,
     methods: {
         submit() {
             this.form

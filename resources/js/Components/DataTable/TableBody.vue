@@ -50,7 +50,7 @@ td > div {
 </style>
 <script setup>
 import { h } from "vue";
-import TableCell from "./TableCell";
+import TableCell from "./TableCell.vue";
 const props = defineProps({
     border: {
         type: String,

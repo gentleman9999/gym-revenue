@@ -28,13 +28,12 @@ class UpdateCalendarEvent
     public function rules()
     {
         return [
-            'title' => ['required', 'string','max:50'],
-            'description' => ['string', 'nullable'],
-            'full_day_event' => ['required', 'boolean'],
-            'start' => ['required'],
-            'end' => ['required'],
-            'event_type_id' => ['required', 'exists:calendar_event_types,id'],
-            'client_id' => ['required', 'exists:clients,id'],
+            'title' => ['sometimes', 'required', 'string','max:50'],
+            'description' => ['sometimes', 'string', 'nullable'],
+            'full_day_event' => ['sometimes', 'required', 'boolean'],
+            'start' => ['sometimes', 'required'],
+            'end' => ['sometimes', 'required'],
+            'event_type_id' => ['sometimes', 'exists:calendar_event_types,id'],
             'user_attendees' => ['sometimes', 'array'],
             'lead_attendees' => ['sometimes', 'array'],
             'member_attendees' => ['sometimes', 'array'],
@@ -45,7 +44,9 @@ class UpdateCalendarEvent
     public function handle($data, $user)
     {
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
-        $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
+        if (array_key_exists('event_type_id', $data)) {
+            $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
+        }
 
         if (array_key_exists('my_reminder', $data)) {
             $reminderData = Reminder::whereEntityType(CalendarEvent::class)
@@ -173,18 +174,19 @@ class UpdateCalendarEvent
             }
         }
 
-        if (CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task') {
-            //Whoever updated this to a task owns it.
-            $data['owner_id'] = $user->id;
+        if (array_key_exists('event_type_id', $data)) {
+            if (CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task') {
+                //Whoever updated this to a task owns it.
+                $data['owner_id'] = $user->id;
 
-            //We clear out all attendee's for Tasks
-            foreach ($userAttendeeIDs as $user) {
-                CalendarAggregate::retrieve($data['client_id'])
-                    ->deleteCalendarAttendee($user, ['entity_type' => User::class, 'entity_id' => $user, 'event_id' => $data['id']])
-                    ->persist();
+                //We clear out all attendee's for Tasks
+                foreach ($userAttendeeIDs as $user) {
+                    CalendarAggregate::retrieve($data['client_id'])
+                        ->deleteCalendarAttendee($user, ['entity_type' => User::class, 'entity_id' => $user, 'event_id' => $data['id']])
+                        ->persist();
+                }
             }
         }
-
 
         CalendarAggregate::retrieve($data['client_id'])
             ->updateCalendarEvent($user->id ?? "Auto Generated", $data)
@@ -204,6 +206,7 @@ class UpdateCalendarEvent
     {
         $data = $request->validated();
         $data['id'] = $id;
+        $data['client_id'] = $request->user()->currentClientId();
         $calendar = $this->handle(
             $data,
             $request->user()

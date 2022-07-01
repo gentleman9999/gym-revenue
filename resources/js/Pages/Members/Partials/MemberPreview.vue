@@ -88,7 +88,7 @@ input {
 </style>
 
 <script setup>
-import MemberPreviewItem from "./MemberPreviewItem";
+import MemberPreviewItem from "./MemberPreviewItem.vue";
 const props = defineProps({
     data: {
         type: Object,

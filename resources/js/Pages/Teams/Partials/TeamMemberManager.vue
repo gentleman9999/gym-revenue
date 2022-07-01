@@ -328,18 +328,18 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import JetActionSection from "@/Jetstream/ActionSection";
-import Button from "@/Components/Button";
-import JetConfirmationModal from "@/Jetstream/ConfirmationModal";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetActionSection from "@/Jetstream/ActionSection.vue";
+import Button from "@/Components/Button.vue";
+import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 
-import JetDialogModal from "@/Jetstream/DialogModal";
-import JetFormSection from "@/Jetstream/FormSection";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import Multiselect from "@vueform/multiselect";
 
 import { getDefaultMultiselectTWClasses } from "@/utils";
@@ -365,6 +365,10 @@ export default defineComponent({
             type: Object,
         },
         availableRoles: {
+            type: Array,
+            default: [],
+        },
+        availableUsers: {
             type: Array,
             default: [],
         },
@@ -456,6 +460,7 @@ export default defineComponent({
         },
 
         confirmTeamMemberRemoval(teamMember) {
+            console.log({ teamMember });
             this.teamMemberBeingRemoved = teamMember;
         },
 
@@ -472,7 +477,6 @@ export default defineComponent({
                     // onSuccess: () => (this.teamMemberBeingRemoved = null),
                     onSuccess: () => {
                         this.teamMemberBeingRemoved = null;
-                        this.$inertia.reload();
                     },
                 }
             );
@@ -483,9 +487,6 @@ export default defineComponent({
         },
     },
     computed: {
-        availableUsers() {
-            return this.$inertia.page.props?.availableUsers || [];
-        },
         userIds() {
             return this.users?.map((user) => user.id) || [];
         },

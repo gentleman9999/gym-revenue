@@ -61,8 +61,8 @@
 <script>
 import { defineComponent, ref, watchEffect, onMounted } from "vue";
 import { comingSoon } from "@/utils/comingSoon";
-import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks";
-import JetNavLink from "@/Jetstream/NavLink";
+import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks.vue";
+import JetNavLink from "@/Jetstream/NavLink.vue";
 import { useLockScroll } from "vue-composable";
 
 import { useBreakpointTailwindCSS } from "vue-composable";

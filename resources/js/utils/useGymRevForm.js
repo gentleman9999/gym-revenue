@@ -1,7 +1,8 @@
 import { useForm } from "@inertiajs/inertia-vue3";
-import { computed } from "vue";
-import cloneDeep from "lodash.clonedeep";
+import { computed, watch } from "vue";
+import cloneDeep from "lodash.clonedeep"; //TODO:figure out why using lodash/clonedeep breaks on dev
 import omitBy from "lodash/omitBy";
+import { useModalPage } from "@/Components/InertiaModal";
 
 /**
  * Creates an enhanced version of inertia-vue3's useForm helper.
@@ -11,6 +12,19 @@ import omitBy from "lodash/omitBy";
  */
 export const useGymRevForm = (...args) => {
     const form = useForm(...args);
+    const page = useModalPage();
+    watch(
+        () => page.props.value.errors,
+        (newErrors) => {
+            console.log("detected change in page", newErrors);
+            console.log(
+                "detected errors on modal version of the form. setting here."
+            );
+            form.errors = newErrors;
+        }
+    );
+    console.log({ page });
+
     const data = (typeof args[0] === "string" ? args[1] : args[0]) || {};
 
     //immutable copy of initial form data
@@ -27,8 +41,6 @@ export const useGymRevForm = (...args) => {
         }
         return fields;
     });
-
-    const formData = computed((form) => form);
 
     /**
      * transform function that removes any properties that aren't dirty.

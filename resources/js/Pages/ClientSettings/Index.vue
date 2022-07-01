@@ -1,61 +1,59 @@
 <template>
-    <app-layout title="Client Settings">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Client Settings</h2>
-        </template>
+    <LayoutHeader title="Client Settings">
+        <h2 class="font-semibold text-xl leading-tight">Client Settings</h2>
+    </LayoutHeader>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div>
-                    <client-services-form
-                        :user="$page.props.user"
-                        :services="services"
-                        :available-services="availableServices"
-                    />
+    <div>
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div>
+                <client-services-form
+                    :user="$page.props.user"
+                    :services="services"
+                    :available-services="availableServices"
+                />
 
-                    <jet-section-border />
-                </div>
+                <jet-section-border />
+            </div>
 
-                <div>
-                    <comm-pref-form
-                        :user="$page.props.user"
-                        :comm-preferences="commPreferences"
-                        :available-comm-preferences="availableCommPreferences"
-                    />
+            <div>
+                <comm-pref-form
+                    :user="$page.props.user"
+                    :comm-preferences="commPreferences"
+                    :available-comm-preferences="availableCommPreferences"
+                />
 
-                    <jet-section-border />
-                </div>
+                <jet-section-border />
+            </div>
 
-                <div>
-                    <trial-membership-form
-                        :user="$page.props.user"
-                        :trial-membership-types="trialMembershipTypes"
-                        :locations="locations"
-                        v-if="
-                            services.filter(
-                                (detail) => detail.value === 'free-trial'
-                            ).length
-                        "
-                    />
+            <div>
+                <trial-membership-form
+                    :user="$page.props.user"
+                    :trial-membership-types="trialMembershipTypes"
+                    :locations="locations"
+                    v-if="
+                        services.filter(
+                            (detail) => detail.value === 'free-trial'
+                        ).length
+                    "
+                />
 
-                    <jet-section-border />
-                </div>
+                <jet-section-border />
             </div>
         </div>
-    </app-layout>
+    </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import ClientServicesForm from "./Partials/ClientServicesForm";
-import CommPrefForm from "./Partials/CommPrefForm";
-import TrialMembershipForm from "./Partials/TrialMembershipForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import ClientServicesForm from "./Partials/ClientServicesForm.vue";
+import CommPrefForm from "./Partials/CommPrefForm.vue";
+import TrialMembershipForm from "./Partials/TrialMembershipForm.vue";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         JetSectionBorder,
         ClientServicesForm,
         TrialMembershipForm,

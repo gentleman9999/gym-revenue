@@ -140,7 +140,10 @@
                     {{ name }}
                 </option>
             </select>
-            <jet-input-error :message="form.errors.type" class="mt-2" />
+            <jet-input-error
+                :message="form.errors.event_type_id"
+                class="mt-2"
+            />
         </div>
         <div class="col-span-6"></div>
 
@@ -361,27 +364,25 @@ label {
 <script>
 import { usePage } from "@inertiajs/inertia-vue3";
 import { computed, watch, watchEffect, ref } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import DaisyModal from "@/Components/DaisyModal";
-import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm";
-import FilesForm from "@/Pages/Calendar/Partials/FilesForm";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm.vue";
+import FilesForm from "@/Pages/Calendar/Partials/FilesForm.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
-import FileManager from "./FileManager";
+import FileManager from "./FileManager.vue";
 import { Inertia } from "@inertiajs/inertia";
-import FileIcon from "@/Components/Icons/File";
-import AddIcon from "@/Components/Icons/Add";
+import FileIcon from "@/Components/Icons/File.vue";
+import AddIcon from "@/Components/Icons/Add.vue";
 import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -523,6 +524,7 @@ export default {
                         ...data,
                         start: transformDate(data.start),
                         end: transformDate(data.end),
+                        full_day_event: !!data.full_day_event,
                     }))
                     .post(route("calendar.event.store"), {
                         preserveScroll: true,

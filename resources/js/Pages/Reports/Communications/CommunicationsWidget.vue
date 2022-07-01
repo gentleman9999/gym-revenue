@@ -126,8 +126,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import CommunicationsModal from "@/Pages/Reports/Communications/CommunicationsModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import CommunicationsModal from "@/Pages/Reports/Communications/CommunicationsModal.vue";
 
 export default defineComponent({
     components: {

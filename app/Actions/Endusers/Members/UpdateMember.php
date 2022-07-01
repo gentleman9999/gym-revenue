@@ -21,23 +21,23 @@ class UpdateMember
     public function rules()
     {
         return [
-            'first_name' => ['required', 'max:50'],
-            'middle_name' => ['string', 'max:50', 'nullable'],
-            'last_name' => ['required', 'max:30'],
-            'email' => ['required', 'email:rfc,dns'],
-            'primary_phone' => ['required', 'string'],
-            'alternate_phone' => ['string', 'nullable'],
-            'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
-            'client_id' => ['required', 'exists:clients,id'],
-            'profile_picture' => ['array', 'nullable'],
+            'first_name' => ['sometimes', 'required', 'max:50'],
+            'middle_name' => ['sometimes', 'string', 'max:50', 'nullable'],
+            'last_name' => ['sometimes', 'required', 'max:30'],
+            'email' => ['sometimes', 'required', 'email:rfc,dns'],
+            'primary_phone' => ['sometimes', 'required', 'string'],
+            'alternate_phone' => ['sometimes', 'string', 'nullable'],
+            'gr_location_id' => ['sometimes', 'required', 'exists:locations,gymrevenue_id'],
+            'client_id' => ['sometimes', 'required', 'exists:clients,id'],
+            'profile_picture' => ['sometimes', 'array', 'nullable'],
             'profile_picture.uuid' => 'sometimes|required|string',
             'profile_picture.key' => 'sometimes|required|string',
             'profile_picture.extension' => 'sometimes|required|string',
             'profile_picture.bucket' => 'sometimes|required|string',
-            'gender' => 'string|required',
-            'date_of_birth' => 'required',
+            'gender' => 'sometimes|string|required',
+            'date_of_birth' => 'sometimes|required',
 //            'agreement_number'          => ['required', 'string'],
-            'notes' => 'nullable|array',
+            'notes' => 'sometimes|nullable|array',
         ];
     }
 
@@ -61,12 +61,14 @@ class UpdateMember
     {
         $data = $request->validated();
         $data['id'] = $id;
+        $data['client_id'] = $request->user()->currentClientId();
         $member = $this->handle(
             $data
         );
 
         Alert::success("Member '{$member->name}' was updated")->flash();
 
-        return Redirect::back();
+//        return Redirect::back();
+        return Redirect::route('data.members.edit', $member->id);
     }
 }

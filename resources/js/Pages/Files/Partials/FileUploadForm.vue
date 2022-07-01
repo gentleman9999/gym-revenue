@@ -77,10 +77,9 @@ progress::-webkit-progress-value {
 import { ref, computed, onMounted, watchEffect } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import FileExtensionIcon from "./FileExtensionIcon";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import FileExtensionIcon from "./FileExtensionIcon.vue";
 import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";

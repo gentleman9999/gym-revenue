@@ -1,72 +1,71 @@
 <template>
-    <app-layout title="Lead Statuses">
-        <page-toolbar-nav title="Lead Statuses" :links="navLinks" />
+    <LayoutHeader title="Lead Statuses" />
+    <page-toolbar-nav title="Lead Statuses" :links="navLinks" />
 
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="max-w-md space-y-2">
-                <div v-for="(source, index) in form.statuses">
-                    <input
-                        type="text"
-                        v-model="form.statuses[index].status"
-                        :ref="setItemRef"
-                        class="w-full"
+    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+        <div class="max-w-md space-y-2">
+            <div v-for="(source, index) in form.statuses">
+                <input
+                    type="text"
+                    v-model="form.statuses[index].status"
+                    :ref="setItemRef"
+                    class="w-full"
+                />
+            </div>
+            <div class="flex flex-row justify-center py-2">
+                <button type="button" @click="addNewStatus">
+                    <font-awesome-icon
+                        icon="plus"
+                        size="2x"
+                        class="opacity-50 hover:opacity-100 transition-opacity"
                     />
-                </div>
-                <div class="flex flex-row justify-center py-2">
-                    <button type="button" @click="addNewStatus">
-                        <font-awesome-icon
-                            icon="plus"
-                            size="2x"
-                            class="opacity-50 hover:opacity-100 transition-opacity"
-                        />
-                    </button>
-                </div>
-                <jet-section-border />
-                <div class="flex flex-row">
-                    <Button
-                        type="button"
-                        @click="$inertia.visit(route('data.leads'))"
-                        :class="{ 'opacity-25': form.processing }"
-                        error
-                        outline
-                        :disabled="form.processing"
-                    >
-                        Cancel
-                    </Button>
-                    <div class="flex-grow" />
-                    <Button
-                        :class="{ 'opacity-25': form.processing }"
-                        class="btn-primary"
-                        :disabled="form.processing || !form.isDirty"
-                        :loading="form.processing"
-                        type="button"
-                        @click="submitForm"
-                    >
-                        Save
-                    </Button>
-                </div>
+                </button>
+            </div>
+            <jet-section-border />
+            <div class="flex flex-row">
+                <Button
+                    type="button"
+                    @click="$inertia.visit(route('data.leads'))"
+                    :class="{ 'opacity-25': form.processing }"
+                    error
+                    outline
+                    :disabled="form.processing"
+                >
+                    Cancel
+                </Button>
+                <div class="flex-grow" />
+                <Button
+                    :class="{ 'opacity-25': form.processing }"
+                    class="btn-primary"
+                    :disabled="form.processing || !form.isDirty"
+                    :loading="form.processing"
+                    type="button"
+                    @click="submitForm"
+                >
+                    Save
+                </Button>
             </div>
         </div>
-    </app-layout>
+    </div>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { useGymRevForm } from "@/utils";
-import AppLayout from "@/Layouts/AppLayout";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import Button from "@/Components/Button";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import Button from "@/Components/Button.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
-import PageToolbarNav from "@/Components/PageToolbarNav";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 library.add(faPlus);
 export default defineComponent({
     props: ["statuses"],
 
     components: {
-        AppLayout,
+        LayoutHeader,
         JetSectionBorder,
         Button,
         FontAwesomeIcon,

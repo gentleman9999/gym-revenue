@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
 import { defineComponent, ref } from "vue";
 import { useGymRevForm } from "@/utils";

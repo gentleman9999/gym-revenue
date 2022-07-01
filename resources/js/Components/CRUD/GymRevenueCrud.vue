@@ -55,6 +55,7 @@
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
+                    :actions="actions"
                 >
                     <template #title>
                         <slot name="title"></slot>
@@ -67,6 +68,7 @@
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
+                    :actions="actions"
                 >
                     <template #title>
                         <slot name="title"></slot>
@@ -80,6 +82,7 @@
                 v-bind="$props"
                 @open-customizer="openCustomizationModal"
                 :form="form"
+                :actions="actions"
             />
         </template>
 
@@ -106,18 +109,19 @@
 import { defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
-import Pagination from "@/Components/Pagination";
-import GymRevenueDataCards from "./GymRevenueDataCards";
-import GymRevenueDataTable from "./GymRevenueDataTable";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
-import JetBarContainer from "@/Components/JetBarContainer";
-import PreviewModal from "@/Components/CRUD/PreviewModal";
-import LeadForm from "@/Pages/Leads/Partials/LeadForm";
+import Pagination from "@/Components/Pagination.vue";
+import GymRevenueDataCards from "./GymRevenueDataCards.vue";
+import GymRevenueDataTable from "./GymRevenueDataTable.vue";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import PreviewModal from "@/Components/CRUD/PreviewModal.vue";
+import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 import { useSearchFilter } from "./helpers/useSearchFilter";
 import { flattenObj } from "@/Components/CRUD/helpers/getData";
-import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal";
+import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal.vue";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
+import { getActions } from "@/Components/CRUD/helpers/actions";
 
 export default defineComponent({
     components: {
@@ -179,6 +183,12 @@ export default defineComponent({
         },
         previewComponent: {
             type: Object,
+        },
+        onDoubleClick: {
+            type: Function,
+        },
+        onClick: {
+            type: Function,
         },
     },
 
@@ -264,7 +274,7 @@ export default defineComponent({
             create: {
                 label: `Create ${props.modelName}`,
                 handler: () => {
-                    Inertia.visit(route(`${props.baseRoute}.create`));
+                    Inertia.visitInModal(route(`${props.baseRoute}.create`));
                 },
                 class: ["btn-primary"],
             },
@@ -303,6 +313,9 @@ export default defineComponent({
         }
         const customizationModal = ref(null);
         const openCustomizationModal = () => customizationModal.value.open();
+
+        const actions = getActions(props);
+        console.log({ actions });
         return {
             form,
             topActions,
@@ -311,6 +324,7 @@ export default defineComponent({
             clearSearch,
             customizationModal,
             openCustomizationModal,
+            actions,
         };
     },
 });

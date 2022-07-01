@@ -15,7 +15,7 @@ class CreateClientBillableActivitiesTable extends Migration
     {
         Schema::create('client_billable_activities', function (Blueprint $table) {
             $table->id();
-            $table->uuid('client_id');
+            $table->uuid('client_id')->index();
             $table->string('desc')->nullable();
             $table->string('entity_type');
             $table->string('entity_id');

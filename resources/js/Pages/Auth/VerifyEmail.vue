@@ -43,9 +43,9 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
-import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
-import Button from "@/Components/Button";
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
+import Button from "@/Components/Button.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
@@ -71,7 +71,7 @@ export default defineComponent({
             this.form.post(this.route("verification.send"));
         },
     },
-
+    layout: null,
     computed: {
         verificationLinkSent() {
             return this.status === "verification-link-sent";

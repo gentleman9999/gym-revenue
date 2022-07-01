@@ -33,8 +33,9 @@ pipelines:
             - composer config -g github-oauth.github.com 235902933cf6ad227b534e7bf60decae368f8ea8
             - ln -f -s .env.example .env
             - composer install --no-interaction --prefer-dist  --optimize-autoloader --no-dev
-            - npm set-script prepare ""
-            - npm ci && npm run prod
+#            Why are we running npm build in here AND vapor.yml?
+#            - npm set-script prepare ""
+#            - npm ci && npm run build
             - php artisan config:clear
             - vendor/bin/vapor env:pull production
             - cp .env.production .env.pipelines
@@ -56,8 +57,9 @@ pipelines:
             - composer config bitbucket-oauth.bitbucket.org $BITBUCKET_CLIENT $BITBUCKET_SECRET
             - composer config -g github-oauth.github.com 235902933cf6ad227b534e7bf60decae368f8ea8
             - composer install --no-interaction --prefer-dist  --optimize-autoloader
-            - npm set-script prepare ""
-            - npm ci && npm run dev
+#            Why are we running npm build in here AND vapor.yml?
+#            - npm set-script prepare ""
+#            - npm ci && npm run build:staging
             - php artisan config:clear
             - vendor/bin/vapor env:pull staging
             - cp .env.staging .env.pipelines
@@ -78,8 +80,9 @@ pipelines:
             - composer config bitbucket-oauth.bitbucket.org $BITBUCKET_CLIENT $BITBUCKET_SECRET
             - composer config -g github-oauth.github.com 235902933cf6ad227b534e7bf60decae368f8ea8
             - composer install --no-interaction --prefer-dist  --optimize-autoloader
-            - npm set-script prepare ""
-            - npm ci && npm run dev
+#            Why are we running npm build in here AND vapor.yml?
+#            - npm set-script prepare ""
+#            - npm ci && npm run build:dev
             - php artisan config:clear
             - vendor/bin/vapor env:pull develop
             - cp .env.develop .env.pipelines

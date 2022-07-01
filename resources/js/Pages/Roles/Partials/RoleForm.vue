@@ -88,7 +88,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('roles'))"
+                @click="handleClickCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -113,16 +113,16 @@
 import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import { Inertia } from "@inertiajs/inertia";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
 
@@ -216,6 +216,17 @@ export default {
             form.ability_names = [...merged];
         };
 
+        const modal = useModal();
+
+        const handleClickCancel = () => {
+            console.log("modal", modal.value);
+            if (modal.value.close) {
+                modal.value.close();
+            } else {
+                Inertia.visit(route("roles"));
+            }
+        };
+
         return {
             form,
             buttonText: operation,
@@ -223,6 +234,7 @@ export default {
             groupedAvailableAbilities,
             selectAll,
             clear,
+            handleClickCancel,
         };
     },
 };

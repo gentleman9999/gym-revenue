@@ -68,6 +68,6 @@ class CreateLocation
 
         Alert::success("Locataion '{$location->name}' was created")->flash();
 
-        return Redirect::route('locations');
+        return Redirect::route('locations.edit', $location->id);
     }
 }

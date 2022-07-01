@@ -56,19 +56,17 @@
 import { ref } from "vue";
 import { useGymRevForm } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder";
-import DaisyModal from "@/Components/DaisyModal";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import usePage from "@/Components/InertiaModal/usePage";
 import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
         EmailBuilder,
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -100,8 +98,8 @@ export default {
                 form.dirty().put(
                     route("comms.email-templates.update", template.id),
                     {
-                        // headers: { "X-Inertia-Modal-Redirect": true },
-                        headers: { "X-Inertia-Modal-CloseOnSuccess": true },
+                        headers: { "X-Inertia-Modal-Redirect": true },
+                        // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
                         onFinish: () => {
                             if (closeAfterSave.value) {
                                 console.log(

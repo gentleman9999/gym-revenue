@@ -20,7 +20,7 @@ class CreateEmailTemplatesTable extends Migration
             $table->longText('json')->nullable();
             $table->json('thumbnail')->nullable();
             $table->boolean('active')->default(1);
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->uuid('team_id')->nullable();
             $table->string('created_by_user_id');
             $table->unique(['client_id','team_id']);

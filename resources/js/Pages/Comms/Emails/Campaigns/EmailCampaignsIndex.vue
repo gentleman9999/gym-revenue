@@ -1,56 +1,53 @@
 <template>
-    <app-layout :title="title">
-        <template #header>
-            <div class="text-center">
-                <h2 class="font-semibold text-xl leading-tight">
-                    Email Campaigns Management
-                </h2>
-            </div>
-            <div
-                class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
-            >
-                <inertia-link
-                    class="btn justify-self-end"
-                    :href="route('comms.dashboard')"
-                >
-                    <span
-                        ><font-awesome-icon
-                            :icon="['far', 'chevron-double-left']"
-                            size="sm"
-                        />
-                        Back</span
-                    >
-                </inertia-link>
-            </div>
-        </template>
-        <gym-revenue-crud
-            base-route="comms.email-campaigns"
-            model-name="Email Campaign"
-            model-key="campaign"
-            :fields="fields"
-            :resource="campaigns"
-            :actions="actions"
-            :top-actions="{ create: { label: 'New Campaign' } }"
-        />
-        <confirm
-            title="Really Trash?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
+    <LayoutHeader title="Email Campaigns">
+        <div class="text-center">
+            <h2 class="font-semibold text-xl leading-tight">
+                Email Campaigns Management
+            </h2>
+        </div>
+        <div
+            class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
         >
-            Are you sure you want to remove this campaign? It will unassign all
-            audiences and/or templates.
-        </confirm>
-    </app-layout>
+            <inertia-link
+                class="btn justify-self-end"
+                :href="route('comms.dashboard')"
+            >
+                <span
+                    ><font-awesome-icon
+                        :icon="['far', 'chevron-double-left']"
+                        size="sm"
+                    />
+                    Back</span
+                >
+            </inertia-link>
+        </div>
+    </LayoutHeader>
+    <gym-revenue-crud
+        base-route="comms.email-campaigns"
+        model-name="Email Campaign"
+        model-key="campaign"
+        :fields="fields"
+        :resource="campaigns"
+        :actions="actions"
+        :top-actions="{ create: { label: 'New Campaign' } }"
+    />
+    <confirm
+        title="Really Trash?"
+        v-if="confirmTrash"
+        @confirm="handleConfirmTrash"
+        @cancel="confirmTrash = null"
+    >
+        Are you sure you want to remove this campaign? It will unassign all
+        audiences and/or templates.
+    </confirm>
 </template>
 
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
-import AppLayout from "@/Layouts/AppLayout";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import Confirm from "@/Components/Confirm";
-
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import Confirm from "@/Components/Confirm.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
     faChevronDoubleLeft,
@@ -65,7 +62,7 @@ library.add(faChevronDoubleLeft, faEllipsisH);
 export default defineComponent({
     name: "EmailCampaignsIndex",
     components: {
-        AppLayout,
+        LayoutHeader,
         FontAwesomeIcon,
         Confirm,
         GymRevenueCrud,
@@ -111,18 +108,18 @@ export default defineComponent({
             return {
                 edit: {
                     shouldRender: ({ data }) => {
-                        if (!data.active) {
+                        if (!data?.active) {
                             return true;
                         }
-                        if (!data.schedule_date?.value) {
+                        if (!data?.schedule_date?.value) {
                             return true;
                         }
-                        if (!parseDate(data.schedule_date.value)) {
-                            console.log({ date: data.schedule_date.value });
+                        if (!parseDate(data?.schedule_date?.value)) {
+                            console.log({ date: data?.schedule_date?.value });
                             return true;
                         }
                         return (
-                            new Date(`${data.schedule_date.value} UTC`) >=
+                            new Date(`${data?.schedule_date?.value} UTC`) >=
                             new Date()
                         );
                     },
@@ -130,8 +127,8 @@ export default defineComponent({
                 results: {
                     label: "Results",
                     shouldRender: ({ data }) =>
-                        data.active &&
-                        data.schedule_date &&
+                        data?.active &&
+                        data?.schedule_date &&
                         new Date(`${data.schedule_date.value} UTC`) <
                             new Date(),
                     handler: () => comingSoon(),

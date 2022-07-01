@@ -198,11 +198,10 @@
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
@@ -212,7 +211,6 @@ import { transformDate } from "@/utils/transformDate";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -235,9 +233,9 @@ export default {
         const page = usePage();
 
         let location = props.location;
-        let poc_first = page.props.value.poc_first;
-        let poc_last = page.props.value.poc_last;
-        let poc_phone = page.props.value.poc_phone;
+        let poc_first = props.poc_first;
+        let poc_last = props.poc_last;
+        let poc_phone = props.poc_phone;
 
         let operation = "Update";
         if (!location) {

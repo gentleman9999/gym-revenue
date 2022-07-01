@@ -195,6 +195,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
     Route::put('/update/{id}', \App\Actions\Jetstream\UpdateTeam::class)->name('team.update');
     Route::delete('/{id}', \App\Actions\Jetstream\DeleteTeam::class)->name('teams.delete');
+    Route::delete('/{team}/{teamMemberId}', \App\Actions\Jetstream\RemoveTeamMember::class)->name('team-members.destroy');
     Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
