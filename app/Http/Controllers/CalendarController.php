@@ -12,6 +12,7 @@ use App\Models\Reminder;
 use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -123,11 +124,20 @@ class CalendarController extends Controller
         $locations = Location::whereClientId($client_id)->get();
         $eventsByLocation = [];
 
+        $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            (new DateTime())->format('Y-m-d 00:00:00')
+        )->getTimestamp())]);
+        $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            (new DateTime())->format('Y-m-d 23:59:59')
+        )->getTimestamp())]);
+
         foreach ($locations as $key => $location) {
             $eventsForTeam = CalendarEvent::whereClientId($client_id)
                     ->whereLocationId($location->id)
                     ->with('type', 'attendees', 'files')
-                    ->filter($request->only('search', 'start', 'end', 'viewUser'))
+                    ->filter($request->only('search', 'start', 'end', ))
                     ->get();
             $eventsByLocation[$key]['location_name'] = $location->name;
             $eventsByLocation[$key]['location_id'] = $location->id;
