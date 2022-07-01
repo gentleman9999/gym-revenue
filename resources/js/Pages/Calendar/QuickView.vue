@@ -1,11 +1,8 @@
 <template>
     <section>
         <location-container
-            v-for="(events, ix) in calendar_events_by_locations"
-            title="location x"
-            date="April 6, 2022"
+            v-for="events in calendar_events_by_locations"
             :events="events"
-            :ix="ix"
         />
     </section>
 </template>

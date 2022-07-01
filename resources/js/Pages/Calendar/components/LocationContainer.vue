@@ -1,20 +1,17 @@
 <template>
-    <inertia-link
-        v-if="events && events.length"
-        href="#"
-        @click="switchTolocation(events)"
-    >
+    <inertia-link href="#" @click="switchTolocation(events)">
         <article
-            v-if="events && events.length"
             class="bg-base-content bg-opacity-80 text-base-300 p-4 h-full rounded-md border border-secondary"
         >
-            <h2 class="font-bold text-xl capitalize">Location {{ ix }}</h2>
+            <h2 class="font-bold text-xl capitalize">
+                {{ events.location_name }}
+            </h2>
             <span class="font-bold text-secondary">{{ getDateStr() }}</span>
             <div>
                 <day-scroller :date="date" />
             </div>
             <ul>
-                <li v-for="e in events" class="flex items-center my-4">
+                <li v-for="e in events.events" class="flex items-center my-4">
                     {{ fmtTime(e.start) }}
                     <div
                         class="w-full bg-base-content px-3 py-1 ml-2 rounded gridgrid-rows-1"
@@ -62,21 +59,13 @@ import DayScroller from "./DayScroller.vue";
 export default defineComponent({
     components: { DayScroller },
     props: {
-        title: {
-            type: String,
-            required: true,
-        },
-        date: {
-            type: String,
-        },
         events: {
             type: Array,
         },
-        ix: {
-            type: Number,
-        },
     },
     setup(props) {
+        console.log("event props", props.events);
+
         const names_weekday = [
             "Sunday",
             "Monday",
