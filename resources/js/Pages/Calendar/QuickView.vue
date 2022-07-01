@@ -1,16 +1,17 @@
 <template>
     <section>
         <location-container
-            v-for="event in calendar_events_by_locations"
+            v-for="events in calendar_events_by_locations"
             title="location x"
             date="April 6, 2022"
+            :events="events"
         />
     </section>
 </template>
 
 <style scoped>
 section {
-    @apply mx-12 grid grid-cols-3 gap-8;
+    @apply mx-24 grid grid-cols-3 gap-8;
 }
 </style>
 

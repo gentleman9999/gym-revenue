@@ -8,28 +8,10 @@
             <day-scroller day="2" />
         </div>
         <ul>
-            <li class="flex items-center my-4">
+            <li v-for="e in events" class="flex items-center my-4">
                 time
                 <div class="w-full bg-base-content px-3 py-1 ml-2 rounded">
-                    Event | Times | Note | Email
-                </div>
-            </li>
-            <li class="flex items-center my-4">
-                time
-                <div class="w-full bg-base-content px-3 py-1 ml-2 rounded">
-                    Event | Times | Note | Email
-                </div>
-            </li>
-            <li class="flex items-center my-4">
-                time
-                <div class="w-full bg-base-content px-3 py-1 ml-2 rounded">
-                    Event | Times | Note | Email
-                </div>
-            </li>
-            <li class="flex items-center my-4">
-                time
-                <div class="w-full bg-base-content px-3 py-1 ml-2 rounded">
-                    Event | Times | Note | Email
+                    <span>{{ e.title }}</span>
                 </div>
             </li>
         </ul>
@@ -50,6 +32,9 @@ export default defineComponent({
         },
         date: {
             type: String,
+        },
+        events: {
+            type: Array,
         },
     },
     setup(props) {
