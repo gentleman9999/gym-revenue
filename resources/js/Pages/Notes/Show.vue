@@ -31,7 +31,6 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
-
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
