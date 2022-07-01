@@ -95,20 +95,20 @@
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import UserForm from "./Partials/UserForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import UserForm from "./Partials/UserForm.vue";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import Confirm from "@/Components/Confirm.vue";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import PageToolbarNav from "@/Components/PageToolbarNav";
-import UserPreview from "@/Pages/Users/Partials/UserPreview";
-import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import UserPreview from "@/Pages/Users/Partials/UserPreview.vue";
+import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
-import DaisyModal from "@/Components/DaisyModal";
-import FileManager from "./Partials/FileManager";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import FileManager from "./Partials/FileManager.vue";
 
 export default defineComponent({
     components: {

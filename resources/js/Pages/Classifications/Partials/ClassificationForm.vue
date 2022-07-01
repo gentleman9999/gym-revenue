@@ -17,7 +17,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('classifications'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -39,11 +39,13 @@
 </template>
 
 <script>
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import { useGymRevForm } from "@/utils";
+import { useModal } from "@/Components/InertiaModal";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
@@ -83,10 +85,19 @@ export default {
             handleSubmit = () => form.post(route("classifications.store"));
         }
 
+        const modal = useModal();
+        const handleCancel = () => {
+            if (modal?.value?.close) {
+                modal.value.close();
+                return;
+            }
+            Inertia.visit(route("classifications"));
+        };
         return {
             form,
             buttonText: operation,
             handleSubmit,
+            handleCancel,
         };
     },
 };

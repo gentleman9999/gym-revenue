@@ -25,8 +25,8 @@
 <script>
 import { computed, defineComponent } from "vue";
 import { useGymRevForm } from "@/utils";
-import BaseCommsAction from "./BaseCommsAction";
-import SmsFormControl from "@/Components/SmsFormControl";
+import BaseCommsAction from "./BaseCommsAction.vue";
+import SmsFormControl from "@/Components/SmsFormControl.vue";
 
 export default defineComponent({
     components: {

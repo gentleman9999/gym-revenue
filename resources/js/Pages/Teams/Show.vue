@@ -25,11 +25,11 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import DeleteTeamForm from "@/Pages/Teams/Partials/DeleteTeamForm";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import TeamMemberManager from "@/Pages/Teams/Partials/TeamMemberManager";
-import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import DeleteTeamForm from "@/Pages/Teams/Partials/DeleteTeamForm.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import TeamMemberManager from "@/Pages/Teams/Partials/TeamMemberManager.vue";
+import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm.vue";
 
 export default defineComponent({
     props: ["team", "availableRoles", "permissions"],

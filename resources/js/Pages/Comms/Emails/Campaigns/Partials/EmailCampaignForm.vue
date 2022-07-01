@@ -158,7 +158,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.email-campaigns'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -198,15 +198,16 @@
 <script>
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import SmsFormControl from "@/Components/SmsFormControl";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import Confirm from "@/Components/Confirm";
+import SmsFormControl from "@/Components/SmsFormControl.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import Confirm from "@/Components/Confirm.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     name: "EmailCampaignForm",
@@ -357,6 +358,14 @@ export default {
         },
         closeModal() {
             this.$refs.modal.close();
+        },
+        handleCancel() {
+            const inertiaModal = useModal();
+            if (inertiaModal?.value?.close) {
+                inertiaModal.value.close();
+                return;
+            }
+            this.$inertia.visit(route("comms.email-campaigns"));
         },
     },
 };

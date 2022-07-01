@@ -32,15 +32,15 @@
 </style>
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import KpiRevenuePerMemberOverall from "./components/KpiRevenuePerMemberOverall";
-import KpiMembershipRevenuePerMember from "./components/KpiMembershipRevenuePerMember";
-import KpiPersonalTraining from "./components/KpiPersonalTraining";
-import KpiRetailRevenuePerMember from "./components/KpiRetailRevenuePerMember";
-import KpiMembership from "./components/KpiMembership";
-import KpiOtherServices from "./components/KpiOtherServices";
-import ReportsTitle from "../components/ReportsTitle";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import KpiRevenuePerMemberOverall from "./components/KpiRevenuePerMemberOverall/KpiRevenuePerMemberOverall.vue";
+import KpiMembershipRevenuePerMember from "./components/KpiMembershipRevenuePerMember/KpiMembershipRevenuePerMember.vue";
+import KpiPersonalTraining from "./components/KpiPersonalTraining/KpiPersonalTraining.vue";
+import KpiRetailRevenuePerMember from "./components/KpiRetailRevenuePerMember/KpiRetailRevenuePerMember.vue";
+import KpiMembership from "./components/KpiMembership.vue";
+import KpiOtherServices from "./components/KpiOtherServices/KpiOtherServices.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
 
 export default defineComponent({
     components: {

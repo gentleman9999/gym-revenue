@@ -35,11 +35,11 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetSectionBorder from "@/Jetstream/SectionBorder";
-import TeamMemberManager from "@/Pages/Teams/Partials/TeamMemberManager";
-import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm";
-import TeamForm from "./Partials/TeamForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
+import TeamMemberManager from "@/Pages/Teams/Partials/TeamMemberManager.vue";
+import UpdateTeamNameForm from "@/Pages/Teams/Partials/UpdateTeamNameForm.vue";
+import TeamForm from "./Partials/TeamForm.vue";
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({

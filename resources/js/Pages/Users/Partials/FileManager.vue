@@ -124,8 +124,8 @@ import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
 import { useGymRevForm } from "@/utils";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
-import FileUploadForm from "@/Pages/Files/Partials/FileUploadForm";
-import UploadIcon from "@/Pages/Files/Partials/UploadIcon";
+import FileUploadForm from "@/Pages/Files/Partials/FileUploadForm.vue";
+import UploadIcon from "@/Pages/Files/Partials/UploadIcon.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({

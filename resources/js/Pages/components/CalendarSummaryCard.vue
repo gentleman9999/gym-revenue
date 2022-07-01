@@ -22,10 +22,10 @@
     </Card>
 </template>
 <script setup>
-import Card from "@/Components/Card";
-import Button from "@/Components/Button";
+import Card from "@/Components/Card.vue";
+import Button from "@/Components/Button.vue";
 
-import ProgressChart from "@/Components/ProgressChart";
+import ProgressChart from "@/Components/ProgressChart.vue";
 const props = defineProps({
     title: {
         type: String,

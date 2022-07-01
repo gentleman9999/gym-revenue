@@ -85,18 +85,18 @@
 </template>
 <script>
 import { defineComponent, ref, watch, computed } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import DaisyModal from "@/Components/DaisyModal";
-import Button from "@/Components/Button";
-import JetBarContainer from "@/Components/JetBarContainer";
-import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
-import PageToolbarNav from "@/Components/PageToolbarNav";
-import TaskDateSwitcher from "./components/TaskDateSwitcher";
-import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher";
-import TaskListView from "./components/TaskListView";
+import Confirm from "@/Components/Confirm.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import Button from "@/Components/Button.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm.vue";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import TaskDateSwitcher from "./components/TaskDateSwitcher/TaskDataSwitcher.vue";
+import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher.vue";
+import TaskListView from "./components/TaskListView.vue";
 import pickBy from "lodash/pickBy";
 import { transformDate } from "@/utils/transformDate";
 

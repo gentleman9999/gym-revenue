@@ -45,7 +45,7 @@
 <script>
 import { defineComponent } from "vue";
 import { useGymRevForm } from "@/utils";
-import BaseCommsAction from "./BaseCommsAction";
+import BaseCommsAction from "./BaseCommsAction.vue";
 
 export default defineComponent({
     components: {

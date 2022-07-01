@@ -62,11 +62,11 @@
 <script setup>
 import { computed } from "@vue/reactivity";
 import { ref } from "vue";
-import FavoriteBtn from "@/Components/FavoriteBtn";
+import FavoriteBtn from "@/Components/FavoriteBtn.vue";
 import SelectBox from "@/Components/SelectBox";
-import SearchInput from "@/Components/SearchInput";
-import MoreIcon from "@/Components/Icons/More";
-import ArrowIcon from "@/Components/Icons/Arrow";
+import SearchInput from "@/Components/SearchInput.vue";
+import MoreIcon from "@/Components/Icons/More.vue";
+import ArrowIcon from "@/Components/Icons/Arrow.vue";
 
 const props = defineProps({
     class: {

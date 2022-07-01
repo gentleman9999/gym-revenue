@@ -201,13 +201,13 @@
 </template>
 
 <script>
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetBarContainer from "@/Components/JetBarContainer";
-import JetBarAlert from "@/Components/JetBarAlert";
-import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
-import JetBarBadge from "@/Components/JetBarBadge";
-import JetBarIcon from "@/Components/JetBarIcon";
-import DaisyModal from "@/Components/DaisyModal";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import JetBarAlert from "@/Components/JetBarAlert.vue";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable.vue";
+import JetBarBadge from "@/Components/JetBarBadge.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -223,8 +223,8 @@ import {
     faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats";
-import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader";
+import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats.vue";
+import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader.vue";
 
 library.add(
     faBars,

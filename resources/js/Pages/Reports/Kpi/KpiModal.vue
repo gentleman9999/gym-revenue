@@ -20,11 +20,11 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
 
-import KpiRevenuePerMemberOverall from "./components/KpiRevenuePerMemberOverall";
-import KpiPersonalTraining from "./components/KpiPersonalTraining";
-import KpiAttachmentRate from "./components/KpiOtherServices/AttachmentRate";
+import KpiRevenuePerMemberOverall from "./components/KpiRevenuePerMemberOverall/KpiRevenuePerMemberOverall.vue";
+import KpiPersonalTraining from "./components/KpiPersonalTraining/KpiPersonalTraining.vue";
+import KpiAttachmentRate from "./components/KpiOtherServices/AttachmentRate.vue";
 
 export default defineComponent({
     components: {

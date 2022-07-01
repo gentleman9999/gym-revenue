@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import {

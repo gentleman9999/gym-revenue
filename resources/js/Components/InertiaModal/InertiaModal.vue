@@ -266,6 +266,11 @@ const visitInModal = (url, options = {}) => {
                                 opts.redirectBack ||
                                 modalRedirectBack in event.detail.visit.headers
                             ) {
+                                const redirectBackVal =
+                                    opts.redirectBack ||
+                                    event.detail.visit.headers[
+                                        modalRedirectBack
+                                    ];
                                 console.log(
                                     "[inertia-modal] visitInModal = opts.redirectBack===true"
                                 );
@@ -314,6 +319,15 @@ const visitInModal = (url, options = {}) => {
                                     removeSuccessEventListener = Inertia.on(
                                         "success",
                                         opts.redirectBack
+                                    );
+                                }
+                                if (redirectBackVal === "close") {
+                                    console.log(
+                                        "[inertia-modal] redirect back set to CLOSE"
+                                    );
+                                    removeSuccessEventListener = Inertia.on(
+                                        "success",
+                                        () => modal.value?.close()
                                     );
                                 }
                             } else if (

@@ -110,8 +110,8 @@
 <script>
 import { computed, defineComponent, ref, watchEffect } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
-import DaisyModal from "@/Components/DaisyModal";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { Inertia } from "@inertiajs/inertia";
 import "@fullcalendar/core/vdom"; // solves problem with Vite
 import FullCalendar from "@fullcalendar/vue3";
@@ -119,13 +119,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import PageToolbarNav from "@/Components/PageToolbarNav";
-import ArrowIcon from "@/Components/Icons/Arrow";
+import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import ArrowIcon from "@/Components/Icons/Arrow.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import Button from "@/Components/Button";
+import Button from "@/Components/Button.vue";
 
 export default defineComponent({
     components: {
@@ -492,11 +492,7 @@ export default defineComponent({
 
 <style>
 .fc .fc-toolbar {
-    @apply flex-col gap-2;
-
-    @screen lg {
-        @apply flex-row;
-    }
+    @apply flex-col gap-2 lg:flex-row;
 }
 .fc .fc-daygrid-day-bottom {
     @apply text-xs;

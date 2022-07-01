@@ -21,7 +21,7 @@
 import { onMounted, ref, watch } from "vue";
 import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import Spinner from "@/Components/Spinner";
+import Spinner from "@/Components/Spinner.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
 

@@ -71,15 +71,15 @@
 
 <script>
 import { defineComponent, ref, onMounted, computed } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
+import Confirm from "@/Components/Confirm.vue";
+import TeamPreview from "@/Pages/Teams/Partials/TeamPreview.vue";
 import { preview } from "@/Components/CRUD/helpers/previewData";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 

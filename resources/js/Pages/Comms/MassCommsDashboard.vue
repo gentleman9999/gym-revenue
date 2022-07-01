@@ -151,15 +151,15 @@
 <script>
 import { defineComponent } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import JetDropdown from "@/Components/Dropdown";
-import JetBarContainer from "@/Components/JetBarContainer";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetDropdown from "@/Components/Dropdown.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
-import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter";
+import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import MassCommDataButton from "./Partials/MassCommDataButton";
-import MassCommStat from "./Partials/MassCommStat";
+import MassCommDataButton from "./Partials/MassCommDataButton.vue";
+import MassCommStat from "./Partials/MassCommStat.vue";
 
 export default defineComponent({
     name: "MassCommsDashboard",

@@ -22,12 +22,12 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 
 export default {
     name: "ShowAPITokenForm",

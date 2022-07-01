@@ -15,9 +15,9 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import AttritionRunningTotal from "./components/AttritionRunningTotal";
-import AttritionWaterline from "./components/AttritionWaterline";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import AttritionRunningTotal from "./components/AttritionRunningTotal/AttritionRunningTotal.vue";
+import AttritionWaterline from "./components/AttritionWaterline/AttritionWaterline.vue";
 export default defineComponent({
     components: {
         DashboardWidgetModal,

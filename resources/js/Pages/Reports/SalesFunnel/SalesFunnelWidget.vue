@@ -229,8 +229,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget";
-import SalesFunnelModal from "@/Pages/Reports/SalesFunnel/SalesFunnelModal";
+import DashboardWidget from "@/Pages/Reports/Partials/DashboardWidget.vue";
+import SalesFunnelModal from "@/Pages/Reports/SalesFunnel/SalesFunnelModal.vue";
 
 export default defineComponent({
     components: {

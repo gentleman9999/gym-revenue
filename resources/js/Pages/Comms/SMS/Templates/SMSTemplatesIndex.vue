@@ -52,10 +52,10 @@
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import Confirm from "@/Components/Confirm";
-import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Confirm from "@/Components/Confirm.vue";
+import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {

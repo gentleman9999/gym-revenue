@@ -138,12 +138,12 @@
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import LayoutHeader from "@/Layouts/LayoutHeader";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import FileUploadForm from "./FileUploadForm";
-import UploadIcon from "./UploadIcon";
+import FileUploadForm from "./FileUploadForm.vue";
+import UploadIcon from "./UploadIcon.vue";
 
 import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";
@@ -240,19 +240,22 @@ const handleSubmit = () => {
             form.reset();
             fileRefs.value.forEach((fileRef) => fileRef.form.reset());
         },
+        headers: {
+            "X-Inertia-Modal-Redirect-Back": "close",
+        },
         ...formSubmitOptions,
     });
 };
 
-const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
-    const { method } = visit;
-    if (method === "get" && numUploadedFiles.value) {
-        return confirm(
-            "You haven't yet saved your uploaded files.  Are you sure you want to navigate away?"
-        );
-    }
-});
+// const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
+//     const { method } = visit;
+//     if (method === "get" && numUploadedFiles.value) {
+//         return confirm(
+//             "You haven't yet saved your uploaded files.  Are you sure you want to navigate away?"
+//         );
+//     }
+// });
 defineExpose({ reset: form.reset });
 
-onUnmounted(removeRouteGuard);
+// onUnmounted(removeRouteGuard);
 </script>
