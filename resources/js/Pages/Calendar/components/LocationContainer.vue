@@ -1,5 +1,12 @@
 <template>
-    <inertia-link href="#" @click="switchTolocation(events.location_id)">
+    <inertia-link
+        :href="
+            route('current-location-qv.update', {
+                location_id: events.location_id,
+            })
+        "
+        method="put"
+    >
         <article
             class="bg-base-content bg-opacity-80 text-base-300 p-4 h-full rounded-md border border-secondary"
         >
@@ -65,12 +72,6 @@ export default defineComponent({
     },
     setup(props) {
         console.log("event props", props.events);
-
-        function switchToLocation(location) {
-            Inertia.put(route("current-location.update"), {
-                location,
-            });
-        }
 
         const names_weekday = [
             "Sunday",
@@ -138,7 +139,6 @@ export default defineComponent({
         return {
             fmtTime,
             getDateStr,
-            switchToLocation,
         };
     },
 });

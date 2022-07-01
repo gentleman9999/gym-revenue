@@ -124,6 +124,16 @@ class LocationsController extends Controller
         return redirect(config('fortify.home'), 303);
     }
 
+    public function switchCalendar(Request $request)
+    {
+        $location = Location::findOrFail($request->location_id);
+        if (! $request->user()->switchLocation($location)) {
+            abort(403);
+        }
+
+        return Redirect::route('calendar');
+    }
+
     private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
     {
         $results = [];
