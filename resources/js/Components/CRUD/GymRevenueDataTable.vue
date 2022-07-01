@@ -96,7 +96,7 @@
     }
 
     .tablebody {
-        @apply max-h-64 overflow-hidden overflow-y-scroll pr-10;
+        @apply h-[70vh] max-h-[26rem] overflow-hidden overflow-y-scroll pr-10;
 
         td {
             @apply text-center bg-black text-white my-2 mx-8 whitespace-nowrap overflow-hidden text-ellipsis py-4;
