@@ -48,7 +48,6 @@ export default defineComponent({
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
-            console.log("click delete", item);
             confirmDelete.value = item;
         };
 

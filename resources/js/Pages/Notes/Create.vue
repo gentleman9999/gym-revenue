@@ -5,12 +5,7 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <template #modal>
-                <note-form
-                    :client-id="$page.props.user.current_client_id"
-                    :notes="notes"
-                />
-            </template>
+            <note-form :client-id="$page.props.user.current_client_id" />
         </div>
     </div>
 </template>
