@@ -130,6 +130,7 @@ class CalendarController extends Controller
                     ->filter($request->only('search', 'start', 'end', 'viewUser'))
                     ->get();
             $eventsByLocation[$key]['location_name'] = $location->name;
+            $eventsByLocation[$key]['location_id'] = $location->id;
             $eventsByLocation[$key]['events'] = $eventsForTeam;
         }
 
