@@ -8,7 +8,7 @@
             class="font-bold"
             :class="{ selected_day: isSameDay(selected_date, day) }"
         >
-            <button @click="$emit('changeDate', day)">
+            <button class="align-middle" @click="$emit('changeDate', day)">
                 {{ day.getDate() }}
             </button>
         </li>
@@ -20,7 +20,7 @@
 
 <style scoped>
 li {
-    @apply h-6 w-6 text-center;
+    @apply h-7 w-7 text-center;
 }
 
 .selected_day {
