@@ -1,20 +1,28 @@
 <template>
     <ul class="flex justify-between py-4">
-        <button class="text-base-100 text-opacity-50">
+        <button @click="$emit('regress')" class="text-base-100 text-opacity-50">
             <font-awesome-icon :icon="['fas', 'chevron-left']" />
         </button>
-        <li v-for="num in week" class="font-bold">
-            {{ num }}
+        <li
+            v-for="day in visibleWeek"
+            class="font-bold"
+            :class="{ selected_day: isSameDay(selected_date, day) }"
+        >
+            {{ day.getDate() }}
         </li>
-        <button class="text-secondary">
+        <button @click="$emit('advance')" class="text-secondary">
             <font-awesome-icon :icon="['fas', 'chevron-right']" />
         </button>
     </ul>
 </template>
 
 <style scoped>
-.today {
-    @apply rounded-full bg-secondary text-base-content h-6 w-6 text-center;
+li {
+    @apply h-6 w-6 text-center;
+}
+
+.selected_day {
+    @apply rounded-full bg-secondary text-base-content;
 }
 </style>
 
@@ -34,23 +42,49 @@ export default defineComponent({
         FontAwesomeIcon,
     },
     props: {
-        week_start_date: {
-            type: Number,
+        visible_date: {
+            type: String,
         },
-        day: {
-            type: Number,
-        },
-        date: {
+        selected_date: {
             type: String,
         },
     },
-    setup(props) {
-        const week = ref([1, 2, 3, 4, 5, 6, 7]);
+    computed: {
+        visibleWeek() {
+            let w = [];
+            for (let i = 0; i < 7; i++) {
+                let cd = new Date(this.visible_date);
 
-        const todaysDate = new Date();
+                if (i === cd.getDay()) {
+                    w[i] = cd;
+                } else {
+                    let x = new Date(
+                        cd.getFullYear(),
+                        cd.getMonth(),
+                        cd.getDate() + i
+                    );
+                    w[i] = x;
+                }
+            }
+
+            return w;
+        },
+    },
+    setup(props) {
+        /** Determine if date1 is the same day as date2 */
+        const isSameDay = (d1, d2) => {
+            let first = d1 instanceof Date ? d1 : new Date(d1);
+            let second = d2 instanceof Date ? d2 : new Date(d2);
+
+            return (
+                first.getDate() == second.getDate() &&
+                first.getMonth() == second.getMonth() &&
+                first.getFullYear() == second.getFullYear()
+            );
+        };
 
         return {
-            week,
+            isSameDay,
         };
     },
 });
