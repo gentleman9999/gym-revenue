@@ -57,16 +57,12 @@ export default defineComponent({
             for (let i = 0; i < 7; i++) {
                 let cd = new Date(this.visible_date);
 
-                if (i === cd.getDay()) {
-                    w[i] = cd;
-                } else {
-                    let x = new Date(
-                        cd.getFullYear(),
-                        cd.getMonth(),
-                        cd.getDate() + i
-                    );
-                    w[i] = x;
-                }
+                let x = new Date(
+                    cd.getFullYear(),
+                    cd.getMonth(),
+                    cd.getDate() + i
+                );
+                w[i] = x;
             }
 
             return w;

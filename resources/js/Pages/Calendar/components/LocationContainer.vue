@@ -125,10 +125,10 @@ export default defineComponent({
         /** some date within the week we want to show */
         const date_in_visible_week = ref(new Date());
 
-        /** For the currently selected date */
+        /** currently selected date */
         const selected = ref(new Date());
 
-        /** Format an events time in hh:mm format */
+        /** Formats an events time as hh:mm */
         const fmtTime = (d) => {
             let t = d.split(" ")[1].split(":");
             return [t[0], t[1]].join(":");
