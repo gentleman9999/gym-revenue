@@ -20,6 +20,7 @@
                 :visible_date="date_in_visible_week"
                 @advance="() => upWeek()"
                 @regress="() => downWeek()"
+                @change-date="(d) => updateSelectedDate(d)"
             />
         </div>
         <ul>
@@ -155,6 +156,11 @@ export default defineComponent({
             date_in_visible_week.value = temp;
         };
 
+        const updateSelectedDate = (d) => {
+            let t = d instanceof Date ? d : new Date(d);
+            selected.value = t;
+        };
+
         return {
             names_weekday,
             names_month,
@@ -163,6 +169,7 @@ export default defineComponent({
             date_in_visible_week,
             upWeek,
             downWeek,
+            updateSelectedDate,
         };
     },
 });

@@ -8,7 +8,9 @@
             class="font-bold"
             :class="{ selected_day: isSameDay(selected_date, day) }"
         >
-            {{ day.getDate() }}
+            <button @click="$emit('changeDate', day)">
+                {{ day.getDate() }}
+            </button>
         </li>
         <button @click="$emit('advance')" class="text-secondary">
             <font-awesome-icon :icon="['fas', 'chevron-right']" />
