@@ -134,22 +134,25 @@ export default defineComponent({
         };
 
         const upWeek = () => {
-            console.log("up 1 week");
             let td = new Date(date_in_visible_week.value);
             let temp = new Date(
                 td.getFullYear(),
                 td.getMonth(),
                 td.getDate() + 7
             );
-            // td.setDate(td.getDate() + 7);
+
             date_in_visible_week.value = temp;
         };
 
         const downWeek = () => {
-            console.log("down 1 week");
             let td = new Date(date_in_visible_week.value);
-            td.setDate(td.getDate() - 7);
-            date_in_visible_week.value = td;
+            let temp = new Date(
+                td.getFullYear(),
+                td.getMonth(),
+                td.getDate() - 7
+            );
+
+            date_in_visible_week.value = temp;
         };
 
         return {
