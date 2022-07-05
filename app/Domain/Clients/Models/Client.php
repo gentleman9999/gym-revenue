@@ -6,7 +6,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Enums\ClientServiceEnum;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\LeadSource;
@@ -31,7 +30,6 @@ class Client extends GymRevProjection
     protected $fillable = [
         'name',
         'active',
-        'services',
     ];
 
     protected $casts = [
@@ -95,22 +93,22 @@ class Client extends GymRevProjection
         })->orderBy('created_at');
     }
 
-    public function setActiveAttribute(bool|int|string|null $val)
-    {
-        if (! isset($val) || ! $val || $val === 'false') {
-            $this->attributes['active'] = 0;
 
-            return;
-        }
-        $this->attributes['active'] = 1;
-    }
-
-    public function getServicesAttribute($value)
-    {
-        $services = collect(json_decode($value))->map(function ($service) {
-            return ClientServiceEnum::tryFrom($service);
-        })->filter()->toArray();
-
-        return $services;
-    }
+//    public function setServicesAttribute($value)
+//    {
+//        dd($value);
+//        $services =  collect($value)->map(function($service){
+//            if($service instanceof ClientServiceEnum){
+//                return $service->name;
+//            }
+//            return ClientServiceEnum::tryFrom($service)->name;
+//        });
+//        $this->attributes['services'] = $services;
+//
+//    }
+//
+//    public function getServicesAttribute($valueStr)
+//    {
+//        return json_decode($valueStr);
+//    }
 }

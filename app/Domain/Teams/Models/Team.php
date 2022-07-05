@@ -3,7 +3,7 @@
 namespace App\Domain\Teams\Models;
 
 use App\Domain\Clients\Models\Client;
-use App\Models\Clients\ClientDetail;
+use App\Domain\Clients\Models\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

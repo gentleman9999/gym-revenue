@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum ClientServiceEnum: string
 {
-    case FREE_TRIAL = "FREE_TRIAL";
-    case MASS_COMMS = "MASS_COMMS";
-    case CALENDAR = "CALENDAR";
-    case LEADS = "LEADS";
-    case MEMBERS = "MEMBERS";
+    case FREE_TRIAL = "Free Trial";
+    case MASS_COMMS = "Mass Comms";
+    case CALENDAR = "Calendar";
+    case LEADS = "Leads";
+    case MEMBERS = "Members";
 }

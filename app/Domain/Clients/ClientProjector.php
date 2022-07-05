@@ -5,6 +5,7 @@ namespace App\Domain\Clients;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Events\ClientDeleted;
 use App\Domain\Clients\Events\ClientRestored;
+use App\Domain\Clients\Events\ClientServicesSet;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
 use App\Domain\Clients\Models\Client;
@@ -45,5 +46,12 @@ class ClientProjector extends Projector
     public function onClientDeleted(ClientDeleted $event): void
     {
         Client::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->forceDelete();
+    }
+
+    public function onClientServicesSet(ClientServicesSet $event)
+    {
+        $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
+        $client->services = $event->services;
+        $client->save();
     }
 }

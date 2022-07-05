@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Models\Client;
-use App\Models\Clients\Features\ClientService;
+use App\Enums\ClientServiceEnum;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -17,7 +17,7 @@ class ClientSettingsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($client_id);
+        $client = Client::with(['trial_membership_types', 'locations'])->find($client_id);
 
         $test = [
             ['name' => 'SMS', 'value' => 'SMS'],
@@ -25,7 +25,9 @@ class ClientSettingsController extends Controller
         ]; //TODO: make this actually pull available communication preferences
 
         return Inertia::render('ClientSettings/Index', [
-            'availableServices' => ClientService::whereClientId($client_id)->get(['feature_name', 'slug', 'id']) ?? [],
+            'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
+                return ['value' => $s->value, 'name' => $s->name];
+            }),
             'commPreferences' => [],
             'availableCommPreferences' => $test,
             'services' => $client->services ?? [],
@@ -34,22 +36,7 @@ class ClientSettingsController extends Controller
         ]);
     }
 
-    public function updateClientServices()
-    {
-        $data = request()->validate([
-            'services' => ['sometimes', 'array'],
-            'commPreferences' => ['sometimes', 'array'],
-
-        ]);
-        $client_id = request()->user()->currentClientId();
-        if (array_key_exists('services', $data) && is_array($data['services'])) {
-            ClientAggregate::retrieve($client_id)->setClientServices($data['services'], request()->user()->id)->persist();
-        }
-        Alert::success("Client Services updated.")->flash();
-
-        return Redirect::back();
-    }
-
+    //TODO:update to action
     public function updateTrialMembershipTypes()
     {
         $data = request()->validate([

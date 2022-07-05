@@ -34,17 +34,17 @@ class ClientSeeder extends Seeder
                 [
                     'name' => $name,
                     'active' => $active,
-                    'services' => ClientServiceEnum::cases(),
+                    'services' => collect(ClientServiceEnum::cases())->map(fn ($e) => $e->name),
                 ]
             );
 
-            $aggy = ClientAggregate::retrieve($client->id)
+//            $aggy = ClientAggregate::retrieve($client->id)
 //                ->createAudience("{$client->name} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
 //                ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
-                ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
-                ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
+//                ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
+//                ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
             ;
-            $aggy->persist();
+//            $aggy->persist();
 //
 //            foreach ($services as $service) {
 //                ClientAggregate::retrieve($client->id)->addClientService($service['feature_name'], $service['slug'], true)->persist();

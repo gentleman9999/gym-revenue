@@ -3,9 +3,9 @@
 namespace App\Actions\Auth;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Models\ClientDetail;
 use App\Domain\Teams\Models\Team;
 use App\Models\Admin\RegisterToken;
-use App\Models\Clients\ClientDetail;
 use Inertia\Inertia;
 use Lorisleiva\Actions\Concerns\AsAction;
 

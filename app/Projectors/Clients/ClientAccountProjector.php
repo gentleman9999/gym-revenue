@@ -4,7 +4,6 @@ namespace App\Projectors\Clients;
 
 use App\Domain\Users\Models\User;
 use App\Models\Clients\ClientBillableActivity;
-use App\Models\Clients\ClientDetail;
 use App\Models\Clients\Features\AudienceDetails;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaignDetails;
@@ -58,7 +57,7 @@ class ClientAccountProjector extends Projector
         }
 
         // make client_details record
-        ClientDetail::create([
+        \App\Domain\Clients\Models\ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'email_campaign',
             'value' => $template->id,
@@ -180,7 +179,7 @@ class ClientAccountProjector extends Projector
         ]);
 
         // make client_details record
-        ClientDetail::create([
+        \App\Domain\Clients\Models\ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'sms_template',
             'value' => $template->id,
@@ -229,7 +228,7 @@ class ClientAccountProjector extends Projector
         }
 
         // make client_details record
-        ClientDetail::create([
+        \App\Domain\Clients\Models\ClientDetail::create([
             'client_id' => $event->client,
             'detail' => 'sms_campaign',
             'value' => $template->id,

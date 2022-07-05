@@ -18,7 +18,7 @@ class CreateTeamsTable extends Migration
             $table->uuid('client_id')->index()->nullable();
             $table->string('name')->index();
             $table->boolean('home_team')->default(0)->index();
-            $table->index(['client_id', 'name']);
+            $table->unique(['client_id', 'name']);
             $table->timestamps();
         });
     }

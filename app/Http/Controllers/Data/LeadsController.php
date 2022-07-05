@@ -231,7 +231,7 @@ class LeadsController extends Controller
             if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
-
+                dd($current_team->id);
                 if (count($team_locations_records) > 0) {
                     foreach ($team_locations_records as $team_locations_record) {
                         // @todo - we will probably need to do some user-level scoping

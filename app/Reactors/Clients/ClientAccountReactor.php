@@ -4,10 +4,6 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
-use App\Domain\Clients\Actions\UpdateClient;
-use App\Domain\Clients\Events\ClientCreated;
-use App\Domain\Clients\Models\Client;
-use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 use App\Models\Comms\EmailTemplates;
@@ -25,14 +21,6 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientAccountReactor extends Reactor implements ShouldQueue
 {
-    public function onClientCreated(ClientCreated $event)
-    {
-        $client = Client::findOrFail($event->aggregateRootUuid());
-        $default_team_name = $client->name . ' Home Office';
-        $home_team = CreateTeam::run(['name' => $default_team_name, 'client_id' => $event->aggregateRootUuid(), 'home_team' => true]);
-        UpdateClient::run($client->id, ['home_team_id' => $home_team->id]);
-    }
-
     public function onEmailCampaignLaunched(EmailCampaignLaunched $event)
     {
         if (strtotime($event->date) <= strtotime('now')) {

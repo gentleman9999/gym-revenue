@@ -47,7 +47,7 @@ class SecondaryTeamsSeeder extends Seeder
 
             if (count($members) > 0) {
                 foreach ($members as $idx => $email) {
-                    AddTeamMember::run($new_team, $email);
+                    AddTeamMember::run($new_team, User::whereClientId(null)->whereEmail($email)->firstOrFail());
 
 //                    $user = User::whereEmail($email)->first();
 //                    $new_team->users()->attach($user);
@@ -228,16 +228,6 @@ class SecondaryTeamsSeeder extends Seeder
             ],
             [
                 'name' => 'Stencils San Jose',
-                'home_team' => 0,
-                'client_id' => $clients['Stencils']->id,
-            ],
-            [
-                'name' => 'Stencils San Jose',
-                'home_team' => 0,
-                'client_id' => $clients['Stencils']->id,
-            ],
-            [
-                'name' => 'Stencils Portland',
                 'home_team' => 0,
                 'client_id' => $clients['Stencils']->id,
             ],
