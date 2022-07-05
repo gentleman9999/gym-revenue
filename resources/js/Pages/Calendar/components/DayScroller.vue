@@ -95,6 +95,16 @@ export default defineComponent({
             let first = d1 instanceof Date ? d1 : new Date(d1);
             let second = d2 instanceof Date ? d2 : new Date(d2);
 
+            let issame =
+                first.getDate() == second.getDate() &&
+                first.getMonth() == second.getMonth() &&
+                first.getFullYear() == second.getFullYear();
+
+            if (issame) {
+                console.log("dates: ", { d1: d1, d2: d2 }, issame);
+                // console.log("date two:", d2, issame);
+            }
+
             return (
                 first.getDate() == second.getDate() &&
                 first.getMonth() == second.getMonth() &&
