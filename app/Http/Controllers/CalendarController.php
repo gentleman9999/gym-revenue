@@ -28,18 +28,18 @@ class CalendarController extends Controller
         }
 
         $locations = Location::whereClientId($client_id)->get();
-        $currentLocationSelect = Location::find($request->user()->current_location_id);
+        //$currentLocationSelect = Location::find($request->user()->current_location_id);
 
         if ($request->get('start')) {
-            if (is_null($currentLocationSelect)) {
-                return Redirect::route('calendar.quickview');
-            } else {
+            //if (is_null($currentLocationSelect)) {
+            //    return Redirect::route('calendar.quickview');
+            //} else {
                 $eventsForTeam = CalendarEvent::whereClientId($client_id)
-                    ->whereLocationId($currentLocationSelect->id)
+            //        ->whereLocationId($currentLocationSelect->id)
                     ->with('type', 'attendees', 'files')
                     ->filter($request->only('search', 'start', 'end', 'viewUser'))
                     ->get();
-            }
+            //}
         } else {
             $eventsForTeam = [];
         }
@@ -124,14 +124,26 @@ class CalendarController extends Controller
         $locations = Location::whereClientId($client_id)->get();
         $eventsByLocation = [];
 
-        $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
-            'Y-m-d H:i:s',
-            (new DateTime())->format('Y-m-d 00:00:00')
-        )->getTimestamp())]);
-        $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
-            'Y-m-d H:i:s',
-            (new DateTime())->format('Y-m-d 23:59:59')
-        )->getTimestamp())]);
+        if (! $request->has('start')) {
+            $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format('Y-m-d 00:00:00')
+            )->getTimestamp())]);
+            $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format('Y-m-d 23:59:59')
+            )->getTimestamp())]);
+        } else {
+            $date = date('Y-m-d', strtotime($request->get('start')));
+            $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format($date.' 00:00:00')
+            )->getTimestamp())]);
+            $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format($date.' 23:59:59')
+            )->getTimestamp())]);
+        }
 
         foreach ($locations as $key => $location) {
             $eventsForTeam = CalendarEvent::whereClientId($client_id)

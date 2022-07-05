@@ -143,7 +143,7 @@ export default defineComponent({
                 {
                     key: "nav-calendar",
                     icon: CalendarIcon,
-                    route: "calendar.quickview",
+                    route: "calendar",
                     label: "Calendar",
                     permission: default_permission,
                 },
