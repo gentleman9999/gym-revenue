@@ -45,12 +45,10 @@ const { form, reset, clearFilters, clearSearch } = useSearchFilter("calendar", {
 });
 /** Currently selected date - this is the date we're showing all events for */
 const active_date = ref(new Date(getQueryDate()));
-getQueryDate();
 
 /** Show events from the selected date */
 const updateDay = (d) => {
     let q_date = d instanceof Date ? d : new Date(d);
-    active_date.value = q_date;
 
     const q = new URLSearchParams();
 
@@ -62,6 +60,7 @@ const updateDay = (d) => {
     q.set("start", qdStr);
 
     window.location.search = q;
+    active_date.value = q_date;
 };
 
 /**
