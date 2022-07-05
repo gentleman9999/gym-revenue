@@ -36,6 +36,7 @@ const getQueryDate = () => {
         get: (searchParams, prop) => searchParams.get(prop),
     });
 
+    if (!p.start) return new Date();
     return p.start;
 };
 
@@ -52,9 +53,12 @@ const updateDay = (d) => {
     active_date.value = q_date;
 
     const q = new URLSearchParams();
-    let qdStr = `${
-        q_date.getMonth() + 1
-    }-${q_date.getDate()}-${q_date.getFullYear()}`;
+
+    let d_year = q_date.getFullYear();
+    let d_month = q_date.getMonth() + 1;
+    let d_day = q_date.getDate();
+
+    let qdStr = `${d_year}-${d_month}-${d_day}`;
     q.set("start", qdStr);
 
     window.location.search = q;
@@ -67,7 +71,6 @@ const updateDay = (d) => {
 const visible_date = ref(new Date(getQueryDate()));
 
 const upWeek = () => {
-    console.log("up week (quick-view)");
     let td = new Date(visible_date.value);
     let temp = new Date(td.getFullYear(), td.getMonth(), td.getDate() + 7);
 
@@ -75,7 +78,6 @@ const upWeek = () => {
 };
 
 const downWeek = () => {
-    console.log("down week (quick-view)");
     let td = new Date(visible_date.value);
     let temp = new Date(td.getFullYear(), td.getMonth(), td.getDate() - 7);
 
@@ -84,5 +86,5 @@ const downWeek = () => {
 
 const start = ref(null);
 
-console.log("calendar eventsss", props.calendar_events_by_locations);
+console.log("calendar events (quick-view)", props.calendar_events_by_locations);
 </script>
