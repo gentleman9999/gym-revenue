@@ -105,14 +105,16 @@ export default defineComponent({
     computed: {
         navigation() {
             const user = usePage().props.value.user;
-            let default_permission = user.current_client_id;
+            let isAdmin = user.abilities.includes("*");
+            console.log("user.abilities");
+            console.log(user.abilities);
             let nav = [
                 {
                     key: "nav-mass",
                     icon: MassComIcon,
                     route: "comms.dashboard",
                     label: "Mass Communicator",
-                    permission: default_permission,
+                    permission: user.abilities.includes("comms") || isAdmin,
                 },
                 {
                     key: "nav-employee",
@@ -120,8 +122,7 @@ export default defineComponent({
                     route: "users",
                     label: "Employee Management",
                     permission:
-                        user.abilities.includes("users.read") ||
-                        user.abilities.includes("*"),
+                        user.abilities.includes("users.read") || isAdmin,
                 },
                 {
                     key: "nav-team",
@@ -129,65 +130,71 @@ export default defineComponent({
                     route: "teams",
                     label: "Team Management",
                     permission:
-                        user.abilities.includes("users.read") ||
-                        user.abilities.includes("*") ||
-                        default_permission,
+                        user.abilities.includes("teams.read") || isAdmin,
                 },
                 {
                     key: "nav-repoting",
                     icon: ReportIcon,
                     route: "reports.dashboard",
                     label: "Reporting",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("reports.read") || isAdmin,
                 },
                 {
                     key: "nav-calendar",
                     icon: CalendarIcon,
                     route: "calendar",
                     label: "Calendar",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("calendar.read") || isAdmin,
                 },
                 {
                     key: "nav-todo",
                     icon: ToDoIcon,
                     route: "tasks",
                     label: "To Do's",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("tasks.read") || isAdmin,
                 },
                 {
                     key: "nav-leads",
                     icon: LeadsIcon,
                     route: "data.leads",
                     label: "Leads",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("leads.read") || isAdmin,
                 },
                 {
                     key: "nav-members",
                     icon: MembersIcon,
                     route: "data.members",
                     label: "Members",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("members.read") || isAdmin,
                 },
                 {
                     key: "nav-documents",
                     icon: FileIcon,
                     route: "files",
                     label: "Documents",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("files.read") || isAdmin,
                 },
                 {
                     key: "nav-locations",
                     icon: LocationIcon,
                     route: "locations",
                     label: "Locations",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("locations.read") || isAdmin,
                 },
                 {
                     key: "nav-settings",
                     icon: SettingIcon,
                     route: "data.conversions",
                     label: "Settings",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("conversions.read") || isAdmin,
                 },
             ];
 
