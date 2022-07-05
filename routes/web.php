@@ -192,7 +192,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
     Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
-    Route::post('/teams/{team}/members', \App\Http\Controllers\TeamMemberController::class . '@store')->name('team-member.store');
+    Route::post('/{team}/members', \App\Domain\Teams\Actions\AddOrInviteTeamMembers::class)->name('team-member.store');
+    Route::delete('/{team}/{teamMemberId}', \App\Domain\Teams\Actions\RemoveTeamMember::class)->name('team-members.destroy');
     Route::put('/update/{team}', \App\Domain\Teams\Actions\UpdateTeam::class)->name('team.update');
     Route::delete('/{team}', \App\Domain\Teams\Actions\DeleteTeam::class)->name('teams.delete');
     Route::get('/export', \App\Http\Controllers\TeamController::class . '@export')->name('teams.export');
@@ -272,4 +273,10 @@ Route::prefix('/communication-preferences')->group(function () {
     Route::post('/l/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@updateLeadCommunicationPreferences')->name('comms-prefs.lead.update');
     Route::get('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@memberCommunicationPreferences')->name('comms-prefs.member');
     Route::post('/m/{member}', \App\Http\Controllers\Data\MembersController::class . '@updateMemberCommunicationPreferences')->name('comms-prefs.member.update');
+});
+
+//TODO: this is the new mass-comm dash - will replace current one in near future.
+Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-com')->group(function () {
+    Route::get('/', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass_com.dashboard');
+    Route::get('/{type}', \App\Http\Controllers\MassCommunicationController::class . '@page')->name('mass_com.page');
 });

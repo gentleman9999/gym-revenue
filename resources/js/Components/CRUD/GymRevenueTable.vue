@@ -89,7 +89,7 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import Pagination from "@/Components/Pagination";
+import Pagination from "@/Components/Pagination.vue";
 import { isObject } from "lodash";
 
 library.add(faAlignLeft);

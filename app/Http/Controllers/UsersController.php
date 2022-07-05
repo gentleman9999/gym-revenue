@@ -159,7 +159,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files');//TODO:get rid of loading all details here.
+        $user->load('details', 'notes', 'files', 'contact_preference');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -183,6 +183,7 @@ class UsersController extends Controller
                 $userData['all_notes'][$key]['read'] = false;
             }
         }
+//        dd($userData);
         $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [

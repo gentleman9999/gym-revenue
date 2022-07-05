@@ -22,6 +22,7 @@
                 <label :for="field.name">{{ field.label }}</label>
             </div>
             <button
+                :disabled="form.processing || !form.isDirty"
                 type="button"
                 @click="handleSubmit"
                 class="btn btn-primary mt-4"
@@ -33,10 +34,10 @@
 </template>
 
 <script>
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
 import { defineComponent, ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import { getCrudConfig } from "@/utils/getCrudCustomization";
 
 export default defineComponent({
@@ -63,7 +64,7 @@ export default defineComponent({
     },
     setup(props, {}) {
         const config = getCrudConfig(props.modelKey);
-        const form = useForm({
+        const form = useGymRevForm({
             table: props.modelKey,
             columns: [...config.value],
         });
@@ -75,7 +76,7 @@ export default defineComponent({
         const fields = getFields(props);
 
         const handleSubmit = () =>
-            form.post(route("crud-customize"), { onSuccess: close });
+            form.dirty().post(route("crud-customize"), { onSuccess: close });
         return { fields, customizationModal, open, close, form, handleSubmit };
     },
 });

@@ -1,4 +1,4 @@
-import CrudBadge from "@/Components/CRUD/Fields/CrudBadge";
+import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
 
 export const defaults = {
     boolean: CrudBadge,

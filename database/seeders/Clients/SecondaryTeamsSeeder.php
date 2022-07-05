@@ -31,6 +31,7 @@ class SecondaryTeamsSeeder extends Seeder
                     'sterling@capeandbay.com',
                     'tommy@capeandbay.com',
                     'blair@capeandbay.com',
+                    'adam@capeandbay.com',
                     'david@capeandbay.com',
                     'larry@capeandbay.com',
 
@@ -58,7 +59,6 @@ class SecondaryTeamsSeeder extends Seeder
         }
 
         $kalamazoo_owner = User::whereEmail('giraffe@kalamazoo.com')->first();
-        $bodies_owner = User::whereEmail('brett+bbb@capeandbay.com')->first();
         $truth_owner = User::whereEmail('monyahanb@clubtruth.com')->first();
         $theZ_owner = User::whereEmail('malaki@thezclubs.com')->first();
         $stencils_owner = User::whereEmail('bsmith@stencils.net')->first();
@@ -84,29 +84,6 @@ class SecondaryTeamsSeeder extends Seeder
                 'home_team' => 0,
                 'client_id' => $clients['The Kalamazoo']->id,
             ],
-
-            // Bodies By Brett
-            [
-                'name' => 'Sales Bodies',
-                'home_team' => 0,
-                'client_id' => $clients['Bodies By Brett']->id,
-            ],
-            [
-                'name' => 'Tampa 1',
-                'home_team' => 0,
-                'client_id' => $clients['Bodies By Brett']->id,
-            ],
-            [
-                'name' => 'Tampa 2',
-                'home_team' => 0,
-                'client_id' => $clients['Bodies By Brett']->id,
-            ],
-            [
-                'name' => 'Tampa 3',
-                'home_team' => 0,
-                'client_id' => $clients['Bodies By Brett']->id,
-            ],
-
             // Fitness Truth
             [
                 'name' => 'FitnessTruth Texas South',

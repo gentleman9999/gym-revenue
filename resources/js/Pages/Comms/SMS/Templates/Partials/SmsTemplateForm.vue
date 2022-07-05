@@ -28,7 +28,6 @@
                 <input
                     type="checkbox"
                     v-model="form.active"
-                    autofocus
                     id="active"
                     class="mt-2"
                     :value="true"
@@ -46,7 +45,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.sms-templates'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -58,7 +57,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -68,16 +67,16 @@
 </template>
 
 <script>
-import { useForm } from "@inertiajs/inertia-vue3";
-import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
+import { useGymRevForm } from "@/utils";
+import SmsFormControl from "@/Components/SmsFormControl.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import { useModal } from "@/Components/InertiaModal";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -97,15 +96,22 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm(template);
+        const form = useGymRevForm(template);
 
         let handleSubmit = () =>
-            form.put(route("comms.sms-templates.update", template.id));
+            form.dirty().put(route("comms.sms-templates.update", template.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("comms.sms-templates.store"));
         }
 
-        return { form, buttonText: operation, handleSubmit };
+        const inertiaModal = useModal();
+        const handleCancel = () => {
+            if (inertiaModal?.value?.close) {
+                inertiaModal.value.close();
+            }
+            Inertia.visit(route("comms.sms-templates"));
+        };
+        return { form, buttonText: operation, handleSubmit, handleCancel };
     },
 };
 </script>

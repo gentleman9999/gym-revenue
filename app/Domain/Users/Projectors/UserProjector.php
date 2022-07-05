@@ -6,7 +6,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
-use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
@@ -30,7 +29,9 @@ class UserProjector extends Projector
 
             $user->id = $event->aggregateRootUuid();
             $user->client_id = $event->payload['client_id'];
-            $user->password = $event->payload['password'];
+            if (array_key_exists('password', $event->payload)) {
+                $user->password = $event->payload['password'];
+            }
             $user_table_data = array_filter($data, function ($key) {
                 return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
@@ -39,7 +40,7 @@ class UserProjector extends Projector
             $user->save();
 
             $details = [
-                'contact_preference' => $data['contact_preference'] ?? null,
+                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
             ];
 
             // Go through the details and create them in the user_details via the
@@ -50,6 +51,7 @@ class UserProjector extends Projector
 
 //            $client_id = $data['client_id'] ?? null;
 
+            //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
             if ($notes) {
                 Note::create([
@@ -131,7 +133,6 @@ class UserProjector extends Projector
             } else {
                 $user = User::with(['teams'])->findOrFail($event->aggregateRootUuid());
             }
-            $data['name'] = "{$data['first_name']} {$data['last_name']}";
 
             $user->updateOrFail($data);
 
@@ -219,10 +220,38 @@ class UserProjector extends Projector
         $user->save();
     }
 
-    public function onUserPasswordUpdated(UserPasswordUpdated $event)
+    public function onTaskCreated(TaskCreated $event)
     {
-        $user = User::findOrFail($event->aggregateRootUuid());
-        $user->forceFill(['password' => $event->password]);
-        $user->save();
+        Tasks::create($event->data);
+    }
+
+    public function onTaskUpdated(TaskUpdated $event)
+    {
+        Tasks::findOrFail($event->data['id'])->update($event->data);
+    }
+
+    public function onTaskDeleted(TaskDeleted $event)
+    {
+        Tasks::withTrashed()->findOrFail($event->data['id'])->forceDelete();
+    }
+
+    public function onTaskRestored(TaskRestored $event)
+    {
+        Tasks::withTrashed()->findOrFail($event->data['id'])->restore();
+    }
+
+    public function onTaskTrashed(TaskTrashed $event)
+    {
+        Tasks::findOrFail($event->data['id'])->delete();
+    }
+
+    public function onTaskMarkedComplete(TaskMarkedComplete $event)
+    {
+        CalendarEvent::findOrFail($event->id)->update(['event_completion' => $event->createdAt()]);
+    }
+
+    public function onTaskMarkedIncomplete(TaskMarkedIncomplete $event)
+    {
+        Tasks::findOrFail($event->data['id'])->update(['completed_at' => null]);
     }
 }

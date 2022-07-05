@@ -16,11 +16,11 @@ class TeamMemberRemoved extends GymRevCrudEvent
 
     protected function getEntity(): string
     {
-        return Team::class;
+        return Team::class;//TODO:should this be User? or maybe change operation to MEMBER_REMOVED?
     }
 
     protected function getOperation(): string
     {
-        return "REMOVED";
+        return "USER_REMOVED";
     }
 }

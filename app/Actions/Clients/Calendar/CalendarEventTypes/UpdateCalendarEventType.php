@@ -22,11 +22,10 @@ class UpdateCalendarEventType
     public function rules()
     {
         return [
-            'name' => ['required', 'string','max:50'],
-            'description' => ['string', 'nullable'],
-            'type' => ['required', 'string', 'nullable'],
-            'color' => ['required', 'string'],
-            'client_id' => ['required', 'exists:clients,id'],
+            'name' => ['sometimes', 'required', 'string','max:50'],
+            'description' => ['sometimes', 'string', 'nullable'],
+            'type' => ['sometimes', 'required', 'string', 'nullable'],
+            'color' => ['sometimes', 'required', 'string'],
         ];
     }
 
@@ -50,12 +49,13 @@ class UpdateCalendarEventType
     {
         $data = $request->validated();
         $data['id'] = $id;
+        $data['client_id'] = $request->user()->currentClientId();
         $calendar_event_type = $this->handle(
             $data
         );
 
         Alert::success("Calendar Event Type '{$calendar_event_type->name}' was updated")->flash();
 
-        return Redirect::back();
+        return Redirect::route('calendar.event_types.edit', $calendar_event_type->id);
     }
 }

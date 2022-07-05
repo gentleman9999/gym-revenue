@@ -1,5 +1,6 @@
 <template>
     <base-comms-action
+        :disabled="form.processing || !form.isDirty"
         :lead-id="leadId"
         submit-text="Send Message"
         :form="form"
@@ -23,9 +24,9 @@
 
 <script>
 import { computed, defineComponent } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
-import BaseCommsAction from "./BaseCommsAction";
-import SmsFormControl from "@/Components/SmsFormControl";
+import { useGymRevForm } from "@/utils";
+import BaseCommsAction from "./BaseCommsAction.vue";
+import SmsFormControl from "@/Components/SmsFormControl.vue";
 
 export default defineComponent({
     components: {
@@ -48,7 +49,7 @@ export default defineComponent({
     },
     emits: ["done"],
     setup(props, { emit }) {
-        const form = useForm({
+        const form = useGymRevForm({
             method: "sms",
             message: null,
         });

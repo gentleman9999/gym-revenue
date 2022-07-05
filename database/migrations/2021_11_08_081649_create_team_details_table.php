@@ -15,7 +15,7 @@ class CreateTeamDetailsTable extends Migration
     {
         Schema::create('team_details', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->uuid('team_id');
+            $table->uuid('team_id')->index();
             $table->string('name');
             $table->string('value')->nullable();
             $table->mediumText('misc')->nullable();

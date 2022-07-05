@@ -19,7 +19,7 @@ class CreateNotificationsTable extends Migration
             $table->string('state')->default('info');
             $table->string('text')->nullable();
             $table->string('entity_type')->nullable();
-            $table->string('entity_id')->nullable();
+            $table->string('entity_id')->nullable()->index();
             $table->json('entity')->nullable();
             $table->json('misc')->nullable();
             $table->timestamps();

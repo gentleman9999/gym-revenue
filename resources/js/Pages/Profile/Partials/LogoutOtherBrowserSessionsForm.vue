@@ -106,14 +106,14 @@
                     devices.
 
                     <div class="mt-4">
-                        <input
-                            type="password"
-                            class="mt-1 block w-3/4"
-                            placeholder="Password"
-                            ref="password"
-                            v-model="form.password"
-                            @keyup.enter="logoutOtherBrowserSessions"
-                        />
+                        <div class="mt-1 block w-3/4">
+                            <password-input
+                                placeholder="Password"
+                                ref="password"
+                                v-model="form.password"
+                                @keyup.enter="logoutOtherBrowserSessions"
+                            />
+                        </div>
 
                         <jet-input-error
                             :message="form.errors.password"
@@ -143,13 +143,14 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import JetActionSection from "@/Jetstream/ProfileActionSection";
-import Button from "@/Components/Button";
-import JetDialogModal from "@/Jetstream/DialogModal";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
+import Button from "@/Components/Button.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
 export default defineComponent({
     props: ["sessions"],
@@ -162,6 +163,7 @@ export default defineComponent({
 
         JetInputError,
         JetSecondaryButton,
+        PasswordInput,
     },
 
     data() {
@@ -178,14 +180,14 @@ export default defineComponent({
         confirmLogout() {
             this.confirmingLogout = true;
 
-            setTimeout(() => this.$refs.password.focus(), 250);
+            setTimeout(() => this.$refs.password.$refs.input.focus(), 250);
         },
 
         logoutOtherBrowserSessions() {
             this.form.delete(route("other-browser-sessions.destroy"), {
                 preserveScroll: true,
                 onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.focus(),
+                onError: () => this.$refs.password.$refs.input.focus(),
                 onFinish: () => this.form.reset(),
             });
         },

@@ -8,21 +8,21 @@
         <div class="flex flex-row space-x-2">
             <calendar-summary-card
                 title="Confirmed"
-                diagram="/img/mocks/clalendar_page_1.png"
+                :progress="[65]"
                 :favorite="false"
                 :collapse="false"
                 :showAction="false"
             />
             <calendar-summary-card
                 title="Canceled"
-                diagram="/img/mocks/clalendar_page_2.png"
+                :progress="[25]"
                 :favorite="false"
                 :collapse="false"
                 :showAction="false"
             />
             <calendar-summary-card
                 title="Rescheduled"
-                diagram="/img/mocks/clalendar_page_3.png"
+                :progress="[10]"
                 :favorite="false"
                 :collapse="false"
                 :showAction="false"
@@ -32,8 +32,8 @@
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import CalendarSummaryCard from "./components/CalendarSummaryCard";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import CalendarSummaryCard from "@/Pages/components/CalendarSummaryCard.vue";
 
 export default defineComponent({
     components: {

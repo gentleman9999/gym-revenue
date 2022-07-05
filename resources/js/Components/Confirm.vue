@@ -13,6 +13,7 @@
             <button
                 @click="handleClickConfirm"
                 class="btn btn-success hover:text-white ml-2"
+                :disabled="disabled"
             >
                 Confirm
             </button>
@@ -21,7 +22,7 @@
 </template>
 <script>
 import { defineComponent, ref, onMounted } from "vue";
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 export default defineComponent({
     components: { DaisyModal },
@@ -34,6 +35,10 @@ export default defineComponent({
             type: String,
             required: false,
             default: "85%",
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
         },
     },
     setup(props, { emit }) {

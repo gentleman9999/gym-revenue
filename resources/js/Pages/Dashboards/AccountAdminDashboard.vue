@@ -1,67 +1,62 @@
 <template>
-    <app-layout>
-        <template #header>
-            <dashboard-header
-                :team-name="teamName"
-                :account-name="accountName"
-            />
-        </template>
+    <LayoutHeader title="Dashboard">
+        <dashboard-header :team-name="teamName" :account-name="accountName" />
+    </LayoutHeader>
 
-        <jet-bar-container>
-            <!-- @todo - leave the jet-bar-alert here and make it contextual, dynamic, pusher-enabled? -->
-            <!-- <jet-bar-alert text="This is an alert message" /> -->
-            <dashboard-stats :widgets="widgets" />
+    <jet-bar-container>
+        <!-- @todo - leave the jet-bar-alert here and make it contextual, dynamic, pusher-enabled? -->
+        <!-- <jet-bar-alert text="This is an alert message" /> -->
+        <dashboard-stats :widgets="widgets" />
 
-            <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div class="grid xl:grid-cols-2 gap-4">
-                    <div class="card bg-base-100 shadow-2xl">
-                        <div class="card-body">
-                            <h2 class="card-title">Club Locations</h2>
-                            <div class="divider mt-0"></div>
-                            <p class="text-center">
-                                Select a Club that you'd like to Access.
-                            </p>
-                            <div
-                                id="teamSelectTable"
-                                class="h-80 overflow-auto mt-6"
-                            >
-                                <table class="table-compact">
-                                    <tbody></tbody>
-                                </table>
-                            </div>
+        <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="grid xl:grid-cols-2 gap-4">
+                <div class="card bg-base-100 shadow-2xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Club Locations</h2>
+                        <div class="divider mt-0"></div>
+                        <p class="text-center">
+                            Select a Club that you'd like to Access.
+                        </p>
+                        <div
+                            id="teamSelectTable"
+                            class="h-80 overflow-auto mt-6"
+                        >
+                            <table class="table-compact">
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
 
-                    <div class="card bg-base-100 shadow-2xl">
-                        <div class="card-body">
-                            <h2 class="card-title">Sales Figures</h2>
-                            <div class="divider mt-0"></div>
+                <div class="card bg-base-100 shadow-2xl">
+                    <div class="card-body">
+                        <h2 class="card-title">Sales Figures</h2>
+                        <div class="divider mt-0"></div>
+                        <div
+                            class="alert alert-info xl:grid-cols-4 flex flex-col"
+                        >
+                            <div class="flex flex-row"></div>
                             <div
-                                class="alert alert-info xl:grid-cols-4 flex flex-col"
-                            >
-                                <div class="flex flex-row"></div>
-                                <div
-                                    id="announcementsTable"
-                                    class="h-80 overflow-auto"
-                                ></div>
-                            </div>
+                                id="announcementsTable"
+                                class="h-80 overflow-auto"
+                            ></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </jet-bar-container>
-    </app-layout>
+        </div>
+    </jet-bar-container>
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
-import JetBarContainer from "@/Components/JetBarContainer";
-import JetBarAlert from "@/Components/JetBarAlert";
-import JetBarStatsContainer from "@/Components/JetBarStatsContainer";
-import JetBarStatCard from "@/Components/JetBarStatCard";
-import GymRevenueTable from "@/Components/CRUD/GymRevenueTable";
-import JetBarBadge from "@/Components/JetBarBadge";
-import JetBarIcon from "@/Components/JetBarIcon";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import JetBarAlert from "@/Components/JetBarAlert.vue";
+import JetBarStatsContainer from "@/Components/JetBarStatsContainer.vue";
+import JetBarStatCard from "@/Components/JetBarStatCard.vue";
+import GymRevenueTable from "@/Components/CRUD/GymRevenueTable.vue";
+import JetBarBadge from "@/Components/JetBarBadge.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBars, faCog, faFileUpload } from "@fortawesome/pro-solid-svg-icons";
@@ -76,8 +71,8 @@ import {
     faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader";
-import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats";
+import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader.vue";
+import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats.vue";
 
 library.add(
     faBars,
@@ -97,7 +92,7 @@ export default {
     components: {
         DashboardStats,
         DashboardHeader,
-        AppLayout,
+        LayoutHeader,
         JetBarContainer,
         JetBarAlert,
         GymRevenueTable,

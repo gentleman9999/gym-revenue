@@ -131,7 +131,7 @@ button {
 <script>
 import { defineComponent } from "vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";

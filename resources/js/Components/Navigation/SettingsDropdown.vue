@@ -46,7 +46,7 @@
                 </li>
                 <li v-if="showClientSettings">
                     <inertia-link :href="route('settings')">
-                        Settings
+                        Client Settings
                     </inertia-link>
                 </li>
                 <li>
@@ -145,9 +145,9 @@
 import { defineComponent, computed, ref } from "vue";
 import { toastWarning } from "@/utils/createToast";
 import { usePage } from "@inertiajs/inertia-vue3";
-import JetDropdown from "@/Components/Dropdown";
-import DaisyModal from "@/Components/DaisyModal";
-import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate";
+import JetDropdown from "@/Components/Dropdown.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 export default defineComponent({

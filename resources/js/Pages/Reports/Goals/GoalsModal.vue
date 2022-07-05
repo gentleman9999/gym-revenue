@@ -6,16 +6,16 @@
         page-route="Goals"
     >
         <div class="flex flex-row">
-            <goals-actual-card class="ml-2" />
+            <goals-actual-card class="mr-2" />
             <goals-projecting-card class="w-64" />
         </div>
     </dashboard-widget-modal>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import GoalsActualCard from "./components/GoalsActualCard";
-import GoalsProjectingCard from "./components/GoalsProjectingCard";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import GoalsActualCard from "./components/GoalsActualCard.vue";
+import GoalsProjectingCard from "./components/GoalsProjectingCard/GoalsProjectingCard.vue";
 
 export default defineComponent({
     components: {

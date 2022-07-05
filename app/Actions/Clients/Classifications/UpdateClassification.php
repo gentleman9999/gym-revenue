@@ -22,15 +22,12 @@ class UpdateClassification
     {
         return [
             'title' => ['string', 'required'],
-            'id' => ['string', 'required'],
         ];
     }
 
     public function handle($data, $current_user)
     {
-        $client_id = $current_user->currentClientId();
-        $data['client_id'] = $client_id;
-        ClientAggregate::retrieve($client_id)->updateClassification($current_user->id, $data)->persist();
+        ClientAggregate::retrieve($data['client_id'])->updateClassification($current_user->id, $data)->persist();
 
         return Classification::find($data['id']);
     }
@@ -46,6 +43,7 @@ class UpdateClassification
     {
         $data = $request->validated();
         $data['id'] = $id;
+        $data['client_id'] = $request->user()->currentClientId();
         $Classification = $this->handle(
             $data,
             $request->user(),
@@ -53,6 +51,7 @@ class UpdateClassification
 
         Alert::success("Classification '{$Classification->title}' was updated")->flash();
 
-        return Redirect::route('classifications');
+//        return Redirect::route('classifications');
+        return Redirect::route('classifications.edit', $id);
     }
 }

@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import AutoDataCard from "@/Components/CRUD/AutoDataCard";
-import FileExtensionIcon from "./FileExtensionIcon";
+import AutoDataCard from "@/Components/CRUD/AutoDataCard.vue";
+import FileExtensionIcon from "./FileExtensionIcon.vue";
 
 export default {
     components: {

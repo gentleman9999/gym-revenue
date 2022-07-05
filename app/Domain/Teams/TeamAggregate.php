@@ -57,6 +57,7 @@ class TeamAggregate extends AggregateRoot
         return $this;
     }
 
+    //TODO: should be id not email
     public function addMember(string $email): static
     {
         $this->recordThat(new TeamMemberAdded($email));
@@ -64,6 +65,7 @@ class TeamAggregate extends AggregateRoot
         return $this;
     }
 
+    //TODO: should be id not email
     public function removeMember(string $email): static
     {
         $this->recordThat(new TeamMemberRemoved($email));

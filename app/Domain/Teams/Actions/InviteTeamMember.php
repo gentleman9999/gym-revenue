@@ -19,13 +19,17 @@ class InviteTeamMember implements InvitesTeamMembers
 {
     use AsAction;
 
-    public function handle(Team $team, string $email): void
+    private Team $team;
+
+    public function handle(Team $team, string $email): string
     {
         $this->validate($team, $email);
 
         TeamAggregate::retrieve($team->id)->inviteMember($email)->persist();
 
 //        InvitingTeamMember::dispatch($team, $email, $role);
+
+        return $email;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -75,7 +79,7 @@ class InviteTeamMember implements InvitesTeamMembers
      * @param  mixed  $team
      * @return array
      */
-    protected function rules($team)
+    public function rules($team)
     {
         return array_filter([
             'email' => ['required', 'email', Rule::unique('team_invitations')->where(function ($query) use ($team) {

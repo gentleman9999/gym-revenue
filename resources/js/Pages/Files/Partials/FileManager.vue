@@ -1,4 +1,5 @@
 <template>
+    <LayoutHeader title="File Manager"> Location Details </LayoutHeader>
     <jet-form-section @submitted="handleSubmit">
         <!--        <template #title>-->
         <!--            Location Details-->
@@ -132,14 +133,14 @@
 
 <script setup>
 import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-import AppLayout from "@/Layouts/AppLayout.vue";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import FileUploadForm from "./FileUploadForm";
-import UploadIcon from "./UploadIcon";
+import FileUploadForm from "./FileUploadForm.vue";
+import UploadIcon from "./UploadIcon.vue";
 
 import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";
@@ -161,7 +162,7 @@ const uploadDragoverTracking = ref(false);
 const uploadDragoverEvent = ref(false);
 const uploadProgress = ref(null);
 
-const form = useForm({
+const form = useGymRevForm({
     files: [],
 });
 
@@ -235,19 +236,22 @@ const handleSubmit = () => {
             form.reset();
             fileRefs.value.forEach((fileRef) => fileRef.form.reset());
         },
+        headers: {
+            "X-Inertia-Modal-Redirect-Back": "close",
+        },
         ...formSubmitOptions,
     });
 };
 
-const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
-    const { method } = visit;
-    if (method === "get" && numUploadedFiles.value) {
-        return confirm(
-            "You haven't yet saved your uploaded files.  Are you sure you want to navigate away?"
-        );
-    }
-});
+// const removeRouteGuard = Inertia.on("before", ({ detail: { visit } }) => {
+//     const { method } = visit;
+//     if (method === "get" && numUploadedFiles.value) {
+//         return confirm(
+//             "You haven't yet saved your uploaded files.  Are you sure you want to navigate away?"
+//         );
+//     }
+// });
 defineExpose({ reset: form.reset });
 
-onUnmounted(removeRouteGuard);
+// onUnmounted(removeRouteGuard);
 </script>

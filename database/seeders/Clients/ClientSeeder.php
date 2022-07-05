@@ -18,7 +18,6 @@ class ClientSeeder extends Seeder
     {
         $clients = [
             'The Kalamazoo' => 1,
-            'Bodies By Brett' => 1,
             'iFit' => 1,
             'TruFit Athletic Clubs' => 1,
             'Stencils' => 1,

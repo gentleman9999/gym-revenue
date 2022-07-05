@@ -28,7 +28,6 @@
         <!--            <input-->
         <!--                type="checkbox"-->
         <!--                v-model="form.active"-->
-        <!--                autofocus-->
         <!--                id="active"-->
         <!--                class="mt-2"-->
         <!--                :value="true"-->
@@ -43,7 +42,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 @click="handleSubmit"
             >
@@ -55,21 +54,19 @@
 
 <script>
 import { ref } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import { Inertia } from "@inertiajs/inertia";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder";
-import DaisyModal from "@/Components/DaisyModal";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import usePage from "@/Components/InertiaModal/usePage";
 import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
         EmailBuilder,
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -93,25 +90,28 @@ export default {
             operation = "Create";
         }
 
-        const form = useForm(template);
+        const form = useGymRevForm(template);
         const closeAfterSave = ref(false);
 
         let handleSubmit = () => {
             if (!form.processing) {
-                form.put(route("comms.email-templates.update", template.id), {
-                    // headers: { "X-Inertia-Modal-Redirect": true },
-                    headers: { "X-Inertia-Modal-CloseOnSuccess": true },
-                    onFinish: () => {
-                        if (closeAfterSave.value) {
-                            console.log(
-                                "closeAfterSave",
-                                closeAfterSave.value,
-                                inertiaModal.value
-                            );
-                            handleOnClose();
-                        }
-                    },
-                });
+                form.dirty().put(
+                    route("comms.email-templates.update", template.id),
+                    {
+                        headers: { "X-Inertia-Modal-Redirect": true },
+                        // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
+                        onFinish: () => {
+                            if (closeAfterSave.value) {
+                                console.log(
+                                    "closeAfterSave",
+                                    closeAfterSave.value,
+                                    inertiaModal.value
+                                );
+                                handleOnClose();
+                            }
+                        },
+                    }
+                );
             }
         };
         if (operation === "Create") {

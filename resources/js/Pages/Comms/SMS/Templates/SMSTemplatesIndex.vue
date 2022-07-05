@@ -1,64 +1,61 @@
 <template>
-    <app-layout :title="title">
-        <template #header>
-            <div class="text-center">
-                <h2 class="font-semibold text-xl leading-tight">
-                    SMS Template Management
-                </h2>
-            </div>
-            <div
-                class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
-            >
-                <inertia-link
-                    class="btn justify-self-end"
-                    :href="route('comms.dashboard')"
-                >
-                    <span
-                        ><font-awesome-icon
-                            :icon="['far', 'chevron-double-left']"
-                            size="sm"
-                        />
-                        Back</span
-                    >
-                </inertia-link>
-            </div>
-        </template>
-
-        <gym-revenue-crud
-            base-route="comms.sms-templates"
-            model-name="SMS Template"
-            model-key="template"
-            :fields="fields"
-            :resource="templates"
-            :actions="actions"
-            :top-actions="{ create: { label: 'New Template' } }"
-        />
-        <confirm
-            title="Really Trash?"
-            v-if="confirmTrash"
-            @confirm="handleConfirmTrash"
-            @cancel="confirmTrash = null"
+    <LayoutHeader title="SMS Templates">
+        <div class="text-center">
+            <h2 class="font-semibold text-xl leading-tight">
+                SMS Template Management
+            </h2>
+        </div>
+        <div
+            class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
         >
-            Are you sure you want to remove this template? It will be removed
-            from any assigned campaigns.
-        </confirm>
-        <confirm-send-form
-            v-if="confirmSend"
-            :template-id="sendVars.templateId"
-            :template-name="sendVars.templateName"
-            @close="handleCloseTextModal"
-        ></confirm-send-form>
-    </app-layout>
+            <inertia-link
+                class="btn justify-self-end"
+                :href="route('comms.dashboard')"
+            >
+                <span
+                    ><font-awesome-icon
+                        :icon="['far', 'chevron-double-left']"
+                        size="sm"
+                    />
+                    Back</span
+                >
+            </inertia-link>
+        </div>
+    </LayoutHeader>
+
+    <gym-revenue-crud
+        base-route="comms.sms-templates"
+        model-name="SMS Template"
+        model-key="template"
+        :fields="fields"
+        :resource="templates"
+        :actions="actions"
+        :top-actions="{ create: { label: 'New Template' } }"
+    />
+    <confirm
+        title="Really Trash?"
+        v-if="confirmTrash"
+        @confirm="handleConfirmTrash"
+        @cancel="confirmTrash = null"
+    >
+        Are you sure you want to remove this template? It will be removed from
+        any assigned campaigns.
+    </confirm>
+    <confirm-send-form
+        v-if="confirmSend"
+        :template-id="sendVars.templateId"
+        :template-name="sendVars.templateName"
+        @close="handleCloseTextModal"
+    ></confirm-send-form>
 </template>
 
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-
-import AppLayout from "@/Layouts/AppLayout";
-import Confirm from "@/Components/Confirm";
-import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Confirm from "@/Components/Confirm.vue";
+import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -72,7 +69,7 @@ library.add(faChevronDoubleLeft, faEllipsisH);
 export default defineComponent({
     name: "SMSTemplatesIndex",
     components: {
-        AppLayout,
+        LayoutHeader,
         FontAwesomeIcon,
         Confirm,
         GymRevenueCrud,

@@ -15,7 +15,7 @@ class CreateUserDetailsTable extends Migration
     {
         Schema::create('user_details', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->uuid('user_id');
+            $table->uuid('user_id')->index();
             $table->string('name');
             $table->string('value')->nullable();
             $table->mediumText('misc')->nullable();

@@ -1,40 +1,35 @@
 <template>
-    <app-layout title="Edit Security Role">
-        <template #header>
-            <jet-bar-icon type="g0back" fill />
-            <h2 class="font-semibold text-xl leading-tight">
-                Edit Security Role
-            </h2>
-        </template>
+    <LayoutHeader title="Edit Security Role">
+        <jet-bar-icon type="g0back" fill />
+        <h2 class="font-semibold text-xl leading-tight">Edit Security Role</h2>
+    </LayoutHeader>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <security-role-form
-                    :client-id="$page.props.user.current_client_id"
-                    :availableAbilities="availableAbilities"
-                    :role="$page.props.role"
-                    :security-groups="securityGroups"
-                />
-            </div>
+    <div>
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <security-role-form
+                :client-id="$page.props.user.current_client_id"
+                :availableAbilities="availableAbilities"
+                :role="role"
+                :security-groups="securityGroups"
+            />
         </div>
-    </app-layout>
+    </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
-import JetBarIcon from "@/Components/JetBarIcon";
-import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
+import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
 
 export default defineComponent({
     components: {
         SecurityRoleForm,
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
         JetInputError,

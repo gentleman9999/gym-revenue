@@ -57,6 +57,7 @@ class UpdateTeam
     {
         Alert::success("Team '{$team->name}' was updated")->flash();
 
-        return Redirect::back();
+//        return Redirect::back();
+        return Redirect::route('teams.edit', $team->id);
     }
 }

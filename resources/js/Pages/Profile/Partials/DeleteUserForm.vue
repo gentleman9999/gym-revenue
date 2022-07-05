@@ -31,15 +31,14 @@
                     you would like to permanently delete your account.
 
                     <div class="mt-4">
-                        <input
-                            type="password"
-                            class="mt-1 block w-3/4"
-                            placeholder="Password"
-                            ref="password"
-                            v-model="form.password"
-                            @keyup.enter="deleteUser"
-                        />
-
+                        <div class="block w-3/4">
+                            <password-input
+                                placeholder="Password"
+                                ref="password"
+                                v-model="form.password"
+                                @keyup.enter="deleteUser"
+                            />
+                        </div>
                         <jet-input-error
                             :message="form.errors.password"
                             class="mt-2"
@@ -68,11 +67,12 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionSection from "@/Jetstream/ProfileActionSection";
-import JetDialogModal from "@/Jetstream/DialogModal";
+import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
 export default defineComponent({
     components: {
@@ -82,6 +82,7 @@ export default defineComponent({
 
         JetInputError,
         JetSecondaryButton,
+        PasswordInput,
     },
 
     data() {
@@ -98,14 +99,14 @@ export default defineComponent({
         confirmUserDeletion() {
             this.confirmingUserDeletion = true;
 
-            setTimeout(() => this.$refs.password.focus(), 250);
+            setTimeout(() => this.$refs.password.$refs.input.focus(), 250);
         },
 
         deleteUser() {
             this.form.delete(route("current-user.destroy"), {
                 preserveScroll: true,
                 onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.focus(),
+                onError: () => this.$refs.password.$refs.input.focus(),
                 onFinish: () => this.form.reset(),
             });
         },

@@ -31,6 +31,7 @@
                 <template #eventForm>
                     <calendar-event-form
                         :calendar_event="selectedEvent"
+                        :duration="duration"
                         :key="selectedEvent"
                         :client_users="client_users"
                         :lead_users="lead_users"
@@ -48,10 +49,10 @@
 <script setup>
 import { ref } from "vue";
 
-import PageContent from "./PageContent";
-import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm";
-import DrawerLayout from "./components/DrawerLayout";
-import DrawerContent from "./components/DrawerContent";
+import PageContent from "./PageContent.vue";
+import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm.vue";
+import DrawerLayout from "./components/DrawerLayout.vue";
+import DrawerContent from "./components/DrawerContent.vue";
 
 const props = defineProps({
     sessions: {
@@ -101,15 +102,17 @@ const toggleSwitch = () => {
     drawerSwitch.value.click();
 };
 
+const duration = ref({});
 const eventForm = ref(null);
 const updateCalendarEventForm = (updated) => {
     eventForm.value = {
         ...eventForm.value,
         form: {
             ...eventForm.value.form,
-            updated,
+            ...updated,
         },
     };
+    duration.value = updated;
 };
 const resetCalendarEventForm = () => {
     eventForm.value?.form?.reset();

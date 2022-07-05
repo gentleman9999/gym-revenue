@@ -34,18 +34,15 @@
                         <br />
                         <small>Active Club:</small>
                         <small>{{
-                            $page.props.user.all_locations.find(
+                            locations.find(
                                 (location) =>
                                     location.id ===
                                     $page.props.user.current_location_id
                             )?.name
                         }}</small>
                     </div>
-                    <ul class="menu compact">
-                        <li
-                            v-for="location in $page.props.user.all_locations"
-                            :key="location.id"
-                        >
+                    <ul class="menu compact overflow-y-scroll max-h-60">
+                        <li v-for="location in locations" :key="location.id">
                             <inertia-link
                                 href="#"
                                 @click="switchToLocation(location)"
@@ -78,15 +75,19 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-import JetDropdown from "@/Components/Dropdown";
+import { defineComponent, computed } from "vue";
+import JetDropdown from "@/Components/Dropdown.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
         JetDropdown,
     },
     setup() {
+        const page = usePage();
+        const locations = computed(() => page.props.value.user.all_locations);
+
         function switchToLocation(location) {
             Inertia.put(
                 route("current-location.update"),
@@ -103,7 +104,7 @@ export default defineComponent({
             );
         }
 
-        return { switchToLocation };
+        return { switchToLocation, locations };
     },
 });
 </script>

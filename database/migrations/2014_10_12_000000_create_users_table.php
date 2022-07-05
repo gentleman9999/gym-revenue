@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->uuid('client_id')->nullable();
+            $table->uuid('client_id')->nullable()->index();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
@@ -30,16 +30,20 @@ class CreateUsersTable extends Migration
             $table->string('access_token')->nullable();
             $table->string('password')->nullable();
             $table->string('job_title')->nullable();
-            $table->uuid('home_location_id')->nullable();
+            $table->uuid('home_location_id')->nullable()->index();
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->timestamp('termination_date')->nullable();
-            $table->uuid('classification_id')->nullable();
+            $table->uuid('classification_id')->nullable()->index();
             $table->string('manager')->nullable();
             $table->boolean('is_cape_and_bay_user')->default(false);
             $table->rememberToken();
-            $table->foreignUuid('current_team_id')->nullable();
+            $table->foreignUuid('current_team_id')->nullable()->index();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->unique(['client_id', 'email']);
+            $table->index(['client_id', 'home_location_id']);
+            $table->index(['client_id', 'classification_id']);
+            $table->index(['client_id', 'current_team_id']);
             $table->timestamps();
         });
     }

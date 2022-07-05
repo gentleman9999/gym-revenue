@@ -1,14 +1,17 @@
-id: 25286
-name: gr-prototype
+id: 31991
+name: GymRevenue
 environments:
     production:
-        domain: grp.capeandbay.com
-        memory: 1024
+        domain: app.gymrevenue.com
+        memory: 2048
         cli-memory: 512
+        network: gymrevenue-vpc-network
+        database: gr-west
+        cache: gr-cache
+        cli-timeout: 900
+        storage: gymrevenue-west
         runtime: docker
-        cache: gr-prototype
-        storage: gymrevenue-p
-        database: gymrevenue
+        balancer: lb-gymrevenue
         queues:
             - grp-production-events
             - grp-production-jobs
@@ -17,18 +20,21 @@ environments:
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
-            - 'npm ci && npm run prod && rm -rf node_modules'
+            - 'npm set-script prepare ""'
+            - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
     staging:
-        domain: grp-stage.capeandbay.com
-        memory: 1024
+        domain: stage.gymrevenue.com
+        memory: 2048
         cli-memory: 512
-        database: mango
-        cache: gr-prototype
+        network: gymrevenue-vpc-network
+        database: gr-west-dev
+        cache: gr-cache
         cli-timeout: 900
-        storage: gymrevenue-stage
+        storage: gymrevenue-west-stage
         runtime: docker
+        balancer: lb-gymrevenue
         queues:
             - grp-staging-events
             - grp-staging-jobs
@@ -37,18 +43,21 @@ environments:
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
-            - 'npm ci && npm run prod && rm -rf node_modules'
+            - 'npm set-script prepare ""'
+            - 'npm ci && npm run build:staging && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
     develop:
-        domain: grp-dev.capeandbay.com
-        memory: 1024
+        domain: dev.gymrevenue.com
+        memory: 2048
         cli-memory: 512
-        database: mango
-        cache: gr-prototype
+        network: gymrevenue-vpc-network
+        database: gr-west-dev
+        cache: gr-cache
         cli-timeout: 900
-        storage: gymrevenue-dev
+        storage: gymrevenue-west-dev
         runtime: docker
+        balancer: lb-gymrevenue
         queues:
             - grp-develop-events
             - grp-develop-jobs
@@ -57,6 +66,7 @@ environments:
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
-            - 'npm ci && npm run dev && rm -rf node_modules'
+            - 'npm set-script prepare ""'
+            - 'npm ci && npm run build:dev && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'

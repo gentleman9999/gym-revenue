@@ -54,10 +54,9 @@
 
             <div class="mt-4">
                 <jet-label for="password" value="Password" />
-                <input
+                <password-input
                     id="password"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password"
                     required
                     autocomplete="new-password"
@@ -69,10 +68,9 @@
                     for="password_confirmation"
                     value="Confirm Password"
                 />
-                <input
+                <password-input
                     id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     v-model="form.password_confirmation"
                     required
                     autocomplete="new-password"
@@ -141,12 +139,13 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetAuthenticationCard from "@/Jetstream/AuthenticationCard";
-import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo";
-import Button from "@/Components/Button";
+import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
+import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
+import Button from "@/Components/Button.vue";
 
-import JetLabel from "@/Jetstream/Label";
-import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
+import PasswordInput from "@/Components/PasswordInput.vue";
 
 export default defineComponent({
     components: {
@@ -156,6 +155,7 @@ export default defineComponent({
         Button,
         JetLabel,
         JetValidationErrors,
+        PasswordInput,
     },
     props: [
         "showRegistration",
@@ -189,6 +189,7 @@ export default defineComponent({
             });
         },
     },
+    layout: null,
     mounted() {
         let urlSearchParams = new URLSearchParams(window.location.search);
         let params = Object.fromEntries(urlSearchParams.entries());

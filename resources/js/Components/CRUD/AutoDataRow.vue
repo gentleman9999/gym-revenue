@@ -22,7 +22,13 @@
                     Object.values(actions).filter((action) => action).length)
             "
         >
-            <div class="tabledata actions">
+            <div
+                class="tabledata actions"
+                v-if="
+                    (actions && actions instanceof Array && actions.length) ||
+                    Object.entries(actions).length
+                "
+            >
                 <slot name="actions">
                     <crud-actions
                         :actions="actions"
@@ -41,10 +47,10 @@
 
 <script>
 import { defineComponent } from "vue";
-import DataCard from "./DataCard";
-import CrudActions from "./CrudActions";
+import DataCard from "./DataCard.vue";
+import CrudActions from "./CrudActions.vue";
 import { getFields } from "./helpers/getFields";
-import RenderField from "./RenderField";
+import RenderField from "./RenderField.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { preview } from "@/Components/CRUD/helpers/previewData";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
@@ -112,7 +118,7 @@ export default defineComponent({
         const handleClick = () => {
             timer = setTimeout(() => {
                 if (!prevent) {
-                    if (props.onClick) {
+                    if (props?.onClick) {
                         props.onClick();
                     } else {
                         openPreview();
@@ -131,11 +137,16 @@ export default defineComponent({
         const handleDoubleClick = () => {
             clearTimeout(timer);
             prevent = true;
-            if (props.onDoubleClick) {
+            if (props.onDoubleClick === false) {
+                return;
+            }
+            if (props?.onDoubleClick) {
                 props.onDoubleClick();
                 return;
             }
-            Inertia.visit(route(`${props.baseRoute}.edit`, props.data.id));
+            Inertia.visitInModal(
+                route(`${props.baseRoute}.edit`, props.data.id)
+            );
         };
 
         return { fields: customizedFields, handleClick, handleDoubleClick };

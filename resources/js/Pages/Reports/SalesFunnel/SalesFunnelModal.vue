@@ -6,30 +6,21 @@
         page-route="SalesFunnel"
     >
         <div class="flex flex-row space-x-2">
-            <cancel-card
-                class="no-collapse h-auto"
-                progress="/img/mocks/clalendar_page_1.png"
-            />
-            <completed-card
-                class="no-favorite no-collapse no-action"
-                progress="/img/mocks/clalendar_page_2.png"
-            />
+            <cancel-card class="no-collapse h-auto" progress="25" />
+            <completed-card class="no-favorite no-collapse no-action" />
         </div>
         <div>
-            <lead-stats-card
-                class="no-favorite no-collapse"
-                progress="/img/mocks/clalendar_page_3.png"
-            />
+            <lead-stats-card class="no-favorite no-collapse" progress="30" />
         </div>
     </dashboard-widget-modal>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
 
-import CancelCard from "./components/CancelCard";
-import CompletedCard from "./components/CompletedCard";
-import LeadStatsCard from "./components/LeadStatsCard";
+import CancelCard from "./components/CancelCard.vue";
+import CompletedCard from "./components/CompletedCard/CompletedCard.vue";
+import LeadStatsCard from "./components/LeadStatsCard.vue";
 
 export default defineComponent({
     components: {

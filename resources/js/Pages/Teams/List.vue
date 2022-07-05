@@ -1,99 +1,91 @@
 <template>
-    <app-layout :title="title">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">Team Management</h2>
-        </template>
-        <gym-revenue-crud
-            base-route="teams"
-            model-name="Team"
-            model-key="team"
-            :fields="fields"
-            :resource="teams"
-            :actions="actions"
-            :preview-component="TeamPreview"
-        >
-            <template #filter>
-                <beefy-search-filter
-                    v-model:modelValue="form.search"
-                    :filtersActive="filtersActive"
-                    class="w-full max-w-md mr-4"
-                    @reset="reset"
-                    @clear-filters="clearFilters"
-                    @clear-search="clearSearch"
-                >
-                    <div class="form-control">
-                        <label
-                            for="users"
-                            class="label label-text py-1 text-xs"
-                        >
-                            Users:
-                        </label>
-                        <multiselect
-                            v-model="form.users"
-                            class="py-2"
-                            id="users"
-                            mode="tags"
-                            :close-on-select="false"
-                            :create-option="true"
-                            :options="
-                                this.$page.props.potentialUsers.map((user) => ({
-                                    label: user.name,
-                                    value: user.id,
-                                }))
-                            "
-                            :classes="multiselectClasses"
-                        />
-                    </div>
+    <LayoutHeader title="Teams">
+        <h2 class="font-semibold text-xl leading-tight">Team Management</h2>
+    </LayoutHeader>
+    <gym-revenue-crud
+        base-route="teams"
+        model-name="Team"
+        model-key="team"
+        :fields="fields"
+        :resource="teams"
+        :actions="actions"
+        :preview-component="TeamPreview"
+    >
+        <template #filter>
+            <beefy-search-filter
+                v-model:modelValue="form.search"
+                :filtersActive="filtersActive"
+                class="w-full max-w-md mr-4"
+                @reset="reset"
+                @clear-filters="clearFilters"
+                @clear-search="clearSearch"
+            >
+                <div class="form-control">
+                    <label for="users" class="label label-text py-1 text-xs">
+                        Users:
+                    </label>
+                    <multiselect
+                        v-model="form.users"
+                        class="py-2"
+                        id="users"
+                        mode="tags"
+                        :close-on-select="false"
+                        :create-option="true"
+                        :options="
+                            this.$page.props.potentialUsers.map((user) => ({
+                                label: user.name,
+                                value: user.id,
+                            }))
+                        "
+                        :classes="multiselectClasses"
+                    />
+                </div>
 
-                    <div class="form-control" v-if="clubs?.length">
-                        <label for="club" class="label label-text py-1 text-xs">
-                            Club
-                        </label>
-                        <select
-                            class="mt-1 w-full form-select"
-                            v-model="form.club"
+                <div class="form-control" v-if="clubs?.length">
+                    <label for="club" class="label label-text py-1 text-xs">
+                        Club
+                    </label>
+                    <select class="mt-1 w-full form-select" v-model="form.club">
+                        <option></option>
+                        <option
+                            v-for="club in clubs"
+                            :value="club.gymrevenue_id"
                         >
-                            <option></option>
-                            <option
-                                v-for="club in clubs"
-                                :value="club.gymrevenue_id"
-                            >
-                                {{ club.name }}
-                            </option>
-                        </select>
-                    </div>
-                </beefy-search-filter>
-            </template>
-        </gym-revenue-crud>
-        <confirm
-            title="Really Delete?"
-            v-if="confirmDelete"
-            @confirm="handleConfirmDelete"
-            @cancel="confirmDelete = null"
-        >
-            Are you sure you want to delete team '{{ confirmDelete.name }}'?
-            This action is permanent, and cannot be undone.
-        </confirm>
-    </app-layout>
+                            {{ club.name }}
+                        </option>
+                    </select>
+                </div>
+            </beefy-search-filter>
+        </template>
+    </gym-revenue-crud>
+    <confirm
+        title="Really Delete?"
+        v-if="confirmDelete"
+        @confirm="handleConfirmDelete"
+        @cancel="confirmDelete = null"
+    >
+        Are you sure you want to delete team '{{ confirmDelete.name }}'? This
+        action is permanent, and cannot be undone.
+    </confirm>
 </template>
 
 <script>
 import { defineComponent, ref, onMounted, computed } from "vue";
-import AppLayout from "@/Layouts/AppLayout.vue";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
-import Confirm from "@/Components/Confirm";
-import TeamPreview from "@/Pages/Teams/Partials/TeamPreview";
+import Confirm from "@/Components/Confirm.vue";
+import TeamPreview from "@/Pages/Teams/Partials/TeamPreview.vue";
 import { preview } from "@/Components/CRUD/helpers/previewData";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter";
+import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 
 export default defineComponent({
     components: {
-        AppLayout,
+        LayoutHeader,
         GymRevenueCrud,
         Confirm,
         BeefySearchFilter,
@@ -121,7 +113,7 @@ export default defineComponent({
         const shouldShowDelete = ({ data }) =>
             (abilities.value.includes("locations.delete") ||
                 abilities.value.includes("*")) &&
-            !data.default_team;
+            !data?.default_team;
 
         const fields = ["name", "created_at", "updated_at"];
 

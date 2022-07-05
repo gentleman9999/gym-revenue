@@ -1,39 +1,35 @@
 <template>
-    <app-layout title="GymRevenue - Workout Generator">
-        <template #header>
-            <h2 class="font-semibold text-xl leading-tight">
-                Workout Generator (Preview)
-            </h2>
-        </template>
+    <LayoutHeader title="Workout Generator">
+        <h2 class="font-semibold text-xl leading-tight">
+            Workout Generator (Preview)
+        </h2>
+    </LayoutHeader>
 
-        <div class="py-16">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg"
-                >
-                    <div class="workout-generator-container">
-                        <workout-form
-                            @submit="generateRoutine"
-                            :reset="resetForm"
-                        ></workout-form>
-                    </div>
+    <div class="py-16">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="workout-generator-container">
+                    <workout-form
+                        @submit="generateRoutine"
+                        :reset="resetForm"
+                    ></workout-form>
                 </div>
-                <div
-                    class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg mt-10"
-                    v-show="showRoutine"
-                >
-                    <div class="workout-routine-container">
-                        <generated-workout
-                            v-if="showRoutine"
-                            :workout="solution"
-                            :rest-msg="restMessage"
-                            @reset="resetEverything"
-                        ></generated-workout>
-                    </div>
+            </div>
+            <div
+                class="bg-base-300 overflow-hidden shadow-xl sm:rounded-lg mt-10"
+                v-show="showRoutine"
+            >
+                <div class="workout-routine-container">
+                    <generated-workout
+                        v-if="showRoutine"
+                        :workout="solution"
+                        :rest-msg="restMessage"
+                        @reset="resetEverything"
+                    ></generated-workout>
                 </div>
             </div>
         </div>
-    </app-layout>
+    </div>
     <daisy-modal id="generationModal" ref="generationModal">
         <font-awesome-icon :icon="['far', whichSmile]" size="8x" spin />
         <br />
@@ -45,12 +41,12 @@
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 
-import WorkoutForm from "@/Presenters/WorkoutGenerator/WorkoutForm";
-import GeneratedWorkout from "@/Presenters/WorkoutGenerator/GeneratedWorkout";
+import WorkoutForm from "@/Presenters/WorkoutGenerator/WorkoutForm.vue";
+import GeneratedWorkout from "@/Presenters/WorkoutGenerator/GeneratedWorkout.vue";
 
-import DaisyModal from "@/Components/DaisyModal";
+import DaisyModal from "@/Components/DaisyModal.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSmile, faSmileWink } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -59,7 +55,7 @@ library.add(faSmile, faSmileWink);
 export default defineComponent({
     name: "WorkoutGenerator",
     components: {
-        AppLayout,
+        LayoutHeader,
         DaisyModal,
         WorkoutForm,
         FontAwesomeIcon,

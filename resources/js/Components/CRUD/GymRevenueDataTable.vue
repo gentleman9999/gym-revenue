@@ -63,6 +63,8 @@
                         :model-name-plural="modelNamePlural"
                         :base-route="baseRoute"
                         :has-preview-component="!!previewComponent"
+                        :on-double-click="onDoubleClick"
+                        :on-click="onClick"
                     />
 
                     <tr v-if="!data?.length">
@@ -94,7 +96,7 @@
     }
 
     .tablebody {
-        @apply max-h-64 overflow-hidden overflow-y-scroll pr-10;
+        @apply h-[70vh] max-h-[26rem] overflow-hidden overflow-y-scroll pr-10;
 
         td {
             @apply text-center bg-black text-white my-2 mx-8 whitespace-nowrap overflow-hidden text-ellipsis py-4;
@@ -117,10 +119,10 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faAlignLeft } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { isObject } from "lodash";
-import AutoDataRow from "@/Components/CRUD/AutoDataRow";
+import AutoDataRow from "@/Components/CRUD/AutoDataRow.vue";
 import { getFields } from "./helpers/getFields";
 import { getData } from "./helpers/getData";
-import SortableHeader from "@/Components/CRUD/SortableHeader";
+import SortableHeader from "@/Components/CRUD/SortableHeader.vue";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
 library.add(faAlignLeft);
@@ -177,6 +179,12 @@ export default {
         },
         form: {
             type: Object,
+        },
+        onDoubleClick: {
+            type: Function,
+        },
+        onClick: {
+            type: Function,
         },
     },
     setup(props) {

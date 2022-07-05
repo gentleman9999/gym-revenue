@@ -17,7 +17,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('classifications'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -29,7 +29,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -39,16 +39,16 @@
 </template>
 
 <script>
-import { useForm } from "@inertiajs/inertia-vue3";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import { useGymRevForm } from "@/utils";
+import { useModal } from "@/Components/InertiaModal";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -68,25 +68,36 @@ export default {
         let operation = "Update";
         if (!classification) {
             classification = {
-                title: null,
+                title: "",
                 id: null,
                 client_id: props.clientId,
             };
             operation = "Create";
         }
 
-        const form = useForm(classification);
+        const form = useGymRevForm(classification);
 
         let handleSubmit = () =>
-            form.put(route("classifications.update", classification.id));
+            form
+                .dirty()
+                .put(route("classifications.update", classification.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("classifications.store"));
         }
 
+        const modal = useModal();
+        const handleCancel = () => {
+            if (modal?.value?.close) {
+                modal.value.close();
+                return;
+            }
+            Inertia.visit(route("classifications"));
+        };
         return {
             form,
             buttonText: operation,
             handleSubmit,
+            handleCancel,
         };
     },
 };

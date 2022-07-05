@@ -14,7 +14,6 @@
                 <input
                     type="checkbox"
                     v-model="form.active"
-                    autofocus
                     id="active"
                     class="mt-2"
                 />
@@ -159,7 +158,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.email-campaigns'))"
+                @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -171,7 +170,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
                 type="button"
                 @click.prevent="
@@ -198,22 +197,21 @@
 
 <script>
 import { computed, ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import SmsFormControl from "@/Components/SmsFormControl";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import Confirm from "@/Components/Confirm";
+import { usePage } from "@inertiajs/inertia-vue3";
+import SmsFormControl from "@/Components/SmsFormControl.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import Confirm from "@/Components/Confirm.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { useGymRevForm, getDefaultMultiselectTWClasses } from "@/utils";
+import { useModal } from "@/Components/InertiaModal";
 
 export default {
     name: "EmailCampaignForm",
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         SmsFormControl,
@@ -226,7 +224,8 @@ export default {
         "clientId",
         "campaign",
         "canActivate",
-        "templates",
+        "emailTemplates",
+        "audiences",
         "assignedTemplate",
         "assignedAudience",
     ],
@@ -253,22 +252,25 @@ export default {
             campaign["schedule_date"] = campaign.schedule_date?.value || "now";
             campaign["schedule"] = campaign.schedule?.value || "";
 
-            campaign["email_templates"] = page.props.value.emailTemplates.map(
-                (template_id) => template_id.value
-            );
-            campaign["audiences"] = page.props.value.audiences.map(
-                (audience_id) => audience_id.value
-            );
+            campaign["email_templates"] =
+                props.emailTemplates?.map((template_id) => template_id.value) ||
+                [];
+            campaign["audiences"] =
+                page.audiences?.map((audience_id) => audience_id.value) || [];
         }
 
         console.log("campaign Params", campaign);
-        const form = useForm(campaign);
+        const form = useGymRevForm(campaign);
 
         let handleSubmit = () => {
-            form.transform((data) => ({
-                ...data,
-                schedule_date: scheduleNow.value ? "now" : data.schedule_date,
-            })).put(route("comms.email-campaigns.update", campaign.id));
+            form.dirty()
+                .transform((data) => ({
+                    ...data,
+                    schedule_date: scheduleNow.value
+                        ? "now"
+                        : data.schedule_date,
+                }))
+                .put(route("comms.email-campaigns.update", campaign.id));
         };
         if (operation === "Create") {
             handleSubmit = () =>
@@ -356,6 +358,14 @@ export default {
         },
         closeModal() {
             this.$refs.modal.close();
+        },
+        handleCancel() {
+            const inertiaModal = useModal();
+            if (inertiaModal?.value?.close) {
+                inertiaModal.value.close();
+                return;
+            }
+            this.$inertia.visit(route("comms.email-campaigns"));
         },
     },
 };

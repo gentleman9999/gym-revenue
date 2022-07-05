@@ -16,8 +16,9 @@ class CreateTeamsTable extends Migration
         Schema::create('teams', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->uuid('client_id')->index()->nullable();
-            $table->string('name');
-            $table->boolean('home_team')->default(0);
+            $table->string('name')->index();
+            $table->boolean('home_team')->default(0)->index();
+            $table->index(['client_id', 'name']);
             $table->timestamps();
         });
     }

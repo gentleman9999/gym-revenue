@@ -1,56 +1,62 @@
 <template>
-    <app-layout title="Edit Email Template">
-        <template #header>
+    <ModalableWrapper>
+        <LayoutHeader title="Edit Email Campaign">
             <h2 class="font-semibold text-xl leading-tight">
                 Configure & Modify Email Campaign
             </h2>
             <small>{{ campaign.name }}</small>
-        </template>
+        </LayoutHeader>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <email-template-form
-                    :client-id="$page.props.user.current_client_id"
-                    :campaign="campaign"
-                    :can-activate="true"
-                    :templates="templates"
-                    :audiences="audiences"
-                    :assigned-template="assignedTemplate"
-                    :assigned-audience="assignedAudience"
-                />
+                <ModalSlot />
             </div>
         </div>
-    </app-layout>
+        <template #modal>
+            <email-template-form
+                :client-id="$page.props.user.current_client_id"
+                :campaign="campaign"
+                :can-activate="true"
+                :templates="emailTemplates"
+                :audiences="audiences"
+                :assigned-template="assignedTemplate"
+                :assigned-audience="assignedAudience"
+            />
+        </template>
+    </ModalableWrapper>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 
-import EmailTemplateForm from "./Partials/EmailCampaignForm";
+import EmailTemplateForm from "./Partials/EmailCampaignForm.vue";
+
+import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default {
     name: "EditEmailCampaign",
     components: {
-        AppLayout,
+        LayoutHeader,
         Button,
         JetFormSection,
-
         JetInputError,
         JetLabel,
         EmailTemplateForm,
+        ModalableWrapper,
+        ModalSlot,
     },
     props: {
         campaign: {
             required: true,
             type: Object,
         },
-        templates: {
+        emailTemplates: {
             required: true,
             type: Array,
         },

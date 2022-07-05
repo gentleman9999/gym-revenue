@@ -44,8 +44,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
-import BaseCommsAction from "./BaseCommsAction";
+import { useGymRevForm } from "@/utils";
+import BaseCommsAction from "./BaseCommsAction.vue";
 
 export default defineComponent({
     components: {
@@ -76,7 +76,7 @@ export default defineComponent({
             appointment: "An Appointment Was Scheduled",
             sale: "Made the Sale over the Phone!",
         };
-        const form = useForm({
+        const form = useGymRevForm({
             method: "phone",
             outcome: null,
             notes: null,

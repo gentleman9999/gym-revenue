@@ -21,7 +21,7 @@
                 }"
             >
                 <div
-                    class="h-full"
+                    class="flex items-center justify-center h-full"
                     :class="{
                         'border-r':
                             !collapsed &&
@@ -50,7 +50,7 @@ td > div {
 </style>
 <script setup>
 import { h } from "vue";
-import TableCell from "./TableCell";
+import TableCell from "./TableCell.vue";
 const props = defineProps({
     border: {
         type: String,

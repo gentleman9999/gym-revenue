@@ -51,7 +51,7 @@
             </jet-action-message>
             <Button
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Save
             </Button>
@@ -61,12 +61,13 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 
@@ -83,6 +84,15 @@ export default defineComponent({
         team: {
             type: Object,
         },
+        availableLocations: {
+            type: Array,
+            required: true,
+        },
+        locations: {
+            type: Array,
+            required: false,
+            default: [],
+        },
     },
 
     setup(props) {
@@ -96,13 +106,14 @@ export default defineComponent({
             };
             operation = "Create";
         } else {
-            team.locations = page.props.value.locations.map(
-                (detail) => detail.value
-            );
+            team.locations = props.locations.map((detail) => detail.value);
+            team.client_id = page.props.value.user?.current_client_id;
+            console.log("team.locations", team.locations);
         }
-        const form = useForm(team);
+        const form = useGymRevForm(team);
 
-        let handleSubmit = () => form.put(route("team.update", team.id));
+        let handleSubmit = () =>
+            form.dirty().put(route("team.update", team.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("teams.store"));
         }
@@ -112,7 +123,6 @@ export default defineComponent({
             operation,
             handleSubmit,
             page,
-            availableLocations: page.props.value.availableLocations,
             multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },

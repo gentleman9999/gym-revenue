@@ -1,45 +1,43 @@
 <template>
-    <app-layout>
-        <template #header>
-            <reports-title>
-                <template #title> Attrition Related </template>
-            </reports-title>
-        </template>
-        <div class="flex flex-col md:px-28 m-auto">
-            <div class="flex flex-row flex-wrap">
-                <attrition-running-total />
-                <attrition-waterline />
-            </div>
-            <div class="flex flex-col px-1 space-y-14">
-                <attrition-card
-                    title="Cancellations"
-                    type="secondary"
-                    :data="cancellations"
-                />
-                <attrition-card
-                    title="Expired Payments"
-                    type="warning"
-                    :data="expired"
-                />
-                <attrition-card
-                    title="Return for Collections (RFC)"
-                    type="gray"
-                    :data="rfc"
-                />
-            </div>
+    <LayoutHeader title="Attrition Related">
+        <reports-title>
+            <template #title> Attrition Related </template>
+        </reports-title>
+    </LayoutHeader>
+    <div class="flex flex-col md:px-28 m-auto">
+        <div class="flex flex-row flex-wrap">
+            <attrition-running-total />
+            <attrition-waterline />
         </div>
-        <jet-bar-container> </jet-bar-container>
-    </app-layout>
+        <div class="flex flex-col px-1 space-y-14">
+            <attrition-card
+                title="Cancellations"
+                type="secondary"
+                :data="cancellations"
+            />
+            <attrition-card
+                title="Expired Payments"
+                type="warning"
+                :data="expired"
+            />
+            <attrition-card
+                title="Return for Collections (RFC)"
+                type="gray"
+                :data="rfc"
+            />
+        </div>
+    </div>
+    <jet-bar-container> </jet-bar-container>
 </template>
 
 <script setup>
 import { defineComponent } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import JetBarContainer from "@/Components/JetBarContainer";
-import ReportsTitle from "../components/ReportsTitle";
-import AttritionRunningTotal from "./components/AttritionRunningTotal";
-import AttritionWaterline from "./components/AttritionWaterline";
-import AttritionCard from "./components/AttritionCard";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import JetBarContainer from "@/Components/JetBarContainer.vue";
+import ReportsTitle from "../components/ReportsTitle.vue";
+import AttritionRunningTotal from "./components/AttritionRunningTotal/AttritionRunningTotal.vue";
+import AttritionWaterline from "./components/AttritionWaterline/AttritionWaterline.vue";
+import AttritionCard from "./components/AttritionCard.vue";
 
 const cancellations = [
     {

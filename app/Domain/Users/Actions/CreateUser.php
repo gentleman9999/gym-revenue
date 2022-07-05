@@ -69,7 +69,7 @@ class CreateUser implements CreatesNewUsers
             // Since the user needs to have their team added in a single transaction in createUser
             // A projector won't get executed (for now) but an apply function will run on the next retrieval
 //            $team_name = Team::getTeamName($team_id);
-            AddTeamMember::run(Team::findOrFail($team_id), $created_user->email);
+            AddTeamMember::run(Team::findOrFail($team_id), $created_user);
 //            $team_client = Team::getClientFromTeamId($team_id);
 //            $team_client_id = ($team_client) ? $team_client->id : null;
 //            $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);

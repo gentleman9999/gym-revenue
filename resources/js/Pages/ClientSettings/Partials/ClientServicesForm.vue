@@ -27,7 +27,7 @@
 
             <Button
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Save
             </Button>
@@ -37,13 +37,13 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetActionMessage from "@/Jetstream/ActionMessage";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
 
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
-import { useForm } from "@inertiajs/inertia-vue3";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import { useGymRevForm } from "@/utils";
 
 export default defineComponent({
     components: {
@@ -68,11 +68,11 @@ export default defineComponent({
             services: props.services,
             availableServices: props.availableServices,
         });
-        const form = useForm({
+        const form = useGymRevForm({
             services: props.services.map((detail) => detail.value),
         });
         let handleSubmit = () =>
-            form.post(route("settings.client-services.update"));
+            form.dirty().post(route("settings.client-services.update"));
 
         return { form, handleSubmit };
     },

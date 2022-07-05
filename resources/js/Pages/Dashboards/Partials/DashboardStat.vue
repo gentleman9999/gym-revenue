@@ -8,8 +8,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import JetBarStatCard from "@/Components/JetBarStatCard";
-import JetBarIcon from "@/Components/JetBarIcon";
+import JetBarStatCard from "@/Components/JetBarStatCard.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
 
 export default defineComponent({
     components: {

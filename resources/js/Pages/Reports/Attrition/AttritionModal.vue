@@ -5,17 +5,19 @@
         ref="modal"
         page-route="Attrition"
     >
-        <div class="flex flex-row">
-            <attrition-running-total class="no-favorite no-collapse" />
-            <attrition-waterline class="no-favorite no-collapse" />
+        <div class="flex flex-row w-full">
+            <attrition-running-total
+                class="min-w-fit no-favorite no-collapse"
+            />
+            <attrition-waterline class="min-w-fit no-favorite no-collapse" />
         </div>
     </dashboard-widget-modal>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
-import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal";
-import AttritionRunningTotal from "./components/AttritionRunningTotal";
-import AttritionWaterline from "./components/AttritionWaterline";
+import DashboardWidgetModal from "@/Pages/Reports/Partials/DashboardWidgetModal.vue";
+import AttritionRunningTotal from "./components/AttritionRunningTotal/AttritionRunningTotal.vue";
+import AttritionWaterline from "./components/AttritionWaterline/AttritionWaterline.vue";
 export default defineComponent({
     components: {
         DashboardWidgetModal,

@@ -131,35 +131,31 @@ class SmsTemplatesController extends Controller
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
 //        return Redirect::route('comms.sms-templates');
-        return Redirect::route('comms.sms-templates.edit', ['id' => $new_template->id]);
+        return Redirect::route('comms.sms-templates.edit', $new_template->id);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $data = $request->validate(
             [
-                'id' => 'required|exists:sms_templates,id',
-                'name' => 'required',
-                'markup' => 'required|max:130',
+                'name' => ['sometimes', 'required'],
+                'markup' => 'sometimes|required|max:130',
                 'active' => 'sometimes',
-                'client_id' => 'required|exists:clients,id',
-                'created_by_user_id' => 'required',
+                'client_id' => 'sometimes|required|exists:clients,id',
             ]
         );
 
-        $template = SmsTemplates::find($data['id']);
+        $template = SmsTemplates::find($id);
         $old_values = $template->toArray();
-        $template->name = ($template->name == $data['name']) ? $template->name : $data['name'];
-        $template->markup = ($template->markup == $data['markup']) ? $template->markup : $data['markup'];
-        $template->active = ($template->active == $data['active']) ? $template->active : $data['active'];
+        $template->update($data);
         $template->save();
 
-        ClientAggregate::retrieve($data['client_id'])
+        ClientAggregate::retrieve($request->user()->currentClientId())
             ->updateSmsTemplate($template->id, request()->user()->id, $old_values, $template->toArray())
             ->persist();
 //        $template['created_by_user_id'] = $request->user()->id;
 //        SmsTemplates::create($template);
-        return Redirect::route('comms.sms-templates');
+        return Redirect::route('comms.sms-templates.edit', $template->id);
     }
 
     public function trash($id)

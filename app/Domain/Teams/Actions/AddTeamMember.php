@@ -3,45 +3,56 @@
 namespace App\Domain\Teams\Actions;
 
 use function __;
-use App\Actions\Jetstream\User;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
+use App\Domain\Users\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
 use Laravel\Jetstream\Events\TeamMemberAdded;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class AddTeamMember implements AddsTeamMembers
 {
     use AsAction;
+
+    private Team $team;
 
     /**
      * Get the validation rules for adding a team member.
      *
      * @return array
      */
-    protected function rules()
+    public function rules()
     {
         return array_filter([
-            'email' => ['required', 'email', 'exists:users'],
+            'email' => ['required', 'email'],
+//            'email' => ['required', 'email', 'exists:users'],
 //            'role' => Jetstream::hasRoles()
 //                            ? ['required', 'string', new Role()]
 //                            : null,
         ]);
     }
 
-    public function handle(Team $team, string $email)
+    public function handle(Team $team, User $user): User
     {
+        $this->team = $team;
 //        Gate::forUser($user)->authorize('addTeamMember', $team);
 
-        $this->validate($team, $email);
+        $this->validate($team, $user->email);
 
-        TeamAggregate::retrieve($team->id)->addMember($email)->persist();
+        //TODO:should be adding by id, not email (should be INVITING by email not id)
+        TeamAggregate::retrieve($team->id)->addMember($user->email)->persist();
 
 //        TeamMemberAdded::dispatch($team, $newTeamMember);
+        $team->refresh();
+
+        return $user->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -51,6 +62,26 @@ class AddTeamMember implements AddsTeamMembers
         $current_user = $request->user();
 
         return $current_user->can('teams.update', Team::class);
+    }
+
+    public function asController(ActionRequest $request, Team $team, $teamMemberId): User
+    {
+        $teamMember = User::findOrFail($teamMemberId);
+//        return $this->handle(
+//            $team,
+//            $teamMember,
+//        );
+        return  $this->handle(
+            $team,
+            $teamMember,
+        );
+    }
+
+    public function htmlResponse(User $user): RedirectResponse
+    {
+        Alert::success("Team Member'{$user->name}' added")->flash();
+
+        return Redirect::route('teams.edit', $this->team->id);
     }
 
     /**
@@ -64,7 +95,7 @@ class AddTeamMember implements AddsTeamMembers
      */
     public function add($user, $team, string $email, string $role = null)
     {
-        $this->handle($team, $email);
+        $this->handle($team, User::whereEmail($email)->firstOrFail());
     }
 
     /**

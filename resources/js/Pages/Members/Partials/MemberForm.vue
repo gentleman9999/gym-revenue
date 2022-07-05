@@ -83,9 +83,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="primary_phone" value="Primary Phone" />
-                <input
+                <phone-input
                     id="primary_phone"
-                    type="tel"
                     v-model="form['primary_phone']"
                 />
                 <jet-input-error
@@ -95,9 +94,8 @@
             </div>
             <div class="form-control col-span-2">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
-                <input
+                <phone-input
                     id="alternate_phone"
-                    type="tel"
                     v-model="form['alternate_phone']"
                 />
                 <jet-input-error
@@ -286,7 +284,7 @@
             <Button
                 :class="{ 'opacity-25': form.processing }"
                 class="btn-primary"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -297,42 +295,35 @@
 
 <script>
 import { computed, watchEffect } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import Vapor from "laravel-vapor";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import { useGoBack } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { transformDate } from "@/utils/transformDate";
+import PhoneInput from "@/Components/PhoneInput.vue";
 
 library.add(faUserCircle);
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         FontAwesomeIcon,
         JetInputError,
         JetLabel,
         DatePicker,
+        PhoneInput,
     },
     props: ["userId", "clientId", "member", "locations", "interactionCount"],
     setup(props, context) {
-        const transformDate = (date) => {
-            if (!date?.toISOString) {
-                return date;
-            }
-
-            return date.toISOString().slice(0, 19).replace("T", " ");
-        };
-
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
                 client_id: props.clientId,
@@ -345,18 +336,18 @@ export default {
         let memberData = null;
         if (!member) {
             memberData = {
-                first_name: null,
-                middle_name: null,
-                last_name: null,
-                email: null,
-                primary_phone: null,
-                alternate_phone: null,
-                club_id: null,
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                email: "",
+                primary_phone: "",
+                alternate_phone: "",
+                club_id: "",
                 client_id: props.clientId,
                 gr_location_id: null,
                 profile_picture: null,
                 gender: "",
-                date_of_birth: "",
+                date_of_birth: null,
                 notes: { title: "", note: "" },
             };
             operation = "Create";
@@ -404,8 +395,8 @@ export default {
                   ).toLocaleDateString("en-US")}`
                 : "This member has never been updated"
         );
-        const form = useForm(memberData);
-        const fileForm = useForm({ file: null });
+        const form = useGymRevForm(memberData);
+        const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
             if (!data.notes?.title) {
@@ -417,6 +408,7 @@ export default {
 
         let handleSubmit = () =>
             form
+                .dirty()
                 .transform(transformFormSubmission)
                 .put(route("data.members.update", member.id), {
                     preserveState: false,
@@ -477,10 +469,6 @@ export default {
 <style scoped>
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
-    @apply w-full mt-1;
-}
-
 select {
     @apply w-full;
 }

@@ -68,7 +68,7 @@ class LeadsController extends Controller
                     'agreementSearch',
                     'lastupdated'
                 ))
-                ->whereNotNull('converted_at')
+                ->whereNull('converted_at')
                 ->orderBy('created_at', 'desc')
                 ->sort()
                 ->paginate($page_count)

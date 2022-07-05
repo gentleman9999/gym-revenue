@@ -31,7 +31,7 @@
 }
 </style>
 <script setup>
-import SearchIcon from "./Icons/Search";
+import SearchIcon from "./Icons/Search.vue";
 const props = defineProps({
     placeholder: {
         type: String,

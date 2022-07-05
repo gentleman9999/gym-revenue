@@ -2,6 +2,7 @@
 
 namespace App\Projectors\Endusers;
 
+use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\StorableEvents\Endusers\Members\MemberCreated;
@@ -63,6 +64,13 @@ class MemberProjector extends Projector
             $event->data['profile_picture'] = $file;
         }
         $member->updateOrFail($event->data);
+
+        //If lead is attached to a member, we're going to also update the lead record with the updated information
+        $record = Lead::whereMemberId($event->data['id'])->first();
+        if (! is_null($record)) {
+            $record->updateOrFail($event->data);
+        }
+
 
 //        $user = User::find($event->user);
 //        MemberDetails::create([

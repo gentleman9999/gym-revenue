@@ -3,6 +3,7 @@
         :lead-id="leadId"
         submit-text="Send"
         :form="form"
+        :disabled="form.processing || !form.isDirty"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
@@ -32,8 +33,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
-import BaseCommsAction from "./BaseCommsAction";
+import { useGymRevForm } from "@/utils";
+import BaseCommsAction from "./BaseCommsAction.vue";
 
 export default defineComponent({
     components: {
@@ -58,7 +59,7 @@ export default defineComponent({
     },
     emits: ["done"],
     setup(props, { emit }) {
-        const form = useForm({
+        const form = useGymRevForm({
             method: "email",
             subject: props.subject,
             message: null,

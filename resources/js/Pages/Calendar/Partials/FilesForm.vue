@@ -74,20 +74,18 @@ label {
 </style>
 
 <script>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { computed, watchEffect, watch } from "vue";
-import AppLayout from "@/Layouts/AppLayout";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import { watchEffect } from "vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
-import DaisyModal from "@/Components/DaisyModal";
-import FileExtensionIcon from "@/Pages/Files/Partials/FileExtensionIcon";
+import DaisyModal from "@/Components/DaisyModal.vue";
+import FileExtensionIcon from "@/Pages/Files/Partials/FileExtensionIcon.vue";
+import { useGymRevForm } from "@/utils";
 
 export default {
     components: {
-        AppLayout,
         Button,
         JetFormSection,
         JetInputError,
@@ -99,7 +97,7 @@ export default {
     setup(props, { emit }) {
         let calendarEvent = props.calendar_event;
 
-        const form = useForm(calendarEvent);
+        const form = useGymRevForm(calendarEvent);
         watchEffect(() => {});
         return {
             form,
