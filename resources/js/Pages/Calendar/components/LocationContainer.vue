@@ -16,11 +16,11 @@
         <span class="font-bold text-secondary">{{ selectedDateStr }}</span>
         <div>
             <day-scroller
-                :selected_date="selected"
-                :visible_date="date_in_visible_week"
-                @advance="() => upWeek()"
-                @regress="() => downWeek()"
-                @change-date="(d) => updateSelectedDate(d)"
+                :selected_date="selectedDate"
+                :visible_date="dateInVisibleWeek"
+                @advance="$emit('advance')"
+                @regress="$emit('regress')"
+                @change-date="(d) => $emit('changeDate', d)"
             />
         </div>
         <ul>
@@ -86,12 +86,24 @@ export default defineComponent({
         events: {
             type: Array,
         },
+        active_date: {
+            type: String,
+        },
+        visible_date: {
+            type: String,
+        },
     },
     computed: {
         selectedDateStr() {
-            return `${this.names_weekday[this.selected.getDay()]}, ${
-                this.names_month[this.selected.getMonth()]
-            } ${this.selected.getDate()},  ${this.selected.getFullYear()}`;
+            return `${this.names_weekday[this.selectedDate.getDay()]}, ${
+                this.names_month[this.selectedDate.getMonth()]
+            } ${this.selectedDate.getDate()},  ${this.selectedDate.getFullYear()}`;
+        },
+        dateInVisibleWeek() {
+            return new Date(this.visible_date);
+        },
+        selectedDate() {
+            return new Date(this.active_date);
         },
     },
     setup(props) {
@@ -119,60 +131,16 @@ export default defineComponent({
             "December",
         ];
 
-        /** A reference for the current point in time */
-        const today = ref(new Date());
-
-        /**
-         * some date within the currently visible week we want to show.
-         * the entierty of our week's dates are derived from this value
-         */
-        const date_in_visible_week = ref(new Date());
-
-        /** currently selected date (show events for this day only) */
-        const selected = ref(new Date());
-
         /** Formats an events time as hh:mm */
         const fmtTime = (d) => {
             let t = d.split(" ")[1].split(":");
-            return [t[0], t[1]].join(":");
-        };
-
-        const upWeek = () => {
-            let td = new Date(date_in_visible_week.value);
-            let temp = new Date(
-                td.getFullYear(),
-                td.getMonth(),
-                td.getDate() + 7
-            );
-
-            date_in_visible_week.value = temp;
-        };
-
-        const downWeek = () => {
-            let td = new Date(date_in_visible_week.value);
-            let temp = new Date(
-                td.getFullYear(),
-                td.getMonth(),
-                td.getDate() - 7
-            );
-
-            date_in_visible_week.value = temp;
-        };
-
-        const updateSelectedDate = (d) => {
-            let t = d instanceof Date ? d : new Date(d);
-            selected.value = t;
+            return [t[0], t[1]].join(":").replace(/^0/, "");
         };
 
         return {
             names_weekday,
             names_month,
             fmtTime,
-            selected,
-            date_in_visible_week,
-            upWeek,
-            downWeek,
-            updateSelectedDate,
         };
     },
 });

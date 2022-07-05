@@ -3,6 +3,11 @@
         <location-container
             v-for="events in calendar_events_by_locations"
             :events="events"
+            :active_date="active_date"
+            :visible_date="visible_date"
+            @advance="() => upWeek()"
+            @regress="() => downWeek()"
+            @changeDate="(d) => updateDay(d)"
         />
     </section>
 </template>
@@ -29,6 +34,42 @@ const props = defineProps({
 const { form, reset, clearFilters, clearSearch } = useSearchFilter("calendar", {
     start: "",
 });
+/** Currently selected date - this is the date we're showing all events for */
+const active_date = ref(new Date());
+
+/** Show events from the selected date */
+const updateDay = (d) => {
+    let q_date = d instanceof Date ? d : new Date(d);
+    active_date.value = q_date;
+
+    const q = new URLSearchParams();
+    let qdStr = `${
+        q_date.getMonth() + 1
+    }-${q_date.getDate()}-${q_date.getFullYear()}`;
+    q.set("start", qdStr);
+};
+
+/**
+ * some date within the currently visible week we want to show.
+ * the entierty of our week's dates are derived from this value
+ */
+const visible_date = ref(new Date());
+
+const upWeek = () => {
+    console.log("up week (quick-view)");
+    let td = new Date(visible_date.value);
+    let temp = new Date(td.getFullYear(), td.getMonth(), td.getDate() + 7);
+
+    visible_date.value = temp;
+};
+
+const downWeek = () => {
+    console.log("down week (quick-view)");
+    let td = new Date(visible_date.value);
+    let temp = new Date(td.getFullYear(), td.getMonth(), td.getDate() - 7);
+
+    visible_date.value = temp;
+};
 
 const start = ref(null);
 
