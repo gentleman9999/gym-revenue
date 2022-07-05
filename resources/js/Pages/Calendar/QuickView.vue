@@ -17,6 +17,7 @@ section {
 import { ref } from "vue";
 
 import LocationContainer from "./components/LocationContainer.vue";
+import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 
 const props = defineProps({
     calendar_events_by_locations: {
@@ -24,6 +25,12 @@ const props = defineProps({
         default: [],
     },
 });
+
+const { form, reset, clearFilters, clearSearch } = useSearchFilter("calendar", {
+    start: "",
+});
+
+const start = ref(null);
 
 console.log("calendar eventsss", props.calendar_events_by_locations);
 </script>
