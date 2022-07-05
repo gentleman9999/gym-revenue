@@ -3,6 +3,8 @@
 namespace App\Models\Calendar;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Users\Models\User;
+use App\Models\File;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,17 +39,22 @@ class CalendarEvent extends Model
 
     public function type()
     {
-        return $this->hasOne('App\Models\Calendar\CalendarEventType', 'id', 'event_type_id');
+        return $this->hasOne(CalendarEventType::class, 'id', 'event_type_id');
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(User::class, 'id', 'owner_id');
     }
 
     public function attendees()
     {
-        return $this->hasMany('App\Models\Calendar\CalendarAttendee', 'calendar_event_id', 'id');
+        return $this->hasMany(CalendarAttendee::class, 'calendar_event_id', 'id');
     }
 
     public function files()
     {
-        return $this->hasMany('App\Models\File', 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
+        return $this->hasMany(File::class, 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
     }
 
     public function fixDate($data): array

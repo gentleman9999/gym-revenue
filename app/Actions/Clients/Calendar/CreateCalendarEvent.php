@@ -53,7 +53,7 @@ class CreateCalendarEvent
         if (! is_null($data['user_attendees'])) {
             $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
             foreach ($data['user_attendees'] as $user) {
-                $user = User::findOrFail($user);
+                $user = User::find($user);
                 if ($user) {
                     CalendarAggregate::retrieve($data['client_id'])
                         ->addCalendarAttendee(
