@@ -52,24 +52,45 @@ export default defineComponent({
         },
     },
     computed: {
+        /**
+         * Generates an array of days (sun - sat) for the week of the currently
+         * visible date. To pan time, we update visible date 7 days in the future/past
+         * on the parent component then calculate the dates for that particular week
+         */
         visibleWeek() {
             let w = [];
             for (let i = 0; i < 7; i++) {
                 let cd = new Date(this.visible_date);
 
-                let x = new Date(
-                    cd.getFullYear(),
-                    cd.getMonth(),
-                    cd.getDate() + i
-                );
-                w[i] = x;
+                const getPosOffsetDate = (offs) => {
+                    return new Date(
+                        cd.getFullYear(),
+                        cd.getMonth(),
+                        cd.getDate() + offs
+                    );
+                };
+
+                const getNegOffsetDate = (offs) => {
+                    return new Date(
+                        cd.getFullYear(),
+                        cd.getMonth(),
+                        cd.getDate() - offs
+                    );
+                };
+
+                if (i === cd.getDay()) {
+                    w[i] = cd;
+                } else if (i < cd.getDay()) {
+                    w[i] = getNegOffsetDate(cd.getDay() - i);
+                } else if (i > cd.getDay()) {
+                    w[i] = getPosOffsetDate(i - cd.getDay());
+                }
             }
 
             return w;
         },
     },
     setup(props) {
-        /** Determine if date1 is the same day as date2 */
         const isSameDay = (d1, d2) => {
             let first = d1 instanceof Date ? d1 : new Date(d1);
             let second = d2 instanceof Date ? d2 : new Date(d2);

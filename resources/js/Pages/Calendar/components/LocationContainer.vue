@@ -122,10 +122,13 @@ export default defineComponent({
         /** A reference for the current point in time */
         const today = ref(new Date());
 
-        /** some date within the week we want to show */
+        /**
+         * some date within the currently visible week we want to show.
+         * the entierty of our week's dates are derived from this value
+         */
         const date_in_visible_week = ref(new Date());
 
-        /** currently selected date */
+        /** currently selected date (show events for this day only) */
         const selected = ref(new Date());
 
         /** Formats an events time as hh:mm */
