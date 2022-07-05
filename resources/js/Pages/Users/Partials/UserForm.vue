@@ -133,21 +133,6 @@
 
             <div class="form-divider" />
 
-            <!-- Official Position -->
-            <div class="form-control col-span-2">
-                <jet-label for="job_title" value="Official Position" />
-                <input
-                    id="job_title"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.job_title"
-                />
-                <jet-input-error
-                    :message="form.errors.job_title"
-                    class="mt-2"
-                />
-            </div>
-
             <!-- Contact Preference -->
             <div class="form-control col-span-2">
                 <jet-label
@@ -164,27 +149,6 @@
                 </select>
                 <jet-input-error
                     :message="form.errors.contact_preference"
-                    class="mt-2"
-                />
-            </div>
-
-            <!-- Classifications -->
-            <div class="form-control col-span-2" v-if="clientId">
-                <jet-label for="classification" value="Classification" />
-                <select
-                    id="classification"
-                    class="block w-full mt-1"
-                    v-model="form.classification_id"
-                >
-                    <option
-                        v-for="classy in classifications"
-                        :value="classy.id"
-                    >
-                        {{ classy.title }}
-                    </option>
-                </select>
-                <jet-input-error
-                    :message="form.errors.classification_id"
                     class="mt-2"
                 />
             </div>
@@ -474,7 +438,6 @@ export default {
         let operation = "Update";
         if (user) {
             user.role_id = user["role_id"];
-            user.classification_id = user.classification_id;
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
             user.first_name = user["first_name"];
@@ -485,7 +448,6 @@ export default {
             user.city = user["city"];
             user.state = user["state"];
             user.zip = user["zip"];
-            user.job_title = user["job_title"];
             user.phone = user["phone"];
             user.start_date = user["start_date"];
             user.end_date = user["end_date"];
@@ -498,7 +460,6 @@ export default {
                 email: "",
                 alternate_email: "",
                 role_id: 0,
-                classification_id: "",
                 contact_preference: null,
                 phone: "",
                 address1: "",
@@ -511,7 +472,6 @@ export default {
                 termination_date: "",
                 state: "",
                 zip: "",
-                job_title: "",
                 client_id: props.clientId,
             };
             //only add clientId when applicable to make user validation rules work better

@@ -62,7 +62,6 @@ class CreateUser implements CreatesNewUsers
             'city' => ['required'],
             'state' => ['required'],
             'zip' => ['required'],
-            'job_title' => ['required'],
             'notes' => ['sometimes'] ,
             'start_date' => ['sometimes'] ,
             'end_date' => ['sometimes'] ,
@@ -70,7 +69,6 @@ class CreateUser implements CreatesNewUsers
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'integer', 'exists:teams,id'],
             'role_id' => ['required', 'integer', 'exists:roles,id'],
-            'classification_id' => ['sometimes', 'nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,

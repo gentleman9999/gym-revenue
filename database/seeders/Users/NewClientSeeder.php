@@ -100,7 +100,6 @@ class NewClientSeeder extends Seeder
                                 ->make([
                                     'client' => $client->name,
                                     'role_id' => $role['id'],
-                                    'classification_id' => $class['id'],
                                     'team_names' => $team_names,
                                 ]);
                         } elseif ($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
@@ -109,7 +108,6 @@ class NewClientSeeder extends Seeder
                                 ->make([
                                     'client' => $client->name,
                                     'role_id' => $role['id'],
-                                    'classification_id' => $class['id'],
                                     'team_names' => $team_names,
                                 ]);
                         } else {
@@ -118,7 +116,6 @@ class NewClientSeeder extends Seeder
                                 ->make([
                                     'client' => $client->name,
                                     'role_id' => $role['id'],
-                                    'classification_id' => $class['id'],
                                     'team_names' => $team_names,
                                 ]);
                         }

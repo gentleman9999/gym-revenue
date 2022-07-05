@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Traits\Sortable;
@@ -38,8 +37,8 @@ class User extends Authenticatable
     protected $fillable = [
         'id', 'email', 'alternate_email', 'password', 'first_name', 'last_name',
         'address1', 'address2', 'city', 'state', 'zip', 'phone', 'client_id',
-        'manager', 'classification_id', 'home_location_id', 'start_date', 'end_date',
-        'termination_date', 'job_title', 'access_token',
+        'manager', 'home_location_id', 'start_date', 'end_date',
+        'termination_date', 'access_token',
     ];
 
     /**
@@ -256,11 +255,6 @@ class User extends Authenticatable
     public function home_location()
     {
         return $this->belongsTo(Location::class, 'home_location_id', 'gymrevenue_id');
-    }
-
-    public function classification()
-    {
-        return $this->belongsTo(Classification::class);
     }
 
     public function getNameAttribute()

@@ -36,7 +36,6 @@ class UpdateUser implements UpdatesUserProfileInformation
             'city' => ['sometimes', 'required'],
             'state' => ['sometimes', 'required'],
             'zip' => ['sometimes', 'required'],
-            'job_title' => ['sometimes', 'required'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
             'termination_date' => ['sometimes'],
@@ -44,7 +43,6 @@ class UpdateUser implements UpdatesUserProfileInformation
             'client_id' => ['sometimes','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['sometimes', 'required','integer', 'exists:teams,id'],
             'role_id' => ['sometimes', 'required', 'integer'],
-            'classification_id' => ['sometimes', 'required'],
             'contact_preference' => ['sometimes', 'nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
