@@ -31,11 +31,20 @@ const props = defineProps({
     },
 });
 
+const getQueryDate = () => {
+    const p = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+    });
+
+    return p.start;
+};
+
 const { form, reset, clearFilters, clearSearch } = useSearchFilter("calendar", {
     start: "",
 });
 /** Currently selected date - this is the date we're showing all events for */
-const active_date = ref(new Date());
+const active_date = ref(new Date(getQueryDate()));
+getQueryDate();
 
 /** Show events from the selected date */
 const updateDay = (d) => {
@@ -47,13 +56,15 @@ const updateDay = (d) => {
         q_date.getMonth() + 1
     }-${q_date.getDate()}-${q_date.getFullYear()}`;
     q.set("start", qdStr);
+
+    window.location.search = q;
 };
 
 /**
  * some date within the currently visible week we want to show.
  * the entierty of our week's dates are derived from this value
  */
-const visible_date = ref(new Date());
+const visible_date = ref(new Date(getQueryDate()));
 
 const upWeek = () => {
     console.log("up week (quick-view)");
