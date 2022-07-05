@@ -106,15 +106,13 @@ export default defineComponent({
         navigation() {
             const user = usePage().props.value.user;
             let isAdmin = user.abilities.includes("*");
-            console.log("user.abilities");
-            console.log(user.abilities);
             let nav = [
                 {
                     key: "nav-mass",
                     icon: MassComIcon,
                     route: "comms.dashboard",
                     label: "Mass Communicator",
-                    permission: user.abilities.includes("comms") || isAdmin,
+                    permission: user.current_client_id,
                 },
                 {
                     key: "nav-employee",
@@ -137,8 +135,7 @@ export default defineComponent({
                     icon: ReportIcon,
                     route: "reports.dashboard",
                     label: "Reporting",
-                    permission:
-                        user.abilities.includes("reports.read") || isAdmin,
+                    permission: user.current_client_id,
                 },
                 {
                     key: "nav-calendar",
