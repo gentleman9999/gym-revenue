@@ -45,6 +45,7 @@
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
+                @click="handleSubmit"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
                 :loading="form.processing"
