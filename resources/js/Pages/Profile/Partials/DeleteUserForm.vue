@@ -34,7 +34,7 @@
                         <div class="block w-3/4">
                             <password-input
                                 placeholder="Password"
-                                ref="password"
+                                ref="passwordInput"
                                 v-model="form.password"
                                 @keyup.enter="deleteUser"
                             />
@@ -65,57 +65,38 @@
     </jet-action-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
 import JetDialogModal from "@/Jetstream/DialogModal.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import PasswordInput from "@/Components/PasswordInput.vue";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        JetActionSection,
-
-        JetDialogModal,
-
-        JetInputError,
-        JetSecondaryButton,
-        PasswordInput,
-    },
-
-    data() {
-        return {
-            confirmingUserDeletion: false,
-
-            form: this.$inertia.form({
-                password: "",
-            }),
-        };
-    },
-
-    methods: {
-        confirmUserDeletion() {
-            this.confirmingUserDeletion = true;
-
-            setTimeout(() => this.$refs.password.$refs.input.focus(), 250);
-        },
-
-        deleteUser() {
-            this.form.delete(route("current-user.destroy"), {
-                preserveScroll: true,
-                onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.$refs.input.focus(),
-                onFinish: () => this.form.reset(),
-            });
-        },
-
-        closeModal() {
-            this.confirmingUserDeletion = false;
-
-            this.form.reset();
-        },
-    },
+const confirmingUserDeletion = ref(false);
+const form = useGymRevForm({
+    password: "",
 });
+const passwordInput = ref(null);
+
+const confirmUserDeletion = () => {
+    confirmingUserDeletion = true;
+
+    setTimeout(() => passwordInput.$refs.input.focus(), 250);
+};
+
+const deleteUser = () => {
+    form.delete(route("current-user.destroy"), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => passwordInput.$refs.input.focus(),
+        onFinish: () => form.reset(),
+    });
+};
+
+function closeModal() {
+    confirmingUserDeletion = false;
+    form.reset();
+}
 </script>

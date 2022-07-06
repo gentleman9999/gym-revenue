@@ -20,8 +20,7 @@
     </jet-form-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
@@ -29,18 +28,11 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 
-export default {
-    name: "ShowAPITokenForm",
-    components: {
-        JetActionMessage,
-        Button,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
+const props = defineProps({
+    token: {
+        type: String,
     },
-    props: ["token"],
-};
+});
 </script>
 
 <style scoped></style>

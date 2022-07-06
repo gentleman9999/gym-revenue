@@ -49,39 +49,24 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
+import { useGymRevForm } from "@/utils";
+import { usePage } from "@inertiajs/inertia-vue3";
 
-export default defineComponent({
-    components: {
-        Button,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
-    },
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                name: "",
-                user_id: this.$page.props.user.id,
-                personal_team: false,
-            }),
-        };
-    },
-
-    methods: {
-        createTeam() {
-            this.form.post(route("teams.store"), {
-                errorBag: "createTeam",
-                preserveScroll: true,
-            });
-        },
-    },
+const page = usePage();
+const form = useGymRevForm({
+    name: "",
+    user_id: page.props.user.id,
+    personal_team: false,
 });
+function createTeam() {
+    form.post(route("teams.store"), {
+        errorBag: "createTeam",
+        preserveScroll: true,
+    });
+}
 </script>

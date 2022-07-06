@@ -33,58 +33,58 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "SendTestSMS",
-    props: ["templateId", "templateName"],
-    watch: {
-        templateId(id) {
-            alert("Fuck! " + id);
-        },
-    },
-    data() {
-        return {
-            showModal: false,
-            loading: false,
-            readyMsg: "Are you ready to send this message?",
-            done: false,
-        };
-    },
-    computed: {},
-    methods: {
-        handleCloseTextModal() {
-            this.loading = false;
-            this.$emit("close");
-        },
-        handleSendingText() {
-            let _this = this;
-            this.loading = true;
+<script setup>
+import { ref, defineEmits, onMounted, watch } from "vue";
 
-            axios
-                .post("/comms/sms-templates/test", {
-                    templateId: this.templateId,
-                })
-                .then(({ data }) => {
-                    _this.loading = false;
-                    _this.readyMsg = "All Sent. Check your mobile device";
-                    _this.done = true;
-                })
-                .catch(({ response }) => {
-                    console.log("", response);
-                    let msg = "Could not send. Retry?";
-                    if ("message" in response["data"]) {
-                        msg = `(${response.status}) - ${response.data.message} Retry?`;
-                    }
-                    _this.loading = false;
-                    _this.readyMsg = msg;
-                });
-        },
+const props = defineProps({
+    templateId: {
+        type: String,
     },
-    mounted() {
-        console.log("templateId", this.templateId);
-        this.showModal = true;
+    templateName: {
+        type: String,
     },
-};
+});
+
+const showModal = ref(false);
+const loading = ref(false);
+const readyMsg = ref("Are you ready to send this message?");
+const done = ref(false);
+const emit = defineEmits(["close"]);
+
+watch([props.templateId], () => {
+    alert("Fuck! " + props.templateId);
+});
+
+function handleCloseTextModal() {
+    loading.value = false;
+    emit("close");
+}
+function handleSendingText() {
+    loading.value = true;
+
+    axios
+        .post("/comms/sms-templates/test", {
+            templateId: props.templateId,
+        })
+        .then(({ data }) => {
+            loading.value = false;
+            readyMsg.value = "All Sent. Check your mobile device";
+            done.value = true;
+        })
+        .catch(({ response }) => {
+            console.log("", response);
+            let msg = "Could not send. Retry?";
+            if ("message" in response["data"]) {
+                msg = `(${response.status}) - ${response.data.message} Retry?`;
+            }
+            loading.value = false;
+            readyMsg.value = msg;
+        });
+}
+
+onMounted(() => {
+    showModal.value = true;
+});
 </script>
 
 <style scoped></style>

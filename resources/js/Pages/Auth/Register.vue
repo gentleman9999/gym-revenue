@@ -136,9 +136,12 @@
         </form>
     </jet-authentication-card>
 </template>
-
 <script>
-import { defineComponent } from "vue";
+export default {
+    layout: null,
+};
+</script>
+<script setup>
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
 import Button from "@/Components/Button.vue";
@@ -146,54 +149,55 @@ import Button from "@/Components/Button.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 import PasswordInput from "@/Components/PasswordInput.vue";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        Head,
-        JetAuthenticationCard,
-        JetAuthenticationCardLogo,
-        Button,
-        JetLabel,
-        JetValidationErrors,
-        PasswordInput,
+const props = defineProps({
+    showRegistration: {
+        type: Boolean,
+        default: false,
     },
-    props: [
-        "showRegistration",
-        "errorMsg",
-        "role",
-        "team",
-        "teamId",
-        "client",
-        "clientId",
-        "extraImg",
-    ],
-    data() {
-        return {
-            form: this.$inertia.form({
-                name: "",
-                email: "",
-                password: "",
-                password_confirmation: "",
-                role: this.role,
-                team: this.team,
-                client: this.client,
-                terms: false,
-            }),
-        };
+    errorMsg: {
+        type: String,
+        default: "",
     },
-    methods: {
-        submit() {
-            this.form.post(this.route("register"), {
-                onFinish: () =>
-                    this.form.reset("password", "password_confirmation"),
-            });
-        },
+    role: {
+        type: String,
+        default: "",
     },
-    layout: null,
-    mounted() {
-        let urlSearchParams = new URLSearchParams(window.location.search);
-        let params = Object.fromEntries(urlSearchParams.entries());
-        console.log(this.showRegistration);
+    team: {
+        type: String,
+        default: "",
+    },
+    teamId: {
+        type: String,
+        default: "",
+    },
+    client: {
+        type: String,
+        default: "",
+    },
+    clientId: {
+        type: String,
+        default: "",
+    },
+    extraImg: {
+        type: String,
+        default: "",
     },
 });
+const form = useGymRevForm({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    role: props.role,
+    team: props.team,
+    client: props.client,
+    terms: false,
+});
+const submit = () => {
+    form.post(route("register"), {
+        onFinish: () => form.reset("password", "password_confirmation"),
+    });
+};
 </script>

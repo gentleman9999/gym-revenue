@@ -64,9 +64,12 @@
         </form>
     </jet-authentication-card>
 </template>
-
 <script>
-import { defineComponent } from "vue";
+export default {
+    layout: null,
+};
+</script>
+<script setup>
 import { comingSoon } from "@/utils/comingSoon.js";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
@@ -76,44 +79,28 @@ import PasswordInput from "@/Components/PasswordInput.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 import { Head } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        Head,
-        JetAuthenticationCard,
-        JetAuthenticationCardLogo,
-        Button,
-        JetLabel,
-        JetValidationErrors,
-        PasswordInput,
+const props = defineProps({
+    canResetPassword: {
+        type: Boolean,
     },
-
-    props: {
-        canResetPassword: Boolean,
-        status: String,
-    },
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                email: "",
-                password: "",
-                remember: false,
-            }),
-        };
-    },
-    layout: null,
-    methods: {
-        submit() {
-            this.form
-                .transform((data) => ({
-                    ...data,
-                    remember: this.form.remember ? "on" : "",
-                }))
-                .post(this.route("login"), {
-                    onFinish: () => this.form.reset("password"),
-                });
-        },
+    status: {
+        type: String,
     },
 });
+
+const form = useGymRevForm({
+    email: "",
+    password: "",
+    remember: false,
+});
+const submit = () => {
+    form.transform((data) => ({
+        ...data,
+        remember: form.remember ? "on" : "",
+    })).post(route("login"), {
+        onFinish: () => form.reset("password"),
+    });
+};
 </script>

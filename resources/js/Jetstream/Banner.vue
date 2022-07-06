@@ -91,23 +91,22 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { ref } from "vue";
+import { computed } from "@vue/reactivity";
+import { usePage } from "@inertiajs/inertia-vue3";
 
-export default defineComponent({
-    data() {
-        return {
-            show: true,
-        };
+const show = ref(false);
+const page = usePage();
+
+const style = computed({
+    get() {
+        return page.props.jetstream.flash?.bannerStyle || "success";
     },
+});
 
-    computed: {
-        style() {
-            return this.$page.props.jetstream.flash?.bannerStyle || "success";
-        },
-
-        message() {
-            return this.$page.props.jetstream.flash?.banner || "";
-        },
+const message = computed({
+    get() {
+        return page.props.jetstream.flash?.banner || "";
     },
 });
 </script>

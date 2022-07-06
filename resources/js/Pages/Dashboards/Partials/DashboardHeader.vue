@@ -13,19 +13,13 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: {
-        teamName: {
-            type: String,
-            required: true,
-        },
-        accountName: {
-            type: String,
-            required: true,
-        },
+<script setup>
+const props = defineProps({
+    teamName: {
+        type: String,
+    },
+    accountName: {
+        type: String,
     },
 });
 </script>

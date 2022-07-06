@@ -118,8 +118,9 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, onMounted, watch } from "vue";
+import { computed } from "@vue/reactivity";
 import Button from "@/Components/Button.vue";
 import FormSection from "@/Jetstream/FormSection.vue";
 import CommsHistory from "./CommsHistory.vue";
@@ -131,102 +132,114 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 
 library.add(faUserCircle);
 
-export default defineComponent({
-    name: "LeadInteractionContainer",
-    components: {
-        CommsHistory,
-        CommsActions,
-
-        Button,
-        FormSection,
-        FontAwesomeIcon,
-        DaisyModal,
+const props = defineProps({
+    userId: {
+        type: String,
     },
-    props: [
-        "userId",
-        "leadId",
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
-        "details",
-        "trialDates",
-        "trialMemberships",
-        "trialMembershipTypes",
-        "interactionCount",
-        "agreementNumber",
-    ],
-    data() {
+    leadId: {
+        type: String,
+    },
+    firstName: {
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    email: {
+        type: String,
+    },
+    phone: {
+        type: String,
+    },
+    details: {
+        type: Array,
+    },
+    trialDates: {
+        type: String,
+    },
+    trialMemberships: {
+        type: Array,
+    },
+    trialMembershipTypes: {
+        type: Array,
+    },
+    interactionCount: {
+        type: Number,
+    },
+    agreementNumber: {
+        type: Number,
+    },
+});
+const activeContactMethod = ref("");
+const dynamicDetails = ref("");
+const borderStyle = computed({
+    get() {
+        let color = "transparent";
+        for (let idx in details.value) {
+            let d = details.value[idx];
+            if (d.field === "opportunity") {
+                switch (d.value) {
+                    case "High":
+                        color = "green";
+                        break;
+
+                    case "Medium":
+                        color = "yellow";
+                        break;
+
+                    case "Low":
+                        color = "red";
+                        break;
+                }
+            }
+        }
         return {
-            activeContactMethod: "",
-            dynamicDetails: "",
+            "border-color": color,
+            "border-width": "5px",
         };
     },
-    computed: {
-        borderStyle() {
-            let color = "transparent";
-            for (let idx in this.details) {
-                let d = this.details[idx];
-                if (d.field === "opportunity") {
-                    switch (d.value) {
-                        case "High":
-                            color = "green";
-                            break;
+});
+const claimedByUser = computed({
+    get() {
+        let r = false;
 
-                        case "Medium":
-                            color = "yellow";
-                            break;
-
-                        case "Low":
-                            color = "red";
-                            break;
-                    }
-                }
+        for (let idx in details.value) {
+            let d = details.value[idx];
+            if (d.field === "claimed") {
+                r = d.value == userId.value;
             }
-            return {
-                "border-color": color,
-                "border-width": "5px",
-            };
-        },
-        claimedByUser() {
-            let r = false;
+        }
+        return r;
+    },
+});
+const modalTitle = computed({
+    get() {
+        switch (activeContactMethod.value) {
+            case "email":
+                return "Email Lead";
+            case "phone":
+                return "Call Lead";
+            case "sms":
+                return "Text Lead";
+        }
+    },
+});
+const commsHistoryRef = ref(null);
+function goToLeadDetailIndex(index) {
+    console.log("goToLeadDetailIndex", index);
+    commsHistoryRef.goToLeadDetailIndex(index);
+}
 
-            for (let idx in this.details) {
-                let d = this.details[idx];
-                if (d.field === "claimed") {
-                    r = d.value == this.userId;
-                }
-            }
+function fetchLeadInfo() {
+    dynamicDetails.value = details.value;
+}
 
-            return r;
-        },
-        modalTitle() {
-            switch (this.activeContactMethod) {
-                case "email":
-                    return "Email Lead";
-                case "phone":
-                    return "Call Lead";
-                case "sms":
-                    return "Text Lead";
-            }
-        },
-    },
-    methods: {
-        goToLeadDetailIndex(index) {
-            console.log("goToLeadDetailIndex", index);
-            this.$refs.commsHistoryRef.goToLeadDetailIndex(index);
-        },
-        fetchLeadInfo() {
-            this.dynamicDetails = this.details;
-        },
-    },
-    watch: {
-        activeContactMethod(val) {
-            val && this.$refs.showViewModal.open();
-        },
-    },
-    mounted() {
-        this.fetchLeadInfo();
-    },
+const showViewModal = ref(null);
+watch([activeContactMethod], () => {
+    activeContactMethod.value && showViewModal.open();
+});
+
+onMounted(() => {
+    fetchLeadInfo();
 });
 </script>
