@@ -2,9 +2,12 @@
 
 namespace App\Domain\Clients;
 
+use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Actions\CreateTeam;
+use App\Models\Endusers\Lead;
+use App\Models\Endusers\Member;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientReactor extends Reactor
@@ -22,5 +25,17 @@ class ClientReactor extends Reactor
         ]);
         $client->home_team_id = $default_team->id;
         $client->save();
+
+        CreateAudience::run([
+            'client_id' => $client->id,
+            'name' => 'All Leads',
+            'entity' => Lead::class,
+        ]);
+
+        CreateAudience::run([
+            'client_id' => $client->id,
+            'name' => 'All Members',
+            'entity' => Member::class,
+        ]);
     }
 }

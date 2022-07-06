@@ -2,10 +2,10 @@
 
 namespace App\Actions\Dashboard\Home;
 
+use App\Domain\Campaigns\DripCampaigns\DripCampaign;
+use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\TeamDetail;
-use App\Models\Clients\Features\EmailCampaigns;
-use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Clients\Location;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -21,26 +21,16 @@ class GetDashboardWidgets
 
         if (! is_null($team->client)) {
             $num_locs = 0;
-            $num_ecs = 0;
-            $num_scs = 0;
+            $num_scheduled_campaigns = ScheduledCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
+            $num_drip_campaigns = DripCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
             $last_widget_count = 0;
             if ($team->home_team) {
                 $num_locs = Location::whereClientId($team->client_id)->whereActive(1)->count();
-                $num_ecs = EmailCampaigns::whereClientId($team->client_id)->count();
-                $num_scs = SmsCampaigns::whereClientId($team->client_id)->count();
             } else {
                 // get the locations the active team has access to
                 $num_locs = TeamDetail::whereTeamId($team->id)
                     ->where('name', '=', 'team-location')->whereActive(1)
                     ->count();
-
-                // @todo - these queries need to be adjusted for all "any" campaigns and campaigns scoped to their team
-                // @todo - maybe add a filter() function to the models.
-                if (true) { // Check that the user is not a sales rep
-                    $num_ecs = EmailCampaigns::whereClientId($team->client_id)->count();
-                    $num_scs = SmsCampaigns::whereClientId($team->client_id)->count();
-                }
-                // @todo - an else
             }
 
             /** @todo - find the context
@@ -70,14 +60,14 @@ class GetDashboardWidgets
                     'icon' => 'users',
                 ],
                 [
-                    'title' => 'Active Email Campaigns',
-                    'value' => $num_ecs,
+                    'title' => 'Active Scheduled Campaigns',
+                    'value' => $num_scheduled_campaigns,
                     'type' => 'success',
                     'icon' => 'money',
                 ],
                 [
-                    'title' => 'Active SMS Campaigns',
-                    'value' => $num_scs,
+                    'title' => 'Active Drip Campaigns',
+                    'value' => $num_drip_campaigns,
                     'type' => 'info',
                     'icon' => 'cart',
                 ],

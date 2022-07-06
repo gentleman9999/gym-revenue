@@ -25,11 +25,11 @@ class ReminderProjector extends Projector
 
     public function onReminderDeleted(ReminderDeleted $event)
     {
-        Reminder::findOrFail($event->payload['id'])->writeable()->delete();
+        Reminder::findOrFail($event->id)->writeable()->delete();
     }
 
     public function onReminderTriggered(ReminderTriggered $event)
     {
-        Reminder::findOrFail($event->payload['id'])->writeable()->updateOrFail(['triggered_at' => $event->createdAt()]);
+        Reminder::findOrFail($event->id)->writeable()->updateOrFail(['triggered_at' => $event->createdAt()]);
     }
 }

@@ -23,12 +23,7 @@ class CreateClient
 
         $aggy = ClientAggregate::retrieve($id);
 
-        $aggy->create($payload)
-            ->createAudience("{$payload['name']} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
-            ->createAudience("{$payload['name']} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto');
-//            ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
-//            ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
-        $aggy->persist();
+        $aggy->create($payload)->persist();
 
         return Client::findOrFail($id);
     }

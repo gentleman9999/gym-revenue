@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
 
 /**
  * Every function in here gets added globally.
@@ -9,7 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 
 if (! function_exists('paginate_array')) {
-    function paginate_array($request, $array, $per_page = 5): LengthAwarePaginator
+    function paginate_array(Request $request, array|Collection $array, int $per_page = 5): LengthAwarePaginator
     {
         if (! is_array($array)) {
             $array = $array->toArray();
@@ -21,11 +23,30 @@ if (! function_exists('paginate_array')) {
 
         $array = array_slice($array, $starting_point, $per_page, false);
 
-        $array = new LengthAwarePaginator($array, $total, $per_page, $current_page, [
+        return new LengthAwarePaginator($array, $total, $per_page, $current_page, [
             'path' => $request->url(),
             'query' => $request->query(),
         ]);
+    }
+}
+if (! function_exists('array_filter_only_keys')) {
+    function array_filter_only_keys(array $array, array $allowedKeys = []): array
+    {
+        return array_filter(
+            $array,
+            function ($key) use ($allowedKeys) {
+                return in_array($key, $allowedKeys);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+    }
+}
 
-        return $array;
+if (! function_exists('array_filter_only_fillable')) {
+    function array_filter_only_fillable(array $array, string $Model): array
+    {
+        $allowedKeys = (new $Model())->getFillable();
+
+        return array_filter_only_keys($array, $allowedKeys);
     }
 }

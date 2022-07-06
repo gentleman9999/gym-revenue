@@ -7,10 +7,8 @@ use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClassificationsSeeder;
 use Database\Seeders\Clients\ClientSeeder;
-use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
@@ -133,14 +131,6 @@ class DatabaseSeeder extends Seeder
         // Baby's First SMS Templates are Seeded for each client
         VarDumper::dump('Running SMS Template  Seeder');
         $this->call(SMSTemplateSeeder::class);
-
-        // Email Campaigns are Seeded for each client
-        VarDumper::dump('Running Email Campaign  Seeder');
-        $this->call(EmailCampaignsSeeder::class);
-
-        // SMS Campaigns are Seeded for each client
-        VarDumper::dump('Running SMS Campaign  Seeder');
-        $this->call(SMSCampaignsSeeder::class);
 
         // CalendarEventType Seeder
         VarDumper::dump('Running Calender Event Type Seeder');

@@ -55,26 +55,26 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
     Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
     Route::get('/export', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@export')->name('comms.export');
 
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('email-campaigns')->group(function () {
-        Route::get('', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@index')->name('comms.email-campaigns');
-        Route::get('/create', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@create')->name('comms.email-campaigns.create');
-        Route::get('/export', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@export')->name('comms.email-campaigns.export');
-        Route::get('/{id}', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@edit')->name('comms.email-campaigns.edit');
-        Route::post('/', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@store')->name('comms.email-campaigns.store');
-        Route::put('/{id}', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@update')->name('comms.email-campaigns.update');
-        Route::delete('/{id}', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@trash')->name('comms.email-campaigns.trash');
-        Route::post('/{id}/restore', \App\Http\Controllers\Comm\EmailCampaignsController::class . '@restore')->name('email.email-campaigns.restore');
+    Route::middleware(['auth:sanctum', 'verified'])->prefix('scheduled-campaigns')->group(function () {
+        Route::get('', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@index')->name('comms.scheduled-campaigns');
+        Route::get('/create', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@create')->name('comms.scheduled-campaigns.create');
+        Route::get('/export', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@export')->name('comms.scheduled-campaigns.export');
+        Route::get('/{scheduledCampaign}', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@edit')->name('comms.scheduled-campaigns.edit');
+        Route::post('/', \App\Domain\Campaigns\ScheduledCampaigns\Actions\CreateScheduledCampaign::class)->name('comms.scheduled-campaigns.store');
+        Route::put('/{scheduledCampaign}', \App\Domain\Campaigns\ScheduledCampaigns\Actions\UpdateScheduledCampaign::class)->name('comms.scheduled-campaigns.update');
+        Route::delete('/{scheduledCampaign}', \App\Domain\Campaigns\ScheduledCampaigns\Actions\TrashScheduledCampaign::class)->name('comms.scheduled-campaigns.trash');
+        Route::post('/{scheduledCampaign}/restore', \App\Domain\Campaigns\ScheduledCampaigns\Actions\RestoreScheduledCampaign::class)->withTrashed()->name('comms.scheduled-campaigns.restore');
     });
 
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('sms-campaigns')->group(function () {
-        Route::get('', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@index')->name('comms.sms-campaigns');
-        Route::get('/create', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@create')->name('comms.sms-campaigns.create');
-        Route::get('/export', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@export')->name('comms.sms-campaigns.export');
-        Route::get('/{id}', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@edit')->name('comms.sms-campaigns.edit');
-        Route::post('/', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@store')->name('comms.sms-campaigns.store');
-        Route::put('/{id}', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@update')->name('comms.sms-campaigns.update');
-        Route::delete('/{id}', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@trash')->name('comms.sms-campaigns.trash');
-        Route::post('/{id}/restore', \App\Http\Controllers\Comm\SmsCampaignsController::class . '@restore')->name('comms.sms-campaigns.restore');
+    Route::middleware(['auth:sanctum', 'verified'])->prefix('drip-campaigns')->group(function () {
+        Route::get('', \App\Http\Controllers\Comm\DripCampaignsController::class . '@index')->name('comms.drip-campaigns');
+        Route::get('/create', \App\Http\Controllers\Comm\DripCampaignsController::class . '@create')->name('comms.drip-campaigns.create');
+        Route::get('/export', \App\Http\Controllers\Comm\DripCampaignsController::class . '@export')->name('comms.drip-campaigns.export');
+        Route::get('/{dripCampaign}', \App\Http\Controllers\Comm\DripCampaignsController::class . '@edit')->name('comms.drip-campaigns.edit');
+        Route::post('/', \App\Domain\Campaigns\DripCampaigns\Actions\CreateDripCampaign::class)->name('comms.drip-campaigns.store');
+        Route::put('/{dripCampaign}', \App\Domain\Campaigns\DripCampaigns\Actions\UpdateDripCampaign::class)->name('comms.drip-campaigns.update');
+        Route::delete('/{dripCampaign}', \App\Domain\Campaigns\DripCampaigns\Actions\TrashDripCampaign::class)->name('comms.drip-campaigns.trash');
+        Route::post('/{dripCampaign}/restore', \App\Domain\Campaigns\DripCampaigns\Actions\RestoreDripCampaign::class)->withTrashed()->name('comms.drip-campaigns.restore');
     });
 
     Route::middleware(['auth:sanctum', 'verified'])->prefix('sms-templates')->group(function () {
