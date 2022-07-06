@@ -40,9 +40,12 @@ const getQueryDate = () => {
     return p.start;
 };
 
-const { form, reset, clearFilters, clearSearch } = useSearchFilter("calendar", {
-    start: "",
-});
+const { form, reset, clearFilters, clearSearch } = useSearchFilter(
+    "calendar.quickview",
+    {
+        start: "",
+    }
+);
 /** Currently selected date - this is the date we're showing all events for */
 const active_date = ref(new Date(getQueryDate()));
 
@@ -59,8 +62,8 @@ const updateDay = (d) => {
     let qdStr = `${d_year}-${d_month}-${d_day}`;
     q.set("start", qdStr);
 
-    window.location.search = q;
     active_date.value = q_date;
+    form.value.start = qdStr;
 };
 
 /**
