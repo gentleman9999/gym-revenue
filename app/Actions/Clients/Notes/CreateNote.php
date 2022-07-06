@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Notes;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Note;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,7 +27,7 @@ class CreateNote
             'entity_type' => ['string', 'sometimes', 'nullable'],
             'note' => ['string', 'sometimes', 'nullable'],
             'created_by_user_id' => ['string', 'sometimes', 'nullable'],
-            'active' => ['integer', 'sometimes', 'nullable'],
+            'active' => ['boolean', 'sometimes', 'nullable'],
             'created_at' => ['timestamp', 'sometimes', 'nullable'],
             'updated_at' => ['timestamp', 'sometimes', 'nullable'],
             'deleted_at' => ['timestamp', 'sometimes', 'nullable'],
@@ -36,13 +37,11 @@ class CreateNote
 
     public function handle($data, $current_user = null)
     {
-        $id = (Note::max('id') ?? 0) + 1;
+        $id = ((int)Note::max('id') ?? 0) + 1;
         $client_id = $current_user->currentClientId();
-        $data['client_id'] = $client_id;
+        $data['created_by_user_id'] = $client_id;
 
-        ClientAggregate::retrieve($client_id)->createNote($current_user->id ?? "Auto Generated", $data)->persist();
-
-        return Note::findOrFail($id);
+        return ClientAggregate::retrieve($client_id)->createNote($current_user->id ?? "Auto Generated", $data)->persist();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -58,10 +57,11 @@ class CreateNote
             $request->validated(),
             $request->user(),
         );
+        $test = $request->toArray();
 
-        Alert::success("Note '{$note->title}' was created")->flash();
+        Alert::success("Note '{$test['title']}' was created")->flash();
 
 //        return Redirect::route('roles');
-        return Redirect::route('notes.edit', $note->id);
+        return Redirect::route('notes');
     }
 }

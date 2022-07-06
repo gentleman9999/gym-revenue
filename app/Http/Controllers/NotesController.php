@@ -31,12 +31,12 @@ class NotesController extends Controller
         }
 
         $page_count = 10;
-        $notes = Note::with('client')
-            ->whereCreatedByUserId($client_id)
+        $notes = Note::whereCreatedByUserId($client_id)
+            ->paginate($page_count)
         ;
 
         return Inertia::render('Notes/Show', [
-            'notes' => $notes->paginate($page_count),
+            'notes' => $notes,
         ]);
     }
 
@@ -55,6 +55,8 @@ class NotesController extends Controller
 
         return Inertia::render('Notes/Create', [
             'created_by_user_id' => $client_id,
+            //'title' => $title,
+            //'note' => $note,
         ]);
     }
 

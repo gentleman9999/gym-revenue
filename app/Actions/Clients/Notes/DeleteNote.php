@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Notes;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -48,7 +49,7 @@ class DeleteNote
             $id
         );
 
-        Alert::success("Note '{$note->title}' was deleted")->flash();
+        Alert::success("Note '{$note->getOriginal()['title']}' was deleted")->flash();
 
         return Redirect::route('notes');
     }

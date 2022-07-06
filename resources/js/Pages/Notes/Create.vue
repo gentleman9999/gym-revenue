@@ -36,6 +36,18 @@ export default defineComponent({
             type: String,
             default: "",
         },
+        title: {
+            type: String,
+            default: "",
+        },
+        note: {
+            type: String,
+            default: "",
+        },
+        active: {
+            type: Boolean,
+            default: false,
+        },
     },
 });
 </script>

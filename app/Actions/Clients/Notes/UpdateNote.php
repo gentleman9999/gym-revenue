@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Notes;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Note;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -36,7 +37,7 @@ class UpdateNote
     public function handle($data, $current_user)
     {
         $client_id = $current_user->currentClientId();
-        $data['client_id'] = $client_id;
+        $data['created_by_user_id'] = $client_id;
         ClientAggregate::retrieve($client_id)->updateNote($current_user->id, $data)->persist();
 
         return Note::find($data['id']);

@@ -8,6 +8,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <note-form
                 :client-id="$page.props.user.current_client_id"
+                :id="note.id"
                 :note="note"
             />
         </div>
@@ -22,7 +23,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
-import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
+import NoteForm from "@/Pages/Notes/Partials/NoteForm.vue";
 
 export default defineComponent({
     components: {

@@ -14,7 +14,12 @@
             </div>
             <div class="col-span-6">
                 <jet-label for="note" value="Note" />
-                <input :id="note" type="text" v-model="form.note" />
+                <input
+                    :id="note"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.note"
+                />
                 <jet-input-error :message="form.errors.active" class="mt-2" />
             </div>
             <div class="col-span-6">
@@ -41,9 +46,10 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
+                :disabled="form.processing"
                 :loading="form.processing"
             >
+                <!--this goes in disabled:  || !form.isDirty" -->
                 {{ buttonText }}
             </Button>
         </template>
@@ -51,7 +57,7 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+//import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 
 import Button from "@/Components/Button.vue";
@@ -84,7 +90,9 @@ export default {
         let operation = "Update";
         if (!note) {
             note = {
-                name: "",
+                title: "",
+                note: "",
+                active: false,
                 id: "",
                 client_id: props.clientId,
             };
@@ -92,7 +100,9 @@ export default {
         }
 
         const form = useGymRevForm({
-            name: note.name,
+            title: note.title,
+            note: note.note,
+            active: note.active,
             id: note.id,
             client_id: props.clientId,
         });
