@@ -9,10 +9,14 @@ class Position extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','client_id', 'name'];
+    protected $fillable = ['client_id', 'name'];
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     public function department()
     {
-        return $this->belongsToMany(Department::class, 'department_position')->withPivot('position');
+        return $this->belongsToMany(Department::class, 'department_position', 'position_id', 'department_id');
     }
 }

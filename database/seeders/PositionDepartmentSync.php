@@ -19,15 +19,10 @@ class PositionDepartmentSync extends Seeder
         $clients = Client::whereActive(1)->get();
 
         foreach ($clients as $client) {
-            $pos = Position::whereClientId($client->id)
-                ->whereName('Front Desk')
-                ->first();
+            $pos = Position::whereClientId($client->id)->whereName('Front Desk')->first();
+            $dept = Department::whereClientId($client->id)->whereName('Sales')->first();
 
-            $dept = Department::whereClientId($client->id)
-                ->whereName('Sales')
-                ->get();
-
-            $dept->position->sync([$pos->id]);
+            $pos->department()->sync([$dept->id]);
         }
     }
 }
