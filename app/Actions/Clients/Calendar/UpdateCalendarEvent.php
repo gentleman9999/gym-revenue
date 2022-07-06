@@ -89,7 +89,7 @@ class UpdateCalendarEvent
                 //Add Users
                 foreach ($data['user_attendees'] as $user) {
                     if (! in_array($user, $userAttendeeIDs)) {
-                        $user = User::whereId($user)->select('id', 'name', 'email')->first();
+                        $user = User::whereId($user)->select('id', 'email')->first();
                         if ($user) {
                             CalendarAggregate::retrieve($data['client_id'])
                                     ->addCalendarAttendee(
@@ -180,7 +180,7 @@ class UpdateCalendarEvent
         if (array_key_exists('event_type_id', $data)) {
             if (CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task') {
                 //Whoever updated this to a task owns it.
-                $data['owner_id'] = $user->id;
+                $data['owner_id'] = $user;
 
                 //We clear out all attendee's for Tasks
                 foreach ($userAttendeeIDs as $user) {
