@@ -45,7 +45,6 @@
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"
-                @click="handleSubmit"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
                 :loading="form.processing"
@@ -108,13 +107,12 @@ export default {
             client_id: props.clientId,
         });
 
-        let handleSubmit = () =>
-            form.dirty().put(route("notes.update", note.id));
+        const modal = useModal();
+
+        let handleSubmit = () => form.put(route("notes.update", note.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("notes.store"));
         }
-
-        const modal = useModal();
 
         const handleClickCancel = () => {
             console.log("modal", modal.value);

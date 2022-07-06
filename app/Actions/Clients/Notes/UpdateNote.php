@@ -22,15 +22,12 @@ class UpdateNote
     {
         return [
             'title' => ['string', 'required'],
-            'id' => ['integer', 'sometimes', 'nullable'],
+            'id' => ['sometimes', 'nullable'],
             'entity_id' => ['string', 'sometimes', 'nullable'],
             'entity_type' => ['string', 'sometimes', 'nullable'],
             'note' => ['string', 'sometimes', 'nullable'],
             'created_by_user_id' => ['string', 'sometimes', 'nullable'],
             'active' => ['integer', 'sometimes', 'nullable'],
-            'created_at' => ['timestamp', 'sometimes', 'nullable'],
-            'updated_at' => ['timestamp', 'sometimes', 'nullable'],
-            'deleted_at' => ['timestamp', 'sometimes', 'nullable'],
         ];
     }
 
@@ -61,7 +58,6 @@ class UpdateNote
 
         Alert::success("Note '{$note->title}' was updated")->flash();
 
-//        return Redirect::route('roles');
         return Redirect::route('notes.edit', $id);
     }
 }

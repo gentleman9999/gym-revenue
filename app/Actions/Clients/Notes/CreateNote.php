@@ -62,6 +62,6 @@ class CreateNote
         Alert::success("Note '{$test['title']}' was created")->flash();
 
 //        return Redirect::route('roles');
-//        return Redirect::route('notes');
+        return Redirect::route('notes');
     }
 }
