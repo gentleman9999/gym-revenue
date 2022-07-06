@@ -64,7 +64,6 @@ class CreateNote
 
         Alert::success("Note '.$note->title.' was created")->flash();
 
-//        return Redirect::route('roles');
         return Redirect::route('notes.edit', $note->id);
     }
 }
