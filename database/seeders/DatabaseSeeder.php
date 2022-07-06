@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
 use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
-use Database\Seeders\Clients\ClassificationsSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
@@ -77,10 +76,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Bouncer Abilities');
         $this->call(BouncerAbilitiesSeeder::class);
 
-
-        // User classifications
-        VarDumper::dump('Running Classifications Seeder');
-        $this->call(ClassificationsSeeder::class);
+        VarDumper::dump('Adding Department and Positions');
+        $this->call(DepartmentSeeder::class);
+        $this->call(PositionSeeder::class);
 
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');
