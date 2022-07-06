@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Clients\Client;
 use App\Models\Department;
+use App\Models\Position;
 use Illuminate\Database\Seeder;
 
 class PositionDepartmentSync extends Seeder
@@ -18,10 +19,15 @@ class PositionDepartmentSync extends Seeder
         $clients = Client::whereActive(1)->get();
 
         foreach ($clients as $client) {
+            $pos = Position::whereClientId($client->id)
+                ->whereName('Front Desk')
+                ->first();
+
             $dept = Department::whereClientId($client->id)
                 ->whereName('Sales')
                 ->get();
-            $dept->sync(['Front Desk']);
+
+            $dept->position->sync([$pos->id]);
         }
     }
 }

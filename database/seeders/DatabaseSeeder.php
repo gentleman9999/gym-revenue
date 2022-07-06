@@ -76,9 +76,10 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Adding Bouncer Abilities');
         $this->call(BouncerAbilitiesSeeder::class);
 
-        VarDumper::dump('Adding Department and Positions');
+        VarDumper::dump('Adding Department and Positions w/ Syncing');
         $this->call(DepartmentSeeder::class);
         $this->call(PositionSeeder::class);
+        $this->call(PositionDepartmentSync::class);
 
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');
