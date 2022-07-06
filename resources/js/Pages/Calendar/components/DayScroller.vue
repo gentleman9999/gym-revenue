@@ -45,10 +45,10 @@ export default defineComponent({
     },
     props: {
         visible_date: {
-            type: String,
+            type: [String, Date],
         },
         selected_date: {
-            type: String,
+            type: [String, Date],
         },
     },
     computed: {

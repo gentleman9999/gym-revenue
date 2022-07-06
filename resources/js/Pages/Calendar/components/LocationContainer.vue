@@ -84,13 +84,13 @@ export default defineComponent({
     components: { DayScroller },
     props: {
         events: {
-            type: Array,
+            type: [Array, Object],
         },
         active_date: {
-            type: String,
+            type: [String, Date],
         },
         visible_date: {
-            type: String,
+            type: [String, Date],
         },
     },
     computed: {
