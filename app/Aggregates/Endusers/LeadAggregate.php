@@ -17,7 +17,6 @@ class LeadAggregate extends AggregateRoot
 {
     protected static bool $allowConcurrency = true;
     protected array $lead = [];
-    protected array $audience_subscriptions = [];
     protected int $interaction_count = 0;
     protected int $interaction_called_count = 0;
     protected int $interaction_emailed_count = 0;
@@ -63,15 +62,6 @@ class LeadAggregate extends AggregateRoot
     public function applyTrialMembershipUsed(TrialMembershipUsed $event)
     {
         $this->trial_dates[] = $event->date;
-    }
-
-    public function joinAudience(string $slug, string $client_id, $entity)
-    {
-        // @todo - add eval if user is already subscribed and throw an UserActivityException::userAlreadySubscribed Exception
-        // @todo - add eval if user belongs to client and throw an UserActivityException::unqualifiedClient Exception
-        $this->recordThat(new \App\StorableEvents\Endusers\Leads\SubscribedToAudience($this->uuid(), $slug, $client_id, $entity));
-
-        return $this;
     }
 
     public function claim(string $user_id, string $client_id)

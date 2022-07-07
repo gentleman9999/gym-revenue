@@ -3,11 +3,11 @@
 namespace App\Actions\Clients\Roles;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Role;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\Database\Role;
 
 class CreateRole
 {
@@ -31,6 +31,7 @@ class CreateRole
     public function handle($data, $current_user = null)
     {
         $id = (Role::max('id') ?? 0) + 1;
+        $data['id'] = $id;
         $client_id = $current_user->currentClientId();
         $data['client_id'] = $client_id;
 

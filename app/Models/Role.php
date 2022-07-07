@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Location;

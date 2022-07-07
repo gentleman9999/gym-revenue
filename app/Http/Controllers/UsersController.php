@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\Models\TeamUser;
+use App\Domain\Users\Models\User;
 use App\Models\Clients\Classification;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\ReadReceipt;
-use App\Models\Team;
-use App\Models\TeamUser;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -29,16 +29,14 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
-        $team_users = User::with(['teams', 'home_location', 'roles'])
-            ->whereClientId($client_id)
-            ->get();
+        $team_users = User::with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::find($client_id);
 
-            $is_default_team = $client->default_team_name->value == $current_team->id;
+            $is_default_team = $client->default_team_id == $current_team->id;
 
             $locations = Location::whereClientId($client_id)->get();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
@@ -46,8 +44,7 @@ class UsersController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams', 'home_location'])
-                    ->whereClientId($client_id)
+                $users = User::with(['teams', 'home_location', 'classification'])
                     ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
@@ -58,8 +55,8 @@ class UsersController extends Controller
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = User::whereIn('id', $user_ids)
-                    ->with(['teams', 'home_location'])
+                $users = User::whereIn('users.id', $user_ids)
+                    ->with(['teams', 'home_location', 'classification'])
                     ->filter($request->only($filterKeys))
                     ->sort()
                     ->paginate(10)
@@ -150,7 +147,7 @@ class UsersController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
         $me = request()->user();
 
@@ -162,7 +159,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user = $me->with(['details','notes','files', 'contact_preference'])->findOrFail($id);
+        $user->load('details', 'notes', 'files', 'contact_preference');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -186,6 +183,7 @@ class UsersController extends Controller
                 $userData['all_notes'][$key]['read'] = false;
             }
         }
+//        dd($userData);
         $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [
@@ -196,7 +194,7 @@ class UsersController extends Controller
         ]);
     }
 
-    public function view($id)
+    public function view(User $user)
     {
         $requesting_user = request()->user(); //Who's driving
         if ($requesting_user->cannot('users.read', User::class)) {
@@ -204,8 +202,7 @@ class UsersController extends Controller
 
             return Redirect::back();
         }
-
-        $user = User::with('details', 'teams', 'files')->findOrFail($id); //User we're peeking
+        $user->load('details', 'teams', 'files');//TODO: get rid of loading all details here.
         $user_teams = $user->teams ?? [];
         $data = $user->toArray();
         $data['role'] = $user->getRole();
@@ -233,12 +230,12 @@ class UsersController extends Controller
 
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::find($client_id);
 
-            $is_default_team = $client->default_team_name->value == $current_team->id;
+            $is_default_team = $client->home_team_id === $current_team->id;
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams'])->whereClientId($client_id)
+                $users = User::with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
             } else {
@@ -248,7 +245,7 @@ class UsersController extends Controller
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = User::whereIn('id', $user_ids)
+                $users = User::whereIn('users.id', $user_ids)
                     ->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();

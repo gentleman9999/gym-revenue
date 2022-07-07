@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Reminders\Reminder;
+use App\Domain\Teams\Models\TeamUser;
+use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
-use App\Models\Reminder;
-use App\Models\Team;
-use App\Models\TeamUser;
-use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -34,12 +33,12 @@ class CalendarController extends Controller
             //if (is_null($currentLocationSelect)) {
             //    return Redirect::route('calendar.quickview');
             //} else {
-                $eventsForTeam = CalendarEvent::whereClientId($client_id)
+            $eventsForTeam = CalendarEvent::whereClientId($client_id)
             //        ->whereLocationId($currentLocationSelect->id)
                     ->with('type', 'attendees', 'files')
                     ->filter($request->only('search', 'start', 'end', 'viewUser'))
                     ->get();
-            //}
+        //}
         } else {
             $eventsForTeam = [];
         }
@@ -78,15 +77,13 @@ class CalendarController extends Controller
             $eventsForTeam[$key]->user_attendees = $user_attendees;
             $eventsForTeam[$key]->lead_attendees = $lead_attendees;
             $eventsForTeam[$key]->member_attendees = $member_attendees;
-
-            $eventsForTeam[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
         }
 
         if ($client_id) {
             $current_team = $request->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::whereId($client_id)->first();
 
-            $is_default_team = $client->default_team_name->value == $current_team->id;
+            $is_default_team = $client->home_team_id === $current_team->id;
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {

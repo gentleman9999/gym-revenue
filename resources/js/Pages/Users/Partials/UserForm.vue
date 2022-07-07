@@ -1,8 +1,8 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <template #title> User Profile </template>
+        <template #title> User Profile</template>
 
-        <template #description> Information about the user. </template>
+        <template #description> Information about the user.</template>
         <template #form>
             <!-- First Name -->
             <div class="form-control col-span-2">
@@ -169,7 +169,7 @@
             </div>
 
             <!-- Classifications -->
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="classification" value="Classification" />
                 <select
                     id="classification"
@@ -190,7 +190,7 @@
             </div>
 
             <!-- Security Role -->
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
@@ -205,7 +205,7 @@
             </div>
 
             <!-- Home Club -->
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="home_location_id" value="Home Club" />
                 <select
                     id="home_location_id"
@@ -340,10 +340,10 @@
             </Button>
         </template>
     </jet-form-section>
-    <jet-form-section v-if="clientId && user?.files" class="mt-16">
-        <template #title> Documents </template>
+    <jet-form-section v-if="isClientUser && user?.files" class="mt-16">
+        <template #title> Documents</template>
 
-        <template #description> Documents attached to the user. </template>
+        <template #description> Documents attached to the user.</template>
         <template #form>
             <!-- Files -->
             <div class="col-span-6">
@@ -380,7 +380,6 @@
             >
                 <file-manager
                     ref="fileManager"
-                    :client-id="clientId"
                     :user="user"
                     :form-submit-options="{ preserveScroll: true }"
                     @submitted="closeFileManagerModal"
@@ -451,6 +450,7 @@ export default {
         "clientId",
         "user",
         "clientName",
+        "isClientUser",
         "roles",
         "classifications",
         "locations",
@@ -460,7 +460,6 @@ export default {
         function notesExpanded(note) {
             console.error(props.user.all_notes);
             axios.post(route("note.seen"), {
-                client_id: props.user.clientId,
                 note: note,
             });
         }
@@ -473,7 +472,9 @@ export default {
 
         let operation = "Update";
         if (user) {
-            user.role_id = user["role_id"];
+            if (props.isClientUser) {
+                user.role_id = user["role_id"];
+            }
             user.classification_id = user.classification_id;
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
@@ -497,7 +498,6 @@ export default {
                 last_name: "",
                 email: "",
                 alternate_email: "",
-                role_id: 0,
                 classification_id: "",
                 contact_preference: null,
                 phone: "",
@@ -512,16 +512,15 @@ export default {
                 state: "",
                 zip: "",
                 job_title: "",
-                client_id: props.clientId,
             };
-            //only add clientId when applicable to make user validation rules work better
-            if (props.clientId) {
-                user.client_id = props.clientId;
+            //only add client specific when applicable to make user validation rules work better
+            if (props.isClientUser) {
                 user.home_location_id = null;
                 user.notes = { title: "", note: "" };
                 user.start_date = null;
                 user.end_date = null;
                 user.termination_date = null;
+                user.role_id = null;
             }
             operation = "Create";
         }
