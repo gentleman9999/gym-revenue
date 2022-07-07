@@ -2,8 +2,8 @@
 
 namespace App\Imports;
 
-use App\Actions\Fortify\CreateUser;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Users\Actions\CreateUser;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Silber\Bouncer\Database\Role;

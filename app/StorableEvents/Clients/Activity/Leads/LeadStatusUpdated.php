@@ -2,8 +2,18 @@
 
 namespace App\StorableEvents\Clients\Activity\Leads;
 
-use App\StorableEvents\Clients\Activity\Campaigns\LeadSourceUpdated;
+use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class LeadStatusUpdated extends LeadSourceUpdated
+class LeadStatusUpdated extends ShouldBeStored
 {
+    public $client;
+    public $data;
+    public $user;
+
+    public function __construct(string $client, array $data, string $user)
+    {
+        $this->client = $client;
+        $this->data = $data;
+        $this->user = $user;
+    }
 }

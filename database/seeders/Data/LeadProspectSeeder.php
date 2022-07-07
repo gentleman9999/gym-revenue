@@ -4,7 +4,7 @@ namespace Database\Seeders\Data;
 
 use App\Actions\Endusers\Leads\CreateLead;
 use App\Aggregates\Endusers\LeadAggregate;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\LeadDetails;
 use Carbon\Carbon;

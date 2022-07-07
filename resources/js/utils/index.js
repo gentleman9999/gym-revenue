@@ -6,4 +6,5 @@ export * from "./parseDate";
 export * from "./getDefaultMultiselectTWClasses";
 export * from "./useNotifications";
 export * from "./useGymRevForm";
-export * from "./parseNotificationResponse.js";
+export * from "./parseNotificationResponse";
+export * from "./getFormObjectFromData";

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Comm;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Campaigns\DripCampaigns\DripCampaign;
+use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
+use App\Domain\Clients\Projections\ClientActivity;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Features\EmailCampaigns;
-use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Lead;
-use function Aws\filter;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -26,11 +26,11 @@ class MassCommunicationsController extends Controller
                 'active' => 0,
                 'created' => 0,
             ],
-            'email_campaigns' => [
+            'drip_campaigns' => [
                 'active' => 0,
                 'created' => 0,
             ],
-            'sms_campaigns' => [
+            'scheduled_campaigns' => [
                 'active' => 0,
                 'created' => 0,
             ],
@@ -51,17 +51,17 @@ class MassCommunicationsController extends Controller
                 'created' => SmsTemplates::whereClientId($client_id)->count(),
                 'active' => SmsTemplates::whereClientId($client_id)->whereActive(1)->count(),
             ];
-            $results['sms_campaigns'] = [
-                'created' => SmsCampaigns::whereClientId($client_id)->count(),
-                'active' => SmsCampaigns::whereClientId($client_id)->whereActive(1)->count(),
+            $results['scheduled_campaigns'] = [
+                'created' => ScheduledCampaign::count(),
+                'active' => ScheduledCampaign::where('status', '!=', 'draft')->count(),
             ];
             $results['email_templates'] = [
                 'created' => EmailTemplates::whereClientId($client_id)->count(),
                 'active' => EmailTemplates::whereClientId($client_id)->whereActive(1)->count(),
             ];
-            $results['email_campaigns'] = [
-                'created' => EmailCampaigns::whereClientId($client_id)->count(),
-                'active' => EmailCampaigns::whereClientId($client_id)->whereActive(1)->count(),
+            $results['drip_campaigns'] = [
+                'created' => DripCampaign::count(),
+                'active' => DripCampaign::where('status', '!=', 'draft')->count(),
             ];
         } else {
             $results['total_audience'] = 25;
@@ -93,29 +93,27 @@ class MassCommunicationsController extends Controller
     public function index(Request $request)
     {
         $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
+        //
+//            $aggy = ClientAggregate::retrieve($client_id);
+//            $history_log = $aggy->getCommunicationHistoryLog();
+//            $aud_options = [
+//                'all' => 'All',
+//                'prospects' => 'Prospects',
+//                'conversions' => 'Conversions',
+//            ];
+//
+//            // @todo - make a function that crunches these datas
+//            $stats = $this->getStats($client_id);
 
-        if (! is_null($client_id)) {
-            $aggy = ClientAggregate::retrieve($client_id);
-            $history_log = $aggy->getCommunicationHistoryLog();
-            $aud_options = [
+        $history_log = [];
+        $aud_options = [
                 'all' => 'All',
                 'prospects' => 'Prospects',
                 'conversions' => 'Conversions',
             ];
 
-            // @todo - make a function that crunches these datas
-            $stats = $this->getStats($client_id);
-        } else {
-            $history_log = [];
-            $aud_options = [
-                'all' => 'All',
-                'admins' => 'Cape & Bay Admins',
-                'employees' => 'Cape & Bay Non-Admins',
-            ];
+        $stats = $this->getStats($client_id);
 
-            $stats = $this->getStats($client_id);
-        }
 
         $active_audience = 'all';
         if (request()->has('audience')) {
@@ -157,12 +155,14 @@ class MassCommunicationsController extends Controller
             return false;
         });
 
+        $comms_history = ClientActivity::with('user')->whereIn('entity', [ScheduledCampaign::class, DripCampaign::class])->paginate(10);
+
         return Inertia::render('Comms/MassCommsDashboard', [
             'title' => 'Mass Communications',
             'audiences' => $aud_options,
             'activeAudience' => $active_audience,
             'stats' => $stats,
-            'historyFeed' => paginate_array($request, $history_log),
+            'historyFeed' => $comms_history,
 //            'historyFeed' => $history_log
         ]);
     }

@@ -49,6 +49,7 @@ class CreateLeadAndMembersTables extends Migration
         $table->integer('membership_type_id')->nullable();
         $table->string('profile_picture')->nullable();
         $table->string('external_id')->nullable();
+        $table->boolean('unsubscribed_comms')->default(false);
         $table->jsonb('misc')->nullable();
         $table->unique(['client_id', 'email']);
         $table->boolean('unsubscribed_email')->default(false);

@@ -42,18 +42,18 @@
                 SMS Templates
             </mass-comm-data-button>
             <mass-comm-data-button
-                :href="route('comms.email-campaigns')"
-                :active="stats['email_campaigns'].active"
-                :total="stats['email_campaigns'].created"
+                :href="route('comms.scheduled-campaigns')"
+                :active="stats['scheduled_campaigns'].active"
+                :total="stats['scheduled_campaigns'].created"
             >
-                Email Campaigns
+                Scheduled Campaigns
             </mass-comm-data-button>
             <mass-comm-data-button
-                :href="route('comms.sms-campaigns')"
-                :active="stats['sms_campaigns'].active"
-                :total="stats['sms_campaigns'].created"
+                :href="route('comms.drip-campaigns')"
+                :active="stats['drip_campaigns'].active"
+                :total="stats['drip_campaigns'].created"
             >
-                SMS Campaigns
+                Drip Campaigns
             </mass-comm-data-button>
         </div>
 
@@ -182,10 +182,11 @@ export default defineComponent({
             }
         );
         const fields = [
-            { name: "type", label: "action", sortable: false },
-            { name: "recordName", label: "template", sortable: false },
-            { name: "date", sortable: false },
-            { name: "by", sortable: false },
+            { name: "operation", label: "action", sortable: false },
+            { name: "entity", label: "Entity", sortable: false },
+            { name: "entityObject.name", label: "Name", sortable: false },
+            { name: "created_at", label: "date", sortable: false },
+            { name: "user.name", label: "by", sortable: false },
         ];
 
         const topActions = {

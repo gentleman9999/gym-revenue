@@ -3,8 +3,8 @@
 namespace App\Actions\Endusers\Leads;
 
 use App\Aggregates\Endusers\LeadAggregate;
-use App\Helpers\Uuid;
 use App\Models\Endusers\Lead;
+use App\Support\Uuid;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -61,7 +61,6 @@ class UpsertLeadApi
         if (is_null($lead)) {
             $aggy = LeadAggregate::retrieve($data['id']);
             $aggy->create($data, $current_user->id ?? 'Auto Generated');
-            $aggy->joinAudience('leads', $data['client_id'], Lead::class);
         } else {
             $id = $data['id'] = $lead->id;
             $old_data = $lead->toArray();

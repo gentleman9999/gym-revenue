@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Actions\Auth\RenderRegisterPage;
-use App\Actions\Fortify\CreateUser;
-use App\Actions\Fortify\ResetUserPassword;
-use App\Actions\Fortify\UpdateUser;
-use App\Actions\Fortify\UpdateUserPassword;
+use App\Domain\Users\Actions\CreateUser;
+use App\Domain\Users\Actions\ResetUserPassword;
+use App\Domain\Users\Actions\UpdateUser;
+use App\Domain\Users\Actions\UpdateUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;

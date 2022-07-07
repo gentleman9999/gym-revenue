@@ -2,14 +2,20 @@
 
 namespace App\Providers;
 
-use App\Actions\Jetstream\AddTeamMember;
-use App\Actions\Jetstream\CreateTeam;
-use App\Actions\Jetstream\DeleteTeam;
-use App\Actions\Jetstream\DeleteUser;
-use App\Actions\Jetstream\InviteTeamMember;
-use App\Actions\Jetstream\RemoveTeamMember;
-use App\Actions\Jetstream\UpdateTeamName;
+use App\Domain\Teams\Actions\AddTeamMember;
+use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Teams\Actions\DeleteTeam;
+use App\Domain\Teams\Actions\InviteTeamMember;
+use App\Domain\Teams\Actions\RemoveTeamMember;
+use App\Domain\Teams\Actions\UpdateTeamName;
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\Models\TeamInvitation;
+use App\Domain\Users\Actions\DeleteUser;
+use App\Domain\Users\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
 use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -33,6 +39,10 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
 
+        Jetstream::useUserModel(User::class);
+        Jetstream::useTeamModel(Team::class);
+        Jetstream::useTeamInvitationModel(TeamInvitation::class);
+
         Jetstream::createTeamsUsing(CreateTeam::class);
         Jetstream::updateTeamNamesUsing(UpdateTeamName::class);
         Jetstream::addTeamMembersUsing(AddTeamMember::class);
@@ -40,6 +50,23 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::removeTeamMembersUsing(RemoveTeamMember::class);
         Jetstream::deleteTeamsUsing(DeleteTeam::class);
         Jetstream::deleteUsersUsing(DeleteUser::class);
+        Fortify::authenticateUsing(function (Request $request) {
+            //Call withoutGlobalScopes so we don't try to apply client_id on login
+            $user = User::withoutGlobalScopes()->where('email', $request->email)->first();
+
+            if ($user &&
+                Hash::check($request->password, $user->password)) {
+                //Successfull CRM Auth -
+                //Let's set some info in our cookie session so we
+                // can use it in middleware / global scopes
+                // without having to hit the db
+                session(['user_id' => $user->id]);
+                session(['client_id' => $user->client_id]);
+                session(['current_client_id' => $user->currentClientId()]);
+
+                return $user;
+            }
+        });
     }
 
     /**

@@ -12,7 +12,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="attendee in form.attendees" :key="attendee.id">
-                        <th v-if="attendee.entity_type == 'App\\Models\\User'">
+                        <th
+                            v-if="
+                                attendee.entity_type ===
+                                'App\\Domain\\Users\\Models\\User'
+                            "
+                        >
                             <img
                                 class="object-cover w-6 h-6 rounded-full"
                                 :src="attendee.entity_data.profile_photo_url"
@@ -23,7 +28,7 @@
 
                         <td
                             v-if="
-                                attendee.entity_type ==
+                                attendee.entity_type ===
                                 'App\\Models\\Endusers\\Lead'
                             "
                         >
@@ -102,10 +107,7 @@ import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import DatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
 import DaisyModal from "@/Components/DaisyModal.vue";
-import AttendeesForm from "@/Pages/Calendar/Partials/AttendeesForm.vue";
 import { useGymRevForm } from "@/utils";
 
 export default {
