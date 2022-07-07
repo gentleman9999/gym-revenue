@@ -168,7 +168,7 @@
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
 
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Select Positions" />
                 <multiselect
                     v-model="form.positions"
@@ -191,7 +191,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-2" v-if="clientId">
+            <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Select Departments" />
                 <multiselect
                     v-model="form.departments"
@@ -457,7 +457,6 @@ export default {
         PhoneInput,
     },
     props: [
-        "clientId",
         "user",
         "clientName",
         "isClientUser",
