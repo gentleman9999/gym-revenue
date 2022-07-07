@@ -160,6 +160,16 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(func
     Route::delete('/{id}/force', \App\Actions\Clients\Reminders\DeleteReminder::class)->name('reminders.delete');
 });
 
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function () {
+    Route::get('/', \App\Http\Controllers\NotesController::class . '@index')->name('notes');
+    Route::get('/create', \App\Http\Controllers\NotesController::class . '@create')->name('notes.create');
+    Route::post('/', \App\Actions\Clients\Notes\CreateNote::class)->name('notes.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
+    Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
+    Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');

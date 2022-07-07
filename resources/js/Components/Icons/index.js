@@ -4,6 +4,7 @@ export { default as ToDoIcon } from "./ToDo.vue";
 export { default as CalendarIcon } from "./Calendar.vue";
 export { default as FileIcon } from "./File.vue";
 export { default as ReminderIcon } from "./Reminder.vue";
+export { default as NotesIcon } from "./Note.vue";
 export { default as LocationIcon } from "./Location.vue";
 export { default as BarsIcon } from "./Bars.vue";
 export { default as MassComIcon } from "./MassCom.vue";
