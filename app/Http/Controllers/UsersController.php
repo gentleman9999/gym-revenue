@@ -147,8 +147,8 @@ class UsersController extends Controller
             'roles' => $roles,
             'clientName' => $client_name,
             'locations' => $locations,
-            'availablePositions' => Position::whereClientId($client_id)->get(),
-            'availableDepartments' => Department::whereClientId($client_id)->get(),
+            'availablePositions' => Position::whereClientId($client_id)->select('id', 'name')->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->select('id', 'name')->get(),
         ]);
     }
 
@@ -195,8 +195,8 @@ class UsersController extends Controller
             'roles' => $roles,
             'classifications' => $classifications,
             'locations' => $locations,
-            'availablePositions' => Position::whereClientId($client_id)->get(),
-            'availableDepartments' => Department::whereClientId($client_id)->get(),
+            'availablePositions' => Position::whereClientId($client_id)->select('id', 'name')->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->select('id', 'name')->get(),
         ]);
     }
 
