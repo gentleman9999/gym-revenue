@@ -1,9 +1,13 @@
 <template>
     <LayoutHeader title="Tasks" />
     <page-toolbar-nav title="Tasks" :links="navLinks" />
-    <div class="flex flex-row justify-center">
-        <!--            hide month switcher until it does something-->
+    <div class="container m-auto flex flex-row gap-4">
         <month-switcher class="pl-4" :onChange="switchMonth" />
+        <button class="btn btn-secondary btn-sm" @click="handleClickNewTask">
+            Create Task
+        </button>
+    </div>
+    <div class="flex flex-row justify-center">
         <div class="flex flex-col items-center">
             <task-date-switcher
                 :startOfTheWeek="startOfTheWeek"
@@ -14,25 +18,11 @@
             <task-list-view
                 v-for="taskType in taskTypes"
                 :key="taskType"
-                :taskType="taskType"
-                base-route="tasks"
-                model-name="Task"
-                model-key="task"
+                :task-type="taskType"
                 :fields="fields"
-                :resource="getTaskData(taskType)"
-                :actions="{
-                    edit: {
-                        label: 'Edit',
-                        handler: ({ data }) => editTask(data, taskType),
-                    },
-                    trash: false,
-                    restore: false,
-                    delete: {
-                        label: 'Delete',
-                        handler: ({ data }) => handleClickDelete(data),
-                    },
-                }"
-                :top-actions="topActions"
+                :tasks="getTaskData(taskType)"
+                :on-double-click="handleDoubleClick"
+                @edit="handleOnEdit"
             />
         </div>
     </div>
@@ -73,7 +63,6 @@
             :client_users="client_users"
             :lead_users="lead_users"
             :member_users="member_users"
-            :client_id="client_id"
             @submitted="closeModals"
             ref="editCalendarEventForm"
             :duration="{
@@ -86,7 +75,6 @@
 <script>
 import { defineComponent, ref, watch, computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
@@ -103,7 +91,6 @@ import { transformDate } from "@/utils/transformDate";
 export default defineComponent({
     components: {
         LayoutHeader,
-        GymRevenueCrud,
         Confirm,
         DaisyModal,
         JetBarContainer,
@@ -115,7 +102,6 @@ export default defineComponent({
         TaskListView,
     },
     props: [
-        "tasks",
         "filters",
         "incomplete_tasks",
         "overdue_tasks",
@@ -139,15 +125,6 @@ export default defineComponent({
             editEventModal.value?.close();
         };
 
-        const editTask = (item, taskType) => {
-            console.log(props.tasks);
-            const id = item.id;
-            const taskData = getTaskData(taskType);
-            selectedCalendarEvent.value = taskData.data.find(
-                (event) => event.id === id
-            );
-            editEventModal.value.open();
-        };
         const handleClickNewTask = () => {
             selectedCalendarEvent.value = null;
             createEventModal.value.open();
@@ -227,17 +204,9 @@ export default defineComponent({
             },
         ];
 
-        const topActions = {
-            create: {
-                label: "New Task",
-                handler: handleClickNewTask,
-                class: "btn-primary",
-            },
-        };
-
         const taskTypes = [
             "incomplete_tasks",
-            "ovedue_tasks",
+            "overdue_tasks",
             "completed_tasks",
         ];
         const getData = function () {
@@ -250,17 +219,33 @@ export default defineComponent({
             };
             Inertia.get(route("tasks"), pickBy(query), options);
         };
+
+        const handleDoubleClick = ({ data }) => {
+            openEventForm(data);
+        };
+        const openEventForm = (data) => {
+            selectedCalendarEvent.value = data;
+            editEventModal.value.open();
+        };
         watch([selectedDate], getData, { deep: true });
 
         const getTaskData = (taskType) => {
             switch (taskType) {
                 case "incomplete_tasks":
                     return props.incomplete_tasks;
-                case "ovedue_tasks":
+                case "overdue_tasks":
                     return props.overdue_tasks;
                 case "completed_tasks":
                     return props.completed_tasks;
+                //TODO: why are we doing thism we should all of that alreadyx
+                default:
+                    throw new Error("unknown taskType " + taskType);
             }
+        };
+
+        const handleOnEdit = (data) => {
+            console.log("handeOnEdit", data);
+            openEventForm(data);
         };
 
         return {
@@ -268,7 +253,6 @@ export default defineComponent({
             confirmDelete,
             handleConfirmDelete,
             handleClickDelete,
-            editTask,
             handleClickNewTask,
             Inertia,
             navLinks,
@@ -280,7 +264,6 @@ export default defineComponent({
             editEventModal,
             selectedCalendarEvent,
             closeModals,
-            topActions,
             selectedDate,
             setSelectedDate,
             startOfTheWeek,
@@ -289,6 +272,8 @@ export default defineComponent({
             selectedDateFormatted,
             getTaskData,
             switchMonth,
+            handleDoubleClick,
+            handleOnEdit,
         };
     },
 });

@@ -3,9 +3,8 @@
 namespace Database\Seeders\Clients;
 
 use App\Actions\Clients\Locations\CreateLocation;
-use App\Actions\Clients\Locations\GenerateGymRevenueId;
 use App\Actions\Clients\Locations\ImportLocations;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -369,24 +368,25 @@ class LocationSeeder extends Seeder
         ];
 
         foreach ($locations as $idx => $location) {
-            $client = Client::whereName($location['client'])->first();
+            $client = \App\Domain\Clients\Models\Client::whereName($location['client'])->first();
+
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
             unset($location['client']);
-            $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
-            $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
+//            $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
+//            $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
 
             $temp_data = Location::factory()
                 ->count(1)
                 ->make()[0];
             $finalData = array_merge($temp_data->toArray(), $location);
 
-            if (is_null($loc_record)) {
-                VarDumper::dump("Adding {$location['name']}");
-                CreateLocation::run($finalData);
-            } else {
-                VarDumper::dump("Skipping {$location['name']}!");
-            }
+//            if (is_null($loc_record)) {
+            VarDumper::dump("Adding {$location['name']}");
+            CreateLocation::run($finalData);
+//            } else {
+//                VarDumper::dump("Skipping {$location['name']}!");
+//            }
         }
 
         ///now do trufit csv import

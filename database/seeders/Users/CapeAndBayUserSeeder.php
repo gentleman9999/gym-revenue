@@ -2,20 +2,20 @@
 
 namespace Database\Seeders\Users;
 
-use App\Actions\Fortify\CreateUser;
-use App\Models\Team;
+use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Users\Actions\CreateUser;
 
 class CapeAndBayUserSeeder extends UserSeeder
 {
     protected $type = 'cnb';
+    protected $cnb_team = null;
 
     protected function getUsersToAdd(): array
     {
-        Team::firstOrCreate([
-            'user_id' => 1,
+        $this->cnb_team = CreateTeam::run([
+            'client_id' => null,
             'name' => 'Cape & Bay Admin Team',
-            'personal_team' => 0,
-            'default_team' => 1,
+            'home_team' => 1,
         ]);
 
         return [
@@ -110,7 +110,7 @@ class CapeAndBayUserSeeder extends UserSeeder
             'last_name' => $user['last_name'],
             'email' => $user['email'],
             'password' => 'Hello123!',
-            'team_id' => 1,
+            'team_id' => $this->cnb_team->id,
             'role_id' => 1,
 //            'home_location_id' => $home_location_id,
             'manager' => 'Senior Manager',

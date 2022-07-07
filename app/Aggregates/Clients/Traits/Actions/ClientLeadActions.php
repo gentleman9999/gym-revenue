@@ -9,28 +9,28 @@ use App\StorableEvents\Clients\Activity\Leads\LeadStatusUpdated;
 
 trait ClientLeadActions
 {
-    public function updateLeadSource(string $source, string $user_id)
+    public function updateLeadSource(array $source,  string $user_id)
     {
         $this->recordThat(new LeadSourceUpdated($this->uuid(), $source, $user_id));
 
         return $this;
     }
 
-    public function createLeadSource(string $source, string $user_id)
+    public function createLeadSource(array $source, string $user_id)
     {
         $this->recordThat(new LeadSourceCreated($this->uuid(), $source, $user_id));
 
         return $this;
     }
 
-    public function updateLeadStatus(string $status, string $user_id)
+    public function updateLeadStatus(array $status, string $user_id)
     {
         $this->recordThat(new LeadStatusUpdated($this->uuid(), $status, $user_id));
 
         return $this;
     }
 
-    public function createLeadStatus(string $status, string $user_id)
+    public function createLeadStatus(array $status, string $user_id)
     {
         $this->recordThat(new LeadStatusCreated($this->uuid(), $status, $user_id));
 

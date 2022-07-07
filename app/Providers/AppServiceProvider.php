@@ -17,7 +17,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //registers any App/Actions/* that have well-defined command signatures
-        Actions::registerCommands();
     }
 
     /**
@@ -28,5 +27,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //Bouncer::useRoleModel(Role::class);
+        if ($this->app->runningInConsole()) {
+            Actions::registerCommands();
+            Actions::registerCommands([
+                'app/Domain/',
+            ]);
+        }
     }
 }

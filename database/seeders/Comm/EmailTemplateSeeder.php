@@ -4,7 +4,7 @@ namespace Database\Seeders\Comm;
 
 use App\Actions\Clients\Activity\Comms\CreateEmailTemplate;
 use App\Actions\Clients\Activity\Comms\UpdateEmailTemplate;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 

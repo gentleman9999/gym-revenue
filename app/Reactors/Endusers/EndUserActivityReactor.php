@@ -38,13 +38,6 @@ class EndUserActivityReactor extends Reactor implements ShouldQueue
         }
     }
 
-    public function onSubscribedToAudience(\App\StorableEvents\Endusers\Leads\SubscribedToAudience $event)
-    {
-        // @todo - check the Campaigns the audience is attached to
-        // @todo - if so, then trigger it here and its aggregate will deal
-        // @todo - with whatever is supposed to happen.
-    }
-
     public function onLeadUpdated(LeadUpdated $event)
     {
         $this->maybeMoveProfilePicture($event->aggregateRootUuid(), $event->data, $event->oldData);

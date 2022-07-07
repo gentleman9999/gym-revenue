@@ -10,7 +10,7 @@ class LeadSourceUpdated extends ShouldBeStored
     public $data;
     public $user;
 
-    public function __construct(string $client, string $data, string $user)
+    public function __construct(string $client, array $data, string $user)
     {
         $this->client = $client;
         $this->data = $data;

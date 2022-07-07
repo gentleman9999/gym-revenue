@@ -3,11 +3,11 @@
 namespace App\Actions\Clients\Roles;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Role;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\Database\Role;
 
 class UpdateRole
 {
