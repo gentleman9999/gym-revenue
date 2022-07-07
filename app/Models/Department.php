@@ -17,7 +17,7 @@ class Department extends Model
 
     public $incrementing = false;
 
-    public function position()
+    public function positions()
     {
         return $this->belongsToMany(Position::class, 'department_position', 'department_id', 'position_id');
     }
