@@ -29,7 +29,7 @@ class PositionsController extends Controller
             ->appends(request()->except('page'));
 
         return Inertia::render('Positions/Show', [
-            'position' => $pos,
+            'positions' => $pos,
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);
     }

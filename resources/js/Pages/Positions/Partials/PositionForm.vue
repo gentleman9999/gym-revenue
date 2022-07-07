@@ -59,15 +59,15 @@ export default {
             type: String,
             required: true,
         },
-        position: {
+        classification: {
             type: Object,
         },
     },
     setup(props) {
-        let positions = props.positions;
+        let classification = props.classification;
         let operation = "Update";
-        if (!positions) {
-            positions = {
+        if (!classification) {
+            classification = {
                 title: "",
                 id: null,
                 client_id: props.clientId,
@@ -78,9 +78,11 @@ export default {
         const form = useGymRevForm(classification);
 
         let handleSubmit = () =>
-            form.dirty().put(route("positions.update", classification.id));
+            form
+                .dirty()
+                .put(route("classifications.update", classification.id));
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("positions.store"));
+            handleSubmit = () => form.post(route("classifications.store"));
         }
 
         const modal = useModal();
@@ -89,7 +91,7 @@ export default {
                 modal.value.close();
                 return;
             }
-            Inertia.visit(route("positions"));
+            Inertia.visit(route("classifications"));
         };
         return {
             form,

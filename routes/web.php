@@ -231,12 +231,12 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('departments')->group(fu
 Route::middleware(['auth:sanctum', 'verified'])->prefix('positions')->group(function () {
     Route::get('/', \App\Http\Controllers\PositionsController::class . '@index')->name('positions');
     Route::get('/create', \App\Http\Controllers\PositionsController::class . '@create')->name('positions.create');
-    //Route::post('/', \App\Actions\Clients\Classifications\CreateClassification::class)->name('positions.store');
+    Route::post('/', \App\Actions\Clients\Classifications\CreateClassification::class)->name('positions.store');
     Route::get('/edit/{id}', \App\Http\Controllers\PositionsController::class . '@edit')->name('positions.edit');
-    //Route::put('/{id}', \App\Actions\Clients\Classifications\UpdateClassification::class)->name('positions.update');
-    //Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('positions.trash');
-    //Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('positions.delete');
-    //Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('positions.restore');
+    Route::put('/{id}', \App\Actions\Clients\Classifications\UpdateClassification::class)->name('positions.update');
+    Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('positions.trash');
+    Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('positions.delete');
+    Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('positions.restore');
     Route::get('/export', \App\Http\Controllers\PositionsController::class . '@export')->name('positions.export');
 });
 

@@ -6,9 +6,9 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <position-form
+            <department-form
                 :client-id="$page.props.user.current_client_id"
-                :classification="classification"
+                :department="department"
             />
         </div>
     </div>
@@ -22,11 +22,11 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
-import PositionForm from "@/Pages/Positions/Partials/PositionForm.vue";
+import DepartmentForm from "@/Pages/Departments/Partials/DepartmentForm.vue";
 
 export default defineComponent({
     components: {
-        PositionForm,
+        DepartmentForm,
         LayoutHeader,
         Button,
         JetFormSection,
@@ -35,7 +35,7 @@ export default defineComponent({
         JetBarIcon,
     },
     props: {
-        position: {
+        department: {
             type: Object,
             required: true,
         },
