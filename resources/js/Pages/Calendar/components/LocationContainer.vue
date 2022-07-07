@@ -75,73 +75,65 @@ li > div {
 }
 </style>
 
-<script>
-import { defineComponent, ref, onMounted, computed } from "vue";
+<script setup>
+import { computed } from "vue";
 
 import DayScroller from "./DayScroller.vue";
 import { Inertia } from "@inertiajs/inertia";
-export default defineComponent({
-    components: { DayScroller },
-    props: {
-        events: {
-            type: [Array, Object],
-        },
-        active_date: {
-            type: [String, Date],
-        },
-        visible_date: {
-            type: [String, Date],
-        },
-    },
-    computed: {
-        selectedDateStr() {
-            return `${this.names_weekday[this.selectedDate.getDay()]}, ${
-                this.names_month[this.selectedDate.getMonth()]
-            } ${this.selectedDate.getDate()},  ${this.selectedDate.getFullYear()}`;
-        },
-        dateInVisibleWeek() {
-            return new Date(this.visible_date);
-        },
-        selectedDate() {
-            return new Date(this.active_date);
-        },
-    },
-    setup(props) {
-        const names_weekday = [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ];
-        const names_month = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ];
 
-        /** Formats an events time as hh:mm */
-        const fmtTime = (d) => {
-            let t = d.split(" ")[1].split(":");
-            return [t[0], t[1]].join(":").replace(/^0/, "");
-        };
-
-        return {
-            names_weekday,
-            names_month,
-            fmtTime,
-        };
+const props = defineProps({
+    events: {
+        type: [Array, Object],
     },
+    active_date: {
+        type: [String, Date],
+    },
+    visible_date: {
+        type: [String, Date],
+    },
+});
+
+const names_weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+];
+const names_month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
+/** Formats an events time as hh:mm */
+const fmtTime = (d) => {
+    let t = d.split(" ")[1].split(":");
+    return [t[0], t[1]].join(":").replace(/^0/, "");
+};
+
+const dateInVisibleWeek = computed(() => {
+    return new Date(props.visible_date);
+});
+
+const selectedDate = computed(() => {
+    return new Date(props.active_date);
+});
+
+const selectedDateStr = computed(() => {
+    return `${names_weekday[selectedDate.value.getDay()]}, ${
+        names_month[selectedDate.value.getMonth()]
+    } ${selectedDate.value.getDate()},  ${selectedDate.value.getFullYear()}`;
 });
 </script>
