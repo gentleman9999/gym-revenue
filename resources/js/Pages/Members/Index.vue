@@ -1,45 +1,74 @@
 <template>
-    <LayoutHeader title="Members" />
-    <page-toolbar-nav title="Member" :links="navLinks" />
-    <gym-revenue-crud
-        :resource="members"
-        model-key="member"
-        :fields="fields"
-        :base-route="baseRoute"
-        :top-actions="{
-            create: { label: 'Add Member' },
-        }"
-        :actions="actions"
-        :preview-component="MemberPreview"
-    >
-        <template #filter>
-            <member-filters :base-route="baseRoute" />
-        </template>
-    </gym-revenue-crud>
-    <confirm
-        title="Really Trash?"
-        v-if="confirmTrash"
-        @confirm="handleConfirmTrash"
-        @cancel="confirmTrash = null"
-        :disabled="trashReason === null || trashReason === 'none'"
-    >
-        {{ firstName }} {{ lastName }} Are you sure you want to remove this
-        lead?<br />
-        Reason for Deleting:<br />
-        <select name="reasonforremoving" v-model="trashReason">
-            <option>Select a reason</option>
-            <option value="duplicate">Is a duplicate</option>
-            <option value="test-lead">Is a test lead</option>
-            <option value="DNC">Lead requested DNC and data removal</option>
-            <option value="person-non-existing">
-                This person does not exist
-            </option>
-            <option value="mistake-creating">
-                I made a mistake creating this lead
-            </option>
-            <option value="other">Other</option>
-        </select>
-    </confirm>
+    <app-layout :title="title">
+        <page-toolbar-nav title="Member" :links="navLinks" />
+        <div
+            class="max-w-screen lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset relative"
+        >
+            <div class="flex flex-row space-x-2 flex-wrap">
+                <div class="flex w-full md:w-3/5 flex-wrap">
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Confirmed"
+                            :progress="[65]"
+                        />
+                    </div>
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Canceled"
+                            :progress="[25]"
+                        />
+                    </div>
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Rescheduled"
+                            :progress="[10]"
+                        />
+                    </div>
+                </div>
+                <calendar-grid />
+            </div>
+            <calendar-schedule-table :data="schedule" />
+        </div>
+        <gym-revenue-crud
+            :resource="members"
+            model-key="member"
+            :fields="fields"
+            :base-route="baseRoute"
+            :top-actions="{
+                create: { label: 'Add Member' },
+            }"
+            :actions="actions"
+            :preview-component="MemberPreview"
+        >
+            <template #filter>
+                <member-filters :base-route="baseRoute" />
+            </template>
+        </gym-revenue-crud>
+        <confirm
+            title="Really Trash?"
+            v-if="confirmTrash"
+            @confirm="handleConfirmTrash"
+            @cancel="confirmTrash = null"
+            :disabled="trashReason === null || trashReason === 'none'"
+        >
+            {{ firstName }} {{ lastName }} Are you sure you want to remove this
+            lead?<br />
+            Reason for Deleting:<br />
+            <select name="reasonforremoving" v-model="trashReason">
+                <option value="none">Select a reason</option>
+                <option value="duplicate">Is a duplicate</option>
+                <option value="test-lead">Is a test lead</option>
+                <option value="DNC">Lead requested DNC and data removal</option>
+                <option value="person-non-existing">
+                    This person does not exist
+                </option>
+                <option value="mistake-creating">
+                    I made a mistake creating this lead
+                </option>
+                <option value="other">Other</option>
+            </select>
+        </confirm>
+    </app-layout>
 </template>
 
 <script>
@@ -58,6 +87,9 @@ import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import MemberFilters from "@/Pages/Members/Partials/MemberFilters.vue";
 import MemberPreview from "@/Pages/Members/Partials/MemberPreview.vue";
 
+import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
+import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
+
 export default defineComponent({
     components: {
         MemberFilters,
@@ -69,6 +101,8 @@ export default defineComponent({
         JetBarContainer,
         // LeadInteraction,
         MemberPreview,
+        CalendarGrid,
+        CalendarSummaryCard,
     },
     props: [
         "members",
