@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Reminders;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,29 +28,29 @@ class RestoreReminder
 
     public function handle($current_user, $id)
     {
-        $role = Role::findOrFail($id);
+        $reminder = Reminder::findOrFail($id);
 
         $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->restoreRole($current_user->id, $id)->persist();
+        ClientAggregate::retrieve($client_id)->restoreReminder($current_user->id, $id)->persist();
 
-        return $role;
+        return $reminder;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
 
-        return $current_user->can('role.restore', Role::class);
+        return $current_user->can('reminder.restore', Reminder::class);
     }
 
     public function asController(Request $request, $id)
     {
-        $role = $this->handle(
+        $reminder = $this->handle(
             $request->user(),
             $id
         );
-        Alert::success("Location '{$role->name}' restored.")->flash();
+        Alert::success("Location '{$reminder->name}' restored.")->flash();
 
-        return Redirect::route('roles');
+        return Redirect::route('reminders');
     }
 }

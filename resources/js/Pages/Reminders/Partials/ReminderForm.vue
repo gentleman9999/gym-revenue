@@ -40,20 +40,6 @@
                     class="mt-2"
                 />
             </div>
-            <div class="col-span-6">
-                <jet-label for="triggered_at" value="Triggered" />
-                <input
-                    id="triggered_at"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.triggered_at"
-                    autofocus
-                />
-                <jet-input-error
-                    :message="form.errors.triggered_at"
-                    class="mt-2"
-                />
-            </div>
             <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
@@ -122,6 +108,8 @@ export default {
                 name: "",
                 id: "",
                 client_id: props.clientId,
+                description: "",
+                remind_time: 0,
             };
             operation = "Create";
         }
@@ -129,49 +117,16 @@ export default {
         const form = useGymRevForm({
             name: reminder.name,
             id: reminder.id,
+            description: reminder.description,
+            remind_time: reminder.remind_time,
             client_id: props.clientId,
-            group: reminder.group,
         });
 
         let handleSubmit = () =>
-            form.dirty().put(route("reminder.update", reminder.id));
+            form.dirty().put(route("reminders.update", reminder.id));
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("reminder.store"));
+            handleSubmit = () => form.post(route("reminders.store"));
         }
-
-        let groupedAvailableAbilities = computed(() => {
-            let grouped = {};
-            props.availableAbilities.forEach((availableAbility) => {
-                let group = availableAbility.name.split(".")[0];
-                if (group === "*") {
-                    return;
-                }
-                if (grouped[group]) {
-                    grouped[group] = [...grouped[group], availableAbility];
-                } else {
-                    grouped[group] = [availableAbility];
-                }
-            });
-            return grouped;
-        });
-
-        const selectAll = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.name
-            );
-            const merged = new Set([...form.ability_names, ...groupAbilities]);
-            form.ability_names = [...merged];
-        };
-
-        const clear = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.name
-            );
-            const merged = form.ability_names.filter(
-                (abilityId) => !groupAbilities.includes(abilityId)
-            );
-            form.ability_names = [...merged];
-        };
 
         const modal = useModal();
 
@@ -188,9 +143,6 @@ export default {
             form,
             buttonText: operation,
             handleSubmit,
-            groupedAvailableAbilities,
-            selectAll,
-            clear,
             handleClickCancel,
         };
     },

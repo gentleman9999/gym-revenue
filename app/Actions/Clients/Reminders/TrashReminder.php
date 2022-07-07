@@ -30,7 +30,7 @@ class TrashReminder
     public function handle($current_user, $id)
     {
         $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->trashRole($current_user->id, $id)->persist();
+        ClientAggregate::retrieve($client_id)->trashReminder($current_user->id, $id)->persist();
     }
 
     public function authorize(ActionRequest $request): bool

@@ -1,5 +1,5 @@
 <template>
-    <LayoutHeader title="Edit Security Role">
+    <LayoutHeader title="Edit Reminder">
         <jet-bar-icon type="goback" fill />
         <h2 class="font-semibold text-xl leading-tight">Edit Reminder</h2>
     </LayoutHeader>
@@ -16,13 +16,14 @@
 
 <script>
 import { defineComponent } from "vue";
-import LayoutHeader from "@/Layouts/LayoutHeader";
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
-import JetBarIcon from "@/Components/JetBarIcon";
-import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
+import JetBarIcon from "@/Components/JetBarIcon.vue";
+
+import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
 
 export default defineComponent({
     components: {

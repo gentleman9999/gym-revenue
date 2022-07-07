@@ -55,7 +55,7 @@ class CreateReminder
             $request->user(),
         );
 
-        Alert::success("Role '{$reminder->name}' was created")->flash();
+        Alert::success("Reminder '{$reminder->name}' was created")->flash();
 
 //        return Redirect::route('roles');
         return Redirect::route('reminder.edit', $reminder->id);
