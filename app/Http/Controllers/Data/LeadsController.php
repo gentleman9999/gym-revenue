@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Data;
 use App\Actions\Endusers\Leads\UpdateLeadCommunicationPreferences;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Endusers\LeadAggregate;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
@@ -16,7 +17,6 @@ use App\Models\Endusers\LeadStatuses;
 use App\Models\Endusers\LeadType;
 use App\Models\Note;
 use App\Models\ReadReceipt;
-use App\Models\TeamDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -223,16 +223,15 @@ class LeadsController extends Controller
              * 4. Query for client id and locations in
              */
             $current_team = request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::find($client_id);
 
-            $default_team_name = $client->default_team_name->value;
 
             $team_locations = [];
 
-            if ($current_team->id != $default_team_name) {
+            if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
-
+                dd($current_team->id);
                 if (count($team_locations_records) > 0) {
                     foreach ($team_locations_records as $team_locations_record) {
                         // @todo - we will probably need to do some user-level scoping
@@ -265,11 +264,10 @@ class LeadsController extends Controller
              * 4. Query for client id and locations in
              */
             $current_team = request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
-            $default_team_name = $client->default_team_name->value;
+            $client = Client::find($client_id);
             $team_locations = [];
 
-            if ($current_team->name != $default_team_name) {
+            if ($current_team->name != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
 
@@ -462,11 +460,10 @@ class LeadsController extends Controller
 
         if ((! is_null($client_id))) {
             $current_team = request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
-            $default_team_name = $client->default_team_name->value;
+            $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
-            if ($current_team->id == $default_team_name) {
+            if ($current_team->id == $client->home_team_id) {
                 $results = Location::whereClientId($client_id);
             } else {
                 // The active_team is not the current client's default_team

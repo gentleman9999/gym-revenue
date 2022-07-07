@@ -3,8 +3,7 @@
 namespace App\Actions\Simulation;
 
 use App\Actions\Endusers\Leads\BatchUpsertLeadApi;
-use App\Models\Clients\Client;
-use App\Models\Clients\Location;
+use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Lead;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redirect;

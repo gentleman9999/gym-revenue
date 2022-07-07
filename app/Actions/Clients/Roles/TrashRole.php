@@ -4,12 +4,12 @@ namespace App\Actions\Clients\Roles;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Clients\Location;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use Silber\Bouncer\Database\Role;
 
 class TrashRole
 {

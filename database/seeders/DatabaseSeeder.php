@@ -6,10 +6,8 @@ use Database\Seeders\AccessControl\BouncerAbilitiesSeeder;
 use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
-use Database\Seeders\Clients\EmailCampaignsSeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
-use Database\Seeders\Clients\SMSCampaignsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
@@ -26,7 +24,7 @@ use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
-use Database\Seeders\Users\NewClientSeeder;
+use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -116,7 +114,7 @@ class DatabaseSeeder extends Seeder
 
         // Regional Managers, Location Managers, Sales Reps and Employees are seeded here
         VarDumper::dump('Running Client Users Seeder');
-        $this->call(NewClientSeeder::class);
+        $this->call(ClientUserSeeder::class);
 
         // This seeder generates dummy leads for each client
         VarDumper::dump('Running Leads Dummy Data Seeder');
@@ -133,14 +131,6 @@ class DatabaseSeeder extends Seeder
         // Baby's First SMS Templates are Seeded for each client
         VarDumper::dump('Running SMS Template  Seeder');
         $this->call(SMSTemplateSeeder::class);
-
-        // Email Campaigns are Seeded for each client
-        VarDumper::dump('Running Email Campaign  Seeder');
-        $this->call(EmailCampaignsSeeder::class);
-
-        // SMS Campaigns are Seeded for each client
-        VarDumper::dump('Running SMS Campaign  Seeder');
-        $this->call(SMSCampaignsSeeder::class);
 
         // CalendarEventType Seeder
         VarDumper::dump('Running Calender Event Type Seeder');

@@ -13,7 +13,7 @@
         </div>
         <template #modal>
             <user-form
-                :client-id="$page.props.user.current_client_id"
+                :is-client-user="$page.props.user.current_team?.isClientTeam"
                 :user="selectedUser"
                 :roles="roles"
                 :locations="locations"

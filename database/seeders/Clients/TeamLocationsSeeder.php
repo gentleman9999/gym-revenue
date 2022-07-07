@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Models\Clients\Location;
-use App\Models\Team;
-use App\Models\TeamDetail;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 

@@ -169,7 +169,7 @@
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
 
-            <!--State-->
+            <!-- State -->
             <div class="col-span-2 sm:col-span-2">
                 <jet-label for="state" value="State" />
                 <multiselect
@@ -306,6 +306,12 @@ export default defineComponent({
                 preserveScroll: true,
                 onSuccess: () => this.clearPhotoFileInput(),
             });
+            // console.log(this.user.id);
+            // this.form.post(route("users.update", this.user.id), {
+            //     errorBag: "updateProfileInformation",
+            //     preserveScroll: true,
+            //     onSuccess: () => this.clearPhotoFileInput(),
+            // });
         },
 
         selectNewPhoto() {
