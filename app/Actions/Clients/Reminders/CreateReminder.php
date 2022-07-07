@@ -2,7 +2,7 @@
 
 namespace App\Actions\Clients\Reminders;
 
-use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -36,7 +36,7 @@ class CreateReminder
         $client_id = $current_user->currentClientId();
         $data['user_id'] = $client_id;
 
-        ClientAggregate::retrieve($client_id)->createReminder($current_user->id ?? "Auto Generated", $data)->persist();
+        UserAggregate::retrieve($current_user->id)->createReminder($current_user->id ?? "Auto Generated", $data)->persist();
 
         return Reminder::findOrFail($id);
     }

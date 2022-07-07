@@ -2,7 +2,7 @@
 
 namespace App\Actions\Clients\Reminders;
 
-use App\Aggregates\Clients\ClientAggregate;
+use App\Aggregates\Users\UserAggregate;
 use App\Models\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -30,7 +30,7 @@ class DeleteReminder
     {
         $reminder = Reminder::findOrFail($id);
         $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->deleteReminder($current_user->id, $id)->persist();
+        UserAggregate::retrieve($current_user->id)->deleteReminder($current_user->id, $id)->persist();
 
         return $reminder;
     }
