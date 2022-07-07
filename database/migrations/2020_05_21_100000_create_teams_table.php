@@ -14,13 +14,11 @@ class CreateTeamsTable extends Migration
     public function up()
     {
         Schema::create('teams', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->index();
+            $table->uuid('id')->primary()->unique();
             $table->uuid('client_id')->index()->nullable();
-            $table->string('name');
-            $table->boolean('personal_team')->default(0);
-            $table->boolean('default_team')->default(0);
-            $table->index(['client_id', 'name']);
+            $table->string('name')->index();
+            $table->boolean('home_team')->default(0)->index();
+            $table->unique(['client_id', 'name']);
             $table->timestamps();
         });
     }

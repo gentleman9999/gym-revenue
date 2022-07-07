@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Roles;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;

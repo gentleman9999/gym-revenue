@@ -3,8 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Endusers\Members\CreateMember;
-use App\Actions\Endusers\Members\UpsertMemberApi;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Member;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -33,7 +32,7 @@ class MemberSeeder extends Seeder
                 VarDumper::dump($client->name);
                 if (count($client->locations) > 0) {
                     foreach ($client->locations as $idx => $location) {
-                        $members = Member::factory()->count(random_int(1, 5))
+                        $members = Member::factory()->count($amountOfMembers)
                             ->client_id($client->id)
                             ->gr_location_id($location->gymrevenue_id ?? '')
                             ->make();

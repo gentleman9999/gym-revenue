@@ -16,6 +16,9 @@
 
             <template v-if="permissions.canDeleteTeam && !team.personal_team">
                 <jet-section-border />
+                <template v-if="permissions.canDeleteTeam">
+                    <jet-section-border />
+                </template>
 
                 <delete-team-form class="mt-10 sm:mt-0" :team="team" />
             </template>

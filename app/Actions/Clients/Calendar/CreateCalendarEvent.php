@@ -3,12 +3,12 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Helpers\Uuid;
+use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
-use App\Models\User;
+use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -53,7 +53,7 @@ class CreateCalendarEvent
         if (! is_null($data['user_attendees'])) {
             $data['user_attendees'] = array_values(array_unique($data['user_attendees'])); //This will dupe check and then re-index the array.
             foreach ($data['user_attendees'] as $user) {
-                $user = User::findOrFail($user);
+                $user = User::find($user);
                 if ($user) {
                     CalendarAggregate::retrieve($data['client_id'])
                         ->addCalendarAttendee(

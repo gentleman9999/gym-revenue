@@ -73,7 +73,7 @@ class Lead extends Model
 
     public function client()
     {
-        return $this->hasOne('App\Models\Clients\Client', 'id', 'client_id');
+        return $this->hasOne('App\Domain\Clients\Models\Client', 'id', 'client_id');
     }
 
     public function trialMemberships()

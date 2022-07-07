@@ -36,7 +36,11 @@ class RoleProjector extends Projector
         foreach ($event->payload['ability_names'] as $ability) {
             Bouncer::allow($role->name)->to($ability, \App\Models\Role::getEntityFromGroup(substr($ability, 0, strpos($ability, '.'))));
         }
-        Role::findOrFail($event->payload['id'])->updateOrFail(array_merge($event->payload, ['title' => $event->payload['name']]));
+        $data = $event->payload;
+        if (array_key_exists('name', $event->payload)) {
+            $data['title'] = $event->payload['name'];
+        }
+        Role::findOrFail($event->payload['id'])->updateOrFail($data);
     }
 
     public function onRoleTrashed(RoleTrashed $event)
