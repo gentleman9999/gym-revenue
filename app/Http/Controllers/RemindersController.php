@@ -57,7 +57,7 @@ class RemindersController extends Controller
         }
 
         return Inertia::render('Reminders/Edit', [
-            'reminder' => Reminder::whereId($id)->get(),
+            'reminder' => Reminder::find($id),
         ]);
     }
 }

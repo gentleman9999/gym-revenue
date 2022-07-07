@@ -22,7 +22,7 @@ class UpdateReminder
     {
         return [
             'name' => ['sometimes', 'string', 'required'],
-            'id' => ['sometimes', 'integer', 'required'],
+            'id' => ['sometimes', 'string', 'required'],
             'description' => ['sometimes', 'string'],
             'remind_time' => ['sometimes', 'string'],
             'triggered_at' => ['sometimes', 'timestamp'],
@@ -32,7 +32,7 @@ class UpdateReminder
     public function handle($data, $current_user)
     {
         $client_id = $current_user->currentClientId();
-        $data['client_id'] = $client_id;
+        //$data['client_id'] = $client_id;
         ClientAggregate::retrieve($client_id)->updateReminder($current_user->id, $data)->persist();
 
         return Reminder::find($data['id']);
