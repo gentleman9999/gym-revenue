@@ -168,11 +168,6 @@ export default defineComponent({
                 label: "Security Role",
             },
             {
-                name: "classification",
-                label: "Classification",
-                transform: (data) => data?.name,
-            },
-            {
                 name: "manager",
                 label: "Manager",
             },

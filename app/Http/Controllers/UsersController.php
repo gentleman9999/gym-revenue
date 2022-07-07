@@ -6,7 +6,6 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\Department;
 use App\Models\Position;
@@ -168,7 +167,6 @@ class UsersController extends Controller
         }
 
         $roles = Role::whereScope($client_id)->get();
-        $classifications = Classification::whereClientId($client_id)->get();
 
         $locations = null;
         if ($user->isClientUser()) {
@@ -191,7 +189,6 @@ class UsersController extends Controller
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
             'roles' => $roles,
-            'classifications' => $classifications,
             'locations' => $locations,
             'availablePositions' => Position::whereClientId($client_id)->select('id', 'name')->get(),
             'availableDepartments' => Department::whereClientId($client_id)->select('id', 'name')->get(),
@@ -263,11 +260,6 @@ class UsersController extends Controller
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
-
-                //redneck join to find out classification name based on ID, will probably refactor this
-                if (! is_null($users[$idx]->classification->value)) {
-                    $users[$idx]->classification->value = Classification::whereId($users[$idx]->classification->value)->first()->title;
-                }
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
