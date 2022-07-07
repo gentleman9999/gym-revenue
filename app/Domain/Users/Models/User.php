@@ -341,7 +341,7 @@ class User extends Authenticatable
         return $this->manager !== null && $this->manager !== '';
     }
 
-    public function department()
+    public function departments()
     {
         return $this->belongsToMany(Department::class)->withPivot('');
     }
