@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('user_departments', function (Blueprint $table) {
+        Schema::create('user_department', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
             $table->foreignUuid('department_id');

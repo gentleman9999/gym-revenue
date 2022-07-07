@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('user_positions', function (Blueprint $table) {
+        Schema::create('user_position', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
             $table->foreignUuid('position_id');

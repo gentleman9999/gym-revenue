@@ -168,6 +168,54 @@
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
 
+            <div class="form-control col-span-2" v-if="clientId">
+                <jet-label for="role_id" value="Select Positions" />
+                <multiselect
+                    v-model="form.positions"
+                    class="py-2"
+                    :disabled="!canEditActiveInputs"
+                    id="positions"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        availablePositions.map((position) => ({
+                            label: position.name,
+                            value: position.id,
+                        }))
+                    "
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error
+                    :message="form.errors.positions"
+                    class="mt-2"
+                />
+            </div>
+
+            <div class="form-control col-span-2" v-if="clientId">
+                <jet-label for="role_id" value="Select Departments" />
+                <multiselect
+                    v-model="form.departments"
+                    class="py-2"
+                    :disabled="!canEditActiveInputs"
+                    id="departments"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        availableDepartments.map((department) => ({
+                            label: department.name,
+                            value: department.id,
+                        }))
+                    "
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error
+                    :message="form.errors.departments"
+                    class="mt-2"
+                />
+            </div>
+
             <!-- Home Club -->
             <div class="form-control col-span-2" v-if="clientId">
                 <jet-label for="home_location_id" value="Home Club" />
@@ -416,8 +464,9 @@ export default {
         "user",
         "clientName",
         "roles",
-        "classifications",
         "locations",
+        "availablePositions",
+        "availableDepartments",
     ],
     emits: ["success"],
     setup(props, { emit }) {
@@ -473,6 +522,8 @@ export default {
                 state: "",
                 zip: "",
                 client_id: props.clientId,
+                positions: [],
+                departments: [],
             };
             //only add clientId when applicable to make user validation rules work better
             if (props.clientId) {

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Clients\Classification;
 use App\Models\Clients\Client;
 use App\Models\Clients\Location;
+use App\Models\Department;
+use App\Models\Position;
 use App\Models\ReadReceipt;
 use App\Models\Team;
 use App\Models\TeamUser;
@@ -139,14 +141,14 @@ class UsersController extends Controller
         }
 
         $roles = Role::whereScope($client_id)->get();
-        $classifications = Classification::whereClientId($client_id)->get();
 
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
             'roles' => $roles,
-            'classifications' => $classifications,
             'clientName' => $client_name,
             'locations' => $locations,
+            'availablePositions' => Position::whereClientId($client_id)->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->get(),
         ]);
     }
 
@@ -193,6 +195,8 @@ class UsersController extends Controller
             'roles' => $roles,
             'classifications' => $classifications,
             'locations' => $locations,
+            'availablePositions' => Position::whereClientId($client_id)->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->get(),
         ]);
     }
 
