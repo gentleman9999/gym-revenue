@@ -1,6 +1,6 @@
 <template>
     <LayoutHeader title="Edit Security Role">
-        <jet-bar-icon type="g0back" fill />
+        <jet-bar-icon type="goback" fill />
         <h2 class="font-semibold text-xl leading-tight">Edit Reminder</h2>
     </LayoutHeader>
 
@@ -9,7 +9,6 @@
             <reminder-form
                 :client-id="$page.props.user.current_client_id"
                 :reminder="reminder"
-                :security-groups="securityGroups"
             />
         </div>
     </div>
@@ -39,10 +38,6 @@ export default defineComponent({
         reminder: {
             type: Object,
             required: true,
-        },
-        securityGroups: {
-            type: Array,
-            default: [],
         },
     },
 });
