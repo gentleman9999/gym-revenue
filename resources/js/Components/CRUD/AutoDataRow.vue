@@ -141,7 +141,7 @@ export default defineComponent({
                 return;
             }
             if (props?.onDoubleClick) {
-                props.onDoubleClick();
+                props.onDoubleClick({ data: props.data });
                 return;
             }
             Inertia.visitInModal(

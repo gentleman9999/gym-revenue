@@ -2,10 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Clients\Client;
-use App\Models\User;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Users\Models\User;
 use Closure;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class EnsureTokenIsValid
 {
@@ -16,9 +19,9 @@ class EnsureTokenIsValid
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return Response|RedirectResponse|JsonResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response|RedirectResponse|JsonResponse
     {
         $token = $request->bearerToken();
         if (! $token) {
@@ -33,7 +36,7 @@ class EnsureTokenIsValid
 
         if ($user->isClientUser()) {
             $this->addClientIdToRequest($request, $user->client_id);
-        } elseif ($user->isCapeAndBayUser()) {
+        } elseif ($user->isAdmin()) {
             $client_id = $request->header($this->client_header);
             if (! $client_id) {
                 return response()->json(['error' => "You must provide a Client Id via the '{$this->client_header}' header"], 400);
@@ -54,12 +57,12 @@ class EnsureTokenIsValid
     {
         $body = $request->all();
 
-        if (count($body) == count($body, COUNT_RECURSIVE)) {
+        if ($this->isStringKeyedArray($body)) {
             $request->merge(['client_id' => $client_id]);
 
             return $request;
         }
-
+        //is an array of objects
         foreach ($body as $idx => $object) {
             $object['client_id'] = $client_id;
             $body[$idx] = $object;
@@ -68,5 +71,14 @@ class EnsureTokenIsValid
         $request->merge($body);
 
         return $request;
+    }
+
+    protected function isStringKeyedArray(array $arr)
+    {
+        if ([] === $arr) {
+            return false;
+        }
+
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }

@@ -21,18 +21,17 @@ class RenameFile
     public function rules()
     {
         return [
-            'id' => 'uuid|required',
             'filename' => 'max:255|required',
-            'client_id' => 'exists:clients,id|required',
+//            'client_id' => 'exists:clients,id|required',
             'user_id' => 'sometimes|nullable|exists:users,id',
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($id, $data, $current_user = null)
     {
-        FileAggregate::retrieve($data['id'])->rename($current_user->id ?? "Auto Generated", $data)->persist();
+        FileAggregate::retrieve($id)->rename($current_user->id ?? "Auto Generated", $data)->persist();
 
-        return File::findOrFail($data['id']);
+        return File::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -42,10 +41,13 @@ class RenameFile
         return $current_user->can('files.update', File::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, $id)
     {
+        $data = $request->validated();
+        $data['client_id'] = $request->user()->currentClientId();//TODO: remove for being injected by middleware
         $file = $this->handle(
-            $request->validated(),
+            $id,
+            $data,
             $request->user(),
         );
 

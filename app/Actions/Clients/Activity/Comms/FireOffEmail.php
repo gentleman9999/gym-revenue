@@ -3,8 +3,8 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\Comms\EmailTemplates;
-use App\Models\User;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -14,8 +14,8 @@ class FireOffEmail
 {
     use AsAction;
 
-    public string $commandSignature = 'email:fire {templateId}';
-    public string $commandDescription = 'Fires off the emails for a given template id.';
+//    public string $commandSignature = 'email:fire {templateId}';
+//    public string $commandDescription = 'Fires off the emails for a given template id.';
 
     private int $batchSize = 100;//MAX IS 1000
 
@@ -54,16 +54,17 @@ class FireOffEmail
         }
     }
 
+    //TODO: fix asCommand. its broken.
     //command for ez development testing
-    public function asCommand(Command $command): void
-    {
-        $this->handle(
-            $command->argument('template_id')
-        );
-        if (AppState::isSimuationMode()) {
-            $command->info('Email skipped sending email because app is in simulation mode');
-        } else {
-            $command->info('Emails Sent!');
-        }
-    }
+//    public function asCommand(Command $command): void
+//    {
+//        $this->handle(
+//            $command->argument('template_id')
+//        );
+//        if (AppState::isSimuationMode()) {
+//            $command->info('Email skipped sending email because app is in simulation mode');
+//        } else {
+//            $command->info('Emails Sent!');
+//        }
+//    }
 }

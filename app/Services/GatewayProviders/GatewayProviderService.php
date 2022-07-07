@@ -2,7 +2,7 @@
 
 namespace App\Services\GatewayProviders;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\GatewayProviders\GatewayProviderType;
 
 abstract class GatewayProviderService

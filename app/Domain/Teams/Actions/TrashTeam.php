@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Domain\Teams\Actions;
+
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\TeamAggregate;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Lorisleiva\Actions\ActionRequest;
+use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
+
+class TrashTeam
+{
+    use AsAction;
+
+    public function handle(string $id)
+    {
+        TeamAggregate::retrieve($id)->trash()->persist();
+
+        return Team::withTrashed()->findOrFail($id);
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+
+        return $current_user->can('teams.trash', Team::class);
+    }
+
+    public function asController(ActionRequest $request, $id): Team
+    {
+        return $this->handle(
+            $id,
+        );
+    }
+
+    public function htmlResponse(Team $team): RedirectResponse
+    {
+        Alert::success("Team '{$team->name}' was sent to the trash.")->flash();
+
+        return Redirect::route('teams');
+    }
+}

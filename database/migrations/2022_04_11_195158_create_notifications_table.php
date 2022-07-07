@@ -22,7 +22,6 @@ class CreateNotificationsTable extends Migration
             $table->string('entity_id')->nullable()->index();
             $table->json('entity')->nullable();
             $table->json('misc')->nullable();
-            $table->timestamp('dismissed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

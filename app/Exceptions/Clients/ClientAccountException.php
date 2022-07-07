@@ -6,9 +6,9 @@ use Exception;
 
 class ClientAccountException extends Exception
 {
-    public static function defaultTeamAlreadyCreated(string $default_team)
+    public static function homeTeamAlreadyCreated(string $home_team)
     {
-        return new self("This account already has a default team - '{$default_team}' set");
+        return new self("This account already has a default team - '{$home_team}' set");
     }
 
     public static function prefixAlreadyCreated(string $prefix, string $default_team)

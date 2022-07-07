@@ -10,12 +10,12 @@
                 v-for="service in availableServices"
             >
                 <input
-                    :id="service.slug"
+                    :id="service.name"
                     type="checkbox"
                     v-model="form.services"
-                    :value="service.slug"
+                    :value="service.name"
                 />
-                <jet-label :for="service.slug" :value="service.feature_name" />
+                <jet-label :for="service.slug" :value="service.value" />
             </div>
             <jet-input-error :message="form.errors.services" class="mt-2" />
         </template>
@@ -69,7 +69,7 @@ export default defineComponent({
             availableServices: props.availableServices,
         });
         const form = useGymRevForm({
-            services: props.services.map((detail) => detail.value),
+            services: props.services,
         });
         let handleSubmit = () =>
             form.dirty().post(route("settings.client-services.update"));
