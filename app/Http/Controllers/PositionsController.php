@@ -2,41 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients\Classification;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
 
-class ClassificationsController extends Controller
+class PositionsController extends Controller
 {
-    protected $rules = [
-        'name' => ['string', 'required'],
-        'id' => ['integer', 'sometimes', 'nullable'],
-        'ability_ids' => ['array', 'sometimes'],
-        'ability_ids.*' => ['array', 'sometimes'],
-    ];
-
     public function index(Request $request)
     {
         $client_id = $request->user()->currentClientId();
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if (request()->user()->cannot('classifications.read', Classification::class)) {
+        if (request()->user()->cannot('positions.read', Position::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
 
-        $classifications = Classification::whereClientId($client_id)
+        $pos = Position::whereClientId($client_id)
             ->filter($request->only('search', 'trashed'))
             ->sort()
             ->paginate(10)
             ->appends(request()->except('page'));
 
-        return Inertia::render('Classifications/Show', [
-            'classifications' => $classifications,
+        return Inertia::render('Positions/Show', [
+            'position' => $pos,
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);
     }
@@ -47,13 +40,13 @@ class ClassificationsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if (request()->user()->cannot('classifications.create', Classification::class)) {
+        if (request()->user()->cannot('positions.create', Position::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
 
-        return Inertia::render('Classifications/Create', [
+        return Inertia::render('Positions/Create', [
         ]);
     }
 
@@ -68,14 +61,14 @@ class ClassificationsController extends Controller
 
             return Redirect::back();
         }
-        if (request()->user()->cannot('classifications.update', Classification::class)) {
+        if (request()->user()->cannot('positions.update', Position::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
 
-        return Inertia::render('Classifications/Edit', [
-            'classification' => Classification::findOrFail($id),
+        return Inertia::render('Positions/Edit', [
+            'position' => Position::findOrFail($id),
         ]);
     }
 
@@ -86,12 +79,12 @@ class ClassificationsController extends Controller
         if (! $client_id) {
             abort(403);
         }
-        if (request()->user()->cannot('classifications.read', Classification::class)) {
+        if (request()->user()->cannot('positions.read', Position::class)) {
             abort(403);
         }
 
-        $classifications = Classification::whereClientId($client_id)->get();
+        $positions = Position::whereClientId($client_id)->get();
 
-        return $classifications;
+        return $positions;
     }
 }

@@ -1,32 +1,29 @@
 <template>
-    <LayoutHeader title="Security Roles" />
-    <page-toolbar-nav title="Security Roles" :links="navLinks" />
+    <LayoutHeader title="Departments" />
+    <page-toolbar-nav title="Departments" :links="navLinks" />
     <gym-revenue-crud
-        base-route="roles"
-        model-name="Role"
-        model-key="role"
+        base-route="departments"
+        model-name="Department"
+        model-key="departments"
         :fields="fields"
-        :resource="roles"
+        :resource="departments"
         :actions="{
-            trash: false,
-            restore: false,
-            delete: {
-                label: 'Delete',
-                handler: ({ data }) => handleClickDelete(data),
+            trash: {
+                handler: ({ data }) => handleClickTrash(data),
             },
         }"
     />
     <confirm
-        title="Really Trash Security Role?"
-        v-if="confirmDelete"
-        @confirm="handleConfirmDelete"
-        @cancel="confirmDelete = null"
+        title="Really Trash Department?"
+        v-if="confirmTrash"
+        @confirm="handleConfirmTrash"
+        @cancel="confirmTrash = null"
     >
-        Are you sure you want to delete Security Role '{{
-            confirmDelete.title
-        }}'
+        Are you sure you want to move Departments '{{ confirmTrash.title }}' to
+        the trash?<BR />
     </confirm>
 </template>
+
 <script>
 import { defineComponent, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
@@ -47,20 +44,19 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["roles", "filters"],
+    props: ["departments", "filters"],
     setup(props) {
-        const confirmDelete = ref(null);
-        const handleClickDelete = (item) => {
-            console.log("click delete", item);
-            confirmDelete.value = item;
+        const confirmTrash = ref(null);
+        const handleClickTrash = (id) => {
+            confirmTrash.value = id;
         };
 
-        const handleConfirmDelete = () => {
-            Inertia.delete(route("roles.delete", confirmDelete.value));
-            confirmDelete.value = null;
+        const handleConfirmTrash = () => {
+            Inertia.delete(route("departments.trash", confirmTrash.value.id));
+            confirmTrash.value = null;
         };
 
-        const fields = ["title", "created_at", "updated_at"];
+        const fields = ["name", "created_at", "updated_at"];
 
         let navLinks = [
             {
@@ -73,11 +69,17 @@ export default defineComponent({
                 label: "Security Roles",
                 href: route("roles"),
                 onClick: null,
-                active: true,
+                active: false,
             },
             {
                 label: "Departments",
                 href: route("departments"),
+                onClick: null,
+                active: true,
+            },
+            {
+                label: "Positions",
+                href: route("positions"),
                 onClick: null,
                 active: false,
             },
@@ -85,9 +87,9 @@ export default defineComponent({
 
         return {
             fields,
-            confirmDelete,
-            handleConfirmDelete,
-            handleClickDelete,
+            confirmTrash,
+            handleConfirmTrash,
+            handleClickTrash,
             Inertia,
             navLinks,
         };

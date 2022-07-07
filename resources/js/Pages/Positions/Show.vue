@@ -1,12 +1,12 @@
 <template>
-    <LayoutHeader title="Classifications" />
-    <page-toolbar-nav title="Classifications" :links="navLinks" />
+    <LayoutHeader title="Positions" />
+    <page-toolbar-nav title="Positions" :links="navLinks" />
     <gym-revenue-crud
-        base-route="classifications"
-        model-name="Classification"
-        model-key="classification"
+        base-route="positions"
+        model-name="Position"
+        model-key="positions"
         :fields="fields"
-        :resource="classifications"
+        :resource="positions"
         :actions="{
             trash: {
                 handler: ({ data }) => handleClickTrash(data),
@@ -14,13 +14,13 @@
         }"
     />
     <confirm
-        title="Really Trash Classification?"
+        title="Really Trash Position?"
         v-if="confirmTrash"
         @confirm="handleConfirmTrash"
         @cancel="confirmTrash = null"
     >
-        Are you sure you want to move Classification '{{ confirmTrash.title }}'
-        to the trash?<BR />
+        Are you sure you want to move Position '{{ confirmTrash.title }}' to the
+        trash?<BR />
     </confirm>
 </template>
 
@@ -44,23 +44,19 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["classifications", "filters"],
+    props: ["positions", "filters"],
     setup(props) {
-        console.log({ classifications: props.classifications });
-
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
         };
 
         const handleConfirmTrash = () => {
-            Inertia.delete(
-                route("classifications.trash", confirmTrash.value.id)
-            );
+            Inertia.delete(route("positions.trash", confirmTrash.value.id));
             confirmTrash.value = null;
         };
 
-        const fields = ["title", "created_at", "updated_at"];
+        const fields = ["name", "created_at", "updated_at"];
 
         let navLinks = [
             {
@@ -76,8 +72,14 @@ export default defineComponent({
                 active: false,
             },
             {
-                label: "Classification",
-                href: route("classifications"),
+                label: "Departments",
+                href: route("departments"),
+                onClick: null,
+                active: false,
+            },
+            {
+                label: "Positions",
+                href: route("positions"),
                 onClick: null,
                 active: true,
             },

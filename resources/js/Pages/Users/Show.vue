@@ -245,8 +245,16 @@ export default defineComponent({
         }
         if (page.props.value.user.current_client_id) {
             navLinks.push({
-                label: "Classification",
-                href: route("classifications"),
+                label: "Departments",
+                href: route("departments"),
+                onClick: null,
+                active: false,
+            });
+        }
+        if (page.props.value.user.current_client_id) {
+            navLinks.push({
+                label: "Positions",
+                href: route("positions"),
                 onClick: null,
                 active: false,
             });
