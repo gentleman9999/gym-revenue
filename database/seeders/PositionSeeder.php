@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Helpers\Uuid;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Position;
+
+use App\Support\Uuid;
 use Illuminate\Database\Seeder;
 
 class PositionSeeder extends Seeder

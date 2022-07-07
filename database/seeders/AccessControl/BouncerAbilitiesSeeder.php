@@ -24,7 +24,7 @@ class BouncerAbilitiesSeeder extends Seeder
 
         $crud_models = collect([
             'users', 'locations', 'leads', 'members', 'files',
-            'teams', 'tasks', 'calendar', 'roles', 'classifications',
+            'teams', 'tasks', 'calendar', 'roles',
             'access_tokens', 'email-templates', 'departments', 'positions',
             'scheduled-campaigns', 'drip-campaigns',
         ]);
@@ -56,13 +56,13 @@ class BouncerAbilitiesSeeder extends Seeder
             VarDumper::dump("Bouncer scoping to $client->name");
 
             /** Account Owner */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Account Owner', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Account Owner', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Account Owner', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Account Owner', $client);
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
 
             /** Regional Admin */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
             $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
 
             /** Location Manager */

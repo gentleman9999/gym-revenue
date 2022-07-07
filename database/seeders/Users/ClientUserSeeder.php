@@ -4,9 +4,7 @@ namespace Database\Seeders\Users;
 
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
-use App\Models\Clients\Classification;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
@@ -21,8 +19,6 @@ class ClientUserSeeder extends Seeder
     public function run()
     {
         $amountOfSalesReps = 5;
-        $amountOfAssociates = 10;
-        $amountOfTrainers = 5;
         $amountOfElse = 2;
         if (env('QUICK_SEED')) {
             $amountOfSalesReps = 1;
@@ -39,7 +35,6 @@ class ClientUserSeeder extends Seeder
 
             /** Find all teams for client and put the names in an array */
             $roles = Role::whereScope($client->id)->get();
-            $classification = Classification::whereClientId($client->id)->get();
 
             /** Collect all teams into an array that so everyone is on every team */
             $team_ids = $client->teams()->pluck('id');
@@ -91,56 +86,6 @@ class ClientUserSeeder extends Seeder
                             'manager' => $manager,
                         ]);
                         \App\Domain\Users\Actions\CreateUser::run($final_data);
-                    }
-                } else {
-                    foreach ($classification as $class) {
-                        if ($class['title'] == 'Club Associate') {
-                            $users = User::factory()
-                                ->count($amountOfAssociates)
-                                ->make([
-                                    'client' => $client->name,
-                                    'role_id' => $role['id'],
-                                    'team_names' => $team_names,
-                                ]);
-                        } elseif ($class['title'] == 'Fitness Trainer' || $class['title'] == 'Personal Trainer') {
-                            $users = User::factory()
-                                ->count($amountOfTrainers)
-                                ->make([
-                                    'client' => $client->name,
-                                    'role_id' => $role['id'],
-                                    'team_names' => $team_names,
-                                ]);
-                        } else {
-                            $users = User::factory()
-                                ->count($amountOfElse)
-                                ->make([
-                                    'client' => $client->name,
-                                    'role_id' => $role['id'],
-                                    'team_names' => $team_names,
-                                ]);
-                        }
-
-                        foreach ($users as $user) {
-                            $client = Client::whereName($user['client'])->first();
-                            $teams = Team::with('locations')->whereIn('name', $user['team_names'])->get();
-                            $team_ids = $teams->pluck('id');
-                            $possible_home_locations = $teams->pluck('locations')->flatten()->keyBy('value')->values()->pluck('value');
-                            if ($possible_home_locations->count() > 0) {
-                                $home_location_id = $possible_home_locations[random_int(0, $possible_home_locations->count() - 1)];
-                            } else {
-                                $home_location_id = null;
-                            }
-
-                            $final_data = array_merge($user->toArray(), [
-                                'client_id' => $client->id,
-                                'password' => 'Hello123!',
-                                'team_ids' => $team_ids,
-                                'home_location_id' => $home_location_id,
-                                'manager' => null,
-                            ]);
-
-                            CreateUser::run($final_data);
-                        }
                     }
                 }
             }

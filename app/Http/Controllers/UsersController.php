@@ -46,7 +46,7 @@ class UsersController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams', 'home_location', 'classification'])
+                $users = User::with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
@@ -58,7 +58,7 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('users.id', $user_ids)
-                    ->with(['teams', 'home_location', 'classification'])
+                    ->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))
                     ->sort()
                     ->paginate(10)
