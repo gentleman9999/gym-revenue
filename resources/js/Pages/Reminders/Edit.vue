@@ -1,15 +1,14 @@
 <template>
     <LayoutHeader title="Edit Security Role">
         <jet-bar-icon type="g0back" fill />
-        <h2 class="font-semibold text-xl leading-tight">Edit Security Role</h2>
+        <h2 class="font-semibold text-xl leading-tight">Edit Reminder</h2>
     </LayoutHeader>
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <security-role-form
+            <reminder-form
                 :client-id="$page.props.user.current_client_id"
-                :availableAbilities="availableAbilities"
-                :role="role"
+                :reminder="reminder"
                 :security-groups="securityGroups"
             />
         </div>
@@ -24,11 +23,11 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import JetBarIcon from "@/Components/JetBarIcon";
-import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
+import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm";
 
 export default defineComponent({
     components: {
-        SecurityRoleForm,
+        ReminderForm,
         LayoutHeader,
         Button,
         JetFormSection,
@@ -37,17 +36,9 @@ export default defineComponent({
         JetBarIcon,
     },
     props: {
-        role: {
+        reminder: {
             type: Object,
             required: true,
-        },
-        availableRoles: {
-            type: Array,
-            default: [],
-        },
-        availableAbilities: {
-            type: Array,
-            default: [],
         },
         securityGroups: {
             type: Array,

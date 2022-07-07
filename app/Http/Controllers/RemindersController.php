@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\SecurityGroupEnum;
 use App\Models\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -20,11 +19,32 @@ class RemindersController extends Controller
             return Redirect::route('dashboard');
         }
         $page_count = 10;
+        $roles = request()->user()->getRoles();
+        $security_group = request()->user()->securityGroup();
+
         $reminders = Reminder::with('client')
                 ->whereUserId($user_id);
 
         return Inertia::render('Reminders/Show', [
             'reminders' => $reminders->paginate($page_count),
+        ]);
+    }
+
+    public function create()
+    {
+        $client_id = request()->user()->currentClientId();
+        if (! $client_id) {
+            return Redirect::route('dashboard');
+        }
+
+        if (request()->user()->cannot('reminders.create', Reminder::class)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+
+            return Redirect::back();
+        }
+
+        return Inertia::render('Reminders/Create', [
+            'user_id' => $client_id,
         ]);
     }
 
@@ -39,34 +59,5 @@ class RemindersController extends Controller
         return Inertia::render('Reminders/Edit', [
             'reminder' => Reminder::find($id),
         ]);
-    }
-
-    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
-    public function export(Request $request)
-    {
-        $client_id = request()->user()->currentClientId();
-
-        if (is_null($client_id)) {
-            abort(403);
-        }
-        $roles = request()->user()->getRoles();
-        $security_group = request()->user()->securityGroup();
-
-        if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
-            $reminders = Reminder::with('client')
-                ->whereClientId($client_id)
-                ->whereUserId(null)
-                ->filter($request->only('search', 'trashed'))
-                ->get();
-        } else {
-            $reminders = Reminder::with('client')
-                ->whereClientId($client_id)
-                ->whereUserId(null)
-                ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
-                ->filter($request->only('search', 'trashed'))
-                ->get();
-        }
-
-        return $reminders;
     }
 }

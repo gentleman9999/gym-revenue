@@ -24,11 +24,11 @@ import JetFormSection from "@/Jetstream/FormSection";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 
-import SecurityRoleForm from "@/Pages/Roles/Partials/RoleForm";
+import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
 
 export default defineComponent({
     components: {
-        SecurityRoleForm,
+        ReminderForm,
         LayoutHeader,
         Button,
         JetFormSection,

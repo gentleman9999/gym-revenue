@@ -2,7 +2,7 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6">
-                <jet-label for="title" value="Name" />
+                <jet-label for="name" value="Name" />
                 <input
                     id="name"
                     type="text"
@@ -13,75 +13,47 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
-                <jet-label for="group" value="Security Group" />
-                <select
+                <jet-label for="description" value="Description" />
+                <input
+                    id="description"
+                    type="text"
                     class="block w-full mt-1"
-                    id="group"
-                    v-model="form.group"
-                >
-                    <option
-                        v-for="{ name, value } in securityGroups"
-                        :value="value"
-                    >
-                        {{ name }}
-                    </option>
-                </select>
-                <jet-input-error :message="form.errors.group" class="mt-2" />
+                    v-model="form.description"
+                    autofocus
+                />
+                <jet-input-error
+                    :message="form.errors.description"
+                    class="mt-2"
+                />
             </div>
-
-            <div class="col-span-6 uppercase font-bold">Abilities</div>
-
-            <div
-                class="col-span-6"
-                v-for="[groupName, availableAbilities] in Object.entries(
-                    groupedAvailableAbilities
-                )"
-            >
-                <div class="grid grid-cols-6">
-                    <div class="flex flex-row col-span-6 items-center pb-4">
-                        <span
-                            class="font-bold uppercase opacity-50 text-sm mr-4"
-                        >
-                            {{ groupName }}
-                        </span>
-                        <!--                        <div class="flex-grow"/>-->
-                        <button
-                            type="button"
-                            class="btn btn-ghost btn-xs opacity-50"
-                            @click="selectAll(groupName)"
-                        >
-                            [Select All]
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-ghost btn-xs opacity-50"
-                            @click="clear(groupName)"
-                        >
-                            [Clear]
-                        </button>
-                    </div>
-
-                    <div
-                        class="flex flex-row items-center gap-4 col-span-6 xl:col-span-3 pb-4"
-                        v-for="availableAbility in availableAbilities"
-                    >
-                        <input
-                            :id="`${availableAbility.name}`"
-                            type="checkbox"
-                            v-model="form.ability_names"
-                            :value="availableAbility.name"
-                        />
-                        <jet-label
-                            :for="`abilities${availableAbility.title}`"
-                            :value="availableAbility.title"
-                        />
-                    </div>
-                </div>
+            <div class="col-span-6">
+                <jet-label for="remind_time" value="Reminder time" />
+                <input
+                    id="remind_time"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.remind_time"
+                    autofocus
+                />
+                <jet-input-error
+                    :message="form.errors.remind_time"
+                    class="mt-2"
+                />
             </div>
-            <jet-input-error
-                :message="form.errors.ability_names"
-                class="mt-2"
-            />
+            <div class="col-span-6">
+                <jet-label for="triggered_at" value="Triggered" />
+                <input
+                    id="triggered_at"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.triggered_at"
+                    autofocus
+                />
+                <jet-input-error
+                    :message="form.errors.triggered_at"
+                    class="mt-2"
+                />
+            </div>
             <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
@@ -110,76 +82,61 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 
-import Button from "@/Components/Button";
-import JetFormSection from "@/Jetstream/FormSection";
-
-import JetInputError from "@/Jetstream/InputError";
-import JetLabel from "@/Jetstream/Label";
+import Button from "@/Components/Button.vue";
+import JetFormSection from "@/Jetstream/FormSection.vue";
+import JetActionMessage from "@/Jetstream/ActionMessage.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useModal } from "@/Components/InertiaModal";
 
 export default {
     components: {
         Button,
+        defineComponent,
         JetFormSection,
-
+        JetActionMessage,
         JetInputError,
         JetLabel,
+        usePage,
     },
     props: {
         clientId: {
             type: String,
             required: true,
         },
-        availableAbilities: {
-            type: Array,
-            default: [],
-        },
-        role: {
+        reminder: {
             type: Object,
-        },
-        securityGroups: {
-            type: Array,
-            default: [],
         },
     },
     setup(props, context) {
-        let role = props.role;
+        let reminder = props.reminder;
         let operation = "Update";
-        if (!role) {
-            role = {
+        if (!reminder) {
+            reminder = {
                 name: "",
                 id: "",
                 client_id: props.clientId,
-                ability_names: [],
-                group: null,
             };
             operation = "Create";
         }
 
         const form = useGymRevForm({
-            name: role.name,
-            id: role.id,
+            name: reminder.name,
+            id: reminder.id,
             client_id: props.clientId,
-            ability_names: getAbilities(),
-            group: role.group,
+            group: reminder.group,
         });
 
-        function getAbilities() {
-            if (role.abilities) {
-                return role.abilities.map((ability) => ability.name);
-            } else {
-                return role.ability_names.map((ability) => ability.name);
-            }
-        }
-
         let handleSubmit = () =>
-            form.dirty().put(route("roles.update", role.id));
+            form.dirty().put(route("reminder.update", reminder.id));
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("roles.store"));
+            handleSubmit = () => form.post(route("reminder.store"));
         }
 
         let groupedAvailableAbilities = computed(() => {
@@ -223,7 +180,7 @@ export default {
             if (modal.value.close) {
                 modal.value.close();
             } else {
-                Inertia.visit(route("roles"));
+                Inertia.visit(route("reminders"));
             }
         };
 
