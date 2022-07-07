@@ -189,11 +189,6 @@ export default defineComponent({
                 },
                 "role",
                 {
-                    name: "classification",
-                    label: "Classification",
-                    transform: (data) => data?.title,
-                },
-                {
                     name: "manager",
                     label: "Manager",
                 },
