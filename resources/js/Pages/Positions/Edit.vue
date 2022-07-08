@@ -8,7 +8,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <department-form
                 :client-id="$page.props.user.current_client_id"
-                :department="department"
+                :position="position"
             />
         </div>
     </div>
@@ -35,7 +35,7 @@ export default defineComponent({
         JetBarIcon,
     },
     props: {
-        department: {
+        position: {
             type: Object,
             required: true,
         },

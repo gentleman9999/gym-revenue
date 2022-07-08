@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients\Classification;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -24,7 +23,7 @@ class DepartmentsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if (request()->user()->cannot('departments.read', Classification::class)) {
+        if (request()->user()->cannot('departments.read', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -48,7 +47,7 @@ class DepartmentsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        if (request()->user()->cannot('departments.create', Classification::class)) {
+        if (request()->user()->cannot('departments.create', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -69,14 +68,14 @@ class DepartmentsController extends Controller
 
             return Redirect::back();
         }
-        if (request()->user()->cannot('departments.update', Classification::class)) {
+        if (request()->user()->cannot('departments.update', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
 
         return Inertia::render('Departments/Edit', [
-            'classification' => Classification::findOrFail($id),
+            'department' => Department::findOrFail($id),
         ]);
     }
 
@@ -87,11 +86,11 @@ class DepartmentsController extends Controller
         if (! $client_id) {
             abort(403);
         }
-        if (request()->user()->cannot('departments.read', Classification::class)) {
+        if (request()->user()->cannot('departments.read', Department::class)) {
             abort(403);
         }
 
-        $departments = Classification::whereClientId($client_id)->get();
+        $departments = Department::whereClientId($client_id)->get();
 
         return $departments;
     }
