@@ -136,6 +136,14 @@ class UserProjector extends Projector
 
             $user->updateOrFail($data);
 
+            if (array_key_exists('positions', $data)) {
+                $user->positions()->sync($data['positions']);
+            }
+
+            if (array_key_exists('departments', $data)) {
+                $user->departments()->sync($data['departments']);
+            }
+
             $details = [
                 'contact_preference' => $data['contact_preference'] ?? null,
             ];

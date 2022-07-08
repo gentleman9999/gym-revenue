@@ -68,6 +68,8 @@ class UpdateUser implements UpdatesUserProfileInformation
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
 //            'home_location_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?
             'home_location_id' => ['sometimes', 'nullable'], //should be required if client_id provided. how to do?
+            'departments' => ['sometimes', 'nullable'],
+            'positions' => ['sometimes', 'nullable'],
         ];
     }
 

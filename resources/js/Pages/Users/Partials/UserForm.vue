@@ -498,6 +498,8 @@ export default {
             user.phone = user["phone"];
             user.start_date = user["start_date"];
             user.end_date = user["end_date"];
+            user.positions = user["positions"];
+            user.departments = user["departments"];
             user.termination_date = user["termination_date"];
             user.notes = { title: "", note: "" };
         } else {
