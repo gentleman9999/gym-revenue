@@ -23,7 +23,7 @@ class UsersController extends Controller
         $client_id = $request->user()->currentClientId();
 
         //Default Render VARs
-        $clubs = [];
+        $locations = [];
         $teams = [];
         $clientName = 'Cape & Bay/GymRevenue';
         $filterKeys = ['search', 'club', 'team', 'roles',];
@@ -38,7 +38,7 @@ class UsersController extends Controller
 
             $is_default_team = $client->default_team_id == $current_team->id;
 
-            $clubs = Location::whereClientId($client_id)->get();
+            $locations = Location::whereClientId($client_id)->get();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
             $clientName = $client->name;
 
@@ -102,7 +102,7 @@ class UsersController extends Controller
         return Inertia::render('Users/Show', [
             'users' => $users,
             'filters' => $request->all($filterKeys),
-            'clubs' => $clubs,
+            'clubs' => $locations,
             'teams' => $teams,
             'clientName' => $clientName,
             'potentialRoles' => $roles,

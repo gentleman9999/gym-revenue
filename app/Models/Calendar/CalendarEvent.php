@@ -30,7 +30,7 @@ class CalendarEvent extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'owner_id', 'event_completion'];
+    protected $fillable = ['id', 'client_id', 'title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'owner_id', 'event_completion', 'location_id'];
 
     public function client()
     {
@@ -75,7 +75,8 @@ class CalendarEvent extends Model
                 $query->where('title', 'like', '%' . $search . '%');
             });
         })->when($filters['start'] ?? null, function ($query) use ($filters) {
-            $query->whereBetween('start', $this->fixDate([$filters['start'],$filters['end']]));
+            $end = $filters['end'] ?? Carbon::parse($filters['start'], 'yyyy-mm-dd')->addDays(1);//add one day
+            $query->whereBetween('start', $this->fixDate([$filters['start'],$end]));
         })->when($filters['viewUser'] ?? null, function ($query) use ($filters) {
             $query->where(function ($query) use ($filters) {
                 $query->where('attendees', 'like', '%"id": ' . $filters['viewUser'] . ',%');

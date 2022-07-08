@@ -38,6 +38,7 @@ class UpdateCalendarEvent
             'lead_attendees' => ['sometimes', 'array'],
             'member_attendees' => ['sometimes', 'array'],
             'my_reminder' => ['sometimes', 'int'],
+            'location_id' => ['required', 'bigint'],
         ];
     }
 
