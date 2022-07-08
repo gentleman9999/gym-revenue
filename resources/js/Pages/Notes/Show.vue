@@ -56,7 +56,7 @@ export default defineComponent({
             confirmDelete.value = null;
         };
 
-        const fields = ["title", "note", "created_by_user_id", "active"];
+        const fields = ["title", "note", "active"];
 
         let navLinks = [
             {
