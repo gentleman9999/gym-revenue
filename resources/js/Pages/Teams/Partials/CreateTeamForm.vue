@@ -48,7 +48,7 @@
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 

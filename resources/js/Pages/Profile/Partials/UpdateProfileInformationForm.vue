@@ -169,7 +169,7 @@
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
 
-            <!--State-->
+            <!-- State -->
             <div class="col-span-2 sm:col-span-2">
                 <jet-label for="state" value="State" />
                 <multiselect
@@ -314,7 +314,7 @@ function updatePhotoPreview() {
     const reader = new FileReader();
 
     reader.onload = (e) => {
-        photoPreview = e.target.result;
+        photoPreview.value = e.target.result;
     };
 
     reader.readAsDataURL(photo);
@@ -324,7 +324,7 @@ function deletePhoto() {
     Inertia.delete(route("current-user-photo.destroy"), {
         preserveScroll: true,
         onSuccess: () => {
-            photoPreview = null;
+            photoPreview.value = null;
             clearPhotoFileInput();
         },
     });

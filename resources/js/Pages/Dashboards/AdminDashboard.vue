@@ -43,20 +43,23 @@
                             >
                                 <tbody>
                                     <tr
-                                        v-for="(team, id) in teams"
+                                        v-for="team in teams"
+                                        :key="team.id"
                                         class="hover"
                                     >
                                         <td class="">
-                                            {{ team["team_name"] }}
+                                            {{ team.name }}
                                         </td>
                                         <td class="">
-                                            ({{ team["client_name"] }})
+                                            <template v-if="team?.client?.name">
+                                                ({{ team?.client?.name }})
+                                            </template>
                                         </td>
                                         <td class="">
                                             <button
                                                 type="button"
                                                 class="btn btn-success"
-                                                @click="switchToTeam(id)"
+                                                @click="switchToTeam(team.id)"
                                             >
                                                 Go
                                             </button>

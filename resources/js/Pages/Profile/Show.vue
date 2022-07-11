@@ -29,7 +29,7 @@
                 <show-api-token-form
                     class="mt-10 sm:mt-0"
                     v-if="!('is_being_impersonated' in $page.props.user)"
-                    :token="$page.props.user.access_token"
+                    :token="addlData['token']"
                 />
                 <jet-form-section v-else>
                     <template #title> API Access </template>
@@ -126,7 +126,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";

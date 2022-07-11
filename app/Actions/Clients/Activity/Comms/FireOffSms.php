@@ -3,8 +3,8 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\Comms\SmsTemplates;
-use App\Models\User;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -14,8 +14,8 @@ class FireOffSms
 {
     use AsAction;
 
-    public string $commandSignature = 'sms:fire {templateId}';
-    public string $commandDescription = 'Fires off the SMS for a given template id.';
+//    public string $commandSignature = 'sms:fire {templateId}';
+//    public string $commandDescription = 'Fires off the SMS for a given template id.';
 
     protected $tokens = ['name'];
 
@@ -59,15 +59,16 @@ class FireOffSms
     }
 
     //command for ez development testing
-    public function asCommand(Command $command): void
-    {
-        $this->handle(
-            $command->argument('sms_campaign_id')
-        );
-        if (AppState::isSimuationMode()) {
-            $command->info('SMS skipped because app is in simulation mode');
-        } else {
-            $command->info('SMS Sent!');
-        }
-    }
+    //TODO: fix as command. its broken.
+//    public function asCommand(Command $command): void
+//    {
+//        $this->handle(
+//            $command->argument('sms_campaign_id')
+//        );
+//        if (AppState::isSimuationMode()) {
+//            $command->info('SMS skipped because app is in simulation mode');
+//        } else {
+//            $command->info('SMS Sent!');
+//        }
+//    }
 }

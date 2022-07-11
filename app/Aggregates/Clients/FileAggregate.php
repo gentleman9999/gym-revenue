@@ -12,7 +12,6 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class FileAggregate extends AggregateRoot
 {
-    protected string $default_team = '';
     protected array $teams = [];
 
     protected static bool $allowConcurrency = true;

@@ -3,7 +3,7 @@
 namespace App\Actions\Simulation;
 
 use App\Actions\Endusers\Members\BatchUpsertMemberApi;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use Illuminate\Console\Command;

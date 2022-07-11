@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Comm;
 
+use App\Domain\Clients\Models\Client;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Client;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class EmailTemplatesController extends Controller
         if ((! is_null($client_id))) {
             // Get the current client or its cape and bay
             $current_team = request()->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+            $client = Client::find($client_id);
 
             // Get the correct Model
             $template_model = ($type == 'email') ? new EmailTemplates() : new SmsTemplates();

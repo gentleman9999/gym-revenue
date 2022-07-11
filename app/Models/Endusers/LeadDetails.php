@@ -30,7 +30,7 @@ class LeadDetails extends Model
 
     public function client()
     {
-        return $this->belongsTo('App\Models\Clients\Client', 'client_id', 'id');
+        return $this->belongsTo('App\Domain\Clients\Models\Client', 'client_id', 'id');
     }
 
     public function lead()

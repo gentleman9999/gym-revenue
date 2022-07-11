@@ -280,7 +280,7 @@ const drops = ref({
         4: "4 Days",
     },
 });
-watch([reset], () => {
+watch([props.reset], () => {
     if (reset.value) {
         currentQuestion.value = 1;
         selectedBodyBand.value = "";

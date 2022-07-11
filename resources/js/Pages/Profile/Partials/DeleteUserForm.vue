@@ -66,6 +66,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
 import JetDialogModal from "@/Jetstream/DialogModal.vue";
 
@@ -81,7 +82,7 @@ const form = useGymRevForm({
 const passwordInput = ref(null);
 
 const confirmUserDeletion = () => {
-    confirmingUserDeletion = true;
+    confirmingUserDeletion.value = true;
 
     setTimeout(() => passwordInput.$refs.input.focus(), 250);
 };
@@ -96,7 +97,7 @@ const deleteUser = () => {
 };
 
 function closeModal() {
-    confirmingUserDeletion = false;
+    confirmingUserDeletion.value = false;
     form.reset();
 }
 </script>

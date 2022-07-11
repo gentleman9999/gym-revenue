@@ -2,8 +2,8 @@
 
 namespace App\Mail\EndUser;
 
+use App\Domain\Users\Models\User;
 use App\Models\Endusers\Lead;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Clients\Files;
 
+use App\Http\Middleware\InjectClientId;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -41,6 +42,11 @@ class CreateFiles
         }
 
         return $files;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

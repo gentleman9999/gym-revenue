@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Client;
 use App\Models\Clients\Location;
-use App\Models\Team;
-use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
@@ -16,38 +17,18 @@ use Prologue\Alerts\Facades\Alert;
 
 class TeamController extends Controller
 {
-    protected $rules = [
-        'name' => ['required', 'max:50'],
-        'user_id' => ['sometimes', 'exists:users,id'],
-        'personal_team' => ['sometimes', 'boolean'],
-        'default_team' => ['sometimes', 'boolean'],
-        'locations' => ['sometimes', 'array'],
-    ];
-
     public function index(Request $request)
     {
         $current_user = $request->user();
         $client_id = $current_user->currentClientId();
-        $current_team = request()->user()->currentTeam()->first();
         //   $users = $current_team->team_users()->get();
-        $users = User::with(['teams', 'home_location'])->whereClientId($client_id)->get();
+        $users = User::with(['teams', 'home_location'])->get();
 
-        if ($client_id) {
-            $client = Client::with('teams')->find($client_id);
-            $team_ids = $client->teams()->pluck('id');
-            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs = Location::whereClientId($client_id)->get();
-        } elseif ($current_user->isCapeAndBayUser()) {
-            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-            $clubs = [];
-        }
+        $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
+        $clubs = Location::whereClientId($client_id)->get();
 
 
         return Inertia::render('Teams/List', [
-//            'teams' => Team::filter($request->only('search', 'club', 'team', 'users'))
-//                ->sort()
-//                ->paginate(10)
-//                ->appends(request()->except('page')),
             'filters' => $request->all('search', 'club', 'team', 'users'),
             'clubs' => $clubs ?? null,
             'teams' => $teams ?? null,
@@ -72,7 +53,7 @@ class TeamController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $teamId
-     * @return \Inertia\Response
+     * @return \Inertia\Response | RedirectResponse
      */
     public function edit(Request $request, $teamId)
     {
@@ -93,20 +74,18 @@ class TeamController extends Controller
 
         $availableUsers = [];
         $availableLocations = [];
-        $users = User::whereHas('teams', function ($query) use ($current_team) {
-            return $query->where('teams.id', '=', $current_team->id);
-        })->get();
+        $users = $team->users;
+
+        $availableUsers = User::get();
 
         if ($client_id) {
-            $availableUsers = User::whereClientId($client_id)->get();
-            if ($current_user->isCapeAndBayUser()) {
+            if ($current_user->is_cape_and_bay_user) {
                 //if cape and bay user, add all the non client associated capeandbay users
-                $availableUsers = $availableUsers->merge(User::whereClientId(null)->where('email', 'like', '%@capeandbay.com')->get());
+                $availableUsers = $availableUsers->merge(User::whereClientId(null)->get());
             }
-            $availableLocations = $team->isClientsDefaultTeam() ? [] : Location::whereClientId($client_id)->get();
-        } elseif ($current_user->isCapeAndBayUser()) {
+            $availableLocations = $team->home_team ? [] : Location::whereClientId($client_id)->get();
+        } elseif ($current_user->is_cape_and_bay_user) {
             //look for users that aren't client users
-            $availableUsers = User::whereClientId(null)->get();
         }
 
         return Jetstream::inertia()->render($request, 'Teams/Edit', [
@@ -141,7 +120,7 @@ class TeamController extends Controller
         $team_users = $current_team->team_users()->get();
         $non_admin_users = [];
         foreach ($team_users as $team_user) {
-            if ($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN) {
+            if ($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN && ! $team_user->is_cape_and_bay_user) {
                 $non_admin_users[] = $team_user;
             }
         }
@@ -152,7 +131,7 @@ class TeamController extends Controller
             $data['client'] = Client::find($first_user->client->id);
         }
 
-        if (request()->user()->isCapeAndBayUser()) {
+        if (request()->user()->is_cape_and_bay_user) {
             $data['users'] = $team_users;
         } else {
             $data['users'] = $non_admin_users;
@@ -164,17 +143,7 @@ class TeamController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
-        $current_user = $request->user();
-        $client_id = $current_user->currentClientId();
-        $current_team = request()->user()->currentTeam()->first();
-
-        if ($client_id) {
-            $client = Client::with('teams')->find($client_id);
-            $team_ids = $client->teams()->pluck('id');
-            $teams = Team::whereIn('id', $team_ids)->filter($request->only('search', 'club', 'team', 'users'))->get();
-        } elseif ($current_user->isCapeAndBayUser()) {
-            $teams = Team::find($current_team->id)->filter($request->only('search', 'club', 'team', 'users'))->get();
-        }
+        $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
 
         return $teams;
     }

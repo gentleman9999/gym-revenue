@@ -123,7 +123,7 @@
                         <div
                             class="flex items-center justify-between"
                             v-for="user in team.users.filter(
-                                (user) => user.id !== team.owner.id
+                                (user) => user.id !== team.owner?.id
                             )"
                             :key="user.id"
                         >
@@ -326,7 +326,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
@@ -373,12 +373,12 @@ const addTeamMemberForm = useGymRevForm({
     emails: [],
 });
 
-updateRoleForm = useGymRevForm({
+const updateRoleForm = useGymRevForm({
     role: null,
 });
 
-leaveTeamForm = useGymRevForm();
-removeTeamMemberForm = useGymRevForm();
+const leaveTeamForm = useGymRevForm();
+const removeTeamMemberForm = useGymRevForm();
 
 const currentlyManagingRole = ref(false);
 const managingRoleFor = ref(null);
@@ -457,9 +457,7 @@ const availableUsersToJoinTeam = computed({
     get() {
         const availableUsersToJoinTeam =
             props.availableUsers?.filter(
-                (user) =>
-                    !userIds.includes(user.id) &&
-                    user.id !== props.team.owner.id
+                (user) => !userIds.value.includes(user.id)
             ) || [];
         return availableUsersToJoinTeam || [];
     },

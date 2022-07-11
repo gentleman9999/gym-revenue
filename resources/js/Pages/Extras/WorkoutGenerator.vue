@@ -55,13 +55,13 @@ library.add(faSmile, faSmileWink);
 
 const props = defineProps({
     core: {
-        type: any,
+        type: null,
     },
     upper: {
-        type: any,
+        type: null,
     },
     lower: {
-        type: any,
+        type: null,
     },
 });
 
@@ -738,9 +738,9 @@ const getSchedule = computed({
 });
 onMounted(() => {
     console.log("WorkoutGeneratorContainer mounted!", {
-        core: core.value,
-        upper: upper.value,
-        lower: lower.value,
+        core: props.core.value,
+        upper: props.upper.value,
+        lower: props.lower.value,
     });
 });
 </script>

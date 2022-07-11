@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -12,19 +12,19 @@ class UserPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param \App\Models\User $user
+     * @param \App\Domain\Users\Models\User $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.view', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.view', User::class);
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\User $model
+     * @param \App\Domain\Users\Models\User $user
+     * @param \App\Domain\Users\Models\User $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, User $model)
@@ -35,7 +35,7 @@ class UserPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param \App\Models\User $user
+     * @param \App\Domain\Users\Models\User $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function create(User $user, User $model)
@@ -44,66 +44,64 @@ class UserPolicy
     // is correct.
     public function create(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.create', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.create', User::class);
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\User $model
+     * @param \App\Domain\Users\Models\User $user
+     * @param \App\Domain\Users\Models\User $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function update(User $user, User $model)
     public function update(User $user)
     {
-        return $user->can('users.update', $user->currentTeam()->first());
-
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.update', $user->currentTeam()->first());
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.update', $user->currentTeam()->first());
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\User $model
+     * @param \App\Domain\Users\Models\User $user
+     * @param \App\Domain\Users\Models\User $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function delete(User $user, User $model)
     public function delete(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.trash', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.trash', User::class);
     }
 
     /**
      * Determine whether the user can restore the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\User $model
+     * @param \App\Domain\Users\Models\User $user
+     * @param \App\Domain\Users\Models\User $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
 //    public function restore(User $user, User $model)
     public function restore(User $user)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.restore', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.restore', User::class);
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\User $model
+     * @param \App\Domain\Users\Models\User $user
+     * @param \App\Domain\Users\Models\User $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, User $model)
     {
-        return $user->isAccountOwner() || $user->isCapeAndBayUser() || $user->can('users.delete', User::class);
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.delete', User::class);
     }
 
     /**
      * Determine whether the user can upload files.
      *
-     * @param \App\User $user
+     * @param User $user
      * @return mixed
      */
     public function uploadFiles(User $user)

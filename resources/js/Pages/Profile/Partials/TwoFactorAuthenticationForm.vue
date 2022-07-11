@@ -169,7 +169,7 @@ function disableTwoFactorAuthentication() {
 
 const twoFactorEnabled = computed({
     get() {
-        return !enabling.value && page.props.user.two_factor_enabled;
+        return !enabling.value && page.props.value.user.two_factor_enabled;
     },
 });
 </script>

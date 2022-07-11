@@ -255,9 +255,8 @@
     </div>
 </template>
 
-<script>
-import { ref, watch, defineEmits } from "vue";
-import { computed } from "@vue/reactivity";
+<script setup>
+import { ref, watch, defineEmits, defineProps, computed } from "vue";
 import SlideUpDown from "vue3-slide-up-down";
 import { jsPDF } from "jspdf";
 import { library } from "@fortawesome/fontawesome-svg-core";

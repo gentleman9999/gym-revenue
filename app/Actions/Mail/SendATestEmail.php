@@ -4,7 +4,7 @@ namespace App\Actions\Mail;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
-use App\Models\Clients\ClientDetail;
+use App\Domain\Clients\Models\ClientDetail;
 use App\Models\Comms\EmailTemplates;
 use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use Lorisleiva\Actions\Concerns\AsAction;

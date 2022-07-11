@@ -90,7 +90,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
 import { usePage } from "@inertiajs/inertia-vue3";
