@@ -137,11 +137,19 @@ class UserProjector extends Projector
             $user->updateOrFail($data);
 
             if (array_key_exists('positions', $data)) {
-                $user->positions()->sync($data['positions']);
+                if (count($data) == count($data, COUNT_RECURSIVE)) {
+                    $user->positions()->sync($data['positions']);
+                } else {
+                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                }
             }
 
             if (array_key_exists('departments', $data)) {
-                $user->departments()->sync($data['departments']);
+                if (count($data) == count($data, COUNT_RECURSIVE)) {
+                    $user->departments()->sync($data['departments']);
+                } else {
+                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                }
             }
 
             $details = [
