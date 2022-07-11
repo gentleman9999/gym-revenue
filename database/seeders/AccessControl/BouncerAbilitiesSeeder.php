@@ -3,9 +3,9 @@
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Leads\Models\Lead;
+use App\Domain\Roles\Role;
 use App\Domain\Users\Models\User;
-use App\Models\Endusers\Lead;
-use App\Models\Role;
 use Bouncer;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -23,8 +23,9 @@ class BouncerAbilitiesSeeder extends Seeder
         Bouncer::allow('Admin')->everything(); // I mean....right?
 
         $crud_models = collect([
-            'users', 'locations', 'leads', 'members', 'files', 'teams', 'tasks', 'calendar',
-            'roles', 'classifications', 'access_tokens', 'email-templates', 'scheduled-campaigns', 'drip-campaigns',
+            'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
+            'files', 'teams', 'tasks', 'calendar', 'roles', 'classifications', 'access_tokens',
+            'email-templates', 'scheduled-campaigns', 'drip-campaigns',
         ]);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
@@ -54,8 +55,15 @@ class BouncerAbilitiesSeeder extends Seeder
             VarDumper::dump("Bouncer scoping to $client->name");
 
             /** Account Owner */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Account Owner', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Account Owner', $client);
+            $this->allowReadInGroup([
+                'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
+            ], 'Account Owner', $client);
+            $this->allowEditInGroup([
+                'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams', 'calendar',
+                'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
+            ], 'Account Owner', $client);
+
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
 
             /** Regional Admin */
@@ -76,7 +84,7 @@ class BouncerAbilitiesSeeder extends Seeder
             $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar'], 'Employee', $client);
             $this->allowEditInGroup(['leads', 'tasks'], 'Employee', $client);
 
-            $roles_allowed_to_contact_leads = ['Location Manager', 'Sales Rep', 'Employee'];
+            $roles_allowed_to_contact_leads = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
             foreach ($roles_allowed_to_contact_leads as $role) {
                 VarDumper::dump("Allowing $role to contact leads for teams");
                 Bouncer::allow($role)->to('leads.contact', Lead::class);

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Roles\Role;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Role;
 use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -64,16 +64,11 @@ class RolesController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(Role $role)
     {
         $client_id = request()->user()->currentClientId();
         if (! $client_id) {
             return Redirect::route('dashboard');
-        }
-        if (! $id) {
-            Alert::error("No Security Role ID provided")->flash();
-
-            return Redirect::back();
         }
         if (request()->user()->cannot('roles.update', Role::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -81,13 +76,12 @@ class RolesController extends Controller
             return Redirect::back();
         }
 
-        $role = Role::findOrFail($id)->toArray();
-        $role['abilities'] = Bouncer::role()->find($id)->getAbilities()->toArray();
+        $role = $role->toArray();
+        $role['abilities'] = Bouncer::role()->find($role['id'])->getAbilities()->toArray();
 
         return Inertia::render('Roles/Edit', [
             'availableAbilities' => Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']),
             'role' => $role,
-            'abilities' => Bouncer::role()->find($id)->getAbilities(),
             'securityGroups' => collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function ($s) {
                 return ['value' => $s->value, 'name' => $s->name];
             }),

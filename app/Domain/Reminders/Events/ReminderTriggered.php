@@ -11,6 +11,7 @@ class ReminderTriggered extends GymRevCrudEvent
 
     public function __construct(string $id)
     {
+        parent::__construct();
         $this->id = $id;
     }
 

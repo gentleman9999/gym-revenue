@@ -112,8 +112,7 @@ export default defineComponent({
             },
             {
                 label: "Leads",
-                href: "#",
-                onClick: comingSoon,
+                href: route("data.leads"),
                 active: false,
             },
             {

@@ -107,19 +107,19 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Actions\Endusers\Leads\CreateLead::class)->name('data.leads.store');
-        Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
-        Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{id}', \App\Actions\Endusers\Leads\UpdateLead::class)->name('data.leads.update');
+        Route::post('/create', \App\Domain\Leads\Actions\CreateLead::class)->name('data.leads.store');
+        Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
+        Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
+        Route::put('/{lead}', \App\Domain\Leads\Actions\UpdateLead::class)->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
-        Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
+        Route::post('/contact/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
-        Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
+        Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
-        Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
-        Route::delete('/delete/{id}', \App\Actions\Endusers\Leads\TrashLead::class)->name('data.leads.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Leads\RestoreLead::class)->name('data.leads.restore');
-        Route::get('/view/{id}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
+        Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
+        Route::delete('/delete/{lead}', \App\Domain\Leads\Actions\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{lead}/restore', \App\Domain\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
+        Route::get('/view/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
 
@@ -191,8 +191,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
     Route::post('/', \App\Domain\Teams\Actions\CreateTeam::class)->name('teams.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
-    Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
+    Route::get('/edit/{team}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
+    Route::get('/view/{team}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
     Route::post('/{team}/members', \App\Domain\Teams\Actions\AddOrInviteTeamMembers::class)->name('team-member.store');
     Route::delete('/{team}/{teamMemberId}', \App\Domain\Teams\Actions\RemoveTeamMember::class)->name('team-members.destroy');
@@ -209,12 +209,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
 Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function () {
     Route::get('/', \App\Http\Controllers\RolesController::class . '@index')->name('roles');
     Route::get('/create', \App\Http\Controllers\RolesController::class . '@create')->name('roles.create');
-    Route::post('/', \App\Actions\Clients\Roles\CreateRole::class)->name('roles.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\RolesController::class . '@edit')->name('roles.edit');
-    Route::put('/{id}', \App\Actions\Clients\Roles\UpdateRole::class)->name('roles.update');
-    Route::delete('/{id}', \App\Actions\Clients\Roles\TrashRole::class)->name('roles.trash');
-    Route::delete('/{id}/force', \App\Actions\Clients\Roles\DeleteRole::class)->name('roles.delete');
-    Route::post('/{id}/restore', \App\Actions\Clients\Roles\RestoreRole::class)->name('roles.restore');
+    Route::post('/', \App\Domain\Roles\Actions\CreateRole::class)->name('roles.store');
+    Route::get('/edit/{role}', \App\Http\Controllers\RolesController::class . '@edit')->name('roles.edit');
+    Route::put('/{role}', \App\Domain\Roles\Actions\UpdateRole::class)->name('roles.update');
+    Route::delete('/{role}', \App\Domain\Roles\Actions\DeleteRole::class)->name('roles.delete');
     Route::get('/export', \App\Http\Controllers\RolesController::class . '@export')->name('roles.export');
 });
 

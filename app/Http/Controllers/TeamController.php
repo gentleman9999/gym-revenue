@@ -55,7 +55,7 @@ class TeamController extends Controller
      * @param int $teamId
      * @return \Inertia\Response | RedirectResponse
      */
-    public function edit(Request $request, $teamId)
+    public function edit(Request $request, Team $team)
     {
         if (request()->user()->cannot('teams.update', Team::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -63,14 +63,9 @@ class TeamController extends Controller
             return Redirect::back();
         }
 
-        $team = Jetstream::newTeamModel()->with('details')->findOrFail($teamId);
-//        Gate::authorize('view', $team);
-
         $current_user = $request->user();
 
         $client_id = $current_user->currentClientId();
-        $current_team = $current_user->currentTeam()->first();
-
 
         $availableUsers = [];
         $availableLocations = [];
@@ -106,7 +101,7 @@ class TeamController extends Controller
         ]);
     }
 
-    public function view($teamId)
+    public function view(Team $team)
     {
         if (request()->user()->cannot('teams.read', Team::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -114,10 +109,9 @@ class TeamController extends Controller
             return Redirect::back();
         }
 
-        $current_team = Team::find($teamId);
-        $data['team'] = $current_team;
+        $data['team'] = $team;
 
-        $team_users = $current_team->team_users()->get();
+        $team_users = $team->team_users()->get();
         $non_admin_users = [];
         foreach ($team_users as $team_user) {
             if ($team_user->user->securityGroup() !== SecurityGroupEnum::ADMIN && ! $team_user->is_cape_and_bay_user) {
