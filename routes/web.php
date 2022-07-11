@@ -221,12 +221,12 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('departments')->group(function () {
     Route::get('/', \App\Http\Controllers\DepartmentsController::class . '@index')->name('departments');
     Route::get('/create', \App\Http\Controllers\DepartmentsController::class . '@create')->name('departments.create');
-    //Route::post('/', \App\Actions\Clients\Classifications\CreateClassification::class)->name('departments.store');
+    Route::post('/', \App\Domain\Departments\Actions\CreateDepartment::class)->name('departments.store');
     Route::get('/edit/{id}', \App\Http\Controllers\DepartmentsController::class . '@edit')->name('departments.edit');
-    //Route::put('/{id}', \App\Actions\Clients\Classifications\UpdateClassification::class)->name('departments.update');
-    //Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('departments.trash');
-    //Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('departments.delete');
-    //Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('departments.restore');
+    Route::put('/{department}', \App\Domain\Departments\Actions\UpdateDepartment::class)->name('departments.update');
+    Route::delete('/{department}', \App\Domain\Departments\Actions\TrashDepartment::class)->name('departments.trash');
+    Route::delete('/{department}/force', \App\Domain\Departments\Actions\DeleteDepartment::class)->name('departments.delete');
+    Route::post('/{department}/restore', \App\Domain\Departments\Actions\RestoreDepartment::class)->name('departments.restore');
     Route::get('/export', \App\Http\Controllers\DepartmentsController::class . '@export')->name('classifications.export');
 });
 

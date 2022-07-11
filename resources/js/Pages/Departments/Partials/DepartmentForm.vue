@@ -29,7 +29,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
+                :disabled="form.processing"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -68,7 +68,7 @@ export default {
         let operation = "Update";
         if (!department) {
             department = {
-                title: "",
+                name: "",
                 id: null,
                 client_id: props.clientId,
             };
