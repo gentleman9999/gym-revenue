@@ -204,6 +204,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
     Route::post('/client-services', \App\Domain\Clients\Actions\SetClientServices::class)->name('settings.client-services.update');
     Route::put('/social-media-set', \App\Domain\Clients\Actions\UpdateSocialMedias::class)->name('settings.social-media.update');
+    Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
 

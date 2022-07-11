@@ -33,6 +33,8 @@
 
                 <jet-section-border />
             </div>
+
+            <file-manager />
         </div>
     </div>
 </template>
@@ -44,6 +46,7 @@ import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import ClientServicesForm from "./Partials/ClientServicesForm.vue";
 import CommPrefForm from "./Partials/CommPrefForm.vue";
 import SocialMediaForm from "./Partials/SocialMediaForm.vue";
+import FileManager from "./Partials/FileManager.vue";
 
 export default defineComponent({
     components: {
@@ -52,6 +55,7 @@ export default defineComponent({
         ClientServicesForm,
         CommPrefForm,
         SocialMediaForm,
+        FileManager,
     },
     props: {
         services: {

@@ -18,6 +18,12 @@ class ClientSettingsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
+
+        if (request()->user()->cannot('client.read', Client::class)) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+
+            return Redirect::back();
+        }
         $client = Client::with(['trial_membership_types', 'locations'])->find($client_id);
 
         $test = [

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
@@ -62,6 +63,10 @@ class Role extends \Silber\Bouncer\Database\Role
                 break;
             case 'task':
                 $entity = Task::class;
+
+                break;
+            case 'client':
+                $entity = Client::class;
 
                 break;
         }
