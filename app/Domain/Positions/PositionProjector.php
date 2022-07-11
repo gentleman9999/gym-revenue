@@ -2,10 +2,10 @@
 
 namespace App\Domain\Positions;
 
-use App\Domain\Audiences\Events\AudienceTrashed;
 use App\Domain\Positions\Events\PositionCreated;
 use App\Domain\Positions\Events\PositionDeleted;
 use App\Domain\Positions\Events\PositionRestored;
+use App\Domain\Positions\Events\PositionTrashed;
 use App\Domain\Positions\Events\PositionUpdated;
 use App\Models\Position;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -26,18 +26,18 @@ class PositionProjector extends Projector
         Position::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
     }
 
-    public function onPositionTrashed(AudienceTrashed $event)
+    public function onPositionTrashed(PositionTrashed $event)
     {
-        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
+        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->delete();
     }
 
     public function onPositionRestored(PositionRestored $event)
     {
-        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
+        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->restore();
     }
 
     public function onPositionDeleted(PositionDeleted $event): void
     {
-        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->forceDelete();
+        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->forceDelete();
     }
 }

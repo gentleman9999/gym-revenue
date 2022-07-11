@@ -25,7 +25,7 @@ class TrashPosition
     {
         $current_user = $request->user();
 
-        return $current_user->can('positions.edit');
+        return $current_user->can('positions.trash', Position::class);
     }
 
     public function asController(ActionRequest $request, Position $position): Position
@@ -39,6 +39,6 @@ class TrashPosition
     {
         Alert::success("Position '{$position->name}' was trashed")->flash();
 
-        return Redirect::route('positions.edit', $position->id);
+        return Redirect::back();
     }
 }
