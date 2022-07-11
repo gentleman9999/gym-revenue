@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
-use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
@@ -56,12 +55,18 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = Role::class;
 
                 break;
-            case 'classifications':
-                $entity = Classification::class;
-
-                break;
             case 'task':
                 $entity = Task::class;
+
+                break;
+
+            case 'positions':
+                $entity = Position::class;
+
+                break;
+
+            case 'departments':
+                $entity = Department::class;
 
                 break;
         }

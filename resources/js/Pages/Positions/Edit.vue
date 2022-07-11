@@ -22,7 +22,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
-import PositionForm from "@/Pages/Positions/Partials/PositionForm";
+import PositionForm from "@/Pages/Positions/Partials/PositionForm.vue";
 
 export default defineComponent({
     components: {

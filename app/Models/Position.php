@@ -5,14 +5,16 @@ namespace App\Models;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\EventSourcing\Projections\Projection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Position extends Projection
+class Position extends Model
 {
     use HasFactory;
     use Sortable;
+    use SoftDeletes;
 
-    protected $fillable = ['client_id', 'name'];
+    protected $fillable = [ 'name'];
 
     protected $keyType = 'string';
 

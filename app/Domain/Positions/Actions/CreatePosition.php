@@ -2,7 +2,7 @@
 
 namespace App\Domain\Positions\Actions;
 
-use App\Domain\Audiences\PositionAggregate;
+use App\Domain\Positions\PositionAggregate;
 use App\Domain\Reminders\Reminder;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;

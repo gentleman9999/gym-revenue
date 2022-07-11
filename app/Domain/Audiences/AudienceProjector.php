@@ -3,10 +3,10 @@
 namespace App\Domain\Audiences;
 
 use App\Domain\Audiences\Events\AudienceCreated;
+use App\Domain\Audiences\Events\AudienceDeleted;
+use App\Domain\Audiences\Events\AudienceRestored;
 use App\Domain\Audiences\Events\AudienceTrashed;
 use App\Domain\Audiences\Events\AudienceUpdated;
-use App\Domain\Audiences\Events\PositionDeleted;
-use App\Domain\Audiences\Events\PositionRestored;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class AudienceProjector extends Projector
@@ -30,12 +30,12 @@ class AudienceProjector extends Projector
         Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
     }
 
-    public function onAudienceRestored(PositionRestored $event)
+    public function onAudienceRestored(AudienceRestored $event)
     {
         Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
     }
 
-    public function onAudienceDeleted(PositionDeleted $event): void
+    public function onAudienceDeleted(AudienceDeleted $event): void
     {
         Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->forceDelete();
     }
