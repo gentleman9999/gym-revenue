@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Enums\ClientServiceEnum;
+use App\Models\SocialMedia;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -33,7 +34,7 @@ class ClientSettingsController extends Controller
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
-            'socialMedias' => [],
+            'socialMedias' => SocialMedia::whereClientId($client_id)->get(),
         ]);
     }
 

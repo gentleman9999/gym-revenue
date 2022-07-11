@@ -72,10 +72,6 @@ export default defineComponent({
         JetLabel,
     },
     props: {
-        availableSocialMedias: {
-            type: Array,
-            default: [],
-        },
         socialMedias: {
             type: Array,
             default: [],
@@ -92,16 +88,23 @@ export default defineComponent({
                 linkedin: "",
             };
         } else {
-            socialMedias.facebook = socialMedias.facebook;
-            socialMedias.twitter = socialMedias.twitter;
-            socialMedias.instagram = socialMedias.instagram;
-            socialMedias.linkedin = socialMedias.linkedin;
+            socialMedias.facebook = socialMedias.find(
+                ({ name }) => name === "facebook"
+            )?.value;
+            socialMedias.twitter = socialMedias.find(
+                ({ name }) => name === "twitter"
+            )?.value;
+            socialMedias.instagram = socialMedias.find(
+                ({ name }) => name === "instagram"
+            )?.value;
+            socialMedias.linkedin = socialMedias.find(
+                ({ name }) => name === "linkedin"
+            )?.value;
         }
-
         const form = useGymRevForm(socialMedias);
 
         let handleSubmit = () =>
-            form.post(route("settings.social-media.update"));
+            form.put(route("settings.social-media.update"));
 
         return { form, handleSubmit };
     },
