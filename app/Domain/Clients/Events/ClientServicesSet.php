@@ -12,6 +12,7 @@ class ClientServicesSet extends GymRevCrudEvent
     public function __construct(array $services)
     {
         $this->services = $services;
+        parent::__construct();
     }
 
     protected function getEntity(): string

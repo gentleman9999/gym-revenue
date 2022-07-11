@@ -3,7 +3,6 @@
 namespace App\Domain\Teams\Actions;
 
 use function app;
-use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use Illuminate\Http\RedirectResponse;
@@ -24,10 +23,6 @@ class DeleteTeam implements DeletesTeams
         $team = Team::findOrFail($id);
 
         TeamAggregate::retrieve($id)->delete()->persist();
-
-        if ($team->client_id) {
-            ClientAggregate::retrieve($team->client_id)->deleteTeam()->persist();
-        }
 
         return $team;
     }

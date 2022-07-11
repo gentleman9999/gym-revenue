@@ -6,7 +6,7 @@
         <p>
             Scroll through this list to select a user you want to impersonate.
         </p>
-        <div v-if="users.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
+        <div v-if="users?.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
             <table
                 class="table w-full table-compact"
                 :class="{ 'table-zebra': true }"
@@ -34,7 +34,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref, defineEmits, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 

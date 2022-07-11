@@ -18,7 +18,7 @@
                         </div>
                         <h1 class="text-center text-2xl">
                             {{ firstName }}
-                            {{ this.$page.props.middle_name.value }}
+                            {{ middleName }}
                             {{ lastName }}
                         </h1>
                         <div class="badge badge-success mt-4">
@@ -142,6 +142,9 @@ const props = defineProps({
     firstName: {
         type: String,
     },
+    middleName: {
+        type: String,
+    },
     lastName: {
         type: String,
     },
@@ -149,6 +152,9 @@ const props = defineProps({
         type: String,
     },
     phone: {
+        type: String,
+    },
+    opportunity: {
         type: String,
     },
     details: {
@@ -169,30 +175,29 @@ const props = defineProps({
     agreementNumber: {
         type: Number,
     },
+    ownerUserId: {
+        type: Number,
+    },
 });
 const activeContactMethod = ref("");
-const dynamicDetails = ref("");
 const borderStyle = computed({
     get() {
         let color = "transparent";
-        for (let idx in details.value) {
-            let d = details.value[idx];
-            if (d.field === "opportunity") {
-                switch (d.value) {
-                    case "High":
-                        color = "green";
-                        break;
 
-                    case "Medium":
-                        color = "yellow";
-                        break;
+        switch (props.opportunity) {
+            case "High":
+                color = "green";
+                break;
 
-                    case "Low":
-                        color = "red";
-                        break;
-                }
-            }
+            case "Medium":
+                color = "yellow";
+                break;
+
+            case "Low":
+                color = "red";
+                break;
         }
+
         return {
             "border-color": color,
             "border-width": "5px",
@@ -202,12 +207,8 @@ const borderStyle = computed({
 const claimedByUser = computed({
     get() {
         let r = false;
-
-        for (let idx in details.value) {
-            let d = details.value[idx];
-            if (d.field === "claimed") {
-                r = d.value == userId.value;
-            }
+        if ((props.owner_user_id = props.userId)) {
+            r = true;
         }
         return r;
     },
@@ -226,20 +227,16 @@ const modalTitle = computed({
 });
 const commsHistoryRef = ref(null);
 function goToLeadDetailIndex(index) {
-    console.log("goToLeadDetailIndex", index);
-    commsHistoryRef.goToLeadDetailIndex(index);
+    console.log("goToLeadDetailIndex", { index, commsHistoryRef });
+    if (index !== undefined && index !== null) {
+        commsHistoryRef.value.goToLeadDetailIndex(index);
+    }
 }
-
-function fetchLeadInfo() {
-    dynamicDetails.value = details.value;
-}
-
 const showViewModal = ref(null);
 watch([activeContactMethod], () => {
-    activeContactMethod.value && showViewModal.open();
+    activeContactMethod.value && showViewModal.value.open();
 });
-
-onMounted(() => {
-    fetchLeadInfo();
+defineExpose({
+    goToLeadDetailIndex,
 });
 </script>
