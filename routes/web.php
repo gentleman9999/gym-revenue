@@ -132,7 +132,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
         Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\MEmbers\RestoreMember::class)->name('data.members.restore');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Members\RestoreMember::class)->name('data.members.restore');
         Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
     });
