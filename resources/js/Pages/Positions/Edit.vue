@@ -6,7 +6,7 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <department-form
+            <position-form
                 :client-id="$page.props.user.current_client_id"
                 :position="position"
             />
@@ -22,11 +22,11 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
-import DepartmentForm from "@/Pages/Departments/Partials/DepartmentForm.vue";
+import PositionForm from "@/Pages/Positions/Partials/PositionForm";
 
 export default defineComponent({
     components: {
-        DepartmentForm,
+        PositionForm,
         LayoutHeader,
         Button,
         JetFormSection,

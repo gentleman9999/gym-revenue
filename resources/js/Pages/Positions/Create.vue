@@ -1,13 +1,11 @@
 <template>
     <LayoutHeader title="Create Security Role">
-        <h2 class="font-semibold text-xl leading-tight">
-            Create Classification
-        </h2>
+        <h2 class="font-semibold text-xl leading-tight">Create Position</h2>
     </LayoutHeader>
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <department-form :client-id="$page.props.user.current_client_id" />
+            <position-form :client-id="$page.props.user.current_client_id" />
         </div>
     </div>
 </template>
@@ -19,11 +17,11 @@ import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import DepartmentForm from "@/Pages/Departments/Partials/DepartmentForm.vue";
+import PositionForm from "@/Pages/Positions/Partials/PositionForm.vue";
 
 export default defineComponent({
     components: {
-        DepartmentForm,
+        PositionForm,
         LayoutHeader,
         Button,
         JetFormSection,

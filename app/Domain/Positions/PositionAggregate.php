@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Domain\Audiences;
+namespace App\Domain\Positions;
 
-use App\Domain\Audiences\Events\AudienceCreated;
-use App\Domain\Audiences\Events\AudienceTrashed;
-use App\Domain\Audiences\Events\AudienceUpdated;
-use App\Domain\Audiences\Events\PositionDeleted;
-use App\Domain\Audiences\Events\PositionRestored;
+use App\Domain\Positions\Events\PositionCreated;
+use App\Domain\Positions\Events\PositionDeleted;
+use App\Domain\Positions\Events\PositionRestored;
+use App\Domain\Positions\Events\PositionTrashed;
+use App\Domain\Positions\Events\PositionUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
-class AudienceAggregate extends AggregateRoot
+class PositionAggregate extends AggregateRoot
 {
     public function create(array $payload): static
     {
-        $this->recordThat(new AudienceCreated($payload));
+        $this->recordThat(new PositionCreated($payload));
 
         return $this;
     }
 
     public function trash(): static
     {
-        $this->recordThat(new AudienceTrashed());
+        $this->recordThat(new PositionTrashed());
 
         return $this;
     }
@@ -41,7 +41,7 @@ class AudienceAggregate extends AggregateRoot
 
     public function update(array $payload): static
     {
-        $this->recordThat(new AudienceUpdated($payload));
+        $this->recordThat(new PositionUpdated($payload));
 
         return $this;
     }

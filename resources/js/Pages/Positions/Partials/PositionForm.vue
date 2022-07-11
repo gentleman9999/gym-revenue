@@ -29,7 +29,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
+                :disabled="form.processing"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -64,21 +64,21 @@ export default {
         },
     },
     setup(props) {
-        let positions = props.positions;
+        let position = props.position;
         let operation = "Update";
-        if (!positions) {
-            positions = {
-                title: "",
+        if (!position) {
+            position = {
+                name: "",
                 id: null,
                 client_id: props.clientId,
             };
             operation = "Create";
         }
 
-        const form = useGymRevForm(classification);
+        const form = useGymRevForm(position);
 
         let handleSubmit = () =>
-            form.dirty().put(route("positions.update", classification.id));
+            form.dirty().put(route("positions.update", position.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("positions.store"));
         }

@@ -22,7 +22,7 @@ class PositionDepartmentSync extends Seeder
             $pos = Position::whereClientId($client->id)->whereName('Front Desk')->first();
             $dept = Department::whereClientId($client->id)->whereName('Sales')->first();
 
-            $pos->departments()->sync([$dept->id]);
+            $dept->positions()->sync([$pos->id]);
         }
     }
 }

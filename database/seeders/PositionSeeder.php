@@ -35,11 +35,13 @@ class PositionSeeder extends Seeder
         if (count($clients) > 0) {
             foreach ($clients as $client) {
                 foreach ($items as $i) {
-                    Position::create([
+                    $position = (new Position())->writeable();
+                    $position->fill([
                         'id' => Uuid::new(),
                         'client_id' => $client->id,
                         'name' => $i,
                     ]);
+                    $position->save();
                 }
             }
         }

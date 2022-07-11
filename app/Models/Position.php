@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use App\Models\Traits\Sortable;
+use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Spatie\EventSourcing\Projections\Projection;
 
-class Position extends Model
+class Position extends Projection
 {
     use HasFactory;
     use Sortable;
@@ -16,6 +17,11 @@ class Position extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ClientScope());
+    }
 
     public function departments()
     {
