@@ -24,6 +24,15 @@
 
                 <jet-section-border />
             </div>
+
+            <div>
+                <social-media-form
+                    :user="$page.props.user"
+                    :social-medias="socialMedias"
+                />
+
+                <jet-section-border />
+            </div>
         </div>
     </div>
 </template>
@@ -34,6 +43,7 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import ClientServicesForm from "./Partials/ClientServicesForm.vue";
 import CommPrefForm from "./Partials/CommPrefForm.vue";
+import SocialMediaForm from "./Partials/SocialMediaForm.vue";
 
 export default defineComponent({
     components: {
@@ -41,6 +51,7 @@ export default defineComponent({
         JetSectionBorder,
         ClientServicesForm,
         CommPrefForm,
+        SocialMediaForm,
     },
     props: {
         services: {
@@ -59,6 +70,9 @@ export default defineComponent({
             type: Array,
         },
         locations: {
+            type: Array,
+        },
+        socialMedias: {
             type: Array,
         },
     },

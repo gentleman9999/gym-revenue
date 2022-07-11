@@ -11,13 +11,14 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class SetClientServices
+class SetSocialMedias
 {
     use AsAction;
 
     public function handle(array $payload): Client
     {
-        ClientAggregate::retrieve($payload['client_id'])->setClientServices($payload['services'])->persist();
+
+        //ClientAggregate::retrieve($payload['client_id'])->setClientServices($payload['services'])->persist();
 
         return Client::findOrFail($payload['client_id']);
     }
@@ -26,7 +27,10 @@ class SetClientServices
     {
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'socialMedias' => [ 'sometimes', 'array'],
+            'facebook' => [ 'sometimes', 'string'],
+            'twitter' => [ 'sometimes', 'string'],
+            'instagram' => [ 'sometimes', 'string'],
+            'linkedin' => [ 'sometimes', 'string'],
         ];
     }
 
@@ -54,7 +58,7 @@ class SetClientServices
 
     public function htmlResponse(Client $client): RedirectResponse
     {
-        Alert::success("Client '{$client->name}' services updated.")->flash();
+        Alert::success("Social Media '{$client->name}' services updated.")->flash();
 
         return Redirect::back();
     }

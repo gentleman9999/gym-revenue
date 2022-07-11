@@ -33,6 +33,7 @@ class ClientSettingsController extends Controller
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
+            'socialMedias' => [],
         ]);
     }
 
