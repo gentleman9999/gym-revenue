@@ -25,12 +25,12 @@ class TeamController extends Controller
         $users = User::with(['teams', 'home_location'])->get();
 
         $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-        $clubs = Location::whereClientId($client_id)->get();
+        $locations = Location::whereClientId($client_id)->get();
 
 
         return Inertia::render('Teams/List', [
             'filters' => $request->all('search', 'club', 'team', 'users'),
-            'clubs' => $clubs ?? null,
+            'clubs' => $locations ?? null,
             'teams' => $teams ?? null,
             'preview' => $request->preview ?? null,
             'potentialUsers' => $users,

@@ -91,8 +91,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { computed } from "@vue/reactivity";
+import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 
 const show = ref(false);

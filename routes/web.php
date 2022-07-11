@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\H
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-team', \App\Domain\Users\Actions\SwitchTeam::class)->name('current-team.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/current-calendar-location', \App\Http\Controllers\LocationsController::class . '@switchCalendar')->name('current-location-qv.update');
 //@todo: need to add in ACL/middleware for CnB users
 Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
     Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
@@ -154,6 +155,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
+    Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
     Route::delete('/reminder/delete/{id}', \App\Domain\Reminders\Actions\DeleteReminder::class)->name('calendar.reminder.delete');

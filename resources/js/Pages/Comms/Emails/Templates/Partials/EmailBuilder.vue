@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="showSpinner"
-        class="w-full h-full flex items-center justify-center"
+        className="w-full h-full flex items-center justify-center"
     >
         <spinner />
     </div>
@@ -18,12 +18,16 @@
 </template>
 
 <script setup>
-import { ref, watch, defineEmits } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import Spinner from "@/Components/Spinner.vue";
+import theme from "@/theme.js";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
+
+const tailwindColors = theme.colors;
+const daisyuiColors = theme.daisyui.themes[0].dark;
 
 const props = defineProps({
     title: {
@@ -60,6 +64,36 @@ const customOptions = {
         "save",
         // "saveAndClose",
     ],
+    theme: {
+        preset: "dark",
+        borderRadius: {
+            small: "4px",
+            large: "8px",
+        },
+        colors: {
+            900: tailwindColors.neutral[900],
+            800: tailwindColors.neutral[850],
+            700: tailwindColors.neutral[800],
+            600: tailwindColors.neutral[750],
+            500: tailwindColors.neutral[700],
+            400: tailwindColors.neutral[600],
+            350: tailwindColors.neutral[500],
+            300: tailwindColors.neutral[450],
+            200: tailwindColors.neutral[300],
+            white: tailwindColors.white,
+            primary: daisyuiColors.primary,
+            "primary-light": daisyuiColors["primary-focus"],
+            "primary-dark": daisyuiColors["primary-content"],
+            secondary: daisyuiColors.secondary,
+            "secondary-light": daisyuiColors["secondary-focus"],
+            error: daisyuiColors.error,
+            "error-light": daisyuiColors.warning,
+            success: daisyuiColors.success,
+            "success-light": tailwindColors.primary[300],
+            active: daisyuiColors.secondary,
+            "active-light": daisyuiColors["secondary-focus"],
+        },
+    },
     // callbacks: {
     //     // onClose: ()=>emit("close"),
     //     onClose: () => {

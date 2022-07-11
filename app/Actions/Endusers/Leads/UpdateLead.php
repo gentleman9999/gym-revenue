@@ -40,7 +40,11 @@ class UpdateLead
             'opportunity' => 'sometimes|required',
             'lead_owner' => 'sometimes|required|exists:users,id',
             'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
-            'notes' => 'sometimes|nullable|array',
+            'notes' => 'nullable|array',
+            'notes.note' => 'nullable|required_with:notes.title|max:2',
+            'notes.title' => 'nullable|required_with:notes.note',
+//            'notes.note' => 'nullable|required_with:notes.title|max:2',
+
         ];
     }
 

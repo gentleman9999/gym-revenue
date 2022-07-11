@@ -151,7 +151,7 @@ class CreateUser implements CreatesNewUsers
         $email = $this->getEmail($first_name);
         $client = $this->getClient($first_name);
         $role = $this->getRole($first_name, $client);
-        $home_club = $this->getHomeClub($first_name, $client);
+        $home_location = $this->getHomeLocation($first_name, $client);
 
         $team_id = 1;//capeandbay team
         if ($client) {
@@ -171,7 +171,7 @@ class CreateUser implements CreatesNewUsers
                 'last_name' => $last_name,
                 'password' => 'Hello123!',
                 'team_id' => $team_id,
-                'home_club' => $home_club,
+                'home_club' => $home_location,
             ]
         );
     }
@@ -266,19 +266,19 @@ class CreateUser implements CreatesNewUsers
         return $selected_role;
     }
 
-    private function getHomeClub(string $user_name, string $client_choice = null)
+    private function getHomeLocation(string $user_name, string $client_choice = null)
     {
-        $selected_home_club = $this->command->option('homeclub');
+        $selected_home_location = $this->command->option('homeclub');
 
-        if (is_null($selected_home_club) && $client_choice) {
+        if (is_null($selected_home_location) && $client_choice) {
             $all_locations = Location::whereClientId($client_choice)->get(['name', 'gymrevenue_id']);
             $locations = $all_locations->pluck('name')->toArray();
 
-            $club_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
-            $selected_home_club = $all_locations->keyBy('name')[$club_choice]->gymrevenue_id;
+            $location_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);
+            $selected_home_location = $all_locations->keyBy('name')[$location_choice]->gymrevenue_id;
         }
 
-        return $selected_home_club;
+        return $selected_home_location;
     }
 
     /**
