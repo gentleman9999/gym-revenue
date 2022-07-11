@@ -279,7 +279,7 @@
                     id="notes.title"
                 />
                 <jet-input-error
-                    :message="form.errors['notes']?.title"
+                    :message="form.errors['notes.title']"
                     class="mt-2"
                 />
             </div>
@@ -287,7 +287,7 @@
                 <jet-label for="notes" value="Body" />
                 <textarea v-model="form['notes'].note" id="notes" />
                 <jet-input-error
-                    :message="form.errors['notes']?.note"
+                    :message="form.errors['notes.note']"
                     class="mt-2"
                 />
             </div>
@@ -514,9 +514,10 @@ export default {
         const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
-            if (!data.notes?.title) {
-                delete data.notes;
-            }
+            // Was this suppose to be some kind of validation for notes?
+            // if (!data.notes?.title) {
+            //     delete data.notes;
+            // }
             data.date_of_birth = transformDate(data.date_of_birth);
             return data;
         };

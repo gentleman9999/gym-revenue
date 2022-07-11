@@ -267,15 +267,15 @@ class User extends Authenticatable
                     ->orWhere('state', 'like', '%' . $search . '%')
                     ->orWhere('zip', 'like', '%' . $search . '%');
             });
-        })->when($filters['club'] ?? null, function ($query, $club_id) {
-            /*$query->whereHas('teams', function ($query) use ($club_id) {
-                return $query->whereHas('detail', function ($query) use ($club_id) {
-                    return $query->whereName('team-location')->whereValue($club_id);
+        })->when($filters['club'] ?? null, function ($query, $location_id) {
+            /*$query->whereHas('teams', function ($query) use ($location_id) {
+                return $query->whereHas('detail', function ($query) use ($location_id) {
+                    return $query->whereName('team-location')->whereValue($location_id);
                 });
             });*/
             //This returns home club location instead of the above clubs a user is a part of.
-            $query->where(function ($query) use ($club_id) {
-                $query->where('home_location_id', '=', $club_id);
+            $query->where(function ($query) use ($location_id) {
+                $query->where('home_location_id', '=', $location_id);
             });
         })->when($filters['team'] ?? null, function ($query, $team_id) {
             $query->whereHas('teams', function ($query) use ($team_id) {
