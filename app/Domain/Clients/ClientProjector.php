@@ -4,6 +4,7 @@ namespace App\Domain\Clients;
 
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Events\ClientDeleted;
+use App\Domain\Clients\Events\ClientGatewaySet;
 use App\Domain\Clients\Events\ClientLogoUploaded;
 use App\Domain\Clients\Events\ClientRestored;
 use App\Domain\Clients\Events\ClientServicesSet;
@@ -11,6 +12,7 @@ use App\Domain\Clients\Events\ClientSocialMediaSet;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
 use App\Domain\Clients\Models\Client;
+use App\Models\ClientGatewaySetting;
 use App\Models\File;
 use App\Models\SocialMedia;
 use Illuminate\Support\Facades\Storage;
@@ -152,6 +154,144 @@ class ClientProjector extends Projector
                     'client_id' => $payload['client_id'],
                     'name' => 'linkedin',
                     'value' => $payload['linkedin'],
+                ]);
+            }
+        }
+    }
+
+    public function onClientGatewaySet(ClientGatewaySet $event)
+    {
+        $payload = $event->payload;
+        if (array_key_exists('mailgunDomain', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('mailgunDomain')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunDomain',
+                    'value' => $payload['mailgunDomain'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunDomain',
+                    'value' => $payload['mailgunDomain'],
+                ]);
+            }
+        }
+        if (array_key_exists('mailgunSecret', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('mailgunSecret')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunSecret',
+                    'value' => $payload['mailgunSecret'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunSecret',
+                    'value' => $payload['mailgunSecret'],
+                ]);
+            }
+        }
+        if (array_key_exists('mailgunFromAddress', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('mailgunFromAddress')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunFromAddress',
+                    'value' => $payload['mailgunFromAddress'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunFromAddress',
+                    'value' => $payload['mailgunFromAddress'],
+                ]);
+            }
+        }
+        if (array_key_exists('mailgunFromName', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('mailgunFromName')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunFromName',
+                    'value' => $payload['mailgunFromName'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'mailgun',
+                    'name' => 'mailgunFromName',
+                    'value' => $payload['mailgunFromName'],
+                ]);
+            }
+        }
+        if (array_key_exists('twilioSID', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('twilioSID')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'twilio',
+                    'name' => 'twilioSID',
+                    'value' => $payload['twilioSID'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'twilio',
+                    'name' => 'twilioSID',
+                    'value' => $payload['twilioSID'],
+                ]);
+            }
+        }
+        if (array_key_exists('twilioToken', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('twilioToken')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'twilio',
+                    'name' => 'twilioToken',
+                    'value' => $payload['twilioToken'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'twilio',
+                    'name' => 'twilioToken',
+                    'value' => $payload['twilioToken'],
+                ]);
+            }
+        }
+        if (array_key_exists('twilioNumber', $payload)) {
+            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
+                ->whereName('twilioNumber')->first();
+            if (is_null($gateway)) {
+                ClientGatewaySetting::create([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'twilio',
+                    'name' => 'twilioNumber',
+                    'value' => $payload['twilioNumber'],
+                ]);
+            } else {
+                $gateway->update([
+                    'client_id' => $payload['client_id'],
+                    'gateway_provider' => 'twilio',
+                    'name' => 'twilioNumber',
+                    'value' => $payload['twilioNumber'],
                 ]);
             }
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Enums\ClientServiceEnum;
+use App\Models\ClientGatewaySetting;
 use App\Models\File;
 use App\Models\SocialMedia;
 use Illuminate\Support\Facades\Redirect;
@@ -45,6 +46,7 @@ class ClientSettingsController extends Controller
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
             'socialMedias' => SocialMedia::whereClientId($client_id)->get(),
+            'gateways' => ClientGatewaySetting::whereClientId($client_id)->get(),
             'logoUrl' => Client::findOrFail($client_id)->logo_url(),
         ]);
     }

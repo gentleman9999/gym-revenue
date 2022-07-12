@@ -34,7 +34,11 @@
 
                 <jet-section-border />
             </div>
+            <div>
+                <gateway-form :user="$page.props.user" :gateways="gateways" />
 
+                <jet-section-border />
+            </div>
             <file-manager />
         </div>
     </div>
@@ -48,9 +52,11 @@ import ClientServicesForm from "./Partials/ClientServicesForm.vue";
 import CommPrefForm from "./Partials/CommPrefForm.vue";
 import SocialMediaForm from "./Partials/SocialMediaForm.vue";
 import FileManager from "./Partials/FileManager.vue";
+import GatewayForm from "@/Pages/ClientSettings/Partials/GatewayForm.vue";
 
 export default defineComponent({
     components: {
+        GatewayForm,
         LayoutHeader,
         JetSectionBorder,
         ClientServicesForm,
@@ -78,6 +84,9 @@ export default defineComponent({
             type: Array,
         },
         socialMedias: {
+            type: Array,
+        },
+        gateways: {
             type: Array,
         },
         logoUrl: {
