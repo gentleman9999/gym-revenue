@@ -241,7 +241,7 @@ export default defineComponent({
                 active: false,
             });
         }
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
                 label: "Positions",
                 href: route("positions"),

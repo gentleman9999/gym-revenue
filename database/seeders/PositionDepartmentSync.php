@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Domain\Clients\Models\Client;
-use App\Models\Department;
+use App\Domain\Departments\Department;
 use App\Models\Position;
 use Illuminate\Database\Seeder;
 

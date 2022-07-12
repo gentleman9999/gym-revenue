@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Departments\Department;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

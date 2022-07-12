@@ -2,9 +2,9 @@
 
 namespace App\Domain\Departments\Actions;
 
+use App\Domain\Departments\Department;
 use App\Domain\Departments\DepartmentAggregate;
 use App\Http\Middleware\InjectClientId;
-use App\Models\Department;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

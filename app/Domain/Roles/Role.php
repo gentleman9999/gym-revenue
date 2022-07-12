@@ -2,6 +2,7 @@
 
 namespace App\Domain\Roles;
 
+use App\Domain\Departments\Department;
 use App\Domain\Leads\Models\Lead;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
@@ -9,7 +10,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Location;
-use App\Models\Department;
 use App\Models\Endusers\Member;
 use App\Models\File;
 use App\Models\Position;

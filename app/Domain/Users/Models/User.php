@@ -6,7 +6,6 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Location;
-use App\Models\Department;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
@@ -345,7 +344,7 @@ class User extends Authenticatable
 
     public function departments()
     {
-        return $this->belongsToMany(Department::class, 'user_department', 'user_id', 'department_id');
+        return $this->belongsToMany(\App\Domain\Departments\Department::class, 'user_department', 'user_id', 'department_id');
     }
 
     public function positions()

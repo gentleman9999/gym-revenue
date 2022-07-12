@@ -7,7 +7,6 @@ use App\Domain\Departments\Events\DepartmentDeleted;
 use App\Domain\Departments\Events\DepartmentRestored;
 use App\Domain\Departments\Events\DepartmentTrashed;
 use App\Domain\Departments\Events\DepartmentUpdated;
-use App\Models\Department;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class DepartmentProjector extends Projector

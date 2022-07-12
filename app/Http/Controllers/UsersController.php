@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Departments\Department;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Clients\Location;
-use App\Models\Department;
 use App\Models\Position;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;

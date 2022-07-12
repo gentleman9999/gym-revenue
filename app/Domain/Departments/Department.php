@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Domain\Departments;
 
+use App\Models\Position;
 use App\Models\Traits\Sortable;
+use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,6 +20,11 @@ class Department extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ClientScope());
+    }
 
     public function positions()
     {
