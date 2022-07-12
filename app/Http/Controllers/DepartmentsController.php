@@ -57,17 +57,8 @@ class DepartmentsController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(Department $department)
     {
-        $client_id = request()->user()->currentClientId();
-        if (! $client_id) {
-            return Redirect::route('dashboard');
-        }
-        if (! $id) {
-            Alert::error("No Security Role ID provided")->flash();
-
-            return Redirect::back();
-        }
         if (request()->user()->cannot('departments.update', Department::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
@@ -75,7 +66,7 @@ class DepartmentsController extends Controller
         }
 
         return Inertia::render('Departments/Edit', [
-            'department' => Department::findOrFail($id),
+            'department' => $department,
         ]);
     }
 

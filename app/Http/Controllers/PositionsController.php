@@ -50,17 +50,8 @@ class PositionsController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(Position $position)
     {
-        $client_id = request()->user()->currentClientId();
-        if (! $client_id) {
-            return Redirect::route('dashboard');
-        }
-        if (! $id) {
-            Alert::error("No Security Role ID provided")->flash();
-
-            return Redirect::back();
-        }
         if (request()->user()->cannot('positions.update', Position::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
@@ -68,7 +59,7 @@ class PositionsController extends Controller
         }
 
         return Inertia::render('Positions/Edit', [
-            'position' => Position::findOrFail($id),
+            'position' => $position,
         ]);
     }
 

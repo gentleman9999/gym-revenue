@@ -220,7 +220,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('departments')->group(fu
     Route::get('/', \App\Http\Controllers\DepartmentsController::class . '@index')->name('departments');
     Route::get('/create', \App\Http\Controllers\DepartmentsController::class . '@create')->name('departments.create');
     Route::post('/', \App\Domain\Departments\Actions\CreateDepartment::class)->name('departments.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\DepartmentsController::class . '@edit')->name('departments.edit');
+    Route::get('/edit/{department}', \App\Http\Controllers\DepartmentsController::class . '@edit')->name('departments.edit');
     Route::put('/{department}', \App\Domain\Departments\Actions\UpdateDepartment::class)->name('departments.update');
     Route::delete('/{department}', \App\Domain\Departments\Actions\TrashDepartment::class)->name('departments.trash');
     Route::delete('/{department}/force', \App\Domain\Departments\Actions\DeleteDepartment::class)->name('departments.delete');
@@ -232,7 +232,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('positions')->group(func
     Route::get('/', \App\Http\Controllers\PositionsController::class . '@index')->name('positions');
     Route::get('/create', \App\Http\Controllers\PositionsController::class . '@create')->name('positions.create');
     Route::post('/', \App\Domain\Positions\Actions\CreatePosition::class)->name('positions.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\PositionsController::class . '@edit')->name('positions.edit');
+    Route::get('/edit/{position}', \App\Http\Controllers\PositionsController::class . '@edit')->name('positions.edit');
     Route::put('/{position}', \App\Domain\Positions\Actions\UpdatePosition::class)->name('positions.update');
     Route::delete('/{position}', \App\Domain\Positions\Actions\TrashPosition::class)->name('positions.trash');
     Route::delete('/{position}/force', \App\Domain\Positions\Actions\DeletePosition::class)->name('positions.delete');
