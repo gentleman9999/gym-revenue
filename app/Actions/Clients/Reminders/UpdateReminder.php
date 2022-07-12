@@ -2,8 +2,9 @@
 
 namespace App\Actions\Clients\Reminders;
 
-use App\Aggregates\Users\UserAggregate;
-use App\Models\Reminder;
+use App\Domain\Reminders\Reminder;
+
+use App\Domain\Users\UserAggregate;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
