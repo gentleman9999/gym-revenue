@@ -9,6 +9,7 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
 use App\Models\Endusers\MembershipType;
+use App\Models\File;
 use App\Models\GymRevProjection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -88,5 +89,12 @@ class Client extends GymRevProjection
         return $this->users()->whereHas('roles', function ($query) {
             $query->where('roles.scope', '=', $this->id)->whereGroup(SecurityGroupEnum::ACCOUNT_OWNER);
         })->orderBy('created_at');
+    }
+
+    public function logo_url()
+    {
+        $file = File::whereType('logo')->first();
+
+        return is_null($file) ? null : $file->url;
     }
 }

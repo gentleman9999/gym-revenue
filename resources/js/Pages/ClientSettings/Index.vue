@@ -29,6 +29,7 @@
                 <social-media-form
                     :user="$page.props.user"
                     :social-medias="socialMedias"
+                    :logo-url="logoUrl"
                 />
 
                 <jet-section-border />
@@ -78,6 +79,9 @@ export default defineComponent({
         },
         socialMedias: {
             type: Array,
+        },
+        logoUrl: {
+            type: String,
         },
     },
 });

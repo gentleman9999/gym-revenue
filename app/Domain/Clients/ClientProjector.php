@@ -63,9 +63,21 @@ class ClientProjector extends Projector
     public function onLogoUploaded(ClientLogoUploaded $event)
     {
         $data = $event->payload;
+
+        $logoToDelete = File::whereClientId($data['client_id'])
+            ->whereType('logo')
+            ->first();
+
+        if (! is_null($logoToDelete)) {
+            Storage::disk('s3')->delete($logoToDelete->key);
+            $logoToDelete->forceDelete();
+        }
+
         $file_table_data = array_filter($data, function ($key) {
             return in_array($key, (new File())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
+        $file_table_data['hidden'] = true;
+        $file_table_data['type'] = 'logo';
         $file = File::create($file_table_data);
         //TODO: consider moving this to reactor?
         $file->url = Storage::disk('s3')->url($file->key);

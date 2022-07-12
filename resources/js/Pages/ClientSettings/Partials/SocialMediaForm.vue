@@ -2,7 +2,9 @@
     <jet-form-section @submitted="handleSubmit" collapsable>
         <template #title>Social Media</template>
 
-        <template #description> Fill out social medias</template>
+        <template #description>
+            Add the URL's to the related social media sites below:</template
+        >
 
         <template #form>
             <div

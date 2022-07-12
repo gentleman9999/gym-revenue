@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Enums\ClientServiceEnum;
+use App\Models\File;
 use App\Models\SocialMedia;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -31,6 +32,9 @@ class ClientSettingsController extends Controller
             ['name' => 'EMAIL', 'value' => 'EMAIL'],
         ]; //TODO: make this actually pull available communication preferences
 
+        $file = File::whereClientId($client_id)->whereType('logo')->first();
+
+
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
                 return ['value' => $s->value, 'name' => $s->name];
@@ -41,6 +45,7 @@ class ClientSettingsController extends Controller
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
             'socialMedias' => SocialMedia::whereClientId($client_id)->get(),
+            'logoUrl' => Client::findOrFail($client_id)->logo_url(),
         ]);
     }
 

@@ -18,7 +18,7 @@ class UploadLogo
         $result = false;
         foreach ($data as $item) {
             $item['client_id'] = $current_user->currentClientId();
-            ClientSettingsAggregate::retrieve($current_user->currentClientId())->uploadLogo($item)->persist();
+            ClientSettingsAggregate::retrieve($item['client_id'])->uploadLogo($item)->persist();
             $result = true;
         }
 

@@ -1,5 +1,17 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
+        <template #description>
+            <div v-if="this.$page.props.logoUrl == null">
+                <div class="divider"></div>
+                <h1>No logo file found.</h1>
+                <div class="divider"></div>
+            </div>
+            <div v-else>
+                <div class="divider"></div>
+                <img :src="this.$page.props.logoUrl" />
+                <div class="divider"></div>
+            </div>
+        </template>
         <template #title> Upload Logo </template>
         <template #form>
             <section class="col-span-6 overflow-hidden">
@@ -114,6 +126,7 @@ import { Inertia } from "@inertiajs/inertia";
 const props = defineProps({
     clientId: { type: String, required: true },
     user: { type: Object },
+    logoUrl: { type: String },
     formSubmitOptions: { type: Object },
     handleCancel: { type: Function },
 });
