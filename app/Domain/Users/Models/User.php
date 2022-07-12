@@ -5,9 +5,9 @@ namespace App\Domain\Users\Models;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\File;
+use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,8 +41,8 @@ class User extends Authenticatable
     protected $fillable = [
         'email', 'alternate_email', 'first_name', 'last_name',
         'address1', 'address2', 'city', 'state', 'zip', 'phone',
-        'manager', 'classification_id', 'home_location_id', 'start_date', 'end_date',
-        'termination_date', 'job_title',
+        'manager', 'home_location_id', 'start_date', 'end_date',
+        'termination_date',
     ];
 
     /**
@@ -332,11 +332,6 @@ class User extends Authenticatable
         return $this->belongsTo(Location::class, 'home_location_id', 'gymrevenue_id');
     }
 
-    public function classification()
-    {
-        return $this->belongsTo(Classification::class);
-    }
-
     public function getNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
@@ -345,6 +340,16 @@ class User extends Authenticatable
     public function getIsManagerAttribute()
     {
         return $this->manager !== null && $this->manager !== '';
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(\App\Domain\Departments\Department::class, 'user_department', 'user_id', 'department_id');
+    }
+
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class, 'user_position', 'user_id', 'position_id');
     }
 
     /**
