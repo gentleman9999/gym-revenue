@@ -3,10 +3,10 @@
 namespace App\Domain\Audiences;
 
 use App\Domain\Audiences\Events\AudienceCreated;
+use App\Domain\Audiences\Events\AudienceDeleted;
+use App\Domain\Audiences\Events\AudienceRestored;
 use App\Domain\Audiences\Events\AudienceTrashed;
 use App\Domain\Audiences\Events\AudienceUpdated;
-use App\Domain\Audiences\Events\PositionDeleted;
-use App\Domain\Audiences\Events\PositionRestored;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class AudienceAggregate extends AggregateRoot
@@ -27,14 +27,14 @@ class AudienceAggregate extends AggregateRoot
 
     public function restore(): static
     {
-        $this->recordThat(new PositionRestored());
+        $this->recordThat(new AudienceRestored());
 
         return $this;
     }
 
     public function delete(): static
     {
-        $this->recordThat(new PositionDeleted());
+        $this->recordThat(new AudienceDeleted());
 
         return $this;
     }
