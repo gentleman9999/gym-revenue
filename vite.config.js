@@ -39,7 +39,18 @@ export default defineConfig({
         alias: {
             '@': '/resources/js',
             'axios': path.resolve('node_modules/axios/dist/axios.js'),
+            'tailwind.config.js': path.resolve(__dirname, 'tailwind.config.js'),
         }
+    },
+    optimizeDeps: {
+        include: [
+            'tailwind.config.js',
+        ]
+    },
+    build: {
+        commonjsOptions: {
+            include: ['tailwind.config.js', 'node_modules/**'],
+        },
     },
     server: detectServerConfig(host),
     css:{

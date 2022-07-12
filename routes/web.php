@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\H
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-team', \App\Domain\Users\Actions\SwitchTeam::class)->name('current-team.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/current-calendar-location', \App\Http\Controllers\LocationsController::class . '@switchCalendar')->name('current-location-qv.update');
 //@todo: need to add in ACL/middleware for CnB users
 Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
     Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
@@ -106,19 +107,19 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Actions\Endusers\Leads\CreateLead::class)->name('data.leads.store');
-        Route::get('/show/{id}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
-        Route::get('/edit/{id}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{id}', \App\Actions\Endusers\Leads\UpdateLead::class)->name('data.leads.update');
+        Route::post('/create', \App\Domain\Leads\Actions\CreateLead::class)->name('data.leads.store');
+        Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
+        Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
+        Route::put('/{lead}', \App\Domain\Leads\Actions\UpdateLead::class)->name('data.leads.update');
         Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
-        Route::post('/contact/{id}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
+        Route::post('/contact/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
-        Route::post('/sources/update', \App\Http\Controllers\Data\LeadsController::class . '@updateSources')->name('data.leads.sources.update');
+        Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
-        Route::post('/statuses/update', \App\Http\Controllers\Data\LeadsController::class . '@updateStatuses')->name('data.leads.statuses.update');
-        Route::delete('/delete/{id}', \App\Actions\Endusers\Leads\TrashLead::class)->name('data.leads.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Leads\RestoreLead::class)->name('data.leads.restore');
-        Route::get('/view/{id}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
+        Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
+        Route::delete('/delete/{lead}', \App\Domain\Leads\Actions\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{lead}/restore', \App\Domain\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
+        Route::get('/view/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
 
@@ -131,7 +132,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
         Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
         Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\MEmbers\RestoreMember::class)->name('data.members.restore');
+        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Members\RestoreMember::class)->name('data.members.restore');
         Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
     });
@@ -173,6 +174,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
+    Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
     Route::delete('/reminder/delete/{id}', \App\Domain\Reminders\Actions\DeleteReminder::class)->name('calendar.reminder.delete');
@@ -208,8 +210,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
     Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
     Route::post('/', \App\Domain\Teams\Actions\CreateTeam::class)->name('teams.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
-    Route::get('/view/{id}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
+    Route::get('/edit/{team}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
+    Route::get('/view/{team}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route
     Route::post('/{team}/members', \App\Domain\Teams\Actions\AddOrInviteTeamMembers::class)->name('team-member.store');
     Route::delete('/{team}/{teamMemberId}', \App\Domain\Teams\Actions\RemoveTeamMember::class)->name('team-members.destroy');
@@ -226,25 +228,35 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
 Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function () {
     Route::get('/', \App\Http\Controllers\RolesController::class . '@index')->name('roles');
     Route::get('/create', \App\Http\Controllers\RolesController::class . '@create')->name('roles.create');
-    Route::post('/', \App\Actions\Clients\Roles\CreateRole::class)->name('roles.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\RolesController::class . '@edit')->name('roles.edit');
-    Route::put('/{id}', \App\Actions\Clients\Roles\UpdateRole::class)->name('roles.update');
-    Route::delete('/{id}', \App\Actions\Clients\Roles\TrashRole::class)->name('roles.trash');
-    Route::delete('/{id}/force', \App\Actions\Clients\Roles\DeleteRole::class)->name('roles.delete');
-    Route::post('/{id}/restore', \App\Actions\Clients\Roles\RestoreRole::class)->name('roles.restore');
+    Route::post('/', \App\Domain\Roles\Actions\CreateRole::class)->name('roles.store');
+    Route::get('/edit/{role}', \App\Http\Controllers\RolesController::class . '@edit')->name('roles.edit');
+    Route::put('/{role}', \App\Domain\Roles\Actions\UpdateRole::class)->name('roles.update');
+    Route::delete('/{role}', \App\Domain\Roles\Actions\DeleteRole::class)->name('roles.delete');
     Route::get('/export', \App\Http\Controllers\RolesController::class . '@export')->name('roles.export');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->group(function () {
-    Route::get('/', \App\Http\Controllers\ClassificationsController::class . '@index')->name('classifications');
-    Route::get('/create', \App\Http\Controllers\ClassificationsController::class . '@create')->name('classifications.create');
-    Route::post('/', \App\Actions\Clients\Classifications\CreateClassification::class)->name('classifications.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\ClassificationsController::class . '@edit')->name('classifications.edit');
-    Route::put('/{id}', \App\Actions\Clients\Classifications\UpdateClassification::class)->name('classifications.update');
-    Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('classifications.trash');
-    Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('classifications.delete');
-    Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('classifications.restore');
-    Route::get('/export', \App\Http\Controllers\ClassificationsController::class . '@export')->name('classifications.export');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('departments')->group(function () {
+    Route::get('/', \App\Http\Controllers\DepartmentsController::class . '@index')->name('departments');
+    Route::get('/create', \App\Http\Controllers\DepartmentsController::class . '@create')->name('departments.create');
+    Route::post('/', \App\Domain\Departments\Actions\CreateDepartment::class)->name('departments.store');
+    Route::get('/edit/{department}', \App\Http\Controllers\DepartmentsController::class . '@edit')->name('departments.edit');
+    Route::put('/{department}', \App\Domain\Departments\Actions\UpdateDepartment::class)->name('departments.update');
+    Route::delete('/{department}', \App\Domain\Departments\Actions\TrashDepartment::class)->name('departments.trash');
+    Route::delete('/{department}/force', \App\Domain\Departments\Actions\DeleteDepartment::class)->name('departments.delete');
+    Route::post('/{department}/restore', \App\Domain\Departments\Actions\RestoreDepartment::class)->name('departments.restore');
+    Route::get('/export', \App\Http\Controllers\DepartmentsController::class . '@export')->name('departments.export');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('positions')->group(function () {
+    Route::get('/', \App\Http\Controllers\PositionsController::class . '@index')->name('positions');
+    Route::get('/create', \App\Http\Controllers\PositionsController::class . '@create')->name('positions.create');
+    Route::post('/', \App\Domain\Positions\Actions\CreatePosition::class)->name('positions.store');
+    Route::get('/edit/{position}', \App\Http\Controllers\PositionsController::class . '@edit')->name('positions.edit');
+    Route::put('/{position}', \App\Domain\Positions\Actions\UpdatePosition::class)->name('positions.update');
+    Route::delete('/{position}', \App\Domain\Positions\Actions\TrashPosition::class)->name('positions.trash');
+    Route::delete('/{position}/force', \App\Domain\Positions\Actions\DeletePosition::class)->name('positions.delete');
+    Route::post('/{position}/restore', \App\Domain\Positions\Actions\RestorePosition::class)->withTrashed()->name('positions.restore');
+    Route::get('/export', \App\Http\Controllers\PositionsController::class . '@export')->name('positions.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {

@@ -19,10 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('leads')->group(function () {
-    Route::get('/', \App\Actions\Endusers\Leads\ReadLeads::class);
-    Route::post('/create', \App\Actions\Endusers\Leads\CreateLeadApi::class);
-    Route::post('/upsert', \App\Actions\Endusers\Leads\UpsertLeadApi::class);
-    Route::post('/batchupsert', \App\Actions\Endusers\Leads\BatchUpsertLeadApi::class);
+    Route::get('/', \App\Domain\Leads\Actions\ReadLeads::class);
+    Route::post('/create', \App\Domain\Leads\Actions\CreateLeadApi::class);
+    Route::post('/upsert', \App\Domain\Leads\Actions\UpsertLeadApi::class);
+    Route::post('/batchupsert', \App\Domain\Leads\Actions\BatchUpsertLeadApi::class);
 });
 
 Route::prefix('members')->group(function () {

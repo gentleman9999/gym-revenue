@@ -141,8 +141,8 @@
     </jet-action-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref } from "vue";
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import JetActionSection from "@/Jetstream/ProfileActionSection.vue";
 import Button from "@/Components/Button.vue";
@@ -151,52 +151,38 @@ import JetDialogModal from "@/Jetstream/DialogModal.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import PasswordInput from "@/Components/PasswordInput.vue";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    props: ["sessions"],
-
-    components: {
-        JetActionMessage,
-        JetActionSection,
-        Button,
-        JetDialogModal,
-
-        JetInputError,
-        JetSecondaryButton,
-        PasswordInput,
-    },
-
-    data() {
-        return {
-            confirmingLogout: false,
-
-            form: this.$inertia.form({
-                password: "",
-            }),
-        };
-    },
-
-    methods: {
-        confirmLogout() {
-            this.confirmingLogout = true;
-
-            setTimeout(() => this.$refs.password.$refs.input.focus(), 250);
-        },
-
-        logoutOtherBrowserSessions() {
-            this.form.delete(route("other-browser-sessions.destroy"), {
-                preserveScroll: true,
-                onSuccess: () => this.closeModal(),
-                onError: () => this.$refs.password.$refs.input.focus(),
-                onFinish: () => this.form.reset(),
-            });
-        },
-
-        closeModal() {
-            this.confirmingLogout = false;
-
-            this.form.reset();
-        },
+const props = defineProps({
+    sessions: {
+        type: Array,
     },
 });
+const confirmingLogout = ref(false);
+
+const form = useGymRevForm({
+    password: "",
+});
+
+const password = ref(null);
+function confirmLogout() {
+    confirmingLogout.value = true;
+
+    setTimeout(() => password.$refs.input.focus(), 250);
+}
+
+function logoutOtherBrowserSessions() {
+    form.delete(route("other-browser-sessions.destroy"), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onError: () => password.$refs.input.focus(),
+        onFinish: () => form.reset(),
+    });
+}
+
+function closeModal() {
+    confirmingLogout.value = false;
+
+    form.reset();
+}
 </script>

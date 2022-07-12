@@ -2,17 +2,14 @@
 
 namespace App\Domain\Clients\Models;
 
+use App\Domain\LeadSources\LeadSource;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
-use App\Enums\ClientServiceEnum;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
-use App\Models\Endusers\LeadSource;
-use App\Models\Endusers\LeadType;
 use App\Models\Endusers\MembershipType;
 use App\Models\GymRevProjection;
-use function collect;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -48,7 +45,7 @@ class Client extends GymRevProjection
 
     public function lead_types()
     {
-        return $this->hasMany(LeadType::class);
+        return $this->hasMany(\App\Domain\LeadTypes\LeadType::class);
     }
 
     public function lead_sources()
@@ -92,23 +89,4 @@ class Client extends GymRevProjection
             $query->where('roles.scope', '=', $this->id)->whereGroup(SecurityGroupEnum::ACCOUNT_OWNER);
         })->orderBy('created_at');
     }
-
-
-//    public function setServicesAttribute($value)
-//    {
-//        dd($value);
-//        $services =  collect($value)->map(function($service){
-//            if($service instanceof ClientServiceEnum){
-//                return $service->name;
-//            }
-//            return ClientServiceEnum::tryFrom($service)->name;
-//        });
-//        $this->attributes['services'] = $services;
-//
-//    }
-//
-//    public function getServicesAttribute($valueStr)
-//    {
-//        return json_decode($valueStr);
-//    }
 }

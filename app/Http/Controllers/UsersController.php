@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Departments\Department;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
+use App\Models\Position;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -23,7 +24,7 @@ class UsersController extends Controller
         $client_id = $request->user()->currentClientId();
 
         //Default Render VARs
-        $clubs = [];
+        $locations = [];
         $teams = [];
         $clientName = 'Cape & Bay/GymRevenue';
         $filterKeys = ['search', 'club', 'team', 'roles',];
@@ -38,13 +39,13 @@ class UsersController extends Controller
 
             $is_default_team = $client->default_team_id == $current_team->id;
 
-            $clubs = Location::whereClientId($client_id)->get();
+            $locations = Location::whereClientId($client_id)->get();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
             $clientName = $client->name;
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams', 'home_location', 'classification'])
+                $users = User::with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
@@ -56,7 +57,7 @@ class UsersController extends Controller
                     $user_ids[] = $team_user->user_id;
                 }
                 $users = User::whereIn('users.id', $user_ids)
-                    ->with(['teams', 'home_location', 'classification'])
+                    ->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))
                     ->sort()
                     ->paginate(10)
@@ -102,7 +103,7 @@ class UsersController extends Controller
         return Inertia::render('Users/Show', [
             'users' => $users,
             'filters' => $request->all($filterKeys),
-            'clubs' => $clubs,
+            'clubs' => $locations,
             'teams' => $teams,
             'clientName' => $clientName,
             'potentialRoles' => $roles,
@@ -136,14 +137,14 @@ class UsersController extends Controller
         }
 
         $roles = Role::whereScope($client_id)->get();
-        $classifications = Classification::whereClientId($client_id)->get();
 
         // Take the data and pass it to the view.
         return Inertia::render('Users/Create', [
             'roles' => $roles,
-            'classifications' => $classifications,
             'clientName' => $client_name,
             'locations' => $locations,
+            'availablePositions' => Position::whereClientId($client_id)->select('id', 'name')->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->select('id', 'name')->get(),
         ]);
     }
 
@@ -159,14 +160,13 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference');//TODO:get rid of loading all details here.
+        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
         }
 
         $roles = Role::whereScope($client_id)->get();
-        $classifications = Classification::whereClientId($client_id)->get();
 
         $locations = null;
         if ($user->isClientUser()) {
@@ -189,8 +189,9 @@ class UsersController extends Controller
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
             'roles' => $roles,
-            'classifications' => $classifications,
             'locations' => $locations,
+            'availablePositions' => Position::whereClientId($client_id)->select('id', 'name')->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->select('id', 'name')->get(),
         ]);
     }
 
@@ -259,11 +260,6 @@ class UsersController extends Controller
                 $default_team_detail = $user->default_team()->first();
                 $default_team = Team::find($default_team_detail->value);
                 $users[$idx]->home_team = $default_team->name;
-
-                //redneck join to find out classification name based on ID, will probably refactor this
-                if (! is_null($users[$idx]->classification->value)) {
-                    $users[$idx]->classification->value = Classification::whereId($users[$idx]->classification->value)->first()->title;
-                }
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {

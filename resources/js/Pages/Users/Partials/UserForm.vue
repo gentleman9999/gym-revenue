@@ -133,21 +133,6 @@
 
             <div class="form-divider" />
 
-            <!-- Official Position -->
-            <div class="form-control col-span-2">
-                <jet-label for="job_title" value="Official Position" />
-                <input
-                    id="job_title"
-                    type="text"
-                    class="block w-full mt-1"
-                    v-model="form.job_title"
-                />
-                <jet-input-error
-                    :message="form.errors.job_title"
-                    class="mt-2"
-                />
-            </div>
-
             <!-- Contact Preference -->
             <div class="form-control col-span-2">
                 <jet-label
@@ -168,27 +153,6 @@
                 />
             </div>
 
-            <!-- Classifications -->
-            <div class="form-control col-span-2" v-if="isClientUser">
-                <jet-label for="classification" value="Classification" />
-                <select
-                    id="classification"
-                    class="block w-full mt-1"
-                    v-model="form.classification_id"
-                >
-                    <option
-                        v-for="classy in classifications"
-                        :value="classy.id"
-                    >
-                        {{ classy.title }}
-                    </option>
-                </select>
-                <jet-input-error
-                    :message="form.errors.classification_id"
-                    class="mt-2"
-                />
-            </div>
-
             <!-- Security Role -->
             <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Security Role" />
@@ -202,6 +166,52 @@
                     </option>
                 </select>
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
+            </div>
+
+            <div class="form-control col-span-2" v-if="isClientUser">
+                <jet-label for="role_id" value="Select Positions" />
+                <multiselect
+                    v-model="form.positions"
+                    class="py-2"
+                    id="positions"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        availablePositions.map((position) => ({
+                            label: position.name,
+                            value: position.id,
+                        }))
+                    "
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error
+                    :message="form.errors.positions"
+                    class="mt-2"
+                />
+            </div>
+
+            <div class="form-control col-span-2" v-if="isClientUser">
+                <jet-label for="role_id" value="Select Departments" />
+                <multiselect
+                    v-model="form.departments"
+                    class="py-2"
+                    id="departments"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        availableDepartments.map((department) => ({
+                            label: department.name,
+                            value: department.id,
+                        }))
+                    "
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error
+                    :message="form.errors.departments"
+                    class="mt-2"
+                />
             </div>
 
             <!-- Home Club -->
@@ -447,13 +457,13 @@ export default {
         PhoneInput,
     },
     props: [
-        "clientId",
         "user",
         "clientName",
         "isClientUser",
         "roles",
-        "classifications",
         "locations",
+        "availablePositions",
+        "availableDepartments",
     ],
     emits: ["success"],
     setup(props, { emit }) {
@@ -475,7 +485,6 @@ export default {
             if (props.isClientUser) {
                 user.role_id = user["role_id"];
             }
-            user.classification_id = user.classification_id;
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
             user.first_name = user["first_name"];
@@ -486,10 +495,11 @@ export default {
             user.city = user["city"];
             user.state = user["state"];
             user.zip = user["zip"];
-            user.job_title = user["job_title"];
             user.phone = user["phone"];
             user.start_date = user["start_date"];
             user.end_date = user["end_date"];
+            user.positions = user["positions"];
+            user.departments = user["departments"];
             user.termination_date = user["termination_date"];
             user.notes = { title: "", note: "" };
         } else {
@@ -498,7 +508,7 @@ export default {
                 last_name: "",
                 email: "",
                 alternate_email: "",
-                classification_id: "",
+                role_id: 0,
                 contact_preference: null,
                 phone: "",
                 address1: "",
@@ -512,6 +522,8 @@ export default {
                 state: "",
                 zip: "",
                 job_title: "",
+                positions: [],
+                departments: [],
             };
             //only add client specific when applicable to make user validation rules work better
             if (props.isClientUser) {

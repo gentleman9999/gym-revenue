@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Leads\Models\Lead;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Lead;
+use App\Models\Clients\Location;
 use App\Models\Endusers\Member;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -19,16 +21,24 @@ class CalendarController extends Controller
     public function index(Request $request)
     {
         $client_id = request()->user()->currentClientId();
-        $reminder = null;
+
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
 
+        $locations = Location::whereClientId($client_id)->get();
+        //$currentLocationSelect = Location::find($request->user()->current_location_id);
+
         if ($request->get('start')) {
-            $eventsForTeam = CalendarEvent::whereClient_id($client_id)
-                ->with('type', 'attendees', 'files')
-                ->filter($request->only('search', 'start', 'end', 'viewUser'))
-                ->get();
+            //if (is_null($currentLocationSelect)) {
+            //    return Redirect::route('calendar.quickview');
+            //} else {
+            $eventsForTeam = CalendarEvent::whereClientId($client_id)
+            //        ->whereLocationId($currentLocationSelect->id)
+                    ->with('type', 'attendees', 'files')
+                    ->filter($request->only('search', 'start', 'end', 'viewUser'))
+                    ->get();
+        //}
         } else {
             $eventsForTeam = [];
         }
@@ -98,6 +108,53 @@ class CalendarController extends Controller
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
+            'locations' => $locations,
+        ]);
+    }
+
+    public function quickView(Request $request)
+    {
+        $client_id = request()->user()->currentClientId();
+        if (is_null($client_id)) {
+            return Redirect::route('dashboard');
+        }
+        $locations = Location::whereClientId($client_id)->get();
+        $eventsByLocation = [];
+
+        if (! $request->has('start')) {
+            $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format('Y-m-d 00:00:00')
+            )->getTimestamp())]);
+            $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format('Y-m-d 23:59:59')
+            )->getTimestamp())]);
+        } else {
+            $date = date('Y-m-d', strtotime($request->get('start')));
+            $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format($date.' 00:00:00')
+            )->getTimestamp())]);
+            $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
+                'Y-m-d H:i:s',
+                (new DateTime())->format($date.' 23:59:59')
+            )->getTimestamp())]);
+        }
+
+        foreach ($locations as $key => $location) {
+            $eventsForTeam = CalendarEvent::whereClientId($client_id)
+                    ->whereLocationId($location->id)
+                    ->with('type', 'attendees', 'files')
+                    ->filter($request->only('search', 'start', 'end', ))
+                    ->get();
+            $eventsByLocation[$key]['location_name'] = $location->name;
+            $eventsByLocation[$key]['location_id'] = $location->id;
+            $eventsByLocation[$key]['events'] = $eventsForTeam;
+        }
+
+        return Inertia::render('Calendar/QuickView', [
+            'calendar_events_by_locations' => $eventsByLocation,
         ]);
     }
 

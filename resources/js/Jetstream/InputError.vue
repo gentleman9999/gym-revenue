@@ -6,10 +6,10 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: ["message"],
+<script setup>
+const props = defineProps({
+    message: {
+        type: String,
+    },
 });
 </script>

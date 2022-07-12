@@ -33,58 +33,54 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "SendTestEmail",
-    props: ["templateId", "templateName"],
-    watch: {
-        templateId(id) {
-            alert("Fuck! " + id);
-        },
+<script setup>
+import { ref, defineEmits, onMounted, watch } from "vue";
+const props = defineProps({
+    templateId: {
+        type: String,
     },
-    data() {
-        return {
-            showModal: false,
-            loading: false,
-            readyMsg: "Are you ready to send this message?",
-            done: false,
-        };
+    templateName: {
+        type: String,
     },
-    computed: {},
-    methods: {
-        handleCloseTextModal() {
-            this.loading = false;
-            this.$emit("close");
-        },
-        handleSendingText() {
-            let _this = this;
-            this.loading = true;
+});
+const showModal = ref(false);
+const loading = ref(false);
+const readyMsg = ref("Are you ready to send this message?");
+const done = ref(false);
+const emit = defineEmits(["close"]);
+function handleCloseTextModal() {
+    loading.value = false;
+    emit("close");
+}
+function handleSendingText() {
+    loading.value = true;
 
-            axios
-                .post("/comms/email-templates/test", {
-                    templateId: this.templateId,
-                })
-                .then(({ data }) => {
-                    _this.loading = false;
-                    _this.readyMsg = "All Sent. Check your email";
-                    _this.done = true;
-                })
-                .catch(({ response }) => {
-                    console.log("", response);
-                    let msg = "Could not send. Retry?";
-                    if ("message" in response["data"]) {
-                        msg = `(${response.status}) - ${response.data.message} Retry?`;
-                    }
-                    _this.loading = false;
-                    _this.readyMsg = msg;
-                });
-        },
-    },
-    mounted() {
-        console.log("templateId", this.templateId);
-        this.showModal = true;
-    },
-};
+    axios
+        .post("/comms/email-templates/test", {
+            templateId: props.templateId,
+        })
+        .then(({ data }) => {
+            loading.value = false;
+            readyMsg.value = "All Sent. Check your email";
+            done.value = true;
+        })
+        .catch(({ response }) => {
+            console.log("", response);
+            let msg = "Could not send. Retry?";
+            if ("message" in response["data"]) {
+                msg = `(${response.status}) - ${response.data.message} Retry?`;
+            }
+            loading.value = false;
+            readyMsg.value = msg;
+        });
+}
+
+onMounted(() => {
+    showModal.value = true;
+});
+watch([props.templateId], () => {
+    alert("Fuck! " + props.templateId);
+});
 </script>
 
 <style scoped></style>

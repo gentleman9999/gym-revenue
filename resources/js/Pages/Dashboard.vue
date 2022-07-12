@@ -205,7 +205,8 @@
     </jet-bar-container>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, watch } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import JetBarAlert from "@/Components/JetBarAlert.vue";
@@ -216,41 +217,38 @@ import JetBarBadge from "@/Components/JetBarBadge.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 
-export default {
-    components: {
-        LayoutHeader,
-        JetBarContainer,
-        JetBarAlert,
-        JetBarStatsContainer,
-        JetBarStatCard,
-        GymRevenueTable,
-        JetBarBadge,
-        JetBarIcon,
-        DaisyModal,
+const props = defineProps({
+    teamName: {
+        type: String,
     },
-    props: ["teamName", "clients", "accountName", "widgets", "announcements"],
-    watch: {
-        announcementModal(flag) {
-            if (flag) {
-                this.$refs.anModal.open();
-            } else {
-                this.$refs.anModal.close();
-            }
-        },
+    clients: {
+        type: Array,
     },
-    data() {
-        return {
-            showAnnouncement: false,
-            announcementModal: false,
-        };
+    accountName: {
+        type: String,
     },
-    methods: {},
-    computed: {},
-    mounted() {
-        if (this.announcements.length > 0) {
-            this.showAnnouncement = true;
-        }
-        console.log("GymRevenue Dashboard");
+    widgets: {
+        type: Array,
     },
-};
+    announcements: {
+        type: Array,
+    },
+});
+const showAnnouncement = ref(false);
+const announcementModal = ref(false);
+const anModal = ref(null);
+
+watch([announcementModal], () => {
+    if (announcementModal.value) {
+        anModal.value.open();
+    } else {
+        anModal.value.close();
+    }
+});
+
+onMounted(() => {
+    if (props.announcements.length > 0) {
+        showAnnouncement.value = true;
+    }
+});
 </script>

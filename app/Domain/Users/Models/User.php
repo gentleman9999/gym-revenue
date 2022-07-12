@@ -5,9 +5,9 @@ namespace App\Domain\Users\Models;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Classification;
 use App\Models\Clients\Location;
 use App\Models\File;
+use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,8 +41,8 @@ class User extends Authenticatable
     protected $fillable = [
         'email', 'alternate_email', 'first_name', 'last_name',
         'address1', 'address2', 'city', 'state', 'zip', 'phone',
-        'manager', 'classification_id', 'home_location_id', 'start_date', 'end_date',
-        'termination_date', 'job_title',
+        'manager', 'home_location_id', 'start_date', 'end_date',
+        'termination_date',
     ];
 
     /**
@@ -266,15 +266,15 @@ class User extends Authenticatable
                     ->orWhere('state', 'like', '%' . $search . '%')
                     ->orWhere('zip', 'like', '%' . $search . '%');
             });
-        })->when($filters['club'] ?? null, function ($query, $club_id) {
-            /*$query->whereHas('teams', function ($query) use ($club_id) {
-                return $query->whereHas('detail', function ($query) use ($club_id) {
-                    return $query->whereName('team-location')->whereValue($club_id);
+        })->when($filters['club'] ?? null, function ($query, $location_id) {
+            /*$query->whereHas('teams', function ($query) use ($location_id) {
+                return $query->whereHas('detail', function ($query) use ($location_id) {
+                    return $query->whereName('team-location')->whereValue($location_id);
                 });
             });*/
             //This returns home club location instead of the above clubs a user is a part of.
-            $query->where(function ($query) use ($club_id) {
-                $query->where('home_location_id', '=', $club_id);
+            $query->where(function ($query) use ($location_id) {
+                $query->where('home_location_id', '=', $location_id);
             });
         })->when($filters['team'] ?? null, function ($query, $team_id) {
             $query->whereHas('teams', function ($query) use ($team_id) {
@@ -332,11 +332,6 @@ class User extends Authenticatable
         return $this->belongsTo(Location::class, 'home_location_id', 'gymrevenue_id');
     }
 
-    public function classification()
-    {
-        return $this->belongsTo(Classification::class);
-    }
-
     public function getNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
@@ -345,6 +340,16 @@ class User extends Authenticatable
     public function getIsManagerAttribute()
     {
         return $this->manager !== null && $this->manager !== '';
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(\App\Domain\Departments\Department::class, 'user_department', 'user_id', 'department_id');
+    }
+
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class, 'user_position', 'user_id', 'position_id');
     }
 
     /**

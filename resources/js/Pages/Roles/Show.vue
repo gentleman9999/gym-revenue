@@ -75,8 +75,8 @@ export default defineComponent({
                 active: true,
             },
             {
-                label: "Classification",
-                href: route("classifications"),
+                label: "Departments",
+                href: route("departments"),
                 onClick: null,
                 active: false,
             },

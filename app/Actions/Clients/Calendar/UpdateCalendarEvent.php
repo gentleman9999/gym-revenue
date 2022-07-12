@@ -3,13 +3,13 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
+use App\Domain\Leads\Models\Lead;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -38,6 +38,7 @@ class UpdateCalendarEvent
             'lead_attendees' => ['sometimes', 'array'],
             'member_attendees' => ['sometimes', 'array'],
             'my_reminder' => ['sometimes', 'int'],
+            'location_id' => ['required', 'bigint'],
         ];
     }
 

@@ -3,10 +3,10 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
+use App\Domain\Leads\Models\Lead;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
@@ -36,6 +36,7 @@ class CreateCalendarEvent
             'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
             'member_attendees' => ['sometimes'],
+            'location_id' => ['required'],
         ];
     }
 
@@ -44,7 +45,7 @@ class CreateCalendarEvent
         $id = Uuid::new();
         $data['id'] = $id;
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
-        ; //Pulling eventType color for this table because that's how fullCalender.IO wants it
+        //Pulling eventType color for this table because that's how fullCalender.IO wants it
 
         if (isset($user->id)) {
             $data['user_attendees'][] = $user->id;

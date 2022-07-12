@@ -47,7 +47,6 @@ class UserFactory extends Factory
             'zip' => substr($this->faker->postcode, 0, 5),
             'alternate_email' => $alternate_email,
             'phone' => $phone,
-            'job_title' => $this->faker->jobTitle(),
         ];
     }
 

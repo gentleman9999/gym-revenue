@@ -134,9 +134,9 @@ class Team extends JetstreamTeam
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
             });
-        })->when($filters['club'] ?? null, function ($query, $club_id) {
-            return $query->whereHas('detail', function ($query) use ($club_id) {
-                return $query->whereName('team-location')->whereValue($club_id);
+        })->when($filters['club'] ?? null, function ($query, $location_id) {
+            return $query->whereHas('detail', function ($query) use ($location_id) {
+                return $query->whereName('team-location')->whereValue($location_id);
             });
         })->when($filters['users'] ?? null, function ($query, $user) {
             return $query->whereHas('team_users', function ($query) use ($user) {

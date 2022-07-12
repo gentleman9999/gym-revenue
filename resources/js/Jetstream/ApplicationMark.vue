@@ -135,15 +135,11 @@ c162 399 303 746 312 769 l18 44 -68 0 -68 0 -268 -667 c-148 -368 -272 -671
     </svg>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: {
-        theme: {
-            type: String,
-            default: "dark",
-        },
+<script setup>
+const props = defineProps({
+    theme: {
+        type: String,
+        default: "dark",
     },
 });
 </script>

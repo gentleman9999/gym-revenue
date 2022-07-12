@@ -2,18 +2,18 @@
     <LayoutHeader title="Members" />
     <jet-bar-container>
         <lead-interaction
-            :lead-id="lead.id"
+            :lead-id="member.id"
             :user-id="$page.props.user.id"
-            :first-name="lead.first_name"
+            :first-name="member.first_name"
             :middle-name="$page.props.middle_name.value"
-            :last-name="lead.last_name"
-            :email="lead.email"
-            :phone="lead.primary_phone"
-            :details="lead['details_desc']"
+            :last-name="member.last_name"
+            :email="member.email"
+            :phone="member.primary_phone"
+            :details="member['details_desc']"
             ref="leadInteractionRef"
             :selectedLeadDetailIndex="selectedLeadDetailIndex"
             :trial-dates="trialDates"
-            :trial-memberships="lead.trial_memberships"
+            :trial-memberships="member.trial_memberships"
             :interaction-count="interactionCount"
         />
     </jet-bar-container>
@@ -32,7 +32,7 @@ export default defineComponent({
         // LeadInteraction,
     },
     props: {
-        lead: {
+        member: {
             type: Object,
             required: true,
         },

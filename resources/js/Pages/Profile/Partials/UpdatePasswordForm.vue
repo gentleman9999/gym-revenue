@@ -68,8 +68,8 @@
     </jet-form-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref } from "vue";
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
@@ -77,47 +77,31 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import PasswordInput from "@/Components/PasswordInput.vue";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        JetActionMessage,
-        Button,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
-        PasswordInput,
-    },
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                current_password: "",
-                password: "",
-                password_confirmation: "",
-            }),
-        };
-    },
-
-    methods: {
-        updatePassword() {
-            this.form.put(route("user-password.update"), {
-                errorBag: "updatePassword",
-                preserveScroll: true,
-                onSuccess: () => this.form.reset(),
-                onError: () => {
-                    if (this.form.errors.password) {
-                        this.form.reset("password", "password_confirmation");
-                        this.$refs.password.$refs.input.focus();
-                    }
-
-                    if (this.form.errors.current_password) {
-                        this.form.reset("current_password");
-                        this.$refs.current_password.$refs.input.focus();
-                    }
-                },
-            });
-        },
-    },
+const form = useGymRevForm({
+    current_password: "",
+    password: "",
+    password_confirmation: "",
 });
+const password = ref(null);
+const current_password = ref(null);
+function updatePassword() {
+    form.put(route("user-password.update"), {
+        errorBag: "updatePassword",
+        preserveScroll: true,
+        onSuccess: () => form.reset(),
+        onError: () => {
+            if (form.errors.password) {
+                form.reset("password", "password_confirmation");
+                password.$refs.input.focus();
+            }
+
+            if (form.errors.current_password) {
+                form.reset("current_password");
+                current_password.$refs.input.focus();
+            }
+        },
+    });
+}
 </script>
