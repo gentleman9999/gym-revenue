@@ -25,7 +25,7 @@ class UpdateReminder
             'name' => ['sometimes', 'string', 'required'],
             'id' => ['sometimes', 'string', 'required'],
             'description' => ['sometimes', 'string'],
-            'remind_time' => ['sometimes', 'string'],
+            'remind_time' => ['sometimes', 'int'],
             'triggered_at' => ['sometimes', 'timestamp'],
         ];
     }
@@ -34,7 +34,7 @@ class UpdateReminder
     {
         $client_id = $current_user->currentClientId();
         $data['client_id'] = $client_id;
-        UserAggregate::retrieve($current_user->id)->updateReminder($current_user->id, $data)->persist();
+        UserAggregate::retrieve($current_user->id)->updateReminder($data)->persist();
 
         return Reminder::find($data['id']);
     }
