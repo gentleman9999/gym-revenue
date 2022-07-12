@@ -2,7 +2,6 @@
 
 namespace App\Aggregates\Clients\Traits;
 
-use App\Aggregates\Clients\Traits\Actions\ClientClassificationActions;
 use App\Aggregates\Clients\Traits\Actions\ClientCrudActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientGatewayActions;
@@ -20,7 +19,6 @@ trait ClientActions
     use ClientGatewayActions;
     use ClientServicesActions;
     use ClientTrialMembershipActions;
-    use ClientClassificationActions;
     use ClientUserActions;
     use ClientLocationsActions;
 }

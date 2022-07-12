@@ -19,7 +19,6 @@ class StandardSMSInterpreter extends MessageInterpreterService
         '%state%' => 'state',
         '%zip%' => 'zip',
         '%phone%' => 'phone',
-        '%job_title%' => 'job_title',
     ];
 
     public function __construct($user_id)

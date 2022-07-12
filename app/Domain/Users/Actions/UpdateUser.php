@@ -57,19 +57,19 @@ class UpdateUser implements UpdatesUserProfileInformation
             'city' => ['sometimes', 'required'],
             'state' => ['sometimes', 'required'],
             'zip' => ['sometimes', 'required'],
-            'job_title' => ['sometimes', 'required'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
             'termination_date' => ['sometimes'],
             'notes' => ['sometimes'],
             'team_id' => ['sometimes', 'required', 'string', 'exists:teams,id'],
             'role_id' => ['sometimes', 'required', 'integer'],
-            'classification_id' => ['sometimes', 'required'],
-            'contact_preference' => ['nullable'],
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : 'sometimes',
+            'contact_preference' => ['sometimes', 'nullable'],
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
 //            'home_location_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?
             'home_location_id' => ['sometimes', 'nullable'], //should be required if client_id provided. how to do?
+            'departments' => ['sometimes', 'nullable'],
+            'positions' => ['sometimes', 'nullable'],
         ];
     }
 

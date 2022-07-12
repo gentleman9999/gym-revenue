@@ -101,19 +101,19 @@ class CreateUser implements CreatesNewUsers
             'city' => ['required'],
             'state' => ['required'],
             'zip' => ['required'],
-            'job_title' => ['required'],
             'notes' => ['sometimes'] ,
             'start_date' => ['sometimes'] ,
             'end_date' => ['sometimes'] ,
             'termination_date' => ['sometimes'] ,
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'team_id' => ['required', 'string', 'exists:teams,id'],
-            'role_id' => ['sometimes', 'integer', 'exists:roles,id'],
-            'classification_id' => ['sometimes', 'nullable'],
+            'role_id' => ['required', 'integer', 'exists:roles,id'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
             'manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager'],
+            'departments' => ['sometimes', 'nullable'],
+            'positions' => ['sometimes', 'nullable'],
         ];
     }
 
