@@ -11,3 +11,9 @@ export const transformDate = (date) => {
     if (!date?.toISOString) return date;
     return date.toISOString().slice(0, 19).replace("T", " ");
 };
+
+/** potential work around? */
+// export const transformDate = (date) => {
+//     const d = date instnaceof Date ? d : new Date(date);
+//     return d.toISOString().slice(0, 19).replace("T", " ");
+// };

@@ -76,7 +76,6 @@
                             v-for="(file, i) in form.files"
                             :file="file"
                             :key="file"
-                            :client-id="clientId"
                             :user-id="user?.id"
                             @remove="removeFile"
                             @input="fileUploadUpdated"
@@ -90,8 +89,6 @@
                 </div>
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </section>
-
-            <jet-input-error :message="form.errors.client_id" class="mt-2" />
         </template>
 
         <template #actions>
@@ -129,7 +126,6 @@ import UploadIcon from "@/Pages/Files/Partials/UploadIcon.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
-    clientId: { type: String, required: true },
     user: { type: Object },
     formSubmitOptions: { type: Object },
     handleCancel: { type: Function },

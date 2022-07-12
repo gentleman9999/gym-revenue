@@ -5,7 +5,7 @@
             :lead-id="lead.id"
             :user-id="$page.props.user.id"
             :first-name="lead.first_name"
-            :middle-name="$page.props.middle_name.value"
+            :middle-name="lead.middle_name"
             :last-name="lead.last_name"
             :email="lead.email"
             :phone="lead.primary_phone"

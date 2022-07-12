@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Data;
 
-use App\Models\Clients\Client;
-use App\Models\Endusers\LeadType;
+use App\Domain\Clients\Models\Client;
+use App\Domain\LeadTypes\Actions\CreateLeadType;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -32,8 +32,8 @@ class LeadTypeSeeder extends Seeder
         $clients = Client::all();
         foreach ($clients as $client) {
             foreach ($lead_types as $lead_type) {
-                LeadType::create(['client_id' => $client->id, 'name' => $lead_type]);
                 VarDumper::dump("Adding lead type {$lead_type}");
+                CreateLeadType::run(['client_id' => $client->id, 'name' => $lead_type]);
             }
         }
     }

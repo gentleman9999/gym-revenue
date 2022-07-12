@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Domain\Clients\Models\Client;
 use App\Models\Utility\AppState;
 use Closure;
 use Illuminate\Http\Request;
@@ -43,9 +44,10 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $abilities = $request->user()->getAbilities()->filter(function ($ability) use ($request) {
+            //todo: cache or move to session
+            $abilities = $user->getAbilities()->filter(function ($ability) use ($user) {
                 if (! is_null($ability->entity_id)) {
-                    $r = $ability->entity_id === $request->user()->current_team_id;
+                    $r = $ability->entity_id === $user->current_team_id;
                 } elseif ($ability->title == 'All abilities') {
                     $r = true;
                 } else {
@@ -54,20 +56,24 @@ class HandleInertiaRequests extends Middleware
 
                 return $r;
             })->pluck('name');
+
+            $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($user->currentClientId());
             $shared = [
                 'user.id' => $user->id,
                 'user.contact_preference' => $user->contact_preference,
                 'user.all_locations' => $user->allLocations(),
+                'user.current_team.isClientTeam' => $user->currentClientId() !== null,
+                //TODO:should be able to remove client_id and current_client_id from most of client stuff once middleware is in place
                 'user.current_client_id' => $user->currentClientId(),
                 'user.abilities' => $abilities,
                 'user.has_api_token' => (! is_null($user->access_token)),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
+                'client_services' => $client->services ?? null,
                 'user.column_config' => $user->column_config->mapWithKeys(function ($item, $key) {
                     return [$item['value'] => $item['misc']];
                 }),
 
             ];
-
             if (session()->has(config('laravel-impersonate.session_key'))) {
                 $shared['user.is_being_impersonated'] = session()->get(config('laravel-impersonate.session_key'));
             }

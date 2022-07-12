@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\AccessControl;
 
+use App\Domain\Clients\Models\Client;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Client;
 use Bouncer;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\Database\Role;
