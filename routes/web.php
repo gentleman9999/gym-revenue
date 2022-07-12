@@ -225,7 +225,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('departments')->group(fu
     Route::delete('/{department}', \App\Domain\Departments\Actions\TrashDepartment::class)->name('departments.trash');
     Route::delete('/{department}/force', \App\Domain\Departments\Actions\DeleteDepartment::class)->name('departments.delete');
     Route::post('/{department}/restore', \App\Domain\Departments\Actions\RestoreDepartment::class)->name('departments.restore');
-    Route::get('/export', \App\Http\Controllers\DepartmentsController::class . '@export')->name('classifications.export');
+    Route::get('/export', \App\Http\Controllers\DepartmentsController::class . '@export')->name('departments.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('positions')->group(function () {

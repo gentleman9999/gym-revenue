@@ -1,8 +1,6 @@
 <template>
     <LayoutHeader title="Create Security Role">
-        <h2 class="font-semibold text-xl leading-tight">
-            Create Classification
-        </h2>
+        <h2 class="font-semibold text-xl leading-tight">Create Department</h2>
     </LayoutHeader>
 
     <div>

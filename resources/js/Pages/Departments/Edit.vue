@@ -1,7 +1,7 @@
 <template>
-    <LayoutHeader title="Edit Classification">
+    <LayoutHeader title="Edit Department">
         <jet-bar-icon type="g0back" fill />
-        <h2 class="font-semibold text-xl leading-tight">Edit Classification</h2>
+        <h2 class="font-semibold text-xl leading-tight">Edit Department</h2>
     </LayoutHeader>
 
     <div>
