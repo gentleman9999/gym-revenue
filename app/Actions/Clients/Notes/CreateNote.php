@@ -3,8 +3,8 @@
 namespace App\Actions\Clients\Notes;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Helpers\Uuid;
 use App\Models\Note;
+use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
