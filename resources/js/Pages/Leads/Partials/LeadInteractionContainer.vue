@@ -18,7 +18,7 @@
                         </div>
                         <h1 class="text-center text-2xl">
                             {{ firstName }}
-                            {{ this.$page.props.middle_name.value }}
+                            {{ middleName }}
                             {{ lastName }}
                         </h1>
                         <div class="badge badge-success mt-4">
@@ -146,6 +146,7 @@ export default defineComponent({
         "userId",
         "leadId",
         "firstName",
+        "middleName",
         "lastName",
         "email",
         "phone",

@@ -23,13 +23,6 @@ export const useGymRevForm = (...args) => {
             form.errors = newErrors;
         }
     );
-    console.log({ page });
-
-    const data = (typeof args[0] === "string" ? args[1] : args[0]) || {};
-
-    //immutable copy of initial form data
-    const initialData = cloneDeep(data);
-    Object.freeze(initialData);
 
     //TODO: Using initialData, and the form object, create a "dirtyFields" property,
     //TODO: which is an Object with the keys from initialData, and boolean if the value
@@ -37,7 +30,7 @@ export const useGymRevForm = (...args) => {
     const dirtyFields = computed(() => {
         let fields = [];
         for (let key in form) {
-            if (initialData[key] !== form[key]) fields.push(key);
+            if (form.defaults[key] !== form[key]) fields.push(key);
         }
         return fields;
     });

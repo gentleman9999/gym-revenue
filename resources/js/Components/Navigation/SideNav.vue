@@ -108,7 +108,9 @@ export default defineComponent({
     props: ["page"],
     computed: {
         navigation() {
-            const user = usePage().props.value.user;
+            const page = usePage();
+            const user = page.props.value.user;
+            const client_services = page.props.value.client_services;
             let default_permission = user.current_client_id;
             let nav = [
                 {
@@ -116,7 +118,9 @@ export default defineComponent({
                     icon: MassComIcon,
                     route: "comms.dashboard",
                     label: "Mass Communicator",
-                    permission: default_permission,
+                    permission:
+                        default_permission &&
+                        client_services.includes("MASS_COMMS"),
                 },
                 {
                     key: "nav-employee",
@@ -149,7 +153,9 @@ export default defineComponent({
                     icon: CalendarIcon,
                     route: "calendar",
                     label: "Calendar",
-                    permission: default_permission,
+                    permission:
+                        default_permission &&
+                        client_services.includes("CALENDAR"),
                 },
                 {
                     key: "nav-notes",
@@ -170,14 +176,17 @@ export default defineComponent({
                     icon: LeadsIcon,
                     route: "data.leads",
                     label: "Leads",
-                    permission: default_permission,
+                    permission:
+                        default_permission && client_services.includes("LEADS"),
                 },
                 {
                     key: "nav-members",
                     icon: MembersIcon,
                     route: "data.members",
                     label: "Members",
-                    permission: default_permission,
+                    permission:
+                        default_permission &&
+                        client_services.includes("MEMBERS"),
                 },
                 {
                     key: "nav-documents",

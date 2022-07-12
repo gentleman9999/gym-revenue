@@ -3,14 +3,14 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Leads\Models\Lead;
+use App\Domain\Reminders\Reminder;
+use App\Domain\Users\Models\User;
+use App\Domain\Users\UserAggregate;
 use App\Models\Calendar\CalendarAttendee;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
-use App\Models\Reminder;
-use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -38,11 +38,15 @@ class UpdateCalendarEvent
             'lead_attendees' => ['sometimes', 'array'],
             'member_attendees' => ['sometimes', 'array'],
             'my_reminder' => ['sometimes', 'int'],
+            'location_id' => ['required', 'bigint'],
         ];
     }
 
     public function handle($data, $user)
     {
+        $calendar_event = CalendarEvent::findOrFail($data['id']);
+        $event_type_id = $data['event_type_id'] ?? $calendar_event->event_type_id;
+        $is_task = CalendarEventType::whereId($event_type_id)->select('type')->first()->type == 'Task' ?? false;
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
         if (array_key_exists('event_type_id', $data)) {
             $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
@@ -86,7 +90,7 @@ class UpdateCalendarEvent
                 //Add Users
                 foreach ($data['user_attendees'] as $user) {
                     if (! in_array($user, $userAttendeeIDs)) {
-                        $user = User::whereId($user)->select('id', 'name', 'email')->first();
+                        $user = User::whereId($user)->select('id', 'email')->first();
                         if ($user) {
                             CalendarAggregate::retrieve($data['client_id'])
                                     ->addCalendarAttendee(
@@ -97,7 +101,7 @@ class UpdateCalendarEvent
                                             'entity_data' => $user,
                                             'calendar_event_id' => $data['id'],
                                             'invitation_status' => 'Invitation Pending',
-                                            'is_task' => CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task' ?? false,
+                                            'is_task' => $is_task,
                                         ]
                                     )->persist();
                         }
@@ -131,7 +135,7 @@ class UpdateCalendarEvent
                                             'entity_data' => $lead,
                                             'calendar_event_id' => $data['id'],
                                             'invitation_status' => 'Invitation Pending',
-                                            'is_task' => CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task' ?? false,
+                                            'is_task' => $is_task,
                                         ]
                                     )->persist();
                         }
@@ -165,7 +169,7 @@ class UpdateCalendarEvent
                                             'entity_data' => $member,
                                             'calendar_event_id' => $data['id'],
                                             'invitation_status' => 'Invitation Pending',
-                                            'is_task' => CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task' ?? false,
+                                            'is_task' => $is_task,
                                         ]
                                     )->persist();
                         }
@@ -177,7 +181,7 @@ class UpdateCalendarEvent
         if (array_key_exists('event_type_id', $data)) {
             if (CalendarEventType::whereId($data['event_type_id'])->select('type')->first()->type == 'Task') {
                 //Whoever updated this to a task owns it.
-                $data['owner_id'] = $user->id;
+                $data['owner_id'] = $user;
 
                 //We clear out all attendee's for Tasks
                 foreach ($userAttendeeIDs as $user) {
@@ -192,7 +196,7 @@ class UpdateCalendarEvent
             ->updateCalendarEvent($user->id ?? "Auto Generated", $data)
             ->persist();
 
-        return CalendarEvent::find($data['id']);
+        return CalendarEvent::findOrFail($data['id']);
     }
 
     public function authorize(ActionRequest $request): bool

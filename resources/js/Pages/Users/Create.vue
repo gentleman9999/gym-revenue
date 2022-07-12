@@ -24,9 +24,10 @@
         </div>
         <template #modal>
             <user-form
-                :client-id="$page.props.user.current_client_id"
+                :is-client-user="$page.props.user.current_team?.isClientTeam"
                 :roles="roles"
-                :classifications="classifications"
+                :available-departments="availableDepartments"
+                :available-positions="availablePositions"
                 :locations="locations"
             />
         </template>
@@ -65,7 +66,11 @@ export default defineComponent({
             type: Array,
             required: true,
         },
-        classifications: {
+        availablePositions: {
+            type: Array,
+            required: true,
+        },
+        availableDepartments: {
             type: Array,
             required: true,
         },

@@ -2,8 +2,8 @@
 
 namespace App\Models\Comms;
 
+use App\Domain\Users\Models\User;
 use App\Models\Traits\Sortable;
-use App\Models\User;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

@@ -16,13 +16,13 @@ class CreateLiveReportsByDaysTable extends Migration
         Schema::create('live_reports_by_days', function (Blueprint $table) {
             $table->id();
             $table->uuid('client_id')->index();
-            $table->string('location_id');
+            $table->string('gr_location_id');
             $table->date('date');
             $table->string('entity');
             $table->float('value')->default(0);
             $table->timestamps();
 
-            $table->unique(['client_id', 'location_id', 'date', 'entity'], 'unique_by_day');
+            $table->unique(['client_id', 'gr_location_id', 'date', 'entity'], 'unique_by_day');
         });
     }
 

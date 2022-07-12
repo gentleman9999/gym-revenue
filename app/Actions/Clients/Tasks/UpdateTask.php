@@ -2,9 +2,9 @@
 
 namespace App\Actions\Clients\Tasks;
 
-use App\Aggregates\Users\UserAggregate;
+use App\Domain\Users\Models\User;
+use App\Domain\Users\UserAggregate;
 use App\Models\Tasks;
-use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

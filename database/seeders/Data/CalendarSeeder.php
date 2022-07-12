@@ -3,8 +3,9 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Clients\Calendar\CreateCalendarEvent;
+use App\Domain\Clients\Models\Client;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Client;
+use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -41,6 +42,9 @@ class CalendarSeeder extends Seeder
                     $randomUsers[] = $user->id;
                 }
 
+                $locations = Location::whereClientId($client->id)->get();
+                $locations = $locations->toArray();
+
                 $randomUsers = array_values(array_unique($randomUsers));
 
                 foreach ($typesOfEvents as $eventType) {
@@ -58,6 +62,13 @@ class CalendarSeeder extends Seeder
                             $attendees[] = $randomUsers[rand(0, count($randomUsers) - 1)];
                         }
 
+                        if (count($locations) > 0) {
+                            $loc_id = $locations[rand(0, count($locations) - 1)]['id'];
+                        } else {
+                            $loc_id = null;
+                        }
+
+
                         /* no leads bc leads seeder is in different project
                         $leadAttendees = [];
                         for ($d = 1; $d <= 10; $d++) {
@@ -72,6 +83,7 @@ class CalendarSeeder extends Seeder
                             'full_day_event' => 0,//todo:randomize,
                             'event_type_id' => $eventType->id,
                             'user_attendees' => $attendees,
+                            'location_id' => $loc_id,
                             //'lead_attendees' => $leadAttendees
                         ];
 
