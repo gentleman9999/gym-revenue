@@ -15,6 +15,7 @@
                 handler: ({ data }) => handleClickDelete(data),
             },
         }"
+        :top-actions="false"
     />
     <confirm
         title="Really Trash Reminder?"
