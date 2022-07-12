@@ -10,21 +10,14 @@
     </jet-bar-stats-container>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import DashboardStat from "@/Pages/Dashboards/Partials/DashboardStat.vue";
 import JetBarStatsContainer from "@/Components/JetBarStatsContainer.vue";
 
-export default defineComponent({
-    components: {
-        DashboardStat,
-        JetBarStatsContainer,
-    },
-    props: {
-        widgets: {
-            type: Array,
-            required: true,
-        },
+const props = defineProps({
+    widgets: {
+        type: Array,
+        required: true,
     },
 });
 </script>

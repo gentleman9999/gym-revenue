@@ -367,20 +367,20 @@
 }
 </style>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { Head } from "@inertiajs/inertia-vue3";
-
-export default defineComponent({
-    components: {
-        Head,
+const props = defineProps({
+    canLogin: {
+        type: Boolean,
     },
-
-    props: {
-        canLogin: Boolean,
-        canRegister: Boolean,
-        laravelVersion: String,
-        phpVersion: String,
+    canRegister: {
+        type: Boolean,
+    },
+    laravelVersion: {
+        type: String,
+    },
+    phpVersion: {
+        type: String,
     },
 });
 </script>

@@ -7,15 +7,17 @@
             :first-name="lead.first_name"
             :middle-name="lead.middle_name"
             :last-name="lead.last_name"
+            :opportunity="lead.opportunity"
             :email="lead.email"
             :phone="lead.primary_phone"
-            :details="lead['details_desc']"
+            :details="lead.details_desc"
             ref="leadInteractionRef"
             :selectedLeadDetailIndex="selectedLeadDetailIndex"
             :trial-dates="trialDates"
             :trial-memberships="lead.trial_memberships"
             :interaction-count="interactionCount"
             :agreement-number="lead.agreement_number"
+            :owner-user-id="lead.owner_user_id"
         />
     </jet-bar-container>
 </template>

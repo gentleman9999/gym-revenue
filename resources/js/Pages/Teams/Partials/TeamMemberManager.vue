@@ -326,8 +326,9 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref } from "vue";
+import { computed } from "@vue/reactivity";
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import JetActionSection from "@/Jetstream/ActionSection.vue";
 import Button from "@/Components/Button.vue";
@@ -342,174 +343,136 @@ import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import Multiselect from "@vueform/multiselect";
 
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
+import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
-export default defineComponent({
-    components: {
-        JetActionMessage,
-        JetActionSection,
-        Button,
-        JetConfirmationModal,
-
-        JetDialogModal,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
-        JetSecondaryButton,
-        JetSectionBorder,
-        Multiselect,
+const props = defineProps({
+    team: {
+        type: Object,
     },
-    props: {
-        team: {
-            type: Object,
-        },
-        availableRoles: {
-            type: Array,
-            default: [],
-        },
-        availableUsers: {
-            type: Array,
-            default: [],
-        },
-        userPermissions: {
-            type: Array,
-            default: [],
-        },
-        users: {
-            type: Array,
-            default: [],
-        },
+    availableRoles: {
+        type: Array,
+        default: [],
     },
-    data() {
-        return {
-            addTeamMemberForm: this.$inertia.form({
-                emails: [],
-            }),
-
-            updateRoleForm: this.$inertia.form({
-                role: null,
-            }),
-
-            leaveTeamForm: this.$inertia.form(),
-            removeTeamMemberForm: this.$inertia.form(),
-
-            currentlyManagingRole: false,
-            managingRoleFor: null,
-            confirmingLeavingTeam: false,
-            teamMemberBeingRemoved: null,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-        };
+    availableUsers: {
+        type: Array,
+        default: [],
     },
-
-    methods: {
-        // addTeamMember() {
-        //     this.addTeamMemberForm.post(
-        //         route("team-members.store", this.team),
-        //         {
-        //             errorBag: "addTeamMember",
-        //             preserveScroll: true,
-        //             onSuccess: () => {
-        //                 this.addTeamMemberForm.reset();
-        //                 this.$inertia.reload();
-        //             },
-        //         }
-        //     );
-        // },
-        //the above inertia based code should work, but weird fatal. workaround by just posting with axios and reloading
-        async addTeamMember() {
-            this.addTeamMemberForm.post(route("team-member.store", this.team));
-        },
-
-        cancelTeamInvitation(invitation) {
-            this.$inertia.delete(
-                route("team-invitations.destroy", invitation),
-                {
-                    preserveScroll: true,
-                }
-            );
-        },
-
-        manageRole(teamMember) {
-            this.managingRoleFor = teamMember;
-            this.updateRoleForm.role = teamMember.membership.role;
-            this.currentlyManagingRole = true;
-        },
-
-        updateRole() {
-            this.updateRoleForm.put(
-                route("team-members.update", [this.team, this.managingRoleFor]),
-                {
-                    preserveScroll: true,
-                    onSuccess: () => (this.currentlyManagingRole = false),
-                }
-            );
-        },
-
-        confirmLeavingTeam() {
-            this.confirmingLeavingTeam = true;
-        },
-
-        leaveTeam() {
-            this.leaveTeamForm.delete(
-                route("team-members.destroy", [
-                    this.team,
-                    this.$page.props.user,
-                ])
-            );
-        },
-
-        confirmTeamMemberRemoval(teamMember) {
-            console.log({ teamMember });
-            this.teamMemberBeingRemoved = teamMember;
-        },
-
-        removeTeamMember() {
-            this.removeTeamMemberForm.delete(
-                route("team-members.destroy", [
-                    this.team,
-                    this.teamMemberBeingRemoved,
-                ]),
-                {
-                    errorBag: "removeTeamMember",
-                    preserveScroll: true,
-                    preserveState: true,
-                    // onSuccess: () => (this.teamMemberBeingRemoved = null),
-                    onSuccess: () => {
-                        this.teamMemberBeingRemoved = null;
-                    },
-                }
-            );
-        },
-
-        displayableRole(role) {
-            return this.availableRoles.find((r) => r.key === role)?.name;
-        },
+    userPermissions: {
+        type: Array,
+        default: [],
     },
-    computed: {
-        userIds() {
-            return this.users?.map((user) => user.id) || [];
-        },
-        availableUsersToJoinTeam() {
-            //now remove team users and account owner from availableUsers;
-            const availableUsersToJoinTeam =
-                this.availableUsers?.filter(
-                    (user) => !this.userIds.includes(user.id)
-                ) || [];
-            return availableUsersToJoinTeam || [];
-        },
-        availableUsersToJoinTeamOptions() {
-            let options = [];
-            if (this.availableUsersToJoinTeam?.map) {
-                options = this.availableUsersToJoinTeam.map(
-                    ({ email, name }) => ({
-                        label: `${email} (${name})`,
-                        value: email,
-                    })
-                );
-            }
-            return options;
-        },
+    users: {
+        type: Array,
+        default: [],
+    },
+});
+
+const addTeamMemberForm = useGymRevForm({
+    emails: [],
+});
+
+const updateRoleForm = useGymRevForm({
+    role: null,
+});
+
+const leaveTeamForm = useGymRevForm();
+const removeTeamMemberForm = useGymRevForm();
+
+const currentlyManagingRole = ref(false);
+const managingRoleFor = ref(null);
+const confirmingLeavingTeam = ref(false);
+const teamMemberBeingRemoved = ref(null);
+const multiselectClasses = ref(getDefaultMultiselectTWClasses());
+async function addTeamMember() {
+    addTeamMemberForm.post(route("team-member.store", team));
+}
+function cancelTeamInvitation(invitation) {
+    Inertia.delete(route("team-invitations.destroy", invitation), {
+        preserveScroll: true,
+    });
+}
+
+function manageRole(teamMember) {
+    managingRoleFor.value = teamMember;
+    updateRoleForm.role = teamMember.membership.role;
+    currentlyManagingRole.value = true;
+}
+
+function updateRole() {
+    updateRoleForm.put(
+        route("team-members.update", [props.team, managingRoleFor.value]),
+        {
+            preserveScroll: true,
+            onSuccess: () => (currentlyManagingRole.value = false),
+        }
+    );
+}
+
+function confirmLeavingTeam() {
+    confirmingLeavingprops.team = true;
+}
+
+const page = usePage();
+function leaveTeam() {
+    leaveTeamForm.delete(
+        route("team-members.destroy", [props.team, page.props.user])
+    );
+}
+
+function confirmTeamMemberRemoval(teamMember) {
+    console.log({ teamMember });
+    teamMemberBeingRemoved.value = teamMember;
+}
+
+function removeTeamMember() {
+    removeTeamMemberForm.delete(
+        route("team-members.destroy", [
+            props.team,
+            teamMemberBeingRemoved.value,
+        ]),
+        {
+            errorBag: "removeTeamMember",
+            preserveScroll: true,
+            preserveState: true,
+            // onSuccess: () => (teamMemberBeingRemoved.value = null),
+            onSuccess: () => {
+                teamMemberBeingRemoved.value = null;
+            },
+        }
+    );
+}
+
+function displayableRole(role) {
+    return props.availableRoles.find((r) => r.key === role)?.name;
+}
+const userIds = computed({
+    get() {
+        return props.users.map.value?.map((user) => user.id) || [];
+    },
+});
+
+const availableUsersToJoinTeam = computed({
+    get() {
+        const availableUsersToJoinTeam =
+            props.availableUsers?.filter(
+                (user) => !userIds.value.includes(user.id)
+            ) || [];
+        return availableUsersToJoinTeam || [];
+    },
+});
+
+const availableUsersToJoinTeamOptions = computed({
+    get() {
+        let options = [];
+        if (availableUsersToJoinTeam?.map) {
+            options = availableUsersToJoinTeam.map(({ email, name }) => ({
+                label: `${email} (${name})`,
+                value: email,
+            }));
+        }
+        return options;
     },
 });
 </script>
