@@ -11,7 +11,9 @@ use App\Domain\Clients\Events\ClientSocialMediaSet;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
 use App\Domain\Clients\Models\Client;
+use App\Models\File;
 use App\Models\SocialMedia;
+use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientProjector extends Projector
@@ -60,6 +62,14 @@ class ClientProjector extends Projector
 
     public function onLogoUploaded(ClientLogoUploaded $event)
     {
+        $data = $event->payload;
+        $file_table_data = array_filter($data, function ($key) {
+            return in_array($key, (new File())->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+        $file = File::create($file_table_data);
+        //TODO: consider moving this to reactor?
+        $file->url = Storage::disk('s3')->url($file->key);
+        $file->save();
     }
 
     public function onClientSocialMediasSet(ClientSocialMediaSet $event)

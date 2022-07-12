@@ -2,7 +2,7 @@
 
 namespace App\Domain\Clients\Actions;
 
-use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\ClientSettingsAggregate;
 use App\Models\Clients\Location;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -13,11 +13,12 @@ class UploadLogo
 {
     use AsAction;
 
-    public function handle($data, $current_user = null)
+    public function handle($data, $current_user)
     {
         $result = false;
         foreach ($data as $item) {
-            ClientAggregate::retrieve($item['client_id'])->importLocations($current_user->id ?? "Auto Generated", $item['key'])->persist();
+            $item['client_id'] = $current_user->currentClientId();
+            ClientSettingsAggregate::retrieve($current_user->currentClientId())->uploadLogo($item)->persist();
             $result = true;
         }
 
@@ -28,7 +29,7 @@ class UploadLogo
     {
         $current_user = $request->user();
 
-        return $current_user->can('locations.create', Location::class);
+        return $current_user->can('client.create', Location::class);
     }
 
     public function asController(ActionRequest $request)
@@ -42,6 +43,6 @@ class UploadLogo
             Alert::success("Logo Import complete.")->flash();
         }
 
-        return Redirect::route('locations');
+        return Redirect::route('settings');
     }
 }
