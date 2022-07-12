@@ -3,8 +3,10 @@
 namespace App\Domain\Positions\Actions;
 
 use App\Domain\Positions\PositionAggregate;
-use App\Domain\Reminders\Reminder;
+use App\Http\Middleware\InjectClientId;
+use App\Models\Position;
 use App\Support\Uuid;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,39 +25,45 @@ class CreatePosition
     {
         return [
             'name' => ['string', 'required'],
+            'client_id' => ['string', 'required'],
         ];
     }
 
     public function handle($data, $current_user = null)
     {
-        if (! is_null($current_user)) {
-            $client_id = $current_user->currentClientId();
-            $data['client_id'] = $client_id;
-        }
-
         $id = Uuid::new();
 
         $aggy = PositionAggregate::retrieve($id);
 
         $aggy->create($data)->persist();
 
-        return Reminder::findOrFail($id);
+        return Position::findOrFail($id);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
     {
-        return true;
+        $current_user = $request->user();
+
+        return $current_user->can('positions.create', Position::class);
     }
 
     public function asController(ActionRequest $request)
     {
-        $position = $this->handle(
+        return $this->handle(
             $request->validated(),
             $request->user(),
         );
+    }
 
+    public function htmlResponse(Position $position): RedirectResponse
+    {
         Alert::success("Position '{$position->name}' was created")->flash();
 
-        return Redirect::route('positions.update', $position->id);
+        return Redirect::route('positions.edit', $position->id);
     }
 }

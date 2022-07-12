@@ -112,6 +112,8 @@ class CreateUser implements CreatesNewUsers
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
             'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
             'manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager'],
+            'departments' => ['sometimes', 'nullable'],
+            'positions' => ['sometimes', 'nullable'],
         ];
     }
 

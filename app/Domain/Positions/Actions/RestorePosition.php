@@ -4,16 +4,15 @@ namespace App\Domain\Positions\Actions;
 
 use App\Domain\Positions\PositionAggregate;
 use App\Models\Position;
-use Illuminate\Console\Command;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class RestorePosition
 {
     use AsAction;
-
-    public string $commandSignature = 'audience:restore {id}';
-    public string $commandDescription = 'Restores the audience';
 
     public function handle(string $id): Position
     {
@@ -29,9 +28,17 @@ class RestorePosition
         return $current_user->can('*');
     }
 
-    public function asCommand(Command $command): void
+    public function asController(ActionRequest $request, Position $position)
     {
-        $audience = $this->handle($command->argument('id'));
-        $command->info('Restored Audience ' . $audience->name);
+        return $this->handle(
+            $position->id,
+        );
+    }
+
+    public function htmlResponse(Position $position): RedirectResponse
+    {
+        Alert::success("Position '{$position->name}' was restored")->flash();
+
+        return Redirect::route('positions.restore', $position->id);
     }
 }

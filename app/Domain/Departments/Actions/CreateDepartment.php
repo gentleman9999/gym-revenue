@@ -3,8 +3,10 @@
 namespace App\Domain\Departments\Actions;
 
 use App\Domain\Departments\DepartmentAggregate;
-use App\Domain\Reminders\Reminder;
+use App\Http\Middleware\InjectClientId;
+use App\Models\Department;
 use App\Support\Uuid;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,39 +25,45 @@ class CreateDepartment
     {
         return [
             'name' => ['string', 'required'],
+            'client_id' => ['string', 'required'],
         ];
     }
 
     public function handle($data, $current_user = null)
     {
-        if (! is_null($current_user)) {
-            $client_id = $current_user->currentClientId();
-            $data['client_id'] = $client_id;
-        }
-
         $id = Uuid::new();
 
         $aggy = DepartmentAggregate::retrieve($id);
 
         $aggy->create($data)->persist();
 
-        return Reminder::findOrFail($id);
+        return Department::findOrFail($id);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
     {
-        return true;
+        $current_user = $request->user();
+
+        return $current_user->can('departments.create', Department::class);
     }
 
     public function asController(ActionRequest $request)
     {
-        $position = $this->handle(
+        return $this->handle(
             $request->validated(),
             $request->user(),
         );
+    }
 
-        Alert::success("Department '{$position->name}' was created")->flash();
+    public function htmlResponse(Department $department): RedirectResponse
+    {
+        Alert::success("Department '{$department->name}' was created")->flash();
 
-        return Redirect::route('departments.update', $position->id);
+        return Redirect::route('departments.edit', $department->id);
     }
 }

@@ -39,6 +39,22 @@ class UserProjector extends Projector
 
             $user->save();
 
+            if (array_key_exists('positions', $data)) {
+                if (count($data) == count($data, COUNT_RECURSIVE)) {
+                    $user->positions()->sync($data['positions']);
+                } else {
+                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                }
+            }
+
+            if (array_key_exists('departments', $data)) {
+                if (count($data) == count($data, COUNT_RECURSIVE)) {
+                    $user->departments()->sync($data['departments']);
+                } else {
+                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                }
+            }
+
             $details = [
                 'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
             ];

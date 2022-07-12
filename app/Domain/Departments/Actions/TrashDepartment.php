@@ -3,6 +3,7 @@
 namespace App\Domain\Departments\Actions;
 
 use App\Domain\Departments\DepartmentAggregate;
+use App\Http\Middleware\InjectClientId;
 use App\Models\Department;
 use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
@@ -27,6 +28,11 @@ class TrashDepartment
         $current_user = $request->user();
 
         return $current_user->can('departments.trash', Position::class);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request, Department $department): Department
