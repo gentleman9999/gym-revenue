@@ -51,7 +51,7 @@
             <label>Lead Owner Email:</label>
             <div class="data" v-if="data.lead.lead_owner">
                 <span class="badge badge-success badge-outline">{{
-                    data.lead.lead_owner.misc.user_id
+                    data.lead.lead_owner.email
                 }}</span>
             </div>
             <div class="data" v-if="!data.lead.lead_owner">

@@ -15,11 +15,12 @@ class CreateLeadAndMembersTables extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $this->getSharedFields($table);
-            $table->integer('lead_type_id');
+            $table->uuid('lead_type_id');
             $table->uuid('lead_source_id');
+            $table->string('opportunity')->nullable();
+            $table->integer('owner_user_id')->nullable();
             $table->timestamp('converted_at')->nullable()->default(null);
             $table->uuid('member_id')->nullable()->default(null);
-            $table->string('opportunity')->nullable();
             $table->string('ip_address')->nullable();
             $table->timestamps();
             $table->softDeletes();

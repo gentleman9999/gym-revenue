@@ -4,7 +4,7 @@ namespace App\Actions\Simulation;
 
 use App\Actions\Endusers\Members\BatchUpsertMemberApi;
 use App\Domain\Clients\Models\Client;
-use App\Models\Endusers\Lead;
+use App\Domain\Leads\Models\Lead;
 use App\Models\Endusers\Member;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redirect;
@@ -44,6 +44,7 @@ class GenerateRandomMembers
                         ->limit(rand(1, 3))
                         ->get();
 
+                    $leads->makeVisible(['client_id']);
                     $lead_data = $leads->toArray();
 
                     $members_with_conversions = $lead_data;
@@ -51,6 +52,7 @@ class GenerateRandomMembers
                         $member_data = $member->toArray();
                         $members_with_conversions[] = $member_data;
                     }
+//                    dd($members_with_conversions);
                     BatchUpsertMemberApi::run($members_with_conversions);
                     $num_members = count($members_with_conversions);
                     VarDumper::dump("Generated {$num_members} Random Members for $client->name at $location->name");

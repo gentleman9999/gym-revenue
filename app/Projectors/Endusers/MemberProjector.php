@@ -2,7 +2,6 @@
 
 namespace App\Projectors\Endusers;
 
-use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\StorableEvents\Endusers\Members\MemberCreated;
@@ -11,7 +10,6 @@ use App\StorableEvents\Endusers\Members\MemberRestored;
 use App\StorableEvents\Endusers\Members\MemberTrashed;
 use App\StorableEvents\Endusers\Members\MemberUpdated;
 use App\StorableEvents\Endusers\Members\MemberUpdatedCommunicationPreferences;
-use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class MemberProjector extends Projector
@@ -66,7 +64,7 @@ class MemberProjector extends Projector
         $member->updateOrFail($event->data);
 
         //If lead is attached to a member, we're going to also update the lead record with the updated information
-        $record = Lead::whereMemberId($event->data['id'])->first();
+        $record = \App\Domain\Leads\Models\Lead::whereMemberId($event->data['id'])->first();
         if (! is_null($record)) {
             $record->updateOrFail($event->data);
         }

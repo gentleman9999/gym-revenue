@@ -82,7 +82,6 @@
                 :message="form.errors.ability_names"
                 class="mt-2"
             />
-            <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
         <template #actions>
@@ -130,10 +129,6 @@ export default {
         JetLabel,
     },
     props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
         availableAbilities: {
             type: Array,
             default: [],
@@ -153,7 +148,6 @@ export default {
             role = {
                 name: "",
                 id: "",
-                client_id: props.clientId,
                 ability_names: [],
                 group: null,
             };
@@ -163,7 +157,6 @@ export default {
         const form = useGymRevForm({
             name: role.name,
             id: role.id,
-            client_id: props.clientId,
             ability_names: getAbilities(),
             group: role.group,
         });
