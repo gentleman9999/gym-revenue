@@ -4,11 +4,14 @@ namespace App\Domain\Clients;
 
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Events\ClientDeleted;
+use App\Domain\Clients\Events\ClientLogoUploaded;
 use App\Domain\Clients\Events\ClientRestored;
 use App\Domain\Clients\Events\ClientServicesSet;
+use App\Domain\Clients\Events\ClientSocialMediaSet;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
 use App\Domain\Clients\Models\Client;
+use App\Models\SocialMedia;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientProjector extends Projector
@@ -53,5 +56,82 @@ class ClientProjector extends Projector
         $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
         $client->services = $event->services;
         $client->save();
+    }
+
+    public function onLogoUploaded(ClientLogoUploaded $event)
+    {
+    }
+
+    public function onClientSocialMediasSet(ClientSocialMediaSet $event)
+    {
+        $payload = $event->payload;
+        if (array_key_exists('facebook', $payload)) {
+            $social = SocialMedia::whereClientId($payload['client_id'])
+                ->whereName('facebook')->first();
+            if (is_null($social)) {
+                SocialMedia::create([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'facebook',
+                    'value' => $payload['facebook'],
+                ]);
+            } else {
+                $social->update([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'facebook',
+                    'value' => $payload['facebook'],
+                ]);
+            }
+        }
+        if (array_key_exists('twitter', $payload)) {
+            $social = SocialMedia::whereClientId($payload['client_id'])
+                ->whereName('twitter')->first();
+            if (is_null($social)) {
+                SocialMedia::create([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'twitter',
+                    'value' => $payload['twitter'],
+                ]);
+            } else {
+                $social->update([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'twitter',
+                    'value' => $payload['twitter'],
+                ]);
+            }
+        }
+        if (array_key_exists('instagram', $payload)) {
+            $social = SocialMedia::whereClientId($payload['client_id'])
+                ->whereName('instagram')->first();
+            if (is_null($social)) {
+                SocialMedia::create([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'instagram',
+                    'value' => $payload['instagram'],
+                ]);
+            } else {
+                $social->update([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'instagram',
+                    'value' => $payload['instagram'],
+                ]);
+            }
+        }
+        if (array_key_exists('linkedin', $payload)) {
+            $social = SocialMedia::whereClientId($payload['client_id'])
+                ->whereName('linkedin')->first();
+            if (is_null($social)) {
+                SocialMedia::create([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'linkedin',
+                    'value' => $payload['linkedin'],
+                ]);
+            } else {
+                $social->update([
+                    'client_id' => $payload['client_id'],
+                    'name' => 'linkedin',
+                    'value' => $payload['linkedin'],
+                ]);
+            }
+        }
     }
 }

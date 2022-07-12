@@ -2,10 +2,9 @@
 
 namespace App\Domain\Clients\Actions;
 
-use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\ClientSettingsAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Http\Middleware\InjectClientId;
-use App\Models\SocialMedia;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -18,76 +17,7 @@ class UpdateSocialMedias
 
     public function handle(array $payload): Client
     {
-        if (array_key_exists('facebook', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('facebook')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                        'client_id' => $payload['client_id'],
-                        'name' => 'facebook',
-                        'value' => $payload['facebook'],
-                    ]);
-            } else {
-                $social->update([
-                        'client_id' => $payload['client_id'],
-                        'name' => 'facebook',
-                        'value' => $payload['facebook'],
-                        ]);
-            }
-        } else {
-        }
-        if (array_key_exists('twitter', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('twitter')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'twitter',
-                    'value' => $payload['twitter'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'twitter',
-                    'value' => $payload['twitter'],
-                ]);
-            }
-        }
-        if (array_key_exists('instagram', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('instagram')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'instagram',
-                    'value' => $payload['instagram'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'instagram',
-                    'value' => $payload['instagram'],
-                ]);
-            }
-        }
-        if (array_key_exists('linkedin', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('linkedin')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'linkedin',
-                    'value' => $payload['linkedin'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'linkedin',
-                    'value' => $payload['linkedin'],
-                ]);
-            }
-        }
-        //ClientAggregate::retrieve($payload['client_id'])->setClientServices($payload['services'])->persist();
+        ClientSettingsAggregate::retrieve($payload['client_id'])->setSocialMedias($payload)->persist();
 
         return Client::findOrFail($payload['client_id']);
     }
