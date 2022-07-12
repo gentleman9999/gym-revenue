@@ -19,7 +19,6 @@ trait ClientActions
     use ClientGatewayActions;
     use ClientServicesActions;
     use ClientTrialMembershipActions;
-    use ClientRoleActions;
     use ClientUserActions;
     use ClientLocationsActions;
 }
