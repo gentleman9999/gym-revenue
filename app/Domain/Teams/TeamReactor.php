@@ -17,15 +17,4 @@ class TeamReactor extends Reactor
         $invitation = $team->teamInvitations()->whereEmail($event->email)->firstOrFail();
         Mail::to($event->email)->send(new TeamInvitation($invitation));
     }
-
-    //    public function onTeamAttachedToClient(TeamAttachedToClient $event)
-//    {
-//        $team = Team::findOrFail($event->team);
-//
-//        if ($team->home_team) {
-//            ClientAggregate::retrieve($event->aggregateRootUuid())
-//                ->addCapeAndBayAdminsToTeam($event->team)
-//                ->persist();
-//        }
-//    }
 }

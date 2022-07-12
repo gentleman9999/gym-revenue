@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Actions\Endusers\Leads\UpdateLeadCommunicationPreferences;
-use App\Aggregates\Clients\ClientAggregate;
-use App\Aggregates\Endusers\LeadAggregate;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Leads\Actions\UpdateLeadCommunicationPreferences;
+use App\Domain\Leads\LeadAggregate;
+use App\Domain\Leads\Models\Lead;
+use App\Domain\Leads\Models\LeadDetails;
+use App\Domain\LeadSources\LeadSource;
+use App\Domain\LeadStatuses\LeadStatus;
+use App\Domain\LeadTypes\LeadType;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
-use App\Models\Endusers\Lead;
-use App\Models\Endusers\LeadDetails;
-use App\Models\Endusers\LeadSource;
-use App\Models\Endusers\LeadStatuses;
-use App\Models\Endusers\LeadType;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -113,8 +112,6 @@ class LeadsController extends Controller
             'grlocations' => Location::whereClientId($client_id)->get(),
             'leadsources' => LeadSource::whereClientId($client_id)->get(),
             'opportunities' => array_values($opportunities->toArray()),
-            'leadsclaimed' => LeadDetails::where('lead_details.client_id', '=', $client_id)->whereField('claimed')->join('users', 'users.id', '=', 'value')->get()->unique('value'),
-
         ]);
     }
 
@@ -187,7 +184,7 @@ class LeadsController extends Controller
 
         $lead_types = LeadType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatus::whereClientId($client_id)->get();
 
 
         /**
@@ -289,18 +286,13 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function edit($lead_id)
+    public function edit(Lead $lead)
     {
         $user = request()->user();
         if ($user->cannot('leads.update', Lead::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
-        }
-        if (! $lead_id) {
-            Alert::error("Access Denied or Lead does not exist")->flash();
-
-            return Redirect::route('data.leads');
         }
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
@@ -319,9 +311,9 @@ class LeadsController extends Controller
 
         $lead_types = LeadType::whereClientId($client_id)->get();
         $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatuses::whereClientId($client_id)->get();
+        $lead_statuses = LeadStatus::whereClientId($client_id)->get();
 
-        $lead_aggy = LeadAggregate::retrieve($lead_id);
+        $lead_aggy = LeadAggregate::retrieve($lead->id);
 
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
@@ -335,15 +327,15 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
-        $lead = Lead::whereId($lead_id)->with(
-            'detailsDesc',
+        $lead->load(
+            [
             'profile_picture',
             'trialMemberships',
             'lead_owner',
             'lead_status',
             'last_updated',
-            'notes'
-        )->first();
+            'notes', ]
+        );
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
@@ -371,25 +363,14 @@ class LeadsController extends Controller
         ]);
     }
 
-    public function show($lead_id)
+    public function show(Lead $lead)
     {
-        // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
-        if (! $lead_id) {
-            Alert::error("Access Denied or Lead does not exist")->flash();
-
-            return Redirect::route('data.leads');
-        }
-        $aggy = LeadAggregate::retrieve($lead_id);
-        $middle_name = 'test';
-        $middle_names = LeadDetails::select('value')->whereLeadId($lead_id)->where('field', 'middle_name')->get();
-        foreach ($middle_names as $middle_name) {
-        }
-        $preview_note = Note::select('note')->whereEntityId($lead_id)->get();
+        $aggy = LeadAggregate::retrieve($lead->id);
+        $preview_note = Note::select('note')->whereEntityId($lead->id)->get();
 
 
         return Inertia::render('Leads/Show', [
-            'lead' => Lead::whereId($lead_id)->with(['detailsDesc', 'trialMemberships'])->first(),
-            'middle_name' => $middle_name,
+            'lead' => $lead->load(['detailsDesc', 'trialMemberships']),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
@@ -423,7 +404,7 @@ class LeadsController extends Controller
             ]);
 
             LeadAggregate::retrieve($data['lead_id'])
-                ->claim($data['user_id'], $data['client_id'])
+                ->claim($data['user_id'])
                 ->persist();
 
             \Alert::info('This lead has been claimed by you! You may now interact with it!')->flash();
@@ -492,7 +473,7 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function contact($lead_id)
+    public function contact(Lead $lead)
     {
         $user = request()->user();
         if ($user->cannot('leads.contact', Lead::class)) {
@@ -501,36 +482,36 @@ class LeadsController extends Controller
             return Redirect::back()->with('selectedLeadDetailIndex', 0);
         }
 
-        $lead = Lead::find($lead_id);
 
-        if ($lead) {
-            if (array_key_exists('method', request()->all())) {
-                $aggy = LeadAggregate::retrieve($lead_id);
-                $data = request()->all();
+        if (array_key_exists('method', request()->all())) {
+            $aggy = LeadAggregate::retrieve($lead->id);
+            $data = request()->all();
 
-                $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
-                foreach ($aggy->getAppliedEvents() as $value) {
-                    $contains = Str::contains(get_class($value), ['LeadWasCalled', 'LeadWasTextMessaged', 'LeadWasEmailed']);
-                    if ($contains) {
-                        $data['interaction_count']++;
-                    }
+            $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
+            foreach ($aggy->getAppliedEvents() as $value) {
+                $contains = Str::contains(get_class($value), ['LeadWasCalled', 'LeadWasTextMessaged', 'LeadWasEmailed']);
+                if ($contains) {
+                    $data['interaction_count']++;
                 }
+            }
 
-                switch (request()->get('method')) {
+            $data['user'] = auth()->user()->id;
+
+            switch (request()->get('method')) {
                     case 'email':
-                        $aggy->email($data, auth()->user()->id)->persist();
+                        $aggy->email($data)->persist();
                         Alert::success("Email sent to lead")->flash();
 
                         break;
 
                     case 'phone':
-                        $aggy->logPhoneCall($data, auth()->user()->id)->persist();
+                        $aggy->logPhoneCall($data)->persist();
                         Alert::success("Call Log Updated")->flash();
 
                         break;
 
                     case 'sms':
-                        $aggy->textMessage($data, auth()->user()->id)->persist();
+                        $aggy->textMessage($data)->persist();
                         Alert::success("SMS Sent")->flash();
 
                         break;
@@ -538,10 +519,8 @@ class LeadsController extends Controller
                     default:
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
-            }
-        } else {
-            Alert::error("Could not find the lead requested.")->flash();
         }
+
 //        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
 //        return redirect()->back()->with('selectedLeadDetailIndex', '0');
         return Redirect::back()->with('selectedLeadDetailIndex', 0);
@@ -554,79 +533,14 @@ class LeadsController extends Controller
         ]);
     }
 
-    public function updateSources(Request $request)
-    {
-        $data = request()->validate([
-            'sources' => 'required',
-            'sources.*.name' => 'required',
-        ]);
-        $sources = $data['sources'];
-        if (array_key_exists('sources', $data) && is_array($data['sources'])) {
-            $sourcesToUpdate = collect($data['sources'])->filter(function ($s) {
-                return $s['id'] !== null && ! empty($s['name']);
-            });
-            $sourcesToCreate = collect($data['sources'])->filter(function ($s) {
-                return $s['id'] === null && ! empty($s['name']);
-            });
-            $client_id = $request->user()->currentClientId();
-
-            $client_aggy = ClientAggregate::retrieve($client_id);
-
-            foreach ($sourcesToUpdate as $sourceToUpdate) {
-                $client_aggy->updateLeadSource($sourceToUpdate, request()->user()->id);
-            }
-            foreach ($sourcesToCreate as $sourceToCreate) {
-                $client_aggy->createLeadSource($sourceToCreate, request()->user()->id);
-            }
-            $client_aggy->persist();
-        }
-        Alert::success("Lead Sources updated")->flash();
-//        return Redirect::route('data.leads');
-        return Redirect::back();
-    }
-
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-            'statuses' => LeadStatuses::whereClientId($request->user()->currentClientId())->get(['id', 'status']),
+            'statuses' => LeadStatus::whereClientId($request->user()->currentClientId())->get(['id', 'status']),
         ]);
     }
 
-    public function updateStatuses(Request $request)
-    {
-        $data = request()->validate([
-            'statuses' => 'required',
-            'statuses.*.status' => 'required',
-        ]);
-
-        $statuses = $data['statuses'];
-
-        if (array_key_exists('statuses', $data) && is_array($data['statuses'])) {
-            $statusesToUpdate = collect($data['statuses'])->filter(function ($s) {
-                return $s['id'] !== null && ! empty($s['status']);
-            });
-            $statusesToCreate = collect($data['statuses'])->filter(function ($s) {
-                return $s['id'] === null && ! empty($s['status']);
-            });
-
-            $client_id = $request->user()->currentClientId();
-
-            $client_aggy = ClientAggregate::retrieve($client_id);
-
-            foreach ($statusesToUpdate as $statusToUpdate) {
-                $client_aggy->updateLeadStatus($statusToUpdate, request()->user()->id);
-            }
-            foreach ($statusesToCreate as $statusToCreate) {
-                $client_aggy->createLeadStatus($statusToCreate, request()->user()->id);
-            }
-            $client_aggy->persist();
-        }
-        Alert::success("Lead Statuses updated")->flash();
-//        return Redirect::route('data.leads');
-        return Redirect::back();
-    }
-
-    public function view($lead_id)
+    public function view(Lead $lead)
     {
         $user = request()->user();
         if ($user->cannot('leads.read', Lead::class)) {
@@ -634,32 +548,27 @@ class LeadsController extends Controller
 
             return Redirect::back();
         }
-        if (! $lead_id) {
-            Alert::error("Access Denied or Lead does not exist")->flash();
-
-            return Redirect::route('data.leads');
-        }
         $user = request()->user();
-        $lead_aggy = LeadAggregate::retrieve($lead_id);
-        $data = Lead::whereId($lead_id)->with('detailsDesc')->first();
-        $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
-        $preview_note = Note::select('note')->whereEntityId($lead_id)->get();
-        $data = [
-            'lead' => Lead::whereId($lead_id)->with(
-                'detailsDesc',
+        $lead_aggy = LeadAggregate::retrieve($lead->id);
+        $locid = Location::where('gymrevenue_id', $lead->gr_location_id)->first();
+        $preview_note = Note::select('note')->whereEntityId($lead->id)->get();
+
+        return [
+            'lead' => $lead->load(
+                [
+                    'detailsDesc',
                 'profile_picture',
                 'trialMemberships',
                 'lead_owner',
                 'lead_status',
-                'last_updated'
-            )->first(),
+                'last_updated',
+                ]
+            ),
             'user_id' => $user->id,
             'club_location' => $locid,
             'interactionCount' => $lead_aggy->getInteractionCount(),
             'preview_note' => $preview_note,
         ];
-
-        return $data;
     }
 
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.

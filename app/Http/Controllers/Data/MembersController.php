@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Data;
 
 use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
-use App\Aggregates\Endusers\LeadAggregate;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Leads\LeadAggregate;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;

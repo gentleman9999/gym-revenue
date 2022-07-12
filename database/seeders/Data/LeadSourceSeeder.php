@@ -3,7 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Domain\Clients\Models\Client;
-use App\Models\Endusers\LeadSource;
+use App\Domain\LeadSources\Actions\CreateLeadSource;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -28,12 +28,13 @@ class LeadSourceSeeder extends Seeder
         $clients = Client::all();
         foreach ($clients as $client) {
             foreach ($lead_sources as $lead_source => $readable_source) {
-                LeadSource::create([
-                    'client_id' => $client->id,
+                CreateLeadSource::run([
                     'name' => $readable_source,
                     'source' => $lead_source,
                     'ui' => 1,
+                    'client_id' => $client->id,
                 ]);
+
 
                 VarDumper::dump("Adding lead source {$readable_source}");
             }
