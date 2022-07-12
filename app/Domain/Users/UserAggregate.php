@@ -44,7 +44,6 @@ class UserAggregate extends AggregateRoot
     protected string $city = '';
     protected string $state = '';
     protected string $zip = '';
-    protected string $job_title = '';
     protected string $notes = '';
     protected string $start_date = '';
     protected string $end_date = '';

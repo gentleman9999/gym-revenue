@@ -29,12 +29,10 @@ class CreateUsersTable extends Migration
             $table->string('zip')->nullable();
             $table->string('access_token')->nullable();
             $table->string('password')->nullable();
-            $table->string('job_title')->nullable();
             $table->uuid('home_location_id')->nullable()->index();
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->timestamp('termination_date')->nullable();
-            $table->uuid('classification_id')->nullable()->index();
             $table->string('manager')->nullable();
             $table->boolean('is_cape_and_bay_user')->default(false);
             $table->rememberToken();
@@ -42,7 +40,6 @@ class CreateUsersTable extends Migration
             $table->string('profile_photo_path', 2048)->nullable();
             $table->unique(['client_id', 'email']);
             $table->index(['client_id', 'home_location_id']);
-            $table->index(['client_id', 'classification_id']);
             $table->index(['client_id', 'current_team_id']);
             $table->timestamps();
         });
