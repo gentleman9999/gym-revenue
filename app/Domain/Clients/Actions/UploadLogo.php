@@ -34,12 +34,12 @@ class UploadLogo
 
     public function asController(ActionRequest $request)
     {
-        $location = $this->handle(
+        $logo = $this->handle(
             $request->all(),
             $request->user(),
         );
 
-        if ($location) { //If at-least one file was correct format and imported we display success
+        if ($logo) { //If at-least one file was correct format and imported we display success
             Alert::success("Logo Import complete.")->flash();
         }
 
