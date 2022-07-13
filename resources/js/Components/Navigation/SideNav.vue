@@ -117,8 +117,7 @@ export default defineComponent({
                     route: "comms.dashboard",
                     label: "Mass Communicator",
                     permission:
-                        user.current_client_id &&
-                        client_services.includes("MASS_COMMS"),
+                        client_services.includes("MASS_COMMS") || isAdmin,
                 },
                 {
                     key: "nav-employee",
@@ -149,7 +148,9 @@ export default defineComponent({
                     route: "calendar",
                     label: "Calendar",
                     permission:
-                        user.abilities.includes("calendar.read") || isAdmin,
+                        user.abilities.includes("calendar.read") ||
+                        client_services.includes("CALENDAR") ||
+                        isAdmin,
                 },
                 {
                     key: "nav-todo",
@@ -165,7 +166,9 @@ export default defineComponent({
                     route: "data.leads",
                     label: "Leads",
                     permission:
-                        user.abilities.includes("leads.read") || isAdmin,
+                        user.abilities.includes("leads.read") ||
+                        client_services.includes("LEADS") ||
+                        isAdmin,
                 },
                 {
                     key: "nav-members",
@@ -173,7 +176,9 @@ export default defineComponent({
                     route: "data.members",
                     label: "Members",
                     permission:
-                        user.abilities.includes("members.read") || isAdmin,
+                        user.abilities.includes("members.read") ||
+                        client_services.includes("MEMBERS") ||
+                        isAdmin,
                 },
                 {
                     key: "nav-documents",
@@ -188,7 +193,8 @@ export default defineComponent({
                     icon: ReminderIcon,
                     route: "reminders",
                     label: "Reminders",
-                    permission: default_permission,
+                    permission:
+                        user.abilities.includes("reminders.read") || isAdmin,
                 },
                 {
                     key: "nav-locations",
@@ -203,8 +209,7 @@ export default defineComponent({
                     icon: SettingIcon,
                     route: "data.conversions",
                     label: "Settings",
-                    permission:
-                        user.abilities.includes("conversions.read") || isAdmin,
+                    permission: isAdmin,
                 },
             ];
 
