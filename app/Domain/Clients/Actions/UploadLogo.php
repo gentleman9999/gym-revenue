@@ -5,6 +5,7 @@ namespace App\Domain\Clients\Actions;
 use App\Domain\Clients\ClientSettingsAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Http\Middleware\InjectClientId;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -14,7 +15,7 @@ class UploadLogo
 {
     use AsAction;
 
-    public function handle($data, $current_user)
+    public function handle($data, $current_user): bool
     {
         $result = false;
         foreach ($data as $item) {
@@ -45,14 +46,17 @@ class UploadLogo
         return [InjectClientId::class];
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): bool
     {
-        $logo = $this->handle(
+        return $this->handle(
             $request->all(),
             $request->user(),
         );
+    }
 
-        if ($logo) { //If at-least one file was correct format and imported we display success
+    public function htmlResponse(bool $success): RedirectResponse
+    {
+        if ($success) { //If at-least one file was correct format and imported we display success
             Alert::success("Logo Import complete.")->flash();
         }
 
