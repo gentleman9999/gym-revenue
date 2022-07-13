@@ -49,9 +49,6 @@
 <style scoped>
 .jet-nav-link {
     @apply text-sm font-semibold rounded-lg btn  btn-ghost hover:bg-primary hover:text-white rounded-none pl-8;
-    & p > svg {
-        @apply mr-8;
-    }
 }
 .nav-link-container {
     @apply block py-2 mt-2 whitespace-nowrap;
@@ -64,6 +61,7 @@ import { comingSoon } from "@/utils/comingSoon";
 import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks.vue";
 import JetNavLink from "@/Jetstream/NavLink.vue";
 import { useLockScroll } from "vue-composable";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import { useBreakpointTailwindCSS } from "vue-composable";
 import {
@@ -75,6 +73,8 @@ import {
     CalendarIcon,
     ToDoIcon,
     FileIcon,
+    NotesIcon,
+    ReminderIcon,
     LocationIcon,
     SettingIcon,
     LeadsIcon,
@@ -95,11 +95,14 @@ export default defineComponent({
         TeamIcon,
         ReportIcon,
         CalendarIcon,
+        NotesIcon,
         ToDoIcon,
         FileIcon,
+        ReminderIcon,
         LocationIcon,
         SettingIcon,
         BurgerIcon,
+        FontAwesomeIcon,
     },
     props: ["page"],
     computed: {
@@ -154,6 +157,13 @@ export default defineComponent({
                         client_services.includes("CALENDAR"),
                 },
                 {
+                    key: "nav-notes",
+                    icon: NotesIcon,
+                    route: "notes",
+                    label: "Notes",
+                    permission: default_permission,
+                },
+                {
                     key: "nav-todo",
                     icon: ToDoIcon,
                     route: "tasks",
@@ -182,6 +192,13 @@ export default defineComponent({
                     icon: FileIcon,
                     route: "files",
                     label: "Documents",
+                    permission: default_permission,
+                },
+                {
+                    key: "nav-reminders",
+                    icon: ReminderIcon,
+                    route: "reminders",
+                    label: "Reminders",
                     permission: default_permission,
                 },
                 {

@@ -6,33 +6,26 @@
     </jet-bar-stat-card>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetBarStatCard from "@/Components/JetBarStatCard.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
 
-export default defineComponent({
-    components: {
-        JetBarStatCard,
-        JetBarIcon,
+const props = defineProps({
+    title: {
+        type: String,
+        required: true,
     },
-    props: {
-        title: {
-            type: String,
-            required: true,
-        },
-        value: {
-            type: Number,
-            required: true,
-        },
-        type: {
-            type: String,
-            required: true,
-        },
-        icon: {
-            type: String,
-            required: true,
-        },
+    value: {
+        type: Number,
+        required: true,
+    },
+    type: {
+        type: String,
+        required: true,
+    },
+    icon: {
+        type: String,
+        required: true,
     },
 });
 </script>

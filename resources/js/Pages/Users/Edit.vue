@@ -16,8 +16,9 @@
                 :is-client-user="$page.props.user.current_team?.isClientTeam"
                 :user="selectedUser"
                 :roles="roles"
-                :classifications="classifications"
                 :locations="locations"
+                :available-departments="availableDepartments"
+                :available-positions="availablePositions"
             />
         </template>
     </ModalableWrapper>
@@ -56,11 +57,15 @@ export default defineComponent({
             type: Array,
             required: true,
         },
-        roles: {
+        availablePositions: {
             type: Array,
             required: true,
         },
-        classifications: {
+        availableDepartments: {
+            type: Array,
+            required: true,
+        },
+        roles: {
             type: Array,
             required: true,
         },

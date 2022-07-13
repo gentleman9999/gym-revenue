@@ -74,7 +74,7 @@ progress::-webkit-progress-value {
 }
 </style>
 <script setup>
-import { ref, computed, onMounted, watchEffect } from "vue";
+import { ref, computed, onMounted, defineEmits } from "vue";
 import { useGymRevForm } from "@/utils";
 
 import JetFormSection from "@/Jetstream/FormSection.vue";

@@ -153,6 +153,25 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
+    Route::get('/', \App\Http\Controllers\RemindersController::class . '@index')->name('reminders');
+    Route::get('/create', \App\Http\Controllers\RemindersController::class . '@create')->name('reminders.create');
+    Route::post('/', \App\Actions\Clients\Reminders\CreateReminder::class)->name('reminders.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\RemindersController::class . '@edit')->name('reminders.edit');
+    Route::put('/{id}', \App\Actions\Clients\Reminders\UpdateReminder::class)->name('reminders.update');
+    Route::delete('/{id}/force', \App\Actions\Clients\Reminders\DeleteReminder::class)->name('reminders.delete');
+});
+
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function () {
+    Route::get('/', \App\Http\Controllers\NotesController::class . '@index')->name('notes');
+    Route::get('/create', \App\Http\Controllers\NotesController::class . '@create')->name('notes.create');
+    Route::post('/', \App\Actions\Clients\Notes\CreateNote::class)->name('notes.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
+    Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
+    Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');
@@ -220,16 +239,28 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('roles')->group(function
     Route::get('/export', \App\Http\Controllers\RolesController::class . '@export')->name('roles.export');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->prefix('classifications')->group(function () {
-    Route::get('/', \App\Http\Controllers\ClassificationsController::class . '@index')->name('classifications');
-    Route::get('/create', \App\Http\Controllers\ClassificationsController::class . '@create')->name('classifications.create');
-    Route::post('/', \App\Actions\Clients\Classifications\CreateClassification::class)->name('classifications.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\ClassificationsController::class . '@edit')->name('classifications.edit');
-    Route::put('/{id}', \App\Actions\Clients\Classifications\UpdateClassification::class)->name('classifications.update');
-    Route::delete('/{id}', \App\Actions\Clients\Classifications\TrashClassification::class)->name('classifications.trash');
-    Route::delete('/{id}/force', \App\Actions\Clients\Classifications\DeleteClassification::class)->name('classifications.delete');
-    Route::post('/{id}/restore', \App\Actions\Clients\Classifications\RestoreClassification::class)->name('classifications.restore');
-    Route::get('/export', \App\Http\Controllers\ClassificationsController::class . '@export')->name('classifications.export');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('departments')->group(function () {
+    Route::get('/', \App\Http\Controllers\DepartmentsController::class . '@index')->name('departments');
+    Route::get('/create', \App\Http\Controllers\DepartmentsController::class . '@create')->name('departments.create');
+    Route::post('/', \App\Domain\Departments\Actions\CreateDepartment::class)->name('departments.store');
+    Route::get('/edit/{department}', \App\Http\Controllers\DepartmentsController::class . '@edit')->name('departments.edit');
+    Route::put('/{department}', \App\Domain\Departments\Actions\UpdateDepartment::class)->name('departments.update');
+    Route::delete('/{department}', \App\Domain\Departments\Actions\TrashDepartment::class)->name('departments.trash');
+    Route::delete('/{department}/force', \App\Domain\Departments\Actions\DeleteDepartment::class)->name('departments.delete');
+    Route::post('/{department}/restore', \App\Domain\Departments\Actions\RestoreDepartment::class)->name('departments.restore');
+    Route::get('/export', \App\Http\Controllers\DepartmentsController::class . '@export')->name('departments.export');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('positions')->group(function () {
+    Route::get('/', \App\Http\Controllers\PositionsController::class . '@index')->name('positions');
+    Route::get('/create', \App\Http\Controllers\PositionsController::class . '@create')->name('positions.create');
+    Route::post('/', \App\Domain\Positions\Actions\CreatePosition::class)->name('positions.store');
+    Route::get('/edit/{position}', \App\Http\Controllers\PositionsController::class . '@edit')->name('positions.edit');
+    Route::put('/{position}', \App\Domain\Positions\Actions\UpdatePosition::class)->name('positions.update');
+    Route::delete('/{position}', \App\Domain\Positions\Actions\TrashPosition::class)->name('positions.trash');
+    Route::delete('/{position}/force', \App\Domain\Positions\Actions\DeletePosition::class)->name('positions.delete');
+    Route::post('/{position}/restore', \App\Domain\Positions\Actions\RestorePosition::class)->withTrashed()->name('positions.restore');
+    Route::get('/export', \App\Http\Controllers\PositionsController::class . '@export')->name('positions.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {

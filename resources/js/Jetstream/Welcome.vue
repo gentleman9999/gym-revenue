@@ -191,13 +191,6 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo.vue";
-
-export default defineComponent({
-    components: {
-        JetApplicationLogo,
-    },
-});
 </script>

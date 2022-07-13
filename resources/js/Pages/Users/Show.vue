@@ -168,11 +168,6 @@ export default defineComponent({
                 label: "Security Role",
             },
             {
-                name: "classification",
-                label: "Classification",
-                transform: (data) => data?.name,
-            },
-            {
                 name: "manager",
                 label: "Manager",
             },
@@ -188,11 +183,6 @@ export default defineComponent({
                     // transform: (data) => data?.home_location?.name,
                 },
                 "role",
-                {
-                    name: "classification",
-                    label: "Classification",
-                    transform: (data) => data?.title,
-                },
                 {
                     name: "manager",
                     label: "Manager",
@@ -245,8 +235,16 @@ export default defineComponent({
         }
         if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
-                label: "Classification",
-                href: route("classifications"),
+                label: "Departments",
+                href: route("departments"),
+                onClick: null,
+                active: false,
+            });
+        }
+        if (page.props.value.user.current_team.isClientTeam) {
+            navLinks.push({
+                label: "Positions",
+                href: route("positions"),
                 onClick: null,
                 active: false,
             });

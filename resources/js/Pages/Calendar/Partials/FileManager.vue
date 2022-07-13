@@ -113,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
+import { ref, defineEmits, computed, onBeforeUpdate, onUnmounted } from "vue";
 import { useGymRevForm } from "@/utils";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";

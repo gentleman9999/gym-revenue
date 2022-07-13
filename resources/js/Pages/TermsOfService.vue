@@ -17,17 +17,13 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { Head } from "@inertiajs/inertia-vue3";
 import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
 
-export default defineComponent({
-    props: ["terms"],
-
-    components: {
-        Head,
-        JetAuthenticationCardLogo,
+const props = defineProps({
+    terms: {
+        type: String,
     },
 });
 </script>

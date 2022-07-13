@@ -26,7 +26,6 @@ class UserProfileController extends Controller
             'city' => '',
             'state' => '',
             'zip' => '',
-            'job_title' => '',
             'alternate_email' => '',
             'start_date' => '',
             'contact_preference' => '',
