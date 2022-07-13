@@ -2,9 +2,9 @@
 
 namespace App\Domain\Clients\Actions;
 
+use App\Domain\Clients\ClientSettingsAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Http\Middleware\InjectClientId;
-use App\Models\File;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -17,9 +17,10 @@ class DeleteLogo
 
     public function handle($current_user)
     {
-        $logo = File::whereClientId($current_user->currentClientId())->whereType('logo')->first();
-
-        $logo->forceDelete();
+        $data['client_id'] = $current_user->currentClientId();
+        ClientSettingsAggregate::retrieve($data['client_id'])
+            ->deleteLogo($data)
+            ->persist();
 
         return Client::findOrFail($current_user->currentClientId());
     }

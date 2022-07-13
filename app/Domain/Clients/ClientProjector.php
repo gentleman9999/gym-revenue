@@ -5,6 +5,7 @@ namespace App\Domain\Clients;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Events\ClientDeleted;
 use App\Domain\Clients\Events\ClientGatewaySet;
+use App\Domain\Clients\Events\ClientLogoDeleted;
 use App\Domain\Clients\Events\ClientLogoUploaded;
 use App\Domain\Clients\Events\ClientRestored;
 use App\Domain\Clients\Events\ClientServicesSet;
@@ -84,6 +85,13 @@ class ClientProjector extends Projector
         //TODO: consider moving this to reactor?
         $file->url = Storage::disk('s3')->url($file->key);
         $file->save();
+    }
+
+    public function onLogoDeleted(ClientLogoDeleted $event)
+    {
+        $logo = File::whereClientId($event->payload['client_id'])->whereType('logo')->first();
+
+        $logo->forceDelete();
     }
 
     public function onClientSocialMediasSet(ClientSocialMediaSet $event)
