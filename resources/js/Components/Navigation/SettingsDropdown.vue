@@ -187,7 +187,10 @@ export default defineComponent({
             Inertia.post(route("impersonation.stop", {}));
         };
         const showClientSettings = computed(
-            () => page.props.value.user.current_client_id
+            () =>
+                page.props.value.user.abilities.includes(
+                    "manage-client-settings"
+                ) || page.props.value.user.abilities.includes("*")
         );
         return {
             showClientSettings,

@@ -11,7 +11,7 @@
         <nav class="flex-grow lg:block pb-4 lg:pb-0 overflow-hidden">
             <div
                 class="flex-shrink-0 px-4 py-4 flex flex-row items-center justify-between"
-                v-if="$page.props.user.current_client_id"
+                v-if="$page.props.user.current_team.isClientUser"
             >
                 <button @click="toggle()" class="btn btn-ghost">
                     <burger-icon class="m-auto h-full mr-6" />
@@ -104,12 +104,15 @@ export default defineComponent({
         BurgerIcon,
         FontAwesomeIcon,
     },
-    props: ["page"],
     computed: {
         navigation() {
-            const user = usePage().props.value.user;
-            const client_services = usePage().props.value.client_services;
-            let isAdmin = user.abilities.includes("*");
+            const page = usePage();
+            const user = page.props.value.user;
+            const client_services = page.props.value.client_services;
+            const isClientUser =
+                page.props.value.user?.current_team?.isClientTeam;
+            let isAdmin = user?.abilities?.includes("*");
+
             let nav = [
                 {
                     key: "nav-mass",
@@ -117,7 +120,8 @@ export default defineComponent({
                     route: "comms.dashboard",
                     label: "Mass Communicator",
                     permission:
-                        client_services.includes("MASS_COMMS") || isAdmin,
+                        isClientUser &&
+                        (client_services?.includes("MASS_COMMS") || isAdmin),
                 },
                 {
                     key: "nav-employee",
@@ -125,7 +129,7 @@ export default defineComponent({
                     route: "users",
                     label: "Employee Management",
                     permission:
-                        user.abilities.includes("users.read") || isAdmin,
+                        user.abilities?.includes("users.read") || isAdmin,
                 },
                 {
                     key: "nav-team",
@@ -133,14 +137,14 @@ export default defineComponent({
                     route: "teams",
                     label: "Team Management",
                     permission:
-                        user.abilities.includes("teams.read") || isAdmin,
+                        user.abilities?.includes("teams.read") || isAdmin,
                 },
                 {
                     key: "nav-repoting",
                     icon: ReportIcon,
                     route: "reports.dashboard",
                     label: "Reporting",
-                    permission: user.current_client_id,
+                    permission: isClientUser,
                 },
                 {
                     key: "nav-calendar",
@@ -148,9 +152,10 @@ export default defineComponent({
                     route: "calendar",
                     label: "Calendar",
                     permission:
-                        user.abilities.includes("calendar.read") ||
-                        client_services.includes("CALENDAR") ||
-                        isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("calendar.read") ||
+                            client_services?.includes("CALENDAR") ||
+                            isAdmin),
                 },
                 {
                     key: "nav-todo",
@@ -158,7 +163,8 @@ export default defineComponent({
                     route: "tasks",
                     label: "To Do's",
                     permission:
-                        user.abilities.includes("tasks.read") || isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("tasks.read") || isAdmin),
                 },
                 {
                     key: "nav-leads",
@@ -166,9 +172,10 @@ export default defineComponent({
                     route: "data.leads",
                     label: "Leads",
                     permission:
-                        user.abilities.includes("leads.read") ||
-                        client_services.includes("LEADS") ||
-                        isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("leads.read") ||
+                            client_services?.includes("LEADS") ||
+                            isAdmin),
                 },
                 {
                     key: "nav-members",
@@ -176,9 +183,10 @@ export default defineComponent({
                     route: "data.members",
                     label: "Members",
                     permission:
-                        user.abilities.includes("members.read") ||
-                        client_services.includes("MEMBERS") ||
-                        isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("members.read") ||
+                            client_services?.includes("MEMBERS") ||
+                            isAdmin),
                 },
                 {
                     key: "nav-documents",
@@ -186,7 +194,8 @@ export default defineComponent({
                     route: "files",
                     label: "Documents",
                     permission:
-                        user.abilities.includes("files.read") || isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("files.read") || isAdmin),
                 },
                 {
                     key: "nav-reminders",
@@ -194,7 +203,8 @@ export default defineComponent({
                     route: "reminders",
                     label: "Reminders",
                     permission:
-                        user.abilities.includes("reminders.read") || isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("reminders.read") || isAdmin),
                 },
                 {
                     key: "nav-locations",
@@ -202,18 +212,19 @@ export default defineComponent({
                     route: "locations",
                     label: "Locations",
                     permission:
-                        user.abilities.includes("locations.read") || isAdmin,
+                        isClientUser &&
+                        (user.abilities?.includes("locations.read") || isAdmin),
                 },
                 {
                     key: "nav-settings",
                     icon: SettingIcon,
                     route: "data.conversions",
                     label: "Settings",
-                    permission: isAdmin,
+                    permission: isClientUser && isAdmin,
                 },
             ];
 
-            return nav.filter((item) => item.permission);
+            return nav.filter((item) => item?.permission);
         },
     },
     setup(props, { emit }) {

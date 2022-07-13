@@ -60,8 +60,8 @@ class BouncerAbilitiesSeeder extends Seeder
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
-                'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams', 'calendar',
-                'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
+                'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
