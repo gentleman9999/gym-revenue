@@ -43,20 +43,23 @@
                             >
                                 <tbody>
                                     <tr
-                                        v-for="(team, id) in teams"
+                                        v-for="team in teams"
+                                        :key="team.id"
                                         class="hover"
                                     >
                                         <td class="">
-                                            {{ team["team_name"] }}
+                                            {{ team.name }}
                                         </td>
                                         <td class="">
-                                            ({{ team["client_name"] }})
+                                            <template v-if="team?.client?.name">
+                                                ({{ team?.client?.name }})
+                                            </template>
                                         </td>
                                         <td class="">
                                             <button
                                                 type="button"
                                                 class="btn btn-success"
-                                                @click="switchToTeam(id)"
+                                                @click="switchToTeam(team.id)"
                                             >
                                                 Go
                                             </button>
@@ -200,7 +203,8 @@
     </jet-bar-container>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, watch } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import JetBarAlert from "@/Components/JetBarAlert.vue";
@@ -240,63 +244,55 @@ library.add(
     faUser
 );
 
-export default {
-    components: {
-        LayoutHeader,
-        JetBarContainer,
-        JetBarAlert,
-        GymRevenueTable,
-        JetBarBadge,
-        JetBarIcon,
-        FontAwesomeIcon,
-        DashboardStats,
-        DashboardHeader,
-        DaisyModal,
+const props = defineProps({
+    teamName: {
+        type: String,
     },
-    props: [
-        "teamName",
-        "teams",
-        "clients",
-        "accountName",
-        "widgets",
-        "announcements",
-    ],
-    watch: {
-        announcementModal(flag) {
-            if (flag) {
-                this.$refs.anModal.open();
-            } else {
-                this.$refs.anModal.close();
-            }
+    teams: {
+        type: Array,
+    },
+    clients: {
+        type: Array,
+    },
+    accountName: {
+        type: String,
+    },
+    widgets: {
+        type: Array,
+    },
+    announcements: {
+        type: Array,
+    },
+});
+
+const showAnnouncement = ref(false);
+const announcementModal = ref(false);
+const anModal = ref(null);
+
+watch([announcementModal], () => {
+    if (announcementModal.value) {
+        anModal.value.open();
+    } else {
+        anModal.value.close();
+    }
+});
+const switchToTeam = (teamId) => {
+    Inertia.put(
+        route("current-team.update"),
+        {
+            team_id: teamId,
         },
-    },
-    data() {
-        return {
-            showAnnouncement: false,
-            announcementModal: false,
-        };
-    },
-    methods: {
-        switchToTeam(teamId) {
-            Inertia.put(
-                route("current-team.update"),
-                {
-                    team_id: teamId,
-                },
-                {
-                    preserveState: false,
-                }
-            );
-        },
-    },
-    computed: {},
-    mounted() {
-        if (this.announcements.length > 0) {
-            this.showAnnouncement = true;
+        {
+            preserveState: false,
         }
-        console.log("GymRevenue Dashboard");
-    },
+    );
 };
+
+onMounted(() => {
+    if (props.announcements.length > 0) {
+        showAnnouncement.value = true;
+    }
+});
 </script>
 
 <style scoped></style>

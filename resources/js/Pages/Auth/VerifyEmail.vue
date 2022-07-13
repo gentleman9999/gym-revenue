@@ -40,42 +40,34 @@
         </form>
     </jet-authentication-card>
 </template>
-
 <script>
-import { defineComponent } from "vue";
+export default {
+    layout: null,
+};
+</script>
+<script setup>
+import { computed } from "@vue/reactivity";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
 import Button from "@/Components/Button.vue";
 import { Head } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        Head,
-        JetAuthenticationCard,
-        JetAuthenticationCardLogo,
-        Button,
+const props = defineProps({
+    status: {
+        type: String,
     },
+});
 
-    props: {
-        status: String,
-    },
+const form = useGymRevForm({});
 
-    data() {
-        return {
-            form: this.$inertia.form(),
-        };
-    },
+const submit = () => {
+    form.post(route("verification.send"));
+};
 
-    methods: {
-        submit() {
-            this.form.post(this.route("verification.send"));
-        },
-    },
-    layout: null,
-    computed: {
-        verificationLinkSent() {
-            return this.status === "verification-link-sent";
-        },
+const verificationLinkSent = computed({
+    get() {
+        return props.status === "verification-link-sent";
     },
 });
 </script>

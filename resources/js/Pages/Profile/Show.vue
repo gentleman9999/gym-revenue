@@ -6,10 +6,7 @@
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <template v-if="$page.props.jetstream.canUpdateProfileInformation">
-                <update-profile-information-form
-                    :user="$page.props.user"
-                    :addlData="addlData"
-                />
+                <update-profile-information-form :user="$page.props.user" />
 
                 <jet-section-border />
             </template>
@@ -32,7 +29,7 @@
                 <show-api-token-form
                     class="mt-10 sm:mt-0"
                     v-if="!('is_being_impersonated' in $page.props.user)"
-                    :token="$page.props.user.access_token"
+                    :token="addlData['token']"
                 />
                 <jet-form-section v-else>
                     <template #title> API Access </template>
@@ -129,8 +126,7 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
@@ -142,20 +138,9 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import ShowApiTokenForm from "@/Pages/Profile/Partials/ShowAPITokenForm.vue";
 import ApiTokenManager from "@/Pages/Profile/Partials/ApiTokenManager.vue";
 
-export default defineComponent({
-    props: ["sessions", "addlData"],
-
-    components: {
-        ApiTokenManager,
-        LayoutHeader,
-        DeleteUserForm,
-        JetSectionBorder,
-        LogoutOtherBrowserSessionsForm,
-        TwoFactorAuthenticationForm,
-        UpdatePasswordForm,
-        JetFormSection,
-        UpdateProfileInformationForm,
-        ShowApiTokenForm,
+const props = defineProps({
+    sessions: {
+        type: Array,
     },
 });
 </script>

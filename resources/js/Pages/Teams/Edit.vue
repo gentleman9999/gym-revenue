@@ -21,14 +21,6 @@
                 :users="users"
                 :availableUsers="availableUsers"
             />
-
-            <!--                <template-->
-            <!--                    v-if="permissions.canDeleteTeam && !team.personal_team"-->
-            <!--                >-->
-            <!--                    <jet-section-border />-->
-
-            <!--                    <delete-team-form class="mt-10 sm:mt-0" :team="team" />-->
-            <!--                </template>-->
         </template>
     </ModalableWrapper>
 </template>

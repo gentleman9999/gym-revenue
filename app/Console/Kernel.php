@@ -2,11 +2,10 @@
 
 namespace App\Console;
 
-use App\Actions\Clients\Activity\Comms\CheckQueuedEmailCampaigns;
-use App\Actions\Clients\Activity\Comms\CheckQueuedSmsCampaigns;
-use App\Actions\Simulation\GenerateRandomLeads;
 use App\Actions\Simulation\GenerateRandomMembers;
-use App\Actions\Users\Reminders\CheckReminders;
+use App\Domain\Campaigns\ScheduledCampaigns\Actions\CheckScheduledCampaigns;
+use App\Domain\Leads\Actions\GenerateRandomLeads;
+use App\Domain\Reminders\Actions\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\App;
@@ -19,25 +18,23 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //Any Actions defined in App/Actions/**/* with well defined
-        //signatures will get auto registered. Don't add them here.
+        //Any Actions defined in App/Actions/**/* or App/Domain/*/Actions/*
+        //with well defined signatures will get auto registered. Don't add them here.
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        //TODO: should be jobs, not commands
-        $schedule->job(new CheckQueuedEmailCampaigns())->everyMinute();
-        $schedule->job(new CheckQueuedSmsCampaigns())->everyMinute();
-        $schedule->job(new CheckReminders())->everyMinute();
+        $schedule->job(new CheckScheduledCampaigns())->everyMinute()->withoutOverlapping();
+        $schedule->job(new CheckReminders())->everyMinute()->withoutOverlapping();
         if (App::environment(['local', 'develop', 'staging'])) {
-            $schedule->job(new GenerateRandomLeads())->everyFiveMinutes();
-            $schedule->job(new GenerateRandomMembers())->everyTenMinutes();
+            $schedule->job(new GenerateRandomLeads())->everyFiveMinutes()->withoutOverlapping();
+            $schedule->job(new GenerateRandomMembers())->everyTenMinutes()->withoutOverlapping();
         }
     }
 

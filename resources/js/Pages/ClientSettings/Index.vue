@@ -24,21 +24,6 @@
 
                 <jet-section-border />
             </div>
-
-            <div>
-                <trial-membership-form
-                    :user="$page.props.user"
-                    :trial-membership-types="trialMembershipTypes"
-                    :locations="locations"
-                    v-if="
-                        services.filter(
-                            (detail) => detail.value === 'free-trial'
-                        ).length
-                    "
-                />
-
-                <jet-section-border />
-            </div>
         </div>
     </div>
 </template>
@@ -49,14 +34,12 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import ClientServicesForm from "./Partials/ClientServicesForm.vue";
 import CommPrefForm from "./Partials/CommPrefForm.vue";
-import TrialMembershipForm from "./Partials/TrialMembershipForm.vue";
 
 export default defineComponent({
     components: {
         LayoutHeader,
         JetSectionBorder,
         ClientServicesForm,
-        TrialMembershipForm,
         CommPrefForm,
     },
     props: {

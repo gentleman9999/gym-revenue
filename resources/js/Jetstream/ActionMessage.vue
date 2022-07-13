@@ -12,10 +12,10 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-    props: ["on"],
+<script setup>
+const props = defineProps({
+    on: {
+        type: Boolean,
+    },
 });
 </script>

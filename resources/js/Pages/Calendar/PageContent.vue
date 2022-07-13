@@ -269,6 +269,18 @@ export default defineComponent({
                 onClick: null,
                 active: false,
             },
+            {
+                label: "Reminders",
+                href: route("reminders"),
+                onClick: null,
+                active: false,
+            },
+            {
+                label: "QuickView",
+                href: route("calendar.quickview"),
+                onClick: null,
+                active: false,
+            },
         ];
 
         const dateSelect = ref();

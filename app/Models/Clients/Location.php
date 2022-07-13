@@ -2,7 +2,8 @@
 
 namespace App\Models\Clients;
 
-use App\Models\Team;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

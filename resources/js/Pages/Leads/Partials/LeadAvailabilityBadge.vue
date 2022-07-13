@@ -52,16 +52,10 @@ export default {
             }
 
             const claimed = props.value;
-            const yours = props.value.filter(
-                (detail) =>
-                    parseInt(detail.value) ===
-                    parseInt(page.props.value.user.id)
-            );
-            console.log({ claimed, yours });
-            if (yours.length) {
+            const yours = props.value === page.props.value.user.id;
+            if (yours) {
                 return "Yours";
-            }
-            if (claimed.length) {
+            } else if (claimed) {
                 return "Claimed";
             }
             return "Available";
@@ -89,7 +83,6 @@ export default {
                     data: {
                         lead_id: props.data.id,
                         user_id: page.props.value.user.id,
-                        client_id: props.data.client_id,
                     },
                     preserveScroll: true,
                     onFinish: () => {
