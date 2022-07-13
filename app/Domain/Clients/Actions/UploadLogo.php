@@ -4,6 +4,7 @@ namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
 use App\Domain\Clients\Models\Client;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -30,6 +31,18 @@ class UploadLogo
         $current_user = $request->user();
 
         return $current_user->can('client.create', Client::class);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
+        ];
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request)

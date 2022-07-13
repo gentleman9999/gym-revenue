@@ -15,7 +15,7 @@ class DeleteLogo
 {
     use AsAction;
 
-    public function handle($current_user)
+    public function handle($current_user, $data)
     {
         $data['client_id'] = $current_user->currentClientId();
         ClientSettingsAggregate::retrieve($data['client_id'])
@@ -23,6 +23,13 @@ class DeleteLogo
             ->persist();
 
         return Client::findOrFail($current_user->currentClientId());
+    }
+
+    public function rules(): array
+    {
+        return [
+            'client_id' => ['sometimes', 'nullable','string', 'max:255'],
+        ];
     }
 
     public function getControllerMiddleware(): array
@@ -41,13 +48,13 @@ class DeleteLogo
     {
         return $this->handle(
             $request->user(),
+            $request->validated()
         );
     }
 
     public function htmlResponse(Client $client): RedirectResponse
     {
         Alert::success("Logo Deleted.")->flash();
-
 
         return Redirect::route('settings');
     }
