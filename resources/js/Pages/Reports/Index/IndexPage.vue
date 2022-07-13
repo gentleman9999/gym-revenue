@@ -17,9 +17,9 @@
     <jet-bar-container>
         <div class="flex flex-col">
             <overview-table />
-            <div class="flex flex-row mt-12 mb-4 justify-center">
+            <div class="flex flex-row mt-12 mb-4 justify-center px-20 w-full">
                 <div class="px-2">
-                    <cpa-cpl-clicks />
+                    <cpa-cpl-clicks class="w-full" />
                 </div>
                 <div class="px-2">
                     <email-stats-card />

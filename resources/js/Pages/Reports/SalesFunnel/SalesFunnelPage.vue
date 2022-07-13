@@ -15,7 +15,7 @@
         </reports-title>
     </LayoutHeader>
     <jet-bar-container>
-        <div class="flex flex-row mt-[-24px] px-20">
+        <div class="flex flex-row mt-[-24px] px-16 mx-2">
             <div class="w-[37.5%]">
                 <status-cards-wrapper
                     title="Actual"

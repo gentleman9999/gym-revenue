@@ -16,7 +16,7 @@
             <sales-annual-fees class="lg:w-1/4" />
         </div>
         <sales-club-table />
-        <div class="flex flex-row px-7 w-full">
+        <div class="flex flex-row px-3 w-full">
             <div class="flex flex-col w-2/3 space-y-4 pr-4">
                 <div class="flex flex-row flex-wrap">
                     <div class="pr-4 w-[53%]"><sales-show-ratio /></div>
