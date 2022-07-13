@@ -57,18 +57,18 @@ class BouncerAbilitiesSeeder extends Seeder
             /** Account Owner */
             $this->allowReadInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
-                'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams', 'calendar',
-                'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders',
+                'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
 
             /** Regional Admin */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders'], 'Regional Admin', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders'], 'Regional Admin', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
             $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
 
             /** Location Manager */
@@ -89,6 +89,7 @@ class BouncerAbilitiesSeeder extends Seeder
                 VarDumper::dump("Allowing $role to contact leads for teams");
                 Bouncer::allow($role)->to('leads.contact', Lead::class);
             }
+            Bouncer::allow('Account Owner')->to('manage-client-settings');
         }
         Bouncer::scope()->to(null);
     }

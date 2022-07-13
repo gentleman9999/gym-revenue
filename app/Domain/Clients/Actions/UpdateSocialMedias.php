@@ -2,7 +2,7 @@
 
 namespace App\Domain\Clients\Actions;
 
-use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\ClientSettingsAggregate;
 use App\Domain\Clients\Models\Client;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
@@ -11,13 +11,13 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class SetClientServices
+class UpdateSocialMedias
 {
     use AsAction;
 
     public function handle(array $payload): Client
     {
-        ClientAggregate::retrieve($payload['client_id'])->setClientServices($payload['services'])->persist();
+        ClientSettingsAggregate::retrieve($payload['client_id'])->setSocialMedias($payload)->persist();
 
         return Client::findOrFail($payload['client_id']);
     }
@@ -26,7 +26,10 @@ class SetClientServices
     {
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'services' => [ 'required', 'array'],
+            'facebook' => [ 'sometimes', 'string', 'nullable'],
+            'twitter' => [ 'sometimes', 'string', 'nullable'],
+            'instagram' => [ 'sometimes', 'string', 'nullable'],
+            'linkedin' => [ 'sometimes', 'string', 'nullable'],
         ];
     }
 
@@ -54,7 +57,7 @@ class SetClientServices
 
     public function htmlResponse(Client $client): RedirectResponse
     {
-        Alert::success("Client '{$client->name}' services updated.")->flash();
+        Alert::success("Social Media '{$client->name}' services updated.")->flash();
 
         return Redirect::back();
     }

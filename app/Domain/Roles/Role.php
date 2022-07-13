@@ -2,6 +2,7 @@
 
 namespace App\Domain\Roles;
 
+use App\Domain\Clients\Models\Client;
 use App\Domain\Departments\Department;
 use App\Domain\Leads\Models\Lead;
 use App\Domain\LeadSources\LeadSource;
@@ -88,6 +89,10 @@ class Role extends \Silber\Bouncer\Database\Role
 
             case 'reminders':
                 $entity = Reminder::class;
+
+                break;
+            case 'client':
+                $entity = Client::class;
 
                 break;
         }
