@@ -25,7 +25,7 @@ class BouncerAbilitiesSeeder extends Seeder
         $crud_models = collect([
             'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
-            'positions', 'email-templates', 'scheduled-campaigns', 'drip-campaigns', 'reminders', 'client',
+            'positions', 'email-templates', 'scheduled-campaigns', 'drip-campaigns', 'reminders',
         ]);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
@@ -89,6 +89,7 @@ class BouncerAbilitiesSeeder extends Seeder
                 VarDumper::dump("Allowing $role to contact leads for teams");
                 Bouncer::allow($role)->to('leads.contact', Lead::class);
             }
+            Bouncer::allow('Account Owner')->to('manage-client-settings');
         }
         Bouncer::scope()->to(null);
     }

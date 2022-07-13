@@ -3,7 +3,6 @@
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
-use App\Domain\Clients\Models\Client;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -31,7 +30,7 @@ class UploadLogo
     {
         $current_user = $request->user();
 
-        return $current_user->can('client.create', Client::class);
+        return $current_user->can('manage-client-settings');
     }
 
     public function rules(): array

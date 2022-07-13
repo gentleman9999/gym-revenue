@@ -21,7 +21,7 @@ class ClientSettingsController extends Controller
             return Redirect::route('dashboard');
         }
 
-        if (request()->user()->cannot('client.read', Client::class)) {
+        if (request()->user()->cannot('manage-client-settings')) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();

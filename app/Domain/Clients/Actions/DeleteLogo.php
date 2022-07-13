@@ -41,7 +41,7 @@ class DeleteLogo
     {
         $current_user = $request->user();
 
-        return $current_user->can('client.trash', Client::class);
+        return $current_user->can('manage-client-settings');
     }
 
     public function asController(ActionRequest $request)
