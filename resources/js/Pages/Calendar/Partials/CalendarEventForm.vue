@@ -1,7 +1,7 @@
 <template>
     <form
         @submit="handleSubmit"
-        class="w-full flex flex-col px-6 py-6 space-y-4 bg-primary"
+        class="w-full flex flex-col px-6 py-6 space-y-4"
     >
         <div class="flex flex-row justify-between">
             <div class="flex">
