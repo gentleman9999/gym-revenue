@@ -49,9 +49,6 @@
 <style scoped>
 .jet-nav-link {
     @apply text-sm font-semibold rounded-lg btn  btn-ghost hover:bg-primary hover:text-white rounded-none pl-8;
-    & p > svg {
-        @apply mr-8;
-    }
 }
 .nav-link-container {
     @apply block py-2 mt-2 whitespace-nowrap;
