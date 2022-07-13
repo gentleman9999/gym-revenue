@@ -26,7 +26,7 @@ class SetClientServices
     {
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'socialMedias' => [ 'sometimes', 'array'],
+            'services' => [ 'required', 'array'],
         ];
     }
 

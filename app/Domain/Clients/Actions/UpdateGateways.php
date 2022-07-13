@@ -26,13 +26,13 @@ class UpdateGateways
     {
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'mailgunDomain' => ['sometimes', 'string'],
-            'mailgunSecret' => ['sometimes', 'string'],
-            'mailgunFromAddress' => ['sometimes', 'string'],
-            'mailgunFromName' => ['sometimes', 'string'],
-            'twilioSID' => ['sometimes', 'string'],
-            'twilioToken' => ['sometimes', 'string'],
-            'twilioNumber' => ['sometimes', 'string'],
+            'mailgunDomain' => ['sometimes', 'string', 'nullable'],
+            'mailgunSecret' => ['sometimes', 'string', 'nullable'],
+            'mailgunFromAddress' => ['sometimes', 'string', 'nullable'],
+            'mailgunFromName' => ['sometimes', 'string', 'nullable'],
+            'twilioSID' => ['sometimes', 'string', 'nullable'],
+            'twilioToken' => ['sometimes', 'string', 'nullable'],
+            'twilioNumber' => ['sometimes', 'string', 'nullable'],
         ];
     }
 
