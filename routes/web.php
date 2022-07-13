@@ -206,7 +206,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(funct
     Route::put('/social-media-set', \App\Domain\Clients\Actions\UpdateSocialMedias::class)->name('settings.social-media.update');
     Route::put('/gateway-set', \App\Domain\Clients\Actions\UpdateGateways::class)->name('settings.gateway.update');
     Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');
-    Route::delete('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.delete');
+    Route::delete('/logo', \App\Domain\Clients\Actions\DeleteLogo::class)->name('settings.logo.delete');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
 

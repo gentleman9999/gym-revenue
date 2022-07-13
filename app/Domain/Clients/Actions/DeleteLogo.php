@@ -3,6 +3,7 @@
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\Models\Client;
+use App\Http\Middleware\InjectClientId;
 use App\Models\File;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -14,19 +15,31 @@ class DeleteLogo
 {
     use AsAction;
 
-    public function handle($data)
+    public function handle($current_user)
     {
-        $logo = File::whereClientId($data['client_id'])->whereType('logo')->first();
+        $logo = File::whereClientId($current_user->currentClientId())->whereType('logo')->first();
 
         $logo->forceDelete();
 
-        return Client::findOrFail($data['client_id']);
+        return Client::findOrFail($current_user->currentClientId());
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+
+        return $current_user->can('client.trash', Client::class);
     }
 
     public function asController(ActionRequest $request)
     {
         return $this->handle(
-            $request->all()
+            $request->user(),
         );
     }
 
