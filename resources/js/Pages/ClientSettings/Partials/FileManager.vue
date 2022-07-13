@@ -10,6 +10,14 @@
                 <div class="divider"></div>
                 <img :src="this.$page.props.logoUrl" />
                 <div class="divider"></div>
+                <div class="flex items-center justify-end mt-[-6px] mb-4">
+                    <Button
+                        class="btn w-max rounded btn-secondary btn-sm"
+                        @click="handleRemoveLogo"
+                    >
+                        Remove Logo
+                    </Button>
+                </div>
             </div>
         </template>
         <template #title> Upload Logo </template>
@@ -133,6 +141,10 @@ const props = defineProps({
 
 const defaultHandleCancel = () => {
     Inertia.visit(route("locations"));
+};
+
+const handleRemoveLogo = () => {
+    Inertia.delete(route("settings.logo.delete"));
 };
 const resolvedHandleCancel = props.handleCancel || defaultHandleCancel;
 

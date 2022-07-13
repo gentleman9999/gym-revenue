@@ -3,7 +3,7 @@
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
-use App\Models\Clients\Location;
+use App\Domain\Clients\Models\Client;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -29,7 +29,7 @@ class UploadLogo
     {
         $current_user = $request->user();
 
-        return $current_user->can('client.create', Location::class);
+        return $current_user->can('client.create', Client::class);
     }
 
     public function asController(ActionRequest $request)
