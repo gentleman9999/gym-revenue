@@ -14,36 +14,36 @@
             </template>
         </reports-title>
     </LayoutHeader>
-    <div class="flex flex-row mt-[-24px] px-20">
-        <div class="w-[37.5%]">
-            <status-cards-wrapper
-                title="Actual"
-                :cards="actual_status"
-            ></status-cards-wrapper>
+    <jet-bar-container>
+        <div class="flex flex-row mt-[-24px] px-20">
+            <div class="w-[37.5%]">
+                <status-cards-wrapper
+                    title="Actual"
+                    :cards="actual_status"
+                ></status-cards-wrapper>
+            </div>
+            <div class="w-[62.5%]">
+                <status-cards-wrapper title="Active" :cards="active_status">
+                    <template #filter>
+                        <status-filter />
+                    </template>
+                </status-cards-wrapper>
+            </div>
         </div>
-        <div class="w-[62.5%]">
-            <status-cards-wrapper title="Active" :cards="active_status">
-                <template #filter>
-                    <status-filter />
-                </template>
-            </status-cards-wrapper>
-        </div>
-    </div>
 
-    <div class="flex flex-row px-20 pt-6 justify-between">
-        <div>
-            <cancel-card progress="25" />
+        <div class="flex flex-row px-20 pt-6 justify-between space-x-2">
+            <div>
+                <cancel-card progress="25" />
+            </div>
+            <div>
+                <completed-card :progress="[34, 54, 16, 23]" />
+            </div>
+            <div>
+                <lead-stats-card progress="73" />
+            </div>
         </div>
-        <div>
-            <completed-card :progress="[34, 54, 16, 23]" />
-        </div>
-        <div>
-            <lead-stats-card progress="73" />
-        </div>
-    </div>
-    <attach-rate-membership />
-
-    <jet-bar-container> </jet-bar-container>
+        <attach-rate-membership />
+    </jet-bar-container>
 </template>
 
 <script setup>

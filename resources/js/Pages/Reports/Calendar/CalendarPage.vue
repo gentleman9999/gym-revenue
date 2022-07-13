@@ -6,29 +6,36 @@
             </template>
         </calendar-title>
     </LayoutHeader>
-    <div class="px-10 flex flex-col">
-        <div class="text-secondary pl-9 text-xl">Client Activity</div>
-        <div class="flex flex-row space-x-2 flex-wrap">
-            <div class="flex w-full md:w-3/5 flex-wrap">
-                <div class="w-4/5 m-auto md:w-1/3 px-2">
-                    <calendar-summary-card title="Confirmed" :progress="[65]" />
+    <jet-bar-container>
+        <div class="px-10 flex flex-col">
+            <div class="text-secondary pl-9 text-xl">Client Activity</div>
+            <div class="flex flex-row space-x-2 flex-wrap">
+                <div class="flex w-full md:w-3/5 flex-wrap">
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Confirmed"
+                            :progress="[65]"
+                        />
+                    </div>
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Canceled"
+                            :progress="[25]"
+                        />
+                    </div>
+                    <div class="w-4/5 m-auto md:w-1/3 px-2">
+                        <calendar-summary-card
+                            title="Rescheduled"
+                            :progress="[10]"
+                        />
+                    </div>
                 </div>
-                <div class="w-4/5 m-auto md:w-1/3 px-2">
-                    <calendar-summary-card title="Canceled" :progress="[25]" />
-                </div>
-                <div class="w-4/5 m-auto md:w-1/3 px-2">
-                    <calendar-summary-card
-                        title="Rescheduled"
-                        :progress="[10]"
-                    />
-                </div>
+                <calendar-grid />
             </div>
-            <calendar-grid />
-        </div>
 
-        <calendar-schedule-table :data="schedule" />
-    </div>
-    <jet-bar-container> </jet-bar-container>
+            <calendar-schedule-table :data="schedule" />
+        </div>
+    </jet-bar-container>
 </template>
 
 <script setup>
