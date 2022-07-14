@@ -267,7 +267,7 @@ class LeadProjector extends Projector
 
     public function onLeadProfilePictureMoved(LeadProfilePictureMoved $event)
     {
-        LeadDetails::whereLeadId($event->aggregateRootUuid())->whereField('profile_picture')->firstOrFail()->updateOrFail(['misc' => $event->file]);
+        Lead::findOrFail($event->aggregateRootUuid())->updateOrFail(['profile_picture' => $event->file]);
     }
 
     protected function createOrUpdateLeadDetailsAndNotes($event, $lead)

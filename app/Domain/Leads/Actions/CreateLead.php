@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -32,7 +33,7 @@ class CreateLead
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'lead_source_id' => ['required', 'exists:lead_sources,id'],
             'lead_type_id' => ['required', 'exists:lead_types,id'],
-//            'client_id' => 'required',
+            'client_id' => 'required',
             'profile_picture' => 'sometimes',
             'profile_picture.uuid' => 'sometimes|required',
             'profile_picture.key' => 'sometimes|required',
@@ -51,10 +52,15 @@ class CreateLead
     {
         $id = Uuid::new();//we should use uuid here
         $data['agreement_number'] = floor(time() - 99999999);
-        $data['client_id'] = auth()->user()->currentClientId();
+
         LeadAggregate::retrieve($id)->create($data)->persist();
 
         return Lead::findOrFail($id);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

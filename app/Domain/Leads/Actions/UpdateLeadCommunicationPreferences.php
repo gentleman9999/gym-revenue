@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -30,6 +31,11 @@ class UpdateLeadCommunicationPreferences
         LeadAggregate::retrieve($id)->updateCommunicationPreferences($data['email'], $data['sms'], Carbon::now())->persist();
 
         return Lead::findOrFail($id);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(Request $request, $id)
