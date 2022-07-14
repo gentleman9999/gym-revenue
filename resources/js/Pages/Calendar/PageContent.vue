@@ -270,6 +270,12 @@ export default defineComponent({
                 active: false,
             },
             {
+                label: "Reminders",
+                href: route("reminders"),
+                onClick: null,
+                active: false,
+            },
+            {
                 label: "QuickView",
                 href: route("calendar.quickview"),
                 onClick: null,

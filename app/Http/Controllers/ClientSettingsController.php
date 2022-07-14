@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\Enums\SocialMediaEnum;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Models\ClientGatewaySetting;
+use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Enums\ClientServiceEnum;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -17,12 +20,19 @@ class ClientSettingsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
+
+        if (request()->user()->cannot('manage-client-settings')) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+
+            return Redirect::back();
+        }
         $client = Client::with(['trial_membership_types', 'locations'])->find($client_id);
 
         $test = [
             ['name' => 'SMS', 'value' => 'SMS'],
             ['name' => 'EMAIL', 'value' => 'EMAIL'],
         ]; //TODO: make this actually pull available communication preferences
+
 
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
@@ -33,6 +43,11 @@ class ClientSettingsController extends Controller
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
+//            'socialMedias' => ClientSocialMedia::all(),
+            'socialMedias' => $client->getSocialMedia(),
+            'availableSocialMedias' => collect(SocialMediaEnum::cases())->map(fn (SocialMediaEnum $enum) => ['name' => $enum->name, 'value' => $enum->value]),
+            'gateways' => ClientGatewaySetting::all(),
+            'logoUrl' => Client::findOrFail($client_id)->logo_url(),
         ]);
     }
 

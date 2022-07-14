@@ -4,11 +4,9 @@ namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Models\Client;
-use App\Enums\ClientServiceEnum;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -29,7 +27,6 @@ class SetClientServices
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
             'services' => [ 'required', 'array'],
-//            'services.*' => ['required', new Enum(ClientServiceEnum::class)]
         ];
     }
 
@@ -37,8 +34,7 @@ class SetClientServices
     {
         $current_user = $request->user();
 
-//        return $current_user->can('*');
-        return $current_user->isAn('Admin', 'Account Owner');
+        return $current_user->can('manage-client-settings');
     }
 
     public function getControllerMiddleware(): array

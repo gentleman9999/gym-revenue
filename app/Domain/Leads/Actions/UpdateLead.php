@@ -71,7 +71,7 @@ class UpdateLead
         );
 
         if ($request->user()) {
-            LeadAggregate::retrieve($lead->id)->claim($request->user()->id)->persist();
+            AssignLeadToRep::run($lead, $request->user());
         }
 
         return $lead->refresh();

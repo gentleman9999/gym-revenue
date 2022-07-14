@@ -2,10 +2,12 @@
 
 namespace App\Domain\Roles;
 
+use App\Domain\Clients\Models\Client;
 use App\Domain\Departments\Department;
 use App\Domain\Leads\Models\Lead;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
+use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
@@ -82,6 +84,15 @@ class Role extends \Silber\Bouncer\Database\Role
 
             case 'departments':
                 $entity = Department::class;
+
+                break;
+
+            case 'reminders':
+                $entity = Reminder::class;
+
+                break;
+            case 'client':
+                $entity = Client::class;
 
                 break;
         }

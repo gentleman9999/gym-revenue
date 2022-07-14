@@ -4,10 +4,6 @@ const plugin = require("tailwindcss/plugin");
 const twColors = require("tailwindcss/colors");
 const svgToDataUri = require("mini-svg-data-uri");
 
-//add default to colors so we don't always need -500 for base shade
-Object.entries(twColors).forEach(
-    ([name, color]) => (color.DEFAULT = color[500])
-);
 
 const colors = {
     ...twColors,
@@ -60,6 +56,7 @@ const colors = {
     }
 };
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
     experimental: {
         applyComplexClasses: true,

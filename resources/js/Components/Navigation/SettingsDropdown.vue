@@ -56,7 +56,7 @@
                     </inertia-link>
                 </li>
                 <li>
-                    <inertia-link :href="route('profile.show')">
+                    <inertia-link href="#" @click="comingSoon()">
                         Invoices
                     </inertia-link>
                 </li>
@@ -149,6 +149,7 @@ import JetDropdown from "@/Components/Dropdown.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import ListOfUsersToImpersonate from "@/Presenters/Impersonation/ListOfUserstoImpersonate.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { comingSoon } from "@/utils/comingSoon.js";
 
 export default defineComponent({
     components: {
@@ -186,7 +187,10 @@ export default defineComponent({
             Inertia.post(route("impersonation.stop", {}));
         };
         const showClientSettings = computed(
-            () => page.props.value.user.current_client_id
+            () =>
+                page.props.value.user.abilities.includes(
+                    "manage-client-settings"
+                ) || page.props.value.user.abilities.includes("*")
         );
         return {
             showClientSettings,
@@ -194,6 +198,7 @@ export default defineComponent({
             leaveImpersonationMode,
             impModal,
             impVars,
+            comingSoon,
         };
     },
 });

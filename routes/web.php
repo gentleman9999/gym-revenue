@@ -111,7 +111,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{lead}', \App\Domain\Leads\Actions\UpdateLead::class)->name('data.leads.update');
-        Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
+        Route::put('/assign/{lead}', \App\Domain\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
         Route::post('/contact/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
@@ -151,6 +151,25 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
+    Route::get('/', \App\Http\Controllers\RemindersController::class . '@index')->name('reminders');
+    Route::get('/create', \App\Http\Controllers\RemindersController::class . '@create')->name('reminders.create');
+    Route::post('/', \App\Actions\Clients\Reminders\CreateReminder::class)->name('reminders.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\RemindersController::class . '@edit')->name('reminders.edit');
+    Route::put('/{id}', \App\Actions\Clients\Reminders\UpdateReminder::class)->name('reminders.update');
+    Route::delete('/{id}/force', \App\Actions\Clients\Reminders\DeleteReminder::class)->name('reminders.delete');
+});
+
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function () {
+    Route::get('/', \App\Http\Controllers\NotesController::class . '@index')->name('notes');
+    Route::get('/create', \App\Http\Controllers\NotesController::class . '@create')->name('notes.create');
+    Route::post('/', \App\Actions\Clients\Notes\CreateNote::class)->name('notes.store');
+    Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
+    Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
+    Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
@@ -203,6 +222,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
     Route::post('/client-services', \App\Domain\Clients\Actions\SetClientServices::class)->name('settings.client-services.update');
+    Route::put('/social-media-set', \App\Domain\Clients\Actions\UpdateSocialMedias::class)->name('settings.social-media.update');
+    Route::put('/gateway-set', \App\Domain\Clients\Actions\UpdateGateways::class)->name('settings.gateway.update');
+    Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');
+    Route::delete('/logo', \App\Domain\Clients\Actions\DeleteLogo::class)->name('settings.logo.delete');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
 

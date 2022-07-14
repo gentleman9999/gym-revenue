@@ -49,7 +49,7 @@ class InjectClientId
     protected function isStringKeyedArray(array $arr)
     {
         if ([] === $arr) {
-            return false;
+            return true;
         }
 
         return array_keys($arr) !== range(0, count($arr) - 1);

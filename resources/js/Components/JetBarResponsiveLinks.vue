@@ -265,7 +265,7 @@ export default {
     },
     methods: {
         switchToTeam(team) {
-            this.$inertia.put(
+            Inertia.put(
                 route("current-team.update"),
                 {
                     team_id: team.id,
@@ -277,7 +277,7 @@ export default {
         },
         logout() {
             console.log("test");
-            this.$inertia.post(route("logout"));
+            Inertia.post(route("logout"));
         },
     },
     setup() {

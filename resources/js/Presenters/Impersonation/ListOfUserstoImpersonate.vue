@@ -6,7 +6,7 @@
         <p>
             Scroll through this list to select a user you want to impersonate.
         </p>
-        <div v-if="users.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
+        <div v-if="users?.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
             <table
                 class="table w-full table-compact"
                 :class="{ 'table-zebra': true }"
@@ -34,46 +34,33 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, defineEmits, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 
-export default {
-    name: "ListOfUsersToImpersonate",
-    components: {},
-    props: [],
-    watch: {},
-    data() {
-        return {
-            loading: false,
-            users: [],
-        };
-    },
-    computed: {},
-    methods: {
-        getList() {
-            let _this = this;
-            this.loading = true;
-
-            axios
-                .post("/impersonation/users", {})
-                .then(({ data }) => {
-                    _this.loading = false;
-                    _this.users = data;
-                })
-                .catch((err) => {
-                    _this.loading = false;
-                    _this.users = [];
-                });
-        },
-        impersonateUser(userId) {
-            Inertia.post(route("impersonation.start", { victimId: userId }));
-            this.$emit("close");
-        },
-    },
-    mounted() {
-        this.getList();
-    },
-};
+const loading = ref(false);
+const users = ref([]);
+const emit = defineEmits(["close"]);
+function getList() {
+    loading.value = true;
+    axios
+        .post("/impersonation/users", {})
+        .then(({ data }) => {
+            loading.value = false;
+            users.value = data;
+        })
+        .catch((err) => {
+            loading.value = false;
+            users.value = [];
+        });
+}
+function impersonateUser(userId) {
+    Inertia.post(route("impersonation.start", { victimId: userId }));
+    emit("close");
+}
+onMounted(() => {
+    getList();
+});
 </script>
 
 <style scoped></style>

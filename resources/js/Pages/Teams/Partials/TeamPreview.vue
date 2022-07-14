@@ -91,9 +91,10 @@ input {
 }
 </style>
 
-<script>
-import { defineComponent } from "vue";
-export default defineComponent({
-    props: ["team"],
+<script setup>
+const props = defineProps({
+    team: {
+        type: Object,
+    },
 });
 </script>

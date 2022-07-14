@@ -6,6 +6,7 @@ use App\Aggregates\Clients\Traits\Actions\ClientCrudActions;
 use App\Aggregates\Clients\Traits\Actions\ClientEmailTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientGatewayActions;
 use App\Aggregates\Clients\Traits\Actions\ClientLocationsActions;
+use App\Aggregates\Clients\Traits\Actions\ClientNoteActions;
 use App\Aggregates\Clients\Traits\Actions\ClientServicesActions;
 use App\Aggregates\Clients\Traits\Actions\ClientSMSTemplateActions;
 use App\Aggregates\Clients\Traits\Actions\ClientTrialMembershipActions;
@@ -19,6 +20,9 @@ trait ClientActions
     use ClientGatewayActions;
     use ClientServicesActions;
     use ClientTrialMembershipActions;
+
+    use ClientNoteActions;
+
     use ClientUserActions;
     use ClientLocationsActions;
 }

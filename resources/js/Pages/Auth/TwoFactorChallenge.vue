@@ -69,9 +69,13 @@
         </form>
     </jet-authentication-card>
 </template>
-
 <script>
-import { defineComponent } from "vue";
+export default {
+    layout: null,
+};
+</script>
+<script setup>
+import { ref, nextTick } from "vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
 import JetAuthenticationCardLogo from "@/Jetstream/AuthenticationCardLogo.vue";
@@ -79,46 +83,29 @@ import Button from "@/Components/Button.vue";
 
 import JetLabel from "@/Jetstream/Label.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        Head,
-        JetAuthenticationCard,
-        JetAuthenticationCardLogo,
-        Button,
-
-        JetLabel,
-        JetValidationErrors,
-    },
-
-    data() {
-        return {
-            recovery: false,
-            form: this.$inertia.form({
-                code: "",
-                recovery_code: "",
-            }),
-        };
-    },
-
-    methods: {
-        toggleRecovery() {
-            this.recovery ^= true;
-
-            this.$nextTick(() => {
-                if (this.recovery) {
-                    this.$refs.recovery_code.focus();
-                    this.form.code = "";
-                } else {
-                    this.$refs.code.focus();
-                    this.form.recovery_code = "";
-                }
-            });
-        },
-        layout: null,
-        submit() {
-            this.form.post(this.route("two-factor.login"));
-        },
-    },
+const recovery = ref(false);
+const recovery_code = ref(null);
+const code = ref(null);
+const form = useGymRevForm({
+    code: "",
+    recovery_code: "",
 });
+const submit = () => {
+    form.post(route("two-factor.login"));
+};
+const toggleRecovery = () => {
+    recovery.value ^= true;
+
+    nextTick(() => {
+        if (recovery.value) {
+            recovery_code.value.focus();
+            form.code = "";
+        } else {
+            code.value.focus();
+            form.recovery_code = "";
+        }
+    });
+};
 </script>

@@ -15,13 +15,6 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetSectionTitle from "./SectionTitle.vue";
-
-export default defineComponent({
-    components: {
-        JetSectionTitle,
-    },
-});
 </script>

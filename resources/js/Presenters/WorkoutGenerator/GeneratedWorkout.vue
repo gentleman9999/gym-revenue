@@ -255,9 +255,9 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref, watch, defineEmits, defineProps, computed } from "vue";
 import SlideUpDown from "vue3-slide-up-down";
-
 import { jsPDF } from "jspdf";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -268,226 +268,205 @@ import { faBug } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 library.add(faChevronDoubleRight, faChevronDoubleLeft, faBug);
 
-export default {
-    name: "GeneratedWorkout",
-    components: {
-        SlideUpDown,
-        FontAwesomeIcon,
+const props = defineProps({
+    workout: {
+        type: String,
     },
-    props: ["workout", "restMsg"],
-    watch: {
-        workout(exercises) {
-            console.log("Retrieved new workout!", exercises);
-            this.showForm = exercises !== "";
-        },
+    restMsg: {
+        type: String,
     },
-    data() {
-        return {
-            exporting: false,
-            showForm: false,
-            days: [
-                "Day 1",
-                "Day 2",
-                "Day 3",
-                "Day 4",
-                "Day 5",
-                "Day 6",
-                "Day 7",
-            ],
-            selectedDay: 0,
-            week: [
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-            ],
-            addingHTML: "",
-        };
+});
+const emit = defineEmits(["reset"]);
+const exporting = ref(false);
+const showForm = ref(false);
+const days = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
+const selectedDay = ref(0);
+const week = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+];
+
+watch([props.workout], () => {
+    console.log("Retrieved new workout!", props.workout);
+    showForm.value = props.workout !== "";
+});
+const addingHTML = ref("");
+const genThreeScrollButtons = computed({
+    get() {
+        let results = [];
+        switch (selectedDay.value) {
+            case 1:
+                results = [1, 2, 3];
+                break;
+
+            case 2:
+            case 3:
+                results = [3, 4, 5];
+                break;
+
+            case 4:
+                results = [4, 5, 6];
+                break;
+
+            case 6:
+            case 5:
+                results = [5, 6, 7];
+                break;
+
+            default:
+                results = [1, 2, 3];
+        }
+
+        return results;
     },
-    computed: {
-        genThreeScrollButtons() {
-            let results = [];
+});
 
-            switch (this.selectedDay) {
-                case 1:
-                    results = [1, 2, 3];
-                    break;
+function setSelectedDay(day) {
+    if (day <= 6 && day >= 0) {
+        selectedDay.value = day;
+    }
+}
+function reset() {
+    emit("");
+}
+function exportThisPage() {
+    setTimeout(function () {
+        let elem = document.getElementById("generatedContents");
+        let HTML_Width = elem.scrollWidth;
+        let HTML_Height = elem.scrollHeight;
+        let top_left_margin = 15;
+        let PDF_Width = HTML_Width + top_left_margin * 2;
+        let PDF_Height = PDF_Width * 1.5 + top_left_margin * 2;
+        let canvas_image_width = HTML_Width;
+        let canvas_image_height = HTML_Height;
 
-                case 2:
-                case 3:
-                    results = [3, 4, 5];
-                    break;
+        let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
 
-                case 4:
-                    results = [4, 5, 6];
-                    break;
+        html2canvas(elem, { allowTaint: true }).then(function (canvas) {
+            canvas.getContext("2d");
 
-                case 6:
-                case 5:
-                    results = [5, 6, 7];
-                    break;
+            console.log(canvas.height + "  " + canvas.width);
 
-                default:
-                    results = [1, 2, 3];
-            }
+            let imgData = canvas.toDataURL("image/jpeg", 1.0);
+            let pdf = new jsPDF("p", "pt", [PDF_Width, PDF_Height]);
+            pdf.addImage(
+                imgData,
+                "JPG",
+                top_left_margin,
+                top_left_margin,
+                canvas_image_width,
+                canvas_image_height
+            );
 
-            return results;
-        },
-    },
-    methods: {
-        setSelectedDay(day) {
-            if (day <= 6 && day >= 0) {
-                this.selectedDay = day;
-            }
-        },
-        reset() {
-            this.$emit("reset");
-        },
-        exportThisPage() {
-            let _this = this;
-            this.exporting = true;
-            setTimeout(function () {
-                let elem = document.getElementById("generatedContents");
-                let HTML_Width = elem.scrollWidth;
-                let HTML_Height = elem.scrollHeight;
-                let top_left_margin = 15;
-                let PDF_Width = HTML_Width + top_left_margin * 2;
-                let PDF_Height = PDF_Width * 1.5 + top_left_margin * 2;
-                let canvas_image_width = HTML_Width;
-                let canvas_image_height = HTML_Height;
-
-                let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
-
-                html2canvas(elem, { allowTaint: true }).then(function (canvas) {
-                    canvas.getContext("2d");
-
-                    console.log(canvas.height + "  " + canvas.width);
-
-                    let imgData = canvas.toDataURL("image/jpeg", 1.0);
-                    let pdf = new jsPDF("p", "pt", [PDF_Width, PDF_Height]);
-                    pdf.addImage(
-                        imgData,
-                        "JPG",
-                        top_left_margin,
-                        top_left_margin,
-                        canvas_image_width,
-                        canvas_image_height
-                    );
-
-                    for (let i = 1; i <= totalPDFPages; i++) {
-                        pdf.addPage(PDF_Width, PDF_Height);
-                        pdf.addImage(
-                            imgData,
-                            "JPG",
-                            top_left_margin,
-                            -(PDF_Height * i) + top_left_margin * 4,
-                            canvas_image_width,
-                            canvas_image_height
-                        );
-                    }
-
-                    pdf.save(
-                        `GeneratedWorkOut${_this.days[_this.selectedDay]}.pdf`
-                    );
-                    setTimeout(function () {
-                        _this.exporting = false;
-                    }, 1000);
-                });
-            }, 250);
-        },
-        appendToFakeDiv(x, element, curDay) {
-            console.log("Elem " + x);
-            let crap = document.getElementById("generatedContents").innerHTML;
-            let temp = document.createElement("div");
-            temp.classList.add("generated-contents");
-            temp.innerHTML =
-                crap +
-                "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />";
-            element.appendChild(temp);
-
-            if (x === 6) {
-                this.selectedDay = 0;
-                this.exporting = false;
-                document.body.appendChild(element);
-                this.finishAllExport(element);
-            } else {
-                return element;
-            }
-        },
-        exportAllPages(page, curDay) {
-            let _this = this;
-            this.exporting = true;
-
-            if (page === 0) {
-                console.log("Generating new fake Div");
-                this.addingHTML = document.createElement("div");
-                this.addingHTML.classList.add("export-contents");
-            }
-
-            this.selectedDay = page;
-            setTimeout(function () {
-                _this.addingHTML = _this.appendToFakeDiv(
-                    page,
-                    _this.addingHTML,
-                    curDay
-                );
-                if (page !== 6) {
-                    _this.exportAllPages(page + 1, curDay);
-                }
-            }, 500);
-        },
-        finishAllExport(elem) {
-            console.log("Exporting ", elem.innerHTML);
-            let elem2 = document.getElementsByClassName("export-contents")[0];
-            let HTML_Width = elem2.scrollWidth;
-            let HTML_Height = elem2.scrollHeight;
-            let top_left_margin = 15;
-            let PDF_Width = HTML_Width + top_left_margin * 2;
-            let PDF_Height = PDF_Width * 1.5 + top_left_margin * 2;
-            let canvas_image_width = HTML_Width;
-            let canvas_image_height = HTML_Height;
-
-            let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
-            console.log("Total pages to generate - " + totalPDFPages);
-
-            html2canvas(elem2, { allowTaint: true }).then(function (canvas) {
-                canvas.getContext("2d");
-
-                console.log(canvas.height + "  " + canvas.width);
-
-                let imgData = canvas.toDataURL("image/jpeg", 1.0);
-                let pdf = new jsPDF("p", "pt", [PDF_Width, PDF_Height]);
+            for (let i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
                 pdf.addImage(
                     imgData,
                     "JPG",
                     top_left_margin,
-                    top_left_margin,
+                    -(PDF_Height * i) + top_left_margin * 4,
                     canvas_image_width,
                     canvas_image_height
                 );
+            }
 
-                for (let i = 1; i <= totalPDFPages; i++) {
-                    pdf.addPage([PDF_Width, PDF_Height]);
-                    pdf.addImage(
-                        imgData,
-                        "JPG",
-                        top_left_margin,
-                        -(PDF_Height * i) + top_left_margin * 4,
-                        canvas_image_width,
-                        canvas_image_height
-                    );
-                }
+            pdf.save(`GeneratedWorkOut${days[_selectedDay.value]}.pdf`);
+            setTimeout(function () {
+                exporting.value = false;
+            }, 1000);
+        });
+    }, 250);
+}
+function appendToFakeDiv(x, element, curDay) {
+    console.log("Elem " + x);
+    let crap = document.getElementById("generatedContents").innerHTML;
+    let temp = document.createElement("div");
+    temp.classList.add("generated-contents");
+    temp.innerHTML =
+        crap + "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />";
+    element.appendChild(temp);
 
-                pdf.save(`GeneratedEntireWorkOutRoutine.pdf`);
-                document.body.removeChild(elem2);
-            });
-        },
-    },
-    mounted() {},
-};
+    if (x === 6) {
+        selectedDay.value = 0;
+        exporting.value = false;
+        document.body.appendChild(element);
+        finishAllExport(element);
+    } else {
+        return element;
+    }
+}
+function exportAllPages(page, curDay) {
+    exporting.value = true;
+
+    if (page === 0) {
+        console.log("Generating new fake Div");
+        addingHTML.value = document.createElement("div");
+        addingHTML.value.classList.add("export-contents");
+    }
+
+    selectedDay.value = page;
+    setTimeout(function () {
+        addingHTML.value = _this.appendToFakeDiv(
+            page,
+            addingHTML.value,
+            curDay
+        );
+        if (page !== 6) {
+            _this.exportAllPages(page + 1, curDay);
+        }
+    }, 500);
+}
+function finishAllExport(elem) {
+    console.log("Exporting ", elem.innerHTML);
+    let elem2 = document.getElementsByClassName("export-contents")[0];
+    let HTML_Width = elem2.scrollWidth;
+    let HTML_Height = elem2.scrollHeight;
+    let top_left_margin = 15;
+    let PDF_Width = HTML_Width + top_left_margin * 2;
+    let PDF_Height = PDF_Width * 1.5 + top_left_margin * 2;
+    let canvas_image_width = HTML_Width;
+    let canvas_image_height = HTML_Height;
+
+    let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+    console.log("Total pages to generate - " + totalPDFPages);
+
+    html2canvas(elem2, { allowTaint: true }).then(function (canvas) {
+        canvas.getContext("2d");
+
+        console.log(canvas.height + "  " + canvas.width);
+
+        let imgData = canvas.toDataURL("image/jpeg", 1.0);
+        let pdf = new jsPDF("p", "pt", [PDF_Width, PDF_Height]);
+        pdf.addImage(
+            imgData,
+            "JPG",
+            top_left_margin,
+            top_left_margin,
+            canvas_image_width,
+            canvas_image_height
+        );
+
+        for (let i = 1; i <= totalPDFPages; i++) {
+            pdf.addPage([PDF_Width, PDF_Height]);
+            pdf.addImage(
+                imgData,
+                "JPG",
+                top_left_margin,
+                -(PDF_Height * i) + top_left_margin * 4,
+                canvas_image_width,
+                canvas_image_height
+            );
+        }
+
+        pdf.save(`GeneratedEntireWorkOutRoutine.pdf`);
+        document.body.removeChild(elem2);
+    });
+}
 </script>
 
 <style scoped>

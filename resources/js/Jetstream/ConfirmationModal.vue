@@ -43,33 +43,28 @@
     </modal>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { defineEmits } from "vue";
 import Modal from "./Modal.vue";
 
-export default defineComponent({
-    emits: ["close"],
-
-    components: {
-        Modal,
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false,
     },
-
-    props: {
-        show: {
-            default: false,
-        },
-        maxWidth: {
-            default: "2xl",
-        },
-        closeable: {
-            default: true,
-        },
+    maxWidth: {
+        type: String,
+        default: "2xl",
     },
-
-    methods: {
-        close() {
-            this.$emit("close");
-        },
+    closeable: {
+        type: Boolean,
+        default: true,
     },
 });
+
+const emit = defineEmits(["close"]);
+
+const close = () => {
+    emit("close");
+};
 </script>

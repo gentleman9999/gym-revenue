@@ -42,8 +42,12 @@
         </form>
     </jet-authentication-card>
 </template>
-
 <script>
+export default {
+    layout: null,
+};
+</script>
+<script setup>
 import { defineComponent } from "vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import JetAuthenticationCard from "@/Jetstream/AuthenticationCard.vue";
@@ -52,34 +56,19 @@ import Button from "@/Components/Button.vue";
 
 import JetLabel from "@/Jetstream/Label.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        Head,
-        JetAuthenticationCard,
-        JetAuthenticationCardLogo,
-        Button,
-
-        JetLabel,
-        JetValidationErrors,
-    },
-
-    props: {
-        status: String,
-    },
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                email: "",
-            }),
-        };
-    },
-    layout: null,
-    methods: {
-        submit() {
-            this.form.post(this.route("password.email"));
-        },
+const props = defineProps({
+    status: {
+        type: String,
     },
 });
+
+const form = useGymRevForm({
+    email: "",
+});
+
+const submit = () => {
+    form.post(route("password.email"));
+};
 </script>

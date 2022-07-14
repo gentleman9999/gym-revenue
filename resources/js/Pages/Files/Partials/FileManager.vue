@@ -132,7 +132,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeUpdate, onUnmounted } from "vue";
+import { ref, computed, onBeforeUpdate, defineEmits } from "vue";
 import { useGymRevForm } from "@/utils";
 
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";

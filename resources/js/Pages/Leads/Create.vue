@@ -23,8 +23,8 @@
     </ModalableWrapper>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { onMounted } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Button from "@/Components/Button.vue";
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
@@ -34,29 +34,33 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 
 import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 
-export default defineComponent({
-    components: {
-        LayoutHeader,
-        Button,
-        JetFormSection,
-        ModalableWrapper,
-        ModalSlot,
-        JetInputError,
-        JetLabel,
-        LeadForm,
+const props = defineProps({
+    user_id: {
+        type: String,
     },
-    props: [
-        "user_id",
-        "locations",
-        "lead_types",
-        "lead_sources",
-        "available_services",
-        "lead_owners",
-        "lead_statuses",
-    ],
-    mounted() {
-        console.log("lead_statuses ", this.$page.props.lead_statuses);
+    locations: {
+        type: Array,
     },
+    lead_types: {
+        type: Array,
+    },
+    lead_sources: {
+        type: Array,
+    },
+    available_services: {
+        type: Array,
+    },
+    lead_owners: {
+        type: Array,
+    },
+    lead_statuses: {
+        type: Array,
+    },
+});
+const page = usePage();
+onMounted(() => {
+    console.log("lead_statuses ", page.props.lead_statuses);
 });
 </script>

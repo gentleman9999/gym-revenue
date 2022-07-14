@@ -276,7 +276,6 @@ class MembersController extends Controller
 
         return Inertia::render('Members/Show', [
             'member' => Member::whereId($member_id)->with(['detailsDesc', 'trialMemberships'])->first(),
-            'middle_name' => $middle_name,
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),

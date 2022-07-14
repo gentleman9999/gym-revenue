@@ -233,8 +233,9 @@
     </jet-form-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref } from "vue";
+import { computed } from "@vue/reactivity";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 
@@ -245,108 +246,93 @@ import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
+import { useGymRevForm } from "@/utils";
+import { Inertia } from "@inertiajs/inertia";
 
-export default defineComponent({
-    components: {
-        JetActionMessage,
-        Button,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
-        JetSecondaryButton,
-        multiselect: Multiselect,
-    },
-
-    props: ["user", "addlData"],
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                _method: "PUT",
-                id: this.user.id,
-                first_name: this.user["first_name"] ?? "",
-                last_name: this.user["last_name"],
-                address1: this.user["address1"] ?? "",
-                address2: this.user["address2"] ?? "",
-                city: this.user["city"] ?? "",
-                state: this.user["state"] ?? "",
-                zip: this.user["zip"] ?? "",
-                email: this.user.email,
-                alternate_email: this.user.alternate_email ?? "",
-                phone: this.user.phone ?? "",
-                photo: null,
-                contact_preference: this.user.contact_preference?.value,
-            }),
-            photoPreview: null,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-        };
-    },
-    computed: {
-        optionStates() {
-            let optionsStates = [];
-            for (let x in states) {
-                optionsStates.push(states[x].abbreviation);
-            }
-
-            return optionsStates;
-        },
-    },
-    methods: {
-        upperCaseF(text) {
-            this.form.state = text.toUpperCase();
-        },
-        updateProfileInformation() {
-            if (this.$refs.photo) {
-                this.form.photo = this.$refs.photo.files[0];
-            }
-
-            this.form.post(route("user-profile-information.update"), {
-                errorBag: "updateProfileInformation",
-                preserveScroll: true,
-                onSuccess: () => this.clearPhotoFileInput(),
-            });
-            // console.log(this.user.id);
-            // this.form.post(route("users.update", this.user.id), {
-            //     errorBag: "updateProfileInformation",
-            //     preserveScroll: true,
-            //     onSuccess: () => this.clearPhotoFileInput(),
-            // });
-        },
-
-        selectNewPhoto() {
-            this.$refs.photo.click();
-        },
-
-        updatePhotoPreview() {
-            const photo = this.$refs.photo.files[0];
-
-            if (!photo) return;
-
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                this.photoPreview = e.target.result;
-            };
-
-            reader.readAsDataURL(photo);
-        },
-
-        deletePhoto() {
-            this.$inertia.delete(route("current-user-photo.destroy"), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    this.photoPreview = null;
-                    this.clearPhotoFileInput();
-                },
-            });
-        },
-
-        clearPhotoFileInput() {
-            if (this.$refs.photo?.value) {
-                this.$refs.photo.value = null;
-            }
-        },
+const props = defineProps({
+    user: {
+        type: Object,
     },
 });
+
+const form = useGymRevForm({
+    _method: "PUT",
+    id: props.user.id,
+    first_name: props.user["first_name"] ?? "",
+    last_name: props.user["last_name"],
+    address1: props.user["address1"] ?? "",
+    address2: props.user["address2"] ?? "",
+    city: props.user["city"] ?? "",
+    state: props.user["state"] ?? "",
+    zip: props.user["zip"] ?? "",
+    job_title: props.user["job_title"],
+    email: props.user.email,
+    alternate_email: props.user.alternate_email ?? "",
+    phone: props.user.phone ?? "",
+    photo: null,
+    contact_preference: props.user.contact_preference?.value,
+});
+const photo = ref(null);
+const photoPreview = ref(null);
+const multiselectClasses = ref(getDefaultMultiselectTWClasses());
+
+const optionStates = computed({
+    get() {
+        let optionsStates = [];
+        for (let x in states) {
+            optionsStates.push(states[x].abbreviation);
+        }
+
+        return optionsStates;
+    },
+});
+
+function upperCaseF(text) {
+    form.state = text.toUpperCase();
+}
+function updateProfileInformation() {
+    if (photo) {
+        form.photo = photo.files[0];
+    }
+
+    form.post(route("user-profile-information.update"), {
+        errorBag: "updateProfileInformation",
+        preserveScroll: true,
+        onSuccess: () => clearPhotoFileInput(),
+    });
+}
+
+function selectNewPhoto() {
+    photo.click();
+}
+
+function updatePhotoPreview() {
+    const photo = photo.files[0];
+
+    if (!photo) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        photoPreview.value = e.target.result;
+    };
+
+    reader.readAsDataURL(photo);
+}
+
+function deletePhoto() {
+    Inertia.delete(route("current-user-photo.destroy"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            photoPreview.value = null;
+            clearPhotoFileInput();
+        },
+    });
+}
+
+function clearPhotoFileInput() {
+    if (photo?.value) {
+        photo.value = null;
+    }
+}
 </script>
