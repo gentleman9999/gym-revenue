@@ -114,7 +114,7 @@ class TaskController extends Controller
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
-            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
+            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->whereType('Task')->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
             'overdue_tasks' => $overdue_tasks,
