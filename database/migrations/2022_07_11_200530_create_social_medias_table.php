@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('social_media', function (Blueprint $table) {
+        Schema::create('client_social_media', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('client_id');
             $table->string('name');
@@ -28,6 +28,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('social_medias');
+        Schema::dropIfExists('client_social_medias');
     }
 };

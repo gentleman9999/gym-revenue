@@ -40,8 +40,7 @@ class UpdateGateways
     {
         $current_user = $request->user();
 
-//        return $current_user->can('*');
-        return $current_user->isAn('Admin', 'Account Owner');
+        return $current_user->can('manage-client-settings');
     }
 
     public function getControllerMiddleware(): array

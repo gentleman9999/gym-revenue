@@ -29,6 +29,7 @@
                 <social-media-form
                     :user="$page.props.user"
                     :social-medias="socialMedias"
+                    :available-social-medias="availableSocialMedias"
                     :logo-url="logoUrl"
                 />
 
@@ -67,30 +68,43 @@ export default defineComponent({
     props: {
         services: {
             type: Array,
+            required: true,
         },
         availableServices: {
             type: Array,
+            required: true,
         },
         commPreferences: {
             type: Array,
+            required: true,
         },
         availableCommPreferences: {
             type: Array,
+            required: true,
         },
         trialMembershipTypes: {
             type: Array,
+            required: true,
         },
         locations: {
             type: Array,
+            required: true,
         },
         socialMedias: {
             type: Array,
+            required: true,
+        },
+        availableSocialMedias: {
+            type: Array,
+            required: true,
         },
         gateways: {
             type: Array,
+            required: true,
         },
         logoUrl: {
             type: String,
+            required: true,
         },
     },
 });

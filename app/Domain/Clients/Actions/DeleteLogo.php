@@ -15,20 +15,19 @@ class DeleteLogo
 {
     use AsAction;
 
-    public function handle($current_user, $data)
+    public function handle($data)
     {
-        $data['client_id'] = $current_user->currentClientId();
         ClientSettingsAggregate::retrieve($data['client_id'])
             ->deleteLogo($data)
             ->persist();
 
-        return Client::findOrFail($current_user->currentClientId());
+        return Client::findOrFail($data['client_id']);
     }
 
     public function rules(): array
     {
         return [
-            'client_id' => ['sometimes', 'nullable','string', 'max:255'],
+            'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
         ];
     }
 
@@ -47,7 +46,6 @@ class DeleteLogo
     public function asController(ActionRequest $request)
     {
         return $this->handle(
-            $request->user(),
             $request->validated()
         );
     }

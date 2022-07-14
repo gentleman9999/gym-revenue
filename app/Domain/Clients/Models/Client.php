@@ -19,12 +19,6 @@ class Client extends GymRevProjection
     use Notifiable;
     use SoftDeletes;
 
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-
     protected $fillable = [
         'name',
         'active',
@@ -84,6 +78,11 @@ class Client extends GymRevProjection
         return $this->hasMany(User::class);
     }
 
+    public function socialMedia()
+    {
+        return $this->hasMany(ClientSocialMedia::class, );
+    }
+
     public function accountOwners()
     {
         return $this->users()->whereHas('roles', function ($query) {
@@ -96,5 +95,10 @@ class Client extends GymRevProjection
         $file = File::whereType('logo')->first();
 
         return is_null($file) ? null : $file->url;
+    }
+
+    public function getSocialMedia()
+    {
+        return $this->socialMedia->keyBy('name')->map(fn ($s) => $s->value);
     }
 }
