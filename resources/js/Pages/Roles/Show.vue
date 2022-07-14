@@ -51,12 +51,11 @@ export default defineComponent({
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
-            console.log("click delete", item);
             confirmDelete.value = item;
         };
 
         const handleConfirmDelete = () => {
-            Inertia.delete(route("roles.delete", confirmDelete.value));
+            Inertia.delete(route("roles.delete", confirmDelete.value.id));
             confirmDelete.value = null;
         };
 
@@ -76,8 +75,8 @@ export default defineComponent({
                 active: true,
             },
             {
-                label: "Classification",
-                href: route("classifications"),
+                label: "Departments",
+                href: route("departments"),
                 onClick: null,
                 active: false,
             },

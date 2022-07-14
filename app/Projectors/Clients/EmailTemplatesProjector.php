@@ -2,9 +2,9 @@
 
 namespace App\Projectors\Clients;
 
+use App\Domain\Users\Models\User;
 use App\Models\Comms\EmailTemplateDetails;
 use App\Models\Comms\EmailTemplates;
-use App\Models\User;
 use App\StorableEvents\Clients\Comms\EmailTemplateCreated;
 use App\StorableEvents\Clients\Comms\EmailTemplateThumbnailUpdated;
 use App\StorableEvents\Clients\Comms\EmailTemplateUpdated;

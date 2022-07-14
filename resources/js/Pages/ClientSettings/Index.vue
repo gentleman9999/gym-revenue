@@ -26,19 +26,21 @@
             </div>
 
             <div>
-                <trial-membership-form
+                <social-media-form
                     :user="$page.props.user"
-                    :trial-membership-types="trialMembershipTypes"
-                    :locations="locations"
-                    v-if="
-                        services.filter(
-                            (detail) => detail.value === 'free-trial'
-                        ).length
-                    "
+                    :social-medias="socialMedias"
+                    :available-social-medias="availableSocialMedias"
+                    :logo-url="logoUrl"
                 />
 
                 <jet-section-border />
             </div>
+            <div>
+                <gateway-form :user="$page.props.user" :gateways="gateways" />
+
+                <jet-section-border />
+            </div>
+            <file-manager />
         </div>
     </div>
 </template>
@@ -49,34 +51,60 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import ClientServicesForm from "./Partials/ClientServicesForm.vue";
 import CommPrefForm from "./Partials/CommPrefForm.vue";
-import TrialMembershipForm from "./Partials/TrialMembershipForm.vue";
+import SocialMediaForm from "./Partials/SocialMediaForm.vue";
+import FileManager from "./Partials/FileManager.vue";
+import GatewayForm from "@/Pages/ClientSettings/Partials/GatewayForm.vue";
 
 export default defineComponent({
     components: {
+        GatewayForm,
         LayoutHeader,
         JetSectionBorder,
         ClientServicesForm,
-        TrialMembershipForm,
         CommPrefForm,
+        SocialMediaForm,
+        FileManager,
     },
     props: {
         services: {
             type: Array,
+            required: true,
         },
         availableServices: {
             type: Array,
+            required: true,
         },
         commPreferences: {
             type: Array,
+            required: true,
         },
         availableCommPreferences: {
             type: Array,
+            required: true,
         },
         trialMembershipTypes: {
             type: Array,
+            required: true,
         },
         locations: {
             type: Array,
+            required: true,
+        },
+        socialMedias: {
+            type: Array,
+            required: true,
+        },
+        availableSocialMedias: {
+            type: Array,
+            required: true,
+        },
+        gateways: {
+            type: Array,
+            required: true,
+        },
+        logoUrl: {
+            type: String,
+            required: true,
         },
     },
 });

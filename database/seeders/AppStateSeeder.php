@@ -413,5 +413,33 @@ class AppStateSeeder extends Seeder
                 ],
             ],
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 07-13-2022',
+            'value' => '2022-07-13',
+            'misc' => [
+                'buildno' => '20220713',
+                'version' => '0.22.01',
+                'notes' => [
+                    'Client - Client Settings Overhaul',
+                    'Reminders - List view RUD Created',
+                    'Notes - List view CRUD Created',
+                    'Mass Comms - Schedule + Drip Campaigns scaffolding',
+                    'User - User Department/Position changes',
+                    'Calendar - Scope By Teams(locations) Within Clients / QuickView introduced',
+                    'Backend - Ensure All Event Sourcing is standardized',
+                    'Backend - Client related Models - Scope by client global',
+                    'Backend - Convert Client to use proper event sourcing',
+                    'Cleanup - Club/Location standardizing naming',
+                    'Cleanup - Removed vue2 syntax',
+                    'BUG - Invoices under my profile should display coming soon message.',
+                    'BUG - Teams/edit - resolved',
+                    'BUG - Roles/create - resolved',
+
+                ],
+            ],
+        ]);
     }
 }

@@ -19,32 +19,24 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { defineEmits } from "vue";
 import EmailCommsAction from "./EmailCommsAction.vue";
 import PhoneCommsAction from "./PhoneCommsAction.vue";
 import SmsCommsAction from "./SmsCommsAction.vue";
-
-export default defineComponent({
-    components: {
-        EmailCommsAction,
-        PhoneCommsAction,
-        SmsCommsAction,
+const props = defineProps({
+    activeContactMethod: {
+        type: String,
+        required: true,
     },
-    props: {
-        activeContactMethod: {
-            type: String,
-            required: true,
-        },
-        leadId: {
-            type: String,
-            required: true,
-        },
-        phone: {
-            type: String,
-            required: true,
-        },
+    leadId: {
+        type: String,
+        required: true,
     },
-    emits: ["done"],
+    phone: {
+        type: String,
+        required: true,
+    },
 });
+const emit = defineEmits(["done"]);
 </script>

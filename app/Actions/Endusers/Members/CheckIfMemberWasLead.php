@@ -2,9 +2,8 @@
 
 namespace App\Actions\Endusers\Members;
 
-use App\Actions\Endusers\Leads\MarkLeadConverted;
-
-use App\Models\Endusers\Lead;
+use App\Domain\Leads\Actions\MarkLeadConverted;
+use App\Domain\Leads\Models\Lead;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

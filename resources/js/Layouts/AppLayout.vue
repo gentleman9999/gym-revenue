@@ -80,7 +80,7 @@
 }
 </style>
 
-<script>
+<script setup>
 import { defineComponent, ref, onMounted } from "vue";
 import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
 import JetBanner from "@/Jetstream/Banner.vue";
@@ -95,80 +95,37 @@ import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 import { Head } from "@inertiajs/inertia-vue3";
-
-// import tailwindConfig from '../../../tailwind.config.js'
-// import {
-//     setBreakpointTailwindCSS,
-//     useBreakpointTailwindCSS
-// } from "vue-composable";
-
-export default defineComponent({
-    components: {
-        DaisyModal,
-        Link,
-        JetBarNavigationMenu,
-        JetApplicationMark,
-        JetBanner,
-        JetNavLink,
-        JetResponsiveNavLink,
-        NotyBell,
-        TopNav,
-        SideNav,
-        InertiaModal,
-        ModalSlot,
-        Head,
-    },
-    props: {
-        title: String,
-    },
-    setup() {
-        // setBreakpointTailwindCSS(tailwindConfig);
-        useFlashAlertEmitter();
-        useNotificationAlertEmitter();
-
-        const animate = ref(false);
-        onMounted(() => (animate.value = true));
-        const showingSidebar = ref(true);
-        const showingNavigationDropdown = ref(false);
-        const showingNotificationDropdown = ref(false);
-
-        const sideNav = ref(null);
-
-        const toggleSideNav = () => {
-            // console.log('Toggle Size Nav', sideNav);
-            sideNav.value.toggle();
-        };
-
-        return {
-            showingSidebar,
-            showingNavigationDropdown,
-            showingNotificationDropdown,
-            toggleSideNav,
-            sideNav,
-            animate,
-        };
-    },
-    methods: {
-        beforeLeave(el) {
-            console.log("before leave");
-        },
-        beforeEnter(el) {
-            console.log("before enter");
-        },
-        enter(el, done) {
-            console.log("entered");
-            done();
-        },
-        afterEnter(el) {
-            console.log("after entered");
-        },
-        // burgerIsClicked(menuIsOpen) {
-        //     this.showMobileMenu = menuIsOpen;
-        // },
-        // footerLoaded() {
-        //     //console.log("Footer is loaded");
-        //     this.loading = false;
-        // },
+const props = defineProps({
+    title: {
+        type: String,
     },
 });
+useFlashAlertEmitter();
+useNotificationAlertEmitter();
+
+const animate = ref(false);
+onMounted(() => (animate.value = true));
+const showingSidebar = ref(true);
+const showingNavigationDropdown = ref(false);
+const showingNotificationDropdown = ref(false);
+
+const sideNav = ref(null);
+
+const toggleSideNav = () => {
+    sideNav.value.toggle();
+};
+
+const beforeLeave = (el) => {
+    console.log("before leave");
+};
+const beforeEnter = (el) => {
+    console.log("before enter");
+};
+const enter = (el, done) => {
+    console.log("entered");
+    done();
+};
+const afterEnter = (el) => {
+    console.log("after entered");
+};
 </script>

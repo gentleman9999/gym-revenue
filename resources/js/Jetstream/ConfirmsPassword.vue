@@ -44,89 +44,68 @@
     </span>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, nextTick, defineEmits } from "vue";
 import Button from "@/Components/Button.vue";
 import JetDialogModal from "./DialogModal.vue";
 import JetInputError from "./InputError.vue";
 import JetSecondaryButton from "./SecondaryButton.vue";
 import PasswordInput from "@/Components/PasswordInput.vue";
 
-export default defineComponent({
-    emits: ["confirmed"],
-
-    props: {
-        title: {
-            default: "Confirm Password",
-        },
-        content: {
-            default:
-                "For your security, please confirm your password to continue.",
-        },
-        button: {
-            default: "Confirm",
-        },
+const props = defineProps({
+    title: {
+        type: String,
+        default: "Confirm Password",
     },
-
-    components: {
-        Button,
-        JetDialogModal,
-
-        JetInputError,
-        JetSecondaryButton,
-        PasswordInput,
+    content: {
+        type: String,
+        default: "For your security, please confirm your password to continue.",
     },
-
-    data() {
-        return {
-            confirmingPassword: false,
-            form: {
-                password: "",
-                error: "",
-            },
-        };
-    },
-
-    methods: {
-        startConfirmingPassword() {
-            axios.get(route("password.confirmation")).then((response) => {
-                if (response.data.confirmed) {
-                    this.$emit("confirmed");
-                } else {
-                    this.confirmingPassword = true;
-
-                    setTimeout(
-                        () => this.$refs.password.$refs.input.focus(),
-                        250
-                    );
-                }
-            });
-        },
-
-        confirmPassword() {
-            this.form.processing = true;
-
-            axios
-                .post(route("password.confirm"), {
-                    password: this.form.password,
-                })
-                .then(() => {
-                    this.form.processing = false;
-                    this.closeModal();
-                    this.$nextTick(() => this.$emit("confirmed"));
-                })
-                .catch((error) => {
-                    this.form.processing = false;
-                    this.form.error = error.response.data.errors.password[0];
-                    this.$refs.password.$refs.input.focus();
-                });
-        },
-
-        closeModal() {
-            this.confirmingPassword = false;
-            this.form.password = "";
-            this.form.error = "";
-        },
+    button: {
+        type: String,
+        default: "Confirm",
     },
 });
+
+const confirmingPassword = ref(false);
+const password = ref(null);
+const form = ref({
+    password: "",
+    error: "",
+});
+const emit = defineEmits(["confirmed"]);
+
+const startConfirmingPassword = () => {
+    axios.get(route("password.confirmation")).then((response) => {
+        if (response.data.confirmed) {
+            emit("confirmed");
+        } else {
+            confirmingPassword.value = true;
+            setTimeout(() => password.$refs.input.focus(), 250);
+        }
+    });
+};
+const confirmPassword = () => {
+    form.value.processing = true;
+
+    axios
+        .post(route("password.confirm"), {
+            password: form.value.password,
+        })
+        .then(() => {
+            form.value.processing = false;
+            closeModal();
+            nextTick(() => emit("confirmed"));
+        })
+        .catch((error) => {
+            form.value.processing = false;
+            form.value.error = error.response.data.errors.password[0];
+            password.$refs.input.focus();
+        });
+};
+const closeModal = () => {
+    confirmingPassword.value = false;
+    form.value.password = "";
+    form.value.error = "";
+};
 </script>

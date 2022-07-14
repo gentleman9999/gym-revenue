@@ -2,11 +2,11 @@
 
 namespace Database\Seeders\Data;
 
-use App\Actions\Endusers\Leads\CreateLead;
-use App\Aggregates\Endusers\LeadAggregate;
-use App\Models\Clients\Client;
-use App\Models\Endusers\Lead;
-use App\Models\Endusers\LeadDetails;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Leads\Actions\CreateLead;
+use App\Domain\Leads\LeadAggregate;
+use App\Domain\Leads\Models\Lead;
+use App\Domain\Leads\Models\LeadDetails;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -56,6 +56,7 @@ class LeadProspectSeeder extends Seeder
 
                             // For each fake user, run them through the EnduserActivityAggregate
                             $prospect_data = $prospect->toArray();
+                            $prospect_data['client_id'] = $prospect['client_id'];
 
                             try {
                                 //sometimes seeder creates duplicate lead name/emails

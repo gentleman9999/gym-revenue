@@ -220,7 +220,7 @@
                 <jet-label for="lead_owner" value="Lead Owner" />
                 <select
                     class=""
-                    v-model="form['lead_owner']"
+                    v-model="form['owner_user_id']"
                     required
                     id="lead_owner"
                 >
@@ -230,13 +230,13 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors['lead_owner']"
+                    :message="form.errors['owner_user_id']"
                     class="mt-2"
                 />
             </div>
 
             <div class="form-control col-span-2">
-                <jet-label for="lead_owner" value="Lead Status" />
+                <jet-label for="lead_status" value="Lead Status" />
                 <select class="" v-model="form['lead_status']" id="lead_status">
                     <option value="">Select a Lead Status</option>
                     <option
@@ -279,7 +279,7 @@
                     id="notes.title"
                 />
                 <jet-input-error
-                    :message="form.errors['notes']?.title"
+                    :message="form.errors['notes.title']"
                     class="mt-2"
                 />
             </div>
@@ -287,7 +287,7 @@
                 <jet-label for="notes" value="Body" />
                 <textarea v-model="form['notes'].note" id="notes" />
                 <jet-input-error
-                    :message="form.errors['notes']?.note"
+                    :message="form.errors['notes.note']"
                     class="mt-2"
                 />
             </div>
@@ -415,7 +415,6 @@ export default {
     },
     props: [
         "userId",
-        "clientId",
         "lead",
         "locations",
         "lead_types",
@@ -449,7 +448,6 @@ export default {
     setup(props, context) {
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
-                client_id: props.clientId,
                 note: note,
             });
         }
@@ -466,7 +464,6 @@ export default {
                 primary_phone: "",
                 alternate_phone: "",
                 club_id: "",
-                client_id: props.clientId,
                 gr_location_id: "",
                 lead_type_id: "",
                 lead_source_id: "",
@@ -474,7 +471,7 @@ export default {
                 gender: "",
                 date_of_birth: null,
                 opportunity: "",
-                lead_owner: props.userId,
+                owner_user_id: props.userId,
                 lead_status: "",
                 notes: { title: "", note: "" },
             };
@@ -488,7 +485,6 @@ export default {
                 primary_phone: lead.primary_phone,
                 alternate_phone: lead.alternate_phone,
                 club_id: lead.club_id,
-                client_id: props.clientId,
                 gr_location_id: lead.gr_location_id,
                 lead_type_id: lead.lead_type_id,
                 lead_source_id: lead.lead_source_id,
@@ -498,9 +494,9 @@ export default {
                 date_of_birth: lead.date_of_birth,
                 opportunity: lead.opportunity,
                 notes: { title: "", note: "" },
+                owner_user_id: lead.owner_user_id,
             };
 
-            leadData["lead_owner"] = props.lead?.lead_owner?.value || "";
             leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>
@@ -514,9 +510,10 @@ export default {
         const fileForm = useGymRevForm({ file: null });
 
         const transformFormSubmission = (data) => {
-            if (!data.notes?.title) {
-                delete data.notes;
-            }
+            // Was this suppose to be some kind of validation for notes?
+            // if (!data.notes?.title) {
+            //     delete data.notes;
+            // }
             data.date_of_birth = transformDate(data.date_of_birth);
             return data;
         };

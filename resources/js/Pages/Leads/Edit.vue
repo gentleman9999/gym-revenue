@@ -27,7 +27,6 @@
             </div>
             <lead-form
                 :user-id="user_id"
-                :client-id="this.$page.props.user.current_client_id"
                 :lead="lead"
                 :locations="locations"
                 :lead_types="lead_types"

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Leads\Models\Lead;
+use App\Domain\Reminders\Reminder;
+use App\Domain\Teams\Models\TeamUser;
+use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Client;
-use App\Models\Endusers\Lead;
 use App\Models\Endusers\Member;
-use App\Models\Reminder;
-use App\Models\TeamUser;
-use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -41,11 +41,11 @@ class TaskController extends Controller
             $date = date('Y-m-d', strtotime($request->get('start')));
             $request->merge(['start' => date('Y-m-d H:i:s', DateTime::createFromFormat(
                 'Y-m-d H:i:s',
-                (new DateTime())->format($date.' 00:00:00')
+                (new DateTime())->format($date . ' 00:00:00')
             )->getTimestamp())]);
             $request->merge(['end' => date('Y-m-d H:i:s', DateTime::createFromFormat(
                 'Y-m-d H:i:s',
-                (new DateTime())->format($date.' 23:59:59')
+                (new DateTime())->format($date . ' 23:59:59')
             )->getTimestamp())]);
         }
 
@@ -55,69 +55,61 @@ class TaskController extends Controller
 
         //page won't load if no events type: task exist. The below fixes that.
         if (! is_null($typeTaskForClient)) {
-            $tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+            $incomplete_tasks = CalendarEvent::with('owner')
+                ->whereEventTypeId($typeTaskForClient->id)
                 ->whereOwnerId(request()->user()->id)
+                ->whereNull('event_completion')
                 ->with('type')
                 ->filter($request->only('search', 'start', 'end'))
                 ->paginate(10);
 
-            $incomplete_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
-                ->whereOwnerId(request()->user()->id)
-                ->whereNull('event_completion')
-                ->with('type')
-                ->paginate(10);
-
-            $completed_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+            $completed_tasks = CalendarEvent::with('owner')
+                ->whereEventTypeId($typeTaskForClient->id)
                 ->whereOwnerId(request()->user()->id)
                 ->whereNotNull('event_completion')
                 ->with('type')
+                ->filter($request->only('search', 'start', 'end'))
                 ->paginate(10);
 
-            $overdue_tasks = CalendarEvent::whereEventTypeId($typeTaskForClient->id)
+            $overdue_tasks = CalendarEvent::with('owner')
+                ->whereEventTypeId($typeTaskForClient->id)
                 ->whereOwnerId(request()->user()->id)
                 ->whereNull('event_completion')
                 ->whereDate('start', '<', date('Y-m-d H:i:s'))
                 ->with('type')
+                ->filter($request->only('search', 'start', 'end'))
                 ->paginate(10);
 
-            $tasks = $this->modifyEventArray($tasks);
             $incomplete_tasks = $this->modifyEventArray($incomplete_tasks);
             $completed_tasks = $this->modifyEventArray($completed_tasks);
             $overdue_tasks = $this->modifyEventArray($overdue_tasks);
         } else {
-            $tasks = [];
             $incomplete_tasks = [];
             $completed_tasks = [];
             $overdue_tasks = [];
         }
 
-        foreach ($tasks as $key => $event) {
-            $tasks[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
-        }
+        $current_team = $request->user()->currentTeam()->first();
+        $client = Client::with(['home_team'])->find($client_id);
 
-        if ($client_id) {
-            $current_team = $request->user()->currentTeam()->first();
-            $client = Client::whereId($client_id)->with('default_team_name')->first();
+        $is_home_team = $client->home_team_id == $current_team->id;
 
-            $is_default_team = $client->default_team_name->value == $current_team->id;
-
-            // If the active team is a client's-default team get all members
-            if ($is_default_team) {
-                $users = User::whereClientId($client_id)->get();
-            } else {
-                // else - get the members of that team
-                $team_users = TeamUser::whereTeamId($current_team->id)->get();
-                $user_ids = [];
-                foreach ($team_users as $team_user) {
-                    $user_ids[] = $team_user->user_id;
-                }
-                $users = User::whereIn('id', $user_ids)
-                    ->get();
+        // If the active team is a client's-default team get all members
+        if ($is_home_team) {
+            $users = User::whereClientId($client_id)->get();
+        } else {
+            // else - get the members of that team
+            $team_users = TeamUser::whereTeamId($current_team->id)->get();
+            $user_ids = [];
+            foreach ($team_users as $team_user) {
+                $user_ids[] = $team_user->user_id;
             }
+            $users = User::whereIn('id', $user_ids)
+                ->get();
         }
+
 
         return Inertia::render('Task/Show', [
-            'tasks' => $tasks,
             'client_id' => $client_id,
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
@@ -133,8 +125,6 @@ class TaskController extends Controller
     public function modifyEventArray($array)
     {
         foreach ($array as $key => $event) {
-            $array[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
-
             $user_attendees = [];
             $lead_attendees = [];
             $member_attendees = [];
@@ -168,8 +158,6 @@ class TaskController extends Controller
             $array[$key]->user_attendees = $user_attendees;
             $array[$key]->lead_attendees = $lead_attendees;
             $array[$key]->member_attendees = $member_attendees;
-
-            $array[$key]->event_owner = User::whereId($event['owner_id'])->first() ?? null;
         }
 
         return $array;

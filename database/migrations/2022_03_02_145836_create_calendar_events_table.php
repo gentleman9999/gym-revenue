@@ -26,6 +26,7 @@ class CreateCalendarEventsTable extends Migration
             $table->foreignUuid('event_type_id');
             $table->integer('owner_id')->nullable()->index();
             $table->dateTime('event_completion')->nullable();
+            $table->bigInteger('location_id')->nullable();
             $table->index(['client_id', 'event_type_id']);
             $table->softDeletes();
             $table->timestamps();

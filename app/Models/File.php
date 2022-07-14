@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Clients\Client;
+use App\Domain\Clients\Models\Client;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +24,7 @@ class File extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'entity_type', 'entity_id']; //'deleted_at'
+    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'entity_type', 'entity_id', 'hidden', 'type']; //'deleted_at'
 
     protected $casts = [
         'permissions' => 'array',

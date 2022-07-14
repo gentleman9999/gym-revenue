@@ -4,8 +4,8 @@
         model-name="Task"
         model-key="task"
         class="border-transparent"
-        :fields="fields"
         :resource="tasks"
+        :fields="fields"
         :actions="{
             edit: {
                 label: 'Edit',
@@ -13,10 +13,10 @@
             },
             trash: false,
             restore: false,
-            delete: {
-                label: 'Delete',
-                handler: ({ data }) => handleClickDelete(data),
-            },
+            // delete: {
+            //     label: 'Delete',
+            //     handler: ({ data }) => handleClickDelete(data),
+            // },
         }"
     >
         <template #top-actions><div></div></template>
@@ -25,12 +25,12 @@
             <div
                 class="task-list-header"
                 :class="{
-                    'bg-secondary': taskType === 'incomplete_tasks',
-                    'bg-error': taskType === 'ovedue_tasks',
-                    'bg-neutral-500': taskType === 'completed_tasks',
+                    'bg-secondary': props.taskType === 'incomplete_tasks',
+                    'bg-error': props.taskType === 'overdue_tasks',
+                    'bg-neutral-500': props.taskType === 'completed_tasks',
                 }"
             >
-                {{ headers[taskType] }}
+                {{ headers[props.taskType] }}
             </div>
         </template>
     </gym-revenue-crud>
@@ -42,21 +42,33 @@
 }
 </style>
 <script setup>
+import { computed } from "vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 
 const props = defineProps({
     taskType: {
         type: String,
+        required: true,
     },
     tasks: {
+        type: Object,
+        required: true,
+    },
+    fields: {
         type: Array,
-        default: [],
+        required: true,
     },
 });
 
+const emit = defineEmits(["edit"]);
+
 const headers = {
     incomplete_tasks: "Today",
-    ovedue_tasks: "Overdue",
+    overdue_tasks: "Overdue",
     completed_tasks: "Completed",
+};
+
+const editTask = (item) => {
+    emit("edit", item);
 };
 </script>

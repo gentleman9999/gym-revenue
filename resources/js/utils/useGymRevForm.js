@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/inertia-vue3";
-import { computed, watch } from "vue";
+import { computed, watch, ref } from "vue";
 import cloneDeep from "lodash.clonedeep"; //TODO:figure out why using lodash/clonedeep breaks on dev
 import omitBy from "lodash/omitBy";
 import { useModalPage } from "@/Components/InertiaModal";
@@ -16,46 +16,73 @@ export const useGymRevForm = (...args) => {
     watch(
         () => page.props.value.errors,
         (newErrors) => {
-            console.log("detected change in page", newErrors);
             console.log(
-                "detected errors on modal version of the form. setting here."
+                "detected errors on modal version of the form. setting here.",
+                newErrors
             );
             form.errors = newErrors;
         }
     );
-    console.log({ page });
 
-    const data = (typeof args[0] === "string" ? args[1] : args[0]) || {};
+    const initialData = ref(args[0]);
+    watch(form, () => {
+        if (form.recentlySuccessful) {
+            initialData.value = form.data();
+        }
+    });
+    const currentData = computed(() => form.data());
 
-    //immutable copy of initial form data
-    const initialData = cloneDeep(data);
-    Object.freeze(initialData);
-
-    //TODO: Using initialData, and the form object, create a "dirtyFields" property,
-    //TODO: which is an Object with the keys from initialData, and boolean if the value
-    //TODO: is dirty or not.  You could also use a ref + watch instead of computed.
     const dirtyFields = computed(() => {
+        console.log({ initialData: initialData.value });
         let fields = [];
-        for (let key in form) {
-            if (initialData[key] !== form[key]) fields.push(key);
+        for (let key in initialData.value) {
+            // console.log({key, initial: initialData.value[key], current: currentData.value[key] })
+            if (initialData.value[key] !== currentData.value[key]) {
+                console.log("found diff", key);
+                fields.push(key);
+            }
         }
         return fields;
     });
+
+    const dirtyData = computed(() =>
+        Object.keys(currentData.value).reduce((carry, key) => {
+            if (dirtyFields.value.includes(key)) {
+                carry[key] = currentData.value[key];
+            }
+            return carry;
+        }, {})
+    );
+
+    watch(dirtyFields, (a) => console.log({ dirtyFields: a }));
+    watch(dirtyData, (a) => console.log({ dirtyData: a }));
+    watch(currentData, (a) => console.log({ currentData: a }));
 
     /**
      * transform function that removes any properties that aren't dirty.
      */
     const onlyDirty = (data) => {
-        let ret = omitBy(data, (value, key) => {
+        let dirtyData = omitBy(data, (value, key) => {
             return !dirtyFields.value?.includes(key);
         });
-        return ret;
+        return dirtyData;
     };
 
     const dirty = () => {
-        let upgraded = onlyDirty({ ...form });
-        return upgraded;
+        const ogTransform = form.transform;
+        form.transform = (callback) => {
+            ogTransform((data) => {
+                const dirtyData = onlyDirty(data);
+                return callback(dirtyData);
+            });
+            return form;
+        };
+        ogTransform(onlyDirty);
+
+        return form;
     };
+
     form.dirty = dirty;
+
     return form;
 };

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Actions\Jetstream\CreateTeam;
 use App\Aggregates\Clients\ClientAggregate;
-use App\Models\Clients\Client;
+use App\Domain\Clients\Actions\CreateClient;
+use App\Enums\ClientServiceEnum;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -26,33 +26,27 @@ class ClientSeeder extends Seeder
             'FitnessTruth' => 1,
         ];
 
-        $services = [['feature_name' => 'Free Trial/Guest Pass Memberships', 'slug' => 'free-trial']];
-
 
         foreach ($clients as $name => $active) {
-            $client = Client::firstOrCreate([
-                'name' => $name,
-                'active' => $active,
-            ]);
+            $client = CreateClient::run(
+                [
+                    'name' => $name,
+                    'active' => $active,
+                    'services' => collect(ClientServiceEnum::cases())->map(fn ($e) => $e->name),
+                ]
+            );
 
-            $default_team_name = $name . ' Home Office';
-            preg_match_all('/(?<=\s|^)[a-z]/i', $default_team_name, $matches);
-            $prefix = strtoupper(implode('', $matches[0]));
-            CreateTeam::run(['name' => $default_team_name, 'default_team' => true, 'client_id' => $client->id]);
-            $aggy = ClientAggregate::retrieve($client->id)
-//                ->createDefaultTeam($default_team_name)
-                ->createTeamPrefix((strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix)
-                ->createAudience("{$client->name} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
-                ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
-                ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
-                ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
-                // @todo - add more onboarding shit here.
+//            $aggy = ClientAggregate::retrieve($client->id)
+//                ->createAudience("{$client->name} Prospects", 'prospects', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
+//                ->createAudience("{$client->name} Conversions", 'conversions', /*env('MAIL_FROM_ADDRESS'),*/ 'auto')
+//                ->createGatewayIntegration('sms', 'twilio', 'default_cnb', 'auto')
+//                ->createGatewayIntegration('email', 'mailgun', 'default_cnb', 'auto')
             ;
-            $aggy->persist();
-
-            foreach ($services as $service) {
-                ClientAggregate::retrieve($client->id)->addClientService($service['feature_name'], $service['slug'], true)->persist();
-            }
+//            $aggy->persist();
+//
+//            foreach ($services as $service) {
+//                ClientAggregate::retrieve($client->id)->addClientService($service['feature_name'], $service['slug'], true)->persist();
+//            }
         }
     }
 }
