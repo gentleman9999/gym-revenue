@@ -32,7 +32,7 @@ class CreateLead
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'lead_source_id' => ['required', 'exists:lead_sources,id'],
             'lead_type_id' => ['required', 'exists:lead_types,id'],
-            'client_id' => 'required',
+//            'client_id' => 'required',
             'profile_picture' => 'sometimes',
             'profile_picture.uuid' => 'sometimes|required',
             'profile_picture.key' => 'sometimes|required',
@@ -51,6 +51,7 @@ class CreateLead
     {
         $id = Uuid::new();//we should use uuid here
         $data['agreement_number'] = floor(time() - 99999999);
+        $data['client_id'] = auth()->user()->currentClientId();
         LeadAggregate::retrieve($id)->create($data)->persist();
 
         return Lead::findOrFail($id);
@@ -72,6 +73,8 @@ class CreateLead
         if ($request->user()) {
             LeadAggregate::retrieve($lead->id)->claim($request->user()->id)->persist();
         }
+
+        return $lead;
     }
 
     public function htmlResponse(Lead $lead): RedirectResponse
