@@ -111,7 +111,7 @@ class ClientProjector extends Projector
                     $social->save();
                 } else {
                     $social->writeable()->updateOrFail([
-                        'value' => $payload['facebook'],
+                        'value' => $payload[$socialMediaEnum->name],
                     ]);
                 }
             }
