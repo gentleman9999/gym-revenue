@@ -377,45 +377,6 @@ class LeadsController extends Controller
         ]);
     }
 
-    public function assign()
-    {
-        $data = request()->all();
-        $user = request()->user();
-        if ($user->cannot('leads.contact', Lead::class)) {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-
-            return Redirect::back();
-        }
-
-        // @todo - change to laravel style Validation
-
-        $claim_detail = LeadDetails::whereLeadId($data['lead_id'])
-            ->whereField('claimed')
-            ->whereActive(1)
-            ->first();
-
-        if (is_null($claim_detail)) {
-            LeadDetails::create([
-                'client_id' => $data['client_id'],
-                'lead_id' => $data['lead_id'],
-                'field' => 'claimed',
-                'value' => $data['user_id'],
-                'misc' => ['claim_date' => date('Y-m-d')],
-            ]);
-
-            LeadAggregate::retrieve($data['lead_id'])
-                ->claim($data['user_id'])
-                ->persist();
-
-            \Alert::info('This lead has been claimed by you! You may now interact with it!')->flash();
-        } else {
-            \Alert::error('This lead has been already been claimed.')->flash();
-        }
-
-
-        return redirect()->back();
-    }
-
     private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
     {
         $results = [];
