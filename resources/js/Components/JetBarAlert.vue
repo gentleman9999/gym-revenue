@@ -40,38 +40,36 @@
     </transition>
 </template>
 
-<script>
-export default {
-    name: "JetBarAlert",
-    props: {
-        text: {
-            type: String,
-            required: true,
-        },
-        type: {
-            type: String,
-            validator: (value) => {
-                return ["info", "success", "warning", "danger"].includes(value);
-            },
+<script setup>
+import { ref } from "vue";
+import { computed } from "@vue/reactivity";
+
+const props = defineProps({
+    text: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        validator: (value) => {
+            return ["info", "success", "warning", "danger"].includes(value);
         },
     },
-    data() {
-        return {
-            show: true,
+});
+
+const show = ref(true);
+
+const alertColor = computed({
+    get() {
+        const colors = {
+            info: "bg-blue-200 text-blue-700",
+            success: "bg-green-200 text-green-700",
+            warning: "bg-yellow-200 text-yellow-700",
+            danger: "bg-red-200 text-red-700",
         };
+        return colors[props.type ?? "info"];
     },
-    computed: {
-        alertColor() {
-            const colors = {
-                info: "bg-blue-200 text-blue-700",
-                success: "bg-green-200 text-green-700",
-                warning: "bg-yellow-200 text-yellow-700",
-                danger: "bg-red-200 text-red-700",
-            };
-            return colors[this.type ?? "info"];
-        },
-    },
-};
+});
 </script>
 
 <style scoped>

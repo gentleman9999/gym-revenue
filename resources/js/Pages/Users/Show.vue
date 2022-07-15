@@ -168,17 +168,12 @@ export default defineComponent({
                 label: "Security Role",
             },
             {
-                name: "classification",
-                label: "Classification",
-                transform: (data) => data?.value,
-            },
-            {
                 name: "manager",
                 label: "Manager",
             },
             "home_team",
         ];
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             fields = [
                 "name",
                 "email",
@@ -188,11 +183,6 @@ export default defineComponent({
                     // transform: (data) => data?.home_location?.name,
                 },
                 "role",
-                {
-                    name: "classification",
-                    label: "Classification",
-                    transform: (data) => data?.title,
-                },
                 {
                     name: "manager",
                     label: "Manager",
@@ -235,7 +225,7 @@ export default defineComponent({
             },
         ];
 
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
                 label: "Roles",
                 href: route("roles"),
@@ -243,10 +233,18 @@ export default defineComponent({
                 active: false,
             });
         }
-        if (page.props.value.user.current_client_id) {
+        if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
-                label: "Classification",
-                href: route("classifications"),
+                label: "Departments",
+                href: route("departments"),
+                onClick: null,
+                active: false,
+            });
+        }
+        if (page.props.value.user.current_team.isClientTeam) {
+            navLinks.push({
+                label: "Positions",
+                href: route("positions"),
                 onClick: null,
                 active: false,
             });

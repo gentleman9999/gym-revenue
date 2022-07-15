@@ -3,8 +3,8 @@
 namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\MemberAggregate;
-use App\Helpers\Uuid;
 use App\Models\Endusers\Member;
+use App\Support\Uuid;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

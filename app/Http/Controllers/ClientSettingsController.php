@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Models\Clients\Client;
-use App\Models\Clients\Features\ClientService;
+use App\Domain\Clients\Enums\SocialMediaEnum;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Models\ClientGatewaySetting;
+use App\Domain\Clients\Models\ClientSocialMedia;
+use App\Enums\ClientServiceEnum;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -17,39 +20,38 @@ class ClientSettingsController extends Controller
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
-        $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($client_id);
+
+        if (request()->user()->cannot('manage-client-settings')) {
+            Alert::error("Oops! You dont have permissions to do that.")->flash();
+
+            return Redirect::back();
+        }
+        $client = Client::with(['trial_membership_types', 'locations'])->find($client_id);
 
         $test = [
             ['name' => 'SMS', 'value' => 'SMS'],
             ['name' => 'EMAIL', 'value' => 'EMAIL'],
         ]; //TODO: make this actually pull available communication preferences
 
+
         return Inertia::render('ClientSettings/Index', [
-            'availableServices' => ClientService::whereClientId($client_id)->get(['feature_name', 'slug', 'id']) ?? [],
+            'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
+                return ['value' => $s->value, 'name' => $s->name];
+            }),
             'commPreferences' => [],
             'availableCommPreferences' => $test,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
+//            'socialMedias' => ClientSocialMedia::all(),
+            'socialMedias' => $client->getSocialMedia(),
+            'availableSocialMedias' => collect(SocialMediaEnum::cases())->map(fn (SocialMediaEnum $enum) => ['name' => $enum->name, 'value' => $enum->value]),
+            'gateways' => ClientGatewaySetting::all(),
+            'logoUrl' => Client::findOrFail($client_id)->logo_url(),
         ]);
     }
 
-    public function updateClientServices()
-    {
-        $data = request()->validate([
-            'services' => ['sometimes', 'array'],
-            'commPreferences' => ['sometimes', 'array'],
-
-        ]);
-        $client_id = request()->user()->currentClientId();
-        if (array_key_exists('services', $data) && is_array($data['services'])) {
-            ClientAggregate::retrieve($client_id)->setClientServices($data['services'], request()->user()->id)->persist();
-        }
-        Alert::success("Client Services updated.")->flash();
-
-        return Redirect::back();
-    }
-
+    //TODO:update to action
     public function updateTrialMembershipTypes()
     {
         $data = request()->validate([

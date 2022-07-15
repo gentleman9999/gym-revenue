@@ -229,8 +229,8 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, onMounted, watch, defineEmits } from "vue";
 import { toastInfo, toastError, toastSuccess } from "@/utils/createToast";
 import SlideUpDown from "vue3-slide-up-down";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -241,140 +241,129 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 library.add(faArrowCircleRight, faArrowCircleLeft);
 
-export default defineComponent({
-    name: "WorkoutForm",
-    components: {
-        SlideUpDown,
-        FontAwesomeIcon,
+const props = defineProps({
+    reset: {
+        type: Boolean,
     },
-    props: ["reset"],
-    watch: {
-        reset(flag) {
-            if (flag) {
-                this.currentQuestion = 1;
-                this.selectedBodyBand = "";
-                this.selectedBarType = "nothing";
-                this.selectedInjury = "";
-                this.selectedCoreDaily = "";
-                this.selectedGoal = "";
-                this.selectedRest = 0;
-            }
-        },
-    },
-    data() {
-        return {
-            showForm: true,
-            currentQuestion: 1,
-
-            selectedBodyBand: "",
-            selectedBarType: "nothing",
-            selectedInjury: "",
-            selectedCoreDaily: "",
-            selectedGoal: "",
-            selectedRest: 0,
-
-            drops: {
-                barType: {
-                    "": "None",
-                    BB: "Barbell",
-                    DB: "Dumbell",
-                    KB: "Kettlebell",
-                },
-                injury: {
-                    none: "None",
-                    neck: "Neck",
-                    back: "Back",
-                    shoulder: "Shoulder",
-                    knee: "Knee",
-                    ankle: "Ankle",
-                },
-                goal: {
-                    gain: "Gain",
-                    maintain: "Maintain",
-                },
-                rest: {
-                    1: "1 Day",
-                    2: "2 Days",
-                    3: "3 Days",
-                    4: "4 Days",
-                },
-            },
-        };
-    },
-    computed: {},
-    methods: {
-        nextQuestion() {
-            if (this.validateQuestion()) {
-                if (this.currentQuestion < 6) {
-                    const toastText = `Awesome! Moving on to question ${
-                        this.currentQuestion + 1
-                    } of 6`;
-                    toastInfo(toastText);
-                    this.currentQuestion++;
-                }
-            } else {
-                toastError("Please complete the question before continuing.");
-            }
-        },
-        prevQuestion() {
-            if (this.currentQuestion > 1) {
-                this.currentQuestion--;
-            }
-        },
-        submitForm() {
-            if (this.currentQuestion === 6 && this.validateQuestion()) {
-                this.$emit("submit", {
-                    selectedBodyBand: this.selectedBodyBand,
-                    selectedBarType: this.selectedBarType,
-                    selectedInjury: this.selectedInjury,
-                    selectedCoreDaily: this.selectedCoreDaily,
-                    selectedGoal: this.selectedGoal,
-                    selectedRest: this.selectedRest,
-                });
-
-                toastSuccess(`Great! Generating A workout for you now!`, {
-                    timeout: 5000,
-                });
-            } else {
-                toastError("Complete the whole form before continuing.", {
-                    timeout: 10000,
-                });
-            }
-        },
-        validateQuestion() {
-            let v = false;
-
-            switch (this.currentQuestion) {
-                case 1:
-                    v = this.selectedBodyBand !== "";
-                    break;
-
-                case 2:
-                    v = this.selectedBarType !== "nothing";
-                    break;
-
-                case 3:
-                    v = this.selectedInjury !== "";
-                    break;
-
-                case 4:
-                    v = this.selectedCoreDaily !== "";
-                    break;
-
-                case 5:
-                    v = this.selectedGoal !== "";
-                    break;
-
-                case 6:
-                    v = this.selectedRest !== 0;
-                    break;
-            }
-
-            return v;
-        },
-    },
-    mounted() {},
 });
+const showForm = ref(true);
+const currentQuestion = ref(1);
+const selectedBodyBand = ref("");
+const selectedBarType = ref("nothing");
+const selectedInjury = ref("");
+const selectedCoreDaily = ref("");
+const selectedGoal = ref("");
+const selectedRest = ref(0);
+const drops = ref({
+    barType: {
+        "": "None",
+        BB: "Barbell",
+        DB: "Dumbell",
+        KB: "Kettlebell",
+    },
+    injury: {
+        none: "None",
+        neck: "Neck",
+        back: "Back",
+        shoulder: "Shoulder",
+        knee: "Knee",
+        ankle: "Ankle",
+    },
+    goal: {
+        gain: "Gain",
+        maintain: "Maintain",
+    },
+    rest: {
+        1: "1 Day",
+        2: "2 Days",
+        3: "3 Days",
+        4: "4 Days",
+    },
+});
+watch([props.reset], () => {
+    if (reset.value) {
+        currentQuestion.value = 1;
+        selectedBodyBand.value = "";
+        selectedBarType.value = "nothing";
+        selectedInjury.value = "";
+        selectedCoreDaily.value = "";
+        selectedGoal.value = "";
+        selectedRest.value = 0;
+    }
+});
+const nextQuestion = () => {
+    if (validateQuestion()) {
+        if (currentQuestion.value < 6) {
+            const toastText = `Awesome! Moving on to question ${
+                currentQuestion.value + 1
+            } of 6`;
+            toastInfo(toastText);
+            currentQuestion.value++;
+        }
+    } else {
+        toastError("Please complete the question before continuing.");
+    }
+};
+
+const prevQuestion = () => {
+    if (currentQuestion.value > 1) {
+        currentQuestion.value--;
+    }
+};
+
+const emit = defineEmits(["submit"]);
+
+const submitForm = () => {
+    if (currentQuestion.value === 6 && validateQuestion()) {
+        emit("submit", {
+            selectedBodyBand: selectedBodyBand.value,
+            selectedBarType: selectedBarType.value,
+            selectedInjury: selectedInjury.value,
+            selectedCoreDaily: selectedCoreDaily.value,
+            selectedGoal: selectedGoal.value,
+            selectedRest: selectedRest.value,
+        });
+
+        toastSuccess(`Great! Generating A workout for you now!`, {
+            timeout: 5000,
+        });
+    } else {
+        toastError("Complete the whole form before continuing.", {
+            timeout: 10000,
+        });
+    }
+};
+const validateQuestion = () => {
+    let v = false;
+
+    switch (currentQuestion.value) {
+        case 1:
+            v = selectedBodyBand.value !== "";
+            break;
+
+        case 2:
+            v = selectedBarType.value !== "nothing";
+            break;
+
+        case 3:
+            v = selectedInjury.value !== "";
+            break;
+
+        case 4:
+            v = selectedCoreDaily.value !== "";
+            break;
+
+        case 5:
+            v = selectedGoal.value !== "";
+            break;
+
+        case 6:
+            v = selectedRest.value !== 0;
+            break;
+    }
+
+    return v;
+};
 </script>
 
 <style scoped>

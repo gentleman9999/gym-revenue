@@ -31,12 +31,9 @@ import { defineComponent } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
-
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-
 import MemberForm from "@/Pages/Members/Partials/MemberForm.vue";
-
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({

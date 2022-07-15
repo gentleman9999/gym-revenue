@@ -28,7 +28,7 @@ class FileProjector extends Projector
 
     public function onFileRenamed(FileRenamed $event)
     {
-        File::withTrashed()->findOrFail($event->data['id'])->updateOrFail(['filename' => $event->data['filename']]);
+        File::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail(['filename' => $event->data['filename']]);
     }
 
     public function onFilePermissionsUpdated(FilePermissionsUpdated $event)

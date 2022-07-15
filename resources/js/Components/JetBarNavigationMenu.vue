@@ -308,7 +308,7 @@ export default defineComponent({
         };
         const logout = () => {
             console.log("logout");
-            this.$inertia.post(route("logout"));
+            Inertia.post(route("logout"));
         };
         return {
             showingNotificationDropdown,

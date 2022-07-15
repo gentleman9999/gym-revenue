@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Data;
 
-use App\Models\Clients\Client;
-use App\Models\Endusers\LeadStatuses;
+use App\Domain\Clients\Models\Client;
+use App\Domain\LeadStatuses\Actions\CreateLeadStatus;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -26,14 +26,13 @@ class LeadStatusSeeder extends Seeder
         $clients = Client::all();
         foreach ($clients as $client) {
             foreach ($lead_types as $idx => $lead_type) {
-                LeadStatuses::create([
+                VarDumper::dump("Adding lead status {$lead_type}");
+                CreateLeadStatus::run([
                     'client_id' => $client->id,
                     'status' => $lead_type,
                     'order' => $idx + 1,
                     'active' => 1,
                 ]);
-
-                VarDumper::dump("Adding lead status {$lead_type}");
             }
         }
     }

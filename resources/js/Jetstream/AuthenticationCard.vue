@@ -33,8 +33,7 @@
         </div>
     </div>
 </template>
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { comingSoon } from "@/utils/comingSoon.js";
 
 import Button from "../Components/Button.vue";
@@ -42,41 +41,29 @@ import Button from "../Components/Button.vue";
 import JetLabel from "./Label.vue";
 import JetValidationErrors from "./ValidationErrors.vue";
 import { Head } from "@inertiajs/inertia-vue3";
+import { useGymRevForm } from "@/utils";
 
-export default defineComponent({
-    components: {
-        Head,
-        Button,
-        JetLabel,
-        JetValidationErrors,
+const props = defineProps({
+    canResetPassword: {
+        type: Boolean,
     },
-
-    props: {
-        canResetPassword: Boolean,
-        status: String,
-    },
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                email: "",
-                password: "",
-                remember: false,
-            }),
-        };
-    },
-
-    methods: {
-        submit() {
-            this.form
-                .transform((data) => ({
-                    ...data,
-                    remember: this.form.remember ? "on" : "",
-                }))
-                .post(this.route("login"), {
-                    onFinish: () => this.form.reset("password"),
-                });
-        },
+    status: {
+        type: String,
     },
 });
+
+const form = useGymRevForm({
+    email: "",
+    password: "",
+    remember: false,
+});
+
+const submit = () => {
+    form.transform((data) => ({
+        ...data,
+        remember: form.remember ? "on" : "",
+    })).post(route("login"), {
+        onFinish: () => form.reset("password"),
+    });
+};
 </script>

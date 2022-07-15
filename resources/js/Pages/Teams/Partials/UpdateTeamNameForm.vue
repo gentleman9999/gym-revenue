@@ -56,40 +56,29 @@
     </jet-form-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-
-export default defineComponent({
-    components: {
-        JetActionMessage,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
+import { useGymRevForm } from "@/utils";
+const props = defineProps({
+    team: {
+        type: Object,
     },
-
-    props: ["team", "abilities"],
-
-    data() {
-        return {
-            form: this.$inertia.form({
-                name: this.team.name,
-            }),
-        };
-    },
-
-    methods: {
-        updateTeamName() {
-            this.form.put(route("team.update", this.team), {
-                errorBag: "updateTeamName",
-                preserveScroll: true,
-            });
-        },
+    abilities: {
+        type: Array,
     },
 });
+
+const form = useGymRevForm({
+    name: props.team.name,
+});
+function updateTeamName() {
+    form.put(route("team.update", props.team), {
+        errorBag: "updateTeamName",
+        preserveScroll: true,
+    });
+}
 </script>

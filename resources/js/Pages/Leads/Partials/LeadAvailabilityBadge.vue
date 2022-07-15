@@ -2,7 +2,7 @@
     <div
         class="badge"
         :class="{ 'cursor-pointer': status === 'Available', ...badgeClass }"
-        @click="handleClick"
+        @click.prevent.stop="handleClick"
     >
         {{ assigning ? "Assigning..." : status }}
     </div>
@@ -52,16 +52,10 @@ export default {
             }
 
             const claimed = props.value;
-            const yours = props.value.filter(
-                (detail) =>
-                    parseInt(detail.value) ===
-                    parseInt(page.props.value.user.id)
-            );
-            console.log({ claimed, yours });
-            if (yours.length) {
+            const yours = props.value === page.props.value.user.id;
+            if (yours) {
                 return "Yours";
-            }
-            if (claimed.length) {
+            } else if (claimed) {
                 return "Claimed";
             }
             return "Available";
@@ -84,13 +78,8 @@ export default {
             console.log("handleClick");
             if (status.value === "Available") {
                 assigning.value = true;
-                Inertia.visit(route("data.leads.assign"), {
-                    method: "post",
-                    data: {
-                        lead_id: props.data.id,
-                        user_id: page.props.value.user.id,
-                        client_id: props.data.client_id,
-                    },
+                Inertia.visit(route("data.leads.assign", props.data.id), {
+                    method: "put",
                     preserveScroll: true,
                     onFinish: () => {
                         assigning.value = false;
@@ -98,7 +87,7 @@ export default {
                 });
             }
         };
-        return { status, handleClick, badgeClass };
+        return { status, handleClick, badgeClass, assigning };
     },
 };
 </script>

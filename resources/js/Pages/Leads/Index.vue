@@ -84,6 +84,7 @@ import LeadPreview from "@/Pages/Leads/Partials/LeadPreview.vue";
 
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
@@ -113,6 +114,7 @@ export default defineComponent({
         "nameSearch",
     ],
     setup(props) {
+        const page = usePage();
         const badgeClasses = (lead_type_id) => {
             if (!lead_type_id) {
                 console.log("no lead type id!");
@@ -197,11 +199,10 @@ export default defineComponent({
                 // transform: data=>data?.lead_type
             },
             {
-                name: "leadsclaimed",
+                name: "owner_user_id",
                 label: "Status",
                 component: LeadAvailabilityBadge,
-                export: (data) =>
-                    data?.length ? data[0].misc.user_id : "Available",
+                export: (data) => (!!data ? "Claimed" : "Available"),
             },
         ];
 
@@ -216,16 +217,10 @@ export default defineComponent({
                     Inertia.visit(route("data.leads.show", data.id));
                 },
                 shouldRender: ({ data }) => {
-                    const claimed =
-                        data?.details_desc?.filter(
-                            (detail) => detail.field === "claimed"
-                        ) || [];
-                    console.log({ claimed, props });
-                    const yours = claimed.filter(
-                        (detail) =>
-                            parseInt(detail.value) === parseInt(props.user.id)
+                    return (
+                        data?.owner_user_id === page.props.value.user.id &&
+                        !data?.unsubscribed_comms
                     );
-                    return yours.length && !data?.unsubscribed_comms;
                 },
             },
         };

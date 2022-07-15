@@ -7,15 +7,8 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
-
-export default defineComponent({
-    components: {
-        JetApplicationMark,
-    },
-});
 </script>
 
 <style scoped>

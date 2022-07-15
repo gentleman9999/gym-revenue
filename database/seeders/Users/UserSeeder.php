@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Users;
 
-use App\Models\User;
+use App\Domain\Users\Models\User;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
