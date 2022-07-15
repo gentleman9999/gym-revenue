@@ -105,6 +105,7 @@ class GetUsersToImpersonate
                                     'userId' => $potential_imp_user->id,
                                     'name' => $potential_imp_user->name,
                                     'role' => $potential_imp_user->getRole(),
+                                    'group' => $potential_imp_user->role()->group,
                                 ];
 
                                 break;
@@ -114,6 +115,14 @@ class GetUsersToImpersonate
                 }
             }
         }
+        $results = collect($results)->sortBy('group')->toArray();
+        $counter = 0;
+        foreach ($results as $result) {
+            unset($result['group']);
+            $sortedArray[$counter] = $result;
+            $counter++;
+        }
+        $results = $sortedArray;
 
         return $results;
     }
