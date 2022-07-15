@@ -32,54 +32,64 @@ class LeadProjector extends Projector
     {
         $lead = new Lead();
         //get only the keys we care about (the ones marked as fillable)
-        $lead_fillable_data = array_filter($event->payload, function ($key) {
-            return in_array($key, (new Lead())->getFillable());
-        }, ARRAY_FILTER_USE_KEY);
+//        $lead_fillable_data = array_filter($event->payload, function ($key) {
+//            return in_array($key, (new Lead())->getFillable());
+//        }, ARRAY_FILTER_USE_KEY);
+        // unsetting notes and lead status as these columns do not exist in leads table
+        unset($event->payload['notes']);
+        unset($event->payload['lead_status']);
+
+        $profile_picture = json_encode($event->payload['profile_picture']);
+        $lead->setRawAttributes($event->payload);
+
+
+        $lead->profile_picture = $profile_picture;
 
         $lead->id = $event->aggregateRootUuid();
-        $lead->client_id = $event->payload['client_id'];
-        $lead->email = $event->payload['email'];
-        $lead->agreement_number = $event->payload['agreement_number'];
-        if (array_key_exists('agreement_number', $event->payload)) {
-            $lead->agreement_number = $event->payload['agreement_number'];
-        }
-        $lead->fill($lead_fillable_data);
+//        $lead->client_id = $event->payload['client_id'];
+//        $lead->email = $event->payload['email'];
+//        $lead->agreement_number = $event->payload['agreement_number'];
+
+//        if (array_key_exists('agreement_number', $event->payload)) {
+//            $lead->agreement_number = $event->payload['agreement_number'];
+//        }
 
         $lead->save();
 
-        $created = new LeadDetails();
-        $created->forceFill([
-            'lead_id' => $lead->id,
-            'client_id' => $event->clientId(),
-            'field' => 'creates',
-            'value' => $event->modifiedBy(),
-        ]);
-        $created->save();
-
-        $creates = new LeadDetails();
-        $creates->forceFill([
-            'lead_id' => $lead->id,
-            'client_id' => $event->clientId(),
-            'field' => 'created',
-            'value' => $event->createdAt(),
-        ]);
-        $creates->save();
+//        $created = new LeadDetails();
+//        $created->forceFill([
+//            'lead_id' => $lead->id,
+//            'name' => $event->payload['first_name'],
+//            'client_id' => $event->clientId(),
+//            'field' => 'creates',
+//            'value' => $event->modifiedBy(),
+//        ]);
+//        $created->save();
+//
+//        $creates = new LeadDetails();
+//        $creates->forceFill([
+//            'lead_id' => $lead->id,
+//            'client_id' => $event->clientId(),
+//            'field' => 'created',
+//            'value' => $event->createdAt(),
+//        ]);
+//        $creates->save();
 
         $this->createOrUpdateLeadDetailsAndNotes($event, $lead);
 
-        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
-            $file = $event->payload['profile_picture'];
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-
-            $profile = new LeadDetails();
-            $profile->forceFill([
-                'lead_id' => $lead->id,
-                'client_id' => $lead->client_id,
-                'field' => 'profile_picture',
-                'misc' => $file,
-            ]);
-            $profile->save();
-        }
+//        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
+//            $file = $event->payload['profile_picture'];
+//            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+//
+//            $profile = new LeadDetails();
+//            $profile->forceFill([
+//                'lead_id' => $lead->id,
+//                'client_id' => $lead->client_id,
+//                'field' => 'profile_picture',
+//                'misc' => $file,
+//            ]);
+//            $profile->save();
+//        }
     }
 
     public function onLeadUpdated(LeadUpdated $event)
@@ -90,34 +100,33 @@ class LeadProjector extends Projector
         }
         $lead->fill($event->payload);
         $lead->save();
-
-        $updated = new LeadDetails();
-        $updated->forceFill([
-            'lead_id' => $lead->id,
-            'client_id' => $lead->client_id,
-            'field' => 'updated',
-            'value' => $event->modifiedBy(),
-        ]);
-        $updated->save();
+//        $updated = new LeadDetails();
+//        $updated->forceFill([
+//            'lead_id' => $lead->id,
+//            'client_id' => $lead->client_id,
+//            'field' => 'updated',
+//            'value' => $event->modifiedBy(),
+//        ]);
+//        $updated->save();
 
         //TODO: see if we are still using this. I feel like we got rid of it.
         LeadDetails::whereLeadId($lead->id)->whereField('service_id')->delete();
 
         $this->createOrUpdateLeadDetailsAndNotes($event, $lead);
 
-        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
-            $file = $event->payload['profile_picture'];
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-
-            $profile = LeadDetails::firstOrNew([
-                'lead_id' => $lead->id,
-                'client_id' => $lead->client_id,
-                'field' => 'profile_picture',
-            ], ['misc' => $file]);
-            $profile->client_id = $lead->client_id;
-            $profile->lead_id = $lead->id;
-            $profile->save();
-        }
+//        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
+//            $file = $event->payload['profile_picture'];
+//            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+//
+//            $profile = LeadDetails::firstOrNew([
+//                'lead_id' => $lead->id,
+//                'client_id' => $lead->client_id,
+//                'field' => 'profile_picture',
+//            ], ['misc' => $file]);
+//            $profile->client_id = $lead->client_id;
+//            $profile->lead_id = $lead->id;
+//            $profile->save();
+//        }
     }
 
     public function onLeadTrashed(LeadTrashed $event)

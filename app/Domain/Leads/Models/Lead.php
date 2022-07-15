@@ -34,12 +34,13 @@ class Lead extends Model
         'first_name', 'middle_name', 'last_name', 'gender',
         'primary_phone', 'alternate_phone', 'gr_location_id', 'ip_address',
         'lead_type_id', 'membership_type_id', 'lead_source_id',
-        'date_of_birth', 'opportunity', 'misc', 'owner_user_id','profile_picture',
+        'date_of_birth', 'opportunity', 'owner_user_id','profile_picture',
+//        'misc',
     ];
 
     protected $casts = [
         'profile_picture' => 'array',
-        'misc' => 'array',
+//        'misc' => 'array',
     ];
 
     protected $hidden = ['client_id'];
