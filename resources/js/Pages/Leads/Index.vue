@@ -75,7 +75,6 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
-import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
 import LeadAvailabilityBadge from "./Partials/LeadAvailabilityBadge.vue";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
@@ -95,7 +94,6 @@ export default defineComponent({
         Confirm,
         Button,
         JetBarContainer,
-        LeadInteraction,
         LeadPreview,
         CalendarGrid,
         CalendarSummaryCard,
