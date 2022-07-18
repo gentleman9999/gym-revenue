@@ -54,6 +54,18 @@ class GetUsersToImpersonate
             default:
                 $allowed_roles = [];
         }
+
+        $victim_users = [];
+
+        $clients = Client::all();
+        foreach ($clients as $client) {
+            $teams = Team::withoutGlobalScopes()->whereClientId($client->id)->get();
+
+            foreach ($teams as $team) {
+                $victim_users[$client->name][$team->name] = $team->team_users()->get();
+            }
+        }//idk what to do with this
+
         // Get the User's currently active team
         $current_team = $user->currentTeam()->first();
 
