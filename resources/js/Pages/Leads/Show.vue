@@ -2,7 +2,8 @@
     <LayoutHeader title="Leads" />
     <jet-bar-container>
         <end-user-interaction-container
-            :lead-id="lead.id"
+            userType="lead"
+            :id="lead.id"
             :user-id="$page.props.user.id"
             :first-name="lead.first_name"
             :middle-name="lead.middle_name"
@@ -56,7 +57,7 @@ export default defineComponent({
         const selectedLeadDetailIndex = props.flash?.selectedLeadDetailIndex;
 
         watchEffect(() => {
-            leadInteractionRef.value?.goToLeadDetailIndex(
+            leadInteractionRef.value?.goToUserDetailIndex(
                 props.flash?.selectedLeadDetailIndex
             );
         });

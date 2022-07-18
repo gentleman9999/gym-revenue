@@ -5,13 +5,16 @@
                 <div class="user-info-container">
                     <user-info
                         :agreementNumber="agreementNumber"
-                        :editUrl="route('data.leads.edit', leadId)"
+                        :editUrl="route('data.leads.edit', id)"
                         :fullName="fullName"
                         :opportunity="opportunity"
                         :trialDates="trialDates"
                         :trialMemberships="trialMemberships"
                     />
-                    <div class="user-action-container" v-if="claimedByUser">
+                    <div
+                        class="user-action-container"
+                        v-if="owner_user_id == userId"
+                    >
                         <user-actions
                             :count="interactionCount"
                             :handleClick="
@@ -32,7 +35,7 @@
                         <comms-actions
                             :activeContactMethod="activeContactMethod"
                             :phone="phone"
-                            :id="leadId"
+                            :id="id"
                             @done="$refs.showViewModal.close()"
                         />
                     </div>
@@ -66,10 +69,11 @@ import UserInfo from "./UserInfo/index.vue";
 import UserActions from "./UserActions/index.vue";
 
 const props = defineProps({
-    userId: {
+    userType: {
         type: String,
+        default: "lead",
     },
-    leadId: {
+    id: {
         type: String,
     },
     firstName: {
@@ -144,32 +148,23 @@ const borderStyle = computed({
         };
     },
 });
-const claimedByUser = computed({
-    get() {
-        let r = false;
-        if ((props.owner_user_id = props.userId)) {
-            r = true;
-        }
-        return r;
-    },
-});
+
 const modalTitle = computed({
     get() {
         switch (activeContactMethod.value) {
             case "email":
-                return "Email Lead";
+                return "Email " + props.userType;
             case "phone":
-                return "Call Lead";
+                return "Call " + props.userType;
             case "sms":
-                return "Text Lead";
+                return "Text " + props.userType;
         }
     },
 });
 const commsHistoryRef = ref(null);
-function goToLeadDetailIndex(index) {
-    console.log("goToLeadDetailIndex", { index, commsHistoryRef });
+function goToUserDetailIndex(index) {
     if (index !== undefined && index !== null) {
-        commsHistoryRef.value.goToLeadDetailIndex(index);
+        commsHistoryRef.value.goToUserDetailIndex(index);
     }
 }
 const showViewModal = ref(null);
@@ -177,6 +172,6 @@ watch([activeContactMethod], () => {
     activeContactMethod.value && showViewModal.value.open();
 });
 defineExpose({
-    goToLeadDetailIndex,
+    goToUserDetailIndex,
 });
 </script>

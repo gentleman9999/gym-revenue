@@ -3,10 +3,10 @@
         <ul class="w-full steps">
             <comms-history-step
                 v-for="detail in details"
-                :key="detail.id"
+                :key="detail.lead_id"
                 :detail="detail"
                 @click="selectedDetail = detail"
-                :active="selectedDetail?.id === detail.id"
+                :active="selectedDetail?.id === detail.lead_id"
             />
         </ul>
         <comms-history-detail :detail="selectedDetail" v-if="selectedDetail" />
@@ -37,9 +37,12 @@ const props = defineProps({
 });
 
 const selectedDetail = ref(null);
-const goToLeadDetailIndex = (index) => {
+const goToUserDetailIndex = (index) => {
     if (index in props.details) {
         selectedDetail.value = props.details[index];
     }
 };
+defineExpose({
+    goToUserDetailIndex,
+});
 </script>

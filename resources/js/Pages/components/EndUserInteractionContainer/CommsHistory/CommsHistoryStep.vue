@@ -74,14 +74,6 @@ export default {
                     return "Email";
                 case "sms_by_rep":
                     return "Text Message";
-                case "claimed":
-                    return "Claimed";
-                case "created":
-                    return "Created";
-                case "updated":
-                    return "Updated";
-                case "manual_create":
-                    return "Created";
                 case "trial-started":
                     return "Trial Started";
                 case "trial-used":
@@ -98,13 +90,6 @@ export default {
                     return "envelope";
                 case "sms_by_rep":
                     return "comment";
-                case "claimed":
-                    return "chevron-double-down";
-                case "manual_create":
-                case "created":
-                    return "user-plus";
-                case "updated":
-                    return "user-edit";
                 case "trial-started":
                     return "dollar-sign";
                 case "trial-used":

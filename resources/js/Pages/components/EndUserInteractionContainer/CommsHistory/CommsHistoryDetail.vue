@@ -10,177 +10,30 @@
                 REP: {{ detail.misc.user_id }}
             </p>
         </div>
-
-        <div class="form-control" v-if="detail.field === 'emailed_by_rep'">
-            <label class="label">
-                <span class="label-text">Subject</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="input input-ghost h-full"
-                style="height: 100%"
-            >
-                {{ detail.misc.subject }}
-            </div>
-        </div>
-
-        <div class="form-control" v-if="detail.field === 'emailed_by_rep'">
-            <label class="label">
-                <span class="label-text">Message</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{ detail.misc.message }}
-            </div>
-        </div>
-
-        <div class="form-control" v-if="detail.field === 'called_by_rep'">
-            <label class="label">
-                <span class="label-text">Outcome</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="input input-ghost h-full"
-                style="height: 100%"
-            >
-                {{ outcome }}
-            </div>
-        </div>
-
-        <div class="form-control" v-if="detail.field === 'called_by_rep'">
-            <label class="label">
-                <span class="label-text">Notes</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{ detail.misc.notes }}
-            </div>
-        </div>
-
-        <div class="form-control" v-if="detail.field === 'sms_by_rep'">
-            <label class="label">
-                <span class="label-text">Message</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{ detail.misc.message }}
-            </div>
-        </div>
-        <div class="response" v-if="detail.field === 'emailed_by_rep'">
-            <h1 class="">Reply</h1>
-            <email-comms-action
-                :id="detail.lead_id"
-                hide-help-text
-                hide-subject
-                :subject="detail.misc.subject"
-                @done="$emit('done')"
-            />
-        </div>
-        <div class="response" v-if="detail.field === 'called_by_rep'">
-            <h1 class="">Follow Up</h1>
-            <phone-comms-action
-                :id="detail.lead_id"
-                :phone="detail.phone"
-                hide-help-text
-                @done="$emit('done')"
-            />
-        </div>
-        <div class="response" v-if="detail.field === 'sms_by_rep'">
-            <h1 class="">Reply</h1>
-            <sms-comms-action
-                :id="detail.lead_id"
-                hide-help-text
-                @done="$emit('done')"
-            />
-        </div>
-        <div class="form-control" v-if="detail.field === 'trial-used'">
-            <label class="label">
-                <span class="label-text">Trial Membership</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{
-                    trialMembershipTypes.find(
-                        (trial) => trial.id === detail.misc.trial_id
-                    ).type_name
-                }}
-            </div>
-            <label class="label">
-                <span class="label-text">Duration</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{
-                    trialMembershipTypes.find(
-                        (trial) => trial.id === detail.misc.trial_id
-                    ).trial_length
-                }}
-            </div>
-        </div>
-        <div class="form-control" v-if="detail.field === 'trial-started'">
-            <label class="label">
-                <span class="label-text">Trial Membership</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{
-                    trialMembershipTypes.find(
-                        (trial) => trial.id === detail.misc.trial_id
-                    ).type_name
-                }}
-            </div>
-            <label class="label">
-                <span class="label-text">Duration</span>
-            </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
-                {{
-                    trialMembershipTypes.find(
-                        (trial) => trial.id === detail.misc.trial_id
-                    ).trial_length
-                }}
-            </div>
-        </div>
+        <comms-email-history
+            :detail="detail"
+            v-if="detail.field === 'emailed_by_rep'"
+        />
+        <comms-sms-history
+            :detail="detail"
+            v-if="detail.field === 'sms_by_rep'"
+        />
+        <comms-phone-history
+            :detail="detail"
+            v-if="detail.field === 'called_by_rep'"
+        />
+        <comms-trial-history
+            :detail="detail"
+            v-if="
+                detail.field === 'trial-used' ||
+                detail.field === 'trial-started'
+            "
+        />
         <div class="form-control" v-if="detail.field === 'note_created'">
             <label class="label">
                 <span class="label-text">Note</span>
             </label>
-            <div
-                type="text"
-                readonly
-                class="textarea textarea-ghost h-full"
-                style="height: 100%"
-            >
+            <div class="textarea textarea-ghost h-full">
                 {{ detail.value }}
             </div>
         </div>
@@ -198,83 +51,53 @@
         @apply opacity-50;
     }
 }
-.response {
-    @apply rounded-lg bg-primary m-4 p-4;
-    h1 {
-        @apply text-center text-xl font-bold;
-    }
-}
 </style>
-<script>
+<script setup>
 import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import EmailCommsAction from "../CommsActions/EmailCommsAction.vue";
-import PhoneCommsAction from "../CommsActions/PhoneCommsAction.vue";
-import SmsCommsAction from "../CommsActions/SmsCommsAction.vue";
+import CommsPhoneHistory from "./CommsPhoneHistory.vue";
+import CommsEmailHistory from "./CommsEmailHistory.vue";
+import CommsSmsHistory from "./CommsSmsHistory.vue";
+import CommsTrialHistory from "./CommsTrialHistory.vue";
 
-export default {
-    components: { SmsCommsAction, PhoneCommsAction, EmailCommsAction },
-    props: {
-        detail: {
-            type: Object,
-            required: true,
-        },
+const props = defineProps({
+    detail: {
+        type: Object,
+        required: true,
     },
-    emits: ["done"],
-    setup(props) {
-        const page = usePage();
-        const trialMembershipTypes = page.props.value.trialMembershipTypes;
+});
+const page = usePage();
+const trialMembershipTypes = page.props.value.trialMembershipTypes;
 
-        const heading = computed(() => {
-            switch (props.detail.field) {
-                case "called_by_rep":
-                    return "Phone Call";
-                case "emailed_by_rep":
-                    return "Email";
-                case "sms_by_rep":
-                    return "Text Message";
-                case "claimed":
-                    return "Lead Claimed";
-                case "created":
-                    return "Lead Created";
-                case "updated":
-                    return "Lead Updated";
-                case "manual_create":
-                    return "Lead Manually Created in Gym Revenue";
-                case "trial-started":
-                    return "Trial Started";
-                case "trial-used":
-                    return "Trial Used";
-                case "note_created":
-                    return "Note Created";
-                default:
-                    console.error("what is this field?!?!", props.detail.field);
-                    break;
-            }
-        });
+const heading = computed(() => {
+    switch (props.detail.field) {
+        case "called_by_rep":
+            return "Phone Call";
+        case "emailed_by_rep":
+            return "Email";
+        case "sms_by_rep":
+            return "Text Message";
+        case "claimed":
+            return "Lead Claimed";
+        case "created":
+            return "Lead Created";
+        case "updated":
+            return "Lead Updated";
+        case "manual_create":
+            return "Lead Manually Created in Gym Revenue";
+        case "trial-started":
+            return "Trial Started";
+        case "trial-used":
+            return "Trial Used";
+        case "note_created":
+            return "Note Created";
+        default:
+            console.error("what is this field?!?!", props.detail.field);
+            break;
+    }
+});
 
-        const outcome = computed(() => {
-            switch (props.detail.misc?.outcome) {
-                case "contacted":
-                    return "Spoke with Lead.";
-                case "voicemail":
-                    return "Left a Voicemail";
-                case "hung-up":
-                    return "Lead Hung Up";
-                case "wrong-number":
-                    return "Wrong Number";
-                case "appointment":
-                    return "An Appointment Was Scheduled";
-                case "sale":
-                    return "Made the Sale over the Phone!";
-            }
-        });
-
-        const date = computed(() => {
-            return new Date(props.detail.created_at).toLocaleString();
-        });
-
-        return { heading, date, outcome, trialMembershipTypes };
-    },
-};
+const date = computed(() => {
+    return new Date(props.detail.created_at).toLocaleString();
+});
 </script>
