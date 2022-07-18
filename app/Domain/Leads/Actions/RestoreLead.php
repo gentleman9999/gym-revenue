@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -27,6 +28,11 @@ class RestoreLead
         $current_user = $request->user();
 
         return $current_user->can('leads.restore', Lead::class);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(Request $request, $id)

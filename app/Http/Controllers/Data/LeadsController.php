@@ -327,9 +327,10 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
+        // profile_picture will not load profile picture on the front end
         $lead->load(
             [
-            'profile_picture',
+//            'profile_picture',
             'trialMemberships',
             'lead_owner',
             'lead_status',
@@ -339,7 +340,7 @@ class LeadsController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $lead->toArray();
+        $leadData = $lead;
         $leadData['all_notes'] = $lead->notes->toArray();
 
         foreach ($leadData['all_notes'] as $key => $value) {
