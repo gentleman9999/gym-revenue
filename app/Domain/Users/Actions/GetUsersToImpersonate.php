@@ -2,6 +2,8 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use function auth;
