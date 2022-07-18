@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -51,9 +52,15 @@ class CreateLead
     {
         $id = Uuid::new();//we should use uuid here
         $data['agreement_number'] = floor(time() - 99999999);
+
         LeadAggregate::retrieve($id)->create($data)->persist();
 
         return Lead::findOrFail($id);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -72,6 +79,8 @@ class CreateLead
         if ($request->user()) {
             LeadAggregate::retrieve($lead->id)->claim($request->user()->id)->persist();
         }
+
+        return $lead;
     }
 
     public function htmlResponse(Lead $lead): RedirectResponse

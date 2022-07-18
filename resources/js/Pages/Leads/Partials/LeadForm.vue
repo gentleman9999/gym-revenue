@@ -11,8 +11,8 @@
                 class="w-full h-full object-cover"
             />
             <img
-                v-else-if="lead?.profile_picture?.misc?.url"
-                :src="lead.profile_picture.misc.url"
+                v-else-if="lead?.profile_picture?.url"
+                :src="lead?.profile_picture?.url"
                 alt="lead profile picture"
                 class="w-full h-full object-cover"
             />
@@ -496,7 +496,6 @@ export default {
                 notes: { title: "", note: "" },
                 owner_user_id: lead.owner_user_id,
             };
-
             leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>

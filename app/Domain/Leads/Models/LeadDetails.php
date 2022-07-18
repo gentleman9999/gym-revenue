@@ -25,9 +25,9 @@ class LeadDetails extends Model
     protected $fillable = ['field', 'value', 'misc', 'active'];
 //    protected $fillable = ['client_id','lead_id', 'field', 'value', 'misc', 'active', 'created_at'];//only needed for seeding data
 
-    protected $casts = [
-        'misc' => 'array',
-    ];
+//    protected $casts = [
+//        'misc' => 'array',
+//    ];
 
     protected $hidden = ['client_id'];
 
