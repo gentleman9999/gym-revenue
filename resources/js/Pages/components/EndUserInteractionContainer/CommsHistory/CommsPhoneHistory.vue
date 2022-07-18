@@ -27,7 +27,7 @@
         />
     </div>
 </template>
-<style>
+<style scoped>
 .response {
     @apply rounded-lg bg-primary m-4 p-4;
     h1 {
