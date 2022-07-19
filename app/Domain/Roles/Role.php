@@ -14,6 +14,7 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Location;
 use App\Models\Endusers\Member;
 use App\Models\File;
+use App\Models\Folder;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -93,6 +94,11 @@ class Role extends \Silber\Bouncer\Database\Role
                 break;
             case 'client':
                 $entity = Client::class;
+
+                break;
+
+            case 'folders':
+                $entity = Folder::class;
 
                 break;
         }

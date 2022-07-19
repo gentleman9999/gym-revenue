@@ -35,6 +35,7 @@ class File extends Model
         return $this->belongsTo(Client::class);
     }
 
+
 //    public function details()
 //    {
 //        return $this->hasMany(FileDetails::class);

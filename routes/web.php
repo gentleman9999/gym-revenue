@@ -153,6 +153,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(function () {
+    Route::get('/', \App\Http\Controllers\FoldersController::class . '@index')->name('folders');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
     Route::get('/', \App\Http\Controllers\RemindersController::class . '@index')->name('reminders');
     Route::get('/create', \App\Http\Controllers\RemindersController::class . '@create')->name('reminders.create');
@@ -209,7 +213,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function () {
     Route::get('/', \App\Http\Controllers\TeamController::class . '@index')->name('teams');
     Route::get('/create', \App\Http\Controllers\TeamController::class . '@create')->name('teams.create');
-    Route::post('/', \App\Domain\Teams\Actions\CreateTeam::class)->name('teams.store');
+    Route::post('/', \App\Domain\Teams\Actions\CreateFolder::class)->name('teams.store');
     Route::get('/edit/{team}', \App\Http\Controllers\TeamController::class . '@edit')->name('teams.edit');
     Route::get('/view/{team}', \App\Http\Controllers\TeamController::class . '@view')->name('teams.view');
 //    for some reason, the commented route below gets overridden by the default teams route

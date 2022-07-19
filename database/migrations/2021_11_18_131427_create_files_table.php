@@ -29,6 +29,7 @@ class CreateFilesTable extends Migration
             $table->string('entity_id')->nullable();
             $table->boolean('hidden')->default(false);
             $table->string('type')->nullable();
+            $table->foreignUuid('folder')->nullable();
             $table->index(['client_id', 'user_id']);
             $table->softDeletes();
             $table->timestamps();
