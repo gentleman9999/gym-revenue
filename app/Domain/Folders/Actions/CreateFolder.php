@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Teams\Folders;
+namespace App\Domain\Folders\Actions;
 
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;

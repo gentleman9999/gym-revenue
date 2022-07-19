@@ -2,10 +2,9 @@
 
 namespace App\Domain\Folders\Events;
 
-use App\Models\Folder;
-use App\StorableEvents\EntityCreated;
+use App\StorableEvents\EntityDeleted;
 
-class FolderCreated extends EntityCreated
+class FolderDeleted extends EntityDeleted
 {
     protected function getEntity(): string
     {

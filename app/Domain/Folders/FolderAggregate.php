@@ -2,6 +2,8 @@
 
 namespace App\Domain\Folders;
 
+use App\Domain\Folders\Events\FolderCreated;
+use App\Domain\Folders\Events\FolderDeleted;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class FolderAggregate extends AggregateRoot
@@ -13,9 +15,9 @@ class FolderAggregate extends AggregateRoot
         return $this;
     }
 
-    public function trash(): static
+    public function delete(): static
     {
-        $this->recordThat(new FolderTrashed());
+        $this->recordThat(new FolderDeleted());
 
         return $this;
     }

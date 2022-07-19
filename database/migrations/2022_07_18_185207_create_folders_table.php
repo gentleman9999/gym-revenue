@@ -17,6 +17,9 @@ return new class () extends Migration {
             $table->foreignUuid('client_id');
             $table->string('name');
             $table->boolean('hidden')->default(false);
+            $table->foreignUuid('shared_with_client_id')->nullable();
+            $table->foreignUuid('shared_with_team_id')->nullable();
+            $table->foreignUuid('shared_with_location_id')->nullable();
             $table->timestamps();
         });
     }
