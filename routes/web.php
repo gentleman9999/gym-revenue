@@ -315,3 +315,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-com')->group(funct
     Route::get('/', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass_com.dashboard');
     Route::get('/{type}', \App\Http\Controllers\MassCommunicationController::class . '@page')->name('mass_com.page');
 });
+
+Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\GetClients::class)->name('clients');
+Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');

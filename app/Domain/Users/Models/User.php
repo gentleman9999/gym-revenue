@@ -229,10 +229,7 @@ class User extends Authenticatable
 
     public function teams()
     {
-        $teams = $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
-        if (! $this->client_id) {
-            $teams = $teams->withoutGlobalScopes();
-        }
+        return $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
 
         return $teams;
     }
@@ -363,11 +360,6 @@ class User extends Authenticatable
      */
     public function allTeams()
     {
-        if ($this->isAdmin()) {
-//            dd();
-            return $this->teams->keyBy('id')->merge(Team::withoutGlobalScopes()->whereHomeTeam(true)->get()->keyBy('id'));
-        }
-
         return $this->teams->sortBy('name');
     }
 }
