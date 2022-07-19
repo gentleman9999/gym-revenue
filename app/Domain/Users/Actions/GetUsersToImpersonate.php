@@ -81,6 +81,8 @@ class GetUsersToImpersonate
             foreach ($imp_users as $imp_user) {
                 if (! is_null($imp_user->user)) {
                     $users[] = $imp_user->user;
+                } else {
+                    $users[] = User::withoutGlobalScopes()->findOrFail($imp_user->user_id);
                 }
             }
 

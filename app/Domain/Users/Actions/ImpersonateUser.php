@@ -36,7 +36,7 @@ class ImpersonateUser
         $data = request()->all();
 
         $invader = auth()->user();
-        $victim = User::find($data['victimId']);
+        $victim = User::withoutGlobalScopes()->find($data['victimId']);
 
         if ($invader->can('users.impersonate', User::class)) {
             //TODO:I don't like the side effect of changing the victim's current_team.
