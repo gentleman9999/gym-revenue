@@ -108,7 +108,7 @@ export default defineComponent({
         "leadsources",
         "user",
         "opportunities",
-        "leadsclaimed",
+        "claimed",
         "nameSearch",
     ],
     setup(props) {

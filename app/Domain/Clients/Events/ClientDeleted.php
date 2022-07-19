@@ -7,7 +7,7 @@ use App\StorableEvents\EntityDeleted;
 
 class ClientDeleted extends EntityDeleted
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

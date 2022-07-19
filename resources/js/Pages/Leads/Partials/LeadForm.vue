@@ -496,6 +496,7 @@ export default {
                 notes: { title: "", note: "" },
                 owner_user_id: lead.owner_user_id,
             };
+
             leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>

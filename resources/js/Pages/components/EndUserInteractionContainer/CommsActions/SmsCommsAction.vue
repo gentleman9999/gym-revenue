@@ -4,6 +4,7 @@
         :id="id"
         submit-text="Send Message"
         :form="form"
+        :end-user-type="endUserType"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
@@ -35,6 +36,10 @@ const props = defineProps({
     hideHelpText: {
         type: Boolean,
         default: false,
+    },
+    endUserType: {
+        type: String,
+        required: true,
     },
 });
 const form = useGymRevForm({

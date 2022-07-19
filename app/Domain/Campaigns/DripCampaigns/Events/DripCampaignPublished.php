@@ -7,7 +7,7 @@ use App\StorableEvents\GymRevCrudEvent;
 
 class DripCampaignPublished extends GymRevCrudEvent
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return DripCampaign::class;
     }

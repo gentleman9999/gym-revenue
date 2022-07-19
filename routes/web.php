@@ -107,18 +107,18 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Domain\Leads\Actions\CreateLead::class)->name('data.leads.store');
+        Route::post('/create', \App\Domain\EndUsers\Leads\Actions\CreateLead::class)->name('data.leads.store');
         Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{lead}', \App\Domain\Leads\Actions\UpdateLead::class)->name('data.leads.update');
-        Route::put('/assign/{lead}', \App\Domain\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
+        Route::put('/{lead}', \App\Domain\EndUsers\Leads\Actions\UpdateLead::class)->name('data.leads.update');
+        Route::put('/assign/{lead}', \App\Domain\EndUsers\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
         Route::post('/contact/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
-        Route::delete('/delete/{lead}', \App\Domain\Leads\Actions\TrashLead::class)->name('data.leads.trash');
-        Route::post('/delete/{lead}/restore', \App\Domain\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
+        Route::delete('/delete/{lead}', \App\Domain\EndUsers\Leads\Actions\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{lead}/restore', \App\Domain\EndUsers\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
         Route::get('/view/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
@@ -126,14 +126,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('members')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
         Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
-        Route::post('/', \App\Actions\Endusers\Members\CreateMember::class)->name('data.members.store');
-        Route::get('/show/{id}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
-        Route::get('/edit/{id}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
-        Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
-        Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
-        Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Members\RestoreMember::class)->name('data.members.restore');
-        Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
+        Route::post('/', \App\Domain\EndUsers\Members\Actions\CreateMember::class)->name('data.members.store');
+        Route::get('/show/{member}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
+        Route::get('/edit/{member}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
+        Route::put('/{member}', \App\Domain\EndUsers\Members\Actions\UpdateMember::class)->name('data.members.update');
+        Route::post('/contact/{member}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::delete('/delete/{member}', \App\Domain\EndUsers\Members\Actions\TrashMember::class)->name('data.members.trash');
+        Route::post('/delete/{member}/restore', \App\Domain\EndUsers\Members\Actions\RestoreMember::class)->withTrashed()->name('data.members.restore');
+        Route::get('/view/{member}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
     });
 

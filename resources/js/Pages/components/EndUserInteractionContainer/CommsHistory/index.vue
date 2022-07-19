@@ -37,12 +37,12 @@ const props = defineProps({
 });
 
 const selectedDetail = ref(null);
-const goToUserDetailIndex = (index) => {
+const goToEndUserDetailIndex = (index) => {
     if (index in props.details) {
         selectedDetail.value = props.details[index];
     }
 };
 defineExpose({
-    goToUserDetailIndex,
+    goToEndUserDetailIndex,
 });
 </script>

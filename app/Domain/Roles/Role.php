@@ -4,7 +4,8 @@ namespace App\Domain\Roles;
 
 use App\Domain\Clients\Models\Client;
 use App\Domain\Departments\Department;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Reminders\Reminder;
@@ -12,7 +13,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Location;
-use App\Models\Endusers\Member;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;

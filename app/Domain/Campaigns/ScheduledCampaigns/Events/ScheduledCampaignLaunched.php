@@ -7,7 +7,7 @@ use App\StorableEvents\GymRevCrudEvent;
 
 class ScheduledCampaignLaunched extends GymRevCrudEvent
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return ScheduledCampaign::class;
     }

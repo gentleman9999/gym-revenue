@@ -3,7 +3,8 @@
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Roles\Role;
 use App\Domain\Users\Models\User;
 use Bouncer;
@@ -88,6 +89,7 @@ class BouncerAbilitiesSeeder extends Seeder
             foreach ($roles_allowed_to_contact_leads as $role) {
                 VarDumper::dump("Allowing $role to contact leads for teams");
                 Bouncer::allow($role)->to('leads.contact', Lead::class);
+                Bouncer::allow($role)->to('members.contact', Member::class);
             }
             Bouncer::allow('Account Owner')->to('manage-client-settings');
         }

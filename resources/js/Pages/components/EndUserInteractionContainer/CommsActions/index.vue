@@ -5,16 +5,19 @@
             :id="id"
             @done="$emit('done')"
             :phone="phone"
+            :end-user-type="endUserType"
         />
         <email-comms-action
             v-if="activeContactMethod === 'email'"
             :id="id"
             @done="$emit('done')"
+            :end-user-type="endUserType"
         />
         <sms-comms-action
             v-if="activeContactMethod === 'sms'"
             :id="id"
             @done="$emit('done')"
+            :end-user-type="endUserType"
         />
     </div>
 </template>
@@ -34,6 +37,10 @@ const props = defineProps({
         required: true,
     },
     phone: {
+        type: String,
+        required: true,
+    },
+    endUserType: {
         type: String,
         required: true,
     },

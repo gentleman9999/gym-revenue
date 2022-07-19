@@ -24,6 +24,7 @@
             :phone="detail.phone"
             hide-help-text
             @done="$emit('done')"
+            :end-user-type="endUserType"
         />
     </div>
 </template>
@@ -42,6 +43,10 @@ const props = defineProps({
     detail: {
         type: Object,
         required: true,
+    },
+    endUserType: {
+        type: String,
+        default: true,
     },
 });
 

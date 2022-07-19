@@ -24,6 +24,7 @@
             hide-subject
             :subject="detail.misc.subject"
             @done="$emit('done')"
+            :end-user-type="EndUserTypes"
         />
     </div>
 </template>
@@ -42,6 +43,10 @@ const props = defineProps({
     detail: {
         type: Object,
         required: true,
+    },
+    endUserType: {
+        type: String,
+        default: true,
     },
 });
 </script>

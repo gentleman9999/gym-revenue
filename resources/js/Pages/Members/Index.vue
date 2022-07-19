@@ -73,7 +73,6 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
-// import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import MemberFilters from "@/Pages/Members/Partials/MemberFilters.vue";
@@ -81,6 +80,7 @@ import MemberPreview from "@/Pages/Members/Partials/MemberPreview.vue";
 
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
+import usePage from "@/Components/InertiaModal/usePage";
 
 export default defineComponent({
     components: {
@@ -91,7 +91,6 @@ export default defineComponent({
         Confirm,
         Button,
         JetBarContainer,
-        // LeadInteraction,
         MemberPreview,
         CalendarGrid,
         CalendarSummaryCard,
@@ -114,17 +113,26 @@ export default defineComponent({
             { name: "updated_at", label: "Updated" },
         ];
 
+        const page = usePage();
         const actions = {
             trash: {
                 handler: ({ data }) => handleClickTrash(data.id),
             },
-
-            // contact: {
-            //     label: "Contact Member",
-            //     handler: ({ data }) => {
-            //         Inertia.visit(route("data.members.show", data.id));
-            //     },
-            // },
+            contact: {
+                label: "Contact Member",
+                shouldRender: (data) => {
+                    return (
+                        (data?.owner_user_id === page.props.value.user.id &&
+                            !data?.unsubscribed_comms) ||
+                        page.props.value.user.roles.find((role) =>
+                            ["Account Owner"].includes(role.name)
+                        )
+                    );
+                },
+                handler: ({ data }) => {
+                    Inertia.visit(route("data.members.show", data.id));
+                },
+            },
         };
         const trashReason = ref(null);
 

@@ -43,11 +43,17 @@ export default defineComponent({
             type: Object,
             required: true,
         },
+        endUserType: {
+            type: String,
+            required: true,
+        },
     },
     emits: ["done"],
     setup(props, { emit }) {
         const submit = async () => {
-            await props.form.post(route("data.leads.contact", props.id));
+            await props.form.post(
+                route(`data.${props.endUserType}s.contact`, props.id)
+            );
             props.form.reset();
             emit("done");
         };

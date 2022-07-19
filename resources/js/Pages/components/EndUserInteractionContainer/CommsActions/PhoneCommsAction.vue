@@ -3,6 +3,7 @@
         :id="id"
         submit-text="Submit"
         :form="form"
+        :end-user-type="endUserType"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
@@ -57,6 +58,10 @@ const props = {
     hideHelpText: {
         type: Boolean,
         default: false,
+    },
+    endUserType: {
+        type: String,
+        required: true,
     },
 };
 const phoneCallOptions = {

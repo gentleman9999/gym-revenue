@@ -4,6 +4,7 @@
         submit-text="Send"
         :form="form"
         :disabled="form.processing || !form.isDirty"
+        :end-user-type="endUserType"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
@@ -46,6 +47,10 @@ const props = defineProps({
     },
     subject: {
         type: String,
+    },
+    endUserType: {
+        type: String,
+        required: true,
     },
 });
 const form = useGymRevForm({

@@ -6,7 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\ClientActivity;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Http\Controllers\Controller;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;

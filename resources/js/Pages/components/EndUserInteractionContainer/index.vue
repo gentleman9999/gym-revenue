@@ -3,9 +3,9 @@
         <div class="w-full mb-8 mt-4">
             <div class="grid grid-cols-12 w-full gap-4">
                 <div class="user-info-container">
-                    <user-info
+                    <end-user-info
                         :agreementNumber="agreementNumber"
-                        :editUrl="route('data.leads.edit', id)"
+                        :editUrl="route(`data.${endUserType}s.edit`, id)"
                         :fullName="fullName"
                         :opportunity="opportunity"
                         :trialDates="trialDates"
@@ -15,11 +15,12 @@
                         class="user-action-container"
                         v-if="owner_user_id == userId"
                     >
-                        <user-actions
+                        <end-user-actions
                             :count="interactionCount"
                             :handleClick="
                                 (value) => (activeContactMethod = value)
                             "
+                            :end-user-type="endUserType"
                         />
                     </div>
                 </div>
@@ -37,6 +38,7 @@
                             :phone="phone"
                             :id="id"
                             @done="$refs.showViewModal.close()"
+                            :end-user-type="endUserType"
                         />
                     </div>
                 </daisy-modal>
@@ -65,11 +67,11 @@ import CommsHistory from "./CommsHistory/index.vue";
 import CommsActions from "./CommsActions/index.vue";
 
 import DaisyModal from "@/Components/DaisyModal.vue";
-import UserInfo from "./UserInfo/index.vue";
-import UserActions from "./UserActions/index.vue";
+import EndUserInfo from "./EndUserInfo/index.vue";
+import EndUserActions from "./EndUserActions/index.vue";
 
 const props = defineProps({
-    userType: {
+    endUserType: {
         type: String,
         default: "lead",
     },
@@ -153,18 +155,18 @@ const modalTitle = computed({
     get() {
         switch (activeContactMethod.value) {
             case "email":
-                return "Email " + props.userType;
+                return "Email " + props.endUserType;
             case "phone":
-                return "Call " + props.userType;
+                return "Call " + props.endUserType;
             case "sms":
-                return "Text " + props.userType;
+                return "Text " + props.endUserType;
         }
     },
 });
 const commsHistoryRef = ref(null);
-function goToUserDetailIndex(index) {
+function goToEndUserDetailIndex(index) {
     if (index !== undefined && index !== null) {
-        commsHistoryRef.value.goToUserDetailIndex(index);
+        commsHistoryRef.value.goToEndUserDetailIndex(index);
     }
 }
 const showViewModal = ref(null);
@@ -172,6 +174,6 @@ watch([activeContactMethod], () => {
     activeContactMethod.value && showViewModal.value.open();
 });
 defineExpose({
-    goToUserDetailIndex,
+    goToEndUserDetailIndex,
 });
 </script>

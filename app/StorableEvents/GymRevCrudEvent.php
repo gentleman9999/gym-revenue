@@ -16,7 +16,7 @@ abstract class GymRevCrudEvent extends GymRevShouldBeStored
         $this->metaData['operation'] = $this->getOperation();
     }
 
-    abstract protected function getEntity(): string;
+    abstract public function getEntity(): string;
 
     abstract protected function getOperation(): string;
 }

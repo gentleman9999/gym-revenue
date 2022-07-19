@@ -13,6 +13,7 @@
             :id="detail.lead_id"
             hide-help-text
             @done="$emit('done')"
+            :end-user-type="EndUserType"
         />
     </div>
 </template>
@@ -31,6 +32,10 @@ const props = defineProps({
     detail: {
         type: Object,
         required: true,
+    },
+    endUserType: {
+        type: String,
+        default: true,
     },
 });
 </script>

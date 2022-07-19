@@ -7,7 +7,7 @@ use App\StorableEvents\EntityDeleted;
 
 class DepartmentDeleted extends EntityDeleted
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Position::class;
     }
