@@ -167,53 +167,6 @@
                 </select>
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
-
-            <div class="form-control col-span-2" v-if="isClientUser">
-                <jet-label for="role_id" value="Select Positions" />
-                <multiselect
-                    v-model="form.positions"
-                    class="py-2"
-                    id="positions"
-                    mode="tags"
-                    :close-on-select="false"
-                    :create-option="true"
-                    :options="
-                        availablePositions.map((position) => ({
-                            label: position.name,
-                            value: position.id,
-                        }))
-                    "
-                    :classes="multiselectClasses"
-                />
-                <jet-input-error
-                    :message="form.errors.positions"
-                    class="mt-2"
-                />
-            </div>
-
-            <div class="form-control col-span-2" v-if="isClientUser">
-                <jet-label for="role_id" value="Select Departments" />
-                <multiselect
-                    v-model="form.departments"
-                    class="py-2"
-                    id="departments"
-                    mode="tags"
-                    :close-on-select="false"
-                    :create-option="true"
-                    :options="
-                        availableDepartments.map((department) => ({
-                            label: department.name,
-                            value: department.id,
-                        }))
-                    "
-                    :classes="multiselectClasses"
-                />
-                <jet-input-error
-                    :message="form.errors.departments"
-                    class="mt-2"
-                />
-            </div>
-
             <!-- Home Club -->
             <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="home_location_id" value="Home Club" />
@@ -273,6 +226,70 @@
                     :message="form.errors.termination_date"
                     class="mt-2"
                 />
+            </div>
+            <div class="form-divider" v-if="isClientUser" />
+            <div class="form-control col-span-2" v-if="isClientUser">
+                <jet-label for="role_id" value="Select Departments" />
+                <select
+                    v-model="selectedDepartment"
+                    class="mt-1 w-full form-select"
+                    id="departments"
+                >
+                    <option
+                        v-for="department in selectableDepartments"
+                        :value="department.id"
+                        :key="department.id"
+                    >
+                        {{ department.name }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.departments"
+                    class="mt-2"
+                />
+            </div>
+            <div class="form-control col-span-2" v-if="isClientUser">
+                <jet-label for="role_id" value="Select Positions" />
+                <multiselect
+                    v-model="selectedPosition"
+                    class="py-2"
+                    id="positions"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        selectablePositions.map((position) => ({
+                            label: position.name,
+                            value: position.id,
+                        }))
+                    "
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error
+                    :message="form.errors.positions"
+                    class="mt-2"
+                />
+            </div>
+            <div class="flex justify-center items-end col-span-2">
+                <Button primary @click="addDepartment">Add Department</Button>
+            </div>
+            <div
+                class="grid grid-cols-6 col-span-6"
+                v-for="(department, ndx) in departments"
+                :key="department.department"
+            >
+                <!-- {{JSON.stringify(department)}} -->
+                <div class="col-span-2">
+                    {{ getDepartment(department.department) }}
+                </div>
+                <div class="col-span-2">
+                    {{ getPositions(department.position) }}
+                </div>
+                <div class="flex justify-center items-end col-span-2">
+                    <Button primary @click="removeDepartment(ndx)"
+                        >Remove Department</Button
+                    >
+                </div>
             </div>
 
             <div class="form-divider" />
@@ -420,7 +437,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -612,6 +629,55 @@ export default {
             }
         };
 
+        let departments = ref([]);
+        let selectedDepartment = ref("");
+        let selectedPosition = ref([]);
+        const addDepartment = (e) => {
+            e.preventDefault();
+            departments.value = [
+                ...departments.value,
+                {
+                    department: selectedDepartment.value,
+                    position: [...selectedPosition.value],
+                },
+            ];
+            selectedDepartment.value = null;
+            selectedPosition.value = [];
+        };
+        const removeDepartment = (ndx) => {
+            departments.value.splice(ndx, 1);
+        };
+        const getDepartment = (id) => {
+            return props.availableDepartments.filter(
+                (item) => item.id === id
+            )[0]?.name;
+        };
+        const getPositions = (id_arr) => {
+            return id_arr
+                .map(
+                    (id) =>
+                        props.availablePositions.filter(
+                            (pos) => pos.id === id
+                        )[0].name
+                )
+                .join(",");
+        };
+
+        const selectablePositions = computed(
+            () =>
+                // TODO get available positions from selectedDepartment.value (department Id)
+                props.availablePositions
+        );
+
+        const selectableDepartments = computed(() =>
+            props.availableDepartments.filter(
+                ({ id }) =>
+                    departments.value.filter(
+                        (selectedOne) => selectedOne.department === id
+                    ).length === 0
+            )
+        );
+
         return {
             form,
             buttonText: operation,
@@ -627,6 +693,14 @@ export default {
             closeFileManagerModal,
             notesExpanded,
             handleClickCancel,
+            departments,
+            selectedDepartment,
+            selectedPosition,
+            addDepartment,
+            getDepartment,
+            getPositions,
+            removeDepartment,
+            selectableDepartments,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()

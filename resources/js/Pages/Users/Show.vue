@@ -97,7 +97,6 @@ import { defineComponent, ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
-import UserForm from "./Partials/UserForm.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
@@ -115,7 +114,6 @@ export default defineComponent({
         BeefySearchFilter,
         LayoutHeader,
         GymRevenueCrud,
-        UserForm,
         Confirm,
         SimpleSearchFilter,
         PageToolbarNav,
