@@ -62,7 +62,6 @@ class JetstreamServiceProvider extends ServiceProvider
                 // without having to hit the db
                 session(['user_id' => $user->id]);
                 session(['client_id' => $user->client_id]);
-                session(['current_client_id' => $user->currentClientId()]);
 
                 return $user;
             }

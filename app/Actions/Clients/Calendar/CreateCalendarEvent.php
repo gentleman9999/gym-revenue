@@ -32,7 +32,7 @@ class CreateCalendarEvent
             'start' => ['required'],
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
-            'client_id' => ['required', 'exists:clients,id'],
+//            'client_id' => ['required', 'exists:clients,id'],
             'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
             'member_attendees' => ['sometimes'],
@@ -135,8 +135,10 @@ class CreateCalendarEvent
 
     public function asController(ActionRequest $request)
     {
+        $data = $request->validated();
+        $data['client_id'] = $request->user()->client_id;
         $calendar = $this->handle(
-            $request->validated(),
+            $data,
             $request->user()
         );
 

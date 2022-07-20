@@ -83,7 +83,7 @@ export default {
             thumbnail: null,
             name: null,
             subject: null,
-            client_id: page.props.value.user?.current_client_id,
+            client_id: page.props.value.user?.client_id,
         };
         let operation = "Update";
         if (!props.template) {

@@ -13,7 +13,7 @@
         </div>
         <template #modal>
             <sms-template-form
-                :client-id="$page.props.user.current_client_id"
+                :client-id="$page.props.user.client_id"
                 :template="template"
                 :can-activate="true"
             />

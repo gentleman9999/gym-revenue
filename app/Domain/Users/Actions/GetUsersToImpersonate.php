@@ -38,7 +38,12 @@ class GetUsersToImpersonate
             $user_role = $user->getRole();
 
             // Get the User's currently active team
-            $team = $user->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $team = Team::find($session_team['id']);
+            } else {
+                $team = Team::find($user->default_team_id);
+            }
 
             if (array_key_exists('team', $data)) {
                 if ($user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {

@@ -34,7 +34,7 @@ class UpdateEmailTemplate
     {
         //TODO: client_id no longer provided because dirty(), and it should only need an id once we merge in with
         //my new branch, where everything is not tied to the client aggregate.
-        $client_id = $data['id'] ?? $user->currentClientId();
+        $client_id = $data['id'] ?? $user->client_id;
         ClientAggregate::retrieve($client_id)
             ->updateEmailTemplate($user->id ?? "Auto Generated", $data)
             ->persist();

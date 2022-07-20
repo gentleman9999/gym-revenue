@@ -5,6 +5,7 @@ namespace App\Actions\Mail;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
 use App\Domain\Clients\Models\ClientDetail;
+use App\Domain\Teams\Models\Team;
 use App\Models\Comms\EmailTemplates;
 use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -41,7 +42,13 @@ class SendATestEmail
             $email_template_record = EmailTemplates::find($data['templateId']);
 
             if (! is_null($email_template_record)) {
-                $current_team_id = $user->current_team_id;
+                $session_team = session()->get('current_team');
+                if ($session_team && array_key_exists('id', $session_team)) {
+                    $team_id = $session_team['id'];
+                } else {
+                    $team_id = $user->default_team_id;
+                }
+                $current_team_id = $team_id;
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {

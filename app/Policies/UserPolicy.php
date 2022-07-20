@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -57,7 +58,14 @@ class UserPolicy
 //    public function update(User $user, User $model)
     public function update(User $user)
     {
-        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.update', $user->currentTeam()->first());
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $team = Team::find($session_team['id']);
+        } else {
+            $team = Team::find($user->default_team_id);
+        }
+
+        return $user->isAccountOwner() || $user->isAdmin() || $user->can('users.update', $team);
     }
 
     /**

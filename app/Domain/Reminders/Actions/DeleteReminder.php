@@ -27,8 +27,7 @@ class DeleteReminder
     public function handle($data, $current_user)
     {
         if (! is_null($current_user)) {
-            $client_id = $current_user->currentClientId();
-            $data['client_id'] = $client_id;
+            $data['client_id'] = $current_user->client_id;
         }
 
         UserAggregate::retrieve($current_user->id)->deleteReminder($data['id'])->persist();
