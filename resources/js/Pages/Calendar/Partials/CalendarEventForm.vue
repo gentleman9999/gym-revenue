@@ -126,10 +126,9 @@
             />
             <jet-input-error :message="form.errors.description" class="mt-2" />
         </div>
-        <div class="col-span-6">
+        <div v-if="calendarEventTypes.length > 1" class="col-span-6">
             <jet-label for="calendar_event_type" value="Event Type" />
             <select
-                v-if="calendarEventTypes.length > 1"
                 v-model="form.event_type_id"
                 class="bg-neutral-100 text-neutral-900"
             >
@@ -142,18 +141,13 @@
                 </option>
             </select>
             <jet-input-error
-                v-if="calendarEventTypes.length > 1"
                 :message="form.errors.event_type_id"
                 class="mt-2"
             />
             <jet-input-error
-                v-if="calendarEventTypes.length > 1"
                 :message="form.errors.event_type_id"
                 class="mt-2"
             />
-            <p v-if="calendarEventTypes.length === 1">
-                {{ calendarEventTypes[0].name }}
-            </p>
         </div>
 
         <div class="col-span-6">
@@ -479,9 +473,9 @@ export default {
                     ? props.duration.end
                     : props.duration.start,
                 event_type_id:
-                    calendarEventTypes?.length <= 1
-                        ? ""
-                        : calendarEventTypes[0].id,
+                    calendarEventTypes.length <= 1
+                        ? calendarEventTypes[0].id
+                        : "",
                 location_id: null,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees: [],
@@ -497,7 +491,10 @@ export default {
                 full_day_event: calendarEvent.full_day_event,
                 start: calendarEvent.start + " UTC",
                 end: calendarEvent.end + " UTC",
-                event_type_id: calendarEvent.event_type_id,
+                event_type_id:
+                    calendarEventTypes?.length <= 1
+                        ? calendarEventTypes[0].id
+                        : calendarEvent.event_type_id,
                 location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.current_client_id,
                 user_attendees:
