@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -50,6 +51,11 @@ class CreateLeadApi
         LeadAggregate::retrieve($id)->create($data)->persist();
 
         return Lead::findOrFail($id);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request)
