@@ -12,6 +12,25 @@
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
+            <div class="col-span-6">
+                <jet-label for="position" value="Position" />
+                <multiselect
+                    v-model="form.positions"
+                    class="py-2"
+                    id="positions"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        availablePositions.map((position) => ({
+                            label: position.name,
+                            value: position.id,
+                        }))
+                    "
+                    :classes="getDefaultMultiselectTWClasses()"
+                />
+                <jet-input-error :message="form.errors.position" class="mt-2" />
+            </div>
         </template>
 
         <template #actions>
@@ -32,13 +51,13 @@
                 :disabled="form.processing"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
@@ -46,57 +65,58 @@ import JetLabel from "@/Jetstream/Label.vue";
 import { useGymRevForm } from "@/utils";
 import { useModal } from "@/Components/InertiaModal";
 import { Inertia } from "@inertiajs/inertia";
+import Multiselect from "@vueform/multiselect";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
+const props = defineProps({
+    clientId: {
+        type: String,
+        required: true,
     },
-    props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
-        department: {
-            type: Object,
-        },
+    department: {
+        type: Object,
     },
-    setup(props) {
-        let department = props.department;
-        let operation = "Update";
-        if (!department) {
-            department = {
-                name: "",
-                id: null,
-                client_id: props.clientId,
-            };
-            operation = "Create";
-        }
+    // availablePositions: {
+    //     type: Array
+    // }
+});
 
-        const form = useGymRevForm(department);
+let department = props.department;
+let operation = "Update";
+if (!department) {
+    department = {
+        name: "",
+        id: null,
+        client_id: props.clientId,
+    };
+    operation = "Create";
+}
 
-        let handleSubmit = () =>
-            form.dirty().put(route("departments.update", department.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("departments.store"));
-        }
+const form = useGymRevForm(department);
 
-        const modal = useModal();
-        const handleCancel = () => {
-            if (modal?.value?.close) {
-                modal.value.close();
-                return;
-            }
-            Inertia.visit(route("departments"));
-        };
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            handleCancel,
-        };
-    },
+let handleSubmit = () =>
+    form.dirty().put(route("departments.update", department.id));
+if (operation === "Create") {
+    handleSubmit = () => form.post(route("departments.store"));
+}
+
+const modal = useModal();
+const handleCancel = () => {
+    if (modal?.value?.close) {
+        modal.value.close();
+        return;
+    }
+    Inertia.visit(route("departments"));
 };
+
+const availablePositions = [
+    {
+        name: "Sales Manager",
+        id: 1,
+    },
+    {
+        name: "Group Exercise Instructor",
+        id: 2,
+    },
+];
 </script>
