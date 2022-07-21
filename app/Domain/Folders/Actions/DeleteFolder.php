@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Folders;
+namespace App\Domain\Folders\Actions;
 
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
