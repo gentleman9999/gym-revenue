@@ -16,6 +16,7 @@ use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Member;
 use App\Models\File;
+use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -100,6 +101,11 @@ class Role extends \Silber\Bouncer\Database\Role
                 break;
             case 'sms-templates':
                 $entity = SmsTemplates::class;
+
+                break;
+
+            case 'notes':
+                $entity = Note::class;
 
                 break;
         }
