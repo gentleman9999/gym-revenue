@@ -35,6 +35,8 @@ const borderStyle = computed({
             case "Low":
                 color = "red";
                 break;
+            default:
+                color = "gray";
         }
 
         return {
