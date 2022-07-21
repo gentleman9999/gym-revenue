@@ -40,7 +40,7 @@ class CreateCalendarEvent
         ];
     }
 
-    public function handle($data, $user = null)
+    public function handle($data, $current_user = null)
     {
         $id = Uuid::new();
         $data['id'] = $id;
@@ -115,8 +115,10 @@ class CreateCalendarEvent
         unset($data['lead_attendees']);
         unset($data['member_attendees']);
 
-        if ($user) {
-            $data['owner_id'] = $user->id;
+        $test = 0;
+
+        if (! is_null($current_user)) {
+            $data['owner_id'] = $current_user->id;
         }
 
         CalendarAggregate::retrieve($data['client_id'])
