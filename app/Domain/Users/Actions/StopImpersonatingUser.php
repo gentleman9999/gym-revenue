@@ -41,15 +41,17 @@ class StopImpersonatingUser
                 $team = $coward->default_team;
             }
 
-            session()->put('current_team_id', $coward->default_team_id);
-            session([
-                'current_team' => [
+            session()->put('current_team_id', $team->id);
+            session()->put(
+                'current_team',
+                [
                     'id' => $team->id,
                     'name' => $team->name,
                     'client_id' => $team->client_id,
-                ],
-            ]);
-            session(['client_id' => $team->client_id]);
+                ]
+            );
+            session()->put('client_id', $team->client_id);
+            session()->put('user_id',  $coward->id);
             auth()->user()->leaveImpersonation();
             $results = true;
 

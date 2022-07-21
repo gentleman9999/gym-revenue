@@ -51,14 +51,16 @@ class ImpersonateUser
             //TODO: ensure that this is setting session of impersonator, so it doesn't leak over into victim
             //TODO: we should be setting to the team in the impersonation window.
             session()->put('current_team_id', $team->id);
-            session([
-                'current_team' => [
+            session()->put(
+                'current_team',
+                [
                     'id' => $team->id,
                     'name' => $team->name,
                     'client_id' => $team->client_id,
-                ],
-            ]);
-            session(['client_id' => $team->client_id]);
+                ]
+            );
+            session()->put('client_id', $team->client_id);
+            session()->put('user_id',  $victim->id);
             $results = true;
         }
 

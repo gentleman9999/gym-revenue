@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Domain\Clients\Models\Client;
+use App\Enums\SecurityGroupEnum;
 use App\Models\Utility\AppState;
 use Closure;
 use Illuminate\Http\Request;
@@ -72,7 +73,10 @@ class HandleInertiaRequests extends Middleware
                 'user.contact_preference' => $user->contact_preference,
                 'user.all_locations' => $user->allLocations(),
                 'user.current_team.isClientTeam' => $user->client_id !== null,
-                'user.current_team_id' => session()->get('current_team')['id'],
+                'user.is_client_user' => $user->client_id !== null,
+                'user.is_gr_admin' => $user->inSecurityGroup(SecurityGroupEnum::ADMIN),
+                'user.current_team_id' => session()->get('current_team')['id'] ?? null,
+                'user.current_team_id1' => session()->get('current_team_id'),
                 //TODO:should be able to remove client_id from most of client stuff once middleware is in place
                 'user.abilities' => $abilities,
                 'user.has_api_token' => (! is_null($user->access_token)),
