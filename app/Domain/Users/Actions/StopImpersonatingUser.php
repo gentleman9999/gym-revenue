@@ -3,8 +3,10 @@
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
+use App\Enums\SecurityGroupEnum;
 use function auth;
 use function config;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -33,10 +35,23 @@ class StopImpersonatingUser
             $coward_id = $coward->id;
             $liberated = auth()->user();
 
-            $coward->current_team_id = $liberated->current_team_id;
-            $liberated->current_team_id = $coward->current_team_id;
-            $coward->save();
-            $liberated->save();
+            if ($coward->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
+                $team = Team::withoutGlobalScopes()->find($coward->default_team_id);
+            } else {
+                $team = $coward->default_team;
+            }
+
+            session()->put('current_team_id', $team->id);
+            session()->put(
+                'current_team',
+                [
+                    'id' => $team->id,
+                    'name' => $team->name,
+                    'client_id' => $team->client_id,
+                ]
+            );
+            session()->put('client_id', $team->client_id);
+            session()->put('user_id',  $coward->id);
             auth()->user()->leaveImpersonation();
             $results = true;
 
@@ -47,7 +62,7 @@ class StopImpersonatingUser
 
             // rat on this user to the paying customer - the client (aggy)
             if (! is_null($liberated->client->id ?? null)) {
-                ClientAggregate::retrieve($liberated->client->id)
+                ClientAggregate::retrieve($liberated->client_id)
                     ->logImpersonationModeDeactivation($liberated->id, $coward_id)->persist();
             }
         }

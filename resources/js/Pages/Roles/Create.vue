@@ -6,7 +6,7 @@
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <security-role-form
-                :client-id="$page.props.user.current_client_id"
+                :client-id="$page.props.user.client_id"
                 :available-roles="availableRoles"
                 :available-abilities="availableAbilities"
                 :security-groups="securityGroups"

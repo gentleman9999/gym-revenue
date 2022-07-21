@@ -107,7 +107,7 @@ export default defineComponent({
             operation = "Create";
         } else {
             team.locations = props.locations.map((detail) => detail.value);
-            team.client_id = page.props.value.user?.current_client_id;
+            team.client_id = page.props.value.user?.client_id;
             console.log("team.locations", team.locations);
         }
         const form = useGymRevForm(team);

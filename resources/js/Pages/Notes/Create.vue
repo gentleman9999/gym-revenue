@@ -5,7 +5,7 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <note-form :client-id="$page.props.user.current_client_id" />
+            <note-form :client-id="$page.props.user.client_id" />
         </div>
     </div>
 </template>

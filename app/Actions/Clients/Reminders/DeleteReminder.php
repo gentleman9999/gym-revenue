@@ -29,7 +29,7 @@ class DeleteReminder
     public function handle($current_user, $id)
     {
         $reminder = Reminder::findOrFail($id);
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         UserAggregate::retrieve($current_user->id)->deleteReminder($current_user->id, $id)->persist();
 
         return $reminder;

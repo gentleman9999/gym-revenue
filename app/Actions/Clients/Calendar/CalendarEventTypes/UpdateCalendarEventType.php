@@ -49,7 +49,7 @@ class UpdateCalendarEventType
     {
         $data = $request->validated();
         $data['id'] = $id;
-        $data['client_id'] = $request->user()->currentClientId();
+        $data['client_id'] = $request->user()->client_id;
         $calendar_event_type = $this->handle(
             $data
         );

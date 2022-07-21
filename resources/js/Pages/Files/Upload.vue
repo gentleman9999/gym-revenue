@@ -10,7 +10,7 @@
             </div>
         </div>
         <template #modal>
-            <file-manager :client-id="$page.props.user.current_client_id" />
+            <file-manager :client-id="$page.props.user.client_id" />
         </template>
     </ModalableWrapper>
 </template>

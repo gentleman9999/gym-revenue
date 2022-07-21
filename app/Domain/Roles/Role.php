@@ -12,6 +12,8 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Location;
+use App\Models\Comms\EmailTemplates;
+use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Member;
 use App\Models\File;
 use App\Models\Position;
@@ -76,23 +78,28 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = Task::class;
 
                 break;
-
             case 'positions':
                 $entity = Position::class;
 
                 break;
-
             case 'departments':
                 $entity = Department::class;
 
                 break;
-
             case 'reminders':
                 $entity = Reminder::class;
 
                 break;
             case 'client':
                 $entity = Client::class;
+
+                break;
+            case 'email-templates':
+                $entity = EmailTemplates::class;
+
+                break;
+            case 'sms-templates':
+                $entity = SmsTemplates::class;
 
                 break;
         }

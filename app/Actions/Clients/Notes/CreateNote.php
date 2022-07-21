@@ -39,7 +39,7 @@ class CreateNote
     public function handle($data, $current_user = null)
     {
         $id = Uuid::new();
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         $data['created_by_user_id'] = $client_id;
         $data['id'] = $id;
 
