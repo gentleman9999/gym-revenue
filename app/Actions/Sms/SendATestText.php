@@ -41,7 +41,12 @@ class SendATestText
             $sms_template_record = SmsTemplates::find($data['templateId']);
 
             if (! is_null($sms_template_record)) {
-                $current_team_id = $user->current_team_id;
+                $session_team = session()->get('current_team');
+                if ($session_team && array_key_exists('id', $session_team)) {
+                    $current_team_id = $session_team['id'];
+                } else {
+                    $current_team_id = $user->default_team_id;
+                }
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {

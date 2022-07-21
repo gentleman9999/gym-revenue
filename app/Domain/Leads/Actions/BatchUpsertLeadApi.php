@@ -2,6 +2,7 @@
 
 namespace App\Domain\Leads\Actions;
 
+use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -55,6 +56,11 @@ class BatchUpsertLeadApi
         }
 
         return $response;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request)

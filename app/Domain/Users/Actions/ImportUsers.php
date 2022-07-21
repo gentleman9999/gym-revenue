@@ -40,7 +40,7 @@ class ImportUsers
     {
         return $this->handle(
             $request->all(),
-            $request->user()->currentClientId()
+            $request->user()->client_id
         );
     }
 

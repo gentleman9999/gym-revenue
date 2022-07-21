@@ -85,8 +85,8 @@ class LeadActivityReactor extends Reactor implements ShouldQueue
         $file['key'] = $destKey;
         $file['url'] = Storage::disk('s3')->url($file['key']);
         $aggy = LeadAggregate::retrieve($lead_id);
-        if ($oldData['profile_picture']['misc'] ?? false) {
-            $aggy->recordThat(new LeadProfilePictureMoved($file, $oldData['profile_picture']['misc']));
+        if ($oldData['profile_picture'] ?? false) {
+            $aggy->recordThat(new LeadProfilePictureMoved($file, $oldData['profile_picture']));
         } else {
             $aggy->recordThat(new LeadProfilePictureMoved($file));
         }

@@ -32,8 +32,7 @@ class UpdateReminder
     public function handle($id, $current_user = null)
     {
         if (! is_null($current_user)) {
-            $client_id = $current_user->currentClientId();
-            $data['client_id'] = $client_id;
+            $data['client_id'] = $current_user->client_id;
         }
 
 

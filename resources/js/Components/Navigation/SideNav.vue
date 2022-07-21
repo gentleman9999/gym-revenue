@@ -158,6 +158,17 @@ export default defineComponent({
                             isAdmin),
                 },
                 {
+                    key: "nav-notes",
+                    icon: NotesIcon,
+                    route: "notes",
+                    label: "Notes",
+                    permission:
+                        isClientUser &&
+                        (user.abilities?.includes("notes.read") ||
+                            client_services?.includes("NOTES") ||
+                            isAdmin),
+                },
+                {
                     key: "nav-todo",
                     icon: ToDoIcon,
                     route: "tasks",

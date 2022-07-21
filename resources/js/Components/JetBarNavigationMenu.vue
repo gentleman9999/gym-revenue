@@ -228,7 +228,7 @@
                                     <div class="flex items-center">
                                         <svg
                                             v-if="
-                                                team.id ==
+                                                team.id ===
                                                 $page.props.user.current_team_id
                                             "
                                             class="mr-2 h-5 w-5 text-green-400"
@@ -296,15 +296,9 @@ export default defineComponent({
         const showingUserDropdown = ref(false);
 
         const switchToTeam = (team) => {
-            Inertia.put(
-                route("current-team.update"),
-                {
-                    team_id: team.id,
-                },
-                {
-                    preserveState: false,
-                }
-            );
+            Inertia.put(route("current-team.update", team.id), {
+                preserveState: false,
+            });
         };
         const logout = () => {
             console.log("logout");

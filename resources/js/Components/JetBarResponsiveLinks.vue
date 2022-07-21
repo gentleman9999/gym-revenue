@@ -265,15 +265,9 @@ export default {
     },
     methods: {
         switchToTeam(team) {
-            Inertia.put(
-                route("current-team.update"),
-                {
-                    team_id: team.id,
-                },
-                {
-                    preserveState: false,
-                }
-            );
+            Inertia.put(route("current-team.update", team.id), {
+                preserveState: false,
+            });
         },
         logout() {
             console.log("test");

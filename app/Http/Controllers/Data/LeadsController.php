@@ -10,6 +10,7 @@ use App\Domain\Leads\Models\LeadDetails;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -33,7 +34,7 @@ class LeadsController extends Controller
             return Redirect::back();
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
         $prospects = [];
@@ -117,7 +118,7 @@ class LeadsController extends Controller
 
     public function claimed(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
 
         $page_count = 10;
@@ -164,10 +165,15 @@ class LeadsController extends Controller
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = auth()->user();
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
 
 
@@ -219,7 +225,12 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
 
@@ -260,7 +271,12 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
             $team_locations = [];
 
@@ -300,7 +316,7 @@ class LeadsController extends Controller
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
@@ -315,7 +331,12 @@ class LeadsController extends Controller
 
         $lead_aggy = LeadAggregate::retrieve($lead->id);
 
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
         /**
          * STEPS for team users
@@ -327,9 +348,10 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
+        // profile_picture will not load profile picture on the front end
         $lead->load(
             [
-            'profile_picture',
+//            'profile_picture',
             'trialMemberships',
             'lead_owner',
             'lead_status',
@@ -339,7 +361,7 @@ class LeadsController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $lead->toArray();
+        $leadData = $lead;
         $leadData['all_notes'] = $lead->notes->toArray();
 
         foreach ($leadData['all_notes'] as $key => $value) {
@@ -373,7 +395,7 @@ class LeadsController extends Controller
             'lead' => $lead->load(['detailsDesc', 'trialMemberships']),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
         ]);
     }
 
@@ -401,7 +423,12 @@ class LeadsController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -490,14 +517,14 @@ class LeadsController extends Controller
     public function sources(Request $request)
     {
         return Inertia::render('Leads/Sources', [
-            'sources' => LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']),
+            'sources' => LeadSource::whereClientId($request->user()->client_id)->get(['id', 'name']),
         ]);
     }
 
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-            'statuses' => LeadStatus::whereClientId($request->user()->currentClientId())->get(['id', 'status']),
+            'statuses' => LeadStatus::whereClientId($request->user()->client_id)->get(['id', 'status']),
         ]);
     }
 
@@ -540,7 +567,7 @@ class LeadsController extends Controller
             abort(403);
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $prospects = [];
         $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);

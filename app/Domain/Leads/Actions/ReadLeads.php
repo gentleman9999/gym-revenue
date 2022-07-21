@@ -3,6 +3,7 @@
 namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use function request;
@@ -43,6 +44,11 @@ class ReadLeads
             ->sort()
             ->paginate($page_count)
             ->appends(request()->except('page'));
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request)

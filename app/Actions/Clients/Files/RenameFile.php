@@ -44,7 +44,7 @@ class RenameFile
     public function asController(ActionRequest $request, $id)
     {
         $data = $request->validated();
-        $data['client_id'] = $request->user()->currentClientId();//TODO: remove for being injected by middleware
+        $data['client_id'] = $request->user()->client_id;//TODO: remove for being injected by middleware
         $file = $this->handle(
             $id,
             $data,
