@@ -115,8 +115,6 @@ class CreateCalendarEvent
         unset($data['lead_attendees']);
         unset($data['member_attendees']);
 
-        $test = 0;
-
         if (! is_null($current_user)) {
             $data['owner_id'] = $current_user->id;
         }
