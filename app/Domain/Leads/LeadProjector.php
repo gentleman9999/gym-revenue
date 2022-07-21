@@ -44,7 +44,11 @@ class LeadProjector extends Projector
             $lead->agreement_number = $event->payload['agreement_number'];
         }
         $lead->fill($lead_fillable_data);
-
+        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
+            $file = $event->payload['profile_picture'];
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+            $lead->profile_picture = $file;
+        }
         $lead->save();
 
         $created = new LeadDetails();
@@ -66,20 +70,6 @@ class LeadProjector extends Projector
         $creates->save();
 
         $this->createOrUpdateLeadDetailsAndNotes($event, $lead);
-
-        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
-            $file = $event->payload['profile_picture'];
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-
-            $profile = new LeadDetails();
-            $profile->forceFill([
-                'lead_id' => $lead->id,
-                'client_id' => $lead->client_id,
-                'field' => 'profile_picture',
-                'misc' => $file,
-            ]);
-            $profile->save();
-        }
     }
 
     public function onLeadUpdated(LeadUpdated $event)
@@ -89,6 +79,11 @@ class LeadProjector extends Projector
             $lead->email = $event->payload['email'];
         }
         $lead->fill($event->payload);
+        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
+            $file = $event->payload['profile_picture'];
+            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
+            $lead->profile_picture = $file;
+        }
         $lead->save();
 
         $updated = new LeadDetails();
@@ -104,20 +99,6 @@ class LeadProjector extends Projector
         LeadDetails::whereLeadId($lead->id)->whereField('service_id')->delete();
 
         $this->createOrUpdateLeadDetailsAndNotes($event, $lead);
-
-        if (array_key_exists('profile_picture', $event->payload) && $event->payload['profile_picture']) {
-            $file = $event->payload['profile_picture'];
-            $file['url'] = "https://{$file['bucket']}.s3.amazonaws.com/{$file['key']}";
-
-            $profile = LeadDetails::firstOrNew([
-                'lead_id' => $lead->id,
-                'client_id' => $lead->client_id,
-                'field' => 'profile_picture',
-            ], ['misc' => $file]);
-            $profile->client_id = $lead->client_id;
-            $profile->lead_id = $lead->id;
-            $profile->save();
-        }
     }
 
     public function onLeadTrashed(LeadTrashed $event)
@@ -267,7 +248,7 @@ class LeadProjector extends Projector
 
     public function onLeadProfilePictureMoved(LeadProfilePictureMoved $event)
     {
-        LeadDetails::whereLeadId($event->aggregateRootUuid())->whereField('profile_picture')->firstOrFail()->updateOrFail(['misc' => $event->file]);
+        Lead::findOrFail($event->aggregateRootUuid())->updateOrFail(['profile_picture' => $event->file]);
     }
 
     protected function createOrUpdateLeadDetailsAndNotes($event, $lead)

@@ -12,9 +12,7 @@
             </div>
         </div>
         <template #modal>
-            <calendar-event-type-form
-                :client-id="$page.props.user.current_client_id"
-            />
+            <calendar-event-type-form :client-id="$page.props.user.client_id" />
         </template>
     </ModalableWrapper>
 </template>

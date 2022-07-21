@@ -12,7 +12,7 @@
             </div>
         </div>
         <template #modal>
-            <location-form :client-id="$page.props.user.current_client_id" />
+            <location-form :client-id="$page.props.user.client_id" />
         </template>
     </ModalableWrapper>
 </template>

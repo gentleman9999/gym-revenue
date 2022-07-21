@@ -97,7 +97,7 @@ export default defineComponent({
 
         const submitForm = () => {
             console.log("submitform", form.data());
-            form.dirty().post(route("data.leads.sources.update"));
+            form.post(route("data.leads.sources.update"));
         };
 
         const navLinks = [

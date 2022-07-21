@@ -48,7 +48,7 @@ class CreateLeadAndMembersTables extends Migration
         $table->datetime('date_of_birth');
         $table->string('agreement_number');
         $table->integer('membership_type_id')->nullable();
-        $table->string('profile_picture')->nullable();
+        $table->longText('profile_picture')->nullable();
         $table->string('external_id')->nullable();
         $table->boolean('unsubscribed_comms')->default(false);
         $table->jsonb('misc')->nullable();

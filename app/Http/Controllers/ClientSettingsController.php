@@ -16,7 +16,7 @@ class ClientSettingsController extends Controller
 {
     public function index()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -60,7 +60,6 @@ class ClientSettingsController extends Controller
             'trialMembershipTypes.*.slug' => ['required'],
             'trialMembershipTypes.*.trial_length' => ['required'],
         ]);
-        $client_id = request()->user()->currentClientId();
         if (array_key_exists('trialMembershipTypes', $data) && is_array($data['trialMembershipTypes'])) {
             $trialMembershipTypesToUpdate = collect($data['trialMembershipTypes'])->filter(function ($t) {
                 return $t['id'] !== null;
@@ -69,7 +68,7 @@ class ClientSettingsController extends Controller
                 return $t['id'] === null;
             });
 
-            $client_aggy = ClientAggregate::retrieve($client_id);
+            $client_aggy = ClientAggregate::retrieve($request->user()->client_id);
 
             foreach ($trialMembershipTypesToUpdate as $trialMembershipTypeData) {
                 $client_aggy->updateTrialMembershipType($trialMembershipTypeData, request()->user()->id);

@@ -30,8 +30,7 @@ class DeleteReminderWithoutID
     public function handle($data, $current_user = null)
     {
         if (! is_null($current_user)) {
-            $client_id = $current_user->currentClientId();
-            $data['client_id'] = $client_id;
+            $data['client_id'] = $current_user->client_id;
         }
 
         $reminder = Reminder::whereEntityType($data['entity_type'])->whereEntityId($data['entity_id'])->whereUserId($data['user_id'])->first();

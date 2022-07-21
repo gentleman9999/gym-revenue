@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -30,6 +31,11 @@ class MarkLeadConverted
         LeadAggregate::retrieve($data['id'])->convert($data['id'])->persist();
 
         return Lead::findOrFail($data['id']);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request)

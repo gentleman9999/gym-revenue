@@ -474,7 +474,7 @@ export default {
                     : props.duration.start,
                 event_type_id: "",
                 location_id: null,
-                client_id: page.props.value.user?.current_client_id,
+                client_id: page.props.value.user?.client_id,
                 user_attendees: [],
                 lead_attendees: [] ?? "",
                 member_attendees: [],
@@ -490,7 +490,7 @@ export default {
                 end: calendarEvent.end + " UTC",
                 event_type_id: calendarEvent.event_type_id,
                 location_id: calendarEvent.location_id,
-                client_id: page.props.value.user?.current_client_id,
+                client_id: page.props.value.user?.client_id,
                 user_attendees:
                     calendarEvent.user_attendees?.map(
                         (user_attendee) => user_attendee.id

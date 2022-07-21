@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Data;
 use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Leads\LeadAggregate;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -29,7 +30,7 @@ class MembersController extends Controller
             return Redirect::back();
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
         $members = [];
@@ -98,7 +99,7 @@ class MembersController extends Controller
 
     public function claimed(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
 
         $page_count = 10;
@@ -138,12 +139,9 @@ class MembersController extends Controller
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = auth()->user();
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
-
 
         if ($user->cannot('members.create', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -175,7 +173,12 @@ class MembersController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
 
@@ -223,7 +226,7 @@ class MembersController extends Controller
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
@@ -234,8 +237,6 @@ class MembersController extends Controller
 
         $member_aggy = LeadAggregate::retrieve($member_id);
 
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
         $member = Member::whereId($member_id)->with(
 //            'detailsDesc',
             'notes'
@@ -278,7 +279,7 @@ class MembersController extends Controller
             'member' => Member::whereId($member_id)->with(['detailsDesc', 'trialMemberships'])->first(),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
         ]);
     }
 
@@ -321,7 +322,12 @@ class MembersController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -448,7 +454,7 @@ class MembersController extends Controller
             abort(403);
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);

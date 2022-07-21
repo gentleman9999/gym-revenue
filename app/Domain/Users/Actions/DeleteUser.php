@@ -4,7 +4,6 @@ namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use function collect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
@@ -39,8 +38,6 @@ class DeleteUser implements DeletesUsers
     public function asController(ActionRequest $request, User $user): User
     {
         $me = request()->user();
-        $current_team = $me->currentTeam()->first();
-        $team_users = collect($current_team->team_users()->with('user')->get());
 //        $non_admins = [];
 //
 //        foreach ($team_users as $team_user) {

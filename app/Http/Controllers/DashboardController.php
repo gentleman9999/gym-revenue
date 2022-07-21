@@ -22,7 +22,12 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $team = $user->currentTeam;
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $team = Team::find($session_team['id']);
+        } else {
+            $team = Team::find($user->default_team_id);
+        }
         $client = $team->client;
         $announcements = [];
         $team_name = $team->name;

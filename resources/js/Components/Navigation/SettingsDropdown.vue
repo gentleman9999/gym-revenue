@@ -186,11 +186,8 @@ export default defineComponent({
         const leaveImpersonationMode = () => {
             Inertia.post(route("impersonation.stop", {}));
         };
-        const showClientSettings = computed(
-            () =>
-                page.props.value.user.abilities.includes(
-                    "manage-client-settings"
-                ) || page.props.value.user.abilities.includes("*")
+        const showClientSettings = computed(() =>
+            page.props.value.user.abilities.includes("manage-client-settings")
         );
         return {
             showClientSettings,

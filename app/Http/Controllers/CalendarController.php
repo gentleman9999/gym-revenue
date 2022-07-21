@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Leads\Models\Lead;
 use App\Domain\Reminders\Reminder;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
@@ -20,7 +21,7 @@ class CalendarController extends Controller
 {
     public function index(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
 
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
@@ -80,7 +81,12 @@ class CalendarController extends Controller
         }
 
         if ($client_id) {
-            $current_team = $request->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::whereId($client_id)->first();
 
             $is_default_team = $client->home_team_id === $current_team->id;
@@ -114,7 +120,7 @@ class CalendarController extends Controller
 
     public function quickView(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
@@ -160,9 +166,7 @@ class CalendarController extends Controller
 
     public function eventTypes(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
-
-        $event_types = CalendarEventType::whereClient_id($client_id)
+        $event_types = CalendarEventType::whereClient_id($request->user()->client_id)
             ->filter($request->only('search', 'trashed', 'type'))
             ->sort()
             ->paginate(10)
@@ -175,15 +179,12 @@ class CalendarController extends Controller
 
     public function createEventType(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
-
         return Inertia::render('Calendar/EventTypes/Create', [
         ]);
     }
 
     public function editEventType(Request $request, $id)
     {
-//        $client_id = request()->user()->currentClientId();
         $calendarEventType = CalendarEventType::findOrFail($id);
 
         return Inertia::render('Calendar/EventTypes/Edit', [

@@ -58,7 +58,7 @@ class UpdateLocation
     {
         $data = $request->validated();
         $data['id'] = $id;
-        $data['client_id'] = $request->user()->currentClientId();
+        $data['client_id'] = $request->user()->client_id;
 
         $location = $this->handle(
             $data,
