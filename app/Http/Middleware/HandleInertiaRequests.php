@@ -3,10 +3,15 @@
 namespace App\Http\Middleware;
 
 use App\Domain\Clients\Models\Client;
+use App\Enums\SecurityGroupEnum;
 use App\Models\Utility\AppState;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
+use Laravel\Fortify\Features;
+use Laravel\Jetstream\Jetstream;
 use Prologue\Alerts\Facades\Alert;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -44,10 +49,15 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            //todo: cache or move to session
-            $abilities = $user->getAbilities()->filter(function ($ability) use ($user) {
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team_id = $session_team['id'];
+            } else {
+                $current_team_id = $user->default_team_id;
+            }
+            $abilities = $user->getAbilities()->filter(function ($ability) use ($user, $current_team_id) {
                 if (! is_null($ability->entity_id)) {
-                    $r = $ability->entity_id === $user->current_team_id;
+                    $r = $ability->entity_id === $current_team_id;
                 } elseif ($ability->title == 'All abilities') {
                     $r = true;
                 } else {
@@ -57,14 +67,17 @@ class HandleInertiaRequests extends Middleware
                 return $r;
             })->pluck('name');
 
-            $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($user->currentClientId());
+            $client = Client::with(['details', 'trial_membership_types', 'locations'])->find($user->client_id);
             $shared = [
                 'user.id' => $user->id,
                 'user.contact_preference' => $user->contact_preference,
                 'user.all_locations' => $user->allLocations(),
-                'user.current_team.isClientTeam' => $user->currentClientId() !== null,
-                //TODO:should be able to remove client_id and current_client_id from most of client stuff once middleware is in place
-                'user.current_client_id' => $user->currentClientId(),
+                'user.current_team.isClientTeam' => $user->client_id !== null,
+                'user.is_client_user' => $user->client_id !== null,
+                'user.is_gr_admin' => $user->inSecurityGroup(SecurityGroupEnum::ADMIN),
+                'user.current_team_id' => session()->get('current_team')['id'] ?? null,
+                'user.current_team_id1' => session()->get('current_team_id'),
+                //TODO:should be able to remove client_id from most of client stuff once middleware is in place
                 'user.abilities' => $abilities,
                 'user.has_api_token' => (! is_null($user->access_token)),
                 'app_state.is_simulation_mode' => AppState::isSimuationMode(),
@@ -85,7 +98,44 @@ class HandleInertiaRequests extends Middleware
         }
         $alerts = Alert::getMessages();
 
-        return array_merge(parent::share($request), [
+        return array_merge([
+            'jetstream' => function () use ($request) {
+                return [
+                    'canCreateTeams' => $request->user() &&
+                        Jetstream::hasTeamFeatures() &&
+                        Gate::forUser($request->user())->check('create', Jetstream::newTeamModel()),
+                    'canManageTwoFactorAuthentication' => Features::canManageTwoFactorAuthentication(),
+                    'canUpdatePassword' => Features::enabled(Features::updatePasswords()),
+                    'canUpdateProfileInformation' => Features::canUpdateProfileInformation(),
+                    'hasEmailVerification' => Features::enabled(Features::emailVerification()),
+                    'flash' => $request->session()->get('flash', []),
+                    'hasAccountDeletionFeatures' => Jetstream::hasAccountDeletionFeatures(),
+                    'hasApiFeatures' => Jetstream::hasApiFeatures(),
+                    'hasTeamFeatures' => Jetstream::hasTeamFeatures(),
+                    'hasTermsAndPrivacyPolicyFeature' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+                    'managesProfilePhotos' => Jetstream::managesProfilePhotos(),
+                ];
+            },
+            'user' => function () use ($request) {
+                if (! $request->user()) {
+                    return;
+                }
+
+                return array_merge($request->user()->toArray(), array_filter([
+                    'all_teams' => Jetstream::hasTeamFeatures() ? $request->user()->allTeams()->values() : null,
+                ]), [
+                    'two_factor_enabled' => ! is_null($request->user()->two_factor_secret),
+                ]);
+            },
+            'errorBags' => function () {
+                return collect(optional(Session::get('errors'))->getBags() ?: [])->mapWithKeys(function ($bag, $key) {
+                    return [$key => $bag->messages()];
+                })->all();
+            },
+            'errors' => function () use ($request) {
+                return $this->resolveValidationErrors($request);
+            },
+        ], [
             'flash' => function () use ($request, $alerts) {
                 return [
                     'selectedLeadDetailIndex' => $request->session()->get('selectedLeadDetailIndex'),

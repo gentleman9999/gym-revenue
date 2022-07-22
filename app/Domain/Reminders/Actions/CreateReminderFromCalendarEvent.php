@@ -30,7 +30,7 @@ class CreateReminderFromCalendarEvent
     public function handle($data, $current_user)
     {
         if (! is_null($current_user)) {
-            $client_id = $current_user->currentClientId();
+            $client_id = $current_user->client_id;
             $data['client_id'] = $client_id;
         }
 

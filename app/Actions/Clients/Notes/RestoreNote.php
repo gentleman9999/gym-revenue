@@ -29,7 +29,7 @@ class RestoreNote
     {
         $note = Note::findOrFail($id);
 
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         ClientAggregate::retrieve($client_id)->restoreNote($current_user->id, $id)->persist();
 
         return $note;

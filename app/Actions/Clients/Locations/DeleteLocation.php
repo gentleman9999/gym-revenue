@@ -28,8 +28,7 @@ class DeleteLocation
 
     public function handle($data, $current_user)
     {
-        $client_id = $current_user->currentClientId();
-        ClientAggregate::retrieve($client_id)->deleteLocation($current_user->id ?? "Auto Generated", $data)->persist();
+        ClientAggregate::retrieve($current_user->client_id)->deleteLocation($current_user->id ?? "Auto Generated", $data)->persist();
     }
 
     public function authorize(ActionRequest $request): bool

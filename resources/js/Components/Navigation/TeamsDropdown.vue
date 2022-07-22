@@ -100,18 +100,12 @@ export default defineComponent({
         const page = usePage();
         const teams = computed(() => page.props.value.user.all_teams);
         function switchToTeam(team) {
-            Inertia.put(
-                route("current-team.update"),
-                {
-                    team_id: team.id,
+            Inertia.put(route("current-team.update", team.id), {
+                preserveState: false,
+                onSuccess: () => {
+                    document.activeElement.blur();
                 },
-                {
-                    preserveState: false,
-                    onSuccess: () => {
-                        document.activeElement.blur();
-                    },
-                }
-            );
+            });
         }
         return { switchToTeam, teams };
     },

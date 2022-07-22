@@ -26,7 +26,7 @@ class MarkNoteAsRead
 
     public function handle($data, $current_user)
     {
-        NoteAggregate::retrieve($current_user->currentClientId())
+        NoteAggregate::retrieve($current_user->client_id)
                 ->createReadReciept($current_user->id, [
                 'note_id' => $data['note']['id'],
                 'read_by_user_id' => $current_user->id,
