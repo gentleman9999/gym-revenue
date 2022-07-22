@@ -380,7 +380,7 @@ class LocationSeeder extends Seeder
                 ->count(1)
                 ->make()[0];
             $finalData = array_merge($temp_data->toArray(), $location);
-
+            $finalData['shouldCreateTeam'] = true;
 //            if (is_null($loc_record)) {
             VarDumper::dump("Adding {$location['name']}");
             CreateLocation::run($finalData);

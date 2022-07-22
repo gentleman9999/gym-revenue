@@ -2,9 +2,11 @@
 
 namespace App\Imports;
 
+use App\Domain\Departments\Department;
 use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
 use App\Models\Clients\Location;
+use App\Models\Position;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -36,7 +38,31 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 if (! $location) {
                     continue;
                 }
-                $team_ids[] = $location->defaultTeam->id;
+                $team_ids[] = $location->default_team_id;
+            }
+
+            $position_ids = [];
+            if (array_key_exists('positions', $arrayRow)) {
+                $positions = explode(",", $row['positions']);
+                foreach ($positions as $position) {
+                    $pos = position::whereName($position)->first();
+                    if (! $pos) {
+                        continue;
+                    }
+                    $position_ids[] = $pos->id;
+                }
+            }
+
+            $department_ids = [];
+            if (array_key_exists('departments', $arrayRow)) {
+                $departments = explode(",", $row['departments']);
+                foreach ($departments as $department) {
+                    $dept = department::whereName($department)->first();
+                    if (! $dept) {
+                        continue;
+                    }
+                    $department_ids[] = $dept->id;
+                }
             }
 
             CreateUser::run([
@@ -53,6 +79,8 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 'city' => array_key_exists('city', $arrayRow) ? $row['city'] : null,
                 'state' => array_key_exists('state', $arrayRow) ? $row['state'] : null,
                 'zip' => array_key_exists('zip', $arrayRow) ? $row['zip'] : null,
+                'positions' => is_null($position_ids) ? null : $position_ids,
+                'departments' => is_null($department_ids) ? null : $department_ids,
                 'client_id' => $this->client_id,
             ]);
         }
