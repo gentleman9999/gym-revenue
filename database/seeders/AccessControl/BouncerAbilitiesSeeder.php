@@ -25,7 +25,7 @@ class BouncerAbilitiesSeeder extends Seeder
         $crud_models = collect([
             'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
-            'positions', 'email-templates', 'scheduled-campaigns', 'drip-campaigns', 'reminders',
+            'positions', 'email-templates', 'scheduled-campaigns', 'drip-campaigns', 'reminders', 'notes',
             'folders',
         ]);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
@@ -58,11 +58,13 @@ class BouncerAbilitiesSeeder extends Seeder
             /** Account Owner */
             $this->allowReadInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
-                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'folders',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
+                'email-templates', 'departments', 'positions', 'notes', 'folders',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
-                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'folders',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
+                'email-templates', 'departments', 'positions', 'notes', 'folders',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);

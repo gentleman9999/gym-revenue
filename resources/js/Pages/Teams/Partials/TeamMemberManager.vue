@@ -386,7 +386,7 @@ const confirmingLeavingTeam = ref(false);
 const teamMemberBeingRemoved = ref(null);
 const multiselectClasses = ref(getDefaultMultiselectTWClasses());
 async function addTeamMember() {
-    addTeamMemberForm.post(route("team-member.store", team));
+    addTeamMemberForm.post(route("team-member.store", props.team.id));
 }
 function cancelTeamInvitation(invitation) {
     Inertia.delete(route("team-invitations.destroy", invitation), {
@@ -466,8 +466,8 @@ const availableUsersToJoinTeam = computed({
 const availableUsersToJoinTeamOptions = computed({
     get() {
         let options = [];
-        if (availableUsersToJoinTeam?.map) {
-            options = availableUsersToJoinTeam.map(({ email, name }) => ({
+        if (availableUsersToJoinTeam?.value.map) {
+            options = availableUsersToJoinTeam.value.map(({ email, name }) => ({
                 label: `${email} (${name})`,
                 value: email,
             }));

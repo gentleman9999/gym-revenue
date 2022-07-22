@@ -30,7 +30,7 @@ class RestoreReminder
     {
         $reminder = Reminder::findOrFail($id);
 
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         ClientAggregate::retrieve($client_id)->restoreReminder($current_user->id, $id)->persist();
 
         return $reminder;

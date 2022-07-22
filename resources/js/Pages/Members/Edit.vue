@@ -13,7 +13,7 @@
         <template #modal>
             <member-form
                 :user-id="user_id"
-                :client-id="this.$page.props.user.current_client_id"
+                :client-id="this.$page.props.user.client_id"
                 :member="member"
                 :locations="locations"
                 :available_services="available_services"

@@ -142,5 +142,9 @@ const props = defineProps({
     sessions: {
         type: Array,
     },
+    addlData: {
+        type: Object,
+        default: {},
+    },
 });
 </script>

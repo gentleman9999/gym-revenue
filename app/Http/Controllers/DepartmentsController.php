@@ -19,7 +19,7 @@ class DepartmentsController extends Controller
 
     public function index(Request $request)
     {
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -43,7 +43,7 @@ class DepartmentsController extends Controller
 
     public function create()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -73,7 +73,7 @@ class DepartmentsController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
         if (! $client_id) {
             abort(403);
         }

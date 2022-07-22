@@ -25,7 +25,7 @@ class NotesController extends Controller
 
     public function index(Request $request)
     {
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -42,7 +42,7 @@ class NotesController extends Controller
 
     public function create()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -62,7 +62,7 @@ class NotesController extends Controller
 
     public function edit($id)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }

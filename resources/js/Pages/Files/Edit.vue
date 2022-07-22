@@ -12,7 +12,7 @@
         </div>
         <template #modal>
             <file-form
-                :client-id="this.$page.props.user.current_client_id"
+                :client-id="this.$page.props.user.client_id"
                 :file="file"
             />
         </template>

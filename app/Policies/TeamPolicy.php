@@ -42,7 +42,7 @@ class TeamPolicy
      */
     public function create(User $user)
     {
-        $can_create_new_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        $can_create_new_teams_for_current_client = $user->can('create-new-teams', Client::find($user->client_id));
 
         return $user->isAccountOwner() || $user->isAdmin() || $can_create_new_teams_for_current_client;
     }
@@ -57,7 +57,7 @@ class TeamPolicy
     public function update(User $user, Team $team)
     {
 //        return $user->ownsTeam($team);
-        $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->client_id));
 
         return $user->isAccountOwner() || $user->isAdmin() || $can_update_teams_for_current_client;
     }
@@ -72,7 +72,7 @@ class TeamPolicy
     public function addTeamMember(User $user, Team $team)
     {
 //        return $user->ownsTeam($team);
-        $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->client_id));
 
         return $user->isAccountOwner() || $user->isAdmin() || $can_update_teams_for_current_client;
     }
@@ -87,7 +87,7 @@ class TeamPolicy
     public function updateTeamMember(User $user, Team $team)
     {
 //        return $user->ownsTeam($team);
-        $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        $can_update_teams_for_current_client = $user->can('create-new-teams', Client::find($user->client_id));
 
         return $user->isAccountOwner() || $user->isAdmin() || $can_update_teams_for_current_client;
     }
@@ -102,7 +102,7 @@ class TeamPolicy
     public function removeTeamMember(User $user, Team $team)
     {
 //        return $user->ownsTeam($team);
-        $can_remove_team_members_from_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        $can_remove_team_members_from_current_client = $user->can('create-new-teams', Client::find($user->client_id));
 
         return $user->isAccountOwner() || $user->isAdmin() || $can_remove_team_members_from_current_client;
     }
@@ -117,7 +117,7 @@ class TeamPolicy
     public function delete(User $user, Team $team)
     {
 //        return $user->ownsTeam($team);
-        $can_delete_team_from_current_client = $user->can('create-new-teams', Client::find($user->currentClientId()));
+        $can_delete_team_from_current_client = $user->can('create-new-teams', Client::find($user->client_id));
 
         return $user->isAccountOwner() || $user->isAdmin() || $can_delete_team_from_current_client;
     }

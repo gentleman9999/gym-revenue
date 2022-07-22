@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Models\Clients\Location;
 use App\Models\Clients\LocationDetails;
@@ -16,7 +17,7 @@ class LocationsController extends Controller
     public function index(Request $request)
     {
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
         $page_count = 10;
 
@@ -157,7 +158,12 @@ class LocationsController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
 
@@ -233,7 +239,7 @@ class LocationsController extends Controller
     public function export(Request $request)
     {
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
 
         if (is_null($client_id)) {
