@@ -11,6 +11,7 @@ use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
+use App\Models\Clients\Location;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -120,7 +121,8 @@ class TaskController extends Controller
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
-            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
+            'locations' => Location::whereClientId($client_id)->select('id', 'name')->get(),
+            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->whereType('Task')->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
             'overdue_tasks' => $overdue_tasks,
