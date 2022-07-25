@@ -327,9 +327,10 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
+        // profile_picture will not load profile picture on the front end
         $lead->load(
             [
-            'profile_picture',
+//            'profile_picture',
             'trialMemberships',
             'lead_owner',
             'lead_status',
@@ -339,7 +340,7 @@ class LeadsController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $lead->toArray();
+        $leadData = $lead;
         $leadData['all_notes'] = $lead->notes->toArray();
 
         foreach ($leadData['all_notes'] as $key => $value) {
@@ -375,45 +376,6 @@ class LeadsController extends Controller
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
         ]);
-    }
-
-    public function assign()
-    {
-        $data = request()->all();
-        $user = request()->user();
-        if ($user->cannot('leads.contact', Lead::class)) {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-
-            return Redirect::back();
-        }
-
-        // @todo - change to laravel style Validation
-
-        $claim_detail = LeadDetails::whereLeadId($data['lead_id'])
-            ->whereField('claimed')
-            ->whereActive(1)
-            ->first();
-
-        if (is_null($claim_detail)) {
-            LeadDetails::create([
-                'client_id' => $data['client_id'],
-                'lead_id' => $data['lead_id'],
-                'field' => 'claimed',
-                'value' => $data['user_id'],
-                'misc' => ['claim_date' => date('Y-m-d')],
-            ]);
-
-            LeadAggregate::retrieve($data['lead_id'])
-                ->claim($data['user_id'])
-                ->persist();
-
-            \Alert::info('This lead has been claimed by you! You may now interact with it!')->flash();
-        } else {
-            \Alert::error('This lead has been already been claimed.')->flash();
-        }
-
-
-        return redirect()->back();
     }
 
     private function setUpLocationsObject(bool $is_client_user, string $client_id = null)

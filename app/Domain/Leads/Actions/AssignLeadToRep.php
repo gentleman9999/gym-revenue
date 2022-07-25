@@ -4,30 +4,34 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class RestoreLead
+class AssignLeadToRep
 {
     use AsAction;
 
-    public function handle(Lead $lead)
+    public function handle(Lead $lead, User $user)
     {
-        LeadAggregate::retrieve($lead->id)->restore()->persist();
+        LeadAggregate::retrieve($lead->id)->claim($user->id)->persist();
 
         return $lead->refresh();
     }
 
-    public function authorize(ActionRequest $request): bool
+    public function authorize(ActionRequest $request, Lead $lead): bool
     {
         $current_user = $request->user();
 
-        return $current_user->can('leads.restore', Lead::class);
+        if ($lead->owner_user_id !== null) {
+            return false;
+        }
+
+        return $current_user->can('leads.contact', Lead::class);
     }
 
     public function getControllerMiddleware(): array
@@ -35,18 +39,18 @@ class RestoreLead
         return [InjectClientId::class];
     }
 
-    public function asController(Request $request, $id)
+    public function asController(ActionRequest $request, Lead $lead)
     {
         return $this->handle(
-            $id,
+            $lead,
             $request->user(),
         );
     }
 
     public function htmlResponse(Lead $lead): RedirectResponse
     {
-        Alert::success("Lead '{$lead->name}' restored.")->flash();
-//        return Redirect::route('data.leads');
+        Alert::success("Lead '{$lead->name}' assigned to Rep")->flash();
+
         return Redirect::back();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Leads\LeadAggregate;
 use App\Domain\Leads\Models\Lead;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -62,6 +63,11 @@ class UpdateLead
         return $current_user->can('leads.update', Lead::class);
     }
 
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
     public function asController(ActionRequest $request, Lead $lead)
     {
         $data = $request->validated();
@@ -71,7 +77,7 @@ class UpdateLead
         );
 
         if ($request->user()) {
-            LeadAggregate::retrieve($lead->id)->claim($request->user()->id)->persist();
+            AssignLeadToRep::run($lead, $request->user());
         }
 
         return $lead->refresh();
