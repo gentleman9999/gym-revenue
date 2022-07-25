@@ -22,7 +22,7 @@ class UpdatePosition
     public function rules()
     {
         return [
-            'name' => ['string', 'required'],
+            'name' => ['required', 'string','min:2'],
         ];
     }
 
