@@ -36,7 +36,7 @@ class ScopeBouncer
     {
         $user = $request->user();
         if ($user) {
-            $clientId = $request->user()->currentClientId();
+            $clientId = $request->user()->client_id;
             $this->bouncer->scope()->to($clientId);
         }
 

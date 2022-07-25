@@ -6,6 +6,7 @@ use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Domain\Clients\Models\Client;
 use App\Domain\EndUsers\Members\MemberAggregate;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -29,7 +30,7 @@ class MembersController extends Controller
             return Redirect::back();
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
         $members = [];
@@ -108,6 +109,40 @@ class MembersController extends Controller
         ]);
     }
 
+    public function claimed(Request $request)
+    {
+        $client_id = request()->user()->client_id;
+        $is_client_user = request()->user()->isClientUser();
+
+        $page_count = 10;
+        $prospects = [];
+
+        $locations = Location::whereClientId($client_id)->get();
+
+        //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+
+        if (! empty($prospects_model)) {
+            $prospects = $prospects_model
+                ->with('location')
+//                ->with('membershipType')
+//                ->with('detailsDesc')
+                //  ->with('leadsclaimed')
+                ->filter($request->only('search', 'trashed', 'createdat', 'grlocation'))
+                ->orderBy('created_at', 'desc')
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
+        }
+
+
+        return Inertia::render('Members/Index', [
+            'leads' => $prospects,
+            'title' => 'Leads',
+            //'isClientUser' => $is_client_user,
+            'filters' => $request->all('search', 'trashed', 'createdat', 'grlocation'),
+            'grlocations' => $locations,
+        ]);
+    }
+
     public function create()
     {
         //@TODO: we may want to embed the currentClientId in the form as a field
@@ -116,12 +151,9 @@ class MembersController extends Controller
         //consequences, potentially adding the member to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = auth()->user();
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
-
 
         if ($user->cannot('members.create', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -153,7 +185,12 @@ class MembersController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
 
@@ -196,7 +233,7 @@ class MembersController extends Controller
         //consequences, potentially adding the member to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
@@ -210,6 +247,10 @@ class MembersController extends Controller
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
         $member->load('notes');
+        $member = Member::whereId($member_id)->with(
+//            'detailsDesc',
+            'notes'
+        )->first();
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
@@ -242,7 +283,7 @@ class MembersController extends Controller
             'member' => $member->load(['detailsDesc']),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
         ]);
     }
 
@@ -270,7 +311,12 @@ class MembersController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -384,7 +430,7 @@ class MembersController extends Controller
             abort(403);
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);

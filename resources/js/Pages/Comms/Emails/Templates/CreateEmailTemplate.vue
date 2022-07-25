@@ -13,7 +13,7 @@
         </div>
         <template #modal>
             <email-template-form
-                :client-id="$page.props.user.current_client_id"
+                :client-id="$page.props.user.client_id"
                 :can-activate="false"
                 :topol-api-key="topolApiKey"
             />

@@ -291,8 +291,8 @@ function upperCaseF(text) {
     form.state = text.toUpperCase();
 }
 function updateProfileInformation() {
-    if (photo) {
-        form.photo = photo.files[0];
+    if (photo.value) {
+        form.photo = photo.value.files[0];
     }
 
     form.post(route("user-profile-information.update"), {

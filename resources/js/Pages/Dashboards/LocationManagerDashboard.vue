@@ -120,7 +120,7 @@ watch([announcementModal], () => {
 
 const switchToTeam = (teamId) => {
     Inertia.put(
-        route("current-team.update"),
+        route("current-team.update", team.id),
         {
             team_id: teamId,
         },

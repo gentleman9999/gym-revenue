@@ -14,7 +14,7 @@
         <template #modal>
             <member-form
                 :user-id="user_id"
-                :client-id="$page.props.user.current_client_id"
+                :client-id="$page.props.user.client_id"
                 :locations="locations"
                 :lead_types="lead_types"
                 :lead_statuses="lead_statuses"

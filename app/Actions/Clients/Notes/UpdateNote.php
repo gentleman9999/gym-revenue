@@ -33,7 +33,7 @@ class UpdateNote
 
     public function handle($data, $current_user)
     {
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         $data['created_by_user_id'] = $client_id;
         ClientAggregate::retrieve($client_id)->updateNote($current_user->id, $data)->persist();
 

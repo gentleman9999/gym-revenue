@@ -19,24 +19,17 @@ class ClientScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         //first just try checking the session if they are typical CRM Client User
-        if (session('client_id') !== null) {
+        if (array_key_exists('client_id', session()->all())) {
             $builder->whereClientId(session('client_id'));
 
             return;
         }
-        //now lets see if they are a C&B Admin with a current client set
-        if (array_key_exists('current_client_id', session()->all())) {
-            $builder->whereClientId(session('current_client_id'));
 
-            return;
-        }
         //if no session keys set, must be API - so check the request body
         $request = request();
         if ($request->client_id ?? false) {
             //must be API
             $builder->whereClientId($request->client_id);
-
-            return;
         }
     }
 }

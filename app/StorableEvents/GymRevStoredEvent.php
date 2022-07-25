@@ -25,8 +25,8 @@ class GymRevStoredEvent extends EloquentStoredEvent
                 $client_id = null;
                 if (session('client_id')) {
                     $client_id = session('client_id');
-                } elseif (session('current_client_id')) {
-                    $client_id = session('current_client_id');
+                } elseif (session('client_id')) {
+                    $client_id = session('client_id');
                 }
                 $access_token = request()->bearerToken() ?? null;
                 $ip = request()->ip() ?? null;

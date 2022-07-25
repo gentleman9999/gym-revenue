@@ -6,6 +6,7 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Reminders\Reminder;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
@@ -19,7 +20,7 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -89,7 +90,12 @@ class TaskController extends Controller
             $overdue_tasks = [];
         }
 
-        $current_team = $request->user()->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $client = Client::with(['home_team'])->find($client_id);
 
         $is_home_team = $client->home_team_id == $current_team->id;

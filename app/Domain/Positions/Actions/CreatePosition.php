@@ -24,7 +24,7 @@ class CreatePosition
     public function rules()
     {
         return [
-            'name' => ['string', 'required'],
+            'name' => ['required', 'string','min:2'],
             'client_id' => ['string', 'required'],
         ];
     }

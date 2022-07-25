@@ -19,9 +19,6 @@ class InjectClientId
         $user = $request->user();
         if ($user->isClientUser()) {
             $this->addClientIdToRequest($request, $user->client_id);
-        } elseif ($user->isAdmin()) {
-            $client_id = $user->currentClientId();
-            $this->addClientIdToRequest($request, $client_id);
         }
 
         return $next($request);

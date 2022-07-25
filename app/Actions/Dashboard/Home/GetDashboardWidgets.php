@@ -5,6 +5,7 @@ namespace App\Actions\Dashboard\Home;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Models\Clients\Location;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -17,8 +18,12 @@ class GetDashboardWidgets
     {
         $results = [];
 
-        $team = auth()->user()->currentTeam;
-
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $team = Team::find($session_team['id']);
+        } else {
+            $team = Team::find(auth()->user()->default_team_id);
+        }
         if (! is_null($team->client)) {
             $num_locs = 0;
             $num_scheduled_campaigns = ScheduledCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
