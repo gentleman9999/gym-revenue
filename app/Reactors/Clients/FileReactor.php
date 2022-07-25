@@ -19,8 +19,12 @@ class FileReactor extends Reactor implements ShouldQueue
             if ($file->user_id) {
                 $destKey = "{$file->client_id}/{$file->user_id}/{$event->data['id']}";
             }
-            if ($event->data['visibility']) {
-                Storage::disk('s3')->put($event->data['key'], $destKey, 'public');
+            if (array_key_exists('visibility', $event->data)) {
+                if ($event->data['visibility']) {
+                    Storage::disk('s3')->put($event->data['key'], $destKey, 'public');
+                } else {
+                    Storage::disk('s3')->put($event->data['key'], $destKey, 'private');
+                }
             } else {
                 Storage::disk('s3')->put($event->data['key'], $destKey, 'private');
             }
