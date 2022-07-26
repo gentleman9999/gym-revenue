@@ -16,6 +16,7 @@ use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\Member;
 use App\Models\File;
+use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
@@ -95,10 +96,12 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = Client::class;
 
                 break;
+
             case 'email-templates':
                 $entity = EmailTemplates::class;
 
                 break;
+
             case 'sms-templates':
                 $entity = SmsTemplates::class;
 
@@ -106,6 +109,11 @@ class Role extends \Silber\Bouncer\Database\Role
 
             case 'notes':
                 $entity = Note::class;
+
+                break;
+
+            case 'folders':
+                $entity = Folder::class;
 
                 break;
         }

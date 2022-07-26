@@ -27,6 +27,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
             'positions', 'email-templates', 'scheduled-campaigns', 'drip-campaigns', 'reminders', 'notes',
+            'folders',
         ]);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
@@ -59,28 +60,38 @@ class BouncerAbilitiesSeeder extends Seeder
             $this->allowReadInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'departments', 'positions', 'notes',
+                'email-templates', 'departments', 'positions', 'notes', 'folders',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'departments', 'positions', 'notes',
+                'email-templates', 'departments', 'positions', 'notes', 'folders',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
 
             /** Regional Admin */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
-            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns'], 'Regional Admin', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'folders',
+                ], 'Regional Admin', $client);
+            $this->allowEditInGroup(['users', 'locations', 'leads', 'members', 'files', 'teams',
+                'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'folders',
+                ], 'Regional Admin', $client);
             $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
 
             /** Location Manager */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders'], 'Location Manager', $client);
-            $this->allowEditInGroup(['users', 'leads', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders'], 'Location Manager', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'access_tokens',
+                'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders', 'folders',
+                ], 'Location Manager', $client);
+            $this->allowEditInGroup(['users', 'leads', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns',
+                'scheduled-campaigns', 'positions', 'departments', 'reminders', 'folders',
+                ], 'Location Manager', $client);
             $this->allowImpersonationInGroup(['users'], 'Location Manager', $client);
 
             /** Sales Rep */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'drip-campaigns', 'scheduled-campaigns', 'reminders'], 'Sales Rep', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'drip-campaigns',
+                'scheduled-campaigns', 'reminders', 'folders',
+            ], 'Sales Rep', $client);
             $this->allowEditInGroup(['leads', 'tasks', 'calendar', 'reminders'], 'Sales Rep', $client);
 
             /** Employee */
