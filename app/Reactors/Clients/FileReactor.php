@@ -20,12 +20,6 @@ class FileReactor extends Reactor implements ShouldQueue
                 $destKey = "{$file->client_id}/{$file->user_id}/{$event->data['id']}";
             }
             Storage::disk('s3')->move($event->data['key'], $destKey);
-
-            if (array_key_exists('visibility', $event->data)) {
-                Storage::disk('s3')->setVisibility($destKey, 'public');
-            } else {
-                Storage::disk('s3')->setVisibility($destKey, 'private');
-            }
             $file->key = $destKey;
             $file->url = Storage::disk('s3')->url($destKey);
             $file->save();

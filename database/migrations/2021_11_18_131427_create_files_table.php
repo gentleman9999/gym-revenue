@@ -27,6 +27,7 @@ class CreateFilesTable extends Migration
             $table->string('permissions')->default('[]');
             $table->string('entity_type')->nullable();
             $table->string('entity_id')->nullable();
+            $table->boolean('visibility')->default(false);
             $table->boolean('hidden')->default(false);
             $table->string('type')->nullable();
             $table->foreignUuid('folder')->nullable();
