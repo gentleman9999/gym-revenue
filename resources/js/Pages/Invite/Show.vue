@@ -17,7 +17,7 @@
                 <p
                     v-if="
                         attendeeData.entity_type ==
-                        'App\\Domain\\Leads\\Models\\Lead'
+                        'App\\Domain\\EndUsers\\Leads\\Models\\Lead'
                     "
                 >
                     <b

@@ -20,7 +20,7 @@ class GymRevStoredEvent extends EloquentStoredEvent
             if (! Projectionist::isReplaying()) {
                 $user_id = null;
                 if (session('user_id')) {
-                    $user_id = session('user_id');
+                    $user_id = auth()->user()->id;
                 }
                 $client_id = null;
                 if (session('client_id')) {

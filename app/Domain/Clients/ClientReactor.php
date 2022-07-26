@@ -5,9 +5,9 @@ namespace App\Domain\Clients;
 use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Teams\Actions\CreateTeam;
-use App\Models\Endusers\Member;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientReactor extends Reactor

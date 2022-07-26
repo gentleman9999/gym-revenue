@@ -126,7 +126,7 @@
             />
             <jet-input-error :message="form.errors.description" class="mt-2" />
         </div>
-        <div class="col-span-6">
+        <div v-if="calendarEventTypes.length > 1" class="col-span-6">
             <jet-label for="calendar_event_type" value="Event Type" />
             <select
                 v-model="form.event_type_id"
@@ -472,7 +472,10 @@ export default {
                 end: props.duration.end
                     ? props.duration.end
                     : props.duration.start,
-                event_type_id: "",
+                event_type_id:
+                    calendarEventTypes.length <= 1
+                        ? calendarEventTypes[0].id
+                        : "",
                 location_id: null,
                 client_id: page.props.value.user?.client_id,
                 user_attendees: [],
@@ -488,7 +491,10 @@ export default {
                 full_day_event: calendarEvent.full_day_event,
                 start: calendarEvent.start + " UTC",
                 end: calendarEvent.end + " UTC",
-                event_type_id: calendarEvent.event_type_id,
+                event_type_id:
+                    calendarEventTypes?.length <= 1
+                        ? calendarEventTypes[0].id
+                        : calendarEvent.event_type_id,
                 location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.client_id,
                 user_attendees:

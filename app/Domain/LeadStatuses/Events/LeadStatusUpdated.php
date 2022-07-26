@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class LeadStatusUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return LeadStatus::class;
     }

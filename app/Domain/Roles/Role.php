@@ -4,7 +4,8 @@ namespace App\Domain\Roles;
 
 use App\Domain\Clients\Models\Client;
 use App\Domain\Departments\Department;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Reminders\Reminder;
@@ -14,8 +15,8 @@ use App\Models\Calendar\CalendarEvent;
 use App\Models\Clients\Location;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
-use App\Models\Endusers\Member;
 use App\Models\File;
+use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
@@ -95,10 +96,12 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = Client::class;
 
                 break;
+
             case 'email-templates':
                 $entity = EmailTemplates::class;
 
                 break;
+
             case 'sms-templates':
                 $entity = SmsTemplates::class;
 
@@ -106,6 +109,11 @@ class Role extends \Silber\Bouncer\Database\Role
 
             case 'notes':
                 $entity = Note::class;
+
+                break;
+
+            case 'folders':
+                $entity = Folder::class;
 
                 break;
         }

@@ -23,7 +23,7 @@ class CreateRole
     public function rules()
     {
         return [
-            'name' => ['string', 'required'],
+            'name' => ['required', 'string','min:2'],
             'ability_names' => ['array', 'sometimes'],
             'group' => ['required', 'integer','min:1', 'max:6'],
         ];

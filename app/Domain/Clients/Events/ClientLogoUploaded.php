@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class ClientLogoUploaded extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

@@ -15,7 +15,7 @@ class ClientServicesSet extends GymRevCrudEvent
         parent::__construct();
     }
 
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

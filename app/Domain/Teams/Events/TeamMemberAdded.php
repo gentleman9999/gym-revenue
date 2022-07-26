@@ -15,7 +15,7 @@ class TeamMemberAdded extends GymRevCrudEvent
         $this->email = $email;
     }
 
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Team::class;
     }

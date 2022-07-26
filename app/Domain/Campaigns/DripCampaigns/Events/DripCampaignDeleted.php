@@ -7,7 +7,7 @@ use App\StorableEvents\EntityDeleted;
 
 class DripCampaignDeleted extends EntityDeleted
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return DripCampaign::class;
     }
