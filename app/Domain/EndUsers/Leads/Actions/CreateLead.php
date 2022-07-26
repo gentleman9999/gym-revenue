@@ -36,7 +36,7 @@ class CreateLead extends CreateEndUser
         return array_merge($base_rules, [
             'lead_source_id' => ['required', 'exists:lead_sources,id'],
             'lead_type_id' => ['required', 'exists:lead_types,id'],
-            'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
+            'lead_status_id' => 'sometimes|required|nullable|exists:lead_statuses,id',
         ]);
     }
 
