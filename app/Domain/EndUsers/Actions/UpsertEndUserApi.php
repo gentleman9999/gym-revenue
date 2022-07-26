@@ -39,7 +39,7 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
 
     public function handle(array $data, $current_user = null)
     {
-        $id = Uuid::new();//we should use uuid here
+        $id = Uuid::new();
 
         if (array_key_exists('external_id', $data)) {
             $lead = ($this->getModel())::whereEmail($data['email'])

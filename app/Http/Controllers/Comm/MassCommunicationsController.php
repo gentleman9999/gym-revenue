@@ -7,9 +7,9 @@ use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\ClientActivity;
 use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Http\Controllers\Controller;
-use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\SmsTemplates;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -48,16 +48,16 @@ class MassCommunicationsController extends Controller
                 'conversions' => 0,
             ];
             $results['sms_templates'] = [
-                'created' => SmsTemplates::whereClientId($client_id)->count(),
-                'active' => SmsTemplates::whereClientId($client_id)->whereActive(1)->count(),
+                'created' => SmsTemplate::whereClientId($client_id)->count(),
+                'active' => SmsTemplate::whereClientId($client_id)->whereActive(1)->count(),
             ];
             $results['scheduled_campaigns'] = [
                 'created' => ScheduledCampaign::count(),
                 'active' => ScheduledCampaign::where('status', '!=', 'draft')->count(),
             ];
             $results['email_templates'] = [
-                'created' => EmailTemplates::whereClientId($client_id)->count(),
-                'active' => EmailTemplates::whereClientId($client_id)->whereActive(1)->count(),
+                'created' => EmailTemplate::whereClientId($client_id)->count(),
+                'active' => EmailTemplate::whereClientId($client_id)->whereActive(1)->count(),
             ];
             $results['drip_campaigns'] = [
                 'created' => DripCampaign::count(),

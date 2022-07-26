@@ -2,7 +2,7 @@
 
 namespace App\Domain\EndUsers\Members\Actions;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
 use Illuminate\Console\Command;

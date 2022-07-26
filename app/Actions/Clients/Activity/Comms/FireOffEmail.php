@@ -4,10 +4,8 @@ namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Users\Models\User;
-use App\Models\Comms\EmailTemplates;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class FireOffEmail
@@ -21,7 +19,7 @@ class FireOffEmail
 
     public function handle(string $client_id, $templateId, $entity_type, $entity_id)
     {
-        $template = EmailTemplates::with('gateway')->findOrFail($templateId);
+        $template = \App\Domain\Templates\EmailTemplates\Projections\EmailTemplate::with('gateway')->findOrFail($templateId);
         $recipients = [];
         $sent_to = [];
         $client_aggy = ClientAggregate::retrieve($client_id);

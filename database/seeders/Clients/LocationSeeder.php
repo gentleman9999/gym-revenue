@@ -2,10 +2,9 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Actions\Clients\Locations\CreateLocation;
-use App\Actions\Clients\Locations\ImportLocations;
-use App\Domain\Clients\Models\Client;
-use App\Models\Clients\Location;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Actions\CreateLocation;
+use App\Domain\Locations\Actions\ImportLocations;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
@@ -368,7 +367,7 @@ class LocationSeeder extends Seeder
         ];
 
         foreach ($locations as $idx => $location) {
-            $client = \App\Domain\Clients\Models\Client::whereName($location['client'])->first();
+            $client = \App\Domain\Clients\Projections\Client::whereName($location['client'])->first();
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
@@ -376,7 +375,7 @@ class LocationSeeder extends Seeder
 //            $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
 //            $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
 
-            $temp_data = Location::factory()
+            $temp_data = \App\Domain\Locations\Projections\Location::factory()
                 ->count(1)
                 ->make()[0];
             $finalData = array_merge($temp_data->toArray(), $location);

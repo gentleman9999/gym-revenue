@@ -2,7 +2,6 @@
 
 namespace App\Domain\Clients\Projections;
 
-use App\Domain\Clients\Models\Client;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;

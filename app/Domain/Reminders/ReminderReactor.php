@@ -10,7 +10,7 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ReminderReactor extends Reactor implements ShouldQueue
 {
-    public function onReminderTriggered(ReminderTriggered $event)
+    public function onReminderTriggered(ReminderTriggered $event): void
     {
 //        dd($event);
 //        Logger::debug($event);

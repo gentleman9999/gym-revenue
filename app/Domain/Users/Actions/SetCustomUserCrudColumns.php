@@ -19,7 +19,7 @@ class SetCustomUserCrudColumns
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'table' => ['required', 'string','max:50'],

@@ -5,6 +5,7 @@ namespace App\Domain\Teams\Actions;
 use function app;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Actions\ValidateTeamDeletion;
@@ -18,13 +19,16 @@ class DeleteTeam implements DeletesTeams
 {
     use AsAction;
 
-    public function handle(string $id): Team
+    public function handle(Team $team): Team
     {
-        $team = Team::findOrFail($id);
+        TeamAggregate::retrieve($team->id)->delete()->persist();
 
-        TeamAggregate::retrieve($id)->delete()->persist();
+        return $team->refresh();
+    }
 
-        return $team;
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -42,7 +46,7 @@ class DeleteTeam implements DeletesTeams
 
 //        $deleter->delete($team);
         return $this->handle(
-            $team->id
+            $team
         );
     }
 
@@ -62,6 +66,6 @@ class DeleteTeam implements DeletesTeams
     public function delete($team): Team
     {
 //        $team->purge();
-        return $this->handle($team->id);
+        return $this->handle($team);
     }
 }

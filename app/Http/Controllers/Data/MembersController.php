@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Data;
 
 use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Members\MemberAggregate;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
-use App\Models\Clients\Location;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -36,7 +36,12 @@ class MembersController extends Controller
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
         $locations = [];
         foreach ($locations_records as $location) {
@@ -198,7 +203,7 @@ class MembersController extends Controller
 
             if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->get();
+                    ->where('field', '=', 'team-location')->get();
 
                 if (count($team_locations_records) > 0) {
                     foreach ($team_locations_records as $team_locations_record) {
@@ -244,13 +249,14 @@ class MembersController extends Controller
 
         $member_aggy = MemberAggregate::retrieve($member->id);
 
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
         $member->load('notes');
-        $member = Member::whereId($member_id)->with(
-//            'detailsDesc',
-            'notes'
-        )->first();
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
@@ -325,7 +331,7 @@ class MembersController extends Controller
             } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->whereActive(1)
+                    ->where('field', '=', 'team-location')
                     ->get();
 
                 if (count($team_locations) > 0) {

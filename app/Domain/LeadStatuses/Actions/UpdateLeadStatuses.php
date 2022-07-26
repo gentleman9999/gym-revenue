@@ -19,7 +19,7 @@ class UpdateLeadStatuses
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'statuses' => ['array', 'required', 'min:1'],
@@ -29,7 +29,7 @@ class UpdateLeadStatuses
         ];
     }
 
-    public function handle(array $data)
+    public function handle(array $data): array
     {
         $statuses = $data['statuses'];
         $statusesToUpdate = collect($statuses)->filter(function ($s) {

@@ -6,7 +6,4 @@ use App\StorableEvents\GymRevShouldBeStored;
 
 class AccessTokenGranted extends GymRevShouldBeStored
 {
-    public function __construct()
-    {
-    }
 }

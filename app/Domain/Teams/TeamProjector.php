@@ -29,7 +29,7 @@ class TeamProjector extends Projector
         $team->save();
         //TODO:just use a team_location pivot table
         foreach ($event->payload['locations'] ?? [] as $location_gymrevenue_id) {
-            TeamDetail::create(['team_id' => $event->aggregateRootUuid(), 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
+            TeamDetail::createOrUpdateRecord($event->aggregateRootUuid(), 'team-location',  $location_gymrevenue_id);
         }
     }
 
@@ -40,10 +40,15 @@ class TeamProjector extends Projector
 
     public function onTeamUpdated(TeamUpdated $event): void
     {
-        Team::findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
-        TeamDetail::whereTeamId($event->aggregateRootUuid())->whereName('team-location')->delete();
-        foreach ($event->payload['locations'] as $location_gymrevenue_id) {
-            TeamDetail::create(['team_id' => $event->aggregateRootUuid(), 'name' => 'team-location', 'value' => $location_gymrevenue_id]);
+        $team_fillable_data = array_filter($event->payload, function ($key) {
+            return in_array($key, (new Team())->getFillable());
+        }, ARRAY_FILTER_USE_KEY);
+        Team::findOrFail($event->aggregateRootUuid())->updateOrFail($team_fillable_data);
+        TeamDetail::whereTeamId($event->aggregateRootUuid())->whereField('team-location')->delete();
+        if (array_key_exists('locations', $event->payload)) {
+            foreach ($event->payload['locations'] as $location_gymrevenue_id) {
+                TeamDetail::createOrUpdateRecord($event->aggregateRootUuid(), 'team-location', $location_gymrevenue_id);
+            }
         }
     }
 

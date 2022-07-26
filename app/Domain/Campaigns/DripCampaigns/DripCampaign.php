@@ -4,7 +4,7 @@ namespace App\Domain\Campaigns\DripCampaigns;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\Enums\CampaignStatusEnum;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
@@ -67,7 +67,7 @@ class DripCampaign extends GymRevProjection
         return $this->can_publish;
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {

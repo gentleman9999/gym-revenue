@@ -4,8 +4,10 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\UserAggregate;
+use App\Http\Middleware\InjectClientId;
 use App\Models\Calendar\CalendarEvent;
 use App\Support\Uuid;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -20,24 +22,18 @@ class CreateReminderFromCalendarEvent
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'id' => ['string', 'sometimes'],
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle(array $data): Reminder
     {
-        if (! is_null($current_user)) {
-            $client_id = $current_user->client_id;
-            $data['client_id'] = $client_id;
-        }
-
         $id = Uuid::new();
         $data['id'] = $id;
         $data['entity_type'] = CalendarEvent::class;
-        $data['user_id'] = $current_user->id;
         $data['name'] = 'User Generated Reminder';
         $data['remind_time'] = 30;
 
@@ -46,18 +42,24 @@ class CreateReminderFromCalendarEvent
         return Reminder::findOrFail($id);
     }
 
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    //TODO: implement real authorization
     public function authorize(ActionRequest $request): bool
     {
         return true;
     }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request, Reminder $reminder): RedirectResponse
     {
         $data = $request->validated();
-        $data['entity_id'] = $id;
+        $data['entity_id'] = $reminder->id;
+        $data['user_id'] = $request->user()->id;
         $reminder = $this->handle(
             $data,
-            $request->user(),
         );
 
         Alert::success("Reminder '{$reminder->name}' was created")->flash();

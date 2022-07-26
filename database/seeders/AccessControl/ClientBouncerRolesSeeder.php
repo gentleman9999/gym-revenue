@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\AccessControl;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
 use Bouncer;
 use Illuminate\Database\Seeder;

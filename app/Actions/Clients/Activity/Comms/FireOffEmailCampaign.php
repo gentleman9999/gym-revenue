@@ -3,10 +3,10 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\EmailCampaigns;
-use App\Models\Comms\EmailTemplates;
 use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
@@ -30,7 +30,7 @@ class FireOffEmailCampaign
         $campaign = EmailCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
             ->findOrFail($email_campaign_id);
         foreach ($campaign->assigned_template as $assigned_template) {
-            $templates[] = EmailTemplates::with('gateway')->findOrFail($assigned_template->value);
+            $templates[] = EmailTemplate::with('gateway')->findOrFail($assigned_template->value);
         }
         foreach ($templates as $template) {
             $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();

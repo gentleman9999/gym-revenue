@@ -254,7 +254,7 @@ class LeadProjector extends Projector
     protected function createOrUpdateLeadDetailsAndNotes($event, $lead)
     {
         foreach ($this->details as $field) {
-            LeadDetails::createOrUpdateRecord($event->aggregateRootUuid(), $lead->client_id, $field, $event->payload[$field] ?? null);
+            LeadDetails::createOrUpdateRecord($event->aggregateRootUuid(),  $field, $event->payload[$field] ?? null);
         }
 
         $notes = $event->payload['notes'] ?? false;

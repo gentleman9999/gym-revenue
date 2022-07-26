@@ -10,7 +10,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ReminderProjector extends Projector
 {
-    public function onReminderCreated(ReminderCreated $event)
+    public function onReminderCreated(ReminderCreated $event): void
     {
         $reminder = (new Reminder())->writeable();
         $reminder->id = $event->payload['id'];
@@ -18,17 +18,17 @@ class ReminderProjector extends Projector
         $reminder->save();
     }
 
-    public function onReminderUpdated(ReminderUpdated $event)
+    public function onReminderUpdated(ReminderUpdated $event): void
     {
         Reminder::findOrFail($event->payload['id'])->writeable()->updateOrFail($event->payload);
     }
 
-    public function onReminderDeleted(ReminderDeleted $event)
+    public function onReminderDeleted(ReminderDeleted $event): void
     {
         Reminder::findOrFail($event->id)->writeable()->delete();
     }
 
-    public function onReminderTriggered(ReminderTriggered $event)
+    public function onReminderTriggered(ReminderTriggered $event): void
     {
         Reminder::findOrFail($event->id)->writeable()->updateOrFail(['triggered_at' => $event->createdAt()]);
     }

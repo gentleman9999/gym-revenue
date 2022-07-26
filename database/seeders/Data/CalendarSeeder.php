@@ -3,9 +3,9 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Clients\Calendar\CreateCalendarEvent;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 

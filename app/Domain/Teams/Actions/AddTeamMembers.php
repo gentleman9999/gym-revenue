@@ -3,6 +3,7 @@
 namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
@@ -21,7 +22,7 @@ class AddTeamMembers
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'emails' => ['required', 'array', 'min:1'],
@@ -41,6 +42,11 @@ class AddTeamMembers
         $team->refresh();
 
         return $users_added;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

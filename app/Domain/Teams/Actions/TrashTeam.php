@@ -4,6 +4,7 @@ namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -14,9 +15,9 @@ class TrashTeam
 {
     use AsAction;
 
-    public function handle(string $id)
+    public function handle(Team $team)
     {
-        TeamAggregate::retrieve($id)->trash()->persist();
+        TeamAggregate::retrieve($team->id)->trash()->persist();
 
         return Team::withTrashed()->findOrFail($id);
     }
@@ -26,6 +27,11 @@ class TrashTeam
         $current_user = $request->user();
 
         return $current_user->can('teams.trash', Team::class);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function asController(ActionRequest $request, $id): Team

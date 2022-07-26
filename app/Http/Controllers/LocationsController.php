@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
+use App\Domain\Locations\Projections\LocationDetails;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
-use App\Models\Clients\Location;
-use App\Models\Clients\LocationDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -68,7 +68,7 @@ class LocationsController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(Location $location)
     {
         $user = request()->user();
         if ($user->cannot('locations.update', Location::class)) {
@@ -77,15 +77,7 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        if (! $id) {
-            Alert::error("No Location ID provided")->flash();
-
-            return Redirect::back();
-        }
-
-        $location = Location::findOrFail($id);
-
-        $locationDetails = LocationDetails::where('location_id', $id)->get();
+        $locationDetails = LocationDetails::where('location_id', $location->id)->get();
         $poc_first = $poc_last = $poc_phone = '';
 
         foreach ($locationDetails as $locationitems) {
@@ -173,7 +165,7 @@ class LocationsController extends Controller
             } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->whereActive(1)
+                    ->where('field', '=', 'team-location')
                     ->get();
 
                 if (count($team_locations) > 0) {
@@ -183,8 +175,7 @@ class LocationsController extends Controller
                         $in_query[] = $team_location->value;
                     }
 
-                    $results = Location::whereClientId($client_id)
-                        ->whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $in_query);
                 }
             }
         } else {
@@ -197,17 +188,11 @@ class LocationsController extends Controller
         return $results;
     }
 
-    public function view($id)
+    public function view(Location $location)
     {
         $user = request()->user();
         if ($user->cannot('locations.read', Location::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
-
-            return Redirect::back();
-        }
-
-        if (! $id) {
-            Alert::error("No Location ID provided")->flash();
 
             return Redirect::back();
         }
@@ -227,7 +212,7 @@ class LocationsController extends Controller
             }
         }
 
-        $data = Location::findOrFail($id)->toArray();
+        $data = $location->toArray();
         $data['poc_first'] = $poc_first;
         $data['poc_last'] = $poc_last;
         $data['poc_phone'] = $poc_phone;

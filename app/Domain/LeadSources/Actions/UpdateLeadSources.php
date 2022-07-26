@@ -19,7 +19,7 @@ class UpdateLeadSources
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'sources' => ['array', 'required', 'min:1'],
@@ -29,7 +29,7 @@ class UpdateLeadSources
         ];
     }
 
-    public function handle(array $data)
+    public function handle(array $data): LeadSource
     {
         $sources = $data['sources'];
         $sourcesToUpdate = collect($sources)->filter(function ($s) {
@@ -70,7 +70,7 @@ class UpdateLeadSources
         return $current_user->can('lead-sources.create', LeadSource::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): LeadSource
     {
         return $this->handle(
             $request->validated(),

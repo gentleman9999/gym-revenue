@@ -47,7 +47,7 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
 
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'sms_by_rep', $event->modifiedBy(), $misc);
+        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'sms_by_rep', $event->modifiedBy(), $misc);
     }
 
     public function onEndUserWasCalledByRep(EndUserWasCalledByRep $event): void
@@ -61,7 +61,7 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'called_by_rep', $event->modifiedBy(), $misc);
+        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'called_by_rep', $event->modifiedBy(), $misc);
 
         $notes = $misc['notes'] ?? false;
         if ($notes) {
@@ -79,7 +79,7 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
     protected function createOrUpdateEndUserDetailsAndNotes($event, EndUser $end_user): void
     {
         foreach ($this->getModel()->getDetailFields() as $field) {
-            ($end_user::getDetailsModel())::createOrUpdateRecord($event->aggregateRootUuid(), $end_user->client_id, $field, $event->payload[$field] ?? null);
+            ($end_user::getDetailsModel())::createOrUpdateRecord($event->aggregateRootUuid(), $field, $event->payload[$field] ?? null);
         }
 
         $notes = $event->payload['notes'] ?? false;
@@ -92,7 +92,7 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
                 'created_by_user_id' => $event->modifiedBy(),
             ]);
 
-            $noted_created = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'note_created',  $notes['note']);
+            $noted_created = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'note_created',  $notes['note']);
         }
     }
 

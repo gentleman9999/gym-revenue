@@ -8,6 +8,7 @@ use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 use App\Enums\SecurityGroupEnum;
 use function auth;
+use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 use function redirect;
@@ -32,7 +33,7 @@ class ImpersonateUser
         ];
     }
 
-    public function handle()
+    public function handle(): mixed
     {
         $results = false;
         $data = request()->all();
@@ -91,7 +92,7 @@ class ImpersonateUser
         return response($results, $code);
     }
 
-    public function htmlResponse($result)
+    public function htmlResponse($result): RedirectResponse
     {
         if ($result) {
             Alert::info('You are now in impersonation mode! Disable it in the name dropdown or the bottom of the screen!')->flash();

@@ -21,17 +21,17 @@ class PositionProjector extends Projector
         $position->save();
     }
 
-    public function onPositionUpdated(PositionUpdated $event)
+    public function onPositionUpdated(PositionUpdated $event): void
     {
         Position::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
     }
 
-    public function onPositionTrashed(PositionTrashed $event)
+    public function onPositionTrashed(PositionTrashed $event): void
     {
         Position::withTrashed()->findOrFail($event->aggregateRootUuid())->delete();
     }
 
-    public function onPositionRestored(PositionRestored $event)
+    public function onPositionRestored(PositionRestored $event): void
     {
         Position::withTrashed()->findOrFail($event->aggregateRootUuid())->restore();
     }

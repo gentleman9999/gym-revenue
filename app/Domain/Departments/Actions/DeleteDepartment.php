@@ -16,10 +16,9 @@ class DeleteDepartment
 {
     use AsAction;
 
-    public function handle(string $id): Position
+    public function handle(Department $department): Position
     {
-        $department = Department::withTrashed()->findOrFail($id);
-        DepartmentAggregate::retrieve($id)->delete()->persist();
+        DepartmentAggregate::retrieve($department->id)->delete()->persist();
 
         return $department;
     }
@@ -39,7 +38,7 @@ class DeleteDepartment
     public function asController(ActionRequest $request, Department $department): Department
     {
         return $this->handle(
-            $department->id,
+            $department,
         );
     }
 

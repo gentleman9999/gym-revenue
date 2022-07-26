@@ -4,7 +4,7 @@ namespace App\Domain\Audiences\Actions;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Members\Projections\Member;
 use App\Support\Uuid;
 use Illuminate\Console\Command;

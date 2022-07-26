@@ -4,10 +4,10 @@ namespace App\Actions\Dashboard\Home;
 
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
-use App\Models\Clients\Location;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetDashboardWidgets
@@ -34,7 +34,7 @@ class GetDashboardWidgets
             } else {
                 // get the locations the active team has access to
                 $num_locs = TeamDetail::whereTeamId($team->id)
-                    ->where('name', '=', 'team-location')->whereActive(1)
+                    ->where('field', '=', 'team-location')
                     ->count();
             }
 

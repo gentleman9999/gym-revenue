@@ -20,7 +20,7 @@ class CreateRole
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['required', 'string','min:2'],
@@ -29,7 +29,7 @@ class CreateRole
         ];
     }
 
-    public function handle(array $data)
+    public function handle(array $data): Role
     {
         $id = (Role::withoutGlobalScopes()->max('id') ?? 0) + 1;
 
@@ -50,7 +50,7 @@ class CreateRole
         return $current_user->can('roles.create', Role::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): Role
     {
         return $this->handle(
             $request->validated(),

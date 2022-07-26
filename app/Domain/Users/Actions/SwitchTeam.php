@@ -16,7 +16,7 @@ class SwitchTeam
 {
     use AsAction;
 
-    public function handle(Team $team)
+    public function handle(Team $team): Team
     {
         session([
             'current_team' => [
@@ -37,7 +37,7 @@ class SwitchTeam
         return count($current_user->teams) > 1;
     }
 
-    public function asController(ActionRequest $request, Team $team)
+    public function asController(ActionRequest $request, Team $team): Team
     {
         return $this->handle(
             $team

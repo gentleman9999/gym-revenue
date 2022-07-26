@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Comm;
 
-use App\Actions\Clients\Activity\Comms\CreateEmailTemplate;
-use App\Actions\Clients\Activity\Comms\UpdateEmailTemplate;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Templates\EmailTemplates\Actions\CreateEmailTemplate;
+use App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -51,7 +51,7 @@ class EmailTemplateSeeder extends Seeder
 
             $template->active = 1;
 
-            UpdateEmailTemplate::run($template->toArray());
+            UpdateEmailTemplate::run($template, $template->toArray());
         }
     }
 }
