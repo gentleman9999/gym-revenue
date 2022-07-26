@@ -46,6 +46,7 @@ class FilesController extends Controller
                 ->appends(request()->except('page'));
         }
 
+
         return Inertia::render('Files/Show', [
             'files' => $files,
         ]);
