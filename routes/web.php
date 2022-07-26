@@ -153,6 +153,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(function () {
+    Route::get('/', \App\Http\Controllers\FoldersController::class . '@index')->name('folders');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
     Route::get('/', \App\Http\Controllers\RemindersController::class . '@index')->name('reminders');
     Route::get('/create', \App\Http\Controllers\RemindersController::class . '@create')->name('reminders.create');
