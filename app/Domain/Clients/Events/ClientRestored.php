@@ -7,7 +7,7 @@ use App\StorableEvents\EntityRestored;
 
 class ClientRestored extends EntityRestored
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

@@ -13,7 +13,7 @@ class FilesController extends Controller
 {
     public function index(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
 
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
@@ -27,6 +27,7 @@ class FilesController extends Controller
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
+                ->whereHidden(false)
                 ->whereEntityType(null)
                 ->filter($request->only('search', 'trashed'))
                 ->sort()
@@ -36,6 +37,7 @@ class FilesController extends Controller
             $files = File::with('client')
                 ->whereClientId($client_id)
                 ->whereUserId(null)
+                ->whereHidden(false)
                 ->whereEntityType(null)
                 ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
                 ->filter($request->only('search', 'trashed'))
@@ -43,6 +45,7 @@ class FilesController extends Controller
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
         }
+
 
         return Inertia::render('Files/Show', [
             'files' => $files,
@@ -71,7 +74,7 @@ class FilesController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
 
         if (is_null($client_id)) {
             abort(403);

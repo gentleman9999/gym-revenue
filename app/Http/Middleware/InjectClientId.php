@@ -19,9 +19,6 @@ class InjectClientId
         $user = $request->user();
         if ($user->isClientUser()) {
             $this->addClientIdToRequest($request, $user->client_id);
-        } elseif ($user->isAdmin()) {
-            $client_id = $user->currentClientId();
-            $this->addClientIdToRequest($request, $client_id);
         }
 
         return $next($request);
@@ -49,7 +46,7 @@ class InjectClientId
     protected function isStringKeyedArray(array $arr)
     {
         if ([] === $arr) {
-            return false;
+            return true;
         }
 
         return array_keys($arr) !== range(0, count($arr) - 1);

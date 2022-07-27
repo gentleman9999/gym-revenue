@@ -7,7 +7,7 @@ use App\StorableEvents\EntityTrashed;
 
 class ClientTrashed extends EntityTrashed
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

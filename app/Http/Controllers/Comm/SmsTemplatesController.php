@@ -19,10 +19,6 @@ class SmsTemplatesController extends Controller
         $results = [];
 
         if ((! is_null($client_id))) {
-            // Get the current client or its cape and bay
-            $current_team = request()->user()->currentTeam()->first();
-            $client = Client::find($client_id);
-
             // Get the correct Model
             $template_model = ($type == 'email') ? new EmailTemplates() : new SmsTemplates();
             // Query for all templates with that client id
@@ -57,7 +53,7 @@ class SmsTemplatesController extends Controller
 
     public function index()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
 
         $page_count = 10;
@@ -113,7 +109,7 @@ class SmsTemplatesController extends Controller
                 'markup' => 'required|max:130',
             ]
         );
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         // @todo - this could come in handy
         //$is_client_user = request()->user()->isClientUser();
         try {
@@ -150,7 +146,7 @@ class SmsTemplatesController extends Controller
         $template->update($data);
         $template->save();
 
-        ClientAggregate::retrieve($request->user()->currentClientId())
+        ClientAggregate::retrieve($request->user()->client_id)
             ->updateSmsTemplate($template->id, request()->user()->id, $old_values, $template->toArray())
             ->persist();
 //        $template['created_by_user_id'] = $request->user()->id;
@@ -192,7 +188,7 @@ class SmsTemplatesController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $templates = [
             'data' => [],

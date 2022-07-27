@@ -102,6 +102,21 @@
                     </ul>
                 </div>
                 <jet-input-error :message="form.errors.name" class="mt-2" />
+
+                <div
+                    class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
+                >
+                    <input
+                        id="visibility"
+                        value="visibility"
+                        type="checkbox"
+                        v-model="form.visibility"
+                    />
+                    <jet-label
+                        for="visibility"
+                        value="Make this upload public?"
+                    />
+                </div>
             </section>
         </template>
 
@@ -230,7 +245,10 @@ const allFiles = computed(() =>
 const formSubmitOptions = props?.formSubmitOptions || {};
 
 const handleSubmit = () => {
-    Inertia.post(route("files.store"), allFiles.value, {
+    const payload = allFiles.value;
+    payload.forEach((file) => (file.visibility = form.visibility));
+
+    Inertia.post(route("files.store"), payload, {
         onSuccess: () => {
             emit("submitted");
             form.reset();

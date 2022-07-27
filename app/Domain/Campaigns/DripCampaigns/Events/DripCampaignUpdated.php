@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class DripCampaignUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return DripCampaign::class;
     }

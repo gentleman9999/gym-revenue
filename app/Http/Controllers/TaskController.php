@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Reminders\Reminder;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Member;
+use App\Models\Clients\Location;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -19,7 +21,7 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -89,7 +91,12 @@ class TaskController extends Controller
             $overdue_tasks = [];
         }
 
-        $current_team = $request->user()->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $client = Client::with(['home_team'])->find($client_id);
 
         $is_home_team = $client->home_team_id == $current_team->id;
@@ -114,7 +121,8 @@ class TaskController extends Controller
             'client_users' => $users,
             'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
             'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
-            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
+            'locations' => Location::whereClientId($client_id)->select('id', 'name')->get(),
+            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->whereType('Task')->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
             'overdue_tasks' => $overdue_tasks,

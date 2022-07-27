@@ -126,9 +126,8 @@ class UserProjector extends Projector
 
             foreach ($user_teams as $i => $team_id) {
                 if ($i === 0) {
-                    $user->current_team_id = $team_id;
+                    $user->default_team_id = $team_id;
                     $user->save();
-                    UserDetails::create(['user_id' => $user->id, 'name' => 'default_team', 'value' => $team_id]);
                 }
 
 //                $team = Team::findOrFail($team_id);

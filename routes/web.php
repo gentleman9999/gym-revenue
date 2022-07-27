@@ -32,7 +32,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/sales-slideshow', \App\Ht
 Route::middleware(['auth:sanctum', 'verified'])->get('/payment-gateways', \App\Http\Controllers\WorkoutGeneratorController::class . '@index')->name('payment-gateways');
 
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-location', \App\Http\Controllers\LocationsController::class . '@switch')->name('current-location.update');
-Route::middleware(['auth:sanctum', 'verified'])->put('/current-team', \App\Domain\Users\Actions\SwitchTeam::class)->name('current-team.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/current-team/{team}', \App\Domain\Users\Actions\SwitchTeam::class)->name('current-team.update');
 Route::middleware(['auth:sanctum', 'verified'])->put('/current-calendar-location', \App\Http\Controllers\LocationsController::class . '@switchCalendar')->name('current-location-qv.update');
 //@todo: need to add in ACL/middleware for CnB users
 Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(function () {
@@ -107,18 +107,18 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Domain\Leads\Actions\CreateLead::class)->name('data.leads.store');
+        Route::post('/create', \App\Domain\EndUsers\Leads\Actions\CreateLead::class)->name('data.leads.store');
         Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{lead}', \App\Domain\Leads\Actions\UpdateLead::class)->name('data.leads.update');
-        Route::post('/assign', \App\Http\Controllers\Data\LeadsController::class . '@assign')->name('data.leads.assign');
+        Route::put('/{lead}', \App\Domain\EndUsers\Leads\Actions\UpdateLead::class)->name('data.leads.update');
+        Route::put('/assign/{lead}', \App\Domain\EndUsers\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
         Route::post('/contact/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
-        Route::delete('/delete/{lead}', \App\Domain\Leads\Actions\TrashLead::class)->name('data.leads.trash');
-        Route::post('/delete/{lead}/restore', \App\Domain\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
+        Route::delete('/delete/{lead}', \App\Domain\EndUsers\Leads\Actions\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{lead}/restore', \App\Domain\EndUsers\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
         Route::get('/view/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
@@ -126,14 +126,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('members')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
         Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
-        Route::post('/', \App\Actions\Endusers\Members\CreateMember::class)->name('data.members.store');
-        Route::get('/show/{id}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
-        Route::get('/edit/{id}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
-        Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
-        Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
-        Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Members\RestoreMember::class)->name('data.members.restore');
-        Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
+        Route::post('/', \App\Domain\EndUsers\Members\Actions\CreateMember::class)->name('data.members.store');
+        Route::get('/show/{member}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
+        Route::get('/edit/{member}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
+        Route::put('/{member}', \App\Domain\EndUsers\Members\Actions\UpdateMember::class)->name('data.members.update');
+        Route::post('/contact/{member}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::delete('/delete/{member}', \App\Domain\EndUsers\Members\Actions\TrashMember::class)->name('data.members.trash');
+        Route::post('/delete/{member}/restore', \App\Domain\EndUsers\Members\Actions\RestoreMember::class)->withTrashed()->name('data.members.restore');
+        Route::get('/view/{member}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
     });
 
@@ -151,6 +151,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
     Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(function () {
+    Route::get('/', \App\Http\Controllers\FoldersController::class . '@index')->name('folders');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
@@ -222,6 +226,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
     Route::post('/client-services', \App\Domain\Clients\Actions\SetClientServices::class)->name('settings.client-services.update');
+    Route::put('/social-media-set', \App\Domain\Clients\Actions\UpdateSocialMedias::class)->name('settings.social-media.update');
+    Route::put('/gateway-set', \App\Domain\Clients\Actions\UpdateGateways::class)->name('settings.gateway.update');
+    Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');
+    Route::delete('/logo', \App\Domain\Clients\Actions\DeleteLogo::class)->name('settings.logo.delete');
     Route::post('/trial-memberships', \App\Http\Controllers\ClientSettingsController::class . '@updateTrialMembershipTypes')->name('settings.trial-membership-types.update');
 });
 
@@ -311,3 +319,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-com')->group(funct
     Route::get('/', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass_com.dashboard');
     Route::get('/{type}', \App\Http\Controllers\MassCommunicationController::class . '@page')->name('mass_com.page');
 });
+
+Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\GetClients::class)->name('clients');
+Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');

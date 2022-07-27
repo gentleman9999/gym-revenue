@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class ScheduledCampaignUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return ScheduledCampaign::class;
     }

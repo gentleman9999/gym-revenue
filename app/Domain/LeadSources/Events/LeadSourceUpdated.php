@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class LeadSourceUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return LeadSource::class;
     }

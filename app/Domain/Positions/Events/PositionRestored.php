@@ -7,7 +7,7 @@ use App\StorableEvents\EntityRestored;
 
 class PositionRestored extends EntityRestored
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Position::class;
     }

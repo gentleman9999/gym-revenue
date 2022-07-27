@@ -3,13 +3,6 @@
         @submit="handleSubmit"
         class="w-full flex flex-col px-6 py-6 space-y-4"
     >
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <div class="flex flex-row justify-between">
             <div class="flex">
                 <jet-label for="full_day_event" value="All Day" />
@@ -24,11 +17,15 @@
             </div>
             <div v-if="calendar_event?.event_completion == null">
                 Project Status:
-                <div class="badge badge-error gap-2">incomplete</div>
+                <div class="badge badge-error gap-2 bg-base-content">
+                    incomplete
+                </div>
             </div>
             <div v-else>
                 Project Status:
-                <div class="badge badge-success gap-2">complete</div>
+                <div class="badge badge-success gap-2 bg-base-content">
+                    complete
+                </div>
             </div>
         </div>
         <div class="flex flex-col">
@@ -47,7 +44,8 @@
                 :month-change-on-scroll="false"
                 :auto-apply="true"
                 :close-on-scroll="true"
-                class="bg-neutral-100 text-neutral-900"
+                class="bg-neutral-800 text-neutral-100"
+                dark
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
         </div>
@@ -65,7 +63,8 @@
                     :auto-apply="true"
                     :close-on-scroll="true"
                     :disabled="calendar_event?.type.type === 'Task'"
-                    class="bg-neutral-100 text-neutral-900"
+                    class="bg-neutral-800 text-neutral-100"
+                    dark
                 />
                 <jet-input-error :message="form.errors.end" class="mt-2" />
             </div>
@@ -74,7 +73,7 @@
                 <jet-label for="user_attendees" value="Select User Attendees" />
                 <multiselect
                     v-model="form.user_attendees"
-                    class="bg-neutral-100 text-neutral-900 py-2"
+                    class="bg-neutral-800 text-neutral-100 py-2"
                     id="user_attendees"
                     mode="tags"
                     :close-on-select="false"
@@ -91,27 +90,12 @@
             </div>
         </template>
 
-        <!-- <div class="col-span-6" v-if="calendar_event?.owner_id">
-            <div class="avatar">
-                <div
-                    class="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
-                >
-                    <img :src="calendar_event?.event_owner.profile_photo_url" />
-                </div>
-            </div>
-            <div>
-                <h1>
-                    {{ calendar_event?.event_owner.name }}
-                </h1>
-            </div>
-        </div> -->
-
         <div class="col-span-6">
             <jet-label for="title" value="Title" />
             <input
                 id="title"
                 type="text"
-                class="bg-neutral-100 text-neutral-900"
+                class="bg-neutral-800 text-neutral-100"
                 v-model="form.title"
                 autofocus
             />
@@ -121,16 +105,16 @@
             <jet-label for="description" value="Description" />
             <textarea
                 id="description"
-                class="bg-neutral-100 text-neutral-900"
+                class="bg-neutral-800 text-neutral-100"
                 v-model="form.description"
             />
             <jet-input-error :message="form.errors.description" class="mt-2" />
         </div>
-        <div class="col-span-6">
+        <div v-if="calendarEventTypes.length > 1" class="col-span-6">
             <jet-label for="calendar_event_type" value="Event Type" />
             <select
                 v-model="form.event_type_id"
-                class="bg-neutral-100 text-neutral-900"
+                class="bg-neutral-800 text-neutral-100"
             >
                 <option
                     v-for="{ id, name } in calendarEventTypes"
@@ -154,7 +138,7 @@
             <jet-label for="location_id" value="Event Location" />
             <select
                 v-model="form.location_id"
-                class="bg-neutral-100 text-neutral-900"
+                class="bg-neutral-800 text-neutral-100"
             >
                 <option v-for="{ id, name } in locations" :value="id">
                     {{ name }}
@@ -169,7 +153,7 @@
             <jet-label for="lead_attendees" value="Select Lead Attendees" />
             <multiselect
                 v-model="form.lead_attendees"
-                class="py-2 bg-neutral-100 text-neutral-900"
+                class="py-2 bg-neutral-800 text-neutral-100"
                 id="lead_attendees"
                 mode="tags"
                 :close-on-select="false"
@@ -188,7 +172,7 @@
             <jet-label for="member_attendees" value="Select Member Attendees" />
             <multiselect
                 v-model="form.member_attendees"
-                class="py-2 bg-neutral-100 text-neutral-900"
+                class="py-2 bg-neutral-800 text-neutral-100"
                 id="member_attendees"
                 mode="tags"
                 :close-on-select="false"
@@ -265,7 +249,7 @@
                 <input
                     id="my_reminder"
                     type="text"
-                    class="bg-neutral-100 text-neutral-900"
+                    class="bg-neutral-800 text-neutral-100"
                     v-model="form.my_reminder"
                 />
                 <jet-input-error
@@ -472,9 +456,12 @@ export default {
                 end: props.duration.end
                     ? props.duration.end
                     : props.duration.start,
-                event_type_id: "",
+                event_type_id:
+                    calendarEventTypes.length <= 1
+                        ? calendarEventTypes[0].id
+                        : "",
                 location_id: null,
-                client_id: page.props.value.user?.current_client_id,
+                client_id: page.props.value.user?.client_id,
                 user_attendees: [],
                 lead_attendees: [] ?? "",
                 member_attendees: [],
@@ -488,9 +475,12 @@ export default {
                 full_day_event: calendarEvent.full_day_event,
                 start: calendarEvent.start + " UTC",
                 end: calendarEvent.end + " UTC",
-                event_type_id: calendarEvent.event_type_id,
+                event_type_id:
+                    calendarEventTypes?.length <= 1
+                        ? calendarEventTypes[0].id
+                        : calendarEvent.event_type_id,
                 location_id: calendarEvent.location_id,
-                client_id: page.props.value.user?.current_client_id,
+                client_id: page.props.value.user?.client_id,
                 user_attendees:
                     calendarEvent.user_attendees?.map(
                         (user_attendee) => user_attendee.id

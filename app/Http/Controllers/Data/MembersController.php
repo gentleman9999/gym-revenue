@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Data;
 
 use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\LeadAggregate;
+use App\Domain\EndUsers\Members\MemberAggregate;
+use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Clients\Location;
-use App\Models\Endusers\Member;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -29,12 +30,23 @@ class MembersController extends Controller
             return Redirect::back();
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
-
+        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find(auth()->user()->default_team_id);
+        }
+        $team_users = $current_team->team_users()->get();
+        $locations = [];
+        foreach ($locations_records as $location) {
+            $locations[$location->gymrevenue_id] = $location->name;
+        }
         if (! empty($members_model)) {
             $members = $members_model
                 ->with('location')
@@ -72,11 +84,17 @@ class MembersController extends Controller
         }
 
 
+        $available_member_owners = [];
+        foreach ($team_users as $team_user) {
+            $available_member_owners[$team_user->user_id] = "{$team_user->user->name}";
+        }
 
         return Inertia::render('Members/Index', [
             'members' => $members,
             'routeName' => request()->route()->getName(),
             'title' => 'Members',
+            'owners' => $available_member_owners,
+            'locations' => $locations,
             //'isClientUser' => $is_client_user,
             'filters' => $request->all(
                 'search',
@@ -98,7 +116,7 @@ class MembersController extends Controller
 
     public function claimed(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
 
         $page_count = 10;
@@ -135,15 +153,12 @@ class MembersController extends Controller
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
-        //consequences, potentially adding the lead to the wrong client, or
+        //consequences, potentially adding the member to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = auth()->user();
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
-        $team_users = $current_team->team_users()->get();
-
 
         if ($user->cannot('members.create', Member::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -171,11 +186,16 @@ class MembersController extends Controller
             /**
              * BUSINESS RULES
              * 1. There must be an active client and an active team.
-             * 2. Client Default Team, then all leads from the client
+             * 2. Client Default Team, then all members from the client
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
 
@@ -204,7 +224,7 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function edit($member_id)
+    public function edit(Member $member)
     {
         $user = request()->user();
         if ($user->cannot('members.update', Member::class)) {
@@ -212,18 +232,13 @@ class MembersController extends Controller
 
             return Redirect::back();
         }
-        if (! $member_id) {
-            Alert::error("Access Denied or Member does not exist")->flash();
-
-            return Redirect::route('data.members');
-        }
         //@TODO: we may want to embed the currentClientId in the form as a field
         //instead of getting the value here.  if you have multiple tabs open, and
         // one has an outdated currentClient id, creating would have unintended ]
-        //consequences, potentially adding the lead to the wrong client, or
+        //consequences, potentially adding the member to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
@@ -232,10 +247,11 @@ class MembersController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $member_aggy = LeadAggregate::retrieve($member_id);
+        $member_aggy = MemberAggregate::retrieve($member->id);
 
         $current_team = $user->currentTeam()->first();
         $team_users = $current_team->team_users()->get();
+        $member->load('notes');
         $member = Member::whereId($member_id)->with(
 //            'detailsDesc',
             'notes'
@@ -262,39 +278,18 @@ class MembersController extends Controller
         ]);
     }
 
-    public function show($member_id)
+    public function show(Member $member)
     {
-        // @todo - set up scoping for a sweet Access Denied if this user is not part of the user's scoped access.
-        if (! $member_id) {
-            Alert::error("Access Denied or Member does not exist")->flash();
-
-            return Redirect::route('data.members');
-        }
-        $aggy = LeadAggregate::retrieve($member_id);
-        $preview_note = Note::select('note')->whereEntityId($member_id)->get();
+        $aggy = MemberAggregate::retrieve($member->id);
+        $preview_note = Note::select('note')->whereEntityId($member->id)->get();
 
 
         return Inertia::render('Members/Show', [
-            'member' => Member::whereId($member_id)->with(['detailsDesc', 'trialMemberships'])->first(),
+            'member' => $member->load(['detailsDesc']),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
         ]);
-    }
-
-    public function assign()
-    {
-        $data = request()->all();
-        $user = request()->user();
-        if ($user->cannot('members.contact', Member::class)) {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-
-            return Redirect::back();
-        }
-
-        // @todo - change to laravel style Validation
-
-        return redirect()->back();
     }
 
     private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
@@ -321,7 +316,12 @@ class MembersController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -354,7 +354,7 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function contact($member_id)
+    public function contact(Member $member)
     {
         $user = request()->user();
         if ($user->cannot('members.contact', Member::class)) {
@@ -363,36 +363,33 @@ class MembersController extends Controller
             return Redirect::back()->with('selectedMemberDetailIndex', 0);
         }
 
-        $member = Member::find($member_id);
+        if (array_key_exists('method', request()->all())) {
+            $aggy = MemberAggregate::retrieve($member->id);
+            $data = request()->all();
 
-        if ($member) {
-            if (array_key_exists('method', request()->all())) {
-                $aggy = LeadAggregate::retrieve($member_id);
-                $data = request()->all();
-
-                $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
-                foreach ($aggy->getAppliedEvents() as $value) {
-                    $contains = Str::contains(get_class($value), ['LeadWasCalled', 'LeadWasTextMessaged', 'LeadWasEmailed']);
-                    if ($contains) {
-                        $data['interaction_count']++;
-                    }
+            $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
+            foreach ($aggy->getAppliedEvents() as $value) {
+                $contains = Str::contains(get_class($value), ['MemberWasCalled', 'MemberWasTextMessaged', 'MemberWasEmailed']);
+                if ($contains) {
+                    $data['interaction_count']++;
                 }
+            }
 
-                switch (request()->get('method')) {
+            switch (request()->get('method')) {
                     case 'email':
-                        $aggy->email($data, auth()->user()->id)->persist();
+                        $aggy->email($data)->persist();
                         Alert::success("Email sent to member")->flash();
 
                         break;
 
                     case 'phone':
-                        $aggy->logPhoneCall($data, auth()->user()->id)->persist();
+                        $aggy->logPhoneCall($data)->persist();
                         Alert::success("Call Log Updated")->flash();
 
                         break;
 
                     case 'sms':
-                        $aggy->textMessage($data, auth()->user()->id)->persist();
+                        $aggy->textMessage($data)->persist();
                         Alert::success("SMS Sent")->flash();
 
                         break;
@@ -400,15 +397,12 @@ class MembersController extends Controller
                     default:
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
-            }
-        } else {
-            Alert::error("Could not find the member requested.")->flash();
         }
 
         return Redirect::back()->with('selectedMemberDetailIndex', 0);
     }
 
-    public function view($member_id)
+    public function view(Member $member)
     {
         $user = request()->user();
         if ($user->cannot('members.read', Member::class)) {
@@ -416,21 +410,14 @@ class MembersController extends Controller
 
             return Redirect::back();
         }
-        if (! $member_id) {
-            Alert::error("Access Denied or Member does not exist")->flash();
-
-            return Redirect::route('data.members');
-        }
         $user = request()->user();
-        $member_aggy = LeadAggregate::retrieve($member_id);
+        $member_aggy = MemberAggregate::retrieve($member->id);
 //        $data = Member::whereId($member_id)->with('detailsDesc')->first();
-        $data = Member::whereId($member_id)->first();
+        $data = Member::whereId($member->id)->first();
         $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
-        $preview_note = Note::select('note')->whereEntityId($member_id)->get();
+        $preview_note = Note::select('note')->whereEntityId($member->id)->get();
         $data = [
-            'member' => Member::whereId($member_id)
-//                ->with('detailsDesc')
-                ->first(),
+            'member' => $member,
             'user_id' => $user->id,
             'club_location' => $locid,
             'interactionCount' => $member_aggy->getInteractionCount(),
@@ -448,7 +435,7 @@ class MembersController extends Controller
             abort(403);
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
@@ -457,7 +444,6 @@ class MembersController extends Controller
             $members = $members_model
                 ->with('location')
 //                ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->filter($request->only(
                     'search',
                     'trashed',

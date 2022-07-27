@@ -12,7 +12,7 @@ class RemindersController extends Controller
 {
     public function index(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $user_id = request()->user()->id;
 
         if (is_null($client_id)) {
@@ -32,7 +32,7 @@ class RemindersController extends Controller
 
     public function create()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }

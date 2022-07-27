@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class ClientCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

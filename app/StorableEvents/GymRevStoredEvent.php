@@ -20,13 +20,13 @@ class GymRevStoredEvent extends EloquentStoredEvent
             if (! Projectionist::isReplaying()) {
                 $user_id = null;
                 if (session('user_id')) {
-                    $user_id = session('user_id');
+                    $user_id = auth()->user()->id;
                 }
                 $client_id = null;
                 if (session('client_id')) {
                     $client_id = session('client_id');
-                } elseif (session('current_client_id')) {
-                    $client_id = session('current_client_id');
+                } elseif (session('client_id')) {
+                    $client_id = session('client_id');
                 }
                 $access_token = request()->bearerToken() ?? null;
                 $ip = request()->ip() ?? null;

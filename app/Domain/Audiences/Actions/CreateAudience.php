@@ -5,7 +5,7 @@ namespace App\Domain\Audiences\Actions;
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
 use App\Domain\Clients\Models\Client;
-use App\Models\Endusers\Member;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;

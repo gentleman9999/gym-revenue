@@ -33,7 +33,7 @@ class CreateReminder
     public function handle($data, $current_user = null)
     {
         $id = (Reminder::max('id') ?? 0) + 1;
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         $data['user_id'] = $client_id;
 
         UserAggregate::retrieve($current_user->id)->createReminder($current_user->id ?? "Auto Generated", $data)->persist();

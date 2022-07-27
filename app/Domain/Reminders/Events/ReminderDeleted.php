@@ -15,7 +15,7 @@ class ReminderDeleted extends EntityDeleted
         $this->id = $id;
     }
 
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Reminder::class;
     }
