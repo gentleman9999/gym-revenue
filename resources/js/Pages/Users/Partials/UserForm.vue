@@ -701,6 +701,7 @@ export default {
             getPositions,
             removeDepartment,
             selectableDepartments,
+            selectablePositions,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()
