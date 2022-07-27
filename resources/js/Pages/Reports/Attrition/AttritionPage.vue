@@ -4,30 +4,31 @@
             <template #title> Attrition Related </template>
         </reports-title>
     </LayoutHeader>
-    <div class="flex flex-col md:px-28 m-auto">
-        <div class="flex flex-row flex-wrap">
-            <attrition-running-total />
-            <attrition-waterline />
+    <jet-bar-container>
+        <div class="flex flex-col md:px-28 m-auto">
+            <div class="flex flex-row flex-wrap">
+                <attrition-running-total />
+                <attrition-waterline />
+            </div>
+            <div class="flex flex-col px-1 space-y-14">
+                <attrition-card
+                    title="Cancellations"
+                    type="secondary"
+                    :data="cancellations"
+                />
+                <attrition-card
+                    title="Expired Payments"
+                    type="warning"
+                    :data="expired"
+                />
+                <attrition-card
+                    title="Return for Collections (RFC)"
+                    type="gray"
+                    :data="rfc"
+                />
+            </div>
         </div>
-        <div class="flex flex-col px-1 space-y-14">
-            <attrition-card
-                title="Cancellations"
-                type="secondary"
-                :data="cancellations"
-            />
-            <attrition-card
-                title="Expired Payments"
-                type="warning"
-                :data="expired"
-            />
-            <attrition-card
-                title="Return for Collections (RFC)"
-                type="gray"
-                :data="rfc"
-            />
-        </div>
-    </div>
-    <jet-bar-container> </jet-bar-container>
+    </jet-bar-container>
 </template>
 
 <script setup>

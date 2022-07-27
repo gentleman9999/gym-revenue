@@ -36,7 +36,12 @@ class MembersController extends Controller
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find(auth()->user()->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
         $locations = [];
         foreach ($locations_records as $location) {

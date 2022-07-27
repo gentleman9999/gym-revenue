@@ -1,5 +1,5 @@
 <template>
-    <div class="px-20">
+    <div class="px-20 mx-2">
         <data-table
             :data="data"
             :columns="columns"
@@ -63,7 +63,7 @@ const columns = [
         field: "label",
         label: "",
         renderer: (value) => {
-            return h("div", { class: "flex flex-row" }, [
+            return h("div", { class: "flex flex-row w-full pl-4" }, [
                 h(
                     "div",
                     { class: "mx-4 w-7 h-7 bg-accent-600 rounded-full" },

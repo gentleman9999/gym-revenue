@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-neutral-900">
+    <div class="bg-secondary">
         <slot name="eventForm"></slot>
     </div>
 </template>
