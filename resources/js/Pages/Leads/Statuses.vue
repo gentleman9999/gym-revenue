@@ -11,6 +11,11 @@
                     :ref="setItemRef"
                     class="w-full"
                 />
+                <jet-input-error
+                    v-if="form.errors['statuses.' + index + '.status']"
+                    message="Status string can not be empty"
+                    class="mt-2"
+                />
             </div>
             <div class="flex flex-row justify-center py-2">
                 <button type="button" @click="addNewStatus">
@@ -50,7 +55,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { useGymRevForm } from "@/utils";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
@@ -60,6 +65,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+
 library.add(faPlus);
 export default defineComponent({
     props: ["statuses"],
@@ -70,6 +77,7 @@ export default defineComponent({
         Button,
         FontAwesomeIcon,
         PageToolbarNav,
+        JetInputError,
     },
     setup(props) {
         const inputs = ref([]);
@@ -93,7 +101,6 @@ export default defineComponent({
         };
 
         const submitForm = () => {
-            console.log("submitform", form.data());
             form.post(route("data.leads.statuses.update"));
         };
 
