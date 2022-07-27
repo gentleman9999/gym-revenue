@@ -2,6 +2,7 @@
 
 namespace App\Domain\Clients;
 
+use App\Domain\Clients\Enums\SocialMediaEnum;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Events\ClientDeleted;
 use App\Domain\Clients\Events\ClientGatewaySet;
@@ -13,9 +14,9 @@ use App\Domain\Clients\Events\ClientSocialMediaSet;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
 use App\Domain\Clients\Models\Client;
-use App\Models\ClientGatewaySetting;
+use App\Domain\Clients\Models\ClientGatewaySetting;
+use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Models\File;
-use App\Models\SocialMedia;
 use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -89,7 +90,7 @@ class ClientProjector extends Projector
 
     public function onLogoDeleted(ClientLogoDeleted $event)
     {
-        $logo = File::whereClientId($event->payload['client_id'])->whereType('logo')->first();
+        $logo = File::whereClientId($event->aggregateRootUuid())->whereType('logo')->first();
 
         $logo->forceDelete();
     }
@@ -97,72 +98,22 @@ class ClientProjector extends Projector
     public function onClientSocialMediasSet(ClientSocialMediaSet $event)
     {
         $payload = $event->payload;
-        if (array_key_exists('facebook', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('facebook')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'facebook',
-                    'value' => $payload['facebook'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'facebook',
-                    'value' => $payload['facebook'],
-                ]);
-            }
-        }
-        if (array_key_exists('twitter', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('twitter')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'twitter',
-                    'value' => $payload['twitter'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'twitter',
-                    'value' => $payload['twitter'],
-                ]);
-            }
-        }
-        if (array_key_exists('instagram', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('instagram')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'instagram',
-                    'value' => $payload['instagram'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'instagram',
-                    'value' => $payload['instagram'],
-                ]);
-            }
-        }
-        if (array_key_exists('linkedin', $payload)) {
-            $social = SocialMedia::whereClientId($payload['client_id'])
-                ->whereName('linkedin')->first();
-            if (is_null($social)) {
-                SocialMedia::create([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'linkedin',
-                    'value' => $payload['linkedin'],
-                ]);
-            } else {
-                $social->update([
-                    'client_id' => $payload['client_id'],
-                    'name' => 'linkedin',
-                    'value' => $payload['linkedin'],
-                ]);
+        foreach (SocialMediaEnum::cases() as $socialMediaEnum) {
+            if (array_key_exists($socialMediaEnum->name, $payload)) {
+                $social = ClientSocialMedia::whereName($socialMediaEnum->name)->first();
+                if (is_null($social)) {
+                    $social = (new ClientSocialMedia())->writeable();
+                    $social->client_id = $event->aggregateRootUuid();
+                    $social->fill([
+                        'name' => $socialMediaEnum->name,
+                        'value' => $payload[$socialMediaEnum->name],
+                    ]);
+                    $social->save();
+                } else {
+                    $social->writeable()->updateOrFail([
+                        'value' => $payload[$socialMediaEnum->name],
+                    ]);
+                }
             }
         }
     }
@@ -171,18 +122,18 @@ class ClientProjector extends Projector
     {
         $payload = $event->payload;
         if (array_key_exists('mailgunDomain', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('mailgunDomain')->first();
+            $gateway = ClientGatewaySetting::whereName('mailgunDomain')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunDomain',
                     'value' => $payload['mailgunDomain'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writeable()->update([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunDomain',
                     'value' => $payload['mailgunDomain'],
@@ -190,18 +141,18 @@ class ClientProjector extends Projector
             }
         }
         if (array_key_exists('mailgunSecret', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('mailgunSecret')->first();
+            $gateway = ClientGatewaySetting::whereName('mailgunSecret')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunSecret',
                     'value' => $payload['mailgunSecret'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writeable()->update([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunSecret',
                     'value' => $payload['mailgunSecret'],
@@ -209,18 +160,18 @@ class ClientProjector extends Projector
             }
         }
         if (array_key_exists('mailgunFromAddress', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('mailgunFromAddress')->first();
+            $gateway = ClientGatewaySetting::whereName('mailgunFromAddress')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunFromAddress',
                     'value' => $payload['mailgunFromAddress'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writebale()->update([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunFromAddress',
                     'value' => $payload['mailgunFromAddress'],
@@ -228,18 +179,18 @@ class ClientProjector extends Projector
             }
         }
         if (array_key_exists('mailgunFromName', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('mailgunFromName')->first();
+            $gateway = ClientGatewaySetting::whereName('mailgunFromName')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunFromName',
                     'value' => $payload['mailgunFromName'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writeable()->update([
                     'gateway_provider' => 'mailgun',
                     'name' => 'mailgunFromName',
                     'value' => $payload['mailgunFromName'],
@@ -247,18 +198,18 @@ class ClientProjector extends Projector
             }
         }
         if (array_key_exists('twilioSID', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('twilioSID')->first();
+            $gateway = ClientGatewaySetting::whereName('twilioSID')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'twilio',
                     'name' => 'twilioSID',
                     'value' => $payload['twilioSID'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writeable()->update([
                     'gateway_provider' => 'twilio',
                     'name' => 'twilioSID',
                     'value' => $payload['twilioSID'],
@@ -266,18 +217,18 @@ class ClientProjector extends Projector
             }
         }
         if (array_key_exists('twilioToken', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('twilioToken')->first();
+            $gateway = ClientGatewaySetting::whereName('twilioToken')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'twilio',
                     'name' => 'twilioToken',
                     'value' => $payload['twilioToken'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writeable()->update([
                     'gateway_provider' => 'twilio',
                     'name' => 'twilioToken',
                     'value' => $payload['twilioToken'],
@@ -285,18 +236,18 @@ class ClientProjector extends Projector
             }
         }
         if (array_key_exists('twilioNumber', $payload)) {
-            $gateway = ClientGatewaySetting::whereClientId($payload['client_id'])
-                ->whereName('twilioNumber')->first();
+            $gateway = ClientGatewaySetting::whereName('twilioNumber')->first();
             if (is_null($gateway)) {
-                ClientGatewaySetting::create([
-                    'client_id' => $payload['client_id'],
+                $gateway = (new ClientGatewaySetting())->writeable();
+                $gateway->client_id = $event->aggregateRootUuid();
+                $gateway->fill([
                     'gateway_provider' => 'twilio',
                     'name' => 'twilioNumber',
                     'value' => $payload['twilioNumber'],
                 ]);
+                $gateway->save();
             } else {
-                $gateway->update([
-                    'client_id' => $payload['client_id'],
+                $gateway->writeable()->update([
                     'gateway_provider' => 'twilio',
                     'name' => 'twilioNumber',
                     'value' => $payload['twilioNumber'],

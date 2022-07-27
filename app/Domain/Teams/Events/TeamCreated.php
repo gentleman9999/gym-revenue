@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class TeamCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Team::class;
     }

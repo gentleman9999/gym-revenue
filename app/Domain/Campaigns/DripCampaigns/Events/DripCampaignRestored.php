@@ -7,7 +7,7 @@ use App\StorableEvents\EntityRestored;
 
 class DripCampaignRestored extends EntityRestored
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return DripCampaign::class;
     }

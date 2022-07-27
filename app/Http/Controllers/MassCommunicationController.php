@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Teams\Models\Team;
 use Inertia\Inertia;
 
 class MassCommunicationController extends Controller
@@ -9,7 +10,12 @@ class MassCommunicationController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $team = $user->currentTeam;
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $team = Team::find($session_team['id']);
+        } else {
+            $team = Team::find($user->default_team_id);
+        }
         $team_name = $team->name;
 
         if (! is_null($team->client)) {
@@ -27,7 +33,12 @@ class MassCommunicationController extends Controller
     public function page($type)
     {
         $user = auth()->user();
-        $team = $user->currentTeam;
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $team = Team::find($session_team['id']);
+        } else {
+            $team = Team::find($user->default_team_id);
+        }
         $team_name = $team->name;
 
         if (! $type) {

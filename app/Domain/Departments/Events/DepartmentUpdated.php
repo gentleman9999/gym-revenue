@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class DepartmentUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Position::class;
     }

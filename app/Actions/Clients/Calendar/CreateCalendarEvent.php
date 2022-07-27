@@ -3,11 +3,11 @@
 namespace App\Actions\Clients\Calendar;
 
 use App\Aggregates\Clients\CalendarAggregate;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Member;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,7 +32,7 @@ class CreateCalendarEvent
             'start' => ['required'],
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
-            'client_id' => ['required', 'exists:clients,id'],
+//            'client_id' => ['required', 'exists:clients,id'],
             'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
             'member_attendees' => ['sometimes'],
@@ -40,7 +40,7 @@ class CreateCalendarEvent
         ];
     }
 
-    public function handle($data, $user = null)
+    public function handle($data, $current_user = null)
     {
         $id = Uuid::new();
         $data['id'] = $id;
@@ -115,8 +115,8 @@ class CreateCalendarEvent
         unset($data['lead_attendees']);
         unset($data['member_attendees']);
 
-        if ($user) {
-            $data['owner_id'] = $user->id;
+        if (! is_null($current_user)) {
+            $data['owner_id'] = $current_user->id;
         }
 
         CalendarAggregate::retrieve($data['client_id'])
@@ -135,8 +135,10 @@ class CreateCalendarEvent
 
     public function asController(ActionRequest $request)
     {
+        $data = $request->validated();
+        $data['client_id'] = $request->user()->client_id;
         $calendar = $this->handle(
-            $request->validated(),
+            $data,
             $request->user()
         );
 

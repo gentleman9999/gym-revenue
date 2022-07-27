@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class LeadStatusCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return LeadStatus::class;
     }

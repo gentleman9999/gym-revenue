@@ -60,9 +60,18 @@ class JetstreamServiceProvider extends ServiceProvider
                 //Let's set some info in our cookie session so we
                 // can use it in middleware / global scopes
                 // without having to hit the db
-                session(['user_id' => $user->id]);
-                session(['client_id' => $user->client_id]);
-                session(['current_client_id' => $user->currentClientId()]);
+                $team = $user->default_team ?? null;
+                session()->put('current_team_id', $team->id);
+                session()->put(
+                    'current_team',
+                    [
+                        'id' => $team->id,
+                        'name' => $team->name,
+                        'client_id' => $team->client_id,
+                    ]
+                );
+                session()->put('client_id', $team->client_id);
+                session()->put('user_id',  $user->id);
 
                 return $user;
             }

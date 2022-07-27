@@ -21,7 +21,7 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         // Check the client ID to determine if we are in Client or Cape & Bay space
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
 
         //Default Render VARs
         $locations = [];
@@ -34,7 +34,12 @@ class UsersController extends Controller
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
-            $current_team = $request->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($request->user()->default_team_id);
+            }
             $client = Client::find($client_id);
 
             $is_default_team = $client->default_team_id == $current_team->id;
@@ -69,21 +74,25 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $default_team_detail = $user->default_team()->first();
-                $default_team = Team::find($default_team_detail->value);
-                $users[$idx]->home_team = $default_team->name;
+                $users[$idx]->home_team = $user->default_team->name;
             }
         } else {
             //cb team selected
-            $users = User::with('home_location')->whereHas('teams', function ($query) use ($request) {
-                return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $team = Team::find($session_team['id']);
+            } else {
+                $team = Team::find($request->user()->default_team_id);
+            }
+
+            $users = User::with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
+                return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))->sort()
                 ->paginate(10)->appends(request()->except('page'));
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team_detail = $user->default_team()->first();
-                $default_team = Team::find($default_team_detail->value);
+                $default_team = $user->default_team;
                 $users[$idx]->home_team = $default_team->name;
             }
         }
@@ -115,14 +124,19 @@ class UsersController extends Controller
         // Get the logged-in user making the request
         $user = request()->user();
         // Get the user's currently accessed team for scoping
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         // CnB Client-based data is not present in the DB and thus the details could be empty.
         $client = $current_team->client;
         // IF we got details, we got the client name, otherwise its Cape & Bay
         $client_name = (! is_null($client)) ? $client->name : 'Cape & Bay';
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
 
         // The logged in user needs the ability to create users scoped to the current team to continue
         if ($user->cannot('users.create', User::class)) {
@@ -152,7 +166,7 @@ class UsersController extends Controller
     {
         $me = request()->user();
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
 
         if ($me->cannot('users.update', User::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
@@ -223,14 +237,20 @@ class UsersController extends Controller
     public function export(Request $request)
     {
         // Check the client ID to determine if we are in Client or Cape & Bay space
-        $client_id = $request->user()->currentClientId();
+        $client_id = $request->user()->client_id;
 
         //Default Render VARs
         $filterKeys = ['search', 'club', 'team', 'roles'];
 
 
         if ($client_id) {
-            $current_team = $request->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
+
             $client = Client::find($client_id);
 
             $is_default_team = $client->home_team_id === $current_team->id;
@@ -257,9 +277,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $default_team_detail = $user->default_team()->first();
-                $default_team = Team::find($default_team_detail->value);
-                $users[$idx]->home_team = $default_team->name;
+                $users[$idx]->home_team = $user->default_team->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -268,16 +286,21 @@ class UsersController extends Controller
             }
         } else {
             //cb team selected
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $team = Team::find($session_team['id']);
+            } else {
+                $team = Team::find($user->default_team_id);
+            }
+
             $users = User::whereHas('teams', function ($query) use ($request) {
-                return $query->where('teams.id', '=', $request->user()->currentTeam()->first()->id);
+                return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))
                 ->get();
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team_detail = $user->default_team()->first();
-                $default_team = Team::find($default_team_detail->value);
-                $users[$idx]->home_team = $default_team->name;
+                $users[$idx]->home_team = $user->default_team->name;
             }
         }
 

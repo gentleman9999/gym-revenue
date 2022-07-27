@@ -17,7 +17,7 @@ class UpdateSocialMedias
 
     public function handle(array $payload): Client
     {
-        ClientSettingsAggregate::retrieve($payload['client_id'])->setSocialMedias($payload)->persist();
+        ClientSettingsAggregate::retrieve($payload['client_id'])->setSocialMedias($payload['socialMedias'])->persist();
 
         return Client::findOrFail($payload['client_id']);
     }
@@ -26,10 +26,8 @@ class UpdateSocialMedias
     {
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'facebook' => [ 'sometimes', 'string', 'nullable'],
-            'twitter' => [ 'sometimes', 'string', 'nullable'],
-            'instagram' => [ 'sometimes', 'string', 'nullable'],
-            'linkedin' => [ 'sometimes', 'string', 'nullable'],
+            'socialMedias' => [ 'sometimes', 'array', 'nullable'],
+            'socialMedias.*' => [ 'string'],
         ];
     }
 
@@ -37,8 +35,7 @@ class UpdateSocialMedias
     {
         $current_user = $request->user();
 
-//        return $current_user->can('*');
-        return $current_user->isAn('Admin', 'Account Owner');
+        return $current_user->can('manage-client-settings');
     }
 
     public function getControllerMiddleware(): array

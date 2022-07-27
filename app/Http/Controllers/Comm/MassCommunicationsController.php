@@ -6,7 +6,7 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\ClientActivity;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Http\Controllers\Controller;
 use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\SmsTemplates;
@@ -92,7 +92,7 @@ class MassCommunicationsController extends Controller
 
     public function index(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         //
 //            $aggy = ClientAggregate::retrieve($client_id);
 //            $history_log = $aggy->getCommunicationHistoryLog();
@@ -170,8 +170,7 @@ class MassCommunicationsController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
-        $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
+        $client_id = request()->user()->client_id;
 
         if (! is_null($client_id)) {
             $aggy = ClientAggregate::retrieve($client_id);

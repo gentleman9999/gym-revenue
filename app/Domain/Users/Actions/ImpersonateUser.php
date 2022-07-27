@@ -3,8 +3,10 @@
 namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
+use App\Enums\SecurityGroupEnum;
 use function auth;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -36,16 +38,29 @@ class ImpersonateUser
         $data = request()->all();
 
         $invader = auth()->user();
-        $victim = User::find($data['victimId']);
+        if ($invader->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
+            $victim = User::withoutGlobalScopes()->findOrFail($data['victimId']);
+            $team = Team::withoutGlobalScopes()->findOrFail($victim->default_team_id);
+        } else {
+            $victim = User::findOrFail($data['victimId']);
+            $team = $victim->default_team;
+        }
 
         if ($invader->can('users.impersonate', User::class)) {
-            //TODO:I don't like the side effect of changing the victim's current_team.
-            //TODO: on second thought, I think current_team should be session based anyways
-            $victim->current_team_id = $invader->current_team_id;
-            $invader->current_team_id = $victim->current_team_id;
-            $victim->save();
-            $invader->save();
             auth()->user()->impersonate($victim);
+            //TODO: ensure that this is setting session of impersonator, so it doesn't leak over into victim
+            //TODO: we should be setting to the team in the impersonation window.
+            session()->put('current_team_id', $team->id);
+            session()->put(
+                'current_team',
+                [
+                    'id' => $team->id,
+                    'name' => $team->name,
+                    'client_id' => $team->client_id,
+                ]
+            );
+            session()->put('client_id', $team->client_id);
+            session()->put('user_id',  $victim->id);
             $results = true;
         }
 

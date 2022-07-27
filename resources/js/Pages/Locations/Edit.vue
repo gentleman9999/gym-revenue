@@ -16,7 +16,7 @@
         </div>
         <template #modal>
             <location-form
-                :client-id="this.$page.props.user.current_client_id"
+                :client-id="this.$page.props.user.client_id"
                 :location="location"
                 :poc_first="poc_first"
                 :poc_last="poc_last"

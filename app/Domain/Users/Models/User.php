@@ -10,15 +10,14 @@ use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
-use Laravel\Jetstream\Jetstream;
 use Laravel\Sanctum\HasApiTokens;
-use function session;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class User extends Authenticatable
@@ -79,53 +78,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the current team of the user's context.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function currentTeam()
-    {
-        if (is_null($this->current_team_id)) {
-            $default_team = $this->default_team()->first();
-            $team_record = Team::find($default_team->value);
-            $this->switchTeam($team_record);
-            //$this->switchTeam($this->personalTeam());
-        }
-
-        return $this->belongsTo(Jetstream::teamModel(), 'current_team_id');
-    }
-
-    /**
-     * Switch the user's context to the given team.
-     *
-     * @param mixed $team
-     * @return bool
-     */
-    public function switchTeam(Team $team)
-    {
-        if (! $this->belongsToTeam($team) && ! $this->isAdmin()) {
-            return false;
-        }
-
-        $this->forceFill([
-            'current_team_id' => $team->id,
-        ])->save();
-
-        $this->setRelation('currentTeam', $team);
-
-        session([
-            'current_team' => [
-                'id' => $team->id,
-                'name' => $team->name,
-                'client_id' => $team->client_id,
-            ],
-        ]);
-        session(['current_client_id' => $team->client_id]);
-
-        return true;
-    }
-
-    /**
      * Determine if the user belongs to the given team.
      *
      * @param  mixed  $team
@@ -147,7 +99,7 @@ class User extends Authenticatable
 
     public function allLocations()
     {
-        return Location::whereClientId($this->currentClientId())->get();
+        return Location::whereClientId($this->client_id)->get();
     }
 
     public function switchLocation($location)
@@ -157,27 +109,10 @@ class User extends Authenticatable
         return $this->save();
     }
 
-    public function currentClientId()
-    {
-        return $this->client_id ?? $this->currentTeam->client->id ?? null;
-    }
-
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
-
-    /**
-     * If user is AccountOwner of the currentTeam
-     * @return bool
-     */
-//    public function isAccountOwner()
-//    {
-//        $current_team_id = $this->currentTeam()->first()->id ?? null;
-//        $current_team = $this->teams()->get()->keyBy('id')[$current_team_id] ?? null;
-//
-//        return $current_team ? $current_team->pivot->role === 'Account Owner' : false;
-//    }
 
     public function isClientUser()
     {
@@ -229,17 +164,14 @@ class User extends Authenticatable
 
     public function teams()
     {
-        $teams = $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
-        if (! $this->client_id) {
-            $teams = $teams->withoutGlobalScopes();
-        }
+        return $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
 
         return $teams;
     }
 
-    public function default_team()
+    public function default_team(): BelongsTo
     {
-        return $this->detail()->where('name', '=', 'default_team');
+        return $this->belongsTo(Team::class, 'default_team_id', 'id');
     }
 
     public function api_token()
@@ -363,11 +295,6 @@ class User extends Authenticatable
      */
     public function allTeams()
     {
-        if ($this->isAdmin()) {
-//            dd();
-            return $this->teams->keyBy('id')->merge(Team::withoutGlobalScopes()->whereHomeTeam(true)->get()->keyBy('id'));
-        }
-
         return $this->teams->sortBy('name');
     }
 }

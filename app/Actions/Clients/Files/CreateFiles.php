@@ -31,6 +31,7 @@ class CreateFiles
             '*.size' => 'integer|min:1|required',//TODO: add max size
             '*.client_id' => 'exists:clients,id|required',
             '*.user_id' => 'nullable|exists:users,id',
+            '*.visibility' => 'sometimes',
         ];
     }
 

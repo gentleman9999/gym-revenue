@@ -3,41 +3,18 @@
         <template #title>Social Media</template>
 
         <template #description>
-            Add the URL's to the related social media sites below:</template
-        >
+            Add the URL's to the related social media sites below:
+        </template>
 
         <template #form>
             <div
+                v-for="{ name, value } in availableSocialMedias"
                 class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
             >
-                <jet-label for="facebook" value="Facebook" />
-                <input id="facebook" type="text" v-model="form.facebook" />
+                <jet-label for="facebook" :value="value" />
+                <input :id="name" type="text" v-model="form[name]" />
+                <jet-input-error :message="form.errors[name]" class="mt-2" />
             </div>
-            <jet-input-error :message="form.errors.facebook" class="mt-2" />
-
-            <div
-                class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
-            >
-                <jet-label for="twitter" value="Twitter" />
-                <input id="twitter" type="text" v-model="form.twitter" />
-            </div>
-            <jet-input-error :message="form.errors.twitter" class="mt-2" />
-
-            <div
-                class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
-            >
-                <jet-label for="instagram" value="Instagram" />
-                <input id="instagram" type="text" v-model="form.instagram" />
-            </div>
-            <jet-input-error :message="form.errors.instagram" class="mt-2" />
-
-            <div
-                class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
-            >
-                <jet-label for="linkedin" value="Linkedin" />
-                <input id="linkedin" type="text" v-model="form.linkedin" />
-            </div>
-            <jet-input-error :message="form.errors.linkedin" class="mt-2" />
         </template>
 
         <template #actions>
@@ -47,7 +24,7 @@
 
             <Button
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
+                :disabled="form.processing || !form.isDirty"
             >
                 Save
             </Button>
@@ -78,35 +55,27 @@ export default defineComponent({
             type: Array,
             default: [],
         },
+        availableSocialMedias: {
+            type: Array,
+            default: [],
+        },
     },
     setup(props) {
-        let socialMedias = props.socialMedias;
+        let socialMedias = Object.fromEntries(
+            props.availableSocialMedias.map(({ name }) => [name, ""])
+        );
 
-        if (!socialMedias) {
-            socialMedias = {
-                facebook: "",
-                twitter: "",
-                instagram: "",
-                linkedin: "",
-            };
-        } else {
-            socialMedias.facebook = socialMedias.find(
-                ({ name }) => name === "facebook"
-            )?.value;
-            socialMedias.twitter = socialMedias.find(
-                ({ name }) => name === "twitter"
-            )?.value;
-            socialMedias.instagram = socialMedias.find(
-                ({ name }) => name === "instagram"
-            )?.value;
-            socialMedias.linkedin = socialMedias.find(
-                ({ name }) => name === "linkedin"
-            )?.value;
+        if (props.socialMedias && Object.entries(props.socialMedias)?.length) {
+            socialMedias = { ...socialMedias, ...props.socialMedias };
         }
+        console.log("socialMedias", { socialMedias: socialMedias });
         const form = useGymRevForm(socialMedias);
-
+        console.log("socialform", { socialForm: form });
         let handleSubmit = () =>
-            form.put(route("settings.social-media.update"));
+            form
+                .dirty()
+                .transform((data) => ({ socialMedias: data }))
+                .put(route("settings.social-media.update"));
 
         return { form, handleSubmit };
     },

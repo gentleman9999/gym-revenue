@@ -5,24 +5,18 @@ namespace App\Domain\Campaigns\DripCampaigns;
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\Enums\CampaignStatusEnum;
 use App\Domain\Clients\Models\Client;
+use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\EventSourcing\Projections\Projection;
 
-class DripCampaign extends Projection
+class DripCampaign extends GymRevProjection
 {
     use SoftDeletes;
     use Sortable;
-
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
 
     protected $hidden = ['client_id'];
 
@@ -35,16 +29,6 @@ class DripCampaign extends Projection
         'start_at' => 'immutable_datetime',
         'end_at' => 'immutable_datetime',
     ];
-
-    public function getKeyName(): string
-    {
-        return 'id';
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'id';
-    }
 
     protected static function booted(): void
     {

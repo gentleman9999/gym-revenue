@@ -80,14 +80,14 @@
                 Leads Claimed By:
             </label>
             <multiselect
-                v-model="form.leadsclaimed"
+                v-model="form.claimed"
                 class="py-2"
                 id="leads_claimed"
                 mode="tags"
                 :close-on-select="false"
                 :create-option="true"
                 :options="
-                    this.$page.props.leadsclaimed.map((user) => ({
+                    this.$page.props.owners.map((user) => ({
                         label: user.name,
                         value: user.id,
                     }))

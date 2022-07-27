@@ -1,14 +1,14 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
         <template #description>
-            <div v-if="this.$page.props.logoUrl == null">
+            <div v-if="logoUrl == null">
                 <div class="divider"></div>
                 <h1>No logo file found.</h1>
                 <div class="divider"></div>
             </div>
             <div v-else>
                 <div class="divider"></div>
-                <img :src="this.$page.props.logoUrl" />
+                <img :src="logoUrl" />
                 <div class="divider"></div>
                 <div class="flex items-center justify-end mt-[-6px] mb-4">
                     <Button
@@ -130,14 +130,17 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import FileUploadForm from "@/Pages/Files/Partials/FileUploadForm.vue";
 import UploadIcon from "@/Pages/Files/Partials/UploadIcon.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 const props = defineProps({
     clientId: { type: String, required: true },
     user: { type: Object },
-    logoUrl: { type: String },
+    // logoUrl: { type: String },
     formSubmitOptions: { type: Object },
     handleCancel: { type: Function },
 });
+const page = usePage();
+const logoUrl = computed(() => page.props.value.logoUrl);
 
 const defaultHandleCancel = () => {
     Inertia.visit(route("locations"));

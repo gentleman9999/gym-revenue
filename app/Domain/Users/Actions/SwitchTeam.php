@@ -2,47 +2,32 @@
 
 namespace App\Domain\Users\Actions;
 
-use function abort;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Users\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 use function redirect;
 
+/**
+ * Switches teams on the session
+ */
 class SwitchTeam
 {
     use AsAction;
 
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-     */
-    public function rules()
+    public function handle(Team $team)
     {
-        return [
-            'team_id' => ['required', 'exists:teams,id'],
-        ];
-    }
+        session([
+            'current_team' => [
+                'id' => $team->id,
+                'name' => $team->name,
+                'client_id' => $team->client_id,
+            ],
+        ]);
+        session(['client_id' => $team->client_id]);
 
-    public function handle($team_id, User $current_user)
-    {
-        $team = null;
-        if ($current_user->client_id) {
-            $team = Team::findOrFail($team_id)[0];
-        } else {
-            //capeandbay user
-            $team = Team::withoutGlobalScopes()->findOrFail($team_id)[0];
-        }
-        $success = $current_user->switchTeam($team);
-
-        if ($success) {
-            return $team;
-        } else {
-            abort(403);
-        }
+        return $team;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -52,11 +37,10 @@ class SwitchTeam
         return count($current_user->teams) > 1;
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, Team $team)
     {
         return $this->handle(
-            $request->validated(),
-            $request->user(),
+            $team
         );
     }
 

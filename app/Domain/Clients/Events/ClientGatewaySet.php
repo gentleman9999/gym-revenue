@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class ClientGatewaySet extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

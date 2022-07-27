@@ -29,7 +29,7 @@ class DeleteNote
     public function handle($current_user, $id)
     {
         $note = Note::findOrFail($id);
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         ClientAggregate::retrieve($client_id)->deleteNote($current_user->id, $id)->persist();
 
         return $note;

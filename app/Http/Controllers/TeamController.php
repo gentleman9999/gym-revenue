@@ -20,7 +20,7 @@ class TeamController extends Controller
     public function index(Request $request)
     {
         $current_user = $request->user();
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
         //   $users = $current_team->team_users()->get();
         $users = User::with(['teams', 'home_location'])->get();
 
@@ -42,7 +42,7 @@ class TeamController extends Controller
 //        Gate::authorize('create', Jetstream::newTeamModel());
         return Inertia::render('Teams/Create', [
             'availableRoles' => array_values(Jetstream::$roles),
-            'availableLocations' => Location::whereClientId($request->user()->currentClientId())->get(),
+            'availableLocations' => Location::whereClientId($request->user()->client_id)->get(),
             'availablePermissions' => Jetstream::$permissions,
             'defaultPermissions' => Jetstream::$defaultPermissions,
         ]);
@@ -65,7 +65,7 @@ class TeamController extends Controller
 
         $current_user = $request->user();
 
-        $client_id = $current_user->currentClientId();
+        $client_id = $current_user->client_id;
 
         $availableUsers = [];
         $availableLocations = [];

@@ -1,20 +1,23 @@
 <template>
     <LayoutHeader title="Members" />
     <jet-bar-container>
-        <lead-interaction
-            :lead-id="member.id"
+        <end-user-interaction-container
+            end-user-type="member"
+            :id="member.id"
             :user-id="$page.props.user.id"
             :first-name="member.first_name"
-            :middle-name="$page.props.middle_name.value"
+            :middle-name="member.middle_name"
             :last-name="member.last_name"
+            :opportunity="member.opportunity"
             :email="member.email"
             :phone="member.primary_phone"
-            :details="member['details_desc']"
-            ref="leadInteractionRef"
+            :details="member.details_desc"
+            ref="memberInteractionRef"
             :selectedLeadDetailIndex="selectedLeadDetailIndex"
             :trial-dates="trialDates"
-            :trial-memberships="member.trial_memberships"
             :interaction-count="interactionCount"
+            :agreement-number="member.agreement_number"
+            :owner-user-id="member.owner_user_id"
         />
     </jet-bar-container>
 </template>
@@ -23,13 +26,13 @@
 import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
-// import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
+import EndUserInteractionContainer from "@/Pages/components/EndUserInteractionContainer/index.vue";
 
 export default defineComponent({
     components: {
         LayoutHeader,
         JetBarContainer,
-        // LeadInteraction,
+        EndUserInteractionContainer,
     },
     props: {
         member: {
@@ -49,16 +52,15 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const leadInteractionRef = ref();
-        const selectedLeadDetailIndex = props.flash?.selectedLeadDetailIndex;
+        const memberInteractionRef = ref();
 
         watchEffect(() => {
-            leadInteractionRef.value?.goToLeadDetailIndex(
-                props.flash?.selectedLeadDetailIndex
+            memberInteractionRef.value?.goToEndUserDetailIndex(
+                props.flash?.selectedMemberDetailIndex
             );
         });
 
-        return { leadInteractionRef };
+        return { memberInteractionRef };
     },
 });
 </script>

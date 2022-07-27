@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\Enums\SocialMediaEnum;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Models\ClientGatewaySetting;
+use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Enums\ClientServiceEnum;
-use App\Models\ClientGatewaySetting;
-use App\Models\File;
-use App\Models\SocialMedia;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -16,7 +16,7 @@ class ClientSettingsController extends Controller
 {
     public function index()
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         if (! $client_id) {
             return Redirect::route('dashboard');
         }
@@ -33,8 +33,6 @@ class ClientSettingsController extends Controller
             ['name' => 'EMAIL', 'value' => 'EMAIL'],
         ]; //TODO: make this actually pull available communication preferences
 
-        $file = File::whereClientId($client_id)->whereType('logo')->first();
-
 
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
@@ -45,8 +43,10 @@ class ClientSettingsController extends Controller
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],
-            'socialMedias' => SocialMedia::whereClientId($client_id)->get(),
-            'gateways' => ClientGatewaySetting::whereClientId($client_id)->get(),
+//            'socialMedias' => ClientSocialMedia::all(),
+            'socialMedias' => $client->getSocialMedia(),
+            'availableSocialMedias' => collect(SocialMediaEnum::cases())->map(fn (SocialMediaEnum $enum) => ['name' => $enum->name, 'value' => $enum->value]),
+            'gateways' => ClientGatewaySetting::all(),
             'logoUrl' => Client::findOrFail($client_id)->logo_url(),
         ]);
     }
@@ -60,7 +60,6 @@ class ClientSettingsController extends Controller
             'trialMembershipTypes.*.slug' => ['required'],
             'trialMembershipTypes.*.trial_length' => ['required'],
         ]);
-        $client_id = request()->user()->currentClientId();
         if (array_key_exists('trialMembershipTypes', $data) && is_array($data['trialMembershipTypes'])) {
             $trialMembershipTypesToUpdate = collect($data['trialMembershipTypes'])->filter(function ($t) {
                 return $t['id'] !== null;
@@ -69,7 +68,7 @@ class ClientSettingsController extends Controller
                 return $t['id'] === null;
             });
 
-            $client_aggy = ClientAggregate::retrieve($client_id);
+            $client_aggy = ClientAggregate::retrieve($request->user()->client_id);
 
             foreach ($trialMembershipTypesToUpdate as $trialMembershipTypeData) {
                 $client_aggy->updateTrialMembershipType($trialMembershipTypeData, request()->user()->id);

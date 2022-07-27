@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Data;
 
 use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\Actions\UpdateLeadCommunicationPreferences;
-use App\Domain\Leads\LeadAggregate;
-use App\Domain\Leads\Models\Lead;
-use App\Domain\Leads\Models\LeadDetails;
+use App\Domain\EndUsers\Leads\Actions\UpdateLeadCommunicationPreferences;
+use App\Domain\EndUsers\Leads\LeadAggregate;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
+use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -33,12 +33,12 @@ class LeadsController extends Controller
             return Redirect::back();
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
         $prospects = [];
-        $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
-        $opportunities = Lead::whereClientId($client_id)->select('opportunity')->distinct()->get()->pluck('opportunity');
+        $prospects_model = $this->setUpLeadsObject($client_id);
+        $opportunities = Lead::select('opportunity')->distinct()->get()->pluck('opportunity');
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -46,9 +46,7 @@ class LeadsController extends Controller
                 ->with('leadType')
                 ->with('membershipType')
                 ->with('leadSource')
-                ->with('leadsclaimed')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->with('notes')
                 ->filter($request->only(
                     'search',
@@ -57,7 +55,7 @@ class LeadsController extends Controller
                     'createdat',
                     'grlocation',
                     'leadsource',
-                    'leadsclaimed',
+                    'claimed',
                     'opportunity',
                     'claimed',
                     'date_of_birth',
@@ -86,6 +84,21 @@ class LeadsController extends Controller
             $prospects->setCollection($sortedResult);
         }
 
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find(auth()->user()->default_team_id);
+        }
+        $team_users = $current_team->team_users()->get();
+        $available_lead_owners = [];
+        foreach ($team_users as $team_user) {
+            $available_lead_owners[] = [
+                'name' => $team_user->user->name,
+                "id" => $team_user->user->id,
+            ];
+        }
+
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
             'routeName' => request()->route()->getName(),
@@ -98,7 +111,7 @@ class LeadsController extends Controller
                 'createdat',
                 'grlocation',
                 'leadsource',
-                'leadsclaimed',
+                'claimed',
                 'opportunity',
                 'claimed',
                 'date_of_birth',
@@ -108,9 +121,10 @@ class LeadsController extends Controller
                 'agreementSearch',
                 'lastupdated'
             ),
-            'lead_types' => LeadType::whereClientId($client_id)->get(),
+            'owners' => $available_lead_owners,
+            'lead_types' => LeadType::all(),
             'grlocations' => Location::whereClientId($client_id)->get(),
-            'leadsources' => LeadSource::whereClientId($client_id)->get(),
+            'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
         ]);
     }
@@ -118,17 +132,14 @@ class LeadsController extends Controller
     public function claimed(Request $request)
     {
         $client_id = request()->user()->currentClientId();
-        $is_client_user = request()->user()->isClientUser();
 
         $page_count = 10;
         $prospects = [];
 
-        $prospects_model = $this->setUpLeadsObjectclaimed($is_client_user, $client_id);
+        $prospects_model = $this->setUpLeadsObjectclaimed($client_id);
 
         $locations = Location::whereClientId($client_id)->get();
-        $leadsource = LeadSource::whereClientId($client_id)->get();
-
-        //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        $leadsource = LeadSource::all();
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -137,7 +148,6 @@ class LeadsController extends Controller
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count)
@@ -149,7 +159,7 @@ class LeadsController extends Controller
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'),
-            'lead_types' => LeadType::whereClientId($client_id)->get(),
+            'lead_types' => LeadType::all(),
             'grlocations' => $locations,
             'leadsources' => $leadsource,
 
@@ -164,10 +174,15 @@ class LeadsController extends Controller
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = auth()->user();
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
 
 
@@ -182,9 +197,9 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $lead_types = LeadType::whereClientId($client_id)->get();
-        $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatus::whereClientId($client_id)->get();
+        $lead_types = LeadType::all();
+        $lead_sources = LeadSource::all();
+        $lead_statuses = LeadStatus::all();
 
 
         /**
@@ -207,7 +222,7 @@ class LeadsController extends Controller
         ]);
     }
 
-    private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
+    private function setUpLeadsObject(string $client_id = null)
     {
         $results = [];
 
@@ -219,7 +234,12 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
 
@@ -228,7 +248,6 @@ class LeadsController extends Controller
             if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
                     ->where('name', '=', 'team-location')->get();
-                dd($current_team->id);
                 if (count($team_locations_records) > 0) {
                     foreach ($team_locations_records as $team_locations_record) {
                         // @todo - we will probably need to do some user-level scoping
@@ -236,11 +255,10 @@ class LeadsController extends Controller
                         $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Lead::whereClientId($client_id)
-                        ->whereIn('gr_location_id', $team_locations);
+                    $results = Lead::whereIn('gr_location_id', $team_locations);
                 }
             } else {
-                $results = Lead::whereClientId($client_id);
+                $results = new Lead();
             }
         }
 
@@ -248,7 +266,7 @@ class LeadsController extends Controller
         return $results;
     }
 
-    private function setUpLeadsObjectclaimed(bool $is_client_user, string $client_id = null)
+    private function setUpLeadsObjectclaimed(string $client_id = null)
     {
         $results = [];
 
@@ -260,7 +278,12 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
             $team_locations = [];
 
@@ -274,12 +297,10 @@ class LeadsController extends Controller
                         // example - if there is scoping and this club is not there, don't include it
                         $team_locations[] = $team_locations_record->value;
                     }
-                    $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
-                    $results = Lead::whereClientId($client_id)
-                        ->whereIn('gr_location_id', $team_locations)->whereHas('leadsclaimed');
+                    $results = Lead::whereIn('gr_location_id', $team_locations)->whereHas('claimed');
                 }
             } else {
-                $results = Lead::whereClientId($client_id)->whereHas('leadsclaimed');
+                $results = Lead::whereHas('claimed');
             }
         }
 
@@ -300,7 +321,7 @@ class LeadsController extends Controller
         //consequences, potentially adding the lead to the wrong client, or
         //just error out. also check for other areas in the app for similar behavior
         $user = request()->user();
-        $client_id = $user->currentClientId();
+        $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
@@ -309,13 +330,18 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $lead_types = LeadType::whereClientId($client_id)->get();
-        $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatus::whereClientId($client_id)->get();
+        $lead_types = LeadType::all();
+        $lead_sources = LeadSource::all();
+        $lead_statuses = LeadStatus::all();
 
         $lead_aggy = LeadAggregate::retrieve($lead->id);
 
-        $current_team = $user->currentTeam()->first();
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($user->default_team_id);
+        }
         $team_users = $current_team->team_users()->get();
         /**
          * STEPS for team users
@@ -329,12 +355,12 @@ class LeadsController extends Controller
 
         $lead->load(
             [
-            'profile_picture',
             'trialMemberships',
-            'lead_owner',
+            'owner',
             'lead_status',
             'last_updated',
-            'notes', ]
+            'notes',
+            ]
         );
 
         //for some reason inertiajs converts "notes" key to empty string.
@@ -373,47 +399,8 @@ class LeadsController extends Controller
             'lead' => $lead->load(['detailsDesc', 'trialMemberships']),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->currentClientId())->get(),
+            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
         ]);
-    }
-
-    public function assign()
-    {
-        $data = request()->all();
-        $user = request()->user();
-        if ($user->cannot('leads.contact', Lead::class)) {
-            Alert::error("Oops! You dont have permissions to do that.")->flash();
-
-            return Redirect::back();
-        }
-
-        // @todo - change to laravel style Validation
-
-        $claim_detail = LeadDetails::whereLeadId($data['lead_id'])
-            ->whereField('claimed')
-            ->whereActive(1)
-            ->first();
-
-        if (is_null($claim_detail)) {
-            LeadDetails::create([
-                'client_id' => $data['client_id'],
-                'lead_id' => $data['lead_id'],
-                'field' => 'claimed',
-                'value' => $data['user_id'],
-                'misc' => ['claim_date' => date('Y-m-d')],
-            ]);
-
-            LeadAggregate::retrieve($data['lead_id'])
-                ->claim($data['user_id'])
-                ->persist();
-
-            \Alert::info('This lead has been claimed by you! You may now interact with it!')->flash();
-        } else {
-            \Alert::error('This lead has been already been claimed.')->flash();
-        }
-
-
-        return redirect()->back();
     }
 
     private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
@@ -440,7 +427,12 @@ class LeadsController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $current_team = request()->user()->currentTeam()->first();
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find($user->default_team_id);
+            }
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -529,14 +521,14 @@ class LeadsController extends Controller
     public function sources(Request $request)
     {
         return Inertia::render('Leads/Sources', [
-            'sources' => LeadSource::whereClientId($request->user()->currentClientId())->get(['id', 'name']),
+            'sources' => LeadSource::get(['id', 'name']),
         ]);
     }
 
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-            'statuses' => LeadStatus::whereClientId($request->user()->currentClientId())->get(['id', 'status']),
+            'statuses' => LeadStatus::get(['id', 'status']),
         ]);
     }
 
@@ -579,10 +571,10 @@ class LeadsController extends Controller
             abort(403);
         }
 
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $prospects = [];
-        $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
+        $prospects_model = $this->setUpLeadsObject($client_id);
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -590,9 +582,8 @@ class LeadsController extends Controller
                 ->with('leadType')
                 ->with('membershipType')
                 ->with('leadSource')
-                ->with('leadsclaimed')
+                ->with('claimed')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->filter($request->only(
                     'search',
                     'trashed',
@@ -600,7 +591,6 @@ class LeadsController extends Controller
                     'createdat',
                     'grlocation',
                     'leadsource',
-                    'leadsclaimed',
                     'opportunity',
                     'claimed',
                     'date_of_birth',
