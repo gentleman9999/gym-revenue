@@ -48,17 +48,12 @@ class SmsTemplatesController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(): array
     {
-        $client_id = request()->user()->client_id;
-        $is_client_user = request()->user()->isClientUser();
         $templates = [
             'data' => [],
         ];
 
-        $templates_model = $this->setupTemplatesObject($is_client_user, 'sms', $client_id);
-
         if (! empty($templates_model)) {
-            $templates = $templates_model//->with('location')->with('detailsDesc')
-            ->with('creator')
+            $templates = SmsTemplate::with('creator')
                 ->filter(request()->only('search', 'trashed'))
                 ->get();
         }

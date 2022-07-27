@@ -30,7 +30,7 @@ class GetDashboardWidgets
             $num_drip_campaigns = DripCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();
             $last_widget_count = 0;
             if ($team->home_team) {
-                $num_locs = Location::whereClientId($team->client_id)->whereActive(1)->count();
+                $num_locs = Location::whereActive(1)->count();
             } else {
                 // get the locations the active team has access to
                 $num_locs = TeamDetail::whereTeamId($team->id)

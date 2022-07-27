@@ -42,7 +42,7 @@ class CalendarSeeder extends Seeder
                     $randomUsers[] = $user->id;
                 }
 
-                $locations = Location::whereClientId($client->id)->get();
+                $locations = Location::all();
                 $locations = $locations->toArray();
 
                 $randomUsers = array_values(array_unique($randomUsers));

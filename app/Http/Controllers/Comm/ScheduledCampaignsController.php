@@ -40,8 +40,8 @@ class ScheduledCampaignsController extends Controller
 
         return Inertia::render('Comms/ScheduledCampaigns/CreateScheduledCampaign', [
             'audiences' => Audience::get(),
-            'emailTemplates' => EmailTemplate::whereClientId(request()->user()->client_id)->get(),
-            'smsTemplates' => SmsTemplate::whereClientId(request()->user()->client_id)->get(),
+            'emailTemplates' => EmailTemplate::all(),
+            'smsTemplates' => SmsTemplate::all(),
             'template_types' => $templateTypes,
         ]);
     }
@@ -69,8 +69,8 @@ class ScheduledCampaignsController extends Controller
         return Inertia::render('Comms/ScheduledCampaigns/EditScheduledCampaign', [
             'scheduledCampaign' => $scheduledCampaign,
             'audiences' => Audience::all(),
-            'emailTemplates' => EmailTemplate::whereClientId(request()->user()->client_id)->get(),
-            'smsTemplates' => SmsTemplate::whereClientId(request()->user()->client_id)->get(),
+            'emailTemplates' => EmailTemplate::all(),
+            'smsTemplates' => SmsTemplate::all(),
             'template_types' => $templateTypes,
         ]);
     }

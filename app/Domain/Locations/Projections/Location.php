@@ -6,6 +6,7 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
+use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,6 +30,11 @@ class Location extends GymRevProjection
         'active', 'location_no', 'gymrevenue_id', 'deleted_at',
         'open_date', 'close_date', 'phone', 'default_team_id',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ClientScope());
+    }
 
     public function client(): BelongsTo
     {

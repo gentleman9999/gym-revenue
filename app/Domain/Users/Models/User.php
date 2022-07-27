@@ -104,7 +104,7 @@ class User extends Authenticatable
 
     public function allLocations(): Collection
     {
-        return Location::whereClientId($this->client_id)->get();
+        return Location::get();
     }
 
     public function switchLocation($location): bool

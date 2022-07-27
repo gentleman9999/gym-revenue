@@ -123,7 +123,7 @@ class LeadsController extends Controller
             ),
             'owners' => $available_lead_owners,
             'lead_types' => LeadType::all(),
-            'grlocations' => Location::whereClientId($client_id)->get(),
+            'grlocations' => Location::all(),
             'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
         ]);
@@ -138,7 +138,7 @@ class LeadsController extends Controller
 
         $prospects_model = $this->setUpLeadsObjectclaimed($client_id);
 
-        $locations = Location::whereClientId($client_id)->get();
+        $locations = Location::all();
         $leadsource = LeadSource::all();
 
         if (! empty($prospects_model)) {
@@ -238,7 +238,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -282,7 +282,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
             $team_locations = [];
@@ -431,7 +431,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -451,8 +451,7 @@ class LeadsController extends Controller
                         $in_query[] = $team_location->value;
                     }
 
-                    $results = Location::whereClientId($client_id)
-                        ->whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $in_query);
                 }
             }
         } else {

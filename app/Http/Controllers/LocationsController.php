@@ -144,24 +144,20 @@ class LocationsController extends Controller
          *      but the user is not a cape & bay user.
          */
 
-        /*$locations = (!is_null($client_id))
-            ? Location::whereClientId($client_id)
-            : new Location();
-        */
 
         if ((! is_null($client_id))) {
             $session_team = session()->get('current_team');
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
 
             // The active_team is the current client's default_team (gets all the client's locations)
             if ($current_team->id == $client->home_team_id) {
-                $results = Location::whereClientId($client_id);
+                $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)

@@ -109,7 +109,7 @@ class MembersController extends Controller
                 'agreementSearch',
                 'lastupdated'
             ),
-            'grlocations' => Location::whereClientId($client_id)->get(),
+            'grlocations' => Location::all(),
 
         ]);
     }
@@ -122,7 +122,7 @@ class MembersController extends Controller
         $page_count = 10;
         $prospects = [];
 
-        $locations = Location::whereClientId($client_id)->get();
+        $locations = Location::all();
 
         //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
 
@@ -194,7 +194,7 @@ class MembersController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -212,11 +212,10 @@ class MembersController extends Controller
                         $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Member::whereClientId($client_id)
-                        ->whereIn('gr_location_id', $team_locations);
+                    $results = Member::whereIn('gr_location_id', $team_locations);
                 }
             } else {
-                $results = Member::whereClientId($client_id);
+                $results = new Member();
             }
         }
 
@@ -311,23 +310,18 @@ class MembersController extends Controller
          *      but the user is not a cape & bay user.
          */
 
-        /*$locations = (!is_null($client_id))
-            ? Location::whereClientId($client_id)
-            : new Location();
-        */
-
         if ((! is_null($client_id))) {
             $session_team = session()->get('current_team');
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
             if ($current_team->id == $client->home_team_id) {
-                $results = Location::whereClientId($client_id);
+                $results = new Location();
             } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
@@ -341,8 +335,7 @@ class MembersController extends Controller
                         $in_query[] = $team_location->value;
                     }
 
-                    $results = Location::whereClientId($client_id)
-                        ->whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $in_query);
                 }
             }
         } else {

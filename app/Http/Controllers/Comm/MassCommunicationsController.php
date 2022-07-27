@@ -41,23 +41,23 @@ class MassCommunicationsController extends Controller
         ];
 
         if (! is_null($client_id)) {
-            $results['total_audience'] = Lead::whereClientId($client_id)->count();
+            $results['total_audience'] = Lead::count();
             $results['audience_breakdown'] = [
-                'all' => Lead::whereClientId($client_id)->count(),
-                'prospects' => Lead::whereClientId($client_id)->count(),
+                'all' => Lead::count(),
+                'prospects' => Lead::count(),
                 'conversions' => 0,
             ];
             $results['sms_templates'] = [
-                'created' => SmsTemplate::whereClientId($client_id)->count(),
-                'active' => SmsTemplate::whereClientId($client_id)->whereActive(1)->count(),
+                'created' => SmsTemplate::count(),
+                'active' => SmsTemplate::whereActive(1)->count(),
             ];
             $results['scheduled_campaigns'] = [
                 'created' => ScheduledCampaign::count(),
                 'active' => ScheduledCampaign::where('status', '!=', 'draft')->count(),
             ];
             $results['email_templates'] = [
-                'created' => EmailTemplate::whereClientId($client_id)->count(),
-                'active' => EmailTemplate::whereClientId($client_id)->whereActive(1)->count(),
+                'created' => EmailTemplate::count(),
+                'active' => EmailTemplate::whereActive(1)->count(),
             ];
             $results['drip_campaigns'] = [
                 'created' => DripCampaign::count(),

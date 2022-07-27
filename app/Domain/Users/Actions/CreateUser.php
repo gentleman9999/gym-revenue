@@ -271,7 +271,7 @@ class CreateUser implements CreatesNewUsers
         $selected_home_location = $this->command->option('homeclub');
 
         if (is_null($selected_home_location) && $client_choice) {
-            $all_locations = Location::whereClientId($client_choice)->get(['name', 'gymrevenue_id']);
+            $all_locations = Location::get(['name', 'gymrevenue_id']);
             $locations = $all_locations->pluck('name')->toArray();
 
             $location_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);

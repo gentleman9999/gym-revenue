@@ -16,7 +16,7 @@ class GenerateGymRevenueId
         $prefix = Client::findOrFail($client_id)->prefix;
 
         if (! is_null($prefix)) {
-            $iterations = Location::whereClientId($client_id)->pluck('gymrevenue_id');
+            $iterations = Location::all()->pluck('gymrevenue_id');
             $value = 001;
 
             if ((count($iterations) > 0) && Str::contains($iterations[count($iterations) - 1], $prefix[0])) {

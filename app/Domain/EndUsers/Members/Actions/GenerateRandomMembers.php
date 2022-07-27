@@ -36,8 +36,7 @@ class GenerateRandomMembers
 
 
                     //so just grab a few random
-                    $leads = Lead::whereClientId($client->id)
-                        ->whereGrLocationId($location->gymrevenue_id)
+                    $leads = Lead::whereGrLocationId($location->gymrevenue_id)
                         ->inRandomOrder()
                         ->limit(rand(1, 3))
                         ->get();
