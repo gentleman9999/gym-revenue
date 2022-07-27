@@ -41,17 +41,6 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 $team_ids[] = $location->default_team_id;
             }
 
-            $position_ids = [];
-            if (array_key_exists('positions', $arrayRow)) {
-                $positions = explode(",", $row['positions']);
-                foreach ($positions as $position) {
-                    $pos = position::whereName($position)->first();
-                    if (! $pos) {
-                        continue;
-                    }
-                    $position_ids[] = $pos->id;
-                }
-            }
 
             $department_ids = [];
             if (array_key_exists('departments', $arrayRow)) {
@@ -62,6 +51,22 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                         continue;
                     }
                     $department_ids[] = $dept->id;
+                }
+            }
+
+
+            $position_ids = [];
+            if (array_key_exists('positions', $arrayRow)) {
+                $positions = explode(",", $row['positions']);
+                foreach ($positions as $position) {
+                    $pos = position::whereName($position)->first();
+                    if (! $pos) {
+                        continue;
+                    }
+                    foreach ($department_ids as $id) {
+                        $potential_dept = Department::whereId($id)->with('positions')->first();
+                    }
+                    $position_ids[] = $pos->id;
                 }
             }
 
