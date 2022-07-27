@@ -33,9 +33,55 @@ class TeamLocationsSeeder extends Seeder
             [
                 'team_id' => Team::fetchTeamIDFromName('Big Island Team'),
                 'name' => 'team-location',
+                'value' => 'TZ04',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Oahu Team'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Oahu Honolulu 1'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Oahu Honolulu 2'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Oahu Honolulu 3'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Oahu Honolulu 4'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Oahu Honolulu 5'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Big Island Boating & CrossFit Club'),
+                'name' => 'team-location',
                 'value' => 'TZ01',
             ],
             // TruFit
+            [
+                'team_id' => Team::fetchTeamIDFromName('TruFit 1'),
+                'name' => 'team-location',
+                'value' => 'TR66',
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('TruFit 2'),
+                'name' => 'team-location',
+                'value' => 'TR66',
+            ],
+
             // Stencils
             [
                 'team_id' => Team::fetchTeamIDFromName('Stencils Portland'),
