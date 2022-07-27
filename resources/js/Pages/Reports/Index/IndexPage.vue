@@ -14,21 +14,22 @@
             </template>
         </reports-title>
     </LayoutHeader>
-    <div class="flex flex-col">
-        <overview-table />
-        <div class="flex flex-row mt-12 mb-4 justify-center">
-            <div class="px-2">
-                <cpa-cpl-clicks />
+    <jet-bar-container>
+        <div class="flex flex-col">
+            <overview-table />
+            <div class="flex flex-row mt-12 mb-4 justify-center px-20 w-full">
+                <div class="px-2">
+                    <cpa-cpl-clicks class="w-full" />
+                </div>
+                <div class="px-2">
+                    <email-stats-card />
+                </div>
             </div>
-            <div class="px-2">
-                <email-stats-card />
+            <div class="w-fit m-auto">
+                <conversion-rate-card />
             </div>
         </div>
-        <div class="w-fit m-auto">
-            <conversion-rate-card />
-        </div>
-    </div>
-    <jet-bar-container> </jet-bar-container>
+    </jet-bar-container>
 </template>
 
 <script setup>

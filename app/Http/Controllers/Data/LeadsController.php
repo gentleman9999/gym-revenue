@@ -88,9 +88,8 @@ class LeadsController extends Controller
         if ($session_team && array_key_exists('id', $session_team)) {
             $current_team = Team::find($session_team['id']);
         } else {
-            $current_team = Team::find($user->default_team_id);
+            $current_team = Team::find(auth()->user()->default_team_id);
         }
-
         $team_users = $current_team->team_users()->get();
         $available_lead_owners = [];
         foreach ($team_users as $team_user) {
