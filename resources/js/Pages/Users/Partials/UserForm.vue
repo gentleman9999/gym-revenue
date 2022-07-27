@@ -161,7 +161,11 @@
                     class="block w-full mt-1"
                     v-model="form.role_id"
                 >
-                    <option v-for="role_id in roles" :value="role_id.id">
+                    <option
+                        v-for="role_id in roles"
+                        :value="role_id.id"
+                        :key="role_id.id"
+                    >
                         {{ role_id.title }}
                     </option>
                 </select>
@@ -178,6 +182,7 @@
                     <option
                         v-for="{ gymrevenue_id, name } in locations"
                         :value="gymrevenue_id"
+                        :key="gymrevenue_id"
                     >
                         {{ name }}
                     </option>
@@ -270,23 +275,26 @@
                     class="mt-2"
                 />
             </div>
-            <div class="flex justify-center items-end col-span-2">
+            <div
+                class="flex justify-center items-end col-span-2"
+                v-if="isClientUser"
+            >
                 <Button primary @click="addDepartment">Add Department</Button>
             </div>
             <div
-                class="grid grid-cols-6 col-span-6"
+                class="grid grid-cols-6 col-span-6 items-center"
                 v-for="(department, ndx) in departments"
                 :key="department.department"
             >
                 <!-- {{JSON.stringify(department)}} -->
                 <div class="col-span-2">
-                    {{ getDepartment(department.department) }}
+                    {{ getDepartment(department.department)?.name }}
                 </div>
                 <div class="col-span-2">
                     {{ getPositions(department.position) }}
                 </div>
                 <div class="flex justify-center items-end col-span-2">
-                    <Button primary @click="removeDepartment(ndx)"
+                    <Button primary size="sm" @click="removeDepartment(ndx)"
                         >Remove Department</Button
                     >
                 </div>
@@ -321,6 +329,7 @@
                     class="collapse col-span-6"
                     tabindex="0"
                     v-for="note in user.all_notes"
+                    :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"
@@ -378,6 +387,7 @@
                     <template v-if="user?.files?.length">
                         <div
                             v-for="file in user.files"
+                            :key="file.id"
                             class="rounded-lg bg-base-100 p-2 flex items-center"
                         >
                             <div class="flex-grow">
@@ -650,7 +660,7 @@ export default {
         const getDepartment = (id) => {
             return props.availableDepartments.filter(
                 (item) => item.id === id
-            )[0]?.name;
+            )[0];
         };
         const getPositions = (id_arr) => {
             return id_arr
@@ -663,11 +673,10 @@ export default {
                 .join(",");
         };
 
-        const selectablePositions = computed(
-            () =>
-                // TODO get available positions from selectedDepartment.value (department Id)
-                props.availablePositions
-        );
+        const selectablePositions = computed(() => {
+            const department = getDepartment(selectedDepartment.value);
+            return department?.positions ? department.positions : [];
+        });
 
         const selectableDepartments = computed(() =>
             props.availableDepartments.filter(

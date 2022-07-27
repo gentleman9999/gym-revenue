@@ -94,9 +94,10 @@ if (!department) {
 
 const form = useGymRevForm(department);
 
+console.log("department");
+console.log(department);
+
 let handleSubmit = () => {
-    console.log("form submit");
-    console.log(form);
     if (operation === "Create") {
         form.post(route("departments.store"));
     } else {
