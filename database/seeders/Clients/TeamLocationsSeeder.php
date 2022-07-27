@@ -30,6 +30,11 @@ class TeamLocationsSeeder extends Seeder
                 'value' => 'TKH001',
             ],
             // The Z
+            [
+                'team_id' => Team::fetchTeamIDFromName('Big Island Team'),
+                'name' => 'team-location',
+                'value' => 'TZ01',
+            ],
             // TruFit
             // Stencils
             [
@@ -38,6 +43,38 @@ class TeamLocationsSeeder extends Seeder
                 'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('ST01')->first()->gymrevenue_id,
             ],
             // SciFi Purple Gyms
+            [
+                'team_id' => Team::fetchTeamIDFromName('SciFi NC'),
+                'name' => 'team-location',
+                'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('PF01')->first()->gymrevenue_id,
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Purple FL'),
+                'name' => 'team-location',
+                'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('PF01')->first()->gymrevenue_id,
+            ],
+
+            [
+                'team_id' => Team::fetchTeamIDFromName('Gym Advance A'),
+                'name' => 'team-location',
+                'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('PF02')->first()->gymrevenue_id,
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Gym BeachLyfe'),
+                'name' => 'team-location',
+                'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('PF02')->first()->gymrevenue_id,
+            ],
+
+            [
+                'team_id' => Team::fetchTeamIDFromName('Gym Advance B'),
+                'name' => 'team-location',
+                'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('PF03')->first()->gymrevenue_id,
+            ],
+            [
+                'team_id' => Team::fetchTeamIDFromName('Gym Callahan'),
+                'name' => 'team-location',
+                'value' => \App\Domain\Locations\Projections\Location::whereLocationNo('PF03')->first()->gymrevenue_id,
+            ],
             // iFit
             [
                 'team_id' => Team::fetchTeamIDFromName('iFit Florida'),
