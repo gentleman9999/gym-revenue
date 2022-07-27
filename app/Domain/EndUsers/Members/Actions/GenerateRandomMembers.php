@@ -2,7 +2,7 @@
 
 namespace App\Domain\EndUsers\Members\Actions;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
 use Illuminate\Console\Command;
@@ -36,8 +36,7 @@ class GenerateRandomMembers
 
 
                     //so just grab a few random
-                    $leads = Lead::whereClientId($client->id)
-                        ->whereGrLocationId($location->gymrevenue_id)
+                    $leads = Lead::whereGrLocationId($location->gymrevenue_id)
                         ->inRandomOrder()
                         ->limit(rand(1, 3))
                         ->get();

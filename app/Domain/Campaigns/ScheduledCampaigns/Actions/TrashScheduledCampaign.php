@@ -18,11 +18,11 @@ class TrashScheduledCampaign
     public string $commandSignature = 'scheduled-campaign:trash {id}';
     public string $commandDescription = 'Soft deletes the audience';
 
-    public function handle(string $id): ScheduledCampaign
+    public function handle(ScheduledCampaign $scheduledCampaign): ScheduledCampaign
     {
-        ScheduledCampaignAggregate::retrieve($id)->trash()->persist();
+        ScheduledCampaignAggregate::retrieve($scheduledCampaign->id)->trash()->persist();
 
-        return ScheduledCampaign::withTrashed()->findOrFail($id);
+        return $scheduledCampaign->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -35,7 +35,7 @@ class TrashScheduledCampaign
     public function asController(ActionRequest $request, ScheduledCampaign $scheduledCampaign): ScheduledCampaign
     {
         return $this->handle(
-            $scheduledCampaign->id,
+            $scheduledCampaign,
         );
     }
 

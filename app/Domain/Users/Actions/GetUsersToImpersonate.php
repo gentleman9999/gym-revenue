@@ -29,7 +29,7 @@ class GetUsersToImpersonate
         ];
     }
 
-    public function handle(ActionRequest $request)
+    public function handle(ActionRequest $request): array
     {
         try {
             $data = $request->validated();

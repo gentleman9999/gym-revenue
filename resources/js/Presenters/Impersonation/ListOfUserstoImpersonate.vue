@@ -43,7 +43,11 @@
         </div>
     </div>
 </template>
-
+<style scoped>
+td {
+    @apply py-2 px-8;
+}
+</style>
 <script setup>
 import { ref, defineEmits, watch, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";

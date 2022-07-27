@@ -122,15 +122,9 @@ watch([announcementModal], () => {
 });
 
 const switchToTeam = (teamId) => {
-    Inertia.put(
-        route("current-team.update"),
-        {
-            team_id: teamId,
-        },
-        {
-            preserveState: false,
-        }
-    );
+    Inertia.put(route("current-team.update", teamId), {
+        preserveState: false,
+    });
 };
 
 onMounted(() => {

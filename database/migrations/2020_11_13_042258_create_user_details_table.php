@@ -16,7 +16,8 @@ class CreateUserDetailsTable extends Migration
         Schema::create('user_details', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
             $table->uuid('user_id')->index();
-            $table->string('name');
+            $table->uuid('client_id')->nullable()->index();
+            $table->string('field');
             $table->string('value')->nullable();
             $table->mediumText('misc')->nullable();
             $table->boolean('active')->default(1);

@@ -20,17 +20,17 @@ class AudienceProjector extends Projector
         $audience->save();
     }
 
-    public function onAudienceUpdated(AudienceUpdated $event)
+    public function onAudienceUpdated(AudienceUpdated $event): void
     {
         Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail($event->payload);
     }
 
-    public function onAudienceTrashed(AudienceTrashed $event)
+    public function onAudienceTrashed(AudienceTrashed $event): void
     {
         Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
     }
 
-    public function onAudienceRestored(AudienceRestored $event)
+    public function onAudienceRestored(AudienceRestored $event): void
     {
         Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
     }

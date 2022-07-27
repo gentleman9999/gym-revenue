@@ -19,7 +19,7 @@ class CreateNotification
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:50'],
@@ -30,7 +30,7 @@ class CreateNotification
         ];
     }
 
-    public function handle($data, $user)
+    public function handle($data, $user): void
     {
         $id = Uuid::new();
         $data['id'] = $id;

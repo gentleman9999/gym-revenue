@@ -19,7 +19,7 @@ class UpdateRole
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //'name' => ['sometimes', 'string', 'required'],
@@ -29,7 +29,7 @@ class UpdateRole
         ];
     }
 
-    public function handle(Role $role, array $data)
+    public function handle(Role $role, array $data): Role
     {
         RoleAggregate::retrieve($role->id)->update($data)->persist();
 
@@ -43,7 +43,7 @@ class UpdateRole
         return $current_user->can('roles.update', Role::class);
     }
 
-    public function asController(ActionRequest $request, Role $role)
+    public function asController(ActionRequest $request, Role $role): Role
     {
         $data = $request->validated();
 

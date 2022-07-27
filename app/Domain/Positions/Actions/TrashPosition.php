@@ -14,11 +14,11 @@ class TrashPosition
 {
     use AsAction;
 
-    public function handle(string $id): Position
+    public function handle(Position $position): Position
     {
-        PositionAggregate::retrieve($id)->trash()->persist();
+        PositionAggregate::retrieve($position->id)->trash()->persist();
 
-        return Position::withTrashed()->findOrFail($id);
+        return $position->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -31,7 +31,7 @@ class TrashPosition
     public function asController(ActionRequest $request, Position $position): Position
     {
         return $this->handle(
-            $position->id
+            $position
         );
     }
 

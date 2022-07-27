@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Events;
 
-use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
+use App\StorableEvents\GymRevShouldBeStored;
 
-class UserWasImpersonated extends ShouldBeStored
+class UserWasImpersonated extends GymRevShouldBeStored
 {
     public $victim;
     public $invader;

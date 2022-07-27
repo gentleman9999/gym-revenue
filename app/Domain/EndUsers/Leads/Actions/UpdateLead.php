@@ -26,7 +26,7 @@ class UpdateLead extends UpdateEndUser
         return array_merge($base_rules, [
             'lead_source_id' => ['sometimes', 'exists:lead_sources,id'],
             'lead_type_id' => ['sometimes', 'exists:lead_types,id'],
-            'lead_status' => 'sometimes|required|nullable|exists:lead_statuses,id',
+            'lead_status_id' => 'sometimes|required|nullable|exists:lead_statuses,id',
         ]);
     }
 

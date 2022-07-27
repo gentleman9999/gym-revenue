@@ -15,11 +15,11 @@ class RestoreAudience
     public string $commandSignature = 'audience:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
-    public function handle(string $id): Audience
+    public function handle(Audience $audience): Audience
     {
-        AudienceAggregate::retrieve($id)->restore()->persist();
+        AudienceAggregate::retrieve($audience->id)->restore()->persist();
 
-        return Audience::withTrashed()->findOrFail($id);
+        return $audience->refresh();
     }
 
     public function authorize(ActionRequest $request): bool

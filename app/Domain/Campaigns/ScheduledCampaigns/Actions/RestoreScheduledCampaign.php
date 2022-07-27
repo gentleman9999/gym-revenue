@@ -18,11 +18,11 @@ class RestoreScheduledCampaign
     public string $commandSignature = 'scheduled-campaign:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
-    public function handle(string $id): ScheduledCampaign
+    public function handle(ScheduledCampaign $scheduledCampaign): ScheduledCampaign
     {
-        ScheduledCampaignAggregate::retrieve($id)->restore()->persist();
+        ScheduledCampaignAggregate::retrieve($scheduledCampaign->id)->restore()->persist();
 
-        return ScheduledCampaign::withTrashed()->findOrFail($id);
+        return $scheduledCampaign->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -35,7 +35,7 @@ class RestoreScheduledCampaign
     public function asController(ActionRequest $request, ScheduledCampaign $scheduledCampaign): ScheduledCampaign
     {
         return $this->handle(
-            $scheduledCampaign->id,
+            $scheduledCampaign,
         );
     }
 

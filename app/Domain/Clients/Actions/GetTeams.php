@@ -4,6 +4,7 @@ namespace App\Domain\Clients\Actions;
 
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
+use Illuminate\Database\Eloquent\Collection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,7 +17,7 @@ class GetTeams
         return  ['client_id' => 'nullable'];
     }
 
-    public function handle(string $client_id = null, $current_user = null)
+    public function handle(string $client_id = null, $current_user = null): Collection
     {
         if ($current_user && $current_user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
             $Team = Team::withoutGlobalScopes()->whereClientId($client_id);
@@ -34,7 +35,7 @@ class GetTeams
         return ! $current_user->inSecurityGroup(SecurityGroupEnum::EMPLOYEE);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): Collection
     {
         $data = $request->validated();
 

@@ -21,7 +21,7 @@ class CreatePosition
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['required', 'string','min:2'],
@@ -29,7 +29,7 @@ class CreatePosition
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data): Position
     {
         $id = Uuid::new();
 
@@ -52,11 +52,10 @@ class CreatePosition
         return $current_user->can('positions.create', Position::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): Position
     {
         return $this->handle(
             $request->validated(),
-            $request->user(),
         );
     }
 

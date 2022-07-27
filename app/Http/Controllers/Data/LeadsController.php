@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Actions\UpdateLeadCommunicationPreferences;
 use App\Domain\EndUsers\Leads\LeadAggregate;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
-use App\Models\Clients\Location;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -123,7 +123,7 @@ class LeadsController extends Controller
             ),
             'owners' => $available_lead_owners,
             'lead_types' => LeadType::all(),
-            'grlocations' => Location::whereClientId($client_id)->get(),
+            'grlocations' => Location::all(),
             'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
         ]);
@@ -138,7 +138,7 @@ class LeadsController extends Controller
 
         $prospects_model = $this->setUpLeadsObjectclaimed($client_id);
 
-        $locations = Location::whereClientId($client_id)->get();
+        $locations = Location::all();
         $leadsource = LeadSource::all();
 
         if (! empty($prospects_model)) {
@@ -238,7 +238,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -247,7 +247,7 @@ class LeadsController extends Controller
 
             if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->get();
+                    ->where('field', '=', 'team-location')->get();
                 if (count($team_locations_records) > 0) {
                     foreach ($team_locations_records as $team_locations_record) {
                         // @todo - we will probably need to do some user-level scoping
@@ -282,7 +282,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
             $team_locations = [];
@@ -431,7 +431,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -441,7 +441,7 @@ class LeadsController extends Controller
             } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->whereActive(1)
+                    ->where('field', '=', 'team-location')
                     ->get();
 
                 if (count($team_locations) > 0) {
@@ -451,8 +451,7 @@ class LeadsController extends Controller
                         $in_query[] = $team_location->value;
                     }
 
-                    $results = Location::whereClientId($client_id)
-                        ->whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $in_query);
                 }
             }
         } else {

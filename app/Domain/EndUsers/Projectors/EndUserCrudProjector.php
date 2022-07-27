@@ -35,8 +35,8 @@ abstract class EndUserCrudProjector extends BaseEndUserProjector
 
         $end_user->save();
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'creates', $event->modifiedBy());
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'created', $event->createdAt());
+        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'creates', $event->modifiedBy());
+        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'created', $event->createdAt());
 
         $this->createOrUpdateEndUserDetailsAndNotes($event, $end_user);
     }
@@ -54,7 +54,7 @@ abstract class EndUserCrudProjector extends BaseEndUserProjector
         $end_user->fill($event->payload);
         $end_user->save();
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'updated', $event->modifiedBy());
+        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'updated', $event->modifiedBy());
 
         $this->createOrUpdateEndUserDetailsAndNotes($event, $end_user);
     }
@@ -67,7 +67,7 @@ abstract class EndUserCrudProjector extends BaseEndUserProjector
         $end_user = $this->getModel()::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
         $end_user->deleteOrFail();
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'softdelete', $event->reason, ['userid' => $event->modifiedBy()]);
+        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'softdelete', $event->reason, ['userid' => $event->modifiedBy()]);
     }
 
     public function onEndUserRestored(EndUserRestored $event): void
@@ -106,7 +106,7 @@ abstract class EndUserCrudProjector extends BaseEndUserProjector
     protected function createOrUpdateEndUserDetailsAndNotes($event, EndUser $end_user): void
     {
         foreach ($this->getModel()->getDetailFields() as $field) {
-            ($end_user::getDetailsModel())::createOrUpdateRecord($event->aggregateRootUuid(), $end_user->client_id, $field, $event->payload[$field] ?? null);
+            ($end_user::getDetailsModel())::createOrUpdateRecord($event->aggregateRootUuid(), $field, $event->payload[$field] ?? null);
         }
 
         $notes = $event->payload['notes'] ?? false;
@@ -119,7 +119,7 @@ abstract class EndUserCrudProjector extends BaseEndUserProjector
                 'created_by_user_id' => $event->modifiedBy(),
             ]);
 
-            ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'note_created',  $notes['note']);
+            ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'note_created',  $notes['note']);
         }
     }
 }

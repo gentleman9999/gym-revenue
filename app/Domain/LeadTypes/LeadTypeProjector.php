@@ -7,7 +7,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class LeadTypeProjector extends Projector
 {
-    public function onLeadTypeCreated(LeadTypeCreated $event)
+    public function onLeadTypeCreated(LeadTypeCreated $event): void
     {
         $lead_type = (new LeadType())->writeable();
         $lead_type->id = $event->aggregateRootUuid();
@@ -16,7 +16,7 @@ class LeadTypeProjector extends Projector
         $lead_type->save();
     }
 
-//    public function onLeadTypeUpdated(LeadTypeUpdated $event)
+//    public function onLeadTypeUpdated(LeadTypeUpdated $event): void
 //    {
 //        $leadType = LeadType::findOrFail($event->aggregateRootUuid())->writeable();
 //        $leadType->updateOrFail($event->payload);

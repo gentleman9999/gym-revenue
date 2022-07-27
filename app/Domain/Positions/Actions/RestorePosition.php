@@ -14,11 +14,11 @@ class RestorePosition
 {
     use AsAction;
 
-    public function handle(string $id): Position
+    public function handle(Position $position): Position
     {
-        PositionAggregate::retrieve($id)->restore()->persist();
+        PositionAggregate::retrieve($position->id)->restore()->persist();
 
-        return Position::withTrashed()->findOrFail($id);
+        return $position->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -28,10 +28,10 @@ class RestorePosition
         return $current_user->can('*');
     }
 
-    public function asController(ActionRequest $request, Position $position)
+    public function asController(ActionRequest $request, Position $position): Position
     {
         return $this->handle(
-            $position->id,
+            $position
         );
     }
 

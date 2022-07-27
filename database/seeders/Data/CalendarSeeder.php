@@ -3,9 +3,9 @@
 namespace Database\Seeders\Data;
 
 use App\Actions\Clients\Calendar\CreateCalendarEvent;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Location;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -42,7 +42,7 @@ class CalendarSeeder extends Seeder
                     $randomUsers[] = $user->id;
                 }
 
-                $locations = Location::whereClientId($client->id)->get();
+                $locations = Location::all();
                 $locations = $locations->toArray();
 
                 $randomUsers = array_values(array_unique($randomUsers));

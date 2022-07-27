@@ -17,7 +17,7 @@ class CreateSmsTemplateDetailsTable extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuid('client_id')->nullable()->index();
             $table->uuid('sms_template_id');
-            $table->string('detail');
+            $table->string('field');
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();
             $table->boolean('active')->default(1);

@@ -5,10 +5,10 @@ namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaignAggregate;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Http\Middleware\InjectClientId;
-use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\SmsTemplates;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
@@ -83,9 +83,9 @@ class CreateScheduledCampaign
         $template_type_alias = $command->choice("Template Type?", ['Email', 'SMS']);
 
         if ($template_type_alias === 'Email') {
-            $template_type = EmailTemplates::class;
+            $template_type = EmailTemplate::class;
         } elseif ($template_type_alias === 'SMS') {
-            $template_type = SmsTemplates::class;
+            $template_type = SmsTemplate::class;
         }
         $template_id = $this->getTemplate($command, $client_id, $template_type);
         $audience_id = $this->getAudience($command, $client_id);

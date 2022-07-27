@@ -26,17 +26,17 @@ class DripCampaignProjector extends Projector
         $dripCampaign->save();
     }
 
-    public function onDripCampaignUpdated(DripCampaignUpdated $event)
+    public function onDripCampaignUpdated(DripCampaignUpdated $event): void
     {
         DripCampaign::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail($event->payload);
     }
 
-    public function onDripCampaignTrashed(DripCampaignTrashed $event)
+    public function onDripCampaignTrashed(DripCampaignTrashed $event): void
     {
         DripCampaign::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
     }
 
-    public function onDripCampaignRestored(DripCampaignRestored $event)
+    public function onDripCampaignRestored(DripCampaignRestored $event): void
     {
         DripCampaign::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
     }

@@ -4,6 +4,7 @@ namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -15,9 +16,9 @@ class RestoreTeam
 {
     use AsAction;
 
-    public function handle(string $id)
+    public function handle(Team $team): Team
     {
-        TeamAggregate::retrieve($id)->restore()->persist();
+        TeamAggregate::retrieve($team->id)->restore()->persist();
 
         return Team::withTrashed()->findOrFail($id);
     }
@@ -29,10 +30,15 @@ class RestoreTeam
         return $current_user->can('teams.restore', Team::class);
     }
 
-    public function asController(Request $request, Team $team)
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    public function asController(Request $request, Team $team): Team
     {
         return $this->handle(
-            $team->id,
+            $team,
         );
     }
 

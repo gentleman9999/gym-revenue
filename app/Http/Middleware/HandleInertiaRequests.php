@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Utility\AppState;
 use Closure;

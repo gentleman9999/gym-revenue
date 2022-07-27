@@ -4,7 +4,7 @@ namespace App\Domain\Clients;
 
 use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Clients\Events\ClientCreated;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Teams\Actions\CreateTeam;

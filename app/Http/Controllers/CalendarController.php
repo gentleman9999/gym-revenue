@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Clients\Location;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -27,7 +27,7 @@ class CalendarController extends Controller
             return Redirect::route('dashboard');
         }
 
-        $locations = Location::whereClientId($client_id)->get();
+        $locations = Location::all();
         //$currentLocationSelect = Location::find($request->user()->current_location_id);
 
         if ($request->get('start')) {
@@ -85,7 +85,7 @@ class CalendarController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::whereId($client_id)->first();
 
@@ -112,8 +112,8 @@ class CalendarController extends Controller
             'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
             'client_id' => $client_id,
             'client_users' => $users,
-            'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
-            'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
+            'lead_users' => Lead::select('id', 'first_name', 'last_name')->get(),
+            'member_users' => Member::select('id', 'first_name', 'last_name')->get(),
             'locations' => $locations,
         ]);
     }
@@ -124,7 +124,7 @@ class CalendarController extends Controller
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
-        $locations = Location::whereClientId($client_id)->get();
+        $locations = Location::all();
         $eventsByLocation = [];
 
         if (! $request->has('start')) {

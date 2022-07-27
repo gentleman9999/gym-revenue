@@ -2,7 +2,7 @@
 
 namespace App\Services\GatewayProviders\Email;
 
-use App\Models\Comms\EmailTemplates;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GatewayProviders\GatewayProviderType;
@@ -13,10 +13,10 @@ use App\Services\GatewayProviders\Profiles\Email\Mailgun;
 class EmailGatewayProviderService extends GatewayProviderService
 {
     protected $provider_type_slug = 'email';
-    protected EmailTemplates $email_template;
+    protected EmailTemplate $email_template;
     protected EmailGatewayProvider $gateway;
 
-    public function __construct(EmailTemplates $email_template)
+    public function __construct(EmailTemplate $email_template)
     {
         $this->email_template = $email_template;
         $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();

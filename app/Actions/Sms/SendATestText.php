@@ -2,11 +2,9 @@
 
 namespace App\Actions\Sms;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
-use App\Domain\Clients\Models\ClientDetail;
-use App\Models\Comms\SmsTemplates;
-use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
+use App\Domain\Clients\Projections\ClientDetail;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SendATestText
@@ -33,12 +31,12 @@ class SendATestText
 
         $data = request()->all();
         $user = request()->user();
-        $phone_detail = $user->phone_number()->first();
+        $phone_detail = $user->phone_number;
 
         // Get the user and check if there is a phone number or fail with string
         if (! is_null($phone_detail)) {
             // Get the sms template from sms templates or fail with string
-            $sms_template_record = SmsTemplates::find($data['templateId']);
+            $sms_template_record = SmsTemplate::find($data['templateId']);
 
             if (! is_null($sms_template_record)) {
                 $session_team = session()->get('current_team');
@@ -57,24 +55,9 @@ class SendATestText
 
                 // Verify the sms going with the client of the active team is the same or its a gymrevenue template
                 if ($client_id == $sms_template_record->client_id) {
-                    $user_aggy = UserAggregate::retrieve($user->id);
-                    if (is_null($client_id)) {
-                        /**
-                         * @todo - make an AdminUserGatewayActivityAggregate and attach it to UserAggy with Bouncer ACL
-                         */
-
-                        $gateway_service = new SMSGatewayProviderService(SmsTemplates::find($sms_template_record->id));
-                        $gateway_service->initSMSGateway($user->id);
-                        $response = $gateway_service->fire($user_aggy->getPhoneNumber());
-                        $user_aggy->logClientSMSActivity($sms_template_record->id, $response)->persist();
-
-                        $results = true;
-                    } else {
-                        ClientAggregate::retrieve($client_id)->getGatewayAggregate()
-                            ->sendATestSMSMessage($sms_template_record->id, $user->id)
-                            ->persist();
-                        $results = true;
-                    }
+//                    $user_aggy = UserAggregate::retrieve($user->id);
+                    //TODO: fire off SMS with the given template to the User
+                    $results = true;
                 } else {
                     $results = 'This template does not belong to this Account.';
                 }

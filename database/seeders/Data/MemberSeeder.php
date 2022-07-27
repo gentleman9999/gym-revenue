@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Data;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Members\Actions\CreateMember;
 use App\Domain\EndUsers\Members\Projections\Member;
 use Illuminate\Database\Seeder;

@@ -16,11 +16,11 @@ class TrashDepartment
 {
     use AsAction;
 
-    public function handle(string $id): Department
+    public function handle(Department $department): Department
     {
-        DepartmentAggregate::retrieve($id)->trash()->persist();
+        DepartmentAggregate::retrieve($department->id)->trash()->persist();
 
-        return Department::withTrashed()->findOrFail($id);
+        return $department->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -38,7 +38,7 @@ class TrashDepartment
     public function asController(ActionRequest $request, Department $department): Department
     {
         return $this->handle(
-            $department->id,
+            $department,
         );
     }
 

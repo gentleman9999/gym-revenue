@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Actions\Clients\Locations\CreateLocation;
+use App\Domain\Locations\Actions\CreateLocation;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 

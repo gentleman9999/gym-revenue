@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Data;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Actions\CreateLead;
 use App\Domain\EndUsers\Leads\LeadAggregate;
 use App\Domain\EndUsers\Leads\Projections\Lead;

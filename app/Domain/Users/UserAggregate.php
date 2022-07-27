@@ -2,7 +2,7 @@
 
 namespace App\Domain\Users;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Notifications\Events\NotificationCreated;
 use App\Domain\Notifications\Events\NotificationDismissed;
 use App\Domain\Reminders\Events\ReminderCreated;
@@ -49,21 +49,21 @@ class UserAggregate extends AggregateRoot
     protected string $end_date = '';
     protected string $termination_date = '';
 
-    public function grantAccessToken()
+    public function grantAccessToken(): static
     {
         $this->recordThat(new AccessTokenGranted());
 
         return $this;
     }
 
-    public function updatePassword(string $password)
+    public function updatePassword(string $password): static
     {
         $this->recordThat(new UserPasswordUpdated($password));
 
         return $this;
     }
 
-    public function applyUserCreated(UserCreated $event)
+    public function applyUserCreated(UserCreated $event): void
     {
         if (array_key_exists('name', $event->payload)) {
             $this->name = $event->payload['name'];
@@ -81,7 +81,7 @@ class UserAggregate extends AggregateRoot
         // @todo - put something useful here
     }
 
-    public function applyUserUpdated(UserUpdated $event)
+    public function applyUserUpdated(UserUpdated $event): void
     {
         if (array_key_exists('name', $event->payload)) {
             $this->name = $event->payload['name'];
@@ -98,7 +98,7 @@ class UserAggregate extends AggregateRoot
         // @todo - put something useful here
     }
 
-    public function applyUserAddedToTeam(UserAddedToTeam $event)
+    public function applyUserAddedToTeam(UserAddedToTeam $event): void
     {
         $this->teams[$event->team] = [
             'team_id' => $event->team,
@@ -106,7 +106,7 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserImpersonatedAnother(UserImpersonatedAnother $event)
+    public function applyUserImpersonatedAnother(UserImpersonatedAnother $event): void
     {
         $this->activity_history[] = [
             'event' => 'user-started-impersonating',
@@ -115,7 +115,7 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserStoppedImpersonatedAnother(UserStoppedImpersonatedAnother $event)
+    public function applyUserStoppedImpersonatedAnother(UserStoppedImpersonatedAnother $event): void
     {
         $this->activity_history[] = [
             'event' => 'user-stopped-impersonating',
@@ -124,7 +124,7 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserWasImpersonated(UserWasImpersonated $event)
+    public function applyUserWasImpersonated(UserWasImpersonated $event): void
     {
         $this->activity_history[] = [
             'event' => 'user-was-impersonated',
@@ -133,7 +133,7 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserStoppedBeingImpersonated(UserStoppedBeingImpersonated $event)
+    public function applyUserStoppedBeingImpersonated(UserStoppedBeingImpersonated $event): void
     {
         $this->activity_history[] = [
             'event' => 'user-stopped-being-impersonated',
@@ -142,7 +142,7 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserReceivedTextMsg(UserReceivedTextMsg $event)
+    public function applyUserReceivedTextMsg(UserReceivedTextMsg $event): void
     {
         $this->activity_history[] = [
             'event' => 'sms-transmission',
@@ -157,7 +157,7 @@ class UserAggregate extends AggregateRoot
         ];
     }
 
-    public function applyUserReceivedEmail(UserReceivedEmail $event)
+    public function applyUserReceivedEmail(UserReceivedEmail $event): void
     {
         $this->activity_history[] = [
             'event' => 'email-transmission',
@@ -241,7 +241,7 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function getTeams()
+    public function getTeams(): array
     {
         $results = $this->teams;
 
@@ -258,50 +258,50 @@ class UserAggregate extends AggregateRoot
         return $results;
     }
 
-    public function activateUserImpersonationMode(string $victim_id)
+    public function activateUserImpersonationMode(string $victim_id): static
     {
         $this->recordThat(new UserImpersonatedAnother($this->uuid(), $victim_id));
 
         return $this;
     }
 
-    public function deactivateUserImpersonationMode(string $liberated_id)
+    public function deactivateUserImpersonationMode(string $liberated_id): static
     {
         $this->recordThat(new UserStoppedImpersonatedAnother($this->uuid(), $liberated_id));
 
         return $this;
     }
 
-    public function activatePossessionMode(string $invader_id)
+    public function activatePossessionMode(string $invader_id): static
     {
         $this->recordThat(new UserWasImpersonated($this->uuid(), $invader_id));
 
         return $this;
     }
 
-    public function deactivatePossessionMode(string $coward_id)
+    public function deactivatePossessionMode(string $coward_id): static
     {
         $this->recordThat(new UserStoppedBeingImpersonated($this->uuid(), $coward_id));
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getPhoneNumber()
+    public function getPhoneNumber(): string
     {
         return $this->phone_number;
     }
 
-    public function getEmailAddress()
+    public function getEmailAddress(): string
     {
         return $this->email;
     }
 
-    public function getProperty(string $prop)
+    public function getProperty(string $prop): mixed
     {
         switch ($prop) {
             case 'name':
@@ -314,42 +314,42 @@ class UserAggregate extends AggregateRoot
         }
     }
 
-    public function createNotification(array $data)
+    public function createNotification(array $data): static
     {
         $this->recordThat(new NotificationCreated($data));
 
         return $this;
     }
 
-    public function dismissNotification(string $id)
+    public function dismissNotification(string $id): static
     {
         $this->recordThat(new NotificationDismissed($id));
 
         return $this;
     }
 
-    public function createReminder(array $payload)
+    public function createReminder(array $payload): static
     {
         $this->recordThat(new ReminderCreated($payload));
 
         return $this;
     }
 
-    public function updateReminder(array $payload)
+    public function updateReminder(array $payload): static
     {
         $this->recordThat(new ReminderUpdated($payload));
 
         return $this;
     }
 
-    public function deleteReminder(string $id)
+    public function deleteReminder(string $id): static
     {
         $this->recordThat(new ReminderDeleted($id));
 
         return $this;
     }
 
-    public function triggerReminder(string $id)
+    public function triggerReminder(string $id): static
     {
         $this->recordThat(new ReminderTriggered($id));
 

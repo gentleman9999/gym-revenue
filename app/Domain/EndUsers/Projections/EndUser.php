@@ -2,9 +2,9 @@
 
 namespace App\Domain\EndUsers\Projections;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Models\User;
-use App\Models\Clients\Location;
 use App\Models\Endusers\MembershipType;
 use App\Models\GymRevProjection;
 use App\Models\Note;
@@ -89,19 +89,19 @@ abstract class EndUser extends GymRevProjection
 
     public function detail(): HasOne
     {
-        $fk = $this->getModelName()->lower()."_id";
+        $fk = $this->getModelName()->lower() . "_id";
 
         return $this->hasOne($this->getDetailsModel(), $fk, 'id');
-    }
-
-    public function location(): HasOne
-    {
-        return $this->hasOne(Location::class, 'gymrevenue_id', 'gr_location_id');
     }
 
     public function client(): HasOne
     {
         return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    public function location(): HasOne
+    {
+        return $this->hasOne(Location::class, 'gymrevenue_id', 'gr_location_id');
     }
 
     public function membershipType(): HasOne
@@ -130,7 +130,7 @@ abstract class EndUser extends GymRevProjection
         return $this->hasMany(Note::class, 'entity_id')->whereEntityType(self::class);
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
