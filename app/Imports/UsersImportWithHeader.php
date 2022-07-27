@@ -65,8 +65,12 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                     }
                     foreach ($department_ids as $id) {
                         $potential_dept = Department::whereId($id)->with('positions')->first();
+                        foreach ($potential_dept->positions as $pot) {
+                            if ($pot->id == $pos->id) {
+                                $position_ids[] = $pos->id;
+                            }
+                        }
                     }
-                    $position_ids[] = $pos->id;
                 }
             }
 
