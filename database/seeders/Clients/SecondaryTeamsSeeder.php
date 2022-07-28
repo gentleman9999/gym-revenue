@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Models\User;
@@ -65,7 +66,7 @@ class SecondaryTeamsSeeder extends Seeder
         $scifi_owner = User::whereEmail('agabla@scifipurplegyms.com')->first();
         $ifit_owner = User::whereEmail('sherri@ifit.com')->first();
 
-        $clients = \App\Domain\Clients\Projections\Client::all()->keyBy('name');
+        $clients = Client::all()->keyBy('name');
 
         $client_teams = [
             // The Kalamazoo
@@ -128,6 +129,11 @@ class SecondaryTeamsSeeder extends Seeder
             ],
             [
                 'name' => 'Stencils San Jose',
+                'home_team' => 0,
+                'client_id' => $clients['Stencils']->id,
+            ],
+            [
+                'name' => 'Stencils Portland 2',
                 'home_team' => 0,
                 'client_id' => $clients['Stencils']->id,
             ],
