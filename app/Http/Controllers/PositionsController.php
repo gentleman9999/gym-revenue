@@ -63,6 +63,7 @@ class PositionsController extends Controller
 
         return Inertia::render('Positions/Edit', [
             'position' => $position,
+            'departments' => Department::all(),
         ]);
     }
 
