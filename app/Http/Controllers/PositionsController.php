@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Departments\Department;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -31,6 +32,7 @@ class PositionsController extends Controller
 
         return Inertia::render('Positions/Show', [
             'positions' => $pos,
+            'departments' => Department::all(),
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);
     }

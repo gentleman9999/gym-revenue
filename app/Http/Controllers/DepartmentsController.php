@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Departments\Department;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -38,6 +39,7 @@ class DepartmentsController extends Controller
 
         return Inertia::render('Departments/Show', [
             'departments' => $depts,
+            'positions' => Position::all(),
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);
     }
