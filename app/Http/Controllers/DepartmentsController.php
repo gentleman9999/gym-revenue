@@ -30,6 +30,7 @@ class DepartmentsController extends Controller
         }
 
         $depts = Department::whereClientId($client_id)
+            ->with('positions')
             ->filter($request->only('search', 'trashed'))
             ->sort()
             ->paginate(10)

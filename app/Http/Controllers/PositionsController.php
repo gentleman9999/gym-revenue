@@ -23,6 +23,7 @@ class PositionsController extends Controller
         }
 
         $pos = Position::whereClientId($client_id)
+            ->with('departments')
             ->filter($request->only('search', 'trashed'))
             ->sort()
             ->paginate(10)
