@@ -94,11 +94,16 @@ if (!department) {
 
 const form = useGymRevForm(department);
 
-let handleSubmit = () =>
-    form.dirty().put(route("departments.update", department.id));
-if (operation === "Create") {
-    handleSubmit = () => form.post(route("departments.store"));
-}
+console.log("department");
+console.log(department);
+
+let handleSubmit = () => {
+    if (operation === "Create") {
+        form.post(route("departments.store"));
+    } else {
+        form.dirty().put(route("departments.update", department.id));
+    }
+};
 
 const modal = useModal();
 const handleCancel = () => {
