@@ -20,7 +20,7 @@ class ImportUsers
         $result = false;
         foreach ($data as $item) {
             if ($item['extension'] === 'csv') {
-                ClientAggregate::retrieve($client_id)->importUsers($item['key'])->persist();
+                ClientAggregate::retrieve($client_id)->importUsers($item['key'], $client_id)->persist();
                 $result = true;
             } else {
                 Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();

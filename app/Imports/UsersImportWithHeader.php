@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
@@ -45,7 +46,7 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
             if (array_key_exists('departments', $arrayRow)) {
                 $departments = explode(",", $row['departments']);
                 foreach ($departments as $department) {
-                    $dept = department::whereName($department)->first();
+                    $dept = Department::whereName($department)->first();
                     if (! $dept) {
                         continue;
                     }
@@ -58,7 +59,7 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
             if (array_key_exists('positions', $arrayRow)) {
                 $positions = explode(",", $row['positions']);
                 foreach ($positions as $position) {
-                    $pos = position::whereName($position)->first();
+                    $pos = Position::whereName($position)->first();
                     if (! $pos) {
                         continue;
                     }

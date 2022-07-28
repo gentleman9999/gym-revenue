@@ -24,7 +24,7 @@ class UserReactor extends Reactor implements ShouldQueue
     {
         $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         if (in_array($headings[0][0][0], (new User())->getFillable())) {
-            Excel::import(new UsersImportWithHeader($event->client), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
+            Excel::import(new UsersImportWithHeader($event->clientId()), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         } else {
             Excel::import(new UsersImport($event->clientId()), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         }
