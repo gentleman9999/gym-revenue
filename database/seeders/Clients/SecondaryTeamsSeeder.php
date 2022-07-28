@@ -65,7 +65,7 @@ class SecondaryTeamsSeeder extends Seeder
         $scifi_owner = User::whereEmail('agabla@scifipurplegyms.com')->first();
         $ifit_owner = User::whereEmail('sherri@ifit.com')->first();
 
-        $clients = \App\Domain\Clients\Models\Client::all()->keyBy('name');
+        $clients = \App\Domain\Clients\Projections\Client::all()->keyBy('name');
 
         $client_teams = [
             // The Kalamazoo

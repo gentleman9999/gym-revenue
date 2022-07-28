@@ -2,7 +2,8 @@
 
 namespace App\Domain\Users\Actions;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
 use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Models\Team;
@@ -10,7 +11,6 @@ use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
-use App\Models\Clients\Location;
 use function bcrypt;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
@@ -271,7 +271,7 @@ class CreateUser implements CreatesNewUsers
         $selected_home_location = $this->command->option('homeclub');
 
         if (is_null($selected_home_location) && $client_choice) {
-            $all_locations = Location::whereClientId($client_choice)->get(['name', 'gymrevenue_id']);
+            $all_locations = Location::get(['name', 'gymrevenue_id']);
             $locations = $all_locations->pluck('name')->toArray();
 
             $location_choice = $this->command->choice("Which home club should {$user_name} be assigned to?", $locations);

@@ -15,7 +15,7 @@ class ImportUsers
 {
     use AsAction;
 
-    public function handle(array $data, string $client_id)
+    public function handle(array $data, string $client_id): bool
     {
         $result = false;
         foreach ($data as $item) {
@@ -42,7 +42,7 @@ class ImportUsers
         return $current_user->can('users.create', User::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): bool
     {
         return $this->handle(
             $request->all(),

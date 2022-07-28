@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class ReminderCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Reminder::class;
     }

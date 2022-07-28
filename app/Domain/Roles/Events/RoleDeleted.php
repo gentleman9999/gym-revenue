@@ -7,7 +7,7 @@ use App\StorableEvents\EntityDeleted;
 
 class RoleDeleted extends EntityDeleted
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Role::class;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Domain\Departments\Department;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
 use App\Models\Clients\Location;

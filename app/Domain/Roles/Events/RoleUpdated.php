@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class RoleUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Role::class;
     }

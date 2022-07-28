@@ -14,7 +14,7 @@
             <div class="flex flex-col h-[160px] overflow-y-scroll pl-2 pr-4">
                 <div v-for="(item, ndx) in goals" :key="ndx">
                     <div class="text-secondary text-base">{{ item.goal }}</div>
-                    <div class="w-[13vw] text-sm">{{ item.content }}</div>
+                    <div class="w-40 text-sm">{{ item.content }}</div>
                 </div>
             </div>
             <div class="flex flex-col justify-center">

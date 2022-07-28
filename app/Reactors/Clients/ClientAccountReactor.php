@@ -4,12 +4,12 @@ namespace App\Reactors\Clients;
 
 use App\Actions\Clients\Activity\Comms\FireOffEmailCampaign;
 use App\Actions\Clients\Activity\Comms\FireOffSmsCampaign;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Models\Comms\EmailTemplates;
 use App\Models\Comms\QueuedEmailCampaign;
 use App\Models\Comms\QueuedSmsCampaign;
-use App\Models\Comms\SmsTemplates;
 use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
 use App\StorableEvents\Clients\Activity\Campaigns\EmailCampaignLaunched;
@@ -48,7 +48,7 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
         if ($event->isCampaign) {
             if ($event->sentTo['entity_type'] == User::class) {
                 $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
-                $gateway_service = new SMSGatewayProviderService(SmsTemplates::find($event->campaign));
+                $gateway_service = new SMSGatewayProviderService(SmsTemplate::find($event->campaign));
                 $gateway_service->initSMSGateway($event->sentTo['entity_id']);
                 $response = $gateway_service->fire($user_aggy->getPhoneNumber());
             } //@todo finish logic for entity_type != user::class
@@ -64,7 +64,7 @@ class ClientAccountReactor extends Reactor implements ShouldQueue
         if ($event->isCampaign) {
             if ($event->sentTo['entity_type'] == User::class) {
                 $user_aggy = UserAggregate::retrieve($event->sentTo['entity_id']);
-                $gateway_service = new EmailGatewayProviderService(EmailTemplates::find($event->campaign));
+                $gateway_service = new EmailGatewayProviderService(EmailTemplate::find($event->campaign));
                 $gateway_service->initEmailGateway($event->sentTo['entity_id']);
                 $response = $gateway_service->fire($user_aggy->getEmailAddress());
             }//@todo finish logic for entity_type != user::class

@@ -5,7 +5,7 @@ namespace App\Domain\Campaigns\DripCampaigns\Actions;
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\DripCampaigns\DripCampaignAggregate;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;

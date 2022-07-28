@@ -16,7 +16,7 @@ class LeadStatus extends GymRevProjection
 
     protected $hidden = ['client_id'];
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }

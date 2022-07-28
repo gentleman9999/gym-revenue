@@ -18,11 +18,11 @@ class RestoreDripCampaign
     public string $commandSignature = 'drip-campaign:restore {id}';
     public string $commandDescription = 'Restores the audience';
 
-    public function handle(string $id): DripCampaign
+    public function handle(DripCampaign $dripCampaign): DripCampaign
     {
-        DripCampaignAggregate::retrieve($id)->restore()->persist();
+        DripCampaignAggregate::retrieve($dripCampaign->id)->restore()->persist();
 
-        return DripCampaign::withTrashed()->findOrFail($id);
+        return $dripCampaign->refresh();
     }
 
     public function authorize(ActionRequest $request): bool

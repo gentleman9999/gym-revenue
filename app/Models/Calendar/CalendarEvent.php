@@ -2,7 +2,7 @@
 
 namespace App\Models\Calendar;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Users\Models\User;
 use App\Models\File;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;

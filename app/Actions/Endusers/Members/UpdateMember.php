@@ -3,7 +3,7 @@
 namespace App\Actions\Endusers\Members;
 
 use App\Aggregates\Endusers\MemberAggregate;
-use App\Models\Endusers\Member;
+use App\Domain\EndUsers\Members\Projections\Member;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

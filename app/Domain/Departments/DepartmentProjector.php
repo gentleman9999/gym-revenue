@@ -20,17 +20,17 @@ class DepartmentProjector extends Projector
         $position->save();
     }
 
-    public function onDepartmentUpdated(DepartmentUpdated $event)
+    public function onDepartmentUpdated(DepartmentUpdated $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
     }
 
-    public function onDepartmentTrashed(DepartmentTrashed $event)
+    public function onDepartmentTrashed(DepartmentTrashed $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->delete();
     }
 
-    public function onDepartmentRestored(DepartmentRestored $event)
+    public function onDepartmentRestored(DepartmentRestored $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->restore();
     }

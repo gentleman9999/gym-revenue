@@ -4,10 +4,8 @@ namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Users\Models\User;
-use App\Models\Comms\SmsTemplates;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class FireOffSms
@@ -21,7 +19,7 @@ class FireOffSms
 
     public function handle(string $client_id, $templateId, $entity_type, $entity_id)
     {
-        $template = SmsTemplates::with('gateway')->findOrFail($templateId);
+        $template = \App\Domain\Templates\SmsTemplates\Projections\SmsTemplate::with('gateway')->findOrFail($templateId);
         $client_aggy = ClientAggregate::retrieve($client_id);
         $sent_to = [];
         $entity = null;

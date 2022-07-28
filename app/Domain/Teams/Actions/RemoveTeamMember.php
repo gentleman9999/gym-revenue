@@ -5,13 +5,10 @@ namespace App\Domain\Teams\Actions;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use App\Domain\Users\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\ValidationException;
 use Laravel\Jetstream\Contracts\RemovesTeamMembers;
-use Laravel\Jetstream\Events\TeamMemberRemoved;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -40,6 +37,11 @@ class RemoveTeamMember implements RemovesTeamMembers
 //            $user->id !== $teamMember->id) {
 //            throw new AuthorizationException();
 //        }
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     //TODO: use implicit route binding on teamMemberId

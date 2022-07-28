@@ -14,10 +14,9 @@ class DeleteScheduledCampaign
     public string $commandSignature = 'scheduled-campaign:delete {id}';
     public string $commandDescription = 'Permanently deletes the ScheduledCampaign';
 
-    public function handle(string $id): ScheduledCampaign
+    public function handle(ScheduledCampaign $scheduledCampaign): ScheduledCampaign
     {
-        $scheduledCampaign = ScheduledCampaign::withTrashed()->findOrFail($id);
-        ScheduledCampaignAggregate::retrieve($id)->delete()->persist();
+        ScheduledCampaignAggregate::retrieve($scheduledCampaign->id)->delete()->persist();
 
         return $scheduledCampaign;
     }
@@ -26,7 +25,7 @@ class DeleteScheduledCampaign
     {
         $scheduledCampaign = ScheduledCampaign::withTrashed()->findOrFail($command->argument('id'));
         if ($command->confirm("Are you sure you want to hard delete ScheduledCampaign '{$scheduledCampaign->name}'? This cannot be undone")) {
-            $scheduledCampaign = $this->handle($command->argument('id'));
+            $scheduledCampaign = $this->handle($scheduledCampaign);
             $command->info('Deleted audience ' . $scheduledCampaign->name);
 
             return;

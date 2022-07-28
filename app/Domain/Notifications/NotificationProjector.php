@@ -8,7 +8,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class NotificationProjector extends Projector
 {
-    public function onNotificationCreated(NotificationCreated $event)
+    public function onNotificationCreated(NotificationCreated $event): void
     {
         $notification = (new Notification())->writeable();
         $notification->id = $event->payload['id'];
@@ -17,7 +17,7 @@ class NotificationProjector extends Projector
         $notification->save();
     }
 
-    public function onNotificationDismissed(NotificationDismissed $event)
+    public function onNotificationDismissed(NotificationDismissed $event): void
     {
         $notification = Notification::find($event->id);
         $notification->deleted_at = $event->createdAt();

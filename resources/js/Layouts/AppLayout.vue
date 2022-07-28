@@ -32,7 +32,7 @@
                         >
                             <div
                                 id="layout-header"
-                                class="max-w-7xl mx-auto pt-3 px-4 sm:px-6 lg:px-8 text-lg font-semibold tracking-widest uppercase"
+                                class="max-w-fit mx-auto pt-3 px-4 sm:px-6 lg:px-8 text-lg font-semibold tracking-widest uppercase"
                             ></div>
                             <!-- Replace with your content -->
                             <div>

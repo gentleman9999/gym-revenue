@@ -11,7 +11,7 @@ class CreateLeadStatus
 {
     use AsAction;
 
-    public function handle(array $data)
+    public function handle(array $data): LeadStatus
     {
         $id = Uuid::new();//we should use uuid here
         LeadStatusAggregate::retrieve($id)->create($data)->persist();

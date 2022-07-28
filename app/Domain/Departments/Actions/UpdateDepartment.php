@@ -23,15 +23,15 @@ class UpdateDepartment
     public function rules()
     {
         return [
-            'name' => ['string', 'required'],
+            'name' => ['required', 'string','min:2'],
         ];
     }
 
-    public function handle(string $id, array $payload): Department
+    public function handle(Department $department, array $payload): Department
     {
-        DepartmentAggregate::retrieve($id)->update($payload)->persist();
+        DepartmentAggregate::retrieve($department->id)->update($payload)->persist();
 
-        return Department::findOrFail($id);
+        return $department->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -49,7 +49,7 @@ class UpdateDepartment
     public function asController(ActionRequest $request, Department $department)
     {
         return $this->handle(
-            $department->id,
+            $department,
             $request->validated(),
         );
     }

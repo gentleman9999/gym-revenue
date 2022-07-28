@@ -44,6 +44,9 @@
         <calendar-event-form
             @submitted="closeModals"
             ref="createCalendarEventForm"
+            :locations="locations"
+            :lead_users="lead_users"
+            :member_users="member_users"
             :duration="{
                 start: null,
             }"
@@ -63,6 +66,7 @@
             :client_users="client_users"
             :lead_users="lead_users"
             :member_users="member_users"
+            :locations="locations"
             @submitted="closeModals"
             ref="editCalendarEventForm"
             :duration="{
@@ -108,6 +112,7 @@ export default defineComponent({
         "completed_tasks",
         "lead_users",
         "member_users",
+        "locations",
     ],
     setup(props) {
         const createEventModal = ref();

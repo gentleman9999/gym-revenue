@@ -61,12 +61,12 @@ class TeamHistory extends EventQuery
         $this->history[] = "Team {$this->teams[$event->aggregateRootUuid()]} $updated_by ";
     }
 
-    public function getTeams()
+    public function getTeams(): array
     {
         return $this->teams;
     }
 
-    public function getHistory()
+    public function getHistory(): array
     {
         return $this->history;
     }

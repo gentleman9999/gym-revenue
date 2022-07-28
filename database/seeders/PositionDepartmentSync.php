@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Departments\Department;
 use App\Models\Position;
 use Illuminate\Database\Seeder;

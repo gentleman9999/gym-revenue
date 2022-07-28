@@ -8,14 +8,14 @@ use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class LeadSourceAggregate extends AggregateRoot
 {
-    public function create(array $payload)
+    public function create(array $payload): static
     {
         $this->recordThat(new LeadSourceCreated($payload));
 
         return $this;
     }
 
-    public function update(array $payload)
+    public function update(array $payload): static
     {
         $this->recordThat(new LeadSourceUpdated($payload));
 

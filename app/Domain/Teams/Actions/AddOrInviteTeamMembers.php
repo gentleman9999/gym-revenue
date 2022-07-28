@@ -4,6 +4,7 @@ namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Features;
@@ -23,7 +24,7 @@ class AddOrInviteTeamMembers
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'emails' => ['required', 'array', 'min:1'],
@@ -49,6 +50,11 @@ class AddOrInviteTeamMembers
         $team->refresh();
 
         return $users_added_or_invited;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Data;
 
-use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\Actions\UpdateLeadCommunicationPreferences;
-use App\Domain\Leads\LeadAggregate;
-use App\Domain\Leads\Models\Lead;
-use App\Domain\Leads\Models\LeadDetails;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Leads\Actions\UpdateLeadCommunicationPreferences;
+use App\Domain\EndUsers\Leads\LeadAggregate;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
-use App\Models\Clients\Location;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -38,8 +37,8 @@ class LeadsController extends Controller
         $is_client_user = request()->user()->isClientUser();
         $page_count = 10;
         $prospects = [];
-        $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
-        $opportunities = Lead::whereClientId($client_id)->select('opportunity')->distinct()->get()->pluck('opportunity');
+        $prospects_model = $this->setUpLeadsObject($client_id);
+        $opportunities = Lead::select('opportunity')->distinct()->get()->pluck('opportunity');
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -47,9 +46,7 @@ class LeadsController extends Controller
                 ->with('leadType')
                 ->with('membershipType')
                 ->with('leadSource')
-                ->with('leadsclaimed')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->with('notes')
                 ->filter($request->only(
                     'search',
@@ -58,7 +55,7 @@ class LeadsController extends Controller
                     'createdat',
                     'grlocation',
                     'leadsource',
-                    'leadsclaimed',
+                    'claimed',
                     'opportunity',
                     'claimed',
                     'date_of_birth',
@@ -87,6 +84,21 @@ class LeadsController extends Controller
             $prospects->setCollection($sortedResult);
         }
 
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find(auth()->user()->default_team_id);
+        }
+        $team_users = $current_team->team_users()->get();
+        $available_lead_owners = [];
+        foreach ($team_users as $team_user) {
+            $available_lead_owners[] = [
+                'name' => $team_user->user->name,
+                "id" => $team_user->user->id,
+            ];
+        }
+
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
             'routeName' => request()->route()->getName(),
@@ -99,7 +111,7 @@ class LeadsController extends Controller
                 'createdat',
                 'grlocation',
                 'leadsource',
-                'leadsclaimed',
+                'claimed',
                 'opportunity',
                 'claimed',
                 'date_of_birth',
@@ -109,27 +121,25 @@ class LeadsController extends Controller
                 'agreementSearch',
                 'lastupdated'
             ),
-            'lead_types' => LeadType::whereClientId($client_id)->get(),
-            'grlocations' => Location::whereClientId($client_id)->get(),
-            'leadsources' => LeadSource::whereClientId($client_id)->get(),
+            'owners' => $available_lead_owners,
+            'lead_types' => LeadType::all(),
+            'grlocations' => Location::all(),
+            'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
         ]);
     }
 
     public function claimed(Request $request)
     {
-        $client_id = request()->user()->client_id;
-        $is_client_user = request()->user()->isClientUser();
+        $client_id = request()->user()->currentClientId();
 
         $page_count = 10;
         $prospects = [];
 
-        $prospects_model = $this->setUpLeadsObjectclaimed($is_client_user, $client_id);
+        $prospects_model = $this->setUpLeadsObjectclaimed($client_id);
 
-        $locations = Location::whereClientId($client_id)->get();
-        $leadsource = LeadSource::whereClientId($client_id)->get();
-
-        //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
+        $locations = Location::all();
+        $leadsource = LeadSource::all();
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -138,7 +148,6 @@ class LeadsController extends Controller
                 ->with('membershipType')
                 ->with('leadSource')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->filter($request->only('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'))
                 ->orderBy('created_at', 'desc')
                 ->paginate($page_count)
@@ -150,7 +159,7 @@ class LeadsController extends Controller
             'title' => 'Leads',
             //'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed', 'typeoflead', 'createdat', 'grlocation', 'leadsource'),
-            'lead_types' => LeadType::whereClientId($client_id)->get(),
+            'lead_types' => LeadType::all(),
             'grlocations' => $locations,
             'leadsources' => $leadsource,
 
@@ -188,9 +197,9 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $lead_types = LeadType::whereClientId($client_id)->get();
-        $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatus::whereClientId($client_id)->get();
+        $lead_types = LeadType::all();
+        $lead_sources = LeadSource::all();
+        $lead_statuses = LeadStatus::all();
 
 
         /**
@@ -213,7 +222,7 @@ class LeadsController extends Controller
         ]);
     }
 
-    private function setUpLeadsObject(bool $is_client_user, string $client_id = null)
+    private function setUpLeadsObject(string $client_id = null)
     {
         $results = [];
 
@@ -229,7 +238,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -238,7 +247,7 @@ class LeadsController extends Controller
 
             if ($current_team->id != $client->home_team_id) {
                 $team_locations_records = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->get();
+                    ->where('field', '=', 'team-location')->get();
                 if (count($team_locations_records) > 0) {
                     foreach ($team_locations_records as $team_locations_record) {
                         // @todo - we will probably need to do some user-level scoping
@@ -246,11 +255,10 @@ class LeadsController extends Controller
                         $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Lead::whereClientId($client_id)
-                        ->whereIn('gr_location_id', $team_locations);
+                    $results = Lead::whereIn('gr_location_id', $team_locations);
                 }
             } else {
-                $results = Lead::whereClientId($client_id);
+                $results = new Lead();
             }
         }
 
@@ -258,7 +266,7 @@ class LeadsController extends Controller
         return $results;
     }
 
-    private function setUpLeadsObjectclaimed(bool $is_client_user, string $client_id = null)
+    private function setUpLeadsObjectclaimed(string $client_id = null)
     {
         $results = [];
 
@@ -274,7 +282,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
             $team_locations = [];
@@ -289,12 +297,10 @@ class LeadsController extends Controller
                         // example - if there is scoping and this club is not there, don't include it
                         $team_locations[] = $team_locations_record->value;
                     }
-                    $claimed = LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
-                    $results = Lead::whereClientId($client_id)
-                        ->whereIn('gr_location_id', $team_locations)->whereHas('leadsclaimed');
+                    $results = Lead::whereIn('gr_location_id', $team_locations)->whereHas('claimed');
                 }
             } else {
-                $results = Lead::whereClientId($client_id)->whereHas('leadsclaimed');
+                $results = Lead::whereHas('claimed');
             }
         }
 
@@ -324,9 +330,9 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $lead_types = LeadType::whereClientId($client_id)->get();
-        $lead_sources = LeadSource::whereClientId($client_id)->get();
-        $lead_statuses = LeadStatus::whereClientId($client_id)->get();
+        $lead_types = LeadType::all();
+        $lead_sources = LeadSource::all();
+        $lead_statuses = LeadStatus::all();
 
         $lead_aggy = LeadAggregate::retrieve($lead->id);
 
@@ -347,20 +353,19 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
-        // profile_picture will not load profile picture on the front end
         $lead->load(
             [
-//            'profile_picture',
             'trialMemberships',
-            'lead_owner',
+            'owner',
             'lead_status',
             'last_updated',
-            'notes', ]
+            'notes',
+            ]
         );
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $lead;
+        $leadData = $lead->toArray();
         $leadData['all_notes'] = $lead->notes->toArray();
 
         foreach ($leadData['all_notes'] as $key => $value) {
@@ -426,7 +431,7 @@ class LeadsController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
             $client = Client::find($client_id);
 
@@ -436,7 +441,7 @@ class LeadsController extends Controller
             } else {
                 // The active_team is not the current client's default_team
                 $team_locations = TeamDetail::whereTeamId($current_team->id)
-                    ->where('name', '=', 'team-location')->whereActive(1)
+                    ->where('field', '=', 'team-location')
                     ->get();
 
                 if (count($team_locations) > 0) {
@@ -446,8 +451,7 @@ class LeadsController extends Controller
                         $in_query[] = $team_location->value;
                     }
 
-                    $results = Location::whereClientId($client_id)
-                        ->whereIn('gymrevenue_id', $in_query);
+                    $results = Location::whereIn('gymrevenue_id', $in_query);
                 }
             }
         } else {
@@ -516,14 +520,14 @@ class LeadsController extends Controller
     public function sources(Request $request)
     {
         return Inertia::render('Leads/Sources', [
-            'sources' => LeadSource::whereClientId($request->user()->client_id)->get(['id', 'name']),
+            'sources' => LeadSource::get(['id', 'name']),
         ]);
     }
 
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-            'statuses' => LeadStatus::whereClientId($request->user()->client_id)->get(['id', 'status']),
+            'statuses' => LeadStatus::get(['id', 'status']),
         ]);
     }
 
@@ -569,7 +573,7 @@ class LeadsController extends Controller
         $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $prospects = [];
-        $prospects_model = $this->setUpLeadsObject($is_client_user, $client_id);
+        $prospects_model = $this->setUpLeadsObject($client_id);
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -577,9 +581,8 @@ class LeadsController extends Controller
                 ->with('leadType')
                 ->with('membershipType')
                 ->with('leadSource')
-                ->with('leadsclaimed')
+                ->with('claimed')
                 ->with('detailsDesc')
-                //  ->with('leadsclaimed')
                 ->filter($request->only(
                     'search',
                     'trashed',
@@ -587,7 +590,6 @@ class LeadsController extends Controller
                     'createdat',
                     'grlocation',
                     'leadsource',
-                    'leadsclaimed',
                     'opportunity',
                     'claimed',
                     'date_of_birth',

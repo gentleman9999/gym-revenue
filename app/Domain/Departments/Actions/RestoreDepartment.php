@@ -15,11 +15,11 @@ class RestoreDepartment
 {
     use AsAction;
 
-    public function handle(string $id): Department
+    public function handle(Department $department): Department
     {
-        DepartmentAggregate::retrieve($id)->restore()->persist();
+        DepartmentAggregate::retrieve($department->id)->restore()->persist();
 
-        return Department::withTrashed()->findOrFail($id);
+        return $department->refresh();
     }
 
     public function getControllerMiddleware(): array

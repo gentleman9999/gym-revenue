@@ -14,7 +14,7 @@ class DeleteRole
 {
     use AsAction;
 
-    public function handle(Role $role)
+    public function handle(Role $role): Role
     {
         RoleAggregate::retrieve($role->id)->delete()->persist();
 
@@ -28,7 +28,7 @@ class DeleteRole
         return $current_user->can('roles.delete', Role::class);
     }
 
-    public function asController(ActionRequest $request, Role $role)
+    public function asController(ActionRequest $request, Role $role): Role
     {
         return $this->handle(
             $role
