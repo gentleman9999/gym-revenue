@@ -5,7 +5,6 @@ namespace App\Imports;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
-use App\Models\Clients\Location;
 use App\Models\Position;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
