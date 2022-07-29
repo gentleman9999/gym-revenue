@@ -23,6 +23,7 @@ class UpdatePosition
     {
         return [
             'name' => ['string', 'required'],
+            'positions' => ['array', 'sometimes'],
         ];
     }
 

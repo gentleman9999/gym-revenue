@@ -24,6 +24,7 @@ class UpdateDepartment
     {
         return [
             'name' => ['string', 'required'],
+            'departments' => ['array', 'sometimes'],
         ];
     }
 
