@@ -5,7 +5,10 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <department-form :client-id="$page.props.user.client_id" />
+            <department-form
+                :client-id="$page.props.user.client_id"
+                :positions="positions"
+            />
         </div>
     </div>
 </template>
@@ -28,6 +31,11 @@ export default defineComponent({
         JetInputError,
         JetLabel,
     },
-    props: {},
+    props: {
+        positions: {
+            type: Object,
+            required: true,
+        },
+    },
 });
 </script>
