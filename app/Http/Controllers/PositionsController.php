@@ -61,7 +61,7 @@ class PositionsController extends Controller
             return Redirect::back();
         }
 
-        $position = Position::findOrFail($position->id)->with('departments')->first();
+        $position = Position::whereId($position->id)->with('departments')->first();
 
         return Inertia::render('Positions/Edit', [
             'position' => $position,

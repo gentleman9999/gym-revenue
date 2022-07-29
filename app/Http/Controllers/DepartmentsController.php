@@ -68,7 +68,7 @@ class DepartmentsController extends Controller
             return Redirect::back();
         }
 
-        $department = Department::findOrFail($department->id)->with('positions')->first();
+        $department = Department::whereId($department->id)->with('positions')->first();
 
         return Inertia::render('Departments/Edit', [
             'department' => $department,
