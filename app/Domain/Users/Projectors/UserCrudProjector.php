@@ -39,17 +39,17 @@ class UserCrudProjector extends Projector
 
             if (array_key_exists('positions', $data)) {
                 if (count($data) == count($data, COUNT_RECURSIVE)) {
-                    $user->positions()->sync($data['positions']);
+                    //do nothing
                 } else {
-                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                    $user->positions()->sync($data['positions']);
                 }
             }
 
             if (array_key_exists('departments', $data)) {
                 if (count($data) == count($data, COUNT_RECURSIVE)) {
-                    $user->departments()->sync($data['departments']);
+                    //do nothing
                 } else {
-                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                    $user->departments()->sync($data['departments']);
                 }
             }
 

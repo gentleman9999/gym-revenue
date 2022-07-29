@@ -2,9 +2,11 @@
 
 namespace App\Imports;
 
+use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
+use App\Models\Position;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -36,7 +38,40 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 if (! $location) {
                     continue;
                 }
-                $team_ids[] = $location->defaultTeam->id;
+                $team_ids[] = $location->default_team_id;
+            }
+
+
+            $department_ids = [];
+            if (array_key_exists('departments', $arrayRow)) {
+                $departments = explode(",", $row['departments']);
+                foreach ($departments as $department) {
+                    $dept = Department::whereName($department)->first();
+                    if (! $dept) {
+                        continue;
+                    }
+                    $department_ids[] = $dept->id;
+                }
+            }
+
+
+            $position_ids = [];
+            if (array_key_exists('positions', $arrayRow)) {
+                $positions = explode(",", $row['positions']);
+                foreach ($positions as $position) {
+                    $pos = Position::whereName($position)->first();
+                    if (! $pos) {
+                        continue;
+                    }
+                    foreach ($department_ids as $id) {
+                        $potential_dept = Department::whereId($id)->with('positions')->first();
+                        foreach ($potential_dept->positions as $pot) {
+                            if ($pot->id == $pos->id) {
+                                $position_ids[] = $pos->id;
+                            }
+                        }
+                    }
+                }
             }
 
             CreateUser::run([
@@ -53,6 +88,8 @@ class UsersImportWithHeader implements ToCollection, WithHeadingRow
                 'city' => array_key_exists('city', $arrayRow) ? $row['city'] : null,
                 'state' => array_key_exists('state', $arrayRow) ? $row['state'] : null,
                 'zip' => array_key_exists('zip', $arrayRow) ? $row['zip'] : null,
+                'positions' => is_null($position_ids) ? null : $position_ids,
+                'departments' => is_null($department_ids) ? null : $department_ids,
                 'client_id' => $this->client_id,
             ]);
         }

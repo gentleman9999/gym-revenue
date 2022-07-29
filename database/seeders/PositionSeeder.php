@@ -30,6 +30,7 @@ class PositionSeeder extends Seeder
             'Fitness Director',
             'Sales Manager',
             'Sales Director',
+            'Fitness Sales Rep',
         ];
         if (count($clients) > 0) {
             foreach ($clients as $client) {

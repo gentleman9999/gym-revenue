@@ -4,6 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Users\Models\User;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -19,7 +20,7 @@ class ImportUsers
         $result = false;
         foreach ($data as $item) {
             if ($item['extension'] === 'csv') {
-                ClientAggregate::retrieve($client_id)->importUsers($item['key'])->persist();
+                ClientAggregate::retrieve($client_id)->importUsers($item['key'], $client_id)->persist();
                 $result = true;
             } else {
                 Alert::error("File name: ".$item['filename']. " doesn't meet extension requirements of '.csv'.")->flash();
@@ -27,6 +28,11 @@ class ImportUsers
         }
 
         return $result;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
