@@ -50,6 +50,7 @@ class PositionsController extends Controller
         }
 
         return Inertia::render('Positions/Create', [
+            'departments' => Department::all(),
         ]);
     }
 

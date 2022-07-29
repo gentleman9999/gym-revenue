@@ -8,12 +8,11 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.name"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
             <div class="col-span-6">
-                <jet-label for="position" value="Position" />
+                <jet-label for="departments" value="Department" />
                 <multiselect
                     v-model="form.departments"
                     class="py-2"
@@ -22,7 +21,7 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                        availableDepartments.map((department) => ({
+                        departments.map((department) => ({
                             label: department.name,
                             value: department.id,
                         }))
@@ -79,6 +78,9 @@ const props = defineProps({
     position: {
         type: Object,
     },
+    departments: {
+        type: Array,
+    },
 });
 let position = props.position;
 let operation = "Update";
@@ -109,15 +111,4 @@ const handleCancel = () => {
     }
     Inertia.visit(route("positions"));
 };
-
-const availableDepartments = [
-    {
-        name: "Sales Manager",
-        id: 1,
-    },
-    {
-        name: "Group Exercise Instructor",
-        id: 2,
-    },
-];
 </script>
