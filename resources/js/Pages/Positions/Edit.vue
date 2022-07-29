@@ -8,15 +8,16 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <position-form
                 :client-id="$page.props.user.client_id"
-                :position="position"
+                :position="pos"
                 :departments="departments"
             />
         </div>
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { computed } from "@vue/reactivity";
+
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
@@ -25,25 +26,23 @@ import JetLabel from "@/Jetstream/Label.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
 import PositionForm from "@/Pages/Positions/Partials/PositionForm.vue";
 
-export default defineComponent({
-    components: {
-        PositionForm,
-        LayoutHeader,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-        JetBarIcon,
+const props = defineProps({
+    position: {
+        type: Object,
+        required: true,
     },
-    props: {
-        position: {
-            type: Object,
-            required: true,
-        },
-        departments: {
-            type: Object,
-            required: true,
-        },
+    departments: {
+        type: Object,
+        required: true,
+    },
+});
+
+const pos = computed({
+    get() {
+        return {
+            ...props.position,
+            departments: props.position.departments.map((item) => item.id),
+        };
     },
 });
 </script>
