@@ -89,6 +89,7 @@ if (!position) {
         name: "",
         id: null,
         client_id: props.clientId,
+        departments: [],
     };
     operation = "Create";
 }
@@ -99,7 +100,7 @@ let handleSubmit = () => {
     if (operation === "Create") {
         form.post(route("positions.store"));
     } else {
-        form.dirty().put(route("positions.update", position.id));
+        form.put(route("positions.update", position.id));
     }
 };
 
