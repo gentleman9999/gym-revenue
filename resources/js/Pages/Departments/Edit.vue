@@ -9,6 +9,7 @@
             <department-form
                 :client-id="$page.props.user.client_id"
                 :department="department"
+                :positions="positions"
             />
         </div>
     </div>
@@ -36,6 +37,10 @@ export default defineComponent({
     },
     props: {
         department: {
+            type: Object,
+            required: true,
+        },
+        positions: {
             type: Object,
             required: true,
         },

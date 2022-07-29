@@ -9,6 +9,7 @@
             <position-form
                 :client-id="$page.props.user.client_id"
                 :position="position"
+                :departments="departments"
             />
         </div>
     </div>
@@ -36,6 +37,10 @@ export default defineComponent({
     },
     props: {
         position: {
+            type: Object,
+            required: true,
+        },
+        departments: {
             type: Object,
             required: true,
         },

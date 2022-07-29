@@ -8,7 +8,6 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.name"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
@@ -22,7 +21,7 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                        availablePositions.map((position) => ({
+                        positions.map((position) => ({
                             label: position.name,
                             value: position.id,
                         }))
@@ -76,9 +75,9 @@ const props = defineProps({
     department: {
         type: Object,
     },
-    // availablePositions: {
-    //     type: Array
-    // }
+    positions: {
+        type: Array,
+    },
 });
 
 let department = props.department;
@@ -93,9 +92,6 @@ if (!department) {
 }
 
 const form = useGymRevForm(department);
-
-console.log("department");
-console.log(department);
 
 let handleSubmit = () => {
     if (operation === "Create") {
@@ -113,15 +109,4 @@ const handleCancel = () => {
     }
     Inertia.visit(route("departments"));
 };
-
-const availablePositions = [
-    {
-        name: "Sales Manager",
-        id: 1,
-    },
-    {
-        name: "Group Exercise Instructor",
-        id: 2,
-    },
-];
 </script>
