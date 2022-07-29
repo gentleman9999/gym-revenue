@@ -23,7 +23,7 @@ class UpdatePosition
     {
         return [
             'name' => ['string', 'required'],
-            'positions' => ['array', 'sometimes'],
+            'departments' => ['array', 'sometimes'],
         ];
     }
 
@@ -45,7 +45,7 @@ class UpdatePosition
     {
         return $this->handle(
             $position->id,
-            $request->validated(),
+            $request->all(),
         );
     }
 
