@@ -45,7 +45,7 @@ class UpdatePosition
     {
         return $this->handle(
             $position->id,
-            $request->all(),
+            $request->validated(),
         );
     }
 
