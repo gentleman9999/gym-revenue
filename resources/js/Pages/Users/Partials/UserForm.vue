@@ -283,7 +283,7 @@
             </div>
             <div
                 class="grid grid-cols-6 col-span-6 items-center"
-                v-for="(department, ndx) in departments"
+                v-for="(department, ndx) in form.departments"
                 :key="department.department"
             >
                 <!-- {{JSON.stringify(department)}} -->
@@ -294,7 +294,11 @@
                     {{ getPositions(department.position) }}
                 </div>
                 <div class="flex justify-center items-end col-span-2">
-                    <Button primary size="sm" @click="removeDepartment(ndx)"
+                    <Button
+                        type="button"
+                        primary
+                        size="sm"
+                        @click="removeDepartment(ndx)"
                         >Remove Department</Button
                     >
                 </div>
@@ -447,7 +451,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -639,13 +643,12 @@ export default {
             }
         };
 
-        let departments = ref([]);
         let selectedDepartment = ref("");
         let selectedPosition = ref([]);
         const addDepartment = (e) => {
             e.preventDefault();
-            departments.value = [
-                ...departments.value,
+            form.departments = [
+                ...form.departments,
                 {
                     department: selectedDepartment.value,
                     position: [...selectedPosition.value],
@@ -654,8 +657,11 @@ export default {
             selectedDepartment.value = null;
             selectedPosition.value = [];
         };
+        watch(selectedDepartment, () => {
+            selectedPosition.value = [];
+        });
         const removeDepartment = (ndx) => {
-            departments.value.splice(ndx, 1);
+            form.departments.splice(ndx, 1);
         };
         const getDepartment = (id) => {
             return props.availableDepartments.filter(
@@ -675,13 +681,14 @@ export default {
 
         const selectablePositions = computed(() => {
             const department = getDepartment(selectedDepartment.value);
-            return department?.positions ? department.positions : [];
+            return department?.positions?.length ? department.positions : [];
         });
 
         const selectableDepartments = computed(() =>
             props.availableDepartments.filter(
-                ({ id }) =>
-                    departments.value.filter(
+                ({ id, positions }) =>
+                    positions?.length &&
+                    form.departments.filter(
                         (selectedOne) => selectedOne.department === id
                     ).length === 0
             )
@@ -702,7 +709,6 @@ export default {
             closeFileManagerModal,
             notesExpanded,
             handleClickCancel,
-            departments,
             selectedDepartment,
             selectedPosition,
             addDepartment,
