@@ -80,6 +80,12 @@ export default defineComponent({
                 onClick: null,
                 active: false,
             },
+            {
+                label: "Positions",
+                href: route("positions"),
+                onClick: null,
+                active: false,
+            },
         ];
 
         return {

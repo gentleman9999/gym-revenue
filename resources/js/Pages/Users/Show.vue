@@ -1,5 +1,5 @@
 <template>
-    <LayoutHeader title="Security Roles" />
+    <LayoutHeader title="Users" />
     <!--        security roles not yet implemented - hide for now-->
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
     <gym-revenue-crud
@@ -225,7 +225,7 @@ export default defineComponent({
 
         if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
-                label: "Roles",
+                label: "Security Roles",
                 href: route("roles"),
                 onClick: null,
                 active: false,
