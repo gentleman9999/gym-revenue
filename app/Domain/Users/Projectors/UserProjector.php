@@ -53,6 +53,18 @@ class UserProjector extends Projector
                     $user->departments()->sync($data['departments']);
                 } else {
                     //ARRAY IS MULTIDEM
+                    $depts = [];
+                    $positions = [];
+                    foreach ($data['departments'] as $dept) {
+                        $depts[] = $dept['department'];
+                        if (array_key_exists('department', $dept)) {
+                            foreach ($dept['position'] as $pos) {
+                                $positions[] = $pos;
+                            }
+                        }
+                    }
+                    $user->departments()->sync($depts);
+                    $user->positions()->sync($positions);
                 }
             }
 
