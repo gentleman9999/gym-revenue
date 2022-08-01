@@ -20,7 +20,7 @@ class DepartmentProjector extends Projector
         $dept->save();
 
         if (array_key_exists('positions', $event->payload)) {
-            $dept->departments()->sync($event->payload['positions']);
+            $dept->positions()->sync($event->payload['positions']);
         }
     }
 
@@ -31,7 +31,7 @@ class DepartmentProjector extends Projector
         $dept->updateOrFail($event->payload);
 
         if (array_key_exists('positions', $event->payload)) {
-            $dept->departments()->sync($event->payload['positions']);
+            $dept->positions()->sync($event->payload['positions']);
         }
     }
 
