@@ -239,6 +239,7 @@
                     v-model="selectedDepartment"
                     class="mt-1 w-full form-select"
                     id="departments"
+                    @change="selectedPosition = []"
                 >
                     <option
                         v-for="department in selectableDepartments"
@@ -283,15 +284,15 @@
             </div>
             <div
                 class="grid grid-cols-6 col-span-6 items-center"
-                v-for="(department, ndx) in departments"
-                :key="department.department"
+                v-for="(department, ndx) in form.departments"
+                :key="department"
             >
                 <!-- {{JSON.stringify(department)}} -->
                 <div class="col-span-2">
-                    {{ getDepartment(department.department)?.name }}
+                    {{ getDepartment(department)?.name }}
                 </div>
                 <div class="col-span-2">
-                    {{ getPositions(department.position) }}
+                    {{ getPositions(form.positions[ndx]) }}
                 </div>
                 <div class="flex justify-center items-end col-span-2">
                     <Button primary size="sm" @click="removeDepartment(ndx)"
@@ -509,6 +510,8 @@ export default {
 
         let operation = "Update";
         if (user) {
+            console.log("update");
+            console.log(user);
             if (props.isClientUser) {
                 user.role_id = user["role_id"];
             }
@@ -639,23 +642,18 @@ export default {
             }
         };
 
-        let departments = ref([]);
         let selectedDepartment = ref("");
         let selectedPosition = ref([]);
         const addDepartment = (e) => {
             e.preventDefault();
-            departments.value = [
-                ...departments.value,
-                {
-                    department: selectedDepartment.value,
-                    position: [...selectedPosition.value],
-                },
-            ];
+            form.departments = [...form.departments, selectedDepartment.value];
+            form.positions = [...form.positions, [...selectedPosition.value]];
             selectedDepartment.value = null;
             selectedPosition.value = [];
         };
         const removeDepartment = (ndx) => {
-            departments.value.splice(ndx, 1);
+            form.departments.splice(ndx, 1);
+            form.positions.splice(ndx, 1);
         };
         const getDepartment = (id) => {
             return props.availableDepartments.filter(
@@ -681,9 +679,8 @@ export default {
         const selectableDepartments = computed(() =>
             props.availableDepartments.filter(
                 ({ id }) =>
-                    departments.value.filter(
-                        (selectedOne) => selectedOne.department === id
-                    ).length === 0
+                    form.departments.filter((selectedOne) => selectedOne === id)
+                        .length === 0
             )
         );
 
@@ -702,7 +699,6 @@ export default {
             closeFileManagerModal,
             notesExpanded,
             handleClickCancel,
-            departments,
             selectedDepartment,
             selectedPosition,
             addDepartment,
