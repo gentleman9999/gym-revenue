@@ -191,6 +191,7 @@ export default {
         const fields = getFields(props);
         const customizedFields = getCustomizedFields(fields, props.modelKey);
         const data = getData(props);
+        console.log(data);
 
         let __modelNamePlural = props.modelNamePlural || props.modelName + "s";
         return {

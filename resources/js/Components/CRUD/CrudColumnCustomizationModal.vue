@@ -68,15 +68,22 @@ export default defineComponent({
             table: props.modelKey,
             columns: [...config.value],
         });
-        const customizationModal = ref(null);
 
+        console.log(props.table);
+
+        const customizationModal = ref(null);
+        console.log(form["table"]);
         const open = () => customizationModal.value.open();
         const close = () => customizationModal.value.close();
 
         const fields = getFields(props);
 
-        const handleSubmit = () =>
+        const handleSubmit = () => {
+            // table prop is not dirty so it is not included in the form
+            // returning "the table field is required" in the console
+            // console.log(form)
             form.dirty().post(route("crud-customize"), { onSuccess: close });
+        };
         return { fields, customizationModal, open, close, form, handleSubmit };
     },
 });

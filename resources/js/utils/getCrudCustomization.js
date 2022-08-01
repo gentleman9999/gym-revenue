@@ -3,9 +3,12 @@ import { computed, ref, watchEffect } from "vue";
 
 export const getCrudConfig = (table) => {
     const page = usePage();
-    const config = computed(() => page?.props.value.user?.column_config || {});
+    const config = computed(
+        () => page?.props.value.user?.column_config.users || {}
+    );
     //we compare json here to prevent double display of the alert
     if (table) {
+        console.log(config.value["misc"]);
         return computed(() => config.value[table] || []);
     }
     return config;
