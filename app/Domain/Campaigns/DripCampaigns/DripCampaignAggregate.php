@@ -152,7 +152,7 @@ class DripCampaignAggregate extends AggregateRoot
         return $this;
     }
 
-    public function applyOnDripCampaignCreated(DripCampaignCreated $event)
+    public function applyOnDripCampaignCreated(DripCampaignCreated $event): void
     {
         $data = array_filter_only_fillable($event->payload, DripCampaign::class);
         if (array_key_exists('client_id', $event->payload)) {
@@ -161,7 +161,7 @@ class DripCampaignAggregate extends AggregateRoot
         $this->data = $data;
     }
 
-    public function applyOnDripCampaignUpdated(DripCampaignUpdated $event)
+    public function applyOnDripCampaignUpdated(DripCampaignUpdated $event): void
     {
         $this->data = array_merge(array_filter_only_fillable($this->data, DripCampaign::class), $event->payload);
     }

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Data;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\LeadTypes\Actions\CreateLeadType;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;

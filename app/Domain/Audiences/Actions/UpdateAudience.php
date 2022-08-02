@@ -10,10 +10,10 @@ class UpdateAudience
 {
     use AsAction;
 
-    public function handle(string $id, array $payload): Audience
+    public function handle(Audience $audience, array $payload): Audience
     {
-        AudienceAggregate::retrieve($id)->update($payload)->persist();
+        AudienceAggregate::retrieve($audience->id)->update($payload)->persist();
 
-        return Audience::findOrFail($id);
+        return $audience->refresh();
     }
 }

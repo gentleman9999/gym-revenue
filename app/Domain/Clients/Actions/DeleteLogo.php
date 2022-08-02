@@ -3,7 +3,7 @@
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

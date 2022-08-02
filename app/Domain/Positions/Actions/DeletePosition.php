@@ -14,10 +14,9 @@ class DeletePosition
 {
     use AsAction;
 
-    public function handle(string $id): Position
+    public function handle(Position $position): Position
     {
-        $position = Position::withTrashed()->findOrFail($id);
-        PositionAggregate::retrieve($id)->delete()->persist();
+        PositionAggregate::retrieve($position->id)->delete()->persist();
 
         return $position;
     }
@@ -29,10 +28,10 @@ class DeletePosition
         return $current_user->can('positions.create', Position::class);
     }
 
-    public function asController(ActionRequest $request, Position $position)
+    public function asController(ActionRequest $request, Position $position): Position
     {
         return $this->handle(
-            $position->id,
+            $position,
         );
     }
 

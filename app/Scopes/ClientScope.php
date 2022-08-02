@@ -27,7 +27,7 @@ class ClientScope implements Scope
 
         //if no session keys set, must be API - so check the request body
         $request = request();
-        if ($request->client_id ?? false) {
+        if ((auth()->user() || $request->bearerToken()) && $request->client_id ?? false) {
             //must be API
             $builder->whereClientId($request->client_id);
         }

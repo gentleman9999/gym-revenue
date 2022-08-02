@@ -17,6 +17,10 @@ class CreateLeadSourcesTable extends Migration
             $table->uuid('id')->primary()->unique();
             $table->uuid('client_id')->nullable()->index();
             $table->string('name');
+            $table->string('source')->nullable();
+            $table->boolean('ui')->default(1);
+            $table->longText('misc')->nullable();
+            $table->boolean('active')->default(1);
             $table->unique(['client_id', 'name']);
             $table->timestamps();
             $table->softDeletes();

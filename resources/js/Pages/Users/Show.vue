@@ -1,5 +1,5 @@
 <template>
-    <LayoutHeader title="Security Roles" />
+    <LayoutHeader title="Users" />
     <!--        security roles not yet implemented - hide for now-->
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
     <gym-revenue-crud
@@ -97,7 +97,6 @@ import { defineComponent, ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
-import UserForm from "./Partials/UserForm.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
@@ -115,7 +114,6 @@ export default defineComponent({
         BeefySearchFilter,
         LayoutHeader,
         GymRevenueCrud,
-        UserForm,
         Confirm,
         SimpleSearchFilter,
         PageToolbarNav,
@@ -227,7 +225,7 @@ export default defineComponent({
 
         if (page.props.value.user.current_team.isClientTeam) {
             navLinks.push({
-                label: "Roles",
+                label: "Security Roles",
                 href: route("roles"),
                 onClick: null,
                 active: false,

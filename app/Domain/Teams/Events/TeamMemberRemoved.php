@@ -15,7 +15,7 @@ class TeamMemberRemoved extends GymRevCrudEvent
         $this->id = $id;
     }
 
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Team::class;//TODO:should this be User? or maybe change operation to MEMBER_REMOVED?
     }

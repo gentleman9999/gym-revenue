@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Location
@@ -24,16 +25,28 @@ class File extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'entity_type', 'entity_id', 'hidden', 'type']; //'deleted_at'
+    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'entity_type', 'entity_id', 'visibility', 'hidden', 'type']; //'deleted_at'
 
     protected $casts = [
         'permissions' => 'array',
+        'visibility' => 'boolean',
     ];
 
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function getUrlAttribute()
+    {
+        if ($this->visibility) {
+            return Storage::disk('s3')->temporaryUrl($this->original['key'], now()->addMinutes(10));
+        } else {
+            return $this->original['url'];
+        }
+    }
+
+
 
 //    public function details()
 //    {

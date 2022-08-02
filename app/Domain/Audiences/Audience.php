@@ -2,21 +2,16 @@
 
 namespace App\Domain\Audiences;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\EventSourcing\Projections\Projection;
 
-class Audience extends Projection
+class Audience extends GymRevProjection
 {
     use SoftDeletes;
-
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
 
     protected $hidden = ['client_id'];
 
@@ -25,11 +20,6 @@ class Audience extends Projection
     protected $casts = [
         'filters' => 'array',
     ];
-
-    public function getKeyName()
-    {
-        return 'id';
-    }
 
     protected static function booted()
     {
@@ -41,17 +31,17 @@ class Audience extends Projection
         return $this->belongsTo(Client::class);
     }
 
-    public function getTextable()
+    public function getTextable(): Collection
     {
         return $this->getEntityBaseQuery()->whereUnsubscribedSms(0)->get();
     }
 
-    public function getEmailable()
+    public function getEmailable(): Collection
     {
         return $this->getEntityBaseQuery()->whereUnsubscribedEmail(0)->get();
     }
 
-    protected function getEntityBaseQuery()
+    protected function getEntityBaseQuery(): Builder
     {
         $entity = new $this->entity();
 

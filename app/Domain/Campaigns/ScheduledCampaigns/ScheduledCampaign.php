@@ -4,7 +4,7 @@ namespace App\Domain\Campaigns\ScheduledCampaigns;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\Enums\CampaignStatusEnum;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Carbon\CarbonImmutable;

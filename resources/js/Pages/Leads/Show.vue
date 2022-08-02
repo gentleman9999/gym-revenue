@@ -1,8 +1,9 @@
 <template>
     <LayoutHeader title="Leads" />
     <jet-bar-container>
-        <lead-interaction
-            :lead-id="lead.id"
+        <end-user-interaction-container
+            end-user-type="lead"
+            :id="lead.id"
             :user-id="$page.props.user.id"
             :first-name="lead.first_name"
             :middle-name="lead.middle_name"
@@ -26,13 +27,13 @@
 import { defineComponent, ref, onMounted, watch, watchEffect } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
-import LeadInteraction from "./Partials/LeadInteractionContainer.vue";
+import EndUserInteractionContainer from "@/Pages/components/EndUserInteractionContainer/index.vue";
 
 export default defineComponent({
     components: {
         LayoutHeader,
         JetBarContainer,
-        LeadInteraction,
+        EndUserInteractionContainer,
     },
     props: {
         lead: {
@@ -56,7 +57,7 @@ export default defineComponent({
         const selectedLeadDetailIndex = props.flash?.selectedLeadDetailIndex;
 
         watchEffect(() => {
-            leadInteractionRef.value?.goToLeadDetailIndex(
+            leadInteractionRef.value?.goToEndUserDetailIndex(
                 props.flash?.selectedLeadDetailIndex
             );
         });

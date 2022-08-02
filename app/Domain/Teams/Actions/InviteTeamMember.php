@@ -5,13 +5,10 @@ namespace App\Domain\Teams\Actions;
 use function __;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
-use Illuminate\Support\Facades\Gate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Jetstream\Contracts\InvitesTeamMembers;
-use Laravel\Jetstream\Events\InvitingTeamMember;
-use Laravel\Jetstream\Jetstream;
-use Laravel\Jetstream\Rules\Role;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -30,6 +27,11 @@ class InviteTeamMember implements InvitesTeamMembers
 //        InvitingTeamMember::dispatch($team, $email, $role);
 
         return $email;
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

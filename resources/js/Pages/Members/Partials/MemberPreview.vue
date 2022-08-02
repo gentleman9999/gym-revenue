@@ -36,13 +36,8 @@
         <member-preview-item
             class="field col-span-6 lg:col-span-3"
             label="Contact"
-            :value="data.member.gender"
+            :value="data.member.email"
         />
-        <!-- <member-preview-item
-            class="field col-span-6 lg:col-span-3"
-            label="Club/Location"
-            :value="data.club_location.name"
-        /> -->
         <div class="field col-span-6 lg:col-span-3">
             <label>Contact</label>
             <div class="data">
@@ -50,9 +45,6 @@
                 Emailed: {{ data.interactionCount.emailedCount }} <br />
                 Text: {{ data.interactionCount.smsCount }} <br />
             </div>
-        </div>
-        <div class="field col-span-6 lg:col-span-3 text-secondary">
-            <label>Club/ Location: {{ data.club_location.name }}</label>
         </div>
         <div
             class="collapse col-span-6"
@@ -64,12 +56,16 @@
             </div>
             <div class="flex flex-col gap-2 collapse-content">
                 <div
-                    v-for="note in data.preview_note"
+                    v-for="(note, ndx) in data.preview_note"
                     class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
+                    :key="ndx"
                 >
                     {{ note["note"] }}
                 </div>
             </div>
+        </div>
+        <div class="field col-span-6 lg:col-span-3 text-secondary">
+            <label>Club/ Location: {{ data.club_location.name }}</label>
         </div>
         <div class="field col-span-6 lg:col-span-6"></div>
     </div>

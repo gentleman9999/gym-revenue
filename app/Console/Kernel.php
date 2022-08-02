@@ -4,7 +4,7 @@ namespace App\Console;
 
 use App\Actions\Simulation\GenerateRandomMembers;
 use App\Domain\Campaigns\ScheduledCampaigns\Actions\CheckScheduledCampaigns;
-use App\Domain\Leads\Actions\GenerateRandomLeads;
+use App\Domain\EndUsers\Leads\Actions\GenerateRandomLeads;
 use App\Domain\Reminders\Actions\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

@@ -11,26 +11,36 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class DepartmentProjector extends Projector
 {
-    public function onPositionCreated(DepartmentCreated $event): void
+    public function onDepartmentCreated(DepartmentCreated $event): void
     {
-        $position = (new Department());
-        $position->fill($event->payload);
-        $position->id = $event->aggregateRootUuid();
-        $position->client_id = $event->clientId();
-        $position->save();
+        $dept = (new Department());
+        $dept->fill($event->payload);
+        $dept->id = $event->aggregateRootUuid();
+        $dept->client_id = $event->clientId();
+        $dept->save();
+
+        if (array_key_exists('positions', $event->payload)) {
+            $dept->positions()->sync($event->payload['positions']);
+        }
     }
 
-    public function onDepartmentUpdated(DepartmentUpdated $event)
+    public function onDepartmentUpdated(DepartmentUpdated $event): void
     {
-        Department::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
+        $dept = Department::withTrashed()->findOrFail($event->aggregateRootUuid());
+
+        $dept->updateOrFail($event->payload);
+
+        if (array_key_exists('positions', $event->payload)) {
+            $dept->positions()->sync($event->payload['positions']);
+        }
     }
 
-    public function onDepartmentTrashed(DepartmentTrashed $event)
+    public function onDepartmentTrashed(DepartmentTrashed $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->delete();
     }
 
-    public function onDepartmentRestored(DepartmentRestored $event)
+    public function onDepartmentRestored(DepartmentRestored $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->restore();
     }

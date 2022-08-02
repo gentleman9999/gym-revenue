@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class DripCampaignCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return DripCampaign::class;
     }

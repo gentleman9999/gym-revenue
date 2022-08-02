@@ -14,10 +14,9 @@ class DeleteDripCampaign
     public string $commandSignature = 'drip-campaign:delete {id}';
     public string $commandDescription = 'Permanently deletes the DripCampaign';
 
-    public function handle(string $id): DripCampaign
+    public function handle(DripCampaign $dripCampaign): DripCampaign
     {
-        $dripCampaign = DripCampaign::withTrashed()->findOrFail($id);
-        DripCampaignAggregate::retrieve($id)->delete()->persist();
+        DripCampaignAggregate::retrieve($dripCampaign->id)->delete()->persist();
 
         return $dripCampaign;
     }
@@ -26,7 +25,7 @@ class DeleteDripCampaign
     {
         $dripCampaign = DripCampaign::withTrashed()->findOrFail($command->argument('id'));
         if ($command->confirm("Are you sure you want to hard delete DripCampaign '{$dripCampaign->name}'? This cannot be undone")) {
-            $dripCampaign = $this->handle($command->argument('id'));
+            $dripCampaign = $this->handle($dripCampaign);
             $command->info('Deleted audience ' . $dripCampaign->name);
 
             return;

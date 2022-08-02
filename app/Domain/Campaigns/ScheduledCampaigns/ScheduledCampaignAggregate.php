@@ -160,7 +160,7 @@ class ScheduledCampaignAggregate extends AggregateRoot
         return $this;
     }
 
-    public function applyOnScheduledCampaignCreated(ScheduledCampaignCreated $event)
+    public function applyOnScheduledCampaignCreated(ScheduledCampaignCreated $event): void
     {
         $data = array_filter_only_fillable($event->payload, ScheduledCampaign::class);
         if (array_key_exists('client_id', $event->payload)) {
@@ -169,7 +169,7 @@ class ScheduledCampaignAggregate extends AggregateRoot
         $this->data = $data;
     }
 
-    public function applyOnScheduledCampaignUpdated(ScheduledCampaignUpdated $event)
+    public function applyOnScheduledCampaignUpdated(ScheduledCampaignUpdated $event): void
     {
         $this->data = array_merge(array_filter_only_fillable($this->data, ScheduledCampaign::class), $event->payload);
     }

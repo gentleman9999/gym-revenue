@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class NotificationCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Notification::class;
     }

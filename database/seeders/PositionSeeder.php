@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Models\Position;
-
 use App\Support\Uuid;
 use Illuminate\Database\Seeder;
 
@@ -31,6 +30,7 @@ class PositionSeeder extends Seeder
             'Fitness Director',
             'Sales Manager',
             'Sales Director',
+            'Fitness Sales Rep',
         ];
         if (count($clients) > 0) {
             foreach ($clients as $client) {

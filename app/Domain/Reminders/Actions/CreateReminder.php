@@ -4,6 +4,7 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\UserAggregate;
+use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -19,7 +20,7 @@ class CreateReminder
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'entity_type' => ['string', 'required'],
@@ -30,7 +31,7 @@ class CreateReminder
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data, $current_user = null): Reminder
     {
         if (! is_null($current_user)) {
             $client_id = $current_user->client_id;
@@ -45,6 +46,12 @@ class CreateReminder
         return Reminder::findOrFail($id);
     }
 
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    //TODO: implement real authorization
     public function authorize(ActionRequest $request): bool
     {
         return true;

@@ -29,7 +29,7 @@
                         <td
                             v-if="
                                 attendee.entity_type ===
-                                'App\\Domain\\Leads\\Models\\Lead'
+                                'App\\Domain\\EndUsers\\Leads\\Models\\Lead'
                             "
                         >
                             <div class="flex items-center space-x-3">

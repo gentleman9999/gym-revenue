@@ -6,6 +6,7 @@ use App\Domain\Departments\Department;
 use App\Domain\Departments\DepartmentAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -21,15 +22,16 @@ class CreateDepartment
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => ['string', 'required'],
+            'name' => ['required', 'string','min:2'],
             'client_id' => ['string', 'required'],
+            'positions' => ['array', 'sometimes'],
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle(array $data): Department
     {
         $id = Uuid::new();
 
@@ -52,11 +54,10 @@ class CreateDepartment
         return $current_user->can('departments.create', Department::class);
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): Collection
     {
         return $this->handle(
-            $request->validated(),
-            $request->user(),
+            $request->validated()
         );
     }
 

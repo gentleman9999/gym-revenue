@@ -2,12 +2,9 @@
 
 namespace App\Actions\Mail;
 
-use App\Aggregates\Clients\ClientAggregate;
 use App\Aggregates\Users\UserAggregate;
-use App\Domain\Clients\Models\ClientDetail;
-use App\Domain\Teams\Models\Team;
-use App\Models\Comms\EmailTemplates;
-use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
+use App\Domain\Clients\Projections\ClientDetail;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SendATestEmail
@@ -39,7 +36,7 @@ class SendATestEmail
         // Get the user and check if there is an email or fail with string
         if (! is_null($email_detail)) {
             // Get the sms template from sms templates or fail with string
-            $email_template_record = EmailTemplates::find($data['templateId']);
+            $email_template_record = EmailTemplate::find($data['templateId']);
 
             if (! is_null($email_template_record)) {
                 $session_team = session()->get('current_team');
@@ -59,28 +56,9 @@ class SendATestEmail
 
                 // Verify the sms going with the client of the active team is the same or its a gymrevenue template
                 if ($client_id == $email_template_record->client_id) {
-                    $user_aggy = UserAggregate::retrieve($user->id);
-                    if (is_null($client_id)) {
-                        /**
-                         * @todo - make an AdminUserGatewayActivityAggregate and attach it to UserAggy with Bouncer ACL
-                         */
-
-                        $gateway_service = new EmailGatewayProviderService(EmailTemplates::find($email_template_record->id));
-                        $gateway_service->initEmailGateway($user->id);
-                        $response = $gateway_service->fire($user_aggy->getEmailAddress());
-                        $user_aggy->logClientEmailActivity($email_template_record->subject, $email_template_record->id, $response)->persist();
-
-                        $results = true;
-                    } else {
-                        ClientAggregate::retrieve($client_id)->getGatewayAggregate()
-                            ->sendATestEmailMessage(
-                                $email_template_record->subject ?? 'Test Email - No Subject Configured',
-                                $email_template_record->id,
-                                $user->id
-                            )
-                            ->persist();
-                        $results = true;
-                    }
+//                    $user_aggy = UserAggregate::retrieve($user->id);
+                    //TODO: fire off email with the given template to the user
+                    $results = true;
                 } else {
                     $results = 'This template does not belong to this Account.';
                 }

@@ -4,6 +4,7 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\UserAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -29,16 +30,16 @@ class UpdateReminder
         ];
     }
 
-    public function handle($id, $current_user = null)
+    public function handle(Reminder $reminder, array $data)
     {
-        if (! is_null($current_user)) {
-            $data['client_id'] = $current_user->client_id;
-        }
+        UserAggregate::retrieve($reminder->user_id)->updateReminder($data)->persist();
 
+        return $reminder->refresh();
+    }
 
-        UserAggregate::retrieve($data['user_id'])->updateReminder($data)->persist();
-
-        return Reminder::findOrFail($id);
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -46,11 +47,11 @@ class UpdateReminder
         return true;
     }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request, Reminder $reminder)
     {
         $reminder = $this->handle(
+            $reminder,
             $request->validated(),
-            $request->user(),
         );
 
         Alert::success("Reminder '{$reminder->name}' was updated")->flash();

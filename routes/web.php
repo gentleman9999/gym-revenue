@@ -39,13 +39,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
     Route::get('/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
     Route::get('/export', \App\Http\Controllers\LocationsController::class . '@export')->name('locations.export');
-    Route::get('/{id}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
-    Route::get('/view/{id}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
-    Route::post('/', \App\Actions\Clients\Locations\CreateLocation::class)->name('locations.store');
-    Route::post('/import', \App\Actions\Clients\Locations\ImportLocations::class)->name('locations.import');
-    Route::put('/{id}', \App\Actions\Clients\Locations\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
-    Route::delete('/{id}', \App\Actions\Clients\Locations\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
-    Route::post('/{id}/restore', \App\Actions\Clients\Locations\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
+    Route::get('/{location}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
+    Route::get('/view/{location}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
+    Route::post('/', \App\Domain\Locations\Actions\CreateLocation::class)->name('locations.store');
+    Route::post('/import', \App\Domain\Locations\Actions\ImportLocations::class)->name('locations.import');
+    Route::put('/{location}', \App\Domain\Locations\Actions\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
+    Route::delete('/{location}', \App\Domain\Locations\Actions\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
+    Route::post('/{location}/restore', \App\Domain\Locations\Actions\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
@@ -82,22 +82,22 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::get('', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@index')->name('comms.sms-templates');
         Route::get('/create', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@create')->name('comms.sms-templates.create');
         Route::get('/export', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@export')->name('comms.sms-templates.export');
-        Route::get('/{id}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@edit')->name('comms.sms-templates.edit');
-        Route::post('/', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@store')->name('comms.sms-templates.store');
-        Route::put('/{id}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@update')->name('comms.sms-templates.update');
-        Route::delete('/{id}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@trash')->name('comms.sms-templates.trash');
-        Route::post('/{id}/restore', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@restore')->name('comms.sms-templates.restore');
+        Route::get('/{smsTemplate}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@edit')->name('comms.sms-templates.edit');
+        Route::post('/', \App\Domain\Templates\SmsTemplates\Actions\CreateSmsTemplate::class)->name('comms.sms-templates.store');
+        Route::put('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\UpdateSmsTemplate::class)->name('comms.sms-templates.update');
+        Route::delete('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\TrashSmsTemplate::class)->name('comms.sms-templates.trash');
+        Route::post('/{smsTemplate}/restore', \App\Domain\Templates\SmsTemplates\Actions\RestoreSmsTemplate::class)->withTrashed()->name('comms.sms-templates.restore');
         Route::post('/test', \App\Actions\Sms\SendATestText::class)->name('comms.sms-templates.test-msg');
     });
     Route::middleware(['auth:sanctum', 'verified'])->prefix('email-templates')->group(function () {
         Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('comms.email-templates');
         Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('comms.email-templates.create');
         Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('comms.email-templates.export');
-        Route::get('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('comms.email-templates.edit');
-        Route::post('/', \App\Actions\Clients\Activity\Comms\CreateEmailTemplate::class)->name('comms.email-templates.store');
-        Route::put('/{id}', \App\Actions\Clients\Activity\Comms\UpdateEmailTemplate::class)->name('comms.email-templates.update');
-        Route::delete('/{id}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@trash')->name('comms.email-templates.trash');
-        Route::post('/{id}/restore', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@restore')->name('comms.email-templates.restore');
+        Route::get('/{emailTemplate}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('comms.email-templates.edit');
+        Route::post('/', \App\Domain\Templates\EmailTemplates\Actions\CreateEmailTemplate::class)->name('comms.email-templates.store');
+        Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('comms.email-templates.update');
+        Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('comms.email-templates.trash');
+        Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('comms.email-templates.restore');
         Route::post('/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
     });
 });
@@ -107,18 +107,18 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Domain\Leads\Actions\CreateLead::class)->name('data.leads.store');
+        Route::post('/create', \App\Domain\EndUsers\Leads\Actions\CreateLead::class)->name('data.leads.store');
         Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
-        Route::put('/{lead}', \App\Domain\Leads\Actions\UpdateLead::class)->name('data.leads.update');
-        Route::put('/assign/{lead}', \App\Domain\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
+        Route::put('/{lead}', \App\Domain\EndUsers\Leads\Actions\UpdateLead::class)->name('data.leads.update');
+        Route::put('/assign/{lead}', \App\Domain\EndUsers\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
         Route::post('/contact/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
-        Route::delete('/delete/{lead}', \App\Domain\Leads\Actions\TrashLead::class)->name('data.leads.trash');
-        Route::post('/delete/{lead}/restore', \App\Domain\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
+        Route::delete('/delete/{lead}', \App\Domain\EndUsers\Leads\Actions\TrashLead::class)->name('data.leads.trash');
+        Route::post('/delete/{lead}/restore', \App\Domain\EndUsers\Leads\Actions\RestoreLead::class)->withTrashed()->name('data.leads.restore');
         Route::get('/view/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
     });
@@ -126,14 +126,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('members')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
         Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
-        Route::post('/', \App\Actions\Endusers\Members\CreateMember::class)->name('data.members.store');
-        Route::get('/show/{id}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
-        Route::get('/edit/{id}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
-        Route::put('/{id}', \App\Actions\Endusers\Members\UpdateMember::class)->name('data.members.update');
-        Route::post('/contact/{id}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
-        Route::delete('/delete/{id}', \App\Actions\Endusers\Members\TrashMember::class)->name('data.members.trash');
-        Route::post('/delete/{id}/restore', \App\Actions\Endusers\Members\RestoreMember::class)->name('data.members.restore');
-        Route::get('/view/{id}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
+        Route::post('/', \App\Domain\EndUsers\Members\Actions\CreateMember::class)->name('data.members.store');
+        Route::get('/show/{member}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
+        Route::get('/edit/{member}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
+        Route::put('/{member}', \App\Domain\EndUsers\Members\Actions\UpdateMember::class)->name('data.members.update');
+        Route::post('/contact/{member}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::delete('/delete/{member}', \App\Domain\EndUsers\Members\Actions\TrashMember::class)->name('data.members.trash');
+        Route::post('/delete/{member}/restore', \App\Domain\EndUsers\Members\Actions\RestoreMember::class)->withTrashed()->name('data.members.restore');
+        Route::get('/view/{member}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
     });
 
@@ -153,13 +153,17 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(function () {
+    Route::get('/', \App\Http\Controllers\FoldersController::class . '@index')->name('folders');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {
     Route::get('/', \App\Http\Controllers\RemindersController::class . '@index')->name('reminders');
     Route::get('/create', \App\Http\Controllers\RemindersController::class . '@create')->name('reminders.create');
-    Route::post('/', \App\Actions\Clients\Reminders\CreateReminder::class)->name('reminders.store');
-    Route::get('/edit/{id}', \App\Http\Controllers\RemindersController::class . '@edit')->name('reminders.edit');
-    Route::put('/{id}', \App\Actions\Clients\Reminders\UpdateReminder::class)->name('reminders.update');
-    Route::delete('/{id}/force', \App\Actions\Clients\Reminders\DeleteReminder::class)->name('reminders.delete');
+    Route::post('/', \App\Domain\Reminders\Actions\CreateReminder::class)->name('reminders.store');
+    Route::get('/edit/{reminder}', \App\Http\Controllers\RemindersController::class . '@edit')->name('reminders.edit');
+    Route::put('/{reminder}', \App\Domain\Reminders\Actions\UpdateReminder::class)->name('reminders.update');
+    Route::delete('/{reminder}', \App\Domain\Reminders\Actions\DeleteReminder::class)->name('reminders.delete');
 });
 
 
@@ -170,6 +174,15 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function
     Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
     Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
     Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(function () {
+    Route::get('/', \App\Http\Controllers\SearchController::class . '@index')->name('searches');
+    Route::post('/searchahead', \App\Http\Controllers\SearchController::class . '@search_api')->name('searches.read');
+//    Route::post('/', \App\Actions\Clients\Searches\CreateSearch::class)->name('searches.store');
+//    Route::get('/edit/{id}', \App\Http\Controllers\SearchController::class . '@edit')->name('searches.edit');
+//    Route::put('/{id}', \App\Actions\Clients\Searches\UpdateSearch::class)->name('searches.update');
+//    Route::delete('/{id}/force', \App\Actions\Clients\Searches\DeleteSearch::class)->name('searches.delete');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {

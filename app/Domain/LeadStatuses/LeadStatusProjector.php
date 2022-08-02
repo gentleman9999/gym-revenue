@@ -8,7 +8,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class LeadStatusProjector extends Projector
 {
-    public function onLeadStatusCreated(LeadStatusCreated $event)
+    public function onLeadStatusCreated(LeadStatusCreated $event): void
     {
         $lead_status = (new LeadStatus())->writeable();
         $lead_status->id = $event->aggregateRootUuid();
@@ -18,7 +18,7 @@ class LeadStatusProjector extends Projector
         $lead_status->save();
     }
 
-    public function onLeadStatusUpdated(LeadStatusUpdated $event)
+    public function onLeadStatusUpdated(LeadStatusUpdated $event): void
     {
         $leadSource = LeadStatus::findOrFail($event->aggregateRootUuid())->writeable();
         $leadSource->updateOrFail($event->payload);

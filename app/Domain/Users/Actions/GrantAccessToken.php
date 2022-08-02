@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
-use App\Models\Clients\Location;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

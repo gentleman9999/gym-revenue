@@ -2,7 +2,7 @@
 
 namespace App\Domain\Clients\Actions;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 

@@ -2,40 +2,29 @@
 
 namespace App\Domain\Users\Models;
 
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\GymRevDetailProjection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserDetails extends Model
+class UserDetails extends GymRevDetailProjection
 {
     use SoftDeletes;
-    use Uuid;
-
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-
-    protected $fillable = ['user_id', 'name', 'value', 'misc', 'active'];
 
     protected $casts = [
         'misc' => 'array',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo('App\Domain\Users\Models\User', 'user_id', 'id');
+        return $this->parentModel;
     }
 
-    public static function createOrUpdateRecord($user_id, $detail, $value)
+    public static function getRelatedModel()
     {
-        $model = self::firstOrCreate([
-            'user_id' => $user_id,
-            'name' => $detail,
-        ]);
+        return new User();
+    }
 
-        $model->value = $value;
-        $model->save();
+    public static function fk(): string
+    {
+        return "user_id";
     }
 }
