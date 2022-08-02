@@ -256,7 +256,7 @@
             <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Select Positions" />
                 <multiselect
-                    v-model="selectedPosition"
+                    v-model="selectedPositions"
                     class="py-2"
                     id="positions"
                     mode="tags"
@@ -279,28 +279,35 @@
                 class="flex justify-center items-end col-span-2"
                 v-if="isClientUser"
             >
-                <Button primary @click="addDepartment">Add Department</Button>
+                <button
+                    class="btn btn-success"
+                    primary
+                    @click.prevent="addDepartmentPositions"
+                >
+                    Add Department
+                </button>
             </div>
             <div
                 class="grid grid-cols-6 col-span-6 items-center"
-                v-for="(department, ndx) in form.departments"
-                :key="department.department"
+                v-for="({ department, position }, ndx) in form.departments"
+                :key="position"
             >
-                <!-- {{JSON.stringify(department)}} -->
                 <div class="col-span-2">
-                    {{ getDepartment(department.department)?.name }}
+                    {{ getDepartment(department)?.name }}
                 </div>
                 <div class="col-span-2">
-                    {{ getPositions(department.position) }}
+                    {{ getPosition(position)?.name }}
                 </div>
                 <div class="flex justify-center items-end col-span-2">
-                    <Button
+                    <button
+                        class="btn btn-outline btn-error btn-sm"
                         type="button"
                         primary
                         size="sm"
                         @click="removeDepartment(ndx)"
-                        >Remove Department</Button
                     >
+                        Remove Department
+                    </button>
                 </div>
             </div>
 
@@ -564,10 +571,89 @@ export default {
                 user.end_date = null;
                 user.termination_date = null;
                 user.role_id = null;
+                // user.departments = {
+                //
+                // }
             }
             operation = "Create";
         }
         const form = useGymRevForm(user);
+
+        const selectableDepartments = computed(() =>
+            props.availableDepartments.filter(
+                ({ id, positions }) =>
+                    positions?.length &&
+                    form.departments.filter(
+                        (selectedOne) => selectedOne.department === id
+                    ).length === 0
+            )
+        );
+        const renderableDepartments = ref([]);
+
+        watch(
+            [selectableDepartments],
+            () => {
+                if (
+                    selectableDepartments.value?.length &&
+                    !renderableDepartments.value?.length
+                ) {
+                    console.log("renderableDepartments - entered");
+                    const department_positions = [];
+                    console.log(
+                        "renderableDepartments-selectableDepartments",
+                        selectableDepartments.value
+                    );
+                    selectableDepartments.value.forEach(({ id, positions }) => {
+                        console.log("renderableDepartments-id.pos", {
+                            id,
+                            positions,
+                        });
+                        const department = props.user.departments.find(
+                            (d) => (d.id = id)
+                        );
+                        console.log("renderableDepartments-found depts", {
+                            department,
+                            user_positions: props.user.positions,
+                        });
+                        const owned_positions = props.user.positions.filter(
+                            (user_pos) =>
+                                positions?.find((dept_pos) => {
+                                    console.log(
+                                        "renderableDepartments-own po loop",
+                                        { user_pos, dept_pos }
+                                    );
+                                    return user_pos.id === dept_pos.id;
+                                })
+                        );
+                        console.log("renderableDepartments-found pos", {
+                            owned_positions,
+                        });
+                        owned_positions.forEach((owned_position) => {
+                            department_positions.push({
+                                department: department.id,
+                                position: owned_position.id,
+                            });
+                        });
+                    });
+                    renderableDepartments.value = department_positions;
+                }
+            },
+            { immediate: true }
+        );
+        watch(
+            renderableDepartments,
+            () => {
+                if (renderableDepartments.value?.length) {
+                    form.departments = [...renderableDepartments.value];
+                    console.log("set form.departments to", {
+                        renderableDepartments: renderableDepartments.value,
+                        formDeps: form.departments,
+                    });
+                }
+            },
+            { immediate: true }
+        );
+
         let upperCaseF = (text) => {
             form.state = text.toUpperCase();
         };
@@ -634,7 +720,6 @@ export default {
         }
 
         const handleClickCancel = () => {
-            console.log("modal", modal.value);
             if (modal.value.close) {
                 console.log("closing modal");
                 modal.value.close();
@@ -644,55 +729,53 @@ export default {
         };
 
         let selectedDepartment = ref("");
-        let selectedPosition = ref([]);
-        const addDepartment = (e) => {
-            e.preventDefault();
+        let selectedPositions = ref([]);
+        const addDepartmentPosition = (department, position) => {
             form.departments = [
                 ...form.departments,
                 {
-                    department: selectedDepartment.value,
-                    position: [...selectedPosition.value],
+                    department,
+                    position,
                 },
             ];
+            console.log("form.departments set to", form.departments);
+        };
+        const addDepartmentPositions = () => {
+            console.log("addDepartmentPositions", selectedPositions.value);
+            selectedPositions.value.map((position) => {
+                addDepartmentPosition(selectedDepartment.value, position);
+            });
             selectedDepartment.value = null;
-            selectedPosition.value = [];
+            selectedPositions.value = [];
         };
         watch(selectedDepartment, () => {
-            selectedPosition.value = [];
+            selectedPositions.value = [];
         });
         const removeDepartment = (ndx) => {
             form.departments.splice(ndx, 1);
         };
         const getDepartment = (id) => {
-            return props.availableDepartments.filter(
-                (item) => item.id === id
-            )[0];
+            return props.availableDepartments.find((item) => item.id === id);
         };
+        const getPosition = (id) => {
+            return props.availablePositions.find((item) => item.id === id);
+        };
+
         const getPositions = (id_arr) => {
-            return id_arr
-                .map(
-                    (id) =>
-                        props.availablePositions.filter(
-                            (pos) => pos.id === id
-                        )[0].name
-                )
-                .join(",");
+            const positions = [];
+            id_arr.map((id) => {
+                const position = getPosition(id);
+                if (position) {
+                    positions.push(position);
+                }
+            });
+            return positions;
         };
 
         const selectablePositions = computed(() => {
             const department = getDepartment(selectedDepartment.value);
             return department?.positions?.length ? department.positions : [];
         });
-
-        const selectableDepartments = computed(() =>
-            props.availableDepartments.filter(
-                ({ id, positions }) =>
-                    positions?.length &&
-                    form.departments.filter(
-                        (selectedOne) => selectedOne.department === id
-                    ).length === 0
-            )
-        );
 
         return {
             form,
@@ -710,13 +793,15 @@ export default {
             notesExpanded,
             handleClickCancel,
             selectedDepartment,
-            selectedPosition,
-            addDepartment,
+            selectedPositions,
+            addDepartmentPositions,
             getDepartment,
+            getPosition,
             getPositions,
             removeDepartment,
             selectableDepartments,
             selectablePositions,
+            renderableDepartments,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()
