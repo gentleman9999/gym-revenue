@@ -15,7 +15,7 @@ class CheckReminders
     public string $commandSignature = 'reminders:check';
     public string $commandDescription = 'Fires off reminders that are ready.';
 
-    public function handle()
+    public function handle(): void
     {
         Log::debug("checking for reminders");
         $reminders = Reminder::whereNull('triggered_at')->with('event')->get();
@@ -24,7 +24,7 @@ class CheckReminders
             if ($reminder->entity_type == CalendarEvent::class) {
                 $time = date('Y-m-d H:i:s', strtotime($reminder->event->start. '-'.$reminder->remind_time.' minutes'));
                 if ($time < date('Y-m-d H:i:s')) {
-                    TriggerReminder::run($reminder->id);
+                    TriggerReminder::run($reminder);
                 }
             }
         });

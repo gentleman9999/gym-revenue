@@ -2,7 +2,7 @@
 
 namespace App\StorableEvents;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Clients\Projections\ClientActivity;
 use App\Domain\Users\Models\User;
 use Carbon\CarbonImmutable;
@@ -20,7 +20,7 @@ class GymRevStoredEvent extends EloquentStoredEvent
             if (! Projectionist::isReplaying()) {
                 $user_id = null;
                 if (session('user_id')) {
-                    $user_id = session('user_id');
+                    $user_id = auth()->user()->id;
                 }
                 $client_id = null;
                 if (session('client_id')) {

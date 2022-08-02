@@ -7,7 +7,7 @@ use App\StorableEvents\EntityTrashed;
 
 class PositionTrashed extends EntityTrashed
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Position::class;
     }

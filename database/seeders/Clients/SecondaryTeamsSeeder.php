@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Clients;
 
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Models\User;
@@ -65,7 +66,7 @@ class SecondaryTeamsSeeder extends Seeder
         $scifi_owner = User::whereEmail('agabla@scifipurplegyms.com')->first();
         $ifit_owner = User::whereEmail('sherri@ifit.com')->first();
 
-        $clients = \App\Domain\Clients\Models\Client::all()->keyBy('name');
+        $clients = Client::all()->keyBy('name');
 
         $client_teams = [
             // The Kalamazoo
@@ -74,84 +75,9 @@ class SecondaryTeamsSeeder extends Seeder
                 'home_team' => 0,
                 'client_id' => $clients['The Kalamazoo']->id,
             ],
-            [
-                'name' => 'The Kalamazoo Gym #1',
-                'home_team' => 0,
-                'client_id' => $clients['The Kalamazoo']->id,
-            ],
-            [
-                'name' => 'The Kalamazoo Gym #2',
-                'home_team' => 0,
-                'client_id' => $clients['The Kalamazoo']->id,
-            ],
             // Fitness Truth
             [
                 'name' => 'FitnessTruth Texas South',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'FitnessTruth Texas Houston',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'FitnessTruth Texas West',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'FitnessTruth Tennessee',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abbot',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abernathy',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abram',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abbot 2',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abernathy 2',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abbot 3',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abbot 4',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abernathy 3',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Abbot 5',
-                'home_team' => 0,
-                'client_id' => $clients['FitnessTruth']->id,
-            ],
-            [
-                'name' => 'Location: Adams',
                 'home_team' => 0,
                 'client_id' => $clients['FitnessTruth']->id,
             ],
@@ -164,31 +90,6 @@ class SecondaryTeamsSeeder extends Seeder
             ],
             [
                 'name' => 'Oahu Team',
-                'home_team' => 0,
-                'client_id' => $clients['The Z']->id,
-            ],
-            [
-                'name' => 'Oahu Honolulu 1',
-                'home_team' => 0,
-                'client_id' => $clients['The Z']->id,
-            ],
-            [
-                'name' => 'Oahu Honolulu 2',
-                'home_team' => 0,
-                'client_id' => $clients['The Z']->id,
-            ],
-            [
-                'name' => 'Oahu Honolulu 3',
-                'home_team' => 0,
-                'client_id' => $clients['The Z']->id,
-            ],
-            [
-                'name' => 'Oahu Honolulu 4',
-                'home_team' => 0,
-                'client_id' => $clients['The Z']->id,
-            ],
-            [
-                'name' => 'Oahu Honolulu 5',
                 'home_team' => 0,
                 'client_id' => $clients['The Z']->id,
             ],
@@ -236,11 +137,6 @@ class SecondaryTeamsSeeder extends Seeder
                 'home_team' => 0,
                 'client_id' => $clients['Stencils']->id,
             ],
-            [
-                'name' => 'Stencils @ Microsoft',
-                'home_team' => 0,
-                'client_id' => $clients['Stencils']->id,
-            ],
 
             // SciFi Purple Gyms
             [
@@ -253,26 +149,6 @@ class SecondaryTeamsSeeder extends Seeder
                 'home_team' => 0,
                 'client_id' => $clients['Sci-Fi Purple Gyms']->id,
             ],
-            [
-                'name' => 'Gym Advance A',
-                'home_team' => 0,
-                'client_id' => $clients['Sci-Fi Purple Gyms']->id,
-            ],
-            [
-                'name' => 'Gym BeachLyfe',
-                'home_team' => 0,
-                'client_id' => $clients['Sci-Fi Purple Gyms']->id,
-            ],
-            [
-                'name' => 'Gym Advance B',
-                'home_team' => 0,
-                'client_id' => $clients['Sci-Fi Purple Gyms']->id,
-            ],
-            [
-                'name' => 'Gym Callahan',
-                'home_team' => 0,
-                'client_id' => $clients['Sci-Fi Purple Gyms']->id,
-            ],
 
             //iFit
             [
@@ -282,76 +158,6 @@ class SecondaryTeamsSeeder extends Seeder
             ],
             [
                 'name' => 'iFit Georgia',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'iFit Virginia',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'iFit Sales Team',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'iFit Sales Team Georgia/VA',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'iFit Sales Team Florida',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'FL - Tampa 1',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'FL - Lake City',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'FL - Hilliard',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'FL - Orange Park',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'FL - Tampa 2',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'GA - Atlanta 1',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'GA - Atlanta 2',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'GA - Atlanta 16',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'VA - Va Beach 1',
-                'home_team' => 0,
-                'client_id' => $clients['iFit']->id,
-            ],
-            [
-                'name' => 'VA - Va Beach 2',
                 'home_team' => 0,
                 'client_id' => $clients['iFit']->id,
             ],

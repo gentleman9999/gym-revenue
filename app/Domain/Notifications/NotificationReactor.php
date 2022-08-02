@@ -10,7 +10,7 @@ use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class NotificationReactor extends Reactor implements ShouldQueue
 {
-    public function onNotificationCreated(NotificationCreated $event)
+    public function onNotificationCreated(NotificationCreated $event): void
     {
 //        \App\Events\NotificationCreated::dispatch($event->user, $event->data);
         $user_id = $event->aggregateRootUuid();

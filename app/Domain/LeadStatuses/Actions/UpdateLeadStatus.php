@@ -10,7 +10,7 @@ class UpdateLeadStatus
 {
     use AsAction;
 
-    public function handle(string $id, array $data)
+    public function handle(string $id, array $data): LeadStatus
     {
         LeadStatusAggregate::retrieve($id)->update($data)->persist();
 

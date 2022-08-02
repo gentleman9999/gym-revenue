@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex flex-col md:flex-row w-full justify-between mt-[-14px] mb-[51px]"
+        class="flex flex-col md:flex-row w-full justify-between mt-[-14px] mb-[51px] space-x-3"
     >
         <slot name="title"></slot>
         <div

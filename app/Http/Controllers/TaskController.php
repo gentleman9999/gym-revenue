@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Clients\Models\Client;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
 use App\Models\Calendar\CalendarEventType;
-use App\Models\Endusers\Member;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -94,7 +95,7 @@ class TaskController extends Controller
         if ($session_team && array_key_exists('id', $session_team)) {
             $current_team = Team::find($session_team['id']);
         } else {
-            $current_team = Team::find($user->default_team_id);
+            $current_team = Team::find(auth()->user()->default_team_id);
         }
         $client = Client::with(['home_team'])->find($client_id);
 
@@ -118,9 +119,10 @@ class TaskController extends Controller
         return Inertia::render('Task/Show', [
             'client_id' => $client_id,
             'client_users' => $users,
-            'lead_users' => Lead::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
-            'member_users' => Member::whereClientId($client_id)->select('id', 'first_name', 'last_name')->get(),
-            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->get(),
+            'lead_users' => Lead::select('id', 'first_name', 'last_name')->get(),
+            'member_users' => Member::select('id', 'first_name', 'last_name')->get(),
+            'locations' => Location::select('id', 'name')->get(),
+            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->whereType('Task')->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
             'overdue_tasks' => $overdue_tasks,

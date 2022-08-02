@@ -10,19 +10,7 @@ class GetUnreadNotificationCount
 {
     use AsAction;
 
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-//            'client_id' => ['required', 'exists:clients,id'],
-        ];
-    }
-
-    public function handle($user)
+    public function handle(User $user): int
     {
         //TODO: is this efficient as possible? is it actually doing a db count or counting the results?
         return Notification::whereUserId($user->id)->count();
@@ -33,7 +21,7 @@ class GetUnreadNotificationCount
 //        return true;
 //    }
 
-    public function asController(ActionRequest $request)
+    public function asController(ActionRequest $request): int
     {
 //        $data = $request->validated();
         return $this->handle(

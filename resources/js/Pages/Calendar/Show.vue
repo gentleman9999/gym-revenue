@@ -40,7 +40,6 @@
                         :client_id="client_id"
                         @submitted="toggleSwitch"
                         ref="eventForm"
-                        class="bg-base-content text-neutral-500"
                     />
                 </template>
             </drawer-content>

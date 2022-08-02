@@ -3,7 +3,7 @@
 namespace App\Domain\Clients\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateClient

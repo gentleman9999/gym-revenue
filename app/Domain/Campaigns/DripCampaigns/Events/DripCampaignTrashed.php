@@ -7,7 +7,7 @@ use App\StorableEvents\EntityTrashed;
 
 class DripCampaignTrashed extends EntityTrashed
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return DripCampaign::class;
     }

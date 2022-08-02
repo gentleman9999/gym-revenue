@@ -6,7 +6,6 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\SmsCampaigns;
-use App\Models\Comms\SmsTemplates;
 use App\Models\Endusers\AudienceMember;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
@@ -30,7 +29,7 @@ class FireOffSmsCampaign
         $campaign = SmsCampaigns::with(['schedule', 'assigned_template', 'assigned_audience'])
             ->findOrFail($sms_campaign_id);
         foreach ($campaign->assigned_template as $assigned_template) {
-            $templates[] = SmsTemplates::with('gateway')->findOrFail($assigned_template->value);
+            $templates[] = \App\Domain\Templates\SmsTemplates\Projections\SmsTemplate::with('gateway')->findOrFail($assigned_template->value);
         }
         foreach ($templates as $template) {
             $gatewayIntegrations[] = ClientGatewayIntegration::whereNickname($template->gateway->value)->whereClientId($campaign->client_id)->firstOrFail();

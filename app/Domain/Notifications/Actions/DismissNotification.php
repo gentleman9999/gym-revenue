@@ -15,23 +15,9 @@ class DismissNotification
 
     public string $commandSignature = 'notifications:dismiss {id}';
 
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-     */
-    public function rules()
+    public function handle(Notification $notification, User $user): void
     {
-        return [
-//            'client_id' => ['required', 'exists:clients,id'],
-        ];
-    }
-
-    public function handle($id, $user)
-    {
-        UserAggregate::retrieve($user->id)->dismissNotification($id)->persist();
-
-        return GetUnreadNotificationCount::run($user);
+        UserAggregate::retrieve($user->id)->dismissNotification($notification->id)->persist();
     }
 
 //    public function authorize(ActionRequest $request): bool
@@ -39,13 +25,13 @@ class DismissNotification
 //        return true;
 //    }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request, Notification $notification): int
     {
-//        $data = $request->validated();
-        return $this->handle(
-            $id,
-            $request->user()
+        $this->handle(
+            $notification,
         );
+
+        return GetUnreadNotificationCount::run($request->user());
     }
 
     //command for ez development testing
@@ -53,7 +39,7 @@ class DismissNotification
     {
         $notification = Notification::findOrFail($command->argument('id'));
         $this->handle(
-            $command->argument('id'),
+            $notification,
             User::findOrFail($notification->user->id)
         );
         $command->info('Notification Dismissed');

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Comm;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Http\Controllers\Controller;
-use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\SmsTemplates;
 use Inertia\Inertia;
 
 class ScheduledCampaignsController extends Controller
@@ -29,19 +29,19 @@ class ScheduledCampaignsController extends Controller
     {
         $templateTypes = [
             [
-                'entity' => EmailTemplates::class,
+                'entity' => EmailTemplate::class,
                 'name' => 'Email',
             ],
             [
-                'entity' => SmsTemplates::class,
+                'entity' => SmsTemplate::class,
                 'name' => 'SMS',
             ],
         ];
 
         return Inertia::render('Comms/ScheduledCampaigns/CreateScheduledCampaign', [
             'audiences' => Audience::get(),
-            'emailTemplates' => EmailTemplates::whereClientId(request()->user()->client_id)->get(),
-            'smsTemplates' => SmsTemplates::whereClientId(request()->user()->client_id)->get(),
+            'emailTemplates' => EmailTemplate::all(),
+            'smsTemplates' => SmsTemplate::all(),
             'template_types' => $templateTypes,
         ]);
     }
@@ -57,11 +57,11 @@ class ScheduledCampaignsController extends Controller
 
         $templateTypes = [
             [
-                'entity' => EmailTemplates::class,
+                'entity' => EmailTemplate::class,
                 'name' => 'Email',
             ],
             [
-                'entity' => SmsTemplates::class,
+                'entity' => SmsTemplate::class,
                 'name' => 'SMS',
             ],
         ];
@@ -69,8 +69,8 @@ class ScheduledCampaignsController extends Controller
         return Inertia::render('Comms/ScheduledCampaigns/EditScheduledCampaign', [
             'scheduledCampaign' => $scheduledCampaign,
             'audiences' => Audience::all(),
-            'emailTemplates' => EmailTemplates::whereClientId(request()->user()->client_id)->get(),
-            'smsTemplates' => SmsTemplates::whereClientId(request()->user()->client_id)->get(),
+            'emailTemplates' => EmailTemplate::all(),
+            'smsTemplates' => SmsTemplate::all(),
             'template_types' => $templateTypes,
         ]);
     }

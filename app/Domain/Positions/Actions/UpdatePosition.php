@@ -19,7 +19,7 @@ class UpdatePosition
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => ['string', 'required'],
@@ -27,11 +27,11 @@ class UpdatePosition
         ];
     }
 
-    public function handle(string $id, array $payload): Position
+    public function handle(Position $position, array $payload): Position
     {
-        PositionAggregate::retrieve($id)->update($payload)->persist();
+        PositionAggregate::retrieve($position->id)->update($payload)->persist();
 
-        return Position::findOrFail($id);
+        return $position->refresh();
     }
 
     public function authorize(ActionRequest $request): bool
@@ -44,7 +44,7 @@ class UpdatePosition
     public function asController(ActionRequest $request, Position $position)
     {
         return $this->handle(
-            $position->id,
+            $position,
             $request->validated(),
         );
     }

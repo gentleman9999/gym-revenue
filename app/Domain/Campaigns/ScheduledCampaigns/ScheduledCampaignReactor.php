@@ -9,8 +9,8 @@ use App\Domain\Campaigns\ScheduledCampaigns\Actions\UnpublishScheduledCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\Events\ScheduledCampaignCreated;
 use App\Domain\Campaigns\ScheduledCampaigns\Events\ScheduledCampaignUpdated;
 use App\Domain\Reminders\Events\ScheduledCampaignLaunched;
-use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\SmsTemplates;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ScheduledCampaignReactor extends Reactor
@@ -60,10 +60,10 @@ class ScheduledCampaignReactor extends Reactor
     {
         $scheduledCampaign = ScheduledCampaign::with('audience')->findOrFail($event->aggregateRootUuid());
         if ($scheduledCampaign->status === CampaignStatusEnum::ACTIVE) {
-            if ($scheduledCampaign->template_type === EmailTemplates::class) {
+            if ($scheduledCampaign->template_type === EmailTemplate::class) {
                 //TODO: fire off emails with the given template to the given audience members
                 //this needs to be done in a way that we are able to track delivery status back to the campaign
-            } elseif ($scheduledCampaign->template_type === SmsTemplates::class) {
+            } elseif ($scheduledCampaign->template_type === SmsTemplate::class) {
                 //TODO: fire off sms with the given template to the given audience members
                 //this needs to be done in a way that we are able to track delivery status back to the campaign
             } else {
@@ -72,7 +72,7 @@ class ScheduledCampaignReactor extends Reactor
         }
     }
 
-    protected function handleDispatchingEmails(ScheduledCampaign $scheduledCampaign)
+    protected function handleDispatchingEmails(ScheduledCampaign $scheduledCampaign): void
     {
 //        //TODO: user enums for provider type...
 //        $gateway_provider_type = GatewayProviderType::whereName('email')->whereActive(1)->first();

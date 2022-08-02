@@ -236,8 +236,12 @@
             </div>
 
             <div class="form-control col-span-2">
-                <jet-label for="lead_status" value="Lead Status" />
-                <select class="" v-model="form['lead_status']" id="lead_status">
+                <jet-label for="lead_status_id" value="Lead Status" />
+                <select
+                    class=""
+                    v-model="form['lead_status_id']"
+                    id="lead_status_id"
+                >
                     <option value="">Select a Lead Status</option>
                     <option
                         v-for="(status, idx) in lead_statuses"
@@ -247,7 +251,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors['lead_status']"
+                    :message="form.errors['lead_status_id']"
                     class="mt-2"
                 />
             </div>
@@ -495,8 +499,8 @@ export default {
                 opportunity: lead.opportunity,
                 notes: { title: "", note: "" },
                 owner_user_id: lead.owner_user_id,
+                lead_status_id: props.lead?.lead_status_id || "",
             };
-            leadData["lead_status"] = props.lead?.lead_status?.value || "";
         }
         const lastUpdated = computed(() =>
             "last_updated" in lead && lead.last_updated

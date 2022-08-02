@@ -24,7 +24,7 @@ class DepartmentProjector extends Projector
         }
     }
 
-    public function onDepartmentUpdated(DepartmentUpdated $event)
+    public function onDepartmentUpdated(DepartmentUpdated $event): void
     {
         $dept = Department::withTrashed()->findOrFail($event->aggregateRootUuid());
 
@@ -35,12 +35,12 @@ class DepartmentProjector extends Projector
         }
     }
 
-    public function onDepartmentTrashed(DepartmentTrashed $event)
+    public function onDepartmentTrashed(DepartmentTrashed $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->delete();
     }
 
-    public function onDepartmentRestored(DepartmentRestored $event)
+    public function onDepartmentRestored(DepartmentRestored $event): void
     {
         Department::withTrashed()->findOrFail($event->aggregateRootUuid())->restore();
     }

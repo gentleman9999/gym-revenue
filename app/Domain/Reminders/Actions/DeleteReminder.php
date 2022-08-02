@@ -3,6 +3,7 @@
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Users\UserAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -12,39 +13,28 @@ class DeleteReminder
 {
     use AsAction;
 
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-     */
-    public function rules()
+    public function handle(Reminder $reminder): Reminder
     {
-        return [
-            'id' => ['string', 'sometimes'],
-        ];
+        UserAggregate::retrieve($reminder->user_id)->deleteReminder($reminder->id)->persist();
+
+        return $reminder;
     }
 
-    public function handle($data, $current_user)
+    public function getControllerMiddleware(): array
     {
-        if (! is_null($current_user)) {
-            $data['client_id'] = $current_user->client_id;
-        }
-
-        UserAggregate::retrieve($current_user->id)->deleteReminder($data['id'])->persist();
+        return [InjectClientId::class];
     }
 
+    //TODO: implement real authorization
     public function authorize(ActionRequest $request): bool
     {
         return true;
     }
 
-    public function asController(ActionRequest $request, $id)
+    public function asController(ActionRequest $request, Reminder $reminder): RedirectResponse
     {
-        $data = $request->validated();
-        $data['id'] = $id;
         $this->handle(
-            $data,
-            $request->user(),
+            $reminder,
         );
 
         Alert::success("Reminder deleted")->flash();

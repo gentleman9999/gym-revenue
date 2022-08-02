@@ -7,7 +7,7 @@ use App\StorableEvents\EntityTrashed;
 
 class NotificationDismissed extends EntityTrashed
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Notification::class;
     }

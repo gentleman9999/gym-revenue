@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Departments\Department;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Models\Clients\Location;
 use App\Models\Position;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -44,7 +44,7 @@ class UsersController extends Controller
 
             $is_default_team = $client->default_team_id == $current_team->id;
 
-            $locations = Location::whereClientId($client_id)->get();
+            $locations = Location::all();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
             $clientName = $client->name;
 
@@ -147,7 +147,7 @@ class UsersController extends Controller
 
         $locations = null;
         if ($client) {
-            $locations = Location::whereClientId($client->id)->get(['name', 'gymrevenue_id']);
+            $locations = Location::get(['name', 'gymrevenue_id']);
         }
 
         $roles = Role::whereScope($client_id)->get();
@@ -184,7 +184,7 @@ class UsersController extends Controller
 
         $locations = null;
         if ($user->isClientUser()) {
-            $locations = Location::whereClientId($user->client->id)->get(['name', 'gymrevenue_id']);
+            $locations = Location::get(['name', 'gymrevenue_id']);
         };
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
@@ -204,8 +204,8 @@ class UsersController extends Controller
             'selectedUser' => $userData,
             'roles' => $roles,
             'locations' => $locations,
-            'availablePositions' => Position::with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::with('positions')->select('id', 'name')->get(),
+            'availablePositions' => Position::whereClientId($client_id)->with('departments')->select('id', 'name')->get(),
+            'availableDepartments' => Department::whereClientId($client_id)->with('positions')->select('id', 'name')->get(),
         ]);
     }
 
@@ -248,7 +248,7 @@ class UsersController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $current_team = Team::find($session_team['id']);
             } else {
-                $current_team = Team::find($user->default_team_id);
+                $current_team = Team::find(auth()->user()->default_team_id);
             }
 
             $client = Client::find($client_id);
@@ -290,7 +290,7 @@ class UsersController extends Controller
             if ($session_team && array_key_exists('id', $session_team)) {
                 $team = Team::find($session_team['id']);
             } else {
-                $team = Team::find($user->default_team_id);
+                $team = Team::find(auth()->user()->default_team_id);
             }
 
             $users = User::whereHas('teams', function ($query) use ($request) {

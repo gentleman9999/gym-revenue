@@ -2,8 +2,8 @@
 
 namespace App\Projectors\Clients;
 
-use App\Domain\Leads\Events\LeadConverted;
-use App\Domain\Leads\Events\LeadCreated;
+use App\Domain\EndUsers\Leads\Events\LeadConverted;
+use App\Domain\EndUsers\Leads\Events\LeadCreated;
 use App\Models\LiveReportsByDay;
 use App\StorableEvents\Endusers\Members\MemberCreated;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;

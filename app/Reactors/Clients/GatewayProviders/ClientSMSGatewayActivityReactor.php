@@ -2,8 +2,8 @@
 
 namespace App\Reactors\Clients\GatewayProviders;
 
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\UserAggregate;
-use App\Models\Comms\SmsTemplates;
 use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
 use App\StorableEvents\Clients\Activity\GatewayProviders\SMS\UserSentATestSMS;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +15,7 @@ class ClientSMSGatewayActivityReactor extends Reactor implements ShouldQueue
     {
         $user_aggy = UserAggregate::retrieve($event->user);
         // Initialize the SMS Gateway Service
-        $gateway_service = new SMSGatewayProviderService(SmsTemplates::find($event->template));
+        $gateway_service = new SMSGatewayProviderService(SmsTemplate::find($event->template));
         // use the service to get the correct gateway & pull the profile
         $gateway_service->initSMSGateway($event->user);
 

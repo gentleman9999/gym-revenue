@@ -7,7 +7,7 @@ use App\StorableEvents\EntityDeleted;
 
 class ScheduledCampaignDeleted extends EntityDeleted
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return ScheduledCampaign::class;
     }

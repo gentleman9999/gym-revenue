@@ -2,11 +2,16 @@
 
 namespace App\Domain\Teams\Models;
 
-use App\Domain\Clients\Models\Client;
-use App\Domain\Clients\Models\ClientDetail;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Clients\Projections\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -63,7 +68,7 @@ class Team extends JetstreamTeam
      *
      * @return void
      */
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
         static::retrieved(function ($model) {
@@ -73,22 +78,22 @@ class Team extends JetstreamTeam
         });
     }
 
-    public function details()
+    public function details(): HasMany
     {
         return $this->hasMany('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
     }
 
-    public function detail()
+    public function detail(): HasOne
     {
         return $this->hasOne('App\Domain\Teams\Models\TeamDetail', 'team_id', 'id');
     }
 
-    public function locations()
+    public function locations(): HasMany
     {
-        return $this->details()->whereName('team-location');
+        return $this->details()->whereField('team-location');
     }
 
-    public function default_team_details()
+    public function default_team_details(): HasOne
     {
         return $this->hasOne(ClientDetail::class, 'value', 'id')
             ->where('detail', '=', 'default-team')
@@ -102,33 +107,27 @@ class Team extends JetstreamTeam
         return $model->getTeamIDFromName($name);
     }
 
-    public function getTeamIDFromName(string $name)
+    public function getTeamIDFromName(string $name): ?string
     {
-        $results = false;
-
         $record = $this->select('id')->where('name', '=', $name)->first();
 
-        if ($record != null) {
-            $results = $record->id;
-        }
-
-        return $results;
+        return $record->id ?? null;
     }
 
-    public function team_users()
+    public function team_users(): HasMany
     {
         return $this->hasMany(TeamUser::class, 'team_id', 'id')
             ->with('user');
     }
 
-    public function isClientsDefaultTeam()
+    public function isClientsDefaultTeam(): bool
     {
         $proof = $this->default_team_details()->first();
 
         return (! is_null($proof));
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
@@ -136,7 +135,7 @@ class Team extends JetstreamTeam
             });
         })->when($filters['club'] ?? null, function ($query, $location_id) {
             return $query->whereHas('detail', function ($query) use ($location_id) {
-                return $query->whereName('team-location')->whereValue($location_id);
+                return $query->whereField('team-location')->whereValue($location_id);
             });
         })->when($filters['users'] ?? null, function ($query, $user) {
             return $query->whereHas('team_users', function ($query) use ($user) {
@@ -145,30 +144,18 @@ class Team extends JetstreamTeam
         });
     }
 
-    public static function getTeamName($team_id)
+    public static function getTeamName($team_id): ?string
     {
-        $results = 'No Name';
-
         $model = self::select('name')->whereId($team_id)->first();
 
-        if ($model !== null) {
-            $results = $model->name;
-        }
-
-        return $results;
+        return $model->name ?? null;
     }
 
-    public static function getClientFromTeamId($team_id)
+    public static function getClientFromTeamId($team_id): ?string
     {
-        $results = null;
-
         $model = self::select('name')->whereId($team_id)->first();
 
-        if ($model != null) {
-            $results = $model->client_id;
-        }
-
-        return $results;
+        return $model->client_id ?? null;
     }
 
     /**
@@ -176,7 +163,7 @@ class Team extends JetstreamTeam
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(Jetstream::userModel(), Jetstream::membershipModel())
 //            ->withPivot('role')
@@ -184,12 +171,12 @@ class Team extends JetstreamTeam
             ->as('membership');
     }
 
-    public function client()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public static function getGymRevAdminTeams()
+    public static function getGymRevAdminTeams(): Collection
     {
         return self::withoutGlobalScopes()->whereClientId(null)->get();
     }
@@ -199,7 +186,7 @@ class Team extends JetstreamTeam
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function owner()
+    public function owner(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_id');
     }
@@ -213,12 +200,12 @@ class Team extends JetstreamTeam
      * @return \Illuminate\Support\Collection
 
      */
-    public function allUsers()
+    public function allUsers(): Collection
     {
         return $this->users;
     }
 
-    public function getGymRevTeamAttribute()
+    public function getGymRevTeamAttribute(): bool
     {
         return $this->client_id === null;
     }

@@ -3,12 +3,12 @@
         <div class="modal" :class="{ 'modal-open': isOpen }">
             <div v-if="closable" class="absolute inset-0" @click="close"></div>
             <div
-                class="modal-box bg-base-200 max-h-[90vh] max-w-[90vw] overflow-auto border-[1px] border-secondary"
+                class="modal-box bg-base-200 max-h-[90vh] max-w-[90vw] overflow-auto border-[1px] border-secondary w-fit pt-8"
                 v-bind="$attrs"
             >
                 <button
                     type="button"
-                    class="btn btn-ghost absolute top-2 right-2"
+                    class="btn btn-ghost absolute top-0 right-0"
                     @click="close"
                     v-if="closable && showCloseButton"
                 >

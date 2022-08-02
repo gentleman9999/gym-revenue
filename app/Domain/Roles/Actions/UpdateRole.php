@@ -19,16 +19,17 @@ class UpdateRole
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'required'],
+            //'name' => ['sometimes', 'string', 'required'],
+            'name' => ['required', 'string','min:2'],
             'ability_names' => ['sometimes', 'array', 'sometimes'],
             'group' => ['sometimes', 'required', 'integer','min:1', 'max:6'],
         ];
     }
 
-    public function handle(Role $role, array $data)
+    public function handle(Role $role, array $data): Role
     {
         RoleAggregate::retrieve($role->id)->update($data)->persist();
 
@@ -42,7 +43,7 @@ class UpdateRole
         return $current_user->can('roles.update', Role::class);
     }
 
-    public function asController(ActionRequest $request, Role $role)
+    public function asController(ActionRequest $request, Role $role): Role
     {
         $data = $request->validated();
 

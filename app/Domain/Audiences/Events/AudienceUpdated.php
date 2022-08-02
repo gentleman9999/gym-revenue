@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class AudienceUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Audience::class;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Services\Dashboard\HomeDashboardService;
