@@ -255,21 +255,19 @@
             </div>
             <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="role_id" value="Select Positions" />
-                <multiselect
-                    v-model="selectedPositions"
-                    class="py-2"
+                <select
+                    v-model="selectedPosition"
+                    class="mt-1 w-full form-select"
                     id="positions"
-                    mode="tags"
-                    :close-on-select="false"
-                    :create-option="true"
-                    :options="
-                        selectablePositions.map((position) => ({
-                            label: position.name,
-                            value: position.id,
-                        }))
-                    "
-                    :classes="multiselectClasses"
-                />
+                >
+                    <option
+                        v-for="{ label, value } in selectablePositionOptions"
+                        :value="value"
+                        :key="value"
+                    >
+                        {{ label }}
+                    </option>
+                </select>
                 <jet-input-error
                     :message="form.errors.positions"
                     class="mt-2"
@@ -282,7 +280,7 @@
                 <button
                     class="btn btn-success"
                     primary
-                    @click.prevent="addDepartmentPositions"
+                    @click.prevent="addDepartmentPosition"
                 >
                     Add Department
                 </button>
@@ -579,13 +577,24 @@ export default {
         }
         const form = useGymRevForm(user);
 
+        let selectedDepartment = ref("");
+        let selectedPosition = ref(null);
+        const _addDepartmentPosition = (department, position) => {
+            form.departments = [
+                ...form.departments,
+                {
+                    department,
+                    position,
+                },
+            ];
+            console.log("form.departments set to", form.departments);
+        };
+
         const selectableDepartments = computed(() =>
             props.availableDepartments.filter(
                 ({ id, positions }) =>
-                    positions?.length &&
-                    form.departments.filter(
-                        (selectedOne) => selectedOne.department === id
-                    ).length === 0
+                    positions?.filter((p) => !selectedPosition.value !== p.id)
+                        .length
             )
         );
         const renderableDepartments = ref([]);
@@ -608,15 +617,15 @@ export default {
                             id,
                             positions,
                         });
-                        const department = props.user.departments.find(
+                        const department = props.user?.departments?.find(
                             (d) => (d.id = id)
                         );
                         console.log("renderableDepartments-found depts", {
                             department,
-                            user_positions: props.user.positions,
+                            user_positions: props.user?.positions,
                         });
-                        const owned_positions = props.user.positions.filter(
-                            (user_pos) =>
+                        const owned_positions =
+                            props.user?.positions?.filter((user_pos) =>
                                 positions?.find((dept_pos) => {
                                     console.log(
                                         "renderableDepartments-own po loop",
@@ -624,7 +633,7 @@ export default {
                                     );
                                     return user_pos.id === dept_pos.id;
                                 })
-                        );
+                            ) || [];
                         console.log("renderableDepartments-found pos", {
                             owned_positions,
                         });
@@ -728,28 +737,16 @@ export default {
             }
         };
 
-        let selectedDepartment = ref("");
-        let selectedPositions = ref([]);
-        const addDepartmentPosition = (department, position) => {
-            form.departments = [
-                ...form.departments,
-                {
-                    department,
-                    position,
-                },
-            ];
-            console.log("form.departments set to", form.departments);
-        };
-        const addDepartmentPositions = () => {
-            console.log("addDepartmentPositions", selectedPositions.value);
-            selectedPositions.value.map((position) => {
-                addDepartmentPosition(selectedDepartment.value, position);
-            });
+        const addDepartmentPosition = () => {
+            _addDepartmentPosition(
+                selectedDepartment.value,
+                selectedPosition.value
+            );
             selectedDepartment.value = null;
-            selectedPositions.value = [];
+            selectedPosition.value = null;
         };
         watch(selectedDepartment, () => {
-            selectedPositions.value = [];
+            selectedPosition.value = null;
         });
         const removeDepartment = (ndx) => {
             form.departments.splice(ndx, 1);
@@ -772,10 +769,54 @@ export default {
             return positions;
         };
 
-        const selectablePositions = computed(() => {
-            const department = getDepartment(selectedDepartment.value);
-            return department?.positions?.length ? department.positions : [];
+        const all_positions_for_selected_department = computed(() => {
+            const selected_department = getDepartment(selectedDepartment.value);
+            return selected_department?.positions?.length
+                ? selected_department?.positions
+                : [];
         });
+        // const selectablePositions = computed(()=>{
+        //     const filtered =  all_positions_for_selected_department.value.filter( department_position =>
+        //         //selected Positions does not yet have this department_position
+        //         !selectedPositions.value?.includes(department_position.id)
+        //     );
+        //     return filtered?.length ? filtered : [];
+        // })
+
+        const selectablePositions = computed(() => {
+            const filtered = all_positions_for_selected_department.value.filter(
+                (department_position) =>
+                    //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
+                    !form.departments?.find(
+                        ({ department, position }) =>
+                            department === selectedDepartment.value &&
+                            position === department_position.id
+                    )
+            );
+            return filtered?.length ? filtered : [];
+        });
+
+        const selectablePositionOptions = computed(() => {
+            if (selectablePositions.value?.length) {
+                return selectablePositions.value?.map((position) => ({
+                    label: position.name,
+                    value: position.id,
+                }));
+            } else {
+                return [];
+            }
+        });
+        //
+        // const selectablePositions = computed(() => {
+        //     const selected_department = getDepartment(selectedDepartment.value);
+        //     const all_departments_positions = selected_department?.positions || [];
+        //     const filtered =  all_departments_positions.filter( department_position =>
+        //         //selected Positions does not yet have this department_position
+        //          !selectedPositions.value?.includes(department_position.id)
+        //             //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
+        //             && form.departments?.filter(({department, position})=> department === selected_department.id &&  position === department_position.id));
+        //     return  filtered?.length ? filtered : [];
+        // });
 
         return {
             form,
@@ -793,8 +834,8 @@ export default {
             notesExpanded,
             handleClickCancel,
             selectedDepartment,
-            selectedPositions,
-            addDepartmentPositions,
+            selectedPosition,
+            addDepartmentPosition,
             getDepartment,
             getPosition,
             getPositions,
@@ -802,6 +843,10 @@ export default {
             selectableDepartments,
             selectablePositions,
             renderableDepartments,
+            // positions_for_selected_department_without_already_assigned_positions,
+            // positions_for_selected_department_excluding_currently_selected,
+            all_positions_for_selected_department,
+            selectablePositionOptions,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()

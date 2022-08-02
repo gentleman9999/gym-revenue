@@ -43,7 +43,7 @@ class UserProjector extends Projector
                 if (count($data) == count($data, COUNT_RECURSIVE)) {
                     $user->positions()->sync($data['positions']);
                 } else {
-                    $user->positions()->sync($data['positions'][0]);
+                    $user->positions()->sync($data['positions']);
                     //ARRAY IS MULTIDEM
                 }
             }
@@ -57,11 +57,7 @@ class UserProjector extends Projector
                     $positions = [];
                     foreach ($data['departments'] as $dept) {
                         $depts[] = $dept['department'];
-                        if (array_key_exists('department', $dept)) {
-                            foreach ($dept['position'] as $pos) {
-                                $positions[] = $pos;
-                            }
-                        }
+                        $positions[] = $dept['position'];
                     }
                     $user->departments()->sync($depts);
                     $user->positions()->sync($positions);
