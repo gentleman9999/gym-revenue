@@ -2,6 +2,20 @@
     <LayoutHeader title="File Management">
         <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
     </LayoutHeader>
+    <div class="flex flex-row space-x-3">
+        <Button primary size="sm" @click="displayMode = 'desktop'"
+            >desktop</Button
+        >
+        <Button primary size="sm" @click="displayMode = 'list'">list</Button>
+    </div>
+    <div class="flex flex-row flex-wrap">
+        <file-item
+            v-for="file in files.data"
+            :file="file"
+            :key="file?.id"
+            :mode="displayMode"
+        />
+    </div>
     <gym-revenue-crud
         base-route="files"
         model-name="File"
@@ -66,7 +80,7 @@ td > div {
 }
 </style>
 
-<script>
+<script setup>
 import { defineComponent, watchEffect, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
@@ -76,47 +90,49 @@ import FileDataCard from "./Partials/FileDataCard.vue";
 import FilenameField from "./Partials/FilenameField.vue";
 import { Inertia } from "@inertiajs/inertia";
 import DaisyModal from "@/Components/DaisyModal.vue";
+import FileItem from "@/Components/FileItem/index.vue";
+import Button from "@/Components/Button.vue";
 
-export default defineComponent({
-    components: {
-        LayoutHeader,
-        GymRevenueCrud,
-        FileForm,
-        DaisyModal,
-        PermissionsForm,
+const props = defineProps({
+    sessions: {
+        type: Array,
     },
-    props: ["sessions", "files", "title", "isClientUser", "filters"],
-    setup() {
-        const selectedFile = ref(null);
-        const selectedFilePermissions = ref(null);
-
-        const filenameModal = ref(null);
-        const permissionsModal = ref(null);
-
-        watchEffect(() => {
-            if (selectedFile.value) {
-                filenameModal.value.open();
-            }
-            if (selectedFilePermissions.value) {
-                permissionsModal.value.open();
-            }
-        });
-
-        const fields = [
-            { name: "filename", component: FilenameField },
-            "size",
-            "created_at",
-            "updated_at",
-        ];
-        return {
-            filenameModal,
-            selectedFile,
-            permissionsModal,
-            selectedFilePermissions,
-            fields,
-            FileDataCard,
-            Inertia,
-        };
+    files: {
+        type: Array,
+    },
+    title: {
+        type: String,
+    },
+    isClientUser: {
+        type: Boolean,
+    },
+    filters: {
+        type: Array,
     },
 });
+const selectedFile = ref(null);
+const selectedFilePermissions = ref(null);
+
+const filenameModal = ref(null);
+const permissionsModal = ref(null);
+
+watchEffect(() => {
+    if (selectedFile.value) {
+        filenameModal.value.open();
+    }
+    if (selectedFilePermissions.value) {
+        permissionsModal.value.open();
+    }
+});
+
+const displayMode = ref("desktop");
+const fields = [
+    { name: "filename", component: FilenameField },
+    "size",
+    "created_at",
+    "updated_at",
+];
+
+console.log("FILE UI");
+console.log(props.files);
 </script>
