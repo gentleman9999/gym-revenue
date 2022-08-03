@@ -143,6 +143,7 @@
                     <!--                        </button>-->
                     <!--                    </div>-->
                     <noty-bell></noty-bell>
+                    <global-search placeholder="Search" size="xs" />
                     <!--                    <div class="ml-3 relative">-->
                     <!--                        <button @click="comingSoon()">-->
                     <!--                            <font-awesome-icon-->
@@ -221,6 +222,7 @@ import LocationsDropdown from "@/Components/Navigation/LocationsDropdown.vue";
 import SettingsDropdown from "@/Components/Navigation/SettingsDropdown.vue";
 import { Head } from "@inertiajs/inertia-vue3";
 import NotyBell from "@/Components/NotyBell.vue";
+import GlobalSearch from "@/Components/GlobalSearch.vue";
 
 library.add(
     faBars,
@@ -239,6 +241,7 @@ export default defineComponent({
         JetNavLink,
         FontAwesomeIcon,
         NotyBell,
+        GlobalSearch,
         TeamsDropdown,
         LocationsDropdown,
         SettingsDropdown,

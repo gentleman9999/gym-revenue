@@ -161,59 +161,16 @@
                     class="block w-full mt-1"
                     v-model="form.role_id"
                 >
-                    <option v-for="role_id in roles" :value="role_id.id">
+                    <option
+                        v-for="role_id in roles"
+                        :value="role_id.id"
+                        :key="role_id.id"
+                    >
                         {{ role_id.title }}
                     </option>
                 </select>
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
-
-            <div class="form-control col-span-2" v-if="isClientUser">
-                <jet-label for="role_id" value="Select Positions" />
-                <multiselect
-                    v-model="form.positions"
-                    class="py-2"
-                    id="positions"
-                    mode="tags"
-                    :close-on-select="false"
-                    :create-option="true"
-                    :options="
-                        availablePositions.map((position) => ({
-                            label: position.name,
-                            value: position.id,
-                        }))
-                    "
-                    :classes="multiselectClasses"
-                />
-                <jet-input-error
-                    :message="form.errors.positions"
-                    class="mt-2"
-                />
-            </div>
-
-            <div class="form-control col-span-2" v-if="isClientUser">
-                <jet-label for="role_id" value="Select Departments" />
-                <multiselect
-                    v-model="form.departments"
-                    class="py-2"
-                    id="departments"
-                    mode="tags"
-                    :close-on-select="false"
-                    :create-option="true"
-                    :options="
-                        availableDepartments.map((department) => ({
-                            label: department.name,
-                            value: department.id,
-                        }))
-                    "
-                    :classes="multiselectClasses"
-                />
-                <jet-input-error
-                    :message="form.errors.departments"
-                    class="mt-2"
-                />
-            </div>
-
             <!-- Home Club -->
             <div class="form-control col-span-2" v-if="isClientUser">
                 <jet-label for="home_location_id" value="Home Club" />
@@ -225,6 +182,7 @@
                     <option
                         v-for="{ gymrevenue_id, name } in locations"
                         :value="gymrevenue_id"
+                        :key="gymrevenue_id"
                     >
                         {{ name }}
                     </option>
@@ -274,6 +232,82 @@
                     class="mt-2"
                 />
             </div>
+            <div class="form-divider" v-if="isClientUser" />
+            <div class="form-control col-span-2" v-if="isClientUser">
+                <jet-label for="role_id" value="Select Departments" />
+                <select
+                    v-model="selectedDepartment"
+                    class="mt-1 w-full form-select"
+                    id="departments"
+                >
+                    <option
+                        v-for="department in selectableDepartments"
+                        :value="department.id"
+                        :key="department.id"
+                    >
+                        {{ department.name }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.departments"
+                    class="mt-2"
+                />
+            </div>
+            <div class="form-control col-span-2" v-if="isClientUser">
+                <jet-label for="role_id" value="Select Positions" />
+                <select
+                    v-model="selectedPosition"
+                    class="mt-1 w-full form-select"
+                    id="positions"
+                >
+                    <option
+                        v-for="{ label, value } in selectablePositionOptions"
+                        :value="value"
+                        :key="value"
+                    >
+                        {{ label }}
+                    </option>
+                </select>
+                <jet-input-error
+                    :message="form.errors.positions"
+                    class="mt-2"
+                />
+            </div>
+            <div
+                class="flex justify-center items-end col-span-2"
+                v-if="isClientUser"
+            >
+                <button
+                    class="btn btn-success"
+                    primary
+                    @click.prevent="addDepartmentPosition"
+                >
+                    Add Department
+                </button>
+            </div>
+            <div
+                class="grid grid-cols-6 col-span-6 items-center"
+                v-for="({ department, position }, ndx) in form.departments"
+                :key="position"
+            >
+                <div class="col-span-2">
+                    {{ getDepartment(department)?.name }}
+                </div>
+                <div class="col-span-2">
+                    {{ getPosition(position)?.name }}
+                </div>
+                <div class="flex justify-center items-end col-span-2">
+                    <button
+                        class="btn btn-outline btn-error btn-sm"
+                        type="button"
+                        primary
+                        size="sm"
+                        @click="removeDepartment(ndx)"
+                    >
+                        Remove Department
+                    </button>
+                </div>
+            </div>
 
             <div class="form-divider" />
             <!-- Notes -->
@@ -304,6 +338,7 @@
                     class="collapse col-span-6"
                     tabindex="0"
                     v-for="note in user.all_notes"
+                    :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"
@@ -361,6 +396,7 @@
                     <template v-if="user?.files?.length">
                         <div
                             v-for="file in user.files"
+                            :key="file.id"
                             class="rounded-lg bg-base-100 p-2 flex items-center"
                         >
                             <div class="flex-grow">
@@ -420,7 +456,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -533,10 +569,100 @@ export default {
                 user.end_date = null;
                 user.termination_date = null;
                 user.role_id = null;
+                // user.departments = {
+                //
+                // }
             }
             operation = "Create";
         }
         const form = useGymRevForm(user);
+
+        let selectedDepartment = ref("");
+        let selectedPosition = ref(null);
+        const _addDepartmentPosition = (department, position) => {
+            form.departments = [
+                ...form.departments,
+                {
+                    department,
+                    position,
+                },
+            ];
+            console.log("form.departments set to", form.departments);
+        };
+
+        const selectableDepartments = computed(() =>
+            props.availableDepartments.filter(
+                ({ id, positions }) =>
+                    positions?.filter((p) => !selectedPosition.value !== p.id)
+                        .length
+            )
+        );
+        const renderableDepartments = ref([]);
+
+        watch(
+            [selectableDepartments],
+            () => {
+                if (
+                    selectableDepartments.value?.length &&
+                    !renderableDepartments.value?.length
+                ) {
+                    console.log("renderableDepartments - entered");
+                    const department_positions = [];
+                    console.log(
+                        "renderableDepartments-selectableDepartments",
+                        selectableDepartments.value
+                    );
+                    selectableDepartments.value.forEach(({ id, positions }) => {
+                        console.log("renderableDepartments-id.pos", {
+                            id,
+                            positions,
+                        });
+                        const department = props.user?.departments?.find(
+                            (d) => (d.id = id)
+                        );
+                        console.log("renderableDepartments-found depts", {
+                            department,
+                            user_positions: props.user?.positions,
+                        });
+                        const owned_positions =
+                            props.user?.positions?.filter((user_pos) =>
+                                positions?.find((dept_pos) => {
+                                    console.log(
+                                        "renderableDepartments-own po loop",
+                                        { user_pos, dept_pos }
+                                    );
+                                    return user_pos.id === dept_pos.id;
+                                })
+                            ) || [];
+                        console.log("renderableDepartments-found pos", {
+                            owned_positions,
+                        });
+                        owned_positions.forEach((owned_position) => {
+                            department_positions.push({
+                                department: department.id,
+                                position: owned_position.id,
+                            });
+                        });
+                    });
+                    renderableDepartments.value = department_positions;
+                }
+            },
+            { immediate: true }
+        );
+        watch(
+            renderableDepartments,
+            () => {
+                if (renderableDepartments.value?.length) {
+                    form.departments = [...renderableDepartments.value];
+                    console.log("set form.departments to", {
+                        renderableDepartments: renderableDepartments.value,
+                        formDeps: form.departments,
+                    });
+                }
+            },
+            { immediate: true }
+        );
+
         let upperCaseF = (text) => {
             form.state = text.toUpperCase();
         };
@@ -603,7 +729,6 @@ export default {
         }
 
         const handleClickCancel = () => {
-            console.log("modal", modal.value);
             if (modal.value.close) {
                 console.log("closing modal");
                 modal.value.close();
@@ -611,6 +736,87 @@ export default {
                 Inertia.visit(route("users"));
             }
         };
+
+        const addDepartmentPosition = () => {
+            _addDepartmentPosition(
+                selectedDepartment.value,
+                selectedPosition.value
+            );
+            selectedDepartment.value = null;
+            selectedPosition.value = null;
+        };
+        watch(selectedDepartment, () => {
+            selectedPosition.value = null;
+        });
+        const removeDepartment = (ndx) => {
+            form.departments.splice(ndx, 1);
+        };
+        const getDepartment = (id) => {
+            return props.availableDepartments.find((item) => item.id === id);
+        };
+        const getPosition = (id) => {
+            return props.availablePositions.find((item) => item.id === id);
+        };
+
+        const getPositions = (id_arr) => {
+            const positions = [];
+            id_arr.map((id) => {
+                const position = getPosition(id);
+                if (position) {
+                    positions.push(position);
+                }
+            });
+            return positions;
+        };
+
+        const all_positions_for_selected_department = computed(() => {
+            const selected_department = getDepartment(selectedDepartment.value);
+            return selected_department?.positions?.length
+                ? selected_department?.positions
+                : [];
+        });
+        // const selectablePositions = computed(()=>{
+        //     const filtered =  all_positions_for_selected_department.value.filter( department_position =>
+        //         //selected Positions does not yet have this department_position
+        //         !selectedPositions.value?.includes(department_position.id)
+        //     );
+        //     return filtered?.length ? filtered : [];
+        // })
+
+        const selectablePositions = computed(() => {
+            const filtered = all_positions_for_selected_department.value.filter(
+                (department_position) =>
+                    //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
+                    !form.departments?.find(
+                        ({ department, position }) =>
+                            department === selectedDepartment.value &&
+                            position === department_position.id
+                    )
+            );
+            return filtered?.length ? filtered : [];
+        });
+
+        const selectablePositionOptions = computed(() => {
+            if (selectablePositions.value?.length) {
+                return selectablePositions.value?.map((position) => ({
+                    label: position.name,
+                    value: position.id,
+                }));
+            } else {
+                return [];
+            }
+        });
+        //
+        // const selectablePositions = computed(() => {
+        //     const selected_department = getDepartment(selectedDepartment.value);
+        //     const all_departments_positions = selected_department?.positions || [];
+        //     const filtered =  all_departments_positions.filter( department_position =>
+        //         //selected Positions does not yet have this department_position
+        //          !selectedPositions.value?.includes(department_position.id)
+        //             //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
+        //             && form.departments?.filter(({department, position})=> department === selected_department.id &&  position === department_position.id));
+        //     return  filtered?.length ? filtered : [];
+        // });
 
         return {
             form,
@@ -627,6 +833,20 @@ export default {
             closeFileManagerModal,
             notesExpanded,
             handleClickCancel,
+            selectedDepartment,
+            selectedPosition,
+            addDepartmentPosition,
+            getDepartment,
+            getPosition,
+            getPositions,
+            removeDepartment,
+            selectableDepartments,
+            selectablePositions,
+            renderableDepartments,
+            // positions_for_selected_department_without_already_assigned_positions,
+            // positions_for_selected_department_excluding_currently_selected,
+            all_positions_for_selected_department,
+            selectablePositionOptions,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
             // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()

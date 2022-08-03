@@ -176,6 +176,15 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function
     Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
 });
 
+Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(function () {
+    Route::get('/', \App\Http\Controllers\SearchController::class . '@index')->name('searches');
+    Route::post('/searchahead', \App\Http\Controllers\SearchController::class . '@search_api')->name('searches.read');
+//    Route::post('/', \App\Actions\Clients\Searches\CreateSearch::class)->name('searches.store');
+//    Route::get('/edit/{id}', \App\Http\Controllers\SearchController::class . '@edit')->name('searches.edit');
+//    Route::put('/{id}', \App\Actions\Clients\Searches\UpdateSearch::class)->name('searches.update');
+//    Route::delete('/{id}/force', \App\Actions\Clients\Searches\DeleteSearch::class)->name('searches.delete');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
     Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');

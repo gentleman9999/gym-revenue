@@ -29,6 +29,18 @@
 .search-input-wrapper:focus .search-icon {
     @apply hidden;
 }
+.search-submit {
+    font-size: 1.5rem;
+    margin-left: auto;
+    background: 0;
+    border: 0;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 200ms ease-out;
+    width: calc(var(--size) - 10px);
+    height: calc(var(--size) - 10px);
+    color: var(--clr-body);
+}
 </style>
 <script setup>
 import SearchIcon from "./Icons/Search.vue";
