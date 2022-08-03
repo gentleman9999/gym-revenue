@@ -3,9 +3,6 @@
 namespace App\Domain\SMS\Actions;
 
 use App\Actions\Sms\Twilio\FireTwilioMsg;
-use App\Domain\Teams\Models\Team;
-use App\Http\Middleware\InjectClientId;
-use App\Services\GatewayProviders\Profiles\SMS\Twilio;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\CreatesTeams;
@@ -17,37 +14,23 @@ class FireTestMessage implements CreatesTeams
 {
     use AsAction;
 
-    public function handle(array $payload): bool
+    public function handle(): bool
     {
-        FireTwilioMsg::run('4239942372', 'this is a test');
+        FireTwilioMsg::run(env('TWILIO_TEST_NUMBER'), 'Test Message');
 
         return true;
     }
 
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
-    }
-
-    public function authorize(ActionRequest $request): bool
-    {
-        $current_user = $request->user();
-
-        return $current_user->can('teams.create', Team::class);
-    }
-
     public function asController(ActionRequest $request)
     {
-        return $this->handle(
-            $request->validated()
-        );
+        return $this->handle();
     }
 
-    public function htmlResponse(Twilio $sms): RedirectResponse
+    public function htmlResponse(): RedirectResponse
     {
         Alert::success("Message was created")->flash();
 
-        return Redirect::route('comms');
+        return Redirect::route('comms.dashboard');
     }
 
     public function create($user, array $input)

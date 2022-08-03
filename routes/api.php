@@ -32,7 +32,7 @@ Route::middleware('bearer')->prefix('members')->group(function () {
     Route::post('/batchupsert', \App\Domain\EndUsers\Members\Actions\BatchUpsertMemberApi::class);
 });
 
-Route::prefix('twilio')->group(function () {
+Route::middleware('twilio')->prefix('twilio')->group(function () {
     Route::post('/statusCallBack', \App\Domain\SMS\Actions\StatusCallback::class);
 });
 
