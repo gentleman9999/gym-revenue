@@ -22,7 +22,8 @@ class UpdatePosition
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string','min:2'],
+            'name' => ['string', 'required'],
+            'departments' => ['array', 'sometimes'],
         ];
     }
 

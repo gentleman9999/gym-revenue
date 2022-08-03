@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Departments\Department;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -23,6 +24,7 @@ class PositionsController extends Controller
         }
 
         $pos = Position::whereClientId($client_id)
+            ->with('departments')
             ->filter($request->only('search', 'trashed'))
             ->sort()
             ->paginate(10)
@@ -30,6 +32,7 @@ class PositionsController extends Controller
 
         return Inertia::render('Positions/Show', [
             'positions' => $pos,
+            'departments' => Department::all(),
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);
     }
@@ -47,6 +50,7 @@ class PositionsController extends Controller
         }
 
         return Inertia::render('Positions/Create', [
+            'departments' => Department::all(),
         ]);
     }
 
@@ -58,8 +62,11 @@ class PositionsController extends Controller
             return Redirect::back();
         }
 
+        $position = Position::whereId($position->id)->with('departments')->first();
+
         return Inertia::render('Positions/Edit', [
             'position' => $position,
+            'departments' => Department::all(),
         ]);
     }
 

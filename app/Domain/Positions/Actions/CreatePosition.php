@@ -26,6 +26,7 @@ class CreatePosition
         return [
             'name' => ['required', 'string','min:2'],
             'client_id' => ['string', 'required'],
+            'departments' => ['array', 'sometimes'],
         ];
     }
 

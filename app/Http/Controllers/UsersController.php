@@ -157,8 +157,8 @@ class UsersController extends Controller
             'roles' => $roles,
             'clientName' => $client_name,
             'locations' => $locations,
-            'availablePositions' => Position::whereClientId($client_id)->select('id', 'name')->get(),
-            'availableDepartments' => Department::whereClientId($client_id)->select('id', 'name')->get(),
+            'availablePositions' => Position::with('departments')->select('id', 'name')->get(),
+            'availableDepartments' => Department::with('positions')->select('id', 'name')->get(),
         ]);
     }
 

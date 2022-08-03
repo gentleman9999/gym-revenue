@@ -19,11 +19,21 @@ class PositionProjector extends Projector
         $position->id = $event->aggregateRootUuid();
         $position->client_id = $event->clientId();
         $position->save();
+
+        if (array_key_exists('departments', $event->payload)) {
+            $position->departments()->sync($event->payload['departments']);
+        }
     }
 
     public function onPositionUpdated(PositionUpdated $event): void
     {
-        Position::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
+        $pos = Position::withTrashed()->findOrFail($event->aggregateRootUuid());
+
+        $pos->updateOrFail($event->payload);
+
+        if (array_key_exists('departments', $event->payload)) {
+            $pos->departments()->sync($event->payload['departments']);
+        }
     }
 
     public function onPositionTrashed(PositionTrashed $event): void

@@ -466,5 +466,31 @@ class AppStateSeeder extends Seeder
                 ],
             ],
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 08-02-2022',
+            'value' => '2022-08-02',
+            'misc' => [
+                'buildno' => '20220802',
+                'version' => '0.23.01',
+                'notes' => [
+                    'Impersonation - Moved Teams Dropdown to impersonation window.',
+                    'Impersonation User List - Sort.',
+                    'Calendar - Layout - Editing event.',
+                    'Members - Member needs all the communication stuff that lead has.',
+                    'User - CSV Import Changes.',
+                    'Files/Folder - File System overhaul.',
+                    'Backend - Finish Client related Models - Scope by client global',
+                    'Backend - Event Sourcing standardization completed.',
+                    'Style - Ensure app looks ok on "big" screens.',
+                    'BUG - Lead Picture does not save when uploading.',
+                    'BUG - Min. Char Name Field Validation.',
+                    'BUG - Lead Statuses Empty Field WIll Not Update.',
+
+                ],
+            ],
+        ]);
     }
 }

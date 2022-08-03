@@ -37,7 +37,18 @@ export const useGymRevForm = (...args) => {
         let fields = [];
         for (let key in initialData.value) {
             // console.log({key, initial: initialData.value[key], current: currentData.value[key] })
-            if (initialData.value[key] !== currentData.value[key]) {
+            const initialValue = initialData.value[key];
+            const currentValue = currentData.value[key];
+            if (typeof initialValue === "Object") {
+                if (
+                    JSON.stringify(initialValue) !==
+                    JSON.stringify(currentValue)
+                ) {
+                    console.log("found diff", key);
+                    fields.push(key);
+                    break;
+                }
+            } else if (initialValue !== currentValue) {
                 console.log("found diff", key);
                 fields.push(key);
             }
