@@ -23,7 +23,8 @@ class UpdateDepartment
     public function rules()
     {
         return [
-            'name' => ['required', 'string','min:2'],
+            'name' => ['string', 'required'],
+            'positions' => ['array', 'sometimes'],
         ];
     }
 

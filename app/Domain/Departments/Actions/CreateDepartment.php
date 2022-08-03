@@ -27,6 +27,7 @@ class CreateDepartment
         return [
             'name' => ['required', 'string','min:2'],
             'client_id' => ['string', 'required'],
+            'positions' => ['array', 'sometimes'],
         ];
     }
 

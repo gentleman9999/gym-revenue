@@ -42,6 +42,7 @@ class UserCrudProjector extends Projector
                     //do nothing
                 } else {
                     $user->positions()->sync($data['positions']);
+                    //ARRAY IS MULTIDEM
                 }
             }
 
@@ -49,7 +50,15 @@ class UserCrudProjector extends Projector
                 if (count($data) == count($data, COUNT_RECURSIVE)) {
                     //do nothing
                 } else {
-                    $user->departments()->sync($data['departments']);
+                    //ARRAY IS MULTIDEM
+                    $depts = [];
+                    $positions = [];
+                    foreach ($data['departments'] as $dept) {
+                        $depts[] = $dept['department'];
+                        $positions[] = $dept['position'];
+                    }
+                    $user->departments()->sync($depts);
+                    $user->positions()->sync($positions);
                 }
             }
 
@@ -136,7 +145,8 @@ class UserCrudProjector extends Projector
                 if (count($data) == count($data, COUNT_RECURSIVE)) {
                     $user->positions()->sync($data['positions']);
                 } else {
-                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                    $user->positions()->sync($data['positions'][0]);
+                    //ARRAY IS MULTIDEM
                 }
             }
 
@@ -144,7 +154,15 @@ class UserCrudProjector extends Projector
                 if (count($data) == count($data, COUNT_RECURSIVE)) {
                     $user->departments()->sync($data['departments']);
                 } else {
-                    //ARRAY IS MULTIDEM, which means we do nothing for now since the no data was modified
+                    //ARRAY IS MULTIDEM
+                    $depts = [];
+                    $positions = [];
+                    foreach ($data['departments'] as $deptPos) {
+                        $depts[] = $deptPos['department'];
+                        $positions[] = $deptPos['position'];
+                    }
+                    $user->departments()->sync($depts);
+                    $user->positions()->sync($positions);
                 }
             }
 
