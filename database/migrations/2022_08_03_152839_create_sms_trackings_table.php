@@ -14,7 +14,6 @@ return new class () extends Migration {
     {
         Schema::create('sms_trackings', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('client_id');
             $table->string('SmsSid');
             $table->string('SmsStatus');
             $table->string('MessageStatus');

@@ -3,7 +3,6 @@
 namespace App\Domain\SMS\Actions;
 
 use App\Domain\SMS\SmsAggregate;
-use App\Models\SmsTracking;
 use App\Support\Uuid;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -14,14 +13,10 @@ class StatusCallback
 
     public function handle(array $payload)
     {
-        $test = $payload;
-
         $id = Uuid::new();
+        SmsAggregate::retrieve($id)->track($payload)->persist();
 
-        SmsAggregate::retrieve($id)->track($test);
-        //SmsTracking::create($payload);
-
-        return $test;
+        return $payload;
     }
 
     public function asController(ActionRequest $request)

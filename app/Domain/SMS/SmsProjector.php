@@ -16,8 +16,6 @@ class SmsProjector extends Projector
             return in_array($key, (new SmsTracking())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
         $sms_tracking->fill($fillable_data);
-        $sms_tracking->id = $event->aggregateRootUuid();
-        $sms_tracking->client_id = $event->payload['client_id'] ?? null;
         $sms_tracking->save();
     }
 }
