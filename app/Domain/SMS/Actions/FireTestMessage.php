@@ -17,27 +17,13 @@ class FireTestMessage implements CreatesTeams
 {
     use AsAction;
 
-    public function handle(array $payload): Team
+    public function handle(array $payload): bool
     {
         FireTwilioMsg::run('4239942372', 'this is a test');
 
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-
-    public function rules(): array
-    {
-        return [
-            'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
-            'name' => ['required', 'max:50'],
-            'home_team' => ['sometimes', 'boolean'],
-            'locations' => ['sometimes', 'array'],
-        ];
-    }*/
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -50,7 +36,7 @@ class FireTestMessage implements CreatesTeams
         return $current_user->can('teams.create', Team::class);
     }
 
-    public function asController(ActionRequest $request): Team
+    public function asController(ActionRequest $request)
     {
         return $this->handle(
             $request->validated()
@@ -64,7 +50,7 @@ class FireTestMessage implements CreatesTeams
         return Redirect::route('comms');
     }
 
-    public function create($user, array $input): Team
+    public function create($user, array $input)
     {
         return $this->handle($input);
     }

@@ -18,18 +18,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('leads')->group(function () {
+Route::middleware('bearer')->prefix('leads')->group(function () {
     Route::get('/', \App\Domain\EndUsers\Leads\Actions\ReadLeads::class);
     Route::post('/create', \App\Domain\EndUsers\Leads\Actions\CreateLeadApi::class);
     Route::post('/upsert', \App\Domain\EndUsers\Leads\Actions\UpsertLeadApi::class);
     Route::post('/batchupsert', \App\Domain\EndUsers\Leads\Actions\BatchUpsertLeadApi::class);
 });
 
-Route::prefix('members')->group(function () {
+Route::middleware('bearer')->prefix('members')->group(function () {
     Route::get('/', \App\Domain\EndUsers\Members\Actions\ReadMembers::class);
     Route::post('/create', \App\Domain\EndUsers\Members\Actions\CreateMemberApi::class);
     Route::post('/upsert', \App\Domain\EndUsers\Members\Actions\UpsertMemberApi::class);
     Route::post('/batchupsert', \App\Domain\EndUsers\Members\Actions\BatchUpsertMemberApi::class);
+});
+
+Route::prefix('twilio')->group(function () {
+    Route::post('/statusCallBack', \App\Domain\SMS\Actions\StatusCallback::class);
 });
 
 Route::post('/plans', \App\Actions\Clients\GetPlans::class);
