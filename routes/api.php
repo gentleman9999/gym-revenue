@@ -33,7 +33,7 @@ Route::middleware('bearer')->prefix('members')->group(function () {
 });
 
 Route::middleware('twilio')->prefix('twilio')->group(function () {
-    Route::post('/statusCallBack', \App\Domain\SMS\Actions\StatusCallback::class);
+    Route::post('/statusCallBack', \App\Domain\SMS\Actions\TwilioStatusCallback::class);
 });
 
 Route::post('/plans', \App\Actions\Clients\GetPlans::class);

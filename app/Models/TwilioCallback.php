@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SmsTracking extends Model
+class TwilioCallback extends Model
 {
     use HasFactory;
 

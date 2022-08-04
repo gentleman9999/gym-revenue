@@ -7,14 +7,14 @@ use App\Support\Uuid;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class StatusCallback
+class TwilioStatusCallback
 {
     use AsAction;
 
     public function handle(array $payload)
     {
         $id = Uuid::new();
-        SmsAggregate::retrieve($id)->track($payload)->persist();
+        SmsAggregate::retrieve($id)->twilioTrack($payload)->persist();
 
         return $payload;
     }

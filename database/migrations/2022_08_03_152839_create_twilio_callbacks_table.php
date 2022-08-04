@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('sms_trackings', function (Blueprint $table) {
+        Schema::create('twilio_callbacks', function (Blueprint $table) {
             $table->id();
             $table->string('SmsSid');
             $table->string('SmsStatus');
@@ -33,6 +33,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('sms_trackings');
+        Schema::dropIfExists('twilio_callbacks');
     }
 };

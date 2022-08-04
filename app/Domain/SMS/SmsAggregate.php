@@ -2,14 +2,14 @@
 
 namespace App\Domain\SMS;
 
-use App\Domain\SMS\Events\SMSTracked;
+use App\Domain\SMS\Events\TwilioTracked;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class SmsAggregate extends AggregateRoot
 {
-    public function track(array $payload): static
+    public function twilioTrack(array $payload): static
     {
-        $this->recordThat(new SMSTracked($payload));
+        $this->recordThat(new TwilioTracked($payload));
 
         return $this;
     }
