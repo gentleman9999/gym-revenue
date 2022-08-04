@@ -1,17 +1,34 @@
 <template>
     <div
+        class="relative"
         :class="{
             'file-desktop': props.mode === 'desktop',
             'file-list': props.mode === 'list',
         }"
+        @contextmenu="$event.preventDefault()"
     >
         <file-icon
             :icon-size="iconSize"
             :extension="file.extension"
             :showExtension="props.mode === 'desktop'"
+            :fileUrl="file.url"
+            @mousedown="handleClick($event)"
         />
         <div class="file-name">{{ filename }}</div>
-        <file-detail v-if="props.mode === 'list'" :file="file" />
+        <file-detail
+            v-if="props.mode === 'list'"
+            :file="file"
+            :handleRename="handleRename"
+            :handleTrash="handleTrash"
+            :handlePermissions="handlePermissions"
+        />
+
+        <file-context-menu
+            ref="subMenu"
+            :handleRename="handleRename"
+            :handleTrash="handleTrash"
+            :handlePermissions="handlePermissions"
+        />
     </div>
 </template>
 <style scoped>
@@ -26,9 +43,10 @@
 }
 </style>
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import FileIcon from "./FileIcon.vue";
 import FileDetail from "./FileDetail.vue";
+import FileContextMenu from "./FileContextMenu.vue";
 const props = defineProps({
     file: {
         type: Object,
@@ -38,8 +56,43 @@ const props = defineProps({
         type: String,
         default: "desktop",
     },
+    handleRename: {
+        type: Function,
+    },
+    handlePermissions: {
+        type: Function,
+    },
+    handleTrash: {
+        type: Function,
+    },
 });
 
+const handleRename = () => {
+    props.handleRename(props.file);
+    subMenu.value.blur();
+};
+const handlePermissions = () => {
+    props.handlePermissions(props.file);
+    subMenu.value.blur();
+};
+
+const handleTrash = () => {
+    props.handleTrash(props.file);
+    subMenu.value.blur();
+};
+
+const subMenu = ref(null);
+
+const handleClick = (event) => {
+    if (props.mode !== "desktop") {
+        return;
+    }
+    if (event.which == 3) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    subMenu.value.focus();
+};
 const iconSize = computed({
     get() {
         return props.mode === "desktop" ? "3x" : "2x";

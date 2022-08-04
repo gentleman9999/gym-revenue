@@ -1,5 +1,8 @@
 <template>
-    <div class="file-icon-wrapper">
+    <div
+        class="file-icon-wrapper"
+        v-if="!['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(extension)"
+    >
         <font-awesome-icon
             icon="file"
             :size="iconSize"
@@ -7,6 +10,15 @@
         />
         <span v-if="showExtension" class="file-ext">{{ extension }}</span>
     </div>
+    <img
+        :src="fileUrl"
+        class="object-cover rounded-sm"
+        :class="{
+            'w-6 h-8': iconSize == '2x',
+            'w-9 h-12': iconSize == '3x',
+        }"
+        v-else
+    />
 </template>
 <style scoped>
 .file-icon-wrapper {
@@ -28,6 +40,9 @@ const props = defineProps({
         type: String,
     },
     extension: {
+        type: String,
+    },
+    fileUrl: {
         type: String,
     },
     showExtension: {
