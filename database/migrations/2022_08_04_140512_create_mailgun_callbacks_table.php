@@ -14,6 +14,15 @@ return new class () extends Migration {
     {
         Schema::create('mailgun_callbacks', function (Blueprint $table) {
             $table->id();
+            $table->string('MailgunId');
+            $table->string('event');
+            $table->timestamp('timestamp');
+            $table->string('MessageId');
+            $table->string('recipient')->nullable();
+            $table->string('recipient-domain')->nullable();
+            $table->string('IpAddress')->nullable();
+            $table->string('sender')->nullable();
+            $table->string('SenderIpAddress')->nullable();
             $table->timestamps();
         });
     }

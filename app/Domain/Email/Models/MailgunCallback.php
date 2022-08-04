@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MailgunCallback extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['MailgunId', 'event','timestamp', 'MessageId', 'recipient', 'recipient-domain', 'IpAddress', 'sender', 'SenderIpAddress'] ;
 }
