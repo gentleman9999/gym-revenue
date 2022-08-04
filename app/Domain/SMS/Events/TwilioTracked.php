@@ -2,7 +2,7 @@
 
 namespace App\Domain\SMS\Events;
 
-use App\Models\TwilioCallback;
+use App\Domain\SMS\Models\TwilioCallback;
 use App\StorableEvents\EntityCreated;
 
 class TwilioTracked extends EntityCreated

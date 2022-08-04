@@ -36,4 +36,9 @@ Route::middleware('twilio')->prefix('twilio')->group(function () {
     Route::post('/statusCallBack', \App\Domain\SMS\Actions\TwilioStatusCallback::class);
 });
 
+Route::prefix('mailgun')->group(function () {
+    Route::post('/', \App\Domain\Email\Actions\MailgunStatusCallback::class);
+});
+
+
 Route::post('/plans', \App\Actions\Clients\GetPlans::class);

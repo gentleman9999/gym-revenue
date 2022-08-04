@@ -3,7 +3,7 @@
 namespace App\Domain\SMS;
 
 use App\Domain\SMS\Events\TwilioTracked;
-use App\Models\TwilioCallback;
+use App\Domain\SMS\Models\TwilioCallback;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class SmsProjector extends Projector
