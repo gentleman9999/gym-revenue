@@ -10,7 +10,7 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class RoleProjector extends Projector
 {
-    public function onRoleCreated(RoleCreated $event)
+    public function onRoleCreated(RoleCreated $event): void
     {
         $role = new Role();
         //get only the keys we care about (the ones marked as fillable)
@@ -25,7 +25,7 @@ class RoleProjector extends Projector
         }
     }
 
-    public function onRoleUpdated(RoleUpdated $event)
+    public function onRoleUpdated(RoleUpdated $event): void
     {
         $role = Bouncer::role()->findOrFail($event->aggregateRootUuid());
         Bouncer::sync($role)->abilities([]);
@@ -39,7 +39,7 @@ class RoleProjector extends Projector
         Role::findOrFail($event->aggregateRootUuid())->updateOrFail($data);
     }
 
-    public function onRoleDeleted(RoleDeleted $event)
+    public function onRoleDeleted(RoleDeleted $event): void
     {
         Role::findOrFail($event->aggregateRootUuid())->deleteOrFail();
     }

@@ -8,9 +8,30 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.name"
-                    autofocus
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
+            </div>
+            <div class="col-span-6">
+                <jet-label for="departments" value="Department" />
+                <multiselect
+                    v-model="form.departments"
+                    class="py-2"
+                    id="departments"
+                    mode="tags"
+                    :close-on-select="false"
+                    :create-option="true"
+                    :options="
+                        departments.map((department) => ({
+                            label: department.name,
+                            value: department.id,
+                        }))
+                    "
+                    :classes="getDefaultMultiselectTWClasses()"
+                />
+                <jet-input-error
+                    :message="form.errors.departments"
+                    class="mt-2"
+                />
             </div>
         </template>
 
@@ -32,13 +53,13 @@
                 :disabled="form.processing"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                {{ operation }}
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
@@ -46,57 +67,49 @@ import JetLabel from "@/Jetstream/Label.vue";
 import { useGymRevForm } from "@/utils";
 import { useModal } from "@/Components/InertiaModal";
 import { Inertia } from "@inertiajs/inertia";
+import Multiselect from "@vueform/multiselect";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
+const props = defineProps({
+    clientId: {
+        type: String,
+        required: true,
     },
-    props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
-        position: {
-            type: Object,
-        },
+    position: {
+        type: Object,
     },
-    setup(props) {
-        let position = props.position;
-        let operation = "Update";
-        if (!position) {
-            position = {
-                name: "",
-                id: null,
-                client_id: props.clientId,
-            };
-            operation = "Create";
-        }
-
-        const form = useGymRevForm(position);
-
-        let handleSubmit = () =>
-            form.dirty().put(route("positions.update", position.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("positions.store"));
-        }
-
-        const modal = useModal();
-        const handleCancel = () => {
-            if (modal?.value?.close) {
-                modal.value.close();
-                return;
-            }
-            Inertia.visit(route("positions"));
-        };
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            handleCancel,
-        };
+    departments: {
+        type: Array,
     },
+});
+let position = props.position;
+let operation = "Update";
+if (!position) {
+    position = {
+        name: "",
+        id: null,
+        client_id: props.clientId,
+        departments: [],
+    };
+    operation = "Create";
+}
+
+const form = useGymRevForm(position);
+
+let handleSubmit = () => {
+    if (operation === "Create") {
+        form.post(route("positions.store"));
+    } else {
+        form.put(route("positions.update", position.id));
+    }
+};
+
+const modal = useModal();
+const handleCancel = () => {
+    if (modal?.value?.close) {
+        modal.value.close();
+        return;
+    }
+    Inertia.visit(route("positions"));
 };
 </script>

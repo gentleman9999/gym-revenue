@@ -6,10 +6,10 @@ use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\ClientActivity;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Http\Controllers\Controller;
-use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\SmsTemplates;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -41,23 +41,23 @@ class MassCommunicationsController extends Controller
         ];
 
         if (! is_null($client_id)) {
-            $results['total_audience'] = Lead::whereClientId($client_id)->count();
+            $results['total_audience'] = Lead::count();
             $results['audience_breakdown'] = [
-                'all' => Lead::whereClientId($client_id)->count(),
-                'prospects' => Lead::whereClientId($client_id)->count(),
+                'all' => Lead::count(),
+                'prospects' => Lead::count(),
                 'conversions' => 0,
             ];
             $results['sms_templates'] = [
-                'created' => SmsTemplates::whereClientId($client_id)->count(),
-                'active' => SmsTemplates::whereClientId($client_id)->whereActive(1)->count(),
+                'created' => SmsTemplate::count(),
+                'active' => SmsTemplate::whereActive(1)->count(),
             ];
             $results['scheduled_campaigns'] = [
                 'created' => ScheduledCampaign::count(),
                 'active' => ScheduledCampaign::where('status', '!=', 'draft')->count(),
             ];
             $results['email_templates'] = [
-                'created' => EmailTemplates::whereClientId($client_id)->count(),
-                'active' => EmailTemplates::whereClientId($client_id)->whereActive(1)->count(),
+                'created' => EmailTemplate::count(),
+                'active' => EmailTemplate::whereActive(1)->count(),
             ];
             $results['drip_campaigns'] = [
                 'created' => DripCampaign::count(),

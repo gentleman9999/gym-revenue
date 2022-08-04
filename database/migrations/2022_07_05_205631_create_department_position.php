@@ -14,8 +14,8 @@ return new class () extends Migration {
     {
         Schema::create('department_position', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('department_id')->unique()->index();
-            $table->foreignUuid('position_id')->unique()->index();
+            $table->foreignUuid('department_id')->index();
+            $table->foreignUuid('position_id')->index();
             $table->timestamps();
         });
     }

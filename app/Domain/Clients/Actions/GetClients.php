@@ -2,8 +2,9 @@
 
 namespace App\Domain\Clients\Actions;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
+use Illuminate\Database\Eloquent\Collection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -11,7 +12,7 @@ class GetClients
 {
     use AsAction;
 
-    public function handle()
+    public function handle(): Collection
     {
         return Client::orderBy('name', 'asc')->get(['name', 'id']);
     }

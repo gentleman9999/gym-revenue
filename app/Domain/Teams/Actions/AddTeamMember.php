@@ -6,13 +6,11 @@ use function __;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use App\Domain\Users\Models\User;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
-use Laravel\Jetstream\Events\TeamMemberAdded;
-use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -28,7 +26,7 @@ class AddTeamMember implements AddsTeamMembers
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return array_filter([
             'email' => ['required', 'email'],
@@ -53,6 +51,11 @@ class AddTeamMember implements AddsTeamMembers
         $team->refresh();
 
         return $user->refresh();
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

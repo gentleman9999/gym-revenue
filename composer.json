@@ -26,6 +26,7 @@
         "mailgun/mailgun-php": "^3.5",
         "predis/predis": "^1.1",
         "prologue/alerts": "^1.0.0",
+        "protonemedia/laravel-cross-eloquent-search": "^3.0",
         "pusher/pusher-php-server": "^7.0",
         "silber/bouncer": "^v1.0.0",
         "spatie/browsershot": "^3.54",

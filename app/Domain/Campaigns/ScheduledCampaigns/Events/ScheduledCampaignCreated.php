@@ -7,7 +7,7 @@ use App\StorableEvents\EntityCreated;
 
 class ScheduledCampaignCreated extends EntityCreated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return ScheduledCampaign::class;
     }

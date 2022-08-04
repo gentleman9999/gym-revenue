@@ -2,12 +2,12 @@
 
 namespace App\Domain\Clients\Events;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\StorableEvents\EntityRestored;
 
 class ClientRestored extends EntityRestored
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Client::class;
     }

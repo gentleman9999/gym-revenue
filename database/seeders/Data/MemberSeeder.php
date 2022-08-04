@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Data;
 
-use App\Actions\Endusers\Members\CreateMember;
-use App\Domain\Clients\Models\Client;
-use App\Models\Endusers\Member;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Members\Actions\CreateMember;
+use App\Domain\EndUsers\Members\Projections\Member;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -40,7 +40,8 @@ class MemberSeeder extends Seeder
                         VarDumper::dump('Generating Members for '.$client->name);
                         foreach ($members as $member) {
                             $member_data = $member->toArray();
-                            $member_data['location_id'] = $location->gymrevenue_id;
+                            $member_data['gr_location_id'] = $location->gymrevenue_id;
+                            $member_data['client_id'] = $client->id;
                             CreateMember::run($member_data);
                             //UpsertMemberApi::run($member_data);
                         }

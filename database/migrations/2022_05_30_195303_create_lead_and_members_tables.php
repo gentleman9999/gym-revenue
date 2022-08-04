@@ -17,11 +17,9 @@ class CreateLeadAndMembersTables extends Migration
             $this->getSharedFields($table);
             $table->uuid('lead_type_id');
             $table->uuid('lead_source_id');
-            $table->string('opportunity')->nullable();
-            $table->integer('owner_user_id')->nullable();
+            $table->uuid('lead_status_id')->nullable();
             $table->timestamp('converted_at')->nullable()->default(null);
             $table->uuid('member_id')->nullable()->default(null);
-            $table->string('ip_address')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -47,14 +45,16 @@ class CreateLeadAndMembersTables extends Migration
         $table->string('gender');
         $table->datetime('date_of_birth');
         $table->string('agreement_number');
+        $table->string('opportunity')->nullable();
+        $table->integer('owner_user_id')->nullable();
         $table->integer('membership_type_id')->nullable();
         $table->longText('profile_picture')->nullable();
         $table->string('external_id')->nullable();
-        $table->boolean('unsubscribed_comms')->default(false);
         $table->jsonb('misc')->nullable();
         $table->unique(['client_id', 'email']);
         $table->boolean('unsubscribed_email')->default(false);
         $table->boolean('unsubscribed_sms')->default(false);
+        $table->string('ip_address')->nullable();
     }
 
     /**

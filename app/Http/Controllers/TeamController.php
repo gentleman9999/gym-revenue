@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Location;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -25,7 +25,7 @@ class TeamController extends Controller
         $users = User::with(['teams', 'home_location'])->get();
 
         $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
-        $locations = Location::whereClientId($client_id)->get();
+        $locations = Location::all();
 
 
         return Inertia::render('Teams/List', [
@@ -42,7 +42,7 @@ class TeamController extends Controller
 //        Gate::authorize('create', Jetstream::newTeamModel());
         return Inertia::render('Teams/Create', [
             'availableRoles' => array_values(Jetstream::$roles),
-            'availableLocations' => Location::whereClientId($request->user()->client_id)->get(),
+            'availableLocations' => Location::all(),
             'availablePermissions' => Jetstream::$permissions,
             'defaultPermissions' => Jetstream::$defaultPermissions,
         ]);
@@ -78,7 +78,7 @@ class TeamController extends Controller
                 //if cape and bay user, add all the non client associated capeandbay users
                 $availableUsers = $availableUsers->merge(User::whereClientId(null)->get());
             }
-            $availableLocations = $team->home_team ? [] : Location::whereClientId($client_id)->get();
+            $availableLocations = $team->home_team ? [] : Location::all();
         } elseif ($current_user->is_cape_and_bay_user) {
             //look for users that aren't client users
         }
@@ -121,7 +121,7 @@ class TeamController extends Controller
 
         if (count($non_admin_users) > 0) {
             $first_user = User::find($non_admin_users[0]->user_id);
-            $data['clubs'] = Location::whereClientId($first_user->client->id)->get();
+            $data['clubs'] = Location::all();
             $data['client'] = Client::find($first_user->client->id);
         }
 

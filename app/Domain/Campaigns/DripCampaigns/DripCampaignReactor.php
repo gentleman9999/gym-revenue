@@ -32,7 +32,7 @@ class DripCampaignReactor extends Reactor
      * @param DripCampaignCreated|DripCampaignUpdated $event
      * @return void
      */
-    protected function maybePublishOrUnpublish(DripCampaign $dripCampaign, DripCampaignCreated|DripCampaignUpdated $event)
+    protected function maybePublishOrUnpublish(DripCampaign $dripCampaign, DripCampaignCreated|DripCampaignUpdated $event): void
     {
         if (! array_key_exists('is_published', $event->payload)) {
             //is_published not even provided in the input, don't do anything

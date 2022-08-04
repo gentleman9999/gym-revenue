@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Clients;
 
-use App\Actions\Clients\Locations\CreateLocation;
-use App\Actions\Clients\Locations\ImportLocations;
-use App\Domain\Clients\Models\Client;
-use App\Models\Clients\Location;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Actions\CreateLocation;
+use App\Domain\Locations\Actions\ImportLocations;
+use App\Domain\Locations\Projections\Location;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
@@ -37,8 +37,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
-                'location_no' => 'TR22',
-                //'gymrevenue_id' => 'FT13'
+                'location_no' => 'FT13',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -46,8 +45,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abernathy',
                 'zip' => '79311',
-                'location_no' => 'TR32',
-                //'gymrevenue_id' => 'FT14'
+                'location_no' => 'FT14',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -55,8 +53,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abram',
                 'zip' => '78572',
-                'location_no' => 'TR33',
-                //'gymrevenue_id' => 'FT15'
+                'location_no' => 'FT15',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -64,8 +61,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
-                'location_no' => 'TR34',
-                //'gymrevenue_id' => 'FT16'
+                'location_no' => 'FT16',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -73,8 +69,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abernathy',
                 'zip' => '79311',
-                'location_no' => 'TR55',
-                //'gymrevenue_id' => 'FT17'
+                'location_no' => 'FT17',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -82,8 +77,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
-                'location_no' => 'TR36',
-                //'gymrevenue_id' => 'FT18'
+                'location_no' => 'FT18',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -91,8 +85,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
-                'location_no' => 'TR32',
-                //'gymrevenue_id' => 'FT19'
+                'location_no' => 'FT19',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -109,8 +102,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TX',
                 'city' => 'Abbott',
                 'zip' => '76621',
-                'location_no' => 'TR65',
-                //'gymrevenue_id' => 'FT21'
+                'location_no' => 'FT21',
             ],
             [
                 'client' => 'FitnessTruth',
@@ -118,8 +110,7 @@ class LocationSeeder extends Seeder
                 'state' => 'TN',
                 'city' => 'Adams',
                 'zip' => '37010',
-                'location_no' => 'TR70',
-                //'gymrevenue_id' => 'FT22'
+                'location_no' => 'FT22',
             ],
             // The Z
             [
@@ -368,7 +359,7 @@ class LocationSeeder extends Seeder
         ];
 
         foreach ($locations as $idx => $location) {
-            $client = \App\Domain\Clients\Models\Client::whereName($location['client'])->first();
+            $client = Client::whereName($location['client'])->first();
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
@@ -380,6 +371,7 @@ class LocationSeeder extends Seeder
                 ->count(1)
                 ->make()[0];
             $finalData = array_merge($temp_data->toArray(), $location);
+            $finalData['shouldCreateTeam'] = true;
 
 //            if (is_null($loc_record)) {
             VarDumper::dump("Adding {$location['name']}");

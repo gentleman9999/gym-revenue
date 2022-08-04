@@ -2,23 +2,28 @@
 
 namespace App\Domain\Users\Models;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
-use App\Models\Clients\Location;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Silber\Bouncer\Database\Role;
 
 class User extends Authenticatable
 {
@@ -83,7 +88,7 @@ class User extends Authenticatable
      * @param  mixed  $team
      * @return bool
      */
-    public function belongsToTeam($team)
+    public function belongsToTeam($team): bool
     {
         if (is_null($team)) {
             return false;
@@ -97,24 +102,24 @@ class User extends Authenticatable
         });
     }
 
-    public function allLocations()
+    public function allLocations(): Collection
     {
-        return Location::whereClientId($this->client_id)->get();
+        return Location::get();
     }
 
-    public function switchLocation($location)
+    public function switchLocation($location): bool
     {
         $this->current_location_id = $location->id;
 
         return $this->save();
     }
 
-    public function client()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function isClientUser()
+    public function isClientUser(): bool
     {
         return $this->client_id !== null;
     }
@@ -123,7 +128,7 @@ class User extends Authenticatable
      * If user is an AccountOwner of the currentClient
      * @return bool
      */
-    public function isAccountOwner()
+    public function isAccountOwner(): bool
     {
         return $this->inSecurityGroup(SecurityGroupEnum::ACCOUNT_OWNER);
     }
@@ -132,37 +137,37 @@ class User extends Authenticatable
      * If user is an AccountOwner of the currentClient
      * @return bool
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->inSecurityGroup(SecurityGroupEnum::ADMIN);
     }
 
-    public function details()
+    public function details(): HasMany
     {
         return $this->hasMany('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
     }
 
-    public function detail()
+    public function detail(): HasOne
     {
         return $this->hasOne('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
     }
 
-    public function files()
+    public function files(): HasMany
     {
         return $this->hasMany(File::class, 'user_id', 'id');
     }
 
-    public function contact_preference()
+    public function contact_preference(): HasOne
     {
-        return $this->detail()->where('name', '=', 'contact_preference');
+        return $this->detail()->where('field', '=', 'contact_preference');
     }
 
-    public function notes()
+    public function notes(): HasMany
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
     }
 
-    public function teams()
+    public function teams(): BelongsToMany
     {
         return $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
 
@@ -174,17 +179,17 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class, 'default_team_id', 'id');
     }
 
-    public function api_token()
+    public function api_token(): HasOne
     {
-        return $this->detail()->where('name', '=', 'api-token');
+        return $this->detail()->where('field', '=', 'api-token');
     }
 
-    public function column_config()
+    public function column_config(): HasMany
     {
-        return $this->details()->where('name', '=', 'column-config');
+        return $this->details()->where('field', '=', 'column-config');
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
@@ -220,12 +225,12 @@ class User extends Authenticatable
         });
     }
 
-    public function role()
+    public function role(): ?Role
     {
         return $this->roles[0] ?? null;
     }
 
-    public function getRole()
+    public function getRole(): Role | string | null
     {
         return $this->getRoles()[0] ?? null;
 //        if(!$roles || !count($roles)){
@@ -234,7 +239,7 @@ class User extends Authenticatable
 //        return $roles[0];
     }
 
-    public function securityGroup()
+    public function securityGroup(): ?SecurityGroupEnum
     {
         $role = $this->role();
         if (! $role) {
@@ -244,22 +249,22 @@ class User extends Authenticatable
         return SecurityGroupEnum::from($role->group);
     }
 
-    public function inSecurityGroup(SecurityGroupEnum ...$groups)
+    public function inSecurityGroup(SecurityGroupEnum ...$groups): bool
     {
         return in_array($this->securityGroup(), $groups);
     }
 
-    public function isAtLeastSecurityGroup(SecurityGroupEnum $group)
+    public function isAtLeastSecurityGroup(SecurityGroupEnum $group): bool
     {
         return $this->securityGroup()->value <= $group->value;
     }
 
-    public function notifications()
+    public function notifications(): HasMany
     {
         return $this->hasMany('notifications');
     }
 
-    public function home_location()
+    public function home_location(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'home_location_id', 'gymrevenue_id');
     }
@@ -274,12 +279,12 @@ class User extends Authenticatable
         return $this->manager !== null && $this->manager !== '';
     }
 
-    public function departments()
+    public function departments(): BelongsToMany
     {
         return $this->belongsToMany(\App\Domain\Departments\Department::class, 'user_department', 'user_id', 'department_id');
     }
 
-    public function positions()
+    public function positions(): BelongsToMany
     {
         return $this->belongsToMany(Position::class, 'user_position', 'user_id', 'position_id');
     }
@@ -293,7 +298,7 @@ class User extends Authenticatable
      * @return \Illuminate\Support\Collection
 
      */
-    public function allTeams()
+    public function allTeams(): Collection
     {
         return $this->teams->sortBy('name');
     }

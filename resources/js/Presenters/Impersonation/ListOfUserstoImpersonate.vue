@@ -4,10 +4,17 @@
     </div>
     <div :hidden="loading">
         <h1>Impersonation</h1>
-        <clients-dropdown v-model="selected.client" />
+        <clients-dropdown
+            v-model="selected.client"
+            v-if="page.props.value.user.is_gr_admin"
+        />
         <client-teams-dropdown
             v-model="selected.team"
             :client-id="selected.client"
+            v-if="
+                page.props.value.user.is_gr_admin ||
+                page.props.value.user.all_teams?.length
+            "
         />
         <div v-if="users?.length > 0" class="pt-4 max-h-60 overflow-y-scroll">
             <table
@@ -36,7 +43,11 @@
         </div>
     </div>
 </template>
-
+<style scoped>
+td {
+    @apply py-2 px-8;
+}
+</style>
 <script setup>
 import { ref, defineEmits, watch, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";

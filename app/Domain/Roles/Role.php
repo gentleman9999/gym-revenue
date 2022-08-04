@@ -2,20 +2,21 @@
 
 namespace App\Domain\Roles;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Departments\Department;
-use App\Domain\Leads\Models\Lead;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\CalendarEvent;
-use App\Models\Clients\Location;
-use App\Models\Comms\EmailTemplates;
-use App\Models\Comms\SmsTemplates;
-use App\Models\Endusers\Member;
 use App\Models\File;
+use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
@@ -31,7 +32,7 @@ class Role extends \Silber\Bouncer\Database\Role
 
     protected $fillable = ['name', 'title', 'group'];
 
-    public static function getEntityFromGroup(string $group)
+    public static function getEntityFromGroup(string $group): ?string
     {
         $entity = null;
         switch ($group) {
@@ -95,12 +96,14 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = Client::class;
 
                 break;
+
             case 'email-templates':
-                $entity = EmailTemplates::class;
+                $entity = EmailTemplate::class;
 
                 break;
+
             case 'sms-templates':
-                $entity = SmsTemplates::class;
+                $entity = SmsTemplate::class;
 
                 break;
 
@@ -108,12 +111,17 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = Note::class;
 
                 break;
+
+            case 'folders':
+                $entity = Folder::class;
+
+                break;
         }
 
         return $entity;
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {

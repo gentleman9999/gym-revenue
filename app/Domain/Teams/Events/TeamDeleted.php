@@ -7,7 +7,7 @@ use App\StorableEvents\EntityDeleted;
 
 class TeamDeleted extends EntityDeleted
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Team::class;
     }

@@ -14,10 +14,9 @@ class TriggerReminder
     public string $commandSignature = 'reminder:trigger {id}';
     public string $commandDescription = 'trigger a specific reminder';
 
-    public function handle($id)
+    public function handle(Reminder $reminder)
     {
-        $reminder = Reminder::with('user')->findOrFail($id);
-        UserAggregate::retrieve($reminder->user->id)->triggerReminder($id)->persist();
+        UserAggregate::retrieve($reminder->user_id)->triggerReminder($reminder->id)->persist();
     }
 
     //command for ez development testing

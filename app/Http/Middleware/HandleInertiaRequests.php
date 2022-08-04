@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Utility\AppState;
 use Closure;
@@ -139,20 +139,11 @@ class HandleInertiaRequests extends Middleware
             'flash' => function () use ($request, $alerts) {
                 return [
                     'selectedLeadDetailIndex' => $request->session()->get('selectedLeadDetailIndex'),
+                    'selectedMemberDetailIndex' => $request->session()->get('selectedMemberDetailIndex'),
                     'alerts' => $alerts,
                 ];
             },
         ], $shared);
-
-
-//        $shared['flash'] = [];
-//        if(!empty($request->session()->get('selectedLeadDetailIndex'))){
-//            dd('works');
-//            $shared['flash']['selectedLeadDetailIndex'] = $request->session()->get('selectedLeadDetailIndex');
-//        }
-////        $shared[ 'flash'] = ['selectedLeadDetailIndex'=>$request->session()->get('selectedLeadDetailIndex')];
-//        $shared['flash']['foo'] = 'bar';
-//        return array_merge(parent::share($request), $shared);
     }
 
     //This code makes redirects worth with inertia modals

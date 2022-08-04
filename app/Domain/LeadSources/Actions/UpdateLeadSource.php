@@ -10,7 +10,7 @@ class UpdateLeadSource
 {
     use AsAction;
 
-    public function handle(string $id, array $data)
+    public function handle(string $id, array $data): LeadSource
     {
         LeadSourceAggregate::retrieve($id)->update($data)->persist();
 

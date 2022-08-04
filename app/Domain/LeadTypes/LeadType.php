@@ -12,7 +12,7 @@ class LeadType extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }

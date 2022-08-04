@@ -15,11 +15,11 @@ class TrashAudience
     public string $commandSignature = 'audience:trash {id}';
     public string $commandDescription = 'Soft deletes the audience';
 
-    public function handle(string $id): Audience
+    public function handle(Audience $audience): Audience
     {
-        AudienceAggregate::retrieve($id)->trash()->persist();
+        AudienceAggregate::retrieve($audience->id)->trash()->persist();
 
-        return Audience::withTrashed()->findOrFail($id);
+        return $audience->refresh();
     }
 
     public function authorize(ActionRequest $request): bool

@@ -7,7 +7,7 @@ use App\StorableEvents\EntityUpdated;
 
 class ReminderUpdated extends EntityUpdated
 {
-    protected function getEntity(): string
+    public function getEntity(): string
     {
         return Reminder::class;
     }

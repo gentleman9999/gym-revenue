@@ -66,6 +66,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useBreakpointTailwindCSS } from "vue-composable";
 import {
     BarsIcon,
+    SearchIcon,
     MassComIcon,
     UserIcon,
     TeamIcon,
@@ -90,6 +91,7 @@ export default defineComponent({
         JetNavLink,
         JetBarResponsiveLinks,
         BarsIcon,
+        SearchIcon,
         MassComIcon,
         UserIcon,
         TeamIcon,
@@ -122,6 +124,15 @@ export default defineComponent({
                     permission:
                         isClientUser &&
                         (client_services?.includes("MASS_COMMS") || isAdmin),
+                },
+                {
+                    key: "nav-search",
+                    icon: SearchIcon,
+                    route: "searches",
+                    label: "Global Search",
+                    permission:
+                        isClientUser &&
+                        (user.abilities?.includes("searches.read") || isAdmin),
                 },
                 {
                     key: "nav-employee",

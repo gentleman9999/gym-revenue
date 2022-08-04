@@ -2,29 +2,29 @@
 
 namespace App\Domain\Teams\Models;
 
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\GymRevDetailProjection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TeamDetail extends Model
+class TeamDetail extends GymRevDetailProjection
 {
     use SoftDeletes;
-    use Uuid;
-
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-
-    protected $fillable = ['team_id', 'name', 'value', 'misc', 'active'];
 
     protected $casts = [
         'misc' => 'array',
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
-        return $this->belongsTo('App\Domain\Teams\Models\Team', 'team_id', 'id');
+        return $this->parentProjection;
+    }
+
+    public static function getRelatedModel()
+    {
+        return new Team();
+    }
+
+    public static function fk(): string
+    {
+        return "team_id";
     }
 }

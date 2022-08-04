@@ -26,7 +26,7 @@ class StopImpersonatingUser
         // ...
     }
 
-    public function handle()
+    public function handle(): bool
     {
         $results = false;
 
@@ -83,7 +83,7 @@ class StopImpersonatingUser
         return response($results, $code);
     }
 
-    public function htmlResponse($result)
+    public function htmlResponse($result): \Illuminate\Http\RedirectResponse
     {
         if ($result) {
             Alert::info('Welcome back to the real world!')->flash();

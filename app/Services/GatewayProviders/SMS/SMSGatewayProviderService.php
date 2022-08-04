@@ -2,7 +2,7 @@
 
 namespace App\Services\GatewayProviders\SMS;
 
-use App\Models\Comms\SmsTemplates;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GatewayProviders\GatewayProviderType;
@@ -13,10 +13,10 @@ use App\Services\GatewayProviders\Profiles\SMS\Twilio;
 class SMSGatewayProviderService extends GatewayProviderService
 {
     protected $provider_type_slug = 'sms';
-    protected SmsTemplates $sms_template;
+    protected SmsTemplate $sms_template;
     protected SMSGatewayProvider $gateway;
 
-    public function __construct(SmsTemplates $sms_template)
+    public function __construct(SmsTemplate $sms_template)
     {
         $this->sms_template = $sms_template;
         $model = GatewayProviderType::where('name', '=', $this->provider_type_slug)->first();

@@ -4,6 +4,7 @@ namespace App\Domain\Teams\Actions;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -14,12 +15,11 @@ class UpdateTeam
 {
     use AsAction;
 
-    public function handle(string $id, array $payload): Team
+    public function handle(Team $team, array $payload): Team
     {
-        TeamAggregate::retrieve($id)->update($payload)->persist();
-        $team = Team::findOrFail($id);
+        TeamAggregate::retrieve($team->id)->update($payload)->persist();
 
-        return $team;
+        return $team->refresh();
     }
 
     /**
@@ -36,6 +36,11 @@ class UpdateTeam
         ];
     }
 
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
@@ -48,7 +53,7 @@ class UpdateTeam
         $data = $request->validated();
 
         return $this->handle(
-            $team->id,
+            $team,
             $data
         );
     }

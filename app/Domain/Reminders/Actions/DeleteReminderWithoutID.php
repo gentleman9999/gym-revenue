@@ -4,6 +4,7 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\UserAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -45,6 +46,12 @@ class DeleteReminderWithoutID
         }
     }
 
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    //TODO: implement real authorization
     public function authorize(ActionRequest $request): bool
     {
         return true;
