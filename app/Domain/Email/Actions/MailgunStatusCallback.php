@@ -14,8 +14,13 @@ class MailgunStatusCallback
     {
         $id = Uuid::new();
         //SmsAggregate::retrieve($id)->twilioTrack($payload)->persist();
-        $test = json_encode($payload);
-        info("testing mailgun callback: ", $payload);
+
+
+        foreach ($payload as $i => $k) {
+            info('Key '. $i);
+            info('Data ', $k);
+        }
+
 
         return $payload;
     }
