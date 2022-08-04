@@ -37,7 +37,7 @@ Route::middleware('twilio')->prefix('twilio')->group(function () {
 });
 
 Route::prefix('mailgun')->group(function () {
-    Route::post('/', \App\Domain\Email\Actions\MailgunStatusCallback::class);
+    Route::post('/statusCallBack', \App\Domain\Email\Actions\MailgunStatusCallback::class);
 });
 
 

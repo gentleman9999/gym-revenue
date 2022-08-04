@@ -3,7 +3,6 @@
 namespace App\Domain\Email\Actions;
 
 use App\Support\Uuid;
-use hollodotme\FastCGI\RequestContents\JsonData;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -11,12 +10,12 @@ class MailgunStatusCallback
 {
     use AsAction;
 
-    public function handle(JsonData $payload)
+    public function handle($payload)
     {
         $id = Uuid::new();
         //SmsAggregate::retrieve($id)->twilioTrack($payload)->persist();
-
-        info("testing mailgun callback: ". json_decode($payload));
+        $test = json_encode($payload);
+        info("testing mailgun callback: ", $payload);
 
         return $payload;
     }
@@ -25,7 +24,7 @@ class MailgunStatusCallback
     {
         info("testing mailgun callback: ");
 
-        return $this->handle($request->json());
+        return $this->handle($request->all());
     }
 
     public function jsonResponse($result)
