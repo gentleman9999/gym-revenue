@@ -30,7 +30,7 @@ class UserActivityProjector extends Projector
 
     public function onUserSetCustomCrudColumns(UserSetCustomCrudColumns $event): void
     {
-        UserDetails::createOrUpdateRecord($event->aggregateRootUuid(), 'column-config',  $event->table, ['misc' => $event->fields]);
+        UserDetails::createOrUpdateRecord($event->aggregateRootUuid(), 'column-config',  $event->table, $event->fields);
     }
 
     public function onAccessTokenGranted(AccessTokenGranted $event): void

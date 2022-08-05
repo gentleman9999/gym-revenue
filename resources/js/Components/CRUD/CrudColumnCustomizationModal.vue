@@ -45,10 +45,6 @@ export default defineComponent({
         DaisyModal,
     },
     props: {
-        table: {
-            type: String,
-            required: true,
-        },
         modelKey: {
             type: String,
             required: true,
@@ -64,8 +60,12 @@ export default defineComponent({
     },
     setup(props, {}) {
         const config = getCrudConfig(props.modelKey);
+        let modelKey = props.modelKey;
+        if (!modelKey.endsWith("s")) {
+            modelKey = `${modelKey}s`;
+        }
         const form = useGymRevForm({
-            table: props.modelKey,
+            table: modelKey,
             columns: [...config.value],
         });
 
@@ -79,12 +79,18 @@ export default defineComponent({
         const fields = getFields(props);
 
         const handleSubmit = () => {
-            // table prop is not dirty so it is not included in the form
-            // returning "the table field is required" in the console
-            // console.log(form)
-            form.dirty().post(route("crud-customize"), { onSuccess: close });
+            form.post(route("crud-customize"), { onSuccess: close });
         };
-        return { fields, customizationModal, open, close, form, handleSubmit };
+
+        return {
+            fields,
+            customizationModal,
+            open,
+            close,
+            form,
+            handleSubmit,
+            modelKey,
+        };
     },
 });
 </script>
