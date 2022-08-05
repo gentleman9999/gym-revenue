@@ -42,13 +42,12 @@ class MailgunBatchSend extends Action
 
         $mg = Mailgun::create(env('MAILGUN_SECRET'));
 
-        $addresses = array_keys($recipients);
-        $mg->messages()->send(env('MAILGUN_DOMAIN'), [
+        $parameters = [
             'from' => env('MAIL_FROM_ADDRESS'),
-            'to' => $addresses,
+            'to' => $recipients,
             'subject' => $subject,
-            'text' => $markup,
-            'recipient-variables' => json_encode($recipients),
-        ]);
+            'html' => $markup,
+        ];
+        $result = $mg->messages()->send('domain', $parameters);
     }
 }

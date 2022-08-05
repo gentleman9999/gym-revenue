@@ -98,7 +98,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('comms.email-templates.update');
         Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('comms.email-templates.trash');
         Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('comms.email-templates.restore');
-        Route::post('/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
+        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('comms.email-templates.test-msg');
     });
 });
 
