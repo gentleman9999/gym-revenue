@@ -70,6 +70,11 @@ class CapeAndBayUserSeeder extends UserSeeder
                 'email' => 'sami@gymrevenue.com',
             ],
             [
+                'first_name' => 'Ron',
+                'last_name' => 'Merryman',
+                'email' => 'ron@gymrevenue.com',
+            ],
+            [
                 'first_name' => 'Tommy',
                 'last_name' => 'Lee',
                 'email' => 'tommy@capeandbay.com',
