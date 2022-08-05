@@ -20,7 +20,7 @@ class SetClientCommsPrefs
 //        dd($payload);
 //        $this->services ?? [];
 //        ClientAggregate::retrieve($payload['client_id'])->setClientServices($payload['services'])->persist();
-        ClientAggregate::retrieve($payload['client_id'])->setCommsPrefs($payload['commPreferences'])->persist();
+        ClientAggregate::retrieve($payload['client_id'])->setCommsPrefs($payload)->persist();
 
 
         return Client::findOrFail($payload['client_id']);
@@ -30,7 +30,8 @@ class SetClientCommsPrefs
     {
         return [
             'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'commPreferences' => ['sometimes', 'array'],
+            'email' => ['sometimes', 'bool'],
+            'sms' => ['sometimes', 'bool'],
         ];
     }
 
