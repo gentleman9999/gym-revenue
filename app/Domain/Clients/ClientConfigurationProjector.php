@@ -32,37 +32,25 @@ class ClientConfigurationProjector extends Projector
         if ($client) {
             $client->writeable();
             $client->client_id = $event->clientId();
-            if (in_array('SMS', $event->commsPreferences)) {
-                $client->sms = true;
-            } else {
-                $client->sms = false;
+            if (array_key_exists('sms', $event->commsPreferences)) {
+                $client->sms = $event->commsPreferences['sms'];
             }
-            if (in_array('EMAIL', $event->commsPreferences)) {
-                $client->email = true;
-            } else {
-                $client->email = false;
+            if (array_key_exists('email', $event->commsPreferences)) {
+                $client->email = $event->commsPreferences['email'];
             }
             $client->writeable()->save();
         } else {
             $client = (new ClientCommunicationPreference())->writeable();
             $client->client_id = $event->aggregateRootUuid();
 
-            if (in_array('SMS', $event->commsPreferences)) {
+            if (array_key_exists('sms', $event->commsPreferences)) {
                 $client->fill([
-                    'sms' => true,
-                ]);
-            } else {
-                $client->fill([
-                    'sms' => false,
+                    'sms' => $event->commsPreferences['sms'],
                 ]);
             }
-            if (in_array('EMAIL', $event->commsPreferences)) {
+            if (array_key_exists('email', $event->commsPreferences)) {
                 $client->fill([
-                    'email' => false,
-                ]);
-            } else {
-                $client->fill([
-                    'email' => false,
+                    'email' => $event->commsPreferences['email'],
                 ]);
             }
             $client->save();
