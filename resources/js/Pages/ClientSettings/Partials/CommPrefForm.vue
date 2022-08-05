@@ -70,7 +70,7 @@ export default defineComponent({
     },
     setup(props) {
         let handleSubmit = () =>
-            form.dirty().post(route("settings.client-services.update"));
+            form.dirty().post(route("settings.client-comms-prefs.update"));
 
         const form = useGymRevForm({
             commPreferences: props.commPreferences.map(

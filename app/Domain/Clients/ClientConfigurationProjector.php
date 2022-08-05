@@ -3,6 +3,7 @@
 namespace App\Domain\Clients;
 
 use App\Domain\Clients\Enums\SocialMediaEnum;
+use App\Domain\Clients\Events\ClientCommsPrefsSet;
 use App\Domain\Clients\Events\ClientGatewaySet;
 use App\Domain\Clients\Events\ClientLogoDeleted;
 use App\Domain\Clients\Events\ClientLogoUploaded;
@@ -21,6 +22,13 @@ class ClientConfigurationProjector extends Projector
     {
         $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
         $client->services = $event->services;
+        $client->save();
+    }
+
+    public function onClientCommsPrefsSet(ClientCommsPrefsSet $event): void
+    {
+        $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
+        $client->commsPreferences = $event->commsPreferences;
         $client->save();
     }
 
