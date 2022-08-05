@@ -14,7 +14,7 @@
                 <input
                     :id="commpref.value"
                     type="checkbox"
-                    v-model="form.commPreferences"
+                    v-model="form.commPreferences[commpref.value.toLowerCase()]"
                     :value="commpref.value"
                 />
                 <jet-label :for="commpref.value" :value="commpref.name" />
@@ -73,9 +73,8 @@ export default defineComponent({
             form.dirty().post(route("settings.client-comms-prefs.update"));
 
         const form = useGymRevForm({
-            commPreferences: props.commPreferences.map(
-                (detail) => detail.value
-            ),
+            email: !!props.commPreferences.email,
+            sms: !!props.commPreferences.sms,
         });
         return { form, handleSubmit };
     },

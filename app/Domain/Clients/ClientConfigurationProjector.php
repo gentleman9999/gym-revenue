@@ -12,6 +12,7 @@ use App\Domain\Clients\Events\ClientSocialMediaSet;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Clients\Projections\Client;
+use App\Models\ClientCommunicationPreference;
 use App\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -27,9 +28,45 @@ class ClientConfigurationProjector extends Projector
 
     public function onClientCommsPrefsSet(ClientCommsPrefsSet $event): void
     {
-        $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
-        $client->commsPreferences = $event->commsPreferences;
-        $client->save();
+        $client = ClientCommunicationPreference::whereClientId($event->aggregateRootUuid())->first();
+        if ($client) {
+            $client->writeable();
+            $client->client_id = $event->clientId();
+            if (in_array('SMS', $event->commsPreferences)) {
+                $client->sms = true;
+            } else {
+                $client->sms = false;
+            }
+            if (in_array('EMAIL', $event->commsPreferences)) {
+                $client->email = true;
+            } else {
+                $client->email = false;
+            }
+            $client->writeable()->save();
+        } else {
+            $client = (new ClientCommunicationPreference())->writeable();
+            $client->client_id = $event->aggregateRootUuid();
+
+            if (in_array('SMS', $event->commsPreferences)) {
+                $client->fill([
+                    'sms' => true,
+                ]);
+            } else {
+                $client->fill([
+                    'sms' => false,
+                ]);
+            }
+            if (in_array('EMAIL', $event->commsPreferences)) {
+                $client->fill([
+                    'email' => false,
+                ]);
+            } else {
+                $client->fill([
+                    'email' => false,
+                ]);
+            }
+            $client->save();
+        }
     }
 
     public function onLogoUploaded(ClientLogoUploaded $event): void
