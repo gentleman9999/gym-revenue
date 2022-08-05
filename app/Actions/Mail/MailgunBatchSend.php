@@ -41,6 +41,7 @@ class MailgunBatchSend extends Action
         info('Mailgun, I choose you! Use BatchSend~~~~~');
 
         $mg = Mailgun::create(env('MAILGUN_SECRET'));
+        $domain = env('MAILGUN_DOMAIN');
 
         $parameters = [
             'from' => env('MAIL_FROM_ADDRESS'),
@@ -48,6 +49,8 @@ class MailgunBatchSend extends Action
             'subject' => $subject,
             'html' => $markup,
         ];
-        $result = $mg->messages()->send('domain', $parameters);
+        $result = $mg->messages()->send($domain, $parameters);
+
+        return $result;
     }
 }
