@@ -7,6 +7,7 @@ use App\Domain\Clients\Enums\SocialMediaEnum;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Projections\Client;
 use App\Enums\ClientServiceEnum;
+use App\Models\ClientCommunicationPreference;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
@@ -29,7 +30,7 @@ class ClientSettingsController extends Controller
 
         $test = [
             ['name' => 'SMS', 'value' => 'SMS'],
-            ['name' => 'EMAIL', 'value' => 'EMAIL'],
+            ['name' => 'EMAIL', 'value' => 'EMAIL', 'enabled'],
         ]; //TODO: make this actually pull available communication preferences
 
 
@@ -37,7 +38,7 @@ class ClientSettingsController extends Controller
             'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
                 return ['value' => $s->value, 'name' => $s->name];
             }),
-            'commPreferences' => [],
+            'commPreferences' => ClientCommunicationPreference::first(),
             'availableCommPreferences' => $test,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],

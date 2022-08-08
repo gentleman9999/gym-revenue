@@ -8,6 +8,7 @@ use App\Domain\Clients\Events\ClientRestored;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
 use App\Domain\Clients\Projections\Client;
+use App\Models\ClientCommunicationPreference;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientCrudProjector extends Projector
@@ -23,8 +24,11 @@ class ClientCrudProjector extends Projector
         $prefix = strtoupper(implode('', $matches[0]));
         $prefix = (strlen($prefix) > 3) ? substr($prefix, 0, 3) : $prefix;
         $client->prefix = $prefix;
+        $client->services = $event->payload['services'];
 
         $client->save();
+
+        (new ClientCommunicationPreference())->writeable()->forceFill(['client_id' => $client->id, 'email' => true, 'sms' => false])->save();
     }
 
     public function onClientUpdated(ClientUpdated $event): void
