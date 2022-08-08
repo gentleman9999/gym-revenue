@@ -49,8 +49,7 @@ class MailgunBatchSend extends Action
             'subject' => $subject,
             'html' => $markup,
         ];
-        $result = $mg->messages()->send($domain, $parameters);
 
-        return $result;
+        return $mg->messages()->send($domain, $parameters);
     }
 }
