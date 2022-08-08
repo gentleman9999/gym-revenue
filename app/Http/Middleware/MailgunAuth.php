@@ -16,15 +16,15 @@ class MailgunAuth
      */
     public function handle(Request $request, Closure $next)
     {
+        $isValid = false;
         foreach ($request->all() as $i => $k) {
             if ($i == "signature") {
                 $token = $k['token'];
                 $timestamp = $k['timestamp'];
                 $signature = $k['signature'];
+                $isValid = $this->verify(env('MAILGUN_SECRET'), $token, $timestamp, $signature);
             }
         }
-
-        $isValid = $this->verify(env('MAILGUN_SIGNING_KEY'), $token, $timestamp, $signature);
 
         if ($isValid) {
             return $next($request);
