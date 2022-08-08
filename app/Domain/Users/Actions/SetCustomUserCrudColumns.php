@@ -4,6 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
+use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,6 +33,11 @@ class SetCustomUserCrudColumns
         UserAggregate::retrieve($user->id)->setCustomCrudColumns($data['table'], $data['columns'])->persist();
 
         return $user->refresh();
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

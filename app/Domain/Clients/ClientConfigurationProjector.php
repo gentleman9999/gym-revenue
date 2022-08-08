@@ -3,6 +3,7 @@
 namespace App\Domain\Clients;
 
 use App\Domain\Clients\Enums\SocialMediaEnum;
+use App\Domain\Clients\Events\ClientCommsPrefsSet;
 use App\Domain\Clients\Events\ClientGatewaySet;
 use App\Domain\Clients\Events\ClientLogoDeleted;
 use App\Domain\Clients\Events\ClientLogoUploaded;
@@ -11,6 +12,7 @@ use App\Domain\Clients\Events\ClientSocialMediaSet;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Clients\Projections\Client;
+use App\Models\ClientCommunicationPreference;
 use App\Models\File;
 use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -22,6 +24,37 @@ class ClientConfigurationProjector extends Projector
         $client = Client::findOrFail($event->aggregateRootUuid())->writeable();
         $client->services = $event->services;
         $client->save();
+    }
+
+    public function onClientCommsPrefsSet(ClientCommsPrefsSet $event): void
+    {
+        $client = ClientCommunicationPreference::whereClientId($event->aggregateRootUuid())->first();
+        if ($client) {
+            $client->writeable();
+            $client->client_id = $event->clientId();
+            if (array_key_exists('sms', $event->commsPreferences)) {
+                $client->sms = $event->commsPreferences['sms'];
+            }
+            if (array_key_exists('email', $event->commsPreferences)) {
+                $client->email = $event->commsPreferences['email'];
+            }
+            $client->writeable()->save();
+        } else {
+            $client = (new ClientCommunicationPreference())->writeable();
+            $client->client_id = $event->aggregateRootUuid();
+
+            if (array_key_exists('sms', $event->commsPreferences)) {
+                $client->fill([
+                    'sms' => $event->commsPreferences['sms'],
+                ]);
+            }
+            if (array_key_exists('email', $event->commsPreferences)) {
+                $client->fill([
+                    'email' => $event->commsPreferences['email'],
+                ]);
+            }
+            $client->save();
+        }
     }
 
     public function onLogoUploaded(ClientLogoUploaded $event): void

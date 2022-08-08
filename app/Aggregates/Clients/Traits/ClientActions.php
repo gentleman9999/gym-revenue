@@ -2,6 +2,7 @@
 
 namespace App\Aggregates\Clients\Traits;
 
+use App\Aggregates\Clients\Traits\Actions\ClientCommsPrefsActions;
 use App\Aggregates\Clients\Traits\Actions\ClientCrudActions;
 use App\Aggregates\Clients\Traits\Actions\ClientImportActions;
 use App\Aggregates\Clients\Traits\Actions\ClientNoteActions;
@@ -17,4 +18,5 @@ trait ClientActions
     use ClientNoteActions;
     use ClientUserActions;
     use ClientImportActions;
+    use ClientCommsPrefsActions;
 }

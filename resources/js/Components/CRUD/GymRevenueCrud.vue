@@ -316,6 +316,7 @@ export default defineComponent({
 
         const actions = getActions(props);
         console.log({ actions });
+        const modelKey = props.modelKey || props.modelName;
         return {
             form,
             topActions,
@@ -325,6 +326,7 @@ export default defineComponent({
             customizationModal,
             openCustomizationModal,
             actions,
+            modelKey,
         };
     },
 });
