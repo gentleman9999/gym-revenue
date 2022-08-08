@@ -341,31 +341,6 @@ class AppStateSeeder extends Seeder
             ],
         ]);
 
-        AppState::firstOrCreate([
-            'name' => 'Deployment Log Record',
-            'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 05-19-2022',
-            'value' => '2022-06-02',
-            'misc' => [
-                'buildno' => '20220602',
-                'version' => '0.19.01',
-                'notes' => [
-                    'Cape & Bay GR Project Upgrade - Added automatic code formatting before all releases.',
-                    'Leads/Members - Communication Opt in/out functionality created. ',
-                    'Leads/Members - Data required by application is now automatically generated for Leads & Members.',
-                    'Users - Data required by application is now automatically generated for Users.',
-                    'Users - CSV Import capabilities for adding users created.',
-                    'Locations - When a new location is created a team is automatically created.',
-                    'Teams - Backend actions converted to proper Event Sourced functionality.',
-                    'API - API Access Token Generation functionality created.',
-                    'API - ACL (Access Control List) created for API Access Tokens',
-                    'API - Ability to read from Leads or Members data functionality created.',
-                    'BUG - All Column sorting has been patched, you can now sort by all columns in any CRUD.',
-                    'BACKEND MAINTENANCE - Moved data columns into more appropriate tables for future storage.',
-                ],
-            ],
-        ]);
-
 
         AppState::firstOrCreate([
             'name' => 'Deployment Log Record',
