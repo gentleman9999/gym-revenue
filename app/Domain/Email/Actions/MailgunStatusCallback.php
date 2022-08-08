@@ -16,8 +16,8 @@ class MailgunStatusCallback
         $id = Uuid::new();
 
         foreach ($payload as $i => $k) {
-            info('Key '. $i);
-            info('Data ', $k);
+            //info('Key '. $i);
+            //info('Data ', $k);
             if ($i == "event-data") {
                 $k['MailgunId'] = $k['id'];
                 $k['timestamp'] = date('Y-m-d H:i:s', $k['timestamp']);
@@ -35,7 +35,7 @@ class MailgunStatusCallback
 
     public function asController(ActionRequest $request)
     {
-        info("testing mailgun callback: ");
+        //info("testing mailgun callback: ");
 
         return $this->handle($request->all());
     }

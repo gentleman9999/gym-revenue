@@ -3,7 +3,8 @@
 namespace App\Http;
 
 use App\Http\Middleware\EnsureTokenIsValid;
-use App\Http\Middleware\Twilio;
+use App\Http\Middleware\MailgunAuth;
+use App\Http\Middleware\TwilioAuth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -70,6 +71,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'client.inject' => \App\Http\Middleware\InjectClientId::class,
         'bearer' => EnsureTokenIsValid::class,
-        'twilio' => Twilio::class,
+        'TwilioAuth' => TwilioAuth::class,
+        'MailgunAuth' => MailgunAuth::class,
     ];
 }

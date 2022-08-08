@@ -32,11 +32,11 @@ Route::middleware('bearer')->prefix('members')->group(function () {
     Route::post('/batchupsert', \App\Domain\EndUsers\Members\Actions\BatchUpsertMemberApi::class);
 });
 
-Route::middleware('twilio')->prefix('twilio')->group(function () {
+Route::middleware('TwilioAuth')->prefix('twilio')->group(function () {
     Route::post('/statusCallBack', \App\Domain\SMS\Actions\TwilioStatusCallback::class);
 });
 
-Route::prefix('mailgun')->group(function () {
+Route::middleware('MailgunAuth')->prefix('mailgun')->group(function () {
     Route::post('/statusCallBack', \App\Domain\Email\Actions\MailgunStatusCallback::class);
 });
 
