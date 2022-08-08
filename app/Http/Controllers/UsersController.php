@@ -222,9 +222,6 @@ class UsersController extends Controller
         $data = $user->toArray();
         $data['role'] = $user->getRole();
 
-        $data['roles'] = Role::all();
-        $data['can_edit_role'] = $requesting_user->can('roles.update', \App\Domain\Roles\Role::class);
-
         $requesting_user_teams = $requesting_user->teams ?? [];
         $data['teams'] = $user_teams->filter(function ($user_team) use ($requesting_user_teams) {
             //only return teams that the current user also has access to
