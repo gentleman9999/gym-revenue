@@ -100,21 +100,14 @@ input {
 
 <script setup>
 import { computed } from "vue";
+import { getAvatarImg } from "@/utils";
 const props = defineProps({
     user: {
         type: Object,
     },
 });
 
-const avatar = computed(
-    () =>
-        "https://ui-avatars.com/api/?name=" +
-        props.user.first_name[0].toUpperCase() +
-        +"+" +
-        props.user.last_name[0].toUpperCase() +
-        "&color=FFFFFF&background=0079FF"
+const avatar = computed(() =>
+    getAvatarImg(props.user.first_name, props.user.last_name)
 );
-
-console.log("USER PREVIEW");
-console.log(props.user);
 </script>
