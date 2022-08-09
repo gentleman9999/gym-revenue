@@ -65,10 +65,22 @@
                 </div>
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3 text-secondary">
+        <div
+            class="flex lg:flex-row flex-col justify-between col-span-6 lg:col-span-6 text-secondary"
+        >
             <label>Club/ Location: {{ data.club_location.name }}</label>
+            <Button size="xs" primary v-if="assign" disabled
+                >Assigning...</Button
+            >
+            <Button
+                size="xs"
+                primary
+                v-else-if="data.lead.owner_user_id"
+                @click="handleContact"
+                >Contact</Button
+            >
+            <Button size="xs" primary v-else @click="handleClaim">Claim</Button>
         </div>
-        <div class="field col-span-6 lg:col-span-6"></div>
     </div>
 </template>
 <style scoped>
@@ -84,10 +96,30 @@ input {
 </style>
 
 <script setup>
+import { ref } from "vue";
 import LeadPreviewItem from "./LeadPreviewItem.vue";
+import Button from "@/Components/Button.vue";
+import { Inertia } from "@inertiajs/inertia";
+
 const props = defineProps({
     data: {
         type: Object,
     },
 });
+
+const assigning = ref(false);
+
+const handleClaim = async () => {
+    assigning.value = true;
+    Inertia.visit(route("data.leads.assign", props.data.lead.id), {
+        method: "put",
+        preserveScroll: true,
+        onFinish: () => {
+            assigning.value = false;
+        },
+    });
+};
+const handleContact = () => {
+    Inertia.visit(route("data.leads.show", props.data.lead.id));
+};
 </script>
