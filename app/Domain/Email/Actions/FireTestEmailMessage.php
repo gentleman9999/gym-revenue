@@ -16,7 +16,7 @@ class FireTestEmailMessage implements CreatesTeams
 
     public function handle(): bool
     {
-        MailgunBatchSend::run(['adam@capeandbay.com', 'blair@capeandbay.com'], 'test', 'test');
+        MailgunBatchSend::run([ 'blair@capeandbay.com'], 'test', 'test');
 
         return true;
     }

@@ -35,8 +35,6 @@ class MailgunStatusCallback
 
     public function asController(ActionRequest $request)
     {
-        //info("testing mailgun callback: ");
-
         return $this->handle($request->all());
     }
 

@@ -14,7 +14,7 @@ return new class () extends Migration {
     {
         Schema::create('mailgun_callbacks', function (Blueprint $table) {
             $table->id();
-            $table->string('MailgunId');
+            $table->string('MailgunId')->nullable();
             $table->string('event');
             $table->timestamp('timestamp');
             $table->string('MessageId');

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Mail;
 
+use App\Domain\Email\Models\MailgunCallback;
+use Carbon\Carbon;
 use Lorisleiva\Actions\Action;
 use Mailgun\Mailgun;
 
@@ -50,6 +52,13 @@ class MailgunBatchSend extends Action
             'html' => $markup,
         ];
 
-        return $mg->messages()->send($domain, $parameters);
+        $result = $mg->messages()->send($domain, $parameters);
+        MailgunCallback::create([
+            'event' => 'sent',
+            'timestamp' => Carbon::now(),
+            'MessageId' => substr($result->getId(), 1, -1),
+        ]);
+
+        return $result;
     }
 }
