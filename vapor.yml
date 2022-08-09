@@ -6,7 +6,7 @@ environments:
         memory: 2048
         cli-memory: 512
         network: gymrevenue-vpc-network
-        database: gr-west
+        database: gymrevenue-west
         cache: gr-cache
         cli-timeout: 900
         storage: gymrevenue-west
