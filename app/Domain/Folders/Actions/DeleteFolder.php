@@ -2,6 +2,7 @@
 
 namespace App\Domain\Folders\Actions;
 
+use App\Domain\Folders\FolderAggregate;
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
