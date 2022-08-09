@@ -36,9 +36,7 @@
             class="field col-span-6 lg:col-span-3"
             label="Lead Owner Email"
             :value="
-                data.lead.lead_owner
-                    ? data.lead.lead_owner.misc.user_id
-                    : 'Not Yet Claimed'
+                data.lead?.owner ? data.lead.owner.email : 'Not Yet Claimed'
             "
         />
         <div class="field col-span-6 lg:col-span-3">
