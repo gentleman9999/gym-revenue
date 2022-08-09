@@ -14,16 +14,16 @@ class FireTestMessage implements CreatesTeams
 {
     use AsAction;
 
-    public function handle(): bool
+    public function handle($user): bool
     {
-        FireTwilioMsg::run(env('TWILIO_TEST_NUMBER'), 'Test Message');
+        FireTwilioMsg::run($user->phone, 'Test Message');
 
         return true;
     }
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle();
+        return $this->handle($request->user());
     }
 
     public function htmlResponse(): RedirectResponse

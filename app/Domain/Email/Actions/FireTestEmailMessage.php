@@ -14,16 +14,16 @@ class FireTestEmailMessage implements CreatesTeams
 {
     use AsAction;
 
-    public function handle(): bool
+    public function handle($user): bool
     {
-        MailgunBatchSend::run([ 'blair@capeandbay.com'], 'test', 'test');
+        MailgunBatchSend::run([$user->email], 'test', 'test');
 
         return true;
     }
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle();
+        return $this->handle($request->user());
     }
 
     public function htmlResponse(): RedirectResponse
