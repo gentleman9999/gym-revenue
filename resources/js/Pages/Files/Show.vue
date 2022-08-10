@@ -11,25 +11,10 @@
             >
                 Upload
             </Button>
-            <div class="space-x-3">
-                <Button
-                    :primary="displayMode === 'desktop'"
-                    :ghost="displayMode !== 'desktop'"
-                    @click="displayMode = 'desktop'"
-                >
-                    <font-awesome-icon
-                        icon="desktop"
-                        class="text-base-content"
-                    />
-                </Button>
-                <Button
-                    :primary="displayMode === 'list'"
-                    :ghost="displayMode !== 'list'"
-                    @click="displayMode = 'list'"
-                >
-                    <font-awesome-icon icon="list" class="text-base-content" />
-                </Button>
-            </div>
+            <file-display-mode
+                :display-mode="displayMode"
+                :handleChange="updateDisplayMode"
+            />
         </div>
         <div class="flex flex-row flex-wrap mt-4">
             <file-item
@@ -84,12 +69,7 @@ import { Inertia } from "@inertiajs/inertia";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileItem from "@/Components/FileItem/index.vue";
 import Button from "@/Components/Button.vue";
-
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faList, faDesktop } from "@fortawesome/pro-solid-svg-icons";
-
-library.add(faList, faDesktop);
+import FileDisplayMode from "./Partials/FileDisplayMode.vue";
 
 const props = defineProps({
     sessions: {
@@ -135,4 +115,8 @@ watchEffect(() => {
 });
 
 const displayMode = ref("desktop");
+
+const updateDisplayMode = (value) => {
+    displayMode.value = value;
+};
 </script>
