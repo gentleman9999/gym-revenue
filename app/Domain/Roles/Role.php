@@ -2,6 +2,7 @@
 
 namespace App\Domain\Roles;
 
+use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Departments\Department;
 use App\Domain\EndUsers\Leads\Projections\Lead;
@@ -14,7 +15,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
-use App\Models\Calendar\CalendarEvent;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Note;
