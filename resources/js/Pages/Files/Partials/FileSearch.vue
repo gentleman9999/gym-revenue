@@ -21,7 +21,5 @@
 <script setup>
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-    route("files")
-);
+const { form, reset, clearFilters, clearSearch } = useSearchFilter("files");
 </script>
