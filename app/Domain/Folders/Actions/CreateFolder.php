@@ -48,7 +48,7 @@ class CreateFolder implements CreatesTeams
     {
         $current_user = $request->user();
 
-        return $current_user->can('teams.create', Folder::class);
+        return $current_user->can('folders.create', Folder::class);
     }
 
     public function asController(ActionRequest $request): Folder
@@ -62,7 +62,8 @@ class CreateFolder implements CreatesTeams
     {
         Alert::success("Folder '{$folder->name}' was created")->flash();
 
-        return Redirect::route('folder.edit', $folder->id);
+        //return Redirect::route('folder.edit', $folder->id);
+        return Redirect::back();
     }
 
     public function create($user, array $input): Folder
