@@ -113,4 +113,6 @@ const displayMode = ref("desktop");
 const updateDisplayMode = (value) => {
     displayMode.value = value;
 };
+console.log("files");
+console.log(props.files);
 </script>
