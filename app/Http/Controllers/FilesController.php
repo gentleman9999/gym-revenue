@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
+use App\Models\Folder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -49,6 +50,7 @@ class FilesController extends Controller
 
         return Inertia::render('Files/Show', [
             'files' => $files,
+            'folders' => Folder::all(),
         ]);
     }
 
