@@ -4,30 +4,22 @@
     </LayoutHeader>
     <div class="files-container">
         <div class="flex flex-row justify-between">
-            <Button
-                primary
-                size="sm"
-                @click="Inertia.visitInModal(route('files.upload'))"
-            >
-                Upload
-            </Button>
+            <file-actions />
             <file-display-mode
                 :display-mode="displayMode"
                 :handleChange="updateDisplayMode"
             />
         </div>
-        <div class="flex flex-row flex-wrap mt-4">
-            <file-item
-                v-for="file in files.data"
-                :file="file"
-                :key="file?.id"
-                :mode="displayMode"
-                :handleRename="handleRename"
-                :handlePermissions="handlePermissions"
-                :handleTrash="handleTrash"
-            />
-        </div>
+        <file-contents
+            :files="files"
+            :displayMode="displayMode"
+            :handleRename="handleRename"
+            :handlePermissions="handlePermissions"
+            :handleTrash="handleTrash"
+        />
     </div>
+
+    <!-- Section for Modals -->
     <daisy-modal
         id="filenameModal"
         ref="filenameModal"
@@ -70,6 +62,8 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 import FileItem from "@/Components/FileItem/index.vue";
 import Button from "@/Components/Button.vue";
 import FileDisplayMode from "./Partials/FileDisplayMode.vue";
+import FileActions from "./Partials/FileActions.vue";
+import FileContents from "./Partials/FileContents.vue";
 
 const props = defineProps({
     sessions: {
