@@ -10,6 +10,7 @@
                 :handleChange="updateDisplayMode"
             />
         </div>
+        <file-search />
         <file-contents
             :files="files"
             :displayMode="displayMode"
@@ -64,7 +65,7 @@ import Button from "@/Components/Button.vue";
 import FileDisplayMode from "./Partials/FileDisplayMode.vue";
 import FileActions from "./Partials/FileActions.vue";
 import FileContents from "./Partials/FileContents.vue";
-
+import FileSearch from "./Partials/FileSearch.vue";
 const props = defineProps({
     sessions: {
         type: Array,
