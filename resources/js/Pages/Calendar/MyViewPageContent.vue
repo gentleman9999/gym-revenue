@@ -35,22 +35,6 @@
                 <div
                     class="block py-2 text-xs text-base-content text-opacity-80"
                 >
-                    View User Calendar:
-                </div>
-                <select v-model="form.viewUser" class="mt-1 w-full form-select">
-                    <option :value="null" />
-                    <option
-                        v-for="{ name, id } in client_users"
-                        :value="id"
-                        :key="id"
-                    >
-                        {{ name }}
-                    </option>
-                </select>
-
-                <div
-                    class="block py-2 text-xs text-base-content text-opacity-80"
-                >
                     Type:
                 </div>
                 <select
