@@ -5,6 +5,7 @@ namespace App\Models\Calendar;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Users\Models\User;
 use App\Models\File;
+use Carbon\Carbon;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,8 +79,8 @@ class CalendarEvent extends Model
             $end = $filters['end'] ?? Carbon::parse($filters['start'], 'yyyy-mm-dd')->addDays(1);//add one day
             $query->whereBetween('start', $this->fixDate([$filters['start'],$end]));
         })->when($filters['viewUser'] ?? null, function ($query) use ($filters) {
-            $query->where(function ($query) use ($filters) {
-                $query->where('attendees', 'like', '%"id": ' . $filters['viewUser'] . ',%');
+            $query->whereHas('attendees', function ($query) use ($filters) {
+                $query->where('entity_data', 'like', '%"id": ' . $filters['viewUser'] . ',%');
             });
         });
     }
