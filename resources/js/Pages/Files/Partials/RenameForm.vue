@@ -2,21 +2,21 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6">
-                <jet-label for="filename" value="Current Filename" />
+                <jet-label for="itemname" value="Current Filename" />
                 <a
-                    :href="file.url"
-                    :download="file.filename"
+                    :href="item.url"
+                    :download="item.filename"
                     target="_blank"
                     class="link link-hover"
-                    >{{ file.filename }}</a
+                    >{{ item.filename }}</a
                 >
-                <jet-input-error :message="form.errors.file" class="mt-2" />
+                <jet-input-error :message="form.errors.item" class="mt-2" />
             </div>
 
             <div class="col-span-6">
-                <jet-label for="filename" value="New Filename" />
+                <jet-label for="itemname" value="New Filename" />
                 <input
-                    id="filename"
+                    id="itemname"
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.filename"
@@ -61,16 +61,16 @@ export default {
         JetInputError,
         JetLabel,
     },
-    props: ["clientId", "file"],
+    props: ["clientId", "item"],
     emits: ["success"],
     setup(props, { emit }) {
         let urlPrev = usePage().props.value.urlPrev;
-        let file = props.file;
+        let item = props.item;
 
-        const form = useGymRevForm(file);
+        const form = useGymRevForm(item);
 
         let handleSubmit = async () => {
-            await form.dirty().put(route("files.rename", file.id));
+            await form.dirty().put(route("files.rename", item.id));
             emit("success");
         };
 

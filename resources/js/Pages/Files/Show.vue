@@ -23,14 +23,14 @@
 
     <!-- Section for Modals -->
     <daisy-modal
-        id="filenameModal"
-        ref="filenameModal"
+        id="renameModal"
+        ref="renameModal"
         @close="selectedItem = null"
     >
-        <file-form
-            :file="selectedItem"
+        <rename-form
+            :item="selectedItem"
             v-if="selectedItem"
-            @success="filenameModal.close"
+            @success="renameModal.close"
         />
     </daisy-modal>
 
@@ -57,7 +57,7 @@
 <script setup>
 import { watchEffect, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import FileForm from "./Partials/FileForm.vue";
+import RenameForm from "./Partials/RenameForm.vue";
 import PermissionsForm from "./Partials/PermissionsForm.vue";
 import { Inertia } from "@inertiajs/inertia";
 import DaisyModal from "@/Components/DaisyModal.vue";
@@ -104,12 +104,12 @@ const handleTrash = (data, type) => {
     }
 };
 
-const filenameModal = ref(null);
+const renameModal = ref(null);
 const permissionsModal = ref(null);
 
 watchEffect(() => {
     if (selectedItem.value) {
-        filenameModal.value.open();
+        renameModal.value.open();
     }
     if (selectedItemPermissions.value) {
         permissionsModal.value.open();
