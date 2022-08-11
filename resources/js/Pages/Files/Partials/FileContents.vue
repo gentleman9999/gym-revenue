@@ -6,7 +6,6 @@
             :key="folder?.id"
             :mode="displayMode"
             :handleRename="handleRename"
-            :handlePermissions="handlePermissions"
             :handleTrash="handleTrash"
         />
         <file-item

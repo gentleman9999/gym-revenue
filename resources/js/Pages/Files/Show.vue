@@ -25,11 +25,11 @@
     <daisy-modal
         id="filenameModal"
         ref="filenameModal"
-        @close="selectedFile = null"
+        @close="selectedItem = null"
     >
         <file-form
-            :file="selectedFile"
-            v-if="selectedFile"
+            :file="selectedItem"
+            v-if="selectedItem"
             @success="filenameModal.close"
         />
     </daisy-modal>
@@ -37,12 +37,12 @@
     <daisy-modal
         ref="permissionsModal"
         id="permissionsModal"
-        @close="selectedFilePermissions = null"
+        @close="selectedItemPermissions = null"
     >
         <h1 class="font-bold mb-4">Modify File Permissions</h1>
         <Permissions-Form
-            :file="selectedFilePermissions"
-            v-if="selectedFilePermissions"
+            :file="selectedItemPermissions"
+            v-if="selectedItemPermissions"
             @success="permissionsModal.close"
         />
     </daisy-modal>
@@ -85,27 +85,33 @@ const props = defineProps({
     },
 });
 
-const selectedFile = ref(null);
-const selectedFilePermissions = ref(null);
+const selectedItem = ref(null);
+const selectedItemPermissions = ref(null);
 
-const handleRename = (data) => {
-    selectedFile.value = data;
+const handleRename = (data, type) => {
+    selectedItem.value = data;
 };
+
 const handlePermissions = (data) => {
-    selectedFilePermissions.value = data;
+    selectedItemPermissions.value = data;
 };
 
-const handleTrash = (data) => {
-    Inertia.delete(route("files.trash", data.id));
+const handleTrash = (data, type) => {
+    if (type === "file") {
+        Inertia.delete(route("files.trash", data.id));
+    } else {
+        Inertia.delete(route("folders.delete", data.id));
+    }
 };
+
 const filenameModal = ref(null);
 const permissionsModal = ref(null);
 
 watchEffect(() => {
-    if (selectedFile.value) {
+    if (selectedItem.value) {
         filenameModal.value.open();
     }
-    if (selectedFilePermissions.value) {
+    if (selectedItemPermissions.value) {
         permissionsModal.value.open();
     }
 });

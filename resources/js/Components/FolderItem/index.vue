@@ -68,16 +68,12 @@ const props = defineProps({
 });
 
 const handleRename = () => {
-    props.handleRename(props.folder);
-    subMenu.value.blur();
-};
-const handlePermissions = () => {
-    props.handlePermissions(props.folder);
+    props.handleRename(props.folder, "folder");
     subMenu.value.blur();
 };
 
 const handleTrash = () => {
-    props.handleTrash(props.folder);
+    props.handleTrash(props.folder, "folder");
     subMenu.value.blur();
 };
 

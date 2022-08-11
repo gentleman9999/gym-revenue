@@ -1,12 +1,5 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <template #form>
             <div class="col-span-6">
                 <jet-label for="filename" value="Current Filename" />
@@ -37,17 +30,6 @@
         </template>
 
         <template #actions>
-            <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
-            <!--            <Button-->
-            <!--                type="button"-->
-            <!--                @click="$inertia.visit(route('files'))"-->
-            <!--                :class="{ 'opacity-25': form.processing }"-->
-            <!--                error-->
-            <!--                outline-->
-            <!--                :disabled="form.processing"-->
-            <!--            >-->
-            <!--                Cancel-->
-            <!--            </Button>-->
             <div class="flex-grow" />
             <Button
                 class="btn-secondary"

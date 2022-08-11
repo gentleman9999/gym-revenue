@@ -68,7 +68,7 @@ const props = defineProps({
 });
 
 const handleRename = () => {
-    props.handleRename(props.file);
+    props.handleRename(props.file, "file");
     subMenu.value.blur();
 };
 const handlePermissions = () => {
@@ -77,7 +77,7 @@ const handlePermissions = () => {
 };
 
 const handleTrash = () => {
-    props.handleTrash(props.file);
+    props.handleTrash(props.file, "file");
     subMenu.value.blur();
 };
 
