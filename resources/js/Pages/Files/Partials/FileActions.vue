@@ -31,6 +31,5 @@ const addFolder = () => {
             },
         }
     );
-    // folders.store
 };
 </script>

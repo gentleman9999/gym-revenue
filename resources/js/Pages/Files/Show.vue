@@ -13,6 +13,7 @@
         <file-search />
         <file-contents
             :files="files"
+            :folders="$page.props.folders"
             :displayMode="displayMode"
             :handleRename="handleRename"
             :handlePermissions="handlePermissions"
@@ -114,6 +115,4 @@ const displayMode = ref("desktop");
 const updateDisplayMode = (value) => {
     displayMode.value = value;
 };
-console.log("files");
-console.log(props.files);
 </script>
