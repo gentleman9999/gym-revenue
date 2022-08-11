@@ -4,6 +4,7 @@ namespace App\Aggregates\Clients;
 
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
+use App\StorableEvents\Clients\Files\FileFolderUpdated;
 use App\StorableEvents\Clients\Files\FilePermissionsUpdated;
 use App\StorableEvents\Clients\Files\FileRenamed;
 use App\StorableEvents\Clients\Files\FileRestored;
@@ -26,6 +27,13 @@ class FileAggregate extends AggregateRoot
     public function updatePermissions(string $userId, array $data)
     {
         $this->recordThat(new FilePermissionsUpdated($userId, $data));
+
+        return $this;
+    }
+
+    public function updateFolder(string $userId, array $data)
+    {
+        $this->recordThat(new FileFolderUpdated($userId, $data));
 
         return $this;
     }
