@@ -196,6 +196,12 @@ export default defineComponent({
                 active: false,
             },
             {
+                label: "My Calendar",
+                href: route("calendar.mine"),
+                onClick: null,
+                active: false,
+            },
+            {
                 label: "Event Types",
                 href: route("calendar.event_types"),
                 onClick: null,
@@ -206,6 +212,18 @@ export default defineComponent({
                 href: route("tasks"),
                 onClick: null,
                 active: true,
+            },
+            {
+                label: "Reminders",
+                href: route("reminders"),
+                onClick: null,
+                active: false,
+            },
+            {
+                label: "QuickView",
+                href: route("calendar.quickview"),
+                onClick: null,
+                active: false,
             },
         ];
 
