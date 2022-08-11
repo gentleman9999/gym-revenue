@@ -496,11 +496,11 @@ class AppStateSeeder extends Seeder
         AppState::firstOrCreate([
             'name' => 'Deployment Log Record',
             'slug' => 'deployment-log-record',
-            'desc' => 'This is a record of code deployed on 08-02-2022',
-            'value' => '2022-08-02',
+            'desc' => 'This is a record of code deployed on 08-11-2022',
+            'value' => '2022-08-11',
             'misc' => [
-                'buildno' => '20220802',
-                'version' => '0.23.01',
+                'buildno' => '202208011',
+                'version' => '0.24.01',
                 'notes' => [
                     'Settings - Client Communication Preferences',
                     'Bug - Edit Columns Form Will Not Save If Empty',
