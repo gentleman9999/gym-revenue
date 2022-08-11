@@ -492,5 +492,26 @@ class AppStateSeeder extends Seeder
                 ],
             ],
         ]);
+
+        AppState::firstOrCreate([
+            'name' => 'Deployment Log Record',
+            'slug' => 'deployment-log-record',
+            'desc' => 'This is a record of code deployed on 08-02-2022',
+            'value' => '2022-08-02',
+            'misc' => [
+                'buildno' => '20220802',
+                'version' => '0.23.01',
+                'notes' => [
+                    'Settings - Client Communication Preferences',
+                    'Bug - Edit Columns Form Will Not Save If Empty',
+                    'GR MailGun - make owner developers@capeandbay.com',
+                    'GR Twilio - make owner developers@capeandbay.com',
+                    'Bug - User Update',
+                    'Bug - 404 Error When Creating Api Token',
+                    'Bug - Leads Form Needs Primary Phone Validation',
+
+                ],
+            ],
+        ]);
     }
 }
