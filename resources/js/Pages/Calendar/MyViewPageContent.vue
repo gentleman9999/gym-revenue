@@ -156,7 +156,7 @@ export default defineComponent({
 
     setup(props) {
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            "calendar",
+            "calendar.mine",
             { start: "", end: "" }
         );
         const calendar = ref(null);
@@ -255,13 +255,13 @@ export default defineComponent({
                 label: "Calendar",
                 href: route("calendar"),
                 onClick: null,
-                active: true,
+                active: false,
             },
             {
                 label: "My Calendar",
                 href: route("calendar.mine"),
                 onClick: null,
-                active: false,
+                active: true,
             },
             {
                 label: "Event Types",

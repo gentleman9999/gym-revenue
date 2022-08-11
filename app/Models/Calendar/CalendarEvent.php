@@ -79,8 +79,8 @@ class CalendarEvent extends Model
             $end = $filters['end'] ?? Carbon::parse($filters['start'], 'yyyy-mm-dd')->addDays(1);//add one day
             $query->whereBetween('start', $this->fixDate([$filters['start'],$end]));
         })->when($filters['viewUser'] ?? null, function ($query) use ($filters) {
-            $query->whereHas('attendees', function ($query) use ($filters) {
-                $query->where('entity_data', 'like', '%"id": ' . $filters['viewUser'] . ',%');
+            $query->where(function ($query) use ($filters) {
+                $query->where('owner_id', '=', $filters['viewUser']);
             });
         });
     }

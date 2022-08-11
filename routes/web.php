@@ -187,6 +187,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(funct
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
+    Route::get('/mycalendar', \App\Http\Controllers\CalendarController::class . '@myCalendar')->name('calendar.mine');
     Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');
     Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
     Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
