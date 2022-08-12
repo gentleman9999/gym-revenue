@@ -48,11 +48,11 @@ abstract class GymRevDetailProjection extends GymRevProjection
             $model->forceFill([ static::fk() => $parent_id ]);
             $model->field = $field;
             $model->client_id = ((new static())::getRelatedModel())::findOrFail($parent_id)->client_id;
-            if ($misc) {
-                $model->misc = $misc;
-            }
         }
         $model->value = $value;
+        if ($misc) {
+            $model->misc = $misc;
+        }
         $model->writeable()->save();
     }
 }

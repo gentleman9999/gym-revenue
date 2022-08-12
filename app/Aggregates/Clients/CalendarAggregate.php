@@ -2,22 +2,21 @@
 
 namespace App\Aggregates\Clients;
 
-use App\StorableEvents\Clients\Calendar\CalendarAttendeeAdded;
-use App\StorableEvents\Clients\Calendar\CalendarAttendeeDeleted;
-use App\StorableEvents\Clients\Calendar\CalendarAttendeeInvited;
-use App\StorableEvents\Clients\Calendar\CalendarEventCreated;
-use App\StorableEvents\Clients\Calendar\CalendarEventDeleted;
-use App\StorableEvents\Clients\Calendar\CalendarEventRestored;
-use App\StorableEvents\Clients\Calendar\CalendarEventTrashed;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeCreated;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeDeleted;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeRestored;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeTrashed;
-use App\StorableEvents\Clients\Calendar\CalendarEventTypes\CalendarEventTypeUpdated;
-use App\StorableEvents\Clients\Calendar\CalendarEventUpdated;
-
-use App\StorableEvents\Clients\Calendar\CalendarInviteAccepted;
-use App\StorableEvents\Clients\Calendar\CalendarInviteDeclined;
+use App\Domain\CalendarAttendees\Events\CalendarAttendeeAccepted;
+use App\Domain\CalendarAttendees\Events\CalendarAttendeeAdded;
+use App\Domain\CalendarAttendees\Events\CalendarAttendeeDeclined;
+use App\Domain\CalendarAttendees\Events\CalendarAttendeeDeleted;
+use App\Domain\CalendarAttendees\Events\CalendarAttendeeInvited;
+use App\Domain\CalendarEvents\Events\CalendarEventCreated;
+use App\Domain\CalendarEvents\Events\CalendarEventDeleted;
+use App\Domain\CalendarEvents\Events\CalendarEventRestored;
+use App\Domain\CalendarEvents\Events\CalendarEventTrashed;
+use App\Domain\CalendarEvents\Events\CalendarEventUpdated;
+use App\Domain\CalendarEventTypes\Events\CalendarEventTypeCreated;
+use App\Domain\CalendarEventTypes\Events\CalendarEventTypeDeleted;
+use App\Domain\CalendarEventTypes\Events\CalendarEventTypeRestored;
+use App\Domain\CalendarEventTypes\Events\CalendarEventTypeTrashed;
+use App\Domain\CalendarEventTypes\Events\CalendarEventTypeUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class CalendarAggregate extends AggregateRoot
@@ -115,14 +114,14 @@ class CalendarAggregate extends AggregateRoot
 
     public function acceptCalendarEvent(string $updated_by_user_id, array $payload)
     {
-        $this->recordThat(new CalendarInviteAccepted($this->uuid(), $updated_by_user_id, $payload));
+        $this->recordThat(new CalendarAttendeeAccepted($this->uuid(), $updated_by_user_id, $payload));
 
         return $this;
     }
 
     public function declineCalendarEvent(string $updated_by_user_id, array $payload)
     {
-        $this->recordThat(new CalendarInviteDeclined($this->uuid(), $updated_by_user_id, $payload));
+        $this->recordThat(new CalendarAttendeeDeclined($this->uuid(), $updated_by_user_id, $payload));
 
         return $this;
     }

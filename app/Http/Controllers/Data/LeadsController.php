@@ -548,11 +548,10 @@ class LeadsController extends Controller
             'lead' => $lead->load(
                 [
                     'detailsDesc',
-                'profile_picture',
-                'trialMemberships',
-                'lead_owner',
-                'lead_status',
-                'last_updated',
+                    'trialMemberships',
+                    'owner',
+                    'lead_status',
+                    'last_updated',
                 ]
             ),
             'user_id' => $user->id,

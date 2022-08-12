@@ -55,7 +55,8 @@ export const parseNotificationResponse = (notification) => {
     let timeout = false;
     let text = notification.text;
     if (
-        notification?.entity_type === "App\\Models\\Calendar\\CalendarEvent" &&
+        notification?.entity_type ===
+            "App\\Domain\\CalendarEvents\\CalendarEvent" &&
         notification.entity
     ) {
         const start = new Date(notification.entity?.start);

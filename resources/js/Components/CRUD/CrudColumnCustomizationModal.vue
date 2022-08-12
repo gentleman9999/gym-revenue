@@ -45,10 +45,6 @@ export default defineComponent({
         DaisyModal,
     },
     props: {
-        table: {
-            type: String,
-            required: true,
-        },
         modelKey: {
             type: String,
             required: true,
@@ -64,20 +60,37 @@ export default defineComponent({
     },
     setup(props, {}) {
         const config = getCrudConfig(props.modelKey);
+        let modelKey = props.modelKey;
+        if (!modelKey.endsWith("s")) {
+            modelKey = `${modelKey}s`;
+        }
         const form = useGymRevForm({
-            table: props.modelKey,
+            table: modelKey,
             columns: [...config.value],
         });
-        const customizationModal = ref(null);
 
+        console.log(props.table);
+
+        const customizationModal = ref(null);
+        console.log(form["table"]);
         const open = () => customizationModal.value.open();
         const close = () => customizationModal.value.close();
 
         const fields = getFields(props);
 
-        const handleSubmit = () =>
-            form.dirty().post(route("crud-customize"), { onSuccess: close });
-        return { fields, customizationModal, open, close, form, handleSubmit };
+        const handleSubmit = () => {
+            form.post(route("crud-customize"), { onSuccess: close });
+        };
+
+        return {
+            fields,
+            customizationModal,
+            open,
+            close,
+            form,
+            handleSubmit,
+            modelKey,
+        };
     },
 });
 </script>

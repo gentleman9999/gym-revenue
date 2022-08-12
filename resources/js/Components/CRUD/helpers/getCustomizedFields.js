@@ -4,6 +4,7 @@ import { getCrudConfig } from "@/utils/getCrudCustomization";
 export const getCustomizedFields = (fields, modelKey) => {
     //now filter out fields we don't care about
     const config = getCrudConfig(modelKey);
+    console.log({ config: config.value, fields, modelKey });
     const filtered = computed(() =>
         config.value?.length
             ? fields.value.filter((field) =>

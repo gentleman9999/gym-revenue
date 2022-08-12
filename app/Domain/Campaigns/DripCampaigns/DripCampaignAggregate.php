@@ -60,14 +60,16 @@ class DripCampaignAggregate extends AggregateRoot
 
     public function update(array $payload): static
     {
-        $send_at = CarbonImmutable::create($this->data['send_at']);
+        if (array_key_exists('send_at', $this->data)) {
+            $send_at = CarbonImmutable::create($this->data['send_at']);
 
-        if (! $this->isDraft() && $send_at <= CarbonImmutable::now()->addMinutes(-1)) {
-            //campaign is not a draft and should have already been started.
-            //only allow updating name
-            $payload = array_filter_only_keys($payload, ['name']);
+
+            if (! $this->isDraft() && $send_at <= CarbonImmutable::now()->addMinutes(-1)) {
+                //campaign is not a draft and should have already been started.
+                //only allow updating name
+                $payload = array_filter_only_keys($payload, ['name']);
+            }
         }
-
         $this->recordThat(new DripCampaignUpdated($payload));
 
         return $this;
