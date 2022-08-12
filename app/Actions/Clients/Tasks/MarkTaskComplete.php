@@ -3,7 +3,7 @@
 namespace App\Actions\Clients\Tasks;
 
 use App\Aggregates\Users\UserAggregate;
-use App\Models\Calendar\CalendarEvent;
+use App\Domain\CalendarEvents\CalendarEvent;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

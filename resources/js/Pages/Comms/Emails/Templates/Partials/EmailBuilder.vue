@@ -6,7 +6,7 @@
         <spinner />
     </div>
     <div
-        class="w-[960px]"
+        class="lg:w-[60rem] xl:w-[90rem]"
         :class="{
             hidden: showSpinner,
         }"
