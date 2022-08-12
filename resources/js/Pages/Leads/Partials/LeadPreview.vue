@@ -69,7 +69,7 @@
             class="flex lg:flex-row flex-col justify-between col-span-6 lg:col-span-6 text-secondary"
         >
             <label>Club/ Location: {{ data.club_location.name }}</label>
-            <Button size="xs" primary v-if="assign" disabled
+            <Button size="xs" primary v-if="assigning" disabled
                 >Assigning...</Button
             >
             <Button
@@ -79,7 +79,13 @@
                 @click="handleContact"
                 >Contact</Button
             >
-            <Button size="xs" primary v-else @click="handleClaim">Claim</Button>
+            <Button
+                size="xs"
+                primary
+                v-else-if="!data.lead.owner_user_id"
+                @click="handleClaim"
+                >Claim</Button
+            >
         </div>
     </div>
 </template>
