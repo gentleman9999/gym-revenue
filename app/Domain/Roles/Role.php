@@ -3,6 +3,7 @@
 namespace App\Domain\Roles;
 
 use App\Domain\CalendarEvents\CalendarEvent;
+use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Departments\Department;
 use App\Domain\EndUsers\Leads\Projections\Lead;
@@ -114,6 +115,11 @@ class Role extends \Silber\Bouncer\Database\Role
 
             case 'folders':
                 $entity = Folder::class;
+
+                break;
+
+            case 'drip-campaigns':
+                $entity = DripCampaign::class;
 
                 break;
         }

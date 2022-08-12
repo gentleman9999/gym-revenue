@@ -33,6 +33,7 @@
                         <option></option>
                         <option
                             v-for="club in clubs"
+                            :key="club.gymrevenue_id"
                             :value="club.gymrevenue_id"
                         >
                             {{ club.name }}
@@ -49,7 +50,11 @@
                         v-model="form.team"
                     >
                         <option></option>
-                        <option v-for="team in teams" :value="team.id">
+                        <option
+                            v-for="team in teams"
+                            :value="team.id"
+                            :key="team.id"
+                        >
                             {{ team.name }}
                         </option>
                     </select>
@@ -65,7 +70,11 @@
                         v-model="form.roles"
                     >
                         <option></option>
-                        <option v-for="role in potentialRoles" :value="role.id">
+                        <option
+                            v-for="role in potentialRoles"
+                            :value="role.id"
+                            :key="role.id"
+                        >
                             {{ role.title }}
                         </option>
                     </select>

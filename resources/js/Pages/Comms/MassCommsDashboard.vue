@@ -201,13 +201,31 @@ export default defineComponent({
                 handler: () => comingSoon(),
                 class: "btn-primary",
             },
+            test: {
+                label: "+ New Test SMS",
+                handler: () => sendATestSMS(),
+                class: "btn-primary",
+            },
+            test2: {
+                label: "+ New Test Email",
+                handler: () => sendATestEmail(),
+                class: "btn-primary",
+            },
         };
 
+        const sendATestSMS = (data) => {
+            Inertia.post(route("comms.sms-templates.test-msg"));
+        };
+
+        const sendATestEmail = (data) => {
+            Inertia.post(route("comms.email-templates.test-msg"));
+        };
         const viewAudienceDashboard = (slug) => {
             Inertia.visit(route("comms.dashboard") + "?audience=" + slug);
         };
         return {
             fields,
+            sendATestSMS,
             comingSoon,
             viewAudienceDashboard,
             topActions,

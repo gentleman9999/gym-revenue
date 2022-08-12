@@ -2,12 +2,10 @@
 
 namespace App\Actions\Mail;
 
-use App\Domain\Email\Models\MailgunCallback;
-use Carbon\Carbon;
 use Lorisleiva\Actions\Action;
-use Mailgun\Mailgun;
+use SendGrid\Mail\Mail;
 
-class MailgunBatchSend extends Action
+class TwilioMailBatchSend extends Action
 {
     protected $getAttributesFromConstructor = ['recipients','markup'];
 
@@ -40,25 +38,16 @@ class MailgunBatchSend extends Action
      */
     public function handle(array $recipients, string $subject, string $markup)
     {
-        info('Mailgun, I choose you! Use BatchSend~~~~~');
+        info('Sending Twilio Mail, batchsend enabled');
 
-        $mg = Mailgun::create(env('MAILGUN_SECRET'));
-        $domain = env('MAILGUN_DOMAIN');
+        $email = new Mail();
+        $email->setFrom('test@example.com', );
+        $email->setSubject($subject);
+        $email->addTo($recipients);
+        $email->addContent('text/html', $markup);
+        $sendgrid = new \SendGrid(env('SENDGRID_API_KEY'));
+        $response = $sendgrid->send($email);
 
-        $parameters = [
-            'from' => env('MAIL_FROM_ADDRESS'),
-            'to' => $recipients,
-            'subject' => $subject,
-            'html' => $markup,
-        ];
-
-        $result = $mg->messages()->send($domain, $parameters);
-        MailgunCallback::create([
-            'event' => 'sent',
-            'timestamp' => Carbon::now(),
-            'MessageId' => substr($result->getId(), 1, -1),
-        ]);
-
-        return $result;
+        info('Twilio Mail Response', $response);
     }
 }
