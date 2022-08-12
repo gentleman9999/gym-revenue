@@ -87,7 +87,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::put('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\UpdateSmsTemplate::class)->name('comms.sms-templates.update');
         Route::delete('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\TrashSmsTemplate::class)->name('comms.sms-templates.trash');
         Route::post('/{smsTemplate}/restore', \App\Domain\Templates\SmsTemplates\Actions\RestoreSmsTemplate::class)->withTrashed()->name('comms.sms-templates.restore');
-        Route::post('/test', \App\Actions\Sms\SendATestText::class)->name('comms.sms-templates.test-msg');
+        Route::post('/test', \App\Domain\SMS\Actions\FireTestMessage::class)->name('comms.sms-templates.test-msg');
     });
     Route::middleware(['auth:sanctum', 'verified'])->prefix('email-templates')->group(function () {
         Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('comms.email-templates');
@@ -98,7 +98,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('comms.email-templates.update');
         Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('comms.email-templates.trash');
         Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('comms.email-templates.restore');
-        Route::post('/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
+        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('comms.email-templates.test-msg');
     });
 });
 
