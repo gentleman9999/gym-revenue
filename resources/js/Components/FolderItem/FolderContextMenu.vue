@@ -2,7 +2,6 @@
     <ul tabindex="1" ref="subMenu" class="folder-submenu">
         <li @click="handleTrash">Trash</li>
         <li @click="handleRename">Rename</li>
-        <li @click="handlePermissions">Permissions</li>
     </ul>
 </template>
 <style scoped>
@@ -22,9 +21,6 @@
 import { ref } from "vue";
 const props = defineProps({
     handleRename: {
-        type: Function,
-    },
-    handlePermissions: {
         type: Function,
     },
     handleTrash: {

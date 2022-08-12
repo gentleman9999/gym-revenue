@@ -20,7 +20,6 @@
             :folder="folder"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
-            :handlePermissions="handlePermissions"
         />
 
         <folder-context-menu
