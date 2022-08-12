@@ -235,6 +235,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
     Route::post('/client-services', \App\Domain\Clients\Actions\SetClientServices::class)->name('settings.client-services.update');
+    Route::post('/client-comms-prefs', \App\Domain\Clients\Actions\SetClientCommsPrefs::class)->name('settings.client-comms-prefs.update');
     Route::put('/social-media-set', \App\Domain\Clients\Actions\UpdateSocialMedias::class)->name('settings.social-media.update');
     Route::put('/gateway-set', \App\Domain\Clients\Actions\UpdateGateways::class)->name('settings.gateway.update');
     Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');

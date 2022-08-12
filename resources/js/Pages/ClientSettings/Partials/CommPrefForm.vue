@@ -9,20 +9,20 @@
         <template #form>
             <div
                 class="col-span-6 sm:col-span-4 form-control flex-row items-center gap-4"
-                v-for="commpref in availableCommPreferences"
+                v-for="{ name, value } in availableCommPreferences"
             >
                 <input
-                    :id="commpref.value"
+                    :id="value"
                     type="checkbox"
-                    v-model="form.commPreferences"
-                    :value="commpref.value"
+                    v-model="form[name.toLowerCase()]"
+                    :value="value"
                 />
-                <jet-label :for="commpref.value" :value="commpref.name" />
+                <jet-label :for="value" :value="name" />
+                <jet-input-error
+                    :message="form.errors[name.toLowerCase()]"
+                    class="mt-2"
+                />
             </div>
-            <jet-input-error
-                :message="form.errors.commPreferences"
-                class="mt-2"
-            />
         </template>
 
         <template #actions>
@@ -60,8 +60,8 @@ export default defineComponent({
     },
     props: {
         commPreferences: {
-            type: Array,
-            default: [],
+            type: Object,
+            required: true,
         },
         availableCommPreferences: {
             type: Array,
@@ -70,12 +70,11 @@ export default defineComponent({
     },
     setup(props) {
         let handleSubmit = () =>
-            form.dirty().post(route("settings.client-services.update"));
+            form.dirty().post(route("settings.client-comms-prefs.update"));
 
         const form = useGymRevForm({
-            commPreferences: props.commPreferences.map(
-                (detail) => detail.value
-            ),
+            email: !!props.commPreferences.email,
+            sms: !!props.commPreferences.sms,
         });
         return { form, handleSubmit };
     },
