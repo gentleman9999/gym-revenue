@@ -2,27 +2,33 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6">
-                <jet-label for="itemname" value="Current Filename" />
+                <jet-label
+                    for="itemname"
+                    :value="'Current ' + type + ' name'"
+                />
                 <a
                     :href="item.url"
                     :download="item.filename"
                     target="_blank"
                     class="link link-hover"
-                    >{{ item.filename }}</a
+                    v-if="type === 'File'"
                 >
+                    {{ item.filename }}
+                </a>
+                <span v-else>{{ item.name }}</span>
                 <jet-input-error :message="form.errors.item" class="mt-2" />
             </div>
 
             <div class="col-span-6">
-                <jet-label for="itemname" value="New Filename" />
+                <jet-label for="itemname" :value="'New ' + type + ' Name'" />
                 <input
                     id="itemname"
                     type="text"
                     class="block w-full mt-1"
-                    v-model="form.filename"
+                    v-model="form[field]"
                     autofocus
                 />
-                <jet-input-error :message="form.errors.filename" class="mt-2" />
+                <jet-input-error :message="form.errors[field]" class="mt-2" />
             </div>
 
             <input id="client_id" type="hidden" v-model="form.client_id" />
@@ -52,6 +58,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
+import { computed } from "@vue/runtime-core";
 
 export default {
     components: {
@@ -69,12 +76,19 @@ export default {
 
         const form = useGymRevForm(item);
 
+        const type = computed(() => (item.filename ? "File" : "Folder"));
+        const field = computed(() => (item.filename ? "filename" : "name"));
+
         let handleSubmit = async () => {
-            await form.dirty().put(route("files.rename", item.id));
-            emit("success");
+            if (type === "File") {
+                await form.dirty().put(route("files.rename", item.id));
+                emit("success");
+            } else {
+                // TODO rename folder
+            }
         };
 
-        return { form, buttonText: "Update", handleSubmit, urlPrev };
+        return { form, buttonText: "Update", handleSubmit, urlPrev, type };
     },
 };
 </script>
