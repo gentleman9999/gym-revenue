@@ -4,6 +4,7 @@ namespace App\Domain\Folders;
 
 use App\Domain\Folders\Events\FolderCreated;
 use App\Domain\Folders\Events\FolderDeleted;
+use App\Domain\Folders\Events\FolderUpdated;
 use App\Models\Folder;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -20,6 +21,11 @@ class FolderProjector extends Projector
         $folder->id = $event->aggregateRootUuid();
         $folder->client_id = $event->payload['client_id'] ?? null;
         $folder->save();
+    }
+
+    public function onFolderUpdated(FolderUpdated $event)
+    {
+        Folder::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
     }
 
     public function onFolderDeleted(FolderDeleted $event): void
