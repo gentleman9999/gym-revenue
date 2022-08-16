@@ -43,5 +43,7 @@ class FireTwilioMsg extends Action
         $payload = ['from' => env('TWILIO_NO'), 'body' => $msg, 'statusCallBack' => env('TWILIO_STATUS_CALLBACK_DOMAIN').'/api/twilio/statusCallBack'];
         $message = $sms_client->messages->create($phone_number, $payload);
         info('Message - ', $message->toArray());
+
+        return $message;
     }
 }
