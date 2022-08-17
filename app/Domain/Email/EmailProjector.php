@@ -5,7 +5,6 @@ namespace App\Domain\Email;
 use App\Domain\Email\Events\EmailLog;
 use App\Domain\Email\Events\MailgunTracked;
 use App\Models\ClientEmailLog;
-use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EmailProjector extends Projector
@@ -16,27 +15,27 @@ class EmailProjector extends Projector
         $payload = [];
         switch ($event->payload['event']) {
             case 'accepted':
-                $payload = ['accepted_at' => Carbon::now()];
+                $payload = ['accepted_at' => $event->payload['timestamp']];
 
                 break;
 
             case 'sent':
-                $payload = ['sent_at' => Carbon::now()];
+                $payload = ['sent_at' => $event->payload['timestamp']];
 
                 break;
 
             case 'delivered':
-                $payload = ['delivered_at' => Carbon::now()];
+                $payload = ['delivered_at' => $event->payload['timestamp']];
 
                 break;
 
             case 'failed':
-                $payload = ['failed_at' => Carbon::now()];
+                $payload = ['failed_at' => $event->payload['timestamp']];
 
                 break;
 
             case 'opened':
-                $payload = ['opened_at' => Carbon::now()];
+                $payload = ['opened_at' => $event->payload['timestamp']];
 
                 break;
             default:

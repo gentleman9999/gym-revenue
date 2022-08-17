@@ -4,9 +4,7 @@ namespace App\Domain\SMS;
 
 use App\Domain\SMS\Events\SmsLog;
 use App\Domain\SMS\Events\TwilioTracked;
-use App\Domain\SMS\Models\TwilioCallback;
 use App\Models\ClientSmsLog;
-use Carbon\Carbon;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class SmsProjector extends Projector
@@ -17,28 +15,18 @@ class SmsProjector extends Projector
         $payload = [];
         if ($event->payload['MessageStatus'] == 'sent') {
             $payload = [
-                'sent_at' => Carbon::now(),
+                'sent_at' => $event->createdAt(),
             ];
         }
 
         if ($event->payload['MessageStatus'] == 'delivered') {
             $payload = [
-                'delivered_at' => Carbon::now(),
+                'delivered_at' => $event->createdAt(),
             ];
         }
         $ClientSmsLog = ClientSmsLog::whereMessageId($event->payload['SmsSid'])->first();
 
         ClientSmsLog::findOrFail($ClientSmsLog->id)->writeable()->updateOrFail($payload);
-
-        /*
-        $sms_tracking = new TwilioCallback();
-        //get only the keys we care about (the ones marked as fillable)
-        $fillable_data = array_filter($event->payload, function ($key) {
-            return in_array($key, (new TwilioCallback())->getFillable());
-        }, ARRAY_FILTER_USE_KEY);
-        $sms_tracking->fill($fillable_data);
-        $sms_tracking->save();
-        */
     }
 
     public function onSmsLog(SmsLog $event): void

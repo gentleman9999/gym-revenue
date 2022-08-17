@@ -2,13 +2,13 @@
 
 namespace App\Domain\Email\Events;
 
-use App\Domain\Email\Models\MailgunCallback;
+use App\Models\ClientEmailLog;
 use App\StorableEvents\EntityCreated;
 
 class MailgunTracked extends EntityCreated
 {
     public function getEntity(): string
     {
-        return MailgunCallback::class;
+        return ClientEmailLog::class;
     }
 }
