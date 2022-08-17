@@ -3,14 +3,17 @@
         <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
     </LayoutHeader>
     <div class="files-container">
-        <div class="flex flex-row justify-between">
+        <div class="row">
             <file-actions />
             <file-display-mode
                 :display-mode="displayMode"
                 :handleChange="updateDisplayMode"
             />
         </div>
-        <file-search />
+        <div class="row">
+            <file-nav />
+            <file-search />
+        </div>
         <file-contents
             :files="files"
             :folders="$page.props.folders"
@@ -52,6 +55,10 @@
 .files-container {
     @apply lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset relative;
 }
+
+.row {
+    @apply flex flex-row justify-between items-center;
+}
 </style>
 
 <script setup>
@@ -67,6 +74,7 @@ import FileDisplayMode from "./Partials/FileDisplayMode.vue";
 import FileActions from "./Partials/FileActions.vue";
 import FileContents from "./Partials/FileContents.vue";
 import FileSearch from "./Partials/FileSearch.vue";
+import FileNav from "./Partials/FileNav.vue";
 const props = defineProps({
     sessions: {
         type: Array,
@@ -120,5 +128,9 @@ const displayMode = ref("desktop");
 
 const updateDisplayMode = (value) => {
     displayMode.value = value;
+};
+
+const goRoot = () => {
+    Inertia.get(route("files"));
 };
 </script>
