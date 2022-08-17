@@ -46,6 +46,9 @@ const props = defineProps({
 });
 
 const moveFileToFolder = (file_id, folder_id) => {
-    Inertia.put(route("files.update.folder", folder_id), { id: file_id });
+    let folder = props.folders.filter((folder) => folder.id === folder_id)[0];
+    Inertia.put(route("files.update.folder", folder.id), {
+        files: [...folder.files, file_id],
+    });
 };
 </script>
