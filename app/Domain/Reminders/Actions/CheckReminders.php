@@ -2,8 +2,8 @@
 
 namespace App\Domain\Reminders\Actions;
 
+use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Reminders\Reminder;
-use App\Models\Calendar\CalendarEvent;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsAction;

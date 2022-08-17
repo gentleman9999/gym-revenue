@@ -258,6 +258,12 @@ export default defineComponent({
                 active: true,
             },
             {
+                label: "My Calendar",
+                href: route("calendar.mine"),
+                onClick: null,
+                active: false,
+            },
+            {
                 label: "Event Types",
                 href: route("calendar.event_types"),
                 onClick: null,

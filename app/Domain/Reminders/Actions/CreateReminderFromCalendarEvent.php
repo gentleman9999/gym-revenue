@@ -2,10 +2,10 @@
 
 namespace App\Domain\Reminders\Actions;
 
+use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
-use App\Models\Calendar\CalendarEvent;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

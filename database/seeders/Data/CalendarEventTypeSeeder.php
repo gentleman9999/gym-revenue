@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Data;
 
-use App\Aggregates\Clients\CalendarAggregate;
+use App\Domain\CalendarEventTypes\Actions\CreateCalendarEventType;
 use App\Domain\Clients\Projections\Client;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
@@ -44,9 +44,7 @@ class CalendarEventTypeSeeder extends Seeder
                             'color' => $type['color'],
                         ];
 
-                        CalendarAggregate::retrieve($client->id)
-                            ->createCalendarEventType('Auto Generated', $payload)
-                            ->persist();
+                        CreateCalendarEventType::run($payload);
                     }
                 }
             }

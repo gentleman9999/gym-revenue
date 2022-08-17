@@ -38,7 +38,7 @@
                 <calendar-event-notification
                     v-if="
                         notification.entity_type ===
-                        'App\\Models\\Calendar\\CalendarEvent'
+                        'App\\Domain\\CalendarEvents\\CalendarEvent'
                     "
                     :notification="notification"
                     @dismiss="() => dismissNotification(notification.id)"
