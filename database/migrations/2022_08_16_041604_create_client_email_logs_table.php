@@ -27,6 +27,7 @@ return new class () extends Migration {
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
+            $table->timestamp('opened_at')->nullable();
             $table->timestamp('failed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

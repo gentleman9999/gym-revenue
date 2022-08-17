@@ -15,7 +15,7 @@ class ClientEmailLog extends GymRevProjection
 
     protected $fillable = ['id','client_id','gateway_id','message_id','campaign_id','email_template_id',
         'recipient_type','recipient_id','recipient_email','initiated_at','accepted_at','sent_at',
-        'delivered_at','failed_at',];
+        'delivered_at','opened_at','failed_at',];
 
     protected static function booted(): void
     {
