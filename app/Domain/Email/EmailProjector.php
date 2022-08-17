@@ -45,7 +45,9 @@ class EmailProjector extends Projector
 
         $ClientEmailLog = ClientEmailLog::whereMessageId($event->payload['message']['headers']['message-id'])->first();
 
-        ClientEmailLog::findOrFail($ClientEmailLog->id)->writeable()->updateOrFail($payload);
+        if ($ClientEmailLog) {
+            ClientEmailLog::findOrFail($ClientEmailLog->id)->writeable()->updateOrFail($payload);
+        }
     }
 
     public function onEmailLog(EmailLog $event): void
