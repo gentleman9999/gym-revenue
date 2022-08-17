@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->foreignUuid('gateway_id');
             $table->string('message_id')->nullable();
             $table->string('campaign_id')->nullable();
+            $table->string('campaign_type')->nullable();
             $table->string('sms_template_id')->nullable();
             $table->string('recipient_type')->nullable();
             $table->string('recipient_id')->nullable();
