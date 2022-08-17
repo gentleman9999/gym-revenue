@@ -34,13 +34,14 @@ class FoldersController extends Controller
 
     public function viewFiles(Folder $folder)
     {
-        $client_id = request()->user()->currentClientId();
+        $client_id = request()->user()->client_id;
 
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
 
-        $files = File::whereFolder($folder->id)->get();
+        $files = File::whereFolder($folder->id)
+            ->get();
 
 
         return Inertia::render('Folders/Show', [
