@@ -5,7 +5,6 @@ namespace App\Domain\Folders\Actions;
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
-use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\CreatesTeams;
@@ -19,11 +18,9 @@ class UpdateFolder implements CreatesTeams
 
     public function handle(array $payload): Folder
     {
-        $id = Uuid::new();
+        FolderAggregate::retrieve($payload['id'])->update($payload)->persist();
 
-        FolderAggregate::retrieve($id)->update($payload)->persist();
-
-        return Folder::findOrFail($id);
+        return Folder::findOrFail($payload['id']);
     }
 
     /**
@@ -36,6 +33,7 @@ class UpdateFolder implements CreatesTeams
         return [
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'name' => ['required', 'max:50'],
+            'id' => ['string', 'required'],
         ];
     }
 

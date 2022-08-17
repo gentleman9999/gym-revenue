@@ -85,12 +85,11 @@ export default {
                 await form.dirty().put(route("files.rename", item.id));
                 emit("success");
             } else {
-                Inertia.put(route("folders.update", item.id), {
+                await Inertia.put(route("folders.update", item.id), {
                     id: item.id,
                     name: form.name,
                 });
-                // await form.dirty().put(route("folders.update", item.id));
-                // emit("success");
+                emit("success");
             }
         };
 
