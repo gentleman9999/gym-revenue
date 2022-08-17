@@ -13,7 +13,6 @@
     >
         <folder-icon
             :icon-size="iconSize"
-            :extension="folder.extension"
             :showExtension="props.mode === 'desktop'"
             :folderUrl="folder.url"
             @mousedown="handleClick($event)"
@@ -112,12 +111,9 @@ const iconSize = computed({
 const foldername = computed({
     get() {
         let ret = props.folder.name;
-        let nameLimit = props.mode === "desktop" ? 10 : 30;
+        let nameLimit = props.mode === "desktop" ? 14 : 30;
         if (ret.length > nameLimit) {
-            ret =
-                ret.split(".")[0].substr(0, nameLimit - 4) +
-                "~." +
-                props.folder.extension;
+            ret = ret.split(".")[0].substr(0, nameLimit - 1) + "~";
         }
         return ret;
     },
