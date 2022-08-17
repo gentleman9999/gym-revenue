@@ -2,9 +2,9 @@
 
 namespace App\Domain\Reminders;
 
+use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Users\Models\User;
-use App\Models\Calendar\CalendarEvent;
 use App\Models\GymRevProjection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -5,16 +5,23 @@
     >
         <spinner />
     </div>
-    <TopolEditor
-        :options="customOptions"
-        v-bind="$attrs"
-        @onClose="handleOnClose"
-        @onClosed="handleOnClose"
-        @onInit="handleOnInit"
-        @onLoaded="handleOnLoaded"
-        :class="{ hidden: showSpinner }"
-        style="position: unset"
-    />
+    <div
+        class="lg:w-[60rem] xl:w-[90rem]"
+        :class="{
+            hidden: showSpinner,
+        }"
+    >
+        <TopolEditor
+            :options="customOptions"
+            v-bind="$attrs"
+            @onClose="handleOnClose"
+            @onClosed="handleOnClose"
+            @onInit="handleOnInit"
+            @onLoaded="handleOnLoaded"
+            :class="{ hidden: showSpinner }"
+            style="position: unset"
+        />
+    </div>
 </template>
 
 <script setup>

@@ -11,6 +11,7 @@
         <client-teams-dropdown
             v-model="selected.team"
             :client-id="selected.client"
+            :value="selected.team"
             v-if="
                 page.props.value.user.is_gr_admin ||
                 page.props.value.user.all_teams?.length
@@ -22,7 +23,7 @@
                 :class="{ 'table-zebra': true }"
             >
                 <tbody>
-                    <tr v-for="(user, idx) in users">
+                    <tr v-for="user in users" :key="user.id">
                         <td>{{ user.name }}</td>
                         <td>{{ user.role }}</td>
                         <td>
@@ -55,7 +56,7 @@ import ClientsDropdown from "@/Presenters/Impersonation/Partials/ClientsDropdown
 import ClientTeamsDropdown from "@/Presenters/Impersonation/Partials/ClientTeamsDropdown.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 
-const loading = ref(false);
+const loading = ref(true);
 const response = ref(null);
 
 const users = ref([]);
@@ -70,7 +71,6 @@ const selected = ref({
 const emit = defineEmits(["close"]);
 function getList() {
     if (selected.value.team) {
-        loading.value = true;
         axios
             .post("/impersonation/users", { team: selected.value.team })
             .then(({ data }) => {

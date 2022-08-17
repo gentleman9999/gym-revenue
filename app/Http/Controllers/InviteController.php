@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Calendar\CalendarAttendee;
+use App\Domain\CalendarAttendees\CalendarAttendee;
 use Inertia\Inertia;
 
 class InviteController extends Controller

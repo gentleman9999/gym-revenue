@@ -11,8 +11,8 @@ use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
+use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
-use Database\Seeders\Data\CalendarSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
@@ -139,7 +139,7 @@ class DatabaseSeeder extends Seeder
         // CalendarEvent Seeder
         if (env('SEED_CALENDAR_EVENTS', false) === true) {
             VarDumper::dump('Running Calender Event Seeder');
-            $this->call(CalendarSeeder::class);
+            $this->call(CalendarEventSeeder::class);
         }
     }
 }

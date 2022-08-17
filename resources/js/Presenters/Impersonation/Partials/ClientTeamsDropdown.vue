@@ -8,7 +8,12 @@
             v-bind="$attrs"
         >
             <option :value="null">Select a team</option>
-            <option v-for="team in teams" :value="team.id">
+            <option
+                v-for="team in teams"
+                :value="team.id"
+                :key="team.id"
+                :selected="value === team.id"
+            >
                 {{ team.name }}
             </option>
         </select>
@@ -21,6 +26,9 @@ const props = defineProps({
     clientId: {
         type: String,
         default: null,
+    },
+    value: {
+        type: String,
     },
 });
 
@@ -38,6 +46,7 @@ watch(
                 route("clients.teams", { client_id: clientId })
             );
             teams.value = response.data;
+            emit("update:modelValue", response.data[0].id);
             loading.value = false;
         }
     },

@@ -7,7 +7,11 @@
             :disabled="loading"
             v-bind="$attrs"
         >
-            <option v-for="client in clients" :value="client?.id || null">
+            <option
+                v-for="client in clients"
+                :value="client?.id || null"
+                :key="client?.id"
+            >
                 {{ client?.name || "Gym Revenue" }}
             </option>
         </select>

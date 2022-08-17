@@ -2,6 +2,8 @@
 
 namespace App\Actions\Mail;
 
+use App\Domain\Email\Models\MailgunCallback;
+use Carbon\Carbon;
 use Lorisleiva\Actions\Action;
 use Mailgun\Mailgun;
 
@@ -41,14 +43,22 @@ class MailgunBatchSend extends Action
         info('Mailgun, I choose you! Use BatchSend~~~~~');
 
         $mg = Mailgun::create(env('MAILGUN_SECRET'));
+        $domain = env('MAILGUN_DOMAIN');
 
-        $addresses = array_keys($recipients);
-        $mg->messages()->send(env('MAILGUN_DOMAIN'), [
+        $parameters = [
             'from' => env('MAIL_FROM_ADDRESS'),
-            'to' => $addresses,
+            'to' => $recipients,
             'subject' => $subject,
-            'text' => $markup,
-            'recipient-variables' => json_encode($recipients),
+            'html' => $markup,
+        ];
+
+        $result = $mg->messages()->send($domain, $parameters);
+        MailgunCallback::create([
+            'event' => 'sent',
+            'timestamp' => Carbon::now(),
+            'MessageId' => substr($result->getId(), 1, -1),
         ]);
+
+        return $result;
     }
 }

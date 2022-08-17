@@ -87,7 +87,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::put('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\UpdateSmsTemplate::class)->name('comms.sms-templates.update');
         Route::delete('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\TrashSmsTemplate::class)->name('comms.sms-templates.trash');
         Route::post('/{smsTemplate}/restore', \App\Domain\Templates\SmsTemplates\Actions\RestoreSmsTemplate::class)->withTrashed()->name('comms.sms-templates.restore');
-        Route::post('/test', \App\Actions\Sms\SendATestText::class)->name('comms.sms-templates.test-msg');
+        Route::post('/test', \App\Domain\SMS\Actions\FireTestMessage::class)->name('comms.sms-templates.test-msg');
     });
     Route::middleware(['auth:sanctum', 'verified'])->prefix('email-templates')->group(function () {
         Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('comms.email-templates');
@@ -98,7 +98,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function
         Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('comms.email-templates.update');
         Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('comms.email-templates.trash');
         Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('comms.email-templates.restore');
-        Route::post('/test', \App\Actions\Mail\SendATestEmail::class)->name('comms.email-templates.test-msg');
+        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('comms.email-templates.test-msg');
     });
 });
 
@@ -187,22 +187,23 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(funct
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(function () {
     Route::get('/', \App\Http\Controllers\CalendarController::class . '@index')->name('calendar');
+    Route::get('/mycalendar', \App\Http\Controllers\CalendarController::class . '@myCalendar')->name('calendar.mine');
     Route::get('/quickview', \App\Http\Controllers\CalendarController::class . '@quickView')->name('calendar.quickview');
-    Route::post('/', \App\Actions\Clients\Calendar\CreateCalendarEvent::class)->name('calendar.event.store');
-    Route::put('/{id}', \App\Actions\Clients\Calendar\UpdateCalendarEvent::class)->name('calendar.event.update');
+    Route::post('/', \App\Domain\CalendarEvents\Actions\CreateCalendarEvent::class)->name('calendar.event.store');
+    Route::put('/{calendarEvent}', \App\Domain\CalendarEvents\Actions\UpdateCalendarEvent::class)->name('calendar.event.update');
     Route::delete('/reminder/delete/{id}', \App\Domain\Reminders\Actions\DeleteReminder::class)->name('calendar.reminder.delete');
     Route::put('/reminder/create/{id}', \App\Domain\Reminders\Actions\CreateReminderFromCalendarEvent::class)->name('calendar.reminder.create');
     Route::put('/complete_task/{id}', \App\Actions\Clients\Tasks\MarkTaskComplete::class)->name('calendar.complete_event');
-    Route::post('/upload', \App\Actions\Clients\Calendar\UploadFile::class)->name('calendar.upload');
+    Route::post('/upload', \App\Domain\CalendarEvents\Actions\UploadFileToCalendarEvent::class)->name('calendar.upload');
     Route::prefix('event_types')->group(function () {
         Route::get('/', \App\Http\Controllers\CalendarController::class . '@eventTypes')->name('calendar.event_types');
         Route::get('/create', \App\Http\Controllers\CalendarController::class . '@createEventType')->name('calendar.event_types.create');
-        Route::post('/', \App\Actions\Clients\Calendar\CalendarEventTypes\CreateCalendarEventType::class)->name('calendar.event_types.store');
-        Route::get('/edit/{id}', \App\Http\Controllers\CalendarController::class . '@editEventType')->name('calendar.event_types.edit');
-        Route::put('/{id}', \App\Actions\Clients\Calendar\CalendarEventTypes\UpdateCalendarEventType::class)->name('calendar.event_types.update');
-        Route::delete('/{id}', \App\Actions\Clients\Calendar\CalendarEventTypes\TrashCalendarEventType::class)->name('calendar.event_types.trash');
-        Route::delete('/{id}/force', \App\Actions\Clients\Calendar\CalendarEventTypes\DeleteCalendarEventType::class)->name('calendar.event_types.delete');
-        Route::post('/{id}/restore', \App\Actions\Clients\Calendar\CalendarEventTypes\RestoreCalendarEventType::class)->name('calendar.event_types.restore');
+        Route::post('/', \App\Domain\CalendarEventTypes\Actions\CreateCalendarEventType::class)->name('calendar.event_types.store');
+        Route::get('/edit/{calendarEventType}', \App\Http\Controllers\CalendarController::class . '@editEventType')->name('calendar.event_types.edit');
+        Route::put('/{calendarEventType}', \App\Domain\CalendarEventTypes\Actions\UpdateCalendarEventType::class)->name('calendar.event_types.update');
+        Route::delete('/{calendarEventType}', \App\Domain\CalendarEventTypes\Actions\TrashCalendarEventType::class)->name('calendar.event_types.trash');
+        Route::delete('/{calendarEventType}/force', \App\Domain\CalendarEventTypes\Actions\DeleteCalendarEventType::class)->name('calendar.event_types.delete');
+        Route::post('/{calendarEventType}/restore', \App\Domain\CalendarEventTypes\Actions\RestoreCalendarEventType::class)->withTrashed()->name('calendar.event_types.restore');
     });
 });
 
@@ -279,7 +280,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('positions')->group(func
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('tasks')->group(function () {
     Route::get('/', \App\Http\Controllers\TaskController::class . '@index')->name('tasks');
-    Route::delete('/{id}', \App\Actions\Clients\Calendar\DeleteCalendarEvent::class)->name('tasks.delete');
+    Route::delete('/{id}', \App\Domain\CalendarEvents\Actions\DeleteCalendarEvent::class)->name('tasks.delete');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('impersonation')->group(function () {
@@ -299,8 +300,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('crud')->group(function 
 
 Route::prefix('invite')->group(function () {
     Route::get('/{id}', \App\Http\Controllers\InviteController::class . '@index')->name('invite');
-    Route::post('/accept', \App\Actions\Clients\Calendar\AcceptInvite::class)->name('invite.accept');
-    Route::post('/decline', \App\Actions\Clients\Calendar\DeclineInvite::class)->name('invite.decline');
+    Route::post('{calendarEvent}/accept', \App\Domain\CalendarAttendees\Actions\AcceptInvite::class)->name('invite.accept');
+    Route::post('{calendarEvent}/decline', \App\Domain\CalendarAttendees\Actions\DeclineInvite::class)->name('invite.decline');
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('notifications')->group(function () {
     Route::get('/', \App\Domain\Notifications\Actions\GetNotifications::class)->name('notifications');
