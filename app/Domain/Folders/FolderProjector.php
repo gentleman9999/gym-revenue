@@ -25,7 +25,7 @@ class FolderProjector extends Projector
 
     public function onFolderUpdated(FolderUpdated $event)
     {
-        Folder::withTrashed()->findOrFail($event->aggregateRootUuid())->updateOrFail($event->payload);
+        Folder::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }
 
     public function onFolderDeleted(FolderDeleted $event): void
