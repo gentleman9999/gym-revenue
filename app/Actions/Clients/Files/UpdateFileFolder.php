@@ -49,7 +49,7 @@ class UpdateFileFolder
             $request->user(),
         );
 
-        Alert::success("File permissions for '{$file->filename}' updated.")->flash();
+        Alert::success("File added to folder.")->flash();
 
         return Redirect::back();
     }
