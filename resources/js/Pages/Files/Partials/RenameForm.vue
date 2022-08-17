@@ -80,15 +80,25 @@ export default {
         const field = computed(() => (item.filename ? "filename" : "name"));
 
         let handleSubmit = async () => {
+            console.log("form");
+            console.log(form);
             if (type.value == "File") {
                 await form.dirty().put(route("files.rename", item.id));
                 emit("success");
             } else {
-                // TODO rename folder
+                await form.dirty().put(route("folders.update", item.id));
+                emit("success");
             }
         };
 
-        return { form, buttonText: "Update", handleSubmit, urlPrev, type };
+        return {
+            form,
+            buttonText: "Update",
+            handleSubmit,
+            urlPrev,
+            type,
+            field,
+        };
     },
 };
 </script>
