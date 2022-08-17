@@ -1,11 +1,12 @@
 <template>
     <div
-        class="relative"
+        class="relative select-all cursor-pointer"
         :class="{
             'file-desktop': props.mode === 'desktop',
             'file-list': props.mode === 'list',
         }"
         @contextmenu="$event.preventDefault()"
+        @dragstart="handleDrag($event)"
     >
         <file-icon
             :icon-size="iconSize"
@@ -47,6 +48,8 @@ import { computed, ref } from "vue";
 import FileIcon from "./FileIcon.vue";
 import FileDetail from "./FileDetail.vue";
 import FileContextMenu from "./FileContextMenu.vue";
+import { useEventsBus } from "@/utils";
+
 const props = defineProps({
     file: {
         type: Object,
@@ -112,4 +115,10 @@ const filename = computed({
         return ret;
     },
 });
+
+const { emit } = useEventsBus();
+
+const handleDrag = (e) => {
+    emit("select_file", props.file.id);
+};
 </script>

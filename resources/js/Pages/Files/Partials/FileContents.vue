@@ -7,6 +7,7 @@
             :mode="displayMode"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :moveFileToFolder="moveFileToFolder"
         />
         <file-item
             v-for="file in files.data"
@@ -22,6 +23,7 @@
 <script setup>
 import FileItem from "@/Components/FileItem/index.vue";
 import FolderItem from "@/Components/FolderItem/index.vue";
+import { Inertia } from "@inertiajs/inertia";
 const props = defineProps({
     files: {
         type: Object,
@@ -43,6 +45,7 @@ const props = defineProps({
     },
 });
 
-console.log("props.folders");
-console.log(props.folders);
+const moveFileToFolder = (file_id, folder_id) => {
+    Inertia.put(route("files.update.folder", folder_id), { id: file_id });
+};
 </script>

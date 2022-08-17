@@ -8,3 +8,4 @@ export * from "./useNotifications";
 export * from "./useGymRevForm";
 export * from "./parseNotificationResponse";
 export * from "./getFormObjectFromData";
+export * from "./eventBus";

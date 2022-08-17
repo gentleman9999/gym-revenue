@@ -80,7 +80,7 @@ export default {
         const field = computed(() => (item.filename ? "filename" : "name"));
 
         let handleSubmit = async () => {
-            if (type === "File") {
+            if (type.value == "File") {
                 await form.dirty().put(route("files.rename", item.id));
                 emit("success");
             } else {

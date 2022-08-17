@@ -1,11 +1,15 @@
 <template>
     <div
-        class="relative"
+        class="folder"
         :class="{
             'folder-desktop': props.mode === 'desktop',
             'folder-list': props.mode === 'list',
         }"
         @contextmenu="$event.preventDefault()"
+        @dragover="$event.preventDefault()"
+        @dragenter="$event.preventDefault()"
+        @drop="handleDrop()"
+        @dblclick="browseFolder()"
     >
         <folder-icon
             :icon-size="iconSize"
@@ -31,6 +35,12 @@
     </div>
 </template>
 <style scoped>
+.folder {
+    @apply relative cursor-pointer;
+}
+.folder:-moz-drag-over {
+    @apply bg-primary/50;
+}
 .folder-desktop {
     @apply sm:w-1/12 w-1/3 flex flex-col items-center;
 }
@@ -42,10 +52,12 @@
 }
 </style>
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import FolderIcon from "./Folder.vue";
 import FolderDetail from "./FolderDetail.vue";
 import FolderContextMenu from "./FolderContextMenu.vue";
+import { useEventsBus } from "@/utils";
+
 const props = defineProps({
     folder: {
         type: Object,
@@ -62,6 +74,9 @@ const props = defineProps({
         type: Function,
     },
     handleTrash: {
+        type: Function,
+    },
+    moveFileToFolder: {
         type: Function,
     },
 });
@@ -107,4 +122,21 @@ const foldername = computed({
         return ret;
     },
 });
+
+const selectedFile = ref(null);
+const handleDrop = () => {
+    props.moveFileToFolder(selectedFile.value, props.folder.id);
+};
+
+const setFile = (data) => {
+    selectedFile.value = data[0];
+};
+
+const { bus } = useEventsBus();
+watch(() => bus.value.get("select_file"), setFile);
+
+const browseFolder = () => {
+    // TODO browse to the folder
+    console.log("browse folder");
+};
 </script>

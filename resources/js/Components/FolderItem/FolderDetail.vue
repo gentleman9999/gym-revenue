@@ -1,5 +1,5 @@
 <template>
-    <div class="w-1/6"></div>
+    <div class="w-1/6">{{ 1 }} file(s)</div>
     <div class="w-1/6 uppercase">folder</div>
     <div class="w-2/6">
         {{ defaultTransform.created_at(folder.created_at) }}
