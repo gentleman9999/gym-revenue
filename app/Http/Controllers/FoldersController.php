@@ -20,6 +20,7 @@ class FoldersController extends Controller
         $page_count = 10;
 
         $folders = Folder::whereClientId($client_id)
+                ->with('files')
                 ->filter($request->only('search', 'trashed'))
                 ->sort()
                 ->paginate($page_count);

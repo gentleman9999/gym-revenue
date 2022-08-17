@@ -47,10 +47,12 @@ class FilesController extends Controller
                 ->appends(request()->except('page'));
         }
 
+        $folders = Folder::with('files')
+            ->get();
 
         return Inertia::render('Files/Show', [
             'files' => $files,
-            'folders' => Folder::all(),
+            'folders' => $folders,
         ]);
     }
 
