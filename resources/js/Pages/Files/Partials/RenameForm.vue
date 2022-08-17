@@ -86,7 +86,7 @@ export default {
                 await form.dirty().put(route("files.rename", item.id));
                 emit("success");
             } else {
-                await form.dirty().put(route("folders.update", item.id));
+                await form.put(route("folders.update", item.id));
                 emit("success");
             }
         };
