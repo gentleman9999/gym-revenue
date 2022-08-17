@@ -56,6 +56,7 @@ import FolderIcon from "./Folder.vue";
 import FolderDetail from "./FolderDetail.vue";
 import FolderContextMenu from "./FolderContextMenu.vue";
 import { useEventsBus } from "@/utils";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     folder: {
@@ -133,6 +134,6 @@ watch(() => bus.value.get("select_file"), setFile);
 
 const browseFolder = () => {
     // TODO browse to the folder
-    console.log("browse folder");
+    Inertia.get(route("folders.viewFiles", props.folder.id));
 };
 </script>
