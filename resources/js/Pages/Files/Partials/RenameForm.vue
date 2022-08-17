@@ -59,6 +59,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { computed } from "@vue/runtime-core";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
@@ -80,13 +81,14 @@ export default {
         const field = computed(() => (item.filename ? "filename" : "name"));
 
         let handleSubmit = async () => {
-            console.log("form");
-            console.log(form);
             if (type.value == "File") {
                 await form.dirty().put(route("files.rename", item.id));
                 emit("success");
             } else {
-                await form.put(route("folders.update", item.id));
+                await Inertia.put(route("folders.update", item.id), {
+                    id: item.id,
+                    name: form.name,
+                });
                 emit("success");
             }
         };
