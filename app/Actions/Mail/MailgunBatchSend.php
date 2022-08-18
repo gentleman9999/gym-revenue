@@ -2,8 +2,7 @@
 
 namespace App\Actions\Mail;
 
-use App\Domain\Email\Models\MailgunCallback;
-use Carbon\Carbon;
+//use App\Domain\Email\Models\MailgunCallback;
 use Lorisleiva\Actions\Action;
 use Mailgun\Mailgun;
 
@@ -36,9 +35,9 @@ class MailgunBatchSend extends Action
      * @param array $recipients
      * @param string $subject
      * @param string $markup
-     * @return mixed
+     * @return \Psr\Http\Message\ResponseInterface|\Mailgun\Model\Message\SendResponse
      */
-    public function handle(array $recipients, string $subject, string $markup)
+    public function handle(array $recipients, string $subject, string $markup): \Psr\Http\Message\ResponseInterface|\Mailgun\Model\Message\SendResponse
     {
         info('Mailgun, I choose you! Use BatchSend~~~~~');
 
@@ -52,13 +51,6 @@ class MailgunBatchSend extends Action
             'html' => $markup,
         ];
 
-        $result = $mg->messages()->send($domain, $parameters);
-        MailgunCallback::create([
-            'event' => 'sent',
-            'timestamp' => Carbon::now(),
-            'MessageId' => substr($result->getId(), 1, -1),
-        ]);
-
-        return $result;
+        return $mg->messages()->send($domain, $parameters);
     }
 }
