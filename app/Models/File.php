@@ -25,7 +25,7 @@ class File extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'entity_type', 'entity_id', 'visibility', 'hidden', 'type']; //'deleted_at'
+    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'folder', 'entity_type', 'entity_id', 'visibility', 'hidden', 'type']; //'deleted_at'
 
     protected $casts = [
         'permissions' => 'array',

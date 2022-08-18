@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Folder extends Model
 {
@@ -16,6 +17,11 @@ class Folder extends Model
     public $incrementing = false;
 
     protected $fillable = ['id', 'name']; //'deleted_at'
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(File::class, 'folder', 'id');
+    }
 
     public function scopeFilter($query, array $filters)
     {
