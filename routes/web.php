@@ -157,7 +157,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function
 Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(function () {
     Route::get('/', \App\Http\Controllers\FoldersController::class . '@index')->name('folders');
     Route::post('/', \App\Domain\Folders\Actions\CreateFolder::class)->name('folders.store');
-    Route::get('/viewFiles/{id}', \App\Http\Controllers\FoldersController::class . '@viewFiles')->name('folders.viewFiles');
+    Route::get('/viewFiles/{folder}', \App\Http\Controllers\FoldersController::class . '@viewFiles')->name('folders.viewFiles');
     Route::put('/{folder}', \App\Domain\Folders\Actions\UpdateFolder::class)->name('folders.update');
     Route::delete('/{folder}', \App\Domain\Folders\Actions\DeleteFolder::class)->name('folders.delete');
 });
