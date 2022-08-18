@@ -45,7 +45,7 @@ class FoldersController extends Controller
 
         return Inertia::render('Files/Show', [
             'files' => ['data' => $files],
-            'folderName' => "F32",
+            'folderName' => $folder->name,
         ]);
     }
 }
