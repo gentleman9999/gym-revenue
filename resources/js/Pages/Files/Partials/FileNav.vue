@@ -6,10 +6,10 @@
         >
             <font-awesome-icon icon="home" class="text-base-content" />
         </span>
-        <span class="pr-1">
+        <span class="pr-1" v-if="folderName">
             <font-awesome-icon icon="angle-right" class="text-base-content" />
         </span>
-        <span>Folder</span>
+        <span v-if="folderName">{{ folderName }}</span>
     </div>
 </template>
 <style scoped>
@@ -26,6 +26,12 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faHome, faAngleRight } from "@fortawesome/pro-solid-svg-icons";
 library.add(faHome, faAngleRight);
+
+const props = defineProps({
+    folderName: {
+        type: String,
+    },
+});
 
 const goRoot = () => {
     Inertia.get(route("files"));

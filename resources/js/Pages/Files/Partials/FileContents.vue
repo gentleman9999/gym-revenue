@@ -50,4 +50,7 @@ const moveFileToFolder = (file_id, folder_id) => {
         folder: folder_id,
     });
 };
+
+console.log("props.files");
+console.log(props.files);
 </script>

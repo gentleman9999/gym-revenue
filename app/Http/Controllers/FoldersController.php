@@ -43,9 +43,9 @@ class FoldersController extends Controller
         $files = File::whereFolder($folder->id)
             ->get();
 
-
-        return Inertia::render('Folders/Show', [
-            'files' => $files,
+        return Inertia::render('Files/Show', [
+            'files' => ['data' => $files],
+            'folderName' => "F32",
         ]);
     }
 }

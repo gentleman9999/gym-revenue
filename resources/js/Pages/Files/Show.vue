@@ -4,14 +4,14 @@
     </LayoutHeader>
     <div class="files-container">
         <div class="row">
-            <file-actions />
+            <file-actions :folderName="folderName" />
             <file-display-mode
                 :display-mode="displayMode"
                 :handleChange="updateDisplayMode"
             />
         </div>
         <div class="row">
-            <file-nav />
+            <file-nav :folderName="folderName" />
             <file-search />
         </div>
         <file-contents
@@ -91,6 +91,9 @@ const props = defineProps({
     filters: {
         type: Array,
     },
+    folderName: {
+        type: String,
+    },
 });
 
 const selectedItem = ref(null);
@@ -133,4 +136,7 @@ const updateDisplayMode = (value) => {
 const goRoot = () => {
     Inertia.get(route("files"));
 };
+
+console.log("props.folderName");
+console.log(props);
 </script>
