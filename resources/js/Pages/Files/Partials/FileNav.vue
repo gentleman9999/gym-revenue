@@ -2,7 +2,7 @@
     <div class="row space-x-2 cursor-pointer">
         <span
             @click="goRoot()"
-            class="hover:bg-neutral-500/20 rounded-sm px-2 py-1"
+            class="hover:bg-base-content/20 rounded px-2 py-1"
         >
             <font-awesome-icon icon="home" class="text-base-content" />
         </span>
