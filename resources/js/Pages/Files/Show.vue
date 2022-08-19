@@ -2,121 +2,141 @@
     <LayoutHeader title="File Management">
         <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
     </LayoutHeader>
-    <gym-revenue-crud
-        base-route="files"
-        model-name="File"
-        model-key="file"
-        :fields="fields"
-        :resource="files"
-        titleField="filename"
-        :card-component="FileDataCard"
-        :actions="{
-            edit: false,
-            rename: {
-                label: 'Rename',
-                handler: ({ data }) => {
-                    selectedFile = data;
-                },
-            },
-            permissions: {
-                label: 'Permissions',
-                handler: ({ data }) => {
-                    selectedFilePermissions = data;
-                },
-            },
-        }"
-        :top-actions="{
-            create: {
-                label: 'Upload',
-                handler: () => {
-                    Inertia.visitInModal(route('files.upload'));
-                },
-            },
-        }"
-    />
+    <div class="files-container">
+        <div class="row">
+            <file-actions :folderName="folderName" />
+            <file-display-mode
+                :display-mode="displayMode"
+                :handleChange="updateDisplayMode"
+            />
+        </div>
+        <div class="row">
+            <file-nav :folderName="folderName" />
+            <file-search />
+        </div>
+        <file-contents
+            :files="files"
+            :folders="$page.props.folders"
+            :displayMode="displayMode"
+            :handleRename="handleRename"
+            :handlePermissions="handlePermissions"
+            :handleTrash="handleTrash"
+        />
+    </div>
+
+    <!-- Section for Modals -->
     <daisy-modal
-        id="filenameModal"
-        ref="filenameModal"
-        @close="selectedFile = null"
+        id="renameModal"
+        ref="renameModal"
+        @close="selectedItem = null"
     >
-        <file-form
-            :file="selectedFile"
-            v-if="selectedFile"
-            @success="filenameModal.close"
+        <rename-form
+            :item="selectedItem"
+            v-if="selectedItem"
+            @success="renameModal.close"
         />
     </daisy-modal>
 
     <daisy-modal
         ref="permissionsModal"
         id="permissionsModal"
-        @close="selectedFilePermissions = null"
+        @close="selectedItemPermissions = null"
     >
         <h1 class="font-bold mb-4">Modify File Permissions</h1>
         <Permissions-Form
-            :file="selectedFilePermissions"
-            v-if="selectedFilePermissions"
+            :file="selectedItemPermissions"
+            v-if="selectedItemPermissions"
             @success="permissionsModal.close"
         />
     </daisy-modal>
 </template>
 
 <style scoped>
-td > div {
-    @apply h-16;
+.files-container {
+    @apply lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset relative;
+}
+
+.row {
+    @apply flex flex-row justify-between items-center;
 }
 </style>
 
-<script>
-import { defineComponent, watchEffect, ref } from "vue";
+<script setup>
+import { watchEffect, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
-import FileForm from "./Partials/FileForm.vue";
+import RenameForm from "./Partials/RenameForm.vue";
 import PermissionsForm from "./Partials/PermissionsForm.vue";
-import FileDataCard from "./Partials/FileDataCard.vue";
-import FilenameField from "./Partials/FilenameField.vue";
 import { Inertia } from "@inertiajs/inertia";
 import DaisyModal from "@/Components/DaisyModal.vue";
-
-export default defineComponent({
-    components: {
-        LayoutHeader,
-        GymRevenueCrud,
-        FileForm,
-        DaisyModal,
-        PermissionsForm,
+import FileItem from "@/Components/FileItem/index.vue";
+import Button from "@/Components/Button.vue";
+import FileDisplayMode from "./Partials/FileDisplayMode.vue";
+import FileActions from "./Partials/FileActions.vue";
+import FileContents from "./Partials/FileContents.vue";
+import FileSearch from "./Partials/FileSearch.vue";
+import FileNav from "./Partials/FileNav.vue";
+const props = defineProps({
+    sessions: {
+        type: Array,
     },
-    props: ["sessions", "files", "title", "isClientUser", "filters"],
-    setup() {
-        const selectedFile = ref(null);
-        const selectedFilePermissions = ref(null);
-
-        const filenameModal = ref(null);
-        const permissionsModal = ref(null);
-
-        watchEffect(() => {
-            if (selectedFile.value) {
-                filenameModal.value.open();
-            }
-            if (selectedFilePermissions.value) {
-                permissionsModal.value.open();
-            }
-        });
-
-        const fields = [
-            { name: "filename", component: FilenameField },
-            "size",
-            "created_at",
-            "updated_at",
-        ];
-        return {
-            filenameModal,
-            selectedFile,
-            permissionsModal,
-            selectedFilePermissions,
-            fields,
-            FileDataCard,
-            Inertia,
-        };
+    files: {
+        type: Array,
+    },
+    title: {
+        type: String,
+    },
+    isClientUser: {
+        type: Boolean,
+    },
+    filters: {
+        type: Array,
+    },
+    folderName: {
+        type: String,
     },
 });
+
+const selectedItem = ref(null);
+const selectedItemPermissions = ref(null);
+
+const handleRename = (data, type) => {
+    selectedItem.value = data;
+};
+
+const handlePermissions = (data) => {
+    selectedItemPermissions.value = data;
+};
+
+const handleTrash = (data, type) => {
+    if (type === "file") {
+        Inertia.delete(route("files.trash", data.id));
+    } else {
+        Inertia.delete(route("folders.delete", data.id));
+    }
+};
+
+const renameModal = ref(null);
+const permissionsModal = ref(null);
+
+watchEffect(() => {
+    if (selectedItem.value) {
+        renameModal.value.open();
+    }
+    if (selectedItemPermissions.value) {
+        permissionsModal.value.open();
+    }
+});
+
+const displayMode = ref("desktop");
+
+const updateDisplayMode = (value) => {
+    displayMode.value = value;
+};
+
+const goRoot = () => {
+    Inertia.get(route("files"));
+};
+
+console.log("props.folderName");
+console.log(props);
 </script>

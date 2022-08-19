@@ -10,3 +10,4 @@ export * from "./parseNotificationResponse";
 export * from "./getFormObjectFromData";
 export * from "./getFormObjectFromData";
 export * from "./getAvatarImg";
+export * from "./eventBus";
