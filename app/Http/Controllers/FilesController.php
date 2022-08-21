@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
+use App\Models\Folder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -19,36 +20,69 @@ class FilesController extends Controller
             return Redirect::route('dashboard');
         }
 
+        $isSearching = $request->has('search');
+
         $page_count = 10;
         $roles = request()->user()->getRoles();
         $security_group = request()->user()->securityGroup();
 
-        if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
-            $files = File::with('client')
-                ->whereClientId($client_id)
-                ->whereUserId(null)
-                ->whereHidden(false)
-                ->whereEntityType(null)
-                ->filter($request->only('search', 'trashed'))
-                ->sort()
-                ->paginate($page_count)
-                ->appends(request()->except('page'));
+        if ($isSearching) {
+            if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
+                $files = File::with('client')
+                    ->whereClientId($client_id)
+                    ->whereUserId(null)
+                    ->whereHidden(false)
+                    ->whereEntityType(null)
+                    ->filter($request->only('search', 'trashed'))
+                    ->sort()
+                    ->paginate($page_count)
+                    ->appends(request()->except('page'));
+            } else {
+                $files = File::with('client')
+                    ->whereClientId($client_id)
+                    ->whereUserId(null)
+                    ->whereHidden(false)
+                    ->whereEntityType(null)
+                    ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
+                    ->filter($request->only('search', 'trashed'))
+                    ->sort()
+                    ->paginate($page_count)
+                    ->appends(request()->except('page'));
+            }
         } else {
-            $files = File::with('client')
-                ->whereClientId($client_id)
-                ->whereUserId(null)
-                ->whereHidden(false)
-                ->whereEntityType(null)
-                ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
-                ->filter($request->only('search', 'trashed'))
-                ->sort()
-                ->paginate($page_count)
-                ->appends(request()->except('page'));
+            if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
+                $files = File::with('client')
+                    ->whereClientId($client_id)
+                    ->whereUserId(null)
+                    ->whereHidden(false)
+                    ->whereFolder(null)
+                    ->whereEntityType(null)
+                    ->filter($request->only('search', 'trashed'))
+                    ->sort()
+                    ->paginate($page_count)
+                    ->appends(request()->except('page'));
+            } else {
+                $files = File::with('client')
+                    ->whereClientId($client_id)
+                    ->whereUserId(null)
+                    ->whereHidden(false)
+                    ->whereFolder(null)
+                    ->whereEntityType(null)
+                    ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
+                    ->filter($request->only('search', 'trashed'))
+                    ->sort()
+                    ->paginate($page_count)
+                    ->appends(request()->except('page'));
+            }
         }
 
 
+        $folders = Folder::with('files')
+            ->get();
+
         return Inertia::render('Files/Show', [
             'files' => $files,
+            'folders' => $folders,
         ]);
     }
 
