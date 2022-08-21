@@ -1,13 +1,12 @@
 ---
 name: Bug report
-about: Report a bug
-title: "[BUG] "
+about: Create a report to help us improve
+title: "[BUG]"
 labels: bug
 assignees: ''
 
 ---
 
-## Description
 A clear and concise description of what the bug is. You may remove this section if it just repeats what is in the "Expected Behavior" and "Actual Behavior" sections.
 
 ## Steps To Reproduce
