@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./workflows/deploy-common.yml@develop
+    uses: ./workflows/deploy-common
 
 # jobs:
 #   deploy:
