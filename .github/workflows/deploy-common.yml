@@ -1,8 +1,36 @@
 name: Deploy to Develop
 
 on:
-  push:
-    branches: [ develop ]
+  workflow_call:
+    secrets:
+      VAPOR_API_TOKEN:
+        required: true
+      SIDECAR_ACCESS_KEY_ID:
+        required: true
+      SIDECAR_SECRET_ACCESS_KEY:
+        required: true
+      SIDECAR_REGION:
+        required: true
+      SIDECAR_ARTIFACT_BUCKET_NAME:
+        required: true
+      SIDECAR_EXECUTION_ROLE:
+        required: true
+      TOPOL_API_KEY:
+        required: true
+      PUSHER_APP_ID:
+        required: true
+      PUSHER_APP_KEY:
+        required: true
+      PUSHER_APP_SECRET:
+        required: true
+      PUSHER_APP_CLUSTER:
+        required: true
+    inputs:
+      environment:
+        required: true
+        type: string
+    
+      
 
 jobs:
   deploy:
@@ -19,13 +47,16 @@ jobs:
       - name: Require Vapor CLI
         run: composer global require laravel/vapor-cli
       - name: Install Project Dependencies
+        if: github.ref == 'refs/heads/master'
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+      - name: Install Project Dependencies (DEV)
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Clear Config
         run: php artisan config:clear
       - name: Clear Event Handlers
         run: php artisan event-sourcing:clear-event-handlers
       - name: Deploy Environment
-        run: vapor deploy develop --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
+        run: vapor deploy ${{inputs.environment}} --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
           SIDECAR_ACCESS_KEY_ID: ${{ secrets.SIDECAR_ACCESS_KEY_ID }}
