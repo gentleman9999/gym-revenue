@@ -65,7 +65,7 @@ environments:
             # - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
-            - 'php artisan tinker --execute="print_r(config('sidecar'));"'
+            - 'php artisan tinker --execute="print_r(config(\'sidecar\'));"'
             - 'php artisan sidecar:deploy'
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:dev && rm -rf node_modules'
