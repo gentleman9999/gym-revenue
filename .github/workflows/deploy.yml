@@ -5,22 +5,34 @@ on:
     branches: [ develop, staging, master ]
 
 jobs:
-  deploy_master:
-    if: github.ref == 'refs/heads/master'
-    uses: ./.github/workflows/deploy-common.yml
-    with:
-      environment: production
-  deploy_staging:
-    if: github.ref == 'refs/heads/staging'
-    uses: ./.github/workflows/deploy-common.yml
-    with:
-      environment: staging
-  deploy_develop:
-    if: github.ref == 'refs/heads/develop'
-    # uses: GymRevenue/gym-revenue/.github/workflows/deploy-common.yml@develop
-    uses: ./.github/workflows/deploy-common.yml
-    with:
-      environment: develop
+  deploy:
+    steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.5
+      - name: Call Deploy Script
+        id: deploy
+        uses: ./.github/workflows/deploy-common.yml
+        with:
+          environment: ${{ steps.branch-name.outputs.current_branch }}
+
+# jobs:
+#   deploy_master:
+#     if: github.ref == 'refs/heads/master'
+#     uses: ./.github/workflows/deploy-common.yml
+#     with:
+#       environment: production
+#   deploy_staging:
+#     if: github.ref == 'refs/heads/staging'
+#     uses: ./.github/workflows/deploy-common.yml
+#     with:
+#       environment: staging
+#   deploy_develop:
+#     if: github.ref == 'refs/heads/develop'
+#     # uses: GymRevenue/gym-revenue/.github/workflows/deploy-common.yml@develop
+#     uses: ./.github/workflows/deploy-common.yml
+#     with:
+#       environment: develop
 # jobs:
 #   deploy:
 #     runs-on: ubuntu-latest
