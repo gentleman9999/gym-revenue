@@ -7,18 +7,18 @@ on:
 jobs:
   deploy_master:
     if: github.ref == 'refs/heads/master'
-    uses: ./.github/workflows/deploy-common.yml@master
+    uses: ./.github/workflows/deploy-common.yml
     with:
       environment: production
   deploy_staging:
     if: github.ref == 'refs/heads/staging'
-    uses: ./.github/workflows/deploy-common.yml@staging
+    uses: ./.github/workflows/deploy-common.yml
     with:
       environment: staging
   deploy_develop:
     if: github.ref == 'refs/heads/develop'
     # uses: GymRevenue/gym-revenue/.github/workflows/deploy-common.yml@develop
-    uses: ./.github/workflows/deploy-common.yml@develop
+    uses: ./.github/workflows/deploy-common.yml
     with:
       environment: develop
 # jobs:
