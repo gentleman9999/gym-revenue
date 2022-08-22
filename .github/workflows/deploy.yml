@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     steps:
       - name: Get branch name
         id: branch-name
