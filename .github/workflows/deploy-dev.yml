@@ -27,7 +27,7 @@ jobs:
       - name: get sidecar config
         run: php artisan tinker --execute="print_r(config('sidecar'));"
         env:
-          SIDECAR_REGION: ${{ secrets.SIDECAR_REGION }}
+          SIDECAR_REGION: "us-west-1"
       - name: Deploy Environment
         run: vapor deploy develop
         env:
