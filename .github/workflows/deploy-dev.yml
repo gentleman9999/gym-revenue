@@ -26,6 +26,8 @@ jobs:
         run: php artisan event-sourcing:clear-event-handlers
       - name: get sidecar config
         run: php artisan tinker --execute="print_r(config('sidecar'));"
+        env:
+          SIDECAR_REGION: ${{ secrets.SIDECAR_REGION }}
       - name: Deploy Environment
         run: vapor deploy develop
         env:
