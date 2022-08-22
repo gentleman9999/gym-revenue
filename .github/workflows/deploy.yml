@@ -73,5 +73,6 @@ jobs:
           PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
           PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
           PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
-          VITE_PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
+          # VITE_PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
+          VITE_PUSHER_APP_KEY: test_vite_app_key
           VITE_PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
