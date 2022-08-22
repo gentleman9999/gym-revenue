@@ -14,7 +14,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v5.5
       - name: Call Deploy Script
-        id: deploy
+        id: deploy_common
         uses: ./.github/workflows/deploy-common.yml
         with:
           environment: ${{ steps.branch-name.outputs.current_branch }}
