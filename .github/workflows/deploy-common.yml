@@ -36,38 +36,38 @@ jobs:
     steps:
       - name: temp
         run: echo 'here'
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          tools: composer:v2
-          coverage: none
-      - name: Require Vapor CLI
-        run: composer global require laravel/vapor-cli
-      - name: Install Project Dependencies
-        if: github.ref == 'refs/heads/master'
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-      - name: Install Project Dependencies (DEV)
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
-      - name: Clear Config
-        run: php artisan config:clear
-      - name: Clear Event Handlers
-        run: php artisan event-sourcing:clear-event-handlers
-      - name: Deploy Environment
-        run: vapor deploy ${{inputs.environment}} --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-          SIDECAR_ACCESS_KEY_ID: ${{ secrets.SIDECAR_ACCESS_KEY_ID }}
-          SIDECAR_SECRET_ACCESS_KEY: ${{ secrets.SIDECAR_SECRET_ACCESS_KEY }}
-          SIDECAR_REGION: ${{ secrets.SIDECAR_REGION }}
-          SIDECAR_ARTIFACT_BUCKET_NAME: ${{ secrets.SIDECAR_ARTIFACT_BUCKET_NAME }}
-          SIDECAR_EXECUTION_ROLE: ${{ secrets.SIDECAR_EXECUTION_ROLE }}
-          TOPOL_API_KEY: ${{ secrets.TOPOL_API_KEY }}
-          PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
-          PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
-          PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
-          PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
-          VITE_PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
-          VITE_PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
+      # - name: Setup PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: 8.1
+      #     tools: composer:v2
+      #     coverage: none
+      # - name: Require Vapor CLI
+      #   run: composer global require laravel/vapor-cli
+      # - name: Install Project Dependencies
+      #   if: github.ref == 'refs/heads/master'
+      #   run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+      # - name: Install Project Dependencies (DEV)
+      #   run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      # - name: Clear Config
+      #   run: php artisan config:clear
+      # - name: Clear Event Handlers
+      #   run: php artisan event-sourcing:clear-event-handlers
+      # - name: Deploy Environment
+      #   run: vapor deploy ${{inputs.environment}} --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
+      #   env:
+      #     VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
+      #     SIDECAR_ACCESS_KEY_ID: ${{ secrets.SIDECAR_ACCESS_KEY_ID }}
+      #     SIDECAR_SECRET_ACCESS_KEY: ${{ secrets.SIDECAR_SECRET_ACCESS_KEY }}
+      #     SIDECAR_REGION: ${{ secrets.SIDECAR_REGION }}
+      #     SIDECAR_ARTIFACT_BUCKET_NAME: ${{ secrets.SIDECAR_ARTIFACT_BUCKET_NAME }}
+      #     SIDECAR_EXECUTION_ROLE: ${{ secrets.SIDECAR_EXECUTION_ROLE }}
+      #     TOPOL_API_KEY: ${{ secrets.TOPOL_API_KEY }}
+      #     PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
+      #     PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
+      #     PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
+      #     PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
+      #     VITE_PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
+      #     VITE_PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
