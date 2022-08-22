@@ -68,5 +68,6 @@ environments:
             - 'php artisan sidecar:deploy'
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:dev && rm -rf node_modules'
+            - 'php artisan tinker --execute="env(''VITE_PUSHER_APP_KEY'')"'
         deploy:
           - 'php artisan sidecar:activate'
