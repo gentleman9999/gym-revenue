@@ -6,18 +6,22 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v5.5
-      - name: Call Deploy Script
-        id: deploy_common
-        uses: ./workflows/deploy-common.yml
-        with:
-          environment: ${{ steps.branch-name.outputs.current_branch }}
+    uses: ./workflows/deploy-common.yml
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#       - name: Get branch name
+#         id: branch-name
+#         uses: tj-actions/branch-names@v5.5
+#       - name: Call Deploy Script
+#         id: deploy_common
+#         uses: ./workflows/deploy-common.yml
+#         with:
+#           environment: ${{ steps.branch-name.outputs.current_branch }}
 
 # jobs:
 #   deploy_master:
