@@ -56,22 +56,24 @@ class JetstreamServiceProvider extends ServiceProvider
 
             if ($user &&
                 Hash::check($request->password, $user->password)) {
-                dd($user->toArray());
+                // dd($user->toArray());
                 //Successfull CRM Auth -
                 //Let's set some info in our cookie session so we
                 // can use it in middleware / global scopes
                 // without having to hit the db
-                $team = $user->default_team ?? null;
-                session()->put('current_team_id', $team->id);
-                session()->put(
-                    'current_team',
-                    [
-                        'id' => $team->id,
-                        'name' => $team->name,
-                        'client_id' => $team->client_id,
-                    ]
-                );
-                session()->put('client_id', $team->client_id);
+                $team = $user->default_team ?? false;
+                if($team){
+                    session()->put('current_team_id', $team->id);
+                    session()->put(
+                        'current_team',
+                        [
+                            'id' => $team->id,
+                            'name' => $team->name,
+                            'client_id' => $team->client_id,
+                        ]
+                    );
+                }
+                session()->put('client_id', $user->client_id);
                 session()->put('user_id',  $user->id);
 
                 return $user;
