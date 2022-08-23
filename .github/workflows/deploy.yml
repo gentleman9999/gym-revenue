@@ -40,7 +40,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: development
+    environment: develop
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -52,17 +52,12 @@ jobs:
           coverage: none
       - name: Require Vapor CLI
         run: composer global require laravel/vapor-cli
-      - name: Install Project Dependencies (DEV)
+      - name: Install Project Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
-      # - name: Install Project Dependencies
-      #   if: github.ref == 'refs/heads/master'
-      #   run: composer install --no-interaction --prefer-dist --optimize-autoloader
       - name: Clear Config
         run: php artisan config:clear
       - name: Clear Event Handlers
         run: php artisan event-sourcing:clear-event-handlers
-      - name: temp
-        run: echo {{env.PUSHER_APP_KEY}}
       - name: Deploy Environment
         run: vapor deploy develop --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
         env:
