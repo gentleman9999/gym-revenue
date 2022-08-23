@@ -34,7 +34,6 @@ jobs:
           SIDECAR_REGION: ${{ secrets.SIDECAR_REGION }}
           SIDECAR_ARTIFACT_BUCKET_NAME: ${{ secrets.SIDECAR_ARTIFACT_BUCKET_NAME }}
           SIDECAR_EXECUTION_ROLE: ${{ secrets.SIDECAR_EXECUTION_ROLE }}
-          TOPOL_API_KEY: ${{ secrets.TOPOL_API_KEY }}
           PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
           PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
           PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
