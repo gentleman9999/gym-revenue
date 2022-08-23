@@ -26,7 +26,7 @@ jobs:
       - name: Clear Event Handlers
         run: php artisan event-sourcing:clear-event-handlers
       - name: Deploy Environment
-        run: vapor deploy develop --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
+        run: vapor deploy production --commit="${{ github.event.head_commit.id }}" --message="${{ github.event.head_commit.message }}" --without-waiting
         env:
           VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
           SIDECAR_ACCESS_KEY_ID: ${{ secrets.SIDECAR_ACCESS_KEY_ID }}
