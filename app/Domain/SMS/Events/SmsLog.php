@@ -5,7 +5,7 @@ namespace App\Domain\SMS\Events;
 use App\Models\ClientSmsLog;
 use App\StorableEvents\EntityCreated;
 
-class TwilioTracked extends EntityCreated
+class SmsLog extends EntityCreated
 {
     public function getEntity(): string
     {
