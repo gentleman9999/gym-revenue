@@ -18,7 +18,7 @@ class EmailTemplateSeeder extends Seeder
     public function run()
     {
         //TODO: could create more pregenerated ones, and loop over directory
-        $template = json_decode(file_get_contents('database/data/templates/email/basic.json'));
+        $template = json_decode(file_get_contents(realpath(__DIR__."/../../../database/data/templates/email/basic.json")));
 
         $default_markup = $template->markup;
         $default_json = $template->json;
