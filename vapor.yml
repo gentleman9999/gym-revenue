@@ -71,6 +71,6 @@ environments:
             - 'php artisan sidecar:deploy'
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:dev && rm -rf node_modules'
-         deploy:
+        deploy:
            - 'php artisan sidecar:activate'
            - 'php artisan migrate:fresh --seed'
