@@ -24,7 +24,7 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
-          - 'php artisan migrate:fresh --seed'
+          - 'php artisan migrate:fresh --seed --force'
     staging:
         domain: stage.gymrevenue.com
         memory: 2048
