@@ -35,7 +35,7 @@ class SecondaryTeamsSeeder extends Seeder
                     'adam@capeandbay.com',
                     'david@capeandbay.com',
                     'larry@capeandbay.com',
-
+                    'abdur@capeandbay.com',
                 ],
             ],
         ];
