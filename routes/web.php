@@ -159,6 +159,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(functi
     Route::post('/', \App\Domain\Folders\Actions\CreateFolder::class)->name('folders.store');
     Route::get('/viewFiles/{folder}', \App\Http\Controllers\FoldersController::class . '@viewFiles')->name('folders.viewFiles');
     Route::put('/{folder}', \App\Domain\Folders\Actions\UpdateFolder::class)->name('folders.update');
+    Route::put('/sharing/{folder}', \App\Domain\Folders\Actions\UpdateFolderSharing::class)->name('folders.sharing.update');
     Route::delete('/{folder}', \App\Domain\Folders\Actions\DeleteFolder::class)->name('folders.delete');
 });
 

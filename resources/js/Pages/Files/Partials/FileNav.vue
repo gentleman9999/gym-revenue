@@ -9,7 +9,7 @@
         <span class="pr-1" v-if="folderName">
             <font-awesome-icon icon="angle-right" class="text-base-content" />
         </span>
-        <span v-if="folderName">{{ folderName }}</span>
+        <span class="w-max" v-if="folderName">{{ folderName }}</span>
     </div>
 </template>
 <style scoped>

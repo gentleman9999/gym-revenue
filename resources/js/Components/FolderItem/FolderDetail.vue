@@ -11,6 +11,9 @@
         <Button ghost @click="handleRename">
             <font-awesome-icon icon="edit" class="text-base-content" />
         </Button>
+        <Button ghost @click="handlePermissions">
+            <font-awesome-icon icon="sliders-h" class="text-base-content" />
+        </Button>
     </div>
 </template>
 <style scoped></style>
@@ -31,6 +34,9 @@ const props = defineProps({
         required: true,
     },
     handleRename: {
+        type: Function,
+    },
+    handlePermissions: {
         type: Function,
     },
     handleTrash: {

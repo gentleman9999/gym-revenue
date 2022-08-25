@@ -7,7 +7,9 @@
             :mode="displayMode"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :handlePermissions="handlePermissions"
             :moveFileToFolder="moveFileToFolder"
+            :handleShare="handleShare"
         />
         <file-item
             v-for="file in files.data"
@@ -43,6 +45,9 @@ const props = defineProps({
     handleTrash: {
         type: Function,
     },
+    handleShare: {
+        type: Function,
+    },
 });
 
 const moveFileToFolder = (file_id, folder_id) => {
@@ -50,7 +55,4 @@ const moveFileToFolder = (file_id, folder_id) => {
         folder: folder_id,
     });
 };
-
-console.log("props.files");
-console.log(props.files);
 </script>

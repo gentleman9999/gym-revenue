@@ -16,11 +16,50 @@ class Folder extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'name']; //'deleted_at'
+    protected $fillable = ['id', 'name', 'team_ids', 'location_ids', 'user_ids', 'position_ids', 'department_ids', 'role_ids']; //'deleted_at'
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'team_ids' => 'array',
+        'location_ids' => 'array',
+        'user_ids' => 'array',
+        'position_ids' => 'array',
+        'department_ids' => 'array',
+        'role_ids' => 'array',
+    ];
 
     public function files(): HasMany
     {
         return $this->hasMany(File::class, 'folder', 'id');
+    }
+
+    public function hasUserIds()
+    {
+        return $this->whereNotNull('user_ids')->exists();
+    }
+
+    public function hasLocationIds()
+    {
+        return $this->whereNotNull('location_ids')->exists();
+    }
+
+    public function hasTeamIds()
+    {
+        return $this->whereNotNull('team_ids')->exists();
+    }
+
+    public function hasPositionIds()
+    {
+        return $this->whereNotNull('position_ids')->exists();
+    }
+
+    public function hasDepartmentIds()
+    {
+        return $this->whereNotNull('department_ids')->exists();
     }
 
     public function scopeFilter($query, array $filters)

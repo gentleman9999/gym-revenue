@@ -25,7 +25,11 @@
         </div>
     </teleport>
 </template>
-
+<style scoped>
+.modal {
+    @apply items-center;
+}
+</style>
 <script>
 import {
     defineComponent,

@@ -21,6 +21,7 @@
             :handleRename="handleRename"
             :handlePermissions="handlePermissions"
             :handleTrash="handleTrash"
+            :handleShare="handleShare"
         />
     </div>
 
@@ -42,11 +43,19 @@
         id="permissionsModal"
         @close="selectedItemPermissions = null"
     >
-        <h1 class="font-bold mb-4">Modify File Permissions</h1>
-        <Permissions-Form
-            :file="selectedItemPermissions"
+        <h1 class="font-bold mb-4">Modify Permissions</h1>
+        <permissions-form
+            :item="selectedItemPermissions"
             v-if="selectedItemPermissions"
             @success="permissionsModal.close"
+        />
+    </daisy-modal>
+    <daisy-modal ref="shareModal" id="shareModal" @close="folder2Share = null">
+        <h1 class="font-bold mb-4">Share with others</h1>
+        <share-form
+            :item="folder2Share"
+            v-if="folder2Share"
+            @success="shareModal.close"
         />
     </daisy-modal>
 </template>
@@ -69,6 +78,7 @@ import PermissionsForm from "./Partials/PermissionsForm.vue";
 import { Inertia } from "@inertiajs/inertia";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileItem from "@/Components/FileItem/index.vue";
+import ShareForm from "./Partials/ShareForm.vue";
 import Button from "@/Components/Button.vue";
 import FileDisplayMode from "./Partials/FileDisplayMode.vue";
 import FileActions from "./Partials/FileActions.vue";
@@ -79,6 +89,7 @@ const props = defineProps({
     sessions: {
         type: Array,
     },
+
     files: {
         type: Array,
     },
@@ -98,6 +109,7 @@ const props = defineProps({
 
 const selectedItem = ref(null);
 const selectedItemPermissions = ref(null);
+const folder2Share = ref(null);
 
 const handleRename = (data, type) => {
     selectedItem.value = data;
@@ -105,6 +117,10 @@ const handleRename = (data, type) => {
 
 const handlePermissions = (data) => {
     selectedItemPermissions.value = data;
+};
+
+const handleShare = (data) => {
+    folder2Share.value = data;
 };
 
 const handleTrash = (data, type) => {
@@ -117,6 +133,7 @@ const handleTrash = (data, type) => {
 
 const renameModal = ref(null);
 const permissionsModal = ref(null);
+const shareModal = ref(null);
 
 watchEffect(() => {
     if (selectedItem.value) {
@@ -124,6 +141,10 @@ watchEffect(() => {
     }
     if (selectedItemPermissions.value) {
         permissionsModal.value.open();
+    }
+    if (folder2Share.value) {
+        // console.log("folder to share")
+        shareModal.value.open();
     }
 });
 
@@ -136,7 +157,4 @@ const updateDisplayMode = (value) => {
 const goRoot = () => {
     Inertia.get(route("files"));
 };
-
-console.log("props.folderName");
-console.log(props);
 </script>

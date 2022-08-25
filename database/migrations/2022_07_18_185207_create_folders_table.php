@@ -17,9 +17,12 @@ return new class () extends Migration {
             $table->foreignUuid('client_id');
             $table->string('name');
             $table->boolean('hidden')->default(false);
-            $table->foreignUuid('shared_with_client_id')->nullable();
-            $table->foreignUuid('shared_with_team_id')->nullable();
-            $table->foreignUuid('shared_with_location_id')->nullable();
+            $table->json('team_ids')->nullable();
+            $table->json('location_ids')->nullable();
+            $table->json('department_ids')->nullable();
+            $table->json('position_ids')->nullable();
+            $table->json('user_ids')->nullable();
+            $table->json('role_ids')->nullable();
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@
             :folder="folder"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :handlePermissions="handlePermissions"
         />
 
         <folder-context-menu
@@ -30,6 +31,7 @@
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
+            :handleShare="handleShare"
         />
     </div>
 </template>
@@ -76,6 +78,9 @@ const props = defineProps({
     handleTrash: {
         type: Function,
     },
+    handleShare: {
+        type: Function,
+    },
     moveFileToFolder: {
         type: Function,
     },
@@ -86,8 +91,19 @@ const handleRename = () => {
     subMenu.value.blur();
 };
 
+const handlePermissions = () => {
+    props.handlePermissions(props.folder);
+    subMenu.value.blur();
+};
+
 const handleTrash = () => {
     props.handleTrash(props.folder, "folder");
+    subMenu.value.blur();
+};
+
+const handleShare = () => {
+    console.log("handleShare");
+    props.handleShare(props.folder);
     subMenu.value.blur();
 };
 

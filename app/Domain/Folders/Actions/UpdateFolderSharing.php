@@ -5,22 +5,20 @@ namespace App\Domain\Folders\Actions;
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
-use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateFolder
+class UpdateFolderSharing
 {
     use AsAction;
 
-    public function handle(array $payload): Folder
+    public function handle(string $id, array $payload): Folder
     {
-        $id = Uuid::new();
-
-        FolderAggregate::retrieve($id)->create($payload)->persist();
+        $payload['id'] = $id;
+        FolderAggregate::retrieve($id)->updateSharing($payload)->persist();
 
         return Folder::findOrFail($id);
     }
@@ -34,7 +32,12 @@ class CreateFolder
     {
         return [
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
-            'name' => ['required', 'max:50'],
+            'team_ids' => ['array', 'sometimes'],
+            'location_ids' => ['array', 'sometimes'],
+            'user_ids' => ['array', 'sometimes'],
+            'position_ids' => ['array', 'sometimes'],
+            'department_ids' => ['array', 'sometimes'],
+            'role_ids' => ['array', 'sometimes'],
         ];
     }
 
@@ -47,19 +50,20 @@ class CreateFolder
     {
         $current_user = $request->user();
 
-        return $current_user->can('folders.create', Folder::class);
+        return $current_user->can('folders.update', Folder::class);
     }
 
-    public function asController(ActionRequest $request): Folder
+    public function asController($id, ActionRequest $request): Folder
     {
         return $this->handle(
+            $id,
             $request->validated()
         );
     }
 
     public function htmlResponse(Folder $folder): RedirectResponse
     {
-        Alert::success("Folder '{$folder->name}' was created")->flash();
+        Alert::success("Folder '{$folder->name}' was updated")->flash();
 
         //return Redirect::route('folder.edit', $folder->id);
         return Redirect::back();
