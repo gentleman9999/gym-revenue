@@ -24,6 +24,7 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
+          - 'php artisan migrate:fresh --seed'
     staging:
         domain: stage.gymrevenue.com
         memory: 2048
@@ -47,6 +48,7 @@ environments:
             - 'npm ci && npm run build:staging && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
+          - 'php artisan migrate:fresh --seed'
     develop:
         domain: dev.gymrevenue.com
         memory: 2048
@@ -63,9 +65,6 @@ environments:
             - grp-develop-jobs
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install'
-            - 'php artisan tinker --execute="print_r(env(''PUSHER_APP_KEY''))"'
-            - 'php artisan tinker --execute="print_r(env(''VITE_PUSHER_APP_KEY''))"'
-            - 'php artisan tinker --execute="print_r(env(''SIDECAR_REGION''))"'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
