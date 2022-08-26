@@ -17,6 +17,7 @@ environments:
             - grp-production-jobs
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev'
+            - 'COMPOSER_MIRROR_PATH_REPOS=1 composer require fakerphp/faker -n'
             - 'php artisan event:cache'
             - 'php artisan event-sourcing:cache-event-handlers'
             - 'php artisan sidecar:deploy'
@@ -24,7 +25,6 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
-          - 'composer require fakerphp/faker'
           - 'php artisan migrate:fresh --seed --force'
     staging:
         domain: stage.gymrevenue.com
