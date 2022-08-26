@@ -24,6 +24,7 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
           - 'php artisan sidecar:activate'
+          - 'composer require fakerphp/faker'
           - 'php artisan migrate:fresh --seed --force'
     staging:
         domain: stage.gymrevenue.com
