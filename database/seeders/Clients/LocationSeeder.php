@@ -168,25 +168,6 @@ class LocationSeeder extends Seeder
                 'location_no' => 'TZ06',
                 //'gymrevenue_id' => 'TZ06'
             ],
-            // TruFit Athletic Clubs
-            [
-                'client' => 'TruFit Athletic Clubs',
-                'name' => 'TruFit 1',
-                'state' => 'TX',
-                'city' => 'Amarillo',
-                'zip' => '79106',
-                'location_no' => 'TR66',
-                //'gymrevenue_id' => 'ST07'
-            ],
-            [
-                'client' => 'TruFit Athletic Clubs',
-                'name' => 'TruFit 2',
-                'state' => 'TN',
-                'city' => 'Antioch',
-                'zip' => '37013',
-                'location_no' => 'TR77',
-                //'gymrevenue_id' => 'ST07'
-            ],
 
             // Stencils
             [
@@ -358,6 +339,27 @@ class LocationSeeder extends Seeder
                 //'gymrevenue_id' => 'IF39'
             ],
         ];
+
+        if (! App::environment('production')) {
+            $locations[] = [
+                'client' => 'TruFit Athletic Clubs',
+                'name' => 'TruFit 1',
+                'state' => 'TX',
+                'city' => 'Amarillo',
+                'zip' => '79106',
+                'location_no' => 'TR66',
+                //'gymrevenue_id' => 'ST07'
+            ];
+            $locations[] = [
+                'client' => 'TruFit Athletic Clubs',
+                'name' => 'TruFit 2',
+                'state' => 'TN',
+                'city' => 'Antioch',
+                'zip' => '37013',
+                'location_no' => 'TR77',
+                //'gymrevenue_id' => 'ST07'
+            ];
+        }
 
         foreach ($locations as $idx => $location) {
             $client = Client::whereName($location['client'])->first();
