@@ -9,14 +9,22 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Imports\LocationsImport;
 use App\Imports\LocationsImportWithHeader;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
+use Symfony\Component\VarDumper\VarDumper;
 
 class LocationReactor extends Reactor
 {
     public function onLocationImported(LocationsImported $event): void
     {
+        VarDumper::dump("LocationsImported:key = ");
+        VarDumper::dump($event->key);
+        $file = Storage::disk('s3')->get($event->key);
+        VarDumper::dump("LocationsImported:file = ");
+        VarDumper::dump($file);
+        dd();
         $headings = (new HeadingRowImport())->toArray($event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         if (in_array($headings[0][0][0], (new Location())->getFillable())) {
             Excel::import(new LocationsImportWithHeader($event->client), $event->key,  's3', \Maatwebsite\Excel\Excel::CSV);
