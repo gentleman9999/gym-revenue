@@ -388,6 +388,9 @@ class LocationSeeder extends Seeder
         VarDumper::dump("csv:");
         VarDumper::dump($csv);
         Storage::disk('s3')->put($key, $csv);
+        $file = Storage::disk('s3')->get($key);
+        VarDumper::dump("LocationSeeder:file = ");
+        VarDumper::dump($file);
         ImportLocations::run([
             [
                 'key' => $key,
