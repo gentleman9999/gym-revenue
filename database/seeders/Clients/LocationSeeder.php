@@ -383,7 +383,7 @@ class LocationSeeder extends Seeder
 
         ///now do trufit csv import
         VarDumper::dump("Adding TruFit Locations from CSV");
-        $key = 'tmp/trufit-clubs';
+        $key = 'tmp_data/trufit-clubs';
         $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
         Storage::disk('s3')->put($key, $csv);
         ImportLocations::run([
