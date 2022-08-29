@@ -5,6 +5,7 @@ namespace Database\Seeders\Clients;
 use App\Domain\Clients\Actions\CreateClient;
 use App\Enums\ClientServiceEnum;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class ClientSeeder extends Seeder
 {
@@ -18,12 +19,15 @@ class ClientSeeder extends Seeder
         $clients = [
             'The Kalamazoo' => 1,
             'iFit' => 1,
-            'TruFit Athletic Clubs' => 1,
             'Stencils' => 1,
             'The Z' => 1,
             'Sci-Fi Purple Gyms' => 1,
             'FitnessTruth' => 1,
         ];
+
+        if (! App::environment('production')) {
+            $clients['TruFit Athletic Clubs'] = 1;
+        }
 
 
         foreach ($clients as $name => $active) {

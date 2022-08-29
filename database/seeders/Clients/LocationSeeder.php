@@ -7,6 +7,7 @@ use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\ImportLocations;
 use App\Domain\Locations\Projections\Location;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -381,22 +382,22 @@ class LocationSeeder extends Seeder
 //            }
         }
 
-        ///now do trufit csv import
-        VarDumper::dump("Adding TruFit Locations from CSV");
-        $key = 'tmp_data/trufit-clubs';
-        $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
-        VarDumper::dump("csv:");
-        VarDumper::dump($csv);
-        Storage::disk('s3')->put($key, $csv);
-        $file = Storage::disk('s3')->get($key);
-        VarDumper::dump("LocationSeeder:file = ");
-        VarDumper::dump($file);
-        ImportLocations::run([
-            [
-                'key' => $key,
-                'extension' => 'csv',
-                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
-            ],
-        ]);
+
+        if (! App::environment('production')) {
+            ///now do trufit csv import
+            VarDumper::dump("Adding TruFit Locations from CSV");
+            $key = 'tmp_data/trufit-clubs';
+            $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
+            Storage::disk('s3')->put($key, $csv);
+            $file = Storage::disk('s3')->get($key);
+
+            ImportLocations::run([
+                [
+                    'key' => $key,
+                    'extension' => 'csv',
+                    'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
+                ],
+            ]);
+        }
     }
 }

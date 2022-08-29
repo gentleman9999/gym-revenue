@@ -99,8 +99,6 @@ class SecondaryTeamsSeeder extends Seeder
                 'client_id' => $clients['The Z']->id,
             ],
 
-            // TruFit
-
             // Stencils
             [
                 'name' => 'Stencils Seattle',
