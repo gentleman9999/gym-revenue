@@ -340,7 +340,7 @@ class LocationSeeder extends Seeder
             ],
         ];
 
-        if (! App::environment('production')) {
+        if (! App::environment(['production', 'staging'])) {
             $locations[] = [
                 'client' => 'TruFit Athletic Clubs',
                 'name' => 'TruFit 1',
@@ -385,7 +385,7 @@ class LocationSeeder extends Seeder
         }
 
 
-        if (! App::environment('production')) {
+        if (! App::environment(['production', 'staging'])) {
             ///now do trufit csv import
             VarDumper::dump("Adding TruFit Locations from CSV");
             $key = 'tmp_data/trufit-clubs';

@@ -25,7 +25,7 @@ class ClientSeeder extends Seeder
             'FitnessTruth' => 1,
         ];
 
-        if (! App::environment('production')) {
+        if (! App::environment(['production', 'staging'])) {
             $clients['TruFit Athletic Clubs'] = 1;
         }
 
