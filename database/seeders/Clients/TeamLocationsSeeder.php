@@ -50,7 +50,6 @@ class TeamLocationsSeeder extends Seeder
                 'name' => 'team-location',
                 'value' => 'TZ01',
             ],
-            // TruFit
             // Stencils
             [
                 'team_id' => Team::fetchTeamIDFromName('Stencils Portland'),

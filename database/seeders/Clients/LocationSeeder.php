@@ -7,6 +7,7 @@ use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\ImportLocations;
 use App\Domain\Locations\Projections\Location;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -166,25 +167,6 @@ class LocationSeeder extends Seeder
                 'zip' => '96795',
                 'location_no' => 'TZ06',
                 //'gymrevenue_id' => 'TZ06'
-            ],
-            // TruFit Athletic Clubs
-            [
-                'client' => 'TruFit Athletic Clubs',
-                'name' => 'TruFit 1',
-                'state' => 'TX',
-                'city' => 'Amarillo',
-                'zip' => '79106',
-                'location_no' => 'TR66',
-                //'gymrevenue_id' => 'ST07'
-            ],
-            [
-                'client' => 'TruFit Athletic Clubs',
-                'name' => 'TruFit 2',
-                'state' => 'TN',
-                'city' => 'Antioch',
-                'zip' => '37013',
-                'location_no' => 'TR77',
-                //'gymrevenue_id' => 'ST07'
             ],
 
             // Stencils
@@ -358,6 +340,27 @@ class LocationSeeder extends Seeder
             ],
         ];
 
+        if (! App::environment(['production', 'staging'])) {
+            $locations[] = [
+                'client' => 'TruFit Athletic Clubs',
+                'name' => 'TruFit 1',
+                'state' => 'TX',
+                'city' => 'Amarillo',
+                'zip' => '79106',
+                'location_no' => 'TR66',
+                //'gymrevenue_id' => 'ST07'
+            ];
+            $locations[] = [
+                'client' => 'TruFit Athletic Clubs',
+                'name' => 'TruFit 2',
+                'state' => 'TN',
+                'city' => 'Antioch',
+                'zip' => '37013',
+                'location_no' => 'TR77',
+                //'gymrevenue_id' => 'ST07'
+            ];
+        }
+
         foreach ($locations as $idx => $location) {
             $client = Client::whereName($location['client'])->first();
 
@@ -381,17 +384,22 @@ class LocationSeeder extends Seeder
 //            }
         }
 
-        ///now do trufit csv import
-        VarDumper::dump("Adding TruFit Locations from CSV");
-        $key = 'tmp/trufit-clubs';
-        $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
-        Storage::disk('s3')->put($key, $csv);
-        ImportLocations::run([
-            [
-                'key' => $key,
-                'extension' => 'csv',
-                'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
-            ],
-        ]);
+
+        if (! App::environment(['production', 'staging'])) {
+            ///now do trufit csv import
+            VarDumper::dump("Adding TruFit Locations from CSV");
+            $key = 'tmp_data/trufit-clubs';
+            $csv = file_get_contents(realpath(__DIR__."/../../../database/data/trufit-clubs.csv"));
+            Storage::disk('s3')->put($key, $csv);
+            $file = Storage::disk('s3')->get($key);
+
+            ImportLocations::run([
+                [
+                    'key' => $key,
+                    'extension' => 'csv',
+                    'client_id' => Client::whereName('TruFit Athletic Clubs')->first()->id,
+                ],
+            ]);
+        }
     }
 }
