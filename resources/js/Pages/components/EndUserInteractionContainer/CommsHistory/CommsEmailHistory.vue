@@ -30,7 +30,7 @@
 </template>
 <style scoped>
 .response {
-    @apply rounded-lg bg-primary m-4 p-4;
+    @apply rounded-lg bg-primary md:m-4 p-4;
     h1 {
         @apply text-center text-xl font-bold;
     }

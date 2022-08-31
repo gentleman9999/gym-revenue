@@ -2,43 +2,43 @@
     <div class="text-secondary font-bold mb-2">Record Preview</div>
     <div class="grid grid-cols-6 gap-4">
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Name"
             :value="data.member.first_name + ' ' + data.member.last_name"
         />
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Email"
             :value="data.member.email"
         />
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Phone 1"
             :value="data.member.primary_phone"
         />
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Phone 2"
             :value="data.member.alternate_phone"
         />
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Gender"
             :value="data.member.gender"
         />
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Birthdate"
             :value="
                 new Date(data.member.date_of_birth).toLocaleDateString('en-US')
             "
         />
         <member-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Contact"
             :value="data.member.email"
         />
-        <div class="field col-span-6 lg:col-span-3">
+        <div class="field col-span-6 md:col-span-3">
             <label>Contact</label>
             <div class="data">
                 Called: {{ data.interactionCount.calledCount }} <br />
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="field col-span-6 lg:col-span-3 text-secondary">
+        <div class="field col-span-6 md:col-span-3 text-secondary">
             <label>Club/ Location: {{ data.club_location.name }}</label>
         </div>
         <div class="field col-span-6 lg:col-span-6"></div>

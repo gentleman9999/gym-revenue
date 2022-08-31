@@ -1,10 +1,12 @@
 <template>
-    <div class="w-1/6">{{ prettyBytes(file.size) }}</div>
-    <div class="w-1/6 uppercase">
+    <div class="w-1/6 hidden md:visible">{{ prettyBytes(file.size) }}</div>
+    <div class="w-1/6 uppercase hidden md:visible">
         {{ file.extension ? file.extension : "unknown" }}
     </div>
-    <div class="w-2/6">{{ defaultTransform.created_at(file.created_at) }}</div>
-    <div class="w-2/6">
+    <div class="w-2/6 hidden md:visible">
+        {{ defaultTransform.created_at(file.created_at) }}
+    </div>
+    <div class="md:w-2/6 w-3/6 flex-wrap">
         <Button ghost @click="handleTrash">
             <font-awesome-icon icon="trash" class="text-base-content" />
         </Button>

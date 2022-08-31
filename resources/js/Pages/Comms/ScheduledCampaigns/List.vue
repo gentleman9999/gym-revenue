@@ -5,9 +5,7 @@
                 Scheduled Campaigns Management
             </h2>
         </div>
-        <div
-            class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
-        >
+        <div class="top-drop-row stop-drop-roll">
             <inertia-link
                 class="btn justify-self-end"
                 :href="route('comms.dashboard')"
@@ -41,7 +39,11 @@
         audiences and/or templates.
     </confirm>
 </template>
-
+<style scoped>
+.top-drop-row {
+    @apply flex flex-row justify-center lg:justify-start md:ml-4;
+}
+</style>
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";

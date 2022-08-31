@@ -14,7 +14,9 @@
 </template>
 <style scoped>
 .dashboard-modal-action {
-    @apply w-full flex justify-end sticky pb-8 bg-base-200 z-20 pr-3;
+    @apply flex justify-end sticky pb-8 bg-base-200 z-20 pr-3;
+    margin-left: -1px;
+    margin-right: -1px;
 }
 </style>
 <script>

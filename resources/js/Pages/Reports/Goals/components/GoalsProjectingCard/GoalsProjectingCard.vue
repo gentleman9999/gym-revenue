@@ -9,10 +9,10 @@
                 diam nonumy eirmod tempor
             </div>
             <div
-                class="flex flex-row"
+                class="flex md:flex-row flex-col items-center"
                 :class="{
                     'w-full justify-between': mode !== 'mini',
-                    'w-fit': mode === 'mini',
+                    'w-fit self-center': mode === 'mini',
                 }"
             >
                 <div v-if="mode !== 'mini'" class="summary-wrapper">

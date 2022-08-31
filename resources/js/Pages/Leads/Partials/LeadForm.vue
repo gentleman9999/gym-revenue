@@ -23,13 +23,6 @@
                 class="opacity-10 !h-full !w-full"
             />
         </div>
-        <!--        <label>-->
-        <!--            <p class="text-white">-->
-        <!--                {{ form["first_name"] }} {{ form["middle_name"] }}-->
-        <!--                {{ form["last_name"] }}-->
-        <!--            </p>-->
-        <!--        </label>-->
-
         <label class="btn btn-secondary btn-sm btn-outline">
             <span>Upload Image</span>
             <input
@@ -43,7 +36,7 @@
     </div>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="first_name" value="First Name" />
                 <input
                     id="first_name"
@@ -56,7 +49,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="middle_name" value="Middle Name" />
                 <input
                     id="middle_name"
@@ -68,7 +61,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="last_name" value="Last Name" />
                 <input id="last_name" type="text" v-model="form['last_name']" />
                 <jet-input-error
@@ -76,12 +69,12 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="email" value="Email" />
                 <input id="email" type="email" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="primary_phone" value="Primary Phone" />
                 <phone-input
                     id="primary_phone"
@@ -92,7 +85,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
                 <phone-input
                     id="alternate_phone"
@@ -104,7 +97,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="gender" value="Gender" />
                 <select class="" v-model="form['gender']" required id="gender">
                     <option value="">Select a Gender</option>
@@ -113,7 +106,7 @@
                 </select>
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="date_of_birth" value="Date of Birth" />
                 <date-picker
                     v-model="form['date_of_birth']"
@@ -127,7 +120,10 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2" v-if="lead?.agreement_number">
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="lead?.agreement_number"
+            >
                 <jet-label for="agreement_number" value="Agreement Number" />
                 <input
                     disabled
@@ -138,7 +134,10 @@
                 />
             </div>
 
-            <div class="form-control col-span-2" v-if="lead?.misc">
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="lead?.misc"
+            >
                 <jet-label for="json_viewer" value="Additional Data" />
                 <vue-json-pretty
                     :data="lead.misc"
@@ -146,7 +145,10 @@
                     class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
                 />
             </div>
-            <div class="form-control col-span-2" v-if="lead?.external_id">
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="lead?.external_id"
+            >
                 <jet-label for="external_id" value="External ID" />
                 <input
                     disabled
@@ -158,7 +160,7 @@
             </div>
 
             <div class="form-divider" />
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="club_id" value="Club" />
                 <select
                     class=""
@@ -167,7 +169,11 @@
                     id="club_id"
                 >
                     <option value="">Select a Club</option>
-                    <option v-for="(name, clubId) in locations" :value="clubId">
+                    <option
+                        v-for="(name, clubId) in locations"
+                        :key="clubId"
+                        :value="clubId"
+                    >
                         {{ name }}
                     </option>
                 </select>
@@ -176,7 +182,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="lead_source_id" value="Source" />
                 <select
                     class=""
@@ -186,8 +192,9 @@
                 >
                     <option value="">Select a Source</option>
                     <option
-                        v-for="(source, i) in lead_sources"
+                        v-for="source in lead_sources"
                         :value="source.id"
+                        :key="source.id"
                     >
                         {{ source.name }}
                     </option>
@@ -197,7 +204,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="lead_type_id" value="Lead Type" />
                 <select
                     class=""
@@ -206,7 +213,11 @@
                     id="lead_type_id"
                 >
                     <option value="">Select a Lead Type</option>
-                    <option v-for="(lead, i) in lead_types" :value="lead.id">
+                    <option
+                        v-for="lead in lead_types"
+                        :value="lead.id"
+                        :key="lead.id"
+                    >
                         {{ lead.name }}
                     </option>
                 </select>
@@ -216,7 +227,7 @@
                 />
             </div>
             <!-- lead owner dropdown will not disable if field is only unchanged field -->
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="lead_owner" value="Lead Owner" />
                 <select
                     class=""
@@ -225,7 +236,11 @@
                     id="lead_owner"
                 >
                     <option value="">Select a Lead Owner</option>
-                    <option v-for="(oname, uid) in lead_owners" :value="uid">
+                    <option
+                        v-for="(oname, uid) in lead_owners"
+                        :value="uid"
+                        :key="uid"
+                    >
                         {{ oname }}
                     </option>
                 </select>
@@ -235,7 +250,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="lead_status_id" value="Lead Status" />
                 <select
                     class=""
@@ -244,8 +259,9 @@
                 >
                     <option value="">Select a Lead Status</option>
                     <option
-                        v-for="(status, idx) in lead_statuses"
+                        v-for="status in lead_statuses"
                         :value="status.id"
+                        :key="status.id"
                     >
                         {{ status.status }}
                     </option>
@@ -255,7 +271,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="opportunity" value="Select Opportunity" />
                 <select
                     class=""
@@ -301,6 +317,7 @@
                     class="collapse col-span-6"
                     tabindex="0"
                     v-for="note in lead.all_notes"
+                    :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"
@@ -330,7 +347,7 @@
             />
             <div
                 v-if="typeof interactionCount !== 'undefined'"
-                class="col-span-2"
+                class="md:col-span-2 col-span-6"
             >
                 Times Emailed:
                 <span class="badge badge-success badge-outline">
@@ -339,7 +356,7 @@
             </div>
             <div
                 v-if="typeof interactionCount !== 'undefined'"
-                class="col-span-2"
+                class="md:col-span-2 col-span-6"
             >
                 Times Called:
                 <span class="badge badge-error badge-outline">
@@ -348,7 +365,7 @@
             </div>
             <div
                 v-if="typeof interactionCount !== 'undefined'"
-                class="col-span-2"
+                class="md:col-span-2 col-span-6"
             >
                 Times Text Messaged:
                 <span class="badge badge-info badge-outline">

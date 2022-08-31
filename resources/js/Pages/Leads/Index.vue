@@ -4,8 +4,8 @@
     <div
         class="max-w-screen lg:max-w-7xl mx-auto py-4 sm:px-6 lg:px-8 position-unset relative"
     >
-        <div class="flex flex-row space-x-2 flex-wrap">
-            <div class="flex w-full md:w-3/5 flex-wrap">
+        <div class="flex flex-row md:space-x-2 flex-wrap">
+            <div class="flex w-full lg:w-3/5 flex-wrap">
                 <div class="w-4/5 m-auto md:w-1/3 px-2">
                     <calendar-summary-card title="Confirmed" :progress="[65]" />
                 </div>

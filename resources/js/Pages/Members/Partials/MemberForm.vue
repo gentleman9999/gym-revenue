@@ -23,13 +23,6 @@
                 class="opacity-10 !h-full !w-full"
             />
         </div>
-        <!--        <label>-->
-        <!--            <p class="text-white">-->
-        <!--                {{ form["first_name"] }} {{ form["middle_name"] }}-->
-        <!--                {{ form["last_name"] }}-->
-        <!--            </p>-->
-        <!--        </label>-->
-
         <label class="btn btn-secondary btn-sm btn-outline">
             <span>Upload Image</span>
             <input
@@ -43,7 +36,7 @@
     </div>
     <jet-form-section @submitted="handleSubmit">
         <template #form>
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="first_name" value="First Name" />
                 <input
                     id="first_name"
@@ -56,7 +49,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="middle_name" value="Middle Name" />
                 <input
                     id="middle_name"
@@ -68,7 +61,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="last_name" value="Last Name" />
                 <input id="last_name" type="text" v-model="form['last_name']" />
                 <jet-input-error
@@ -76,12 +69,12 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="email" value="Email" />
                 <input id="email" type="email" v-model="form.email" />
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="primary_phone" value="Primary Phone" />
                 <phone-input
                     id="primary_phone"
@@ -92,7 +85,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
                 <phone-input
                     id="alternate_phone"
@@ -103,7 +96,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="gender" value="Gender" />
                 <select class="" v-model="form['gender']" required id="gender">
                     <option value="">Select a Gender</option>
@@ -112,7 +105,7 @@
                 </select>
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="date_of_birth" value="Date of Birth" />
                 <date-picker
                     v-model="form['date_of_birth']"
@@ -127,7 +120,7 @@
                 />
             </div>
             <div
-                class="form-control col-span-2"
+                class="form-control md:col-span-2 col-span-6"
                 v-if="member?.agreement_number"
             >
                 <jet-label for="agreement_number" value="Agreement Number" />
@@ -140,7 +133,10 @@
                 />
             </div>
 
-            <div class="form-control col-span-2" v-if="member?.external_id">
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="member?.external_id"
+            >
                 <jet-label for="external_id" value="External ID" />
                 <input
                     disabled
@@ -150,7 +146,10 @@
                     id="external_id"
                 />
             </div>
-            <div class="form-control col-span-2" v-if="member?.misc">
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="member?.misc"
+            >
                 <jet-label for="json_viewer" value="Additional Data" />
                 <vue-json-pretty
                     :data="member.misc"
@@ -160,7 +159,7 @@
             </div>
 
             <div class="form-divider" />
-            <div class="form-control col-span-2">
+            <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="club_id" value="Club" />
                 <select
                     class=""
@@ -169,7 +168,11 @@
                     id="club_id"
                 >
                     <option value="">Select a Club</option>
-                    <option v-for="(name, clubId) in locations" :value="clubId">
+                    <option
+                        v-for="(name, clubId) in locations"
+                        :value="clubId"
+                        :key="clubId"
+                    >
                         {{ name }}
                     </option>
                 </select>
@@ -207,6 +210,7 @@
                     class="collapse col-span-6"
                     tabindex="0"
                     v-for="note in member.all_notes"
+                    :key="note.id"
                 >
                     <div
                         class="collapse-title text-sm font-medium"

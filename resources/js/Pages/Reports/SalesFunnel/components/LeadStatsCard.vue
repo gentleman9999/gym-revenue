@@ -11,7 +11,9 @@
             <div class="text-base-content text-lg text-bold">Lead Stats</div>
         </template>
         <div class="flex flex-row">
-            <div class="flex flex-col h-[160px] overflow-y-scroll pl-2 pr-4">
+            <div
+                class="md:flex hidden flex-col h-[160px] overflow-y-scroll pl-2 pr-4"
+            >
                 <div v-for="(item, ndx) in goals" :key="ndx">
                     <div class="text-secondary text-base">{{ item.goal }}</div>
                     <div class="w-40 text-sm">{{ item.content }}</div>

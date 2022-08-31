@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-lg bg-base-100 flex flex-col shadow shadow-xl">
+    <div class="rounded-lg bg-base-50 flex flex-col shadow shadow-xl">
         <div
             class="flex flex-row nowrap rounded-t-xl p-4 border-b border-gray-500"
         >

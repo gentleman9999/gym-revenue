@@ -63,7 +63,7 @@
             </div>
 
             <!-- First Name -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="first_name" value="First Name" />
                 <input
                     id="first_name"
@@ -79,7 +79,7 @@
             </div>
 
             <!-- Last Name -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="last_name" value="Last Name" />
                 <input
                     id="last_name"
@@ -95,7 +95,7 @@
             </div>
 
             <!-- Phone # -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="phone" value="Phone #" />
                 <input
                     id="phone"
@@ -107,7 +107,7 @@
             </div>
 
             <!-- Email -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="email" value="Email" />
                 <input
                     id="email"
@@ -119,7 +119,7 @@
             </div>
 
             <!-- alternate_email -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="alternate_email" value="Personal Email" />
                 <input
                     id="alternate_email"
@@ -158,7 +158,7 @@
             </div>
 
             <!-- City -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="city" value="City" />
                 <input
                     id="city"
@@ -170,7 +170,7 @@
             </div>
 
             <!-- State -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
@@ -185,7 +185,7 @@
             </div>
 
             <!-- Zip -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="zip" value="Zip Code" />
                 <input
                     id="zip"
@@ -198,7 +198,7 @@
             </div>
 
             <!-- Contact Preference -->
-            <div class="col-span-2 sm:col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label
                     for="contact_preference"
                     value="Contact Preference"

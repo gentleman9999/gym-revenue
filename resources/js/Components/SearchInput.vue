@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center relative search-input-wrapper">
+    <div class="flex items-center relative search-input-wrapper w-fit">
         <input
             :class="{
                 'search-input border-secondary': true,

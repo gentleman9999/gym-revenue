@@ -45,8 +45,9 @@
                         >
                             <option :value="null" />
                             <option
-                                v-for="(state, i) in this.$page.props.eachstate"
+                                v-for="state in this.$page.props.eachstate"
                                 :value="state.state"
+                                :key="state.state"
                             >
                                 {{ state.state }}
                             </option>

@@ -11,8 +11,11 @@
             />
         </div>
         <div class="row">
-            <file-nav :folderName="folderName" />
+            <file-nav :folderName="folderName" class="nav-desktop" />
             <file-search />
+        </div>
+        <div class="row">
+            <file-nav :folderName="folderName" class="nav-mobile" />
         </div>
         <file-contents
             :files="files"
@@ -67,6 +70,14 @@
 
 .row {
     @apply flex flex-row justify-between items-center;
+}
+
+.nav-desktop {
+    @apply hidden md:flex;
+}
+
+.nav-mobile {
+    @apply flex md:hidden mt-2;
 }
 </style>
 

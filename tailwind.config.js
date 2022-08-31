@@ -147,6 +147,7 @@ module.exports = {
                     neutral: "#1c1c1c",
                     "neutral-focus": colors.primary[900],
                     "neutral-content": "#ffffff",
+                    "base-50": "#2e2e2e",
                     "base-100": "#242424",
                     "base-200": "#202020",
                     "base-300": "#1c1c1c",

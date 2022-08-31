@@ -2,15 +2,17 @@
     <LayoutHeader title="Calendar Reporting">
         <calendar-title>
             <template #title>
-                <h1>Calendar Reporting</h1>
+                <h1 class="mr-8">Calendar Reporting</h1>
             </template>
         </calendar-title>
     </LayoutHeader>
     <jet-bar-container>
-        <div class="px-10 flex flex-col">
+        <div class="md:px-10 flex flex-col">
             <div class="text-secondary pl-9 text-xl">Client Activity</div>
-            <div class="flex flex-row space-x-2 flex-wrap">
-                <div class="flex w-full md:w-3/5 flex-wrap">
+            <div
+                class="flex flex-row space-x-2 flex-wrap justify-center lg:justify-start"
+            >
+                <div class="flex w-full lg:w-3/5 flex-wrap">
                     <div class="w-4/5 m-auto md:w-1/3 px-2">
                         <calendar-summary-card
                             title="Confirmed"
@@ -33,11 +35,20 @@
                 <calendar-grid />
             </div>
 
-            <calendar-schedule-table :data="schedule" />
+            <calendar-schedule-table :data="schedule" class="schedule-table" />
         </div>
     </jet-bar-container>
 </template>
-
+<style scoped>
+@media only screen and (max-width: 768px) {
+    .schedule-table {
+        width: calc(100vw - 48px);
+    }
+}
+.schedule-table {
+    @apply overflow-x-scroll;
+}
+</style>
 <script setup>
 import { defineComponent } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";

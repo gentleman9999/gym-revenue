@@ -3,6 +3,7 @@
         <li @click="handleTrash">Trash</li>
         <li @click="handleRename">Rename</li>
         <li @click="handleShare">Share</li>
+        <li @click="handleBrowse()">Look Up</li>
     </ul>
 </template>
 <style scoped>
@@ -28,6 +29,9 @@ const props = defineProps({
         type: Function,
     },
     handleShare: {
+        type: Function,
+    },
+    handleBrowse: {
         type: Function,
     },
 });

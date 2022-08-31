@@ -38,30 +38,28 @@
                                 >
                             </div>
 
-                            <div class="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="optionsRadios"
-                                        id="optionsRadios1"
-                                        value="true"
-                                        v-model="selectedBodyBand"
-                                    />
-                                    Body weight- and band-based
-                                </label>
+                            <div class="flex space-x-2 mb-2">
+                                <input
+                                    type="radio"
+                                    name="optionsRadios"
+                                    id="optionsRadios1"
+                                    value="true"
+                                    class="radio"
+                                    v-model="selectedBodyBand"
+                                />
+                                <div>Body weight- and band-based</div>
                             </div>
 
-                            <div class="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="optionsRadios"
-                                        id="optionsRadios2"
-                                        value="false"
-                                        v-model="selectedBodyBand"
-                                    />
-                                    Weighted-based
-                                </label>
+                            <div class="flex space-x-2 mb-2">
+                                <input
+                                    class="radio"
+                                    type="radio"
+                                    name="optionsRadios"
+                                    id="optionsRadios2"
+                                    value="false"
+                                    v-model="selectedBodyBand"
+                                />
+                                <div>Weighted-based</div>
                             </div>
                         </div>
 
@@ -72,7 +70,7 @@
                             <label>2. Dumbells, Barbells or Kettlebells?</label>
                             <div>
                                 <select
-                                    class="form-control w-1/2 mt-4"
+                                    class="form-control w-1/2 mt-4 mb-2"
                                     v-model="selectedBarType"
                                 >
                                     <option
@@ -92,7 +90,7 @@
                             >
                             <div>
                                 <select
-                                    class="form-control w-1/2 mt-4"
+                                    class="form-control w-1/2 mt-4 mb-2"
                                     v-model="selectedInjury"
                                 >
                                     <option
@@ -107,30 +105,28 @@
 
                         <div class="form-group" v-show="currentQuestion === 4">
                             <label>4. Throw in Daily Core Workouts?</label>
-                            <div class="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="coreOptionsRadios"
-                                        id="optionsRadios3"
-                                        value="true"
-                                        v-model="selectedCoreDaily"
-                                    />
-                                    Yes
-                                </label>
+                            <div class="flex space-x-2 mb-2">
+                                <input
+                                    type="radio"
+                                    name="coreOptionsRadios"
+                                    id="optionsRadios3"
+                                    value="true"
+                                    class="radio"
+                                    v-model="selectedCoreDaily"
+                                />
+                                <div>Yes</div>
                             </div>
 
-                            <div class="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        name="coreOptionsRadios"
-                                        id="optionsRadios4"
-                                        value="false"
-                                        v-model="selectedCoreDaily"
-                                    />
-                                    No
-                                </label>
+                            <div class="flex space-x-2 mb-2">
+                                <input
+                                    type="radio"
+                                    name="coreOptionsRadios"
+                                    id="optionsRadios4"
+                                    value="false"
+                                    class="radio"
+                                    v-model="selectedCoreDaily"
+                                />
+                                <div>No</div>
                             </div>
                         </div>
 
@@ -138,7 +134,7 @@
                             <label>5. Goal Focus?</label>
                             <div>
                                 <select
-                                    class="form-control w-1/2 mt-4"
+                                    class="form-control w-1/2 mt-4 mb-2"
                                     v-model="selectedGoal"
                                 >
                                     <option
@@ -155,7 +151,7 @@
                             <label>6. # of Rest Days?</label>
                             <div>
                                 <select
-                                    class="form-control w-1/2 mt-4"
+                                    class="form-control w-1/2 mt-4 mb-2"
                                     v-model="selectedRest"
                                 >
                                     <option
@@ -228,7 +224,12 @@
         </slide-up-down>
     </div>
 </template>
-
+<style scoped>
+input.radio:focus:focus {
+    box-shadow: 0 0 0 4px hsl(var(--b1)) inset, 0 0 0 4px hsl(var(--b1)) inset,
+        var(--focus-shadow);
+}
+</style>
 <script setup>
 import { ref, onMounted, watch, defineEmits } from "vue";
 import { toastInfo, toastError, toastSuccess } from "@/utils/createToast";

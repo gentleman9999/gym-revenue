@@ -62,7 +62,7 @@ class JetstreamServiceProvider extends ServiceProvider
                 // can use it in middleware / global scopes
                 // without having to hit the db
                 $team = $user->default_team ?? false;
-                if($team){
+                if ($team) {
                     session()->put('current_team_id', $team->id);
                     session()->put(
                         'current_team',

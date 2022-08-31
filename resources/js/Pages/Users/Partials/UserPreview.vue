@@ -49,7 +49,7 @@
                 <div
                     v-for="team in user.teams"
                     :key="team.id"
-                    class="md:w-1/6 p-1 w-full"
+                    class="md:w-1/3 lg:w-1/6 p-1 w-full"
                 >
                     <label class="flex data">
                         {{ team.name }}

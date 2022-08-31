@@ -4,7 +4,6 @@
         v-bind="$attrs"
         ref="modal"
         page-route="Communications"
-        class="max-h-fit"
     >
         <div class="flex flex-row flex-wrap">
             <communication-card

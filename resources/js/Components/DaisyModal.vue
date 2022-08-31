@@ -28,6 +28,7 @@
 <style scoped>
 .modal {
     @apply items-center;
+    max-width: 100vw;
 }
 </style>
 <script>

@@ -5,7 +5,7 @@
         </reports-title>
     </LayoutHeader>
     <jet-bar-container>
-        <div class="flex flex-col px-16">
+        <div class="flex flex-col md:px-16">
             <div class="text-secondary text-xl font-semibold">
                 Call Reporting
             </div>
@@ -13,7 +13,7 @@
                 <span>Club:</span>
                 <select-box :items="locations" label="Locations" size="xs" />
             </div>
-            <call-records></call-records>
+            <call-records class="comm-table"></call-records>
             <div class="text-secondary text-xl font-semibold mt-9 mb-7">
                 Mass Communication
             </div>
@@ -22,34 +22,40 @@
                 <Button secondary outline size="xs">Email</Button>
             </div>
             <div class="flex flex-col md:px-12">
-                <div class="flex flex-row">
+                <div class="flex md:flex-row flex-col flex-wrap">
                     <communication-card
                         title="Deliver Rate"
                         :progress="75"
-                        class="md:w-1/4"
+                        class="md:w-1/2 lg:w-1/4"
                     />
                     <communication-card
                         title="Open Rate"
                         :progress="60"
-                        class="md:w-1/4"
+                        class="md:w-1/2 lg:w-1/4"
                     />
                     <communication-card
                         title="Click Rate"
                         :progress="55"
-                        class="md:w-1/4"
+                        class="md:w-1/2 lg:w-1/4"
                     />
                     <communication-card
                         title="Opt-Out Rate"
                         :progress="25"
-                        class="md:w-1/4"
+                        class="md:w-1/2 lg:w-1/4"
                     />
                 </div>
-                <mass-call-records />
+                <mass-call-records class="comm-table" />
             </div>
         </div>
     </jet-bar-container>
 </template>
-
+<style scoped>
+@media only screen and (max-width: 768px) {
+    .comm-table {
+        width: calc(100vw - 32px);
+    }
+}
+</style>
 <script setup>
 import { defineComponent } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";

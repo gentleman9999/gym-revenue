@@ -4,7 +4,7 @@
             <template #title>
                 <h1>KPI Dashboard</h1>
                 <div
-                    class="flex flex-row text-base-content space-x-2 text-xs items-center"
+                    class="flex flex-row text-base-content space-x-2 text-xs items-center flex-wrap"
                 >
                     <span class="cursor-pointer text-secondary">Monthly</span>
                     <span class="cursor-pointer">Quartely</span>
@@ -28,7 +28,7 @@
 
 <style>
 .kpi-card {
-    @apply flex flex-col justify-between min-w-[370px];
+    @apply flex flex-col justify-between md:min-w-[370px];
 }
 </style>
 <script>

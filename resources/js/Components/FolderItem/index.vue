@@ -9,7 +9,6 @@
         @dragover="$event.preventDefault()"
         @dragenter="$event.preventDefault()"
         @drop="handleDrop()"
-        @dblclick="browseFolder()"
     >
         <folder-icon
             :icon-size="iconSize"
@@ -32,6 +31,7 @@
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
             :handleShare="handleShare"
+            :handleBrowse="browseFolder"
         />
     </div>
 </template>
@@ -111,12 +111,11 @@ const subMenu = ref(null);
 
 const handleClick = (event) => {
     if (props.mode !== "desktop") {
+        browseFolder();
         return;
     }
-    if (event.which == 3) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+    event.preventDefault();
+    event.stopPropagation();
     subMenu.value.focus();
 };
 const iconSize = computed({

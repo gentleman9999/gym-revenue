@@ -10,22 +10,16 @@
 
     <jet-bar-container class="space-y-8">
         <div class="shadow stats">
-            <!--                <div class="stat">-->
-            <!--                    <div class="stat-title">Audience</div>-->
-            <!--                    <div class="stat-value">-->
-            <!--                        {{ stats["total_audience"] }}-->
-            <!--                    </div>-->
-            <!--                    <div class="stat-desc">Total</div>-->
-            <!--                </div>-->
             <mass-comm-stat
                 v-for="(lbl, slug) in audiences"
+                :key="lbl"
                 :title="lbl"
                 :value="stats['audience_breakdown'][slug]"
             />
         </div>
 
         <div
-            class="grid grid-cols-2 lg:flex flex-wrap xl:flex-row justify-center xl:justify-start gap-2 lg:gap-1"
+            class="grid grid-cols-1 md:grid-cols-2 lg:flex flex-wrap xl:flex-row justify-center xl:justify-start gap-2 lg:gap-1"
         >
             <mass-comm-data-button
                 :href="route('comms.email-templates')"

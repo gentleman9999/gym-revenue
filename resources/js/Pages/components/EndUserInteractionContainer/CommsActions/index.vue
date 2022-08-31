@@ -1,5 +1,5 @@
 <template>
-    <div class="col-span-3">
+    <div class="col-span-3 items-center">
         <phone-comms-action
             v-if="activeContactMethod === 'phone'"
             :id="id"

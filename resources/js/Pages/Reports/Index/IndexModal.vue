@@ -5,7 +5,7 @@
         ref="modal"
         page-route="Index"
     >
-        <div class="flex flex-row space-x-2">
+        <div class="flex md:flex-row flex-col md:space-x-2">
             <cpa-cpl-clicks
                 class="flex flex-col no-favorite no-collapse h-[350px]"
             />

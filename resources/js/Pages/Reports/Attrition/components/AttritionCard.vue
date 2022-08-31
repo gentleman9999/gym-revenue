@@ -15,10 +15,20 @@
             :columns="columns"
             borderType="secondary"
             :rowBordered="true"
-            class="h-72 mt-4"
+            class="attrition-table"
         />
     </Card>
 </template>
+<style scoped>
+.attrition-table {
+    @apply h-72 mt-4 overflow-x-scroll;
+}
+@media only screen and (max-width: 768px) {
+    .attrition-table {
+        width: calc(100vw - 64px);
+    }
+}
+</style>
 <script setup>
 import { h } from "vue";
 import Card from "@/Components/Card.vue";

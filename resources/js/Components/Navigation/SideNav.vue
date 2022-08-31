@@ -21,13 +21,18 @@
             <div
                 v-for="navItem in navigation"
                 :key="navItem.key"
+                class="nav-link-container"
                 :class="{
                     'bg-primary': route().current(navItem.route),
                     'bg-transparent': route().current(navItem.route),
                 }"
-                class="nav-link-container"
+                @click="goToLink(route(navItem.route))"
             >
-                <jet-nav-link class="jet-nav-link" :href="route(navItem.route)">
+                <jet-nav-link
+                    class="jet-nav-link"
+                    :href="route(navItem.route)"
+                    @click="$event.preventDefault()"
+                >
                     <p class="flex items-center">
                         <span
                             class="text-base-content inline-block w-8 h-8 mr-4"
@@ -48,10 +53,10 @@
 
 <style scoped>
 .jet-nav-link {
-    @apply text-sm font-semibold rounded-lg btn  btn-ghost hover:bg-primary hover:text-white rounded-none pl-8;
+    @apply text-sm font-semibold rounded-lg btn  btn-ghost rounded-none pl-8 hover:bg-primary hover:text-white focus:border-none;
 }
 .nav-link-container {
-    @apply block py-2 mt-2 whitespace-nowrap;
+    @apply block py-2 mt-2 whitespace-nowrap hover:bg-primary hover:text-white cursor-pointer;
 }
 </style>
 
@@ -62,6 +67,7 @@ import JetBarResponsiveLinks from "@/Components/JetBarResponsiveLinks.vue";
 import JetNavLink from "@/Jetstream/NavLink.vue";
 import { useLockScroll } from "vue-composable";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { Inertia } from "@inertiajs/inertia";
 
 import { useBreakpointTailwindCSS } from "vue-composable";
 import {
@@ -271,7 +277,26 @@ export default defineComponent({
             expanded.value = !expanded.value;
             emit("toggle");
         };
-        return { comingSoon, toggle, expanded, media };
+
+        const handleClickItem = () => {
+            if (window.innerWidth < 1024) {
+                toggle();
+            }
+        };
+        const goToLink = (link) => {
+            if (window.innerWidth < 1024) {
+                toggle();
+            }
+            Inertia.visit(link);
+        };
+        return {
+            comingSoon,
+            toggle,
+            handleClickItem,
+            expanded,
+            media,
+            goToLink,
+        };
     },
 });
 </script>

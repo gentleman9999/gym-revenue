@@ -7,7 +7,9 @@
                 </div>
                 <div class="text-secondary text-base">Subject</div>
             </div>
-            <div class="flex flex-row space-x-2">
+            <div
+                class="flex md:flex-row md:space-x-2 md:space-y-0 flex-col space-y-2"
+            >
                 <select-box :items="dateList" label="Date" size="xs" />
                 <select-box :items="memberList" label="Member" size="xs" />
                 <select-box :items="periodList" label="Period" size="xs" />

@@ -52,8 +52,7 @@
 
             <div
                 v-if="$page.props.jetstream.canUpdatePassword"
-                class="w-1/2"
-                style="margin: 0 auto"
+                class="w-full md:w-1/2 mx-auto mt-4 md:mt-0"
             >
                 <update-password-form
                     class="mt-10 sm:mt-0"
@@ -83,7 +82,7 @@
                     v-if="
                         $page.props.jetstream.canManageTwoFactorAuthentication
                     "
-                    class="col-span-2 sm:col-span-2"
+                    class="col-span-6 md:w-1/2 mx-auto mt-4 md:mt-0"
                 >
                     <two-factor-authentication-form
                         class="mt-10 sm:mt-0"

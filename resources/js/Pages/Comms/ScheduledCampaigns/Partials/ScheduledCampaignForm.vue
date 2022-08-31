@@ -17,14 +17,18 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control col-span-6 md:col-span-3 flex flex-col">
                 <p>Select an audience</p>
                 <select
                     v-model="form.audience_id"
                     :disabled="!canEditActiveInputs"
                     id="audience_id"
                 >
-                    <option v-for="audience in audiences" :value="audience.id">
+                    <option
+                        v-for="audience in audiences"
+                        :value="audience.id"
+                        :key="audience.id"
+                    >
                         {{ audience.name }}
                     </option>
                 </select>
@@ -34,7 +38,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control col-span-6 md:col-span-3 flex flex-col">
                 <p>Select Communication Type</p>
                 <select
                     v-model="form.template_type"
@@ -44,6 +48,7 @@
                     <option
                         v-for="templateType in template_types"
                         :value="templateType.entity"
+                        :key="templateType.entity"
                     >
                         {{ templateType.name }}
                     </option>
@@ -54,7 +59,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control col-span-6 md:col-span-3 flex flex-col">
                 <p>Select a Template</p>
                 <select
                     v-model="form.template_id"
@@ -69,6 +74,7 @@
                         <option
                             v-for="template in emailTemplates"
                             :value="template.id"
+                            :key="template.id"
                         >
                             {{ template.name }}
                         </option>
@@ -81,6 +87,7 @@
                         <option
                             v-for="template in smsTemplates"
                             :value="template.id"
+                            :key="template.id"
                         >
                             {{ template.name }}
                         </option>
@@ -92,7 +99,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control col-span-6 md:col-span-3 flex flex-col">
                 <p>When should this campaign be sent?</p>
                 <date-picker
                     v-model="form.send_at"
