@@ -22,7 +22,7 @@ class AudienceProjector extends Projector
 
     public function onAudienceUpdated(AudienceUpdated $event): void
     {
-        Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail($event->payload);
+        Audience::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->fill($event->payload)->save();
     }
 
     public function onAudienceTrashed(AudienceTrashed $event): void

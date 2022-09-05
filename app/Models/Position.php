@@ -7,6 +7,7 @@ use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Position extends Model
@@ -21,17 +22,17 @@ class Position extends Model
 
     public $incrementing = false;
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }
 
-    public function departments()
+    public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_position', 'position_id', 'department_id');
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {

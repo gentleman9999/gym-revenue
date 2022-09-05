@@ -134,7 +134,7 @@
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.scheduled-campaigns'))"
+                @click="$inertia.visit(route('mass-comms.scheduled-campaigns'))"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -274,7 +274,7 @@ export default {
         let handleSubmit = () => {
             form.transform(transformData).put(
                 route(
-                    "comms.scheduled-campaigns.update",
+                    "mass-comms.scheduled-campaigns.update",
                     props.scheduledCampaign.id
                 )
             );
@@ -283,7 +283,7 @@ export default {
             handleSubmit = () =>
                 form
                     .transform(transformData)
-                    .post(route("comms.scheduled-campaigns.store"));
+                    .post(route("mass-comms.scheduled-campaigns.store"));
         }
         const canEditActiveInputs = computed(() => {
             if (operation === "Create") {

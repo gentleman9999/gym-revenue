@@ -4,6 +4,7 @@ namespace App\Domain\Roles;
 
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
+use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Departments\Department;
 use App\Domain\EndUsers\Leads\Projections\Lead;
@@ -120,6 +121,10 @@ class Role extends \Silber\Bouncer\Database\Role
 
             case 'drip-campaigns':
                 $entity = DripCampaign::class;
+
+                break;
+            case 'scheduled-campaigns':
+                $entity = ScheduledCampaign::class;
 
                 break;
         }

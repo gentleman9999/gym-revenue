@@ -24,7 +24,6 @@ class UpdateSmsTemplate
     {
         return [
             'name' => ['string', 'sometimes'],
-            'subject' => ['string', 'sometimes'],
             'markup' => ['string', 'sometimes', 'required|max:130'],
         ];
     }
@@ -60,6 +59,6 @@ class UpdateSmsTemplate
     {
         Alert::success("SMS Template'{$template->name}' was updated")->flash();
 
-        return Redirect::route('comms.sms-templates.edit', $template->id);
+        return Redirect::route('mass-comms.sms-templates.edit', $template->id);
     }
 }

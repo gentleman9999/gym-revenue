@@ -125,7 +125,7 @@ export default defineComponent({
                 {
                     key: "nav-mass",
                     icon: MassComIcon,
-                    route: "comms.dashboard",
+                    route: "mass-comms.dashboard",
                     label: "Mass Communicator",
                     permission:
                         isClientUser &&

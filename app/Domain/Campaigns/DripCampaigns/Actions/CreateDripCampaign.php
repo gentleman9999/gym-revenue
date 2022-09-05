@@ -31,18 +31,30 @@ class CreateDripCampaign
 
         $aggy->create($payload)->persist();
 
-        return DripCampaign::findOrFail($id);
+        $dripCampaign = DripCampaign::findOrFail($id);
+        foreach ($payload['days'] as $day) {
+            $insertDay['drip_campaign_id'] = $dripCampaign->id;
+            $insertDay['day_of_campaign'] = $day['day_in_campaign'];
+            $insertDay['email_template_id'] = $day['email'];
+            $insertDay['sms_template_id'] = $day['sms'];
+            $insertDay['client_call_script'] = $day['call'];
+            CreateDripCampaignDay::run($insertDay);
+        }
+
+        return $dripCampaign;
     }
 
     public function rules(): array
     {
         return [
+            'client_id' => ['required', 'exists:clients,id'],
             'name' => ['required', 'max:50'],
             'audience_id' => ['required', 'exists:audiences,id'],
-            'start_at' => ['required', 'nullable', 'after:now'],
+            'start_at' => ['sometimes', 'nullable', 'after:now'],
             'end_at' => ['sometimes', 'nullable', 'after:start_at'],
-            'client_id' => ['required', 'exists:clients,id'],
-            'is_published' => ['sometimes', 'boolean'],
+            'completed_at' => ['sometimes', 'nullable', 'after:start_at'],
+            'days' => ['array', 'min:1'],
+//            'status' => ['required', 'DRAFT'],
         ];
     }
 
@@ -69,7 +81,7 @@ class CreateDripCampaign
     {
         Alert::success("Drip Campaign '{$dripCampaign->name}' was created")->flash();
 
-        return Redirect::route('comms.drip-campaigns.edit', $dripCampaign->id);
+        return Redirect::route('mass-comms.drip-campaigns.edit', $dripCampaign->id);
     }
 
     public function asCommand(Command $command): void

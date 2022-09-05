@@ -26,12 +26,11 @@ class CreateSmsTemplate
         return [
             'client_id' => ['required', 'exists:clients,id'],
             'name' => ['string', 'required'],
-            'subject' => ['string', 'required'],
             'markup' => ['string', 'required', 'max:130'],
         ];
     }
 
-    public function handle($data): SmsTemplate
+    public function handle(array $data): SmsTemplate
     {
         $id = Uuid::new();
 
@@ -66,6 +65,6 @@ class CreateSmsTemplate
     {
         Alert::success("SMS Template'{$template->name}' was created")->flash();
 
-        return Redirect::route('comms.sms-templates.edit', $template->id);
+        return Redirect::route('mass-comms.sms-templates.edit', $template->id);
     }
 }

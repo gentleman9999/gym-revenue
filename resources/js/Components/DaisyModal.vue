@@ -79,7 +79,7 @@ export default defineComponent({
         const open = () => {
             isOpen.value = true;
             emit("open");
-            // lock();
+            lock();
         };
 
         watchEffect(() => {

@@ -8,7 +8,7 @@
         <div class="top-drop-row stop-drop-roll">
             <inertia-link
                 class="btn justify-self-end"
-                :href="route('comms.dashboard')"
+                :href="route('mass-comms.dashboard')"
             >
                 <span>
                     <font-awesome-icon
@@ -22,7 +22,7 @@
     </LayoutHeader>
 
     <gym-revenue-crud
-        base-route="comms.email-templates"
+        base-route="mass-comms.email-templates"
         model-name="Email Template"
         model-key="template"
         :fields="fields"
@@ -89,7 +89,7 @@ export default defineComponent({
         };
         const handleConfirmTrash = () => {
             Inertia.delete(
-                route("comms.email-templates.trash", confirmTrash.value)
+                route("mass-comms.email-templates.trash", confirmTrash.value)
             );
             confirmTrash.value = null;
         };

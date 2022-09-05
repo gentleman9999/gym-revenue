@@ -26,9 +26,9 @@ class ScheduledCampaign extends Projection
 
     protected $hidden = ['client_id'];
 
-    protected $fillable = ['name', 'audience_id', 'send_at', 'template_type', 'template_id'];
+    protected $fillable = ['name', 'audience_id', 'send_at', 'email_template_id', 'sms_template_id', 'client_call_script', 'template_type', 'template_id'];
 
-    protected $appends = ['is_published', 'can_publish', 'can_unpublish'];
+    protected $appends = ['is_published', 'can_publish', 'can_unpublish', 'daysCount'];
 
     protected $casts = [
         'status' => CampaignStatusEnum::class,
@@ -45,7 +45,7 @@ class ScheduledCampaign extends Projection
         return 'id';
     }
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }
@@ -70,7 +70,7 @@ class ScheduledCampaign extends Projection
         if ($this->status === CampaignStatusEnum::COMPLETED || $this->status === CampaignStatusEnum::ACTIVE) {
             return false;
         }
-        if ($this->send_at <= CarbonImmutable::now()->addMinute(-1)) {
+        if ($this->send_at && $this->send_at <= CarbonImmutable::now()->addMinute(-1)) {
             return false;
         }
 
@@ -80,6 +80,11 @@ class ScheduledCampaign extends Projection
     public function getCanUnpublishAttribute(): bool
     {
         return $this->can_publish;
+    }
+
+    public function getDaysCountAttribute(): int
+    {
+        return 1;
     }
 
     public function scopeFilter($query, array $filters)

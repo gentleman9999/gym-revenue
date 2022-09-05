@@ -39,6 +39,6 @@ class RestoreEmailTemplate
     {
         Alert::success("Email Template'{$emailTemplate->name}' was restored")->flash();
 
-        return Redirect::route('comms.email-templates');
+        return Redirect::route('mass-comms.email-templates');
     }
 }

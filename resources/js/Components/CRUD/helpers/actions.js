@@ -51,7 +51,7 @@ export const getDefaults = ({ previewComponent }) => {
 export const getActions = (props) => {
     return computed(() => {
         if (!props.actions) {
-            console.log("getActions returning []");
+            console.log("getActions returning [],");
             return [];
         }
         if (typeof props.actions === "array" || props.actions[0]) {

@@ -25,7 +25,7 @@ class TrashSmsTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('comms.sms-templates.create', SmsTemplate::class);
+        return $current_user->can('mass-comms.sms-templates.create', SmsTemplate::class);
     }
 
     public function asController(ActionRequest $request, SmsTemplate $smsTemplate): SmsTemplate

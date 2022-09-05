@@ -20,9 +20,9 @@ class DripCampaign extends GymRevProjection
 
     protected $hidden = ['client_id'];
 
-    protected $fillable = ['name', 'audience_id', 'start_at', 'end_at'];
+    protected $fillable = ['client_id','name', 'audience_id', 'start_at', 'end_at', 'completed_at', 'status'];
 
-    protected $appends = ['is_published', 'can_publish', 'can_unpublish'];
+    protected $appends = ['is_published', 'can_publish', 'can_unpublish', 'daysCount'];
 
     protected $casts = [
         'status' => CampaignStatusEnum::class,
@@ -55,7 +55,8 @@ class DripCampaign extends GymRevProjection
         if ($this->status === CampaignStatusEnum::COMPLETED || $this->status === CampaignStatusEnum::ACTIVE) {
             return false;
         }
-        if ($this->start_at <= CarbonImmutable::now()->addMinute(-1)) {
+
+        if ($this->start_at && $this->start_at <= CarbonImmutable::now()->addMinute(-1)) {
             return false;
         }
 
@@ -80,5 +81,15 @@ class DripCampaign extends GymRevProjection
                 $query->onlyTrashed();
             }
         });
+    }
+
+    public function getDaysCountAttribute(): int
+    {
+        return count($this->days);
+    }
+
+    public function days()
+    {
+        return $this->hasMany(DripCampaignDay::class)->orderBy('day_of_campaign');
     }
 }

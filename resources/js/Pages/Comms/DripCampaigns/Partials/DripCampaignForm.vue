@@ -86,7 +86,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.drip-campaigns'))"
+                @click="$inertia.visit(route('mass-comms.drip-campaigns'))"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -194,14 +194,14 @@ export default {
 
         let handleSubmit = () => {
             form.transform(transformData).put(
-                route("comms.drip-campaigns.update", props.dripCampaign.id)
+                route("mass-comms.drip-campaigns.update", props.dripCampaign.id)
             );
         };
         if (operation === "Create") {
             handleSubmit = () =>
                 form
                     .transform(transformData)
-                    .post(route("comms.drip-campaigns.store"));
+                    .post(route("mass-comms.drip-campaigns.store"));
         }
 
         const canEditActiveInputs = computed(() => {

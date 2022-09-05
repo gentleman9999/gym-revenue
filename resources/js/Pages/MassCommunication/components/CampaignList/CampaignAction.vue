@@ -1,14 +1,14 @@
 <template>
     <div
-        class="campaign-action"
+        class="campaign-action opacity-90 bg-base-100"
         :class="{
             'border-secondary': action !== 'sms',
             'border-base-content': action === 'sms',
         }"
     >
         <sms-icon v-if="action === 'sms'" />
-        <chat-icon v-if="action === 'chat'" />
-        <phone-icon v-if="action === 'phone'" />
+        <chat-icon v-if="action === 'email'" />
+        <phone-icon v-if="action === 'call'" />
         <to-do24-icon v-if="action === 'todo'" />
     </div>
 </template>

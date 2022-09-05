@@ -53,13 +53,13 @@
     @apply text-lg font-bold mb-4;
 }
 .recent-campaign-content {
-    @apply flex flex-row;
+    @apply flex flex-row flex-wrap;
 }
 .recent-campaign-content > div {
-    @apply flex flex-col justify-between w-1/3 px-10;
+    @apply flex flex-col justify-between w-full md:w-1/3 md:px-10 px-2;
 }
 .recent-campaign-item {
-    @apply flex flex-row justify-between;
+    @apply flex flex-row flex-wrap justify-between;
 }
 .blocked-requests {
     @apply text-6xl text-base-content font-bold bg-error w-fit rounded py-2 px-4 mt-4;
