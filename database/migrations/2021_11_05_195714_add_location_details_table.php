@@ -15,8 +15,8 @@ class AddLocationDetailsTable extends Migration
     {
         Schema::create('location_details', function (Blueprint $table) {
             $table->string('id')->primary()->unique();
-            $table->foreignUuid('location_id')->nullable()->constrained('locations');
-            $table->foreignUuid('client_id')->nullable()->constrained('clients');
+            $table->foreignUuid('location_id')->nullable();
+            $table->foreignUuid('client_id')->nullable();
             $table->string('field');
             $table->longText('value')->nullable();
             $table->longText('misc')->nullable();

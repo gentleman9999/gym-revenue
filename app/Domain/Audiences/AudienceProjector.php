@@ -11,6 +11,11 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class AudienceProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        Audience::truncate();
+    }
+
     public function onAudienceCreated(AudienceCreated $event): void
     {
         $audience = (new Audience())->writeable();

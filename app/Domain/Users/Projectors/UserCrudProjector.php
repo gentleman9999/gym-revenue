@@ -17,6 +17,12 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class UserCrudProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        User::truncate();
+        UserDetails::truncate();
+    }
+
     public function onUserCreated(UserCreated $event): void
     {
         $data = $event->payload;
