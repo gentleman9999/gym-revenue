@@ -1,5 +1,5 @@
 <template>
-    <inertia-link class="btn justify-self-end" :href="href">
+    <inertia-link class="btn lg:justify-self-end" :href="href">
         <slot />
         <div class="m-2 flex gap-1">
             <span class="bg-info p-1 tooltip" :data-tip="total + ' Total'">{{

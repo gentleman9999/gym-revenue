@@ -29,9 +29,7 @@ class CreateScheduledCampaign
     {
         $id = Uuid::new();
 
-        $aggy = ScheduledCampaignAggregate::retrieve($id);
-
-        $aggy->create($payload)->persist();
+        ScheduledCampaignAggregate::retrieve($id)->create($payload)->persist();
 
         return ScheduledCampaign::findOrFail($id);
     }
@@ -42,10 +40,11 @@ class CreateScheduledCampaign
             'name' => ['required', 'max:50'],
             'audience_id' => ['required', 'exists:audiences,id'],
             'send_at' => ['required', 'after:now'],
-            'template_type' => ['required', 'string'],
-            'template_id' => ['required', 'string'],
+            'email_template_id' => ['sometimes', 'string'],
+            'sms_template_id' => ['sometimes', 'string'],
+            'client_call_script' => ['sometimes', 'string'],
             'client_id' => ['required', 'exists:clients,id'],
-            'is_published' => ['sometimes', 'boolean'],
+//            'is_published' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -72,7 +71,7 @@ class CreateScheduledCampaign
     {
         Alert::success("Scheduled Campaign '{$scheduledCampaign->name}' was created")->flash();
 
-        return Redirect::route('comms.scheduled-campaigns.edit', $scheduledCampaign->id);
+        return Redirect::route('mass-comms.scheduled-campaigns.edit', $scheduledCampaign->id);
     }
 
     public function asCommand(Command $command): void

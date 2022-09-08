@@ -50,7 +50,7 @@ class FireTestMessage
     {
         Alert::success("Message was created")->flash();
 
-        return Redirect::route('comms.dashboard');
+        return Redirect::route('mass-comms.dashboard');
     }
 
     public function create($user, array $input)

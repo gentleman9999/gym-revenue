@@ -25,7 +25,12 @@
         </div>
     </teleport>
 </template>
-
+<style scoped>
+.modal {
+    @apply items-center;
+    max-width: 100vw;
+}
+</style>
 <script>
 import {
     defineComponent,
@@ -74,7 +79,7 @@ export default defineComponent({
         const open = () => {
             isOpen.value = true;
             emit("open");
-            // lock();
+            lock();
         };
 
         watchEffect(() => {

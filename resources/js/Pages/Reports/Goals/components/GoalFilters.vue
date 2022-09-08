@@ -19,16 +19,19 @@
 </template>
 <style>
 .goal-filter-wrapper {
-    @apply flex flex-row justify-between w-full;
+    @apply flex flex-row justify-between w-full flex-wrap;
 }
 .goal-filter-wrapper .btn-secondary {
     @apply text-base-content border-secondary rounded;
 }
 .goal-filters {
-    @apply flex flex-row space-x-6;
+    @apply flex flex-row md:space-x-6 flex-wrap;
+}
+.goal-filters > div {
+    @apply mt-1 mr-2;
 }
 .goal-filter-operations {
-    @apply flex flex-row space-x-6 items-baseline;
+    @apply flex flex-row md:space-x-6 space-x-2 items-baseline mt-1;
 }
 </style>
 <script setup>

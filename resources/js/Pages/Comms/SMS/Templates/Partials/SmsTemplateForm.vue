@@ -44,6 +44,7 @@
         <template #actions>
             <!--            TODO: navigation links should always be Anchors. We need to extract button css so that we can style links as buttons-->
             <Button
+                v-if="useInertia"
                 type="button"
                 @click="handleCancel"
                 :class="{ 'opacity-25': form.processing }"
@@ -82,8 +83,20 @@ export default {
         SmsFormControl,
         JetInputError,
     },
-    props: ["clientId", "template", "canActivate"],
-    setup(props, context) {
+    props: {
+        template: {
+            type: Object,
+        },
+        canActivate: {
+            type: Boolean,
+            required: true,
+        },
+        useInertia: {
+            type: Boolean,
+            default: true,
+        },
+    },
+    setup(props, { emit }) {
         let template = props.template;
         let operation = "Update";
         if (!template) {
@@ -98,10 +111,39 @@ export default {
 
         const form = useGymRevForm(template);
 
-        let handleSubmit = () =>
-            form.dirty().put(route("comms.sms-templates.update", template.id));
+        let handleSubmit = () => {
+            if (props.useInertia) {
+                form.dirty().put(
+                    route("mass-comms.sms-templates.update", template.id)
+                );
+            } else {
+                axios
+                    .put(
+                        route("mass-comms.sms-templates.update", template.id),
+                        form.dirty().data()
+                    )
+                    .then(({ data }) => {
+                        console.log("closeAfterSave", data);
+                        emit("done", data);
+                    });
+            }
+        };
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("comms.sms-templates.store"));
+            if (props.useInertia) {
+                handleSubmit = () =>
+                    form.post(route("mass-comms.sms-templates.store"));
+            } else {
+                handleSubmit = () =>
+                    axios
+                        .post(
+                            route("mass-comms.sms-templates.store"),
+                            form.data()
+                        )
+                        .then(({ data }) => {
+                            console.log("closeAfterSave", data);
+                            emit("done", data);
+                        });
+            }
         }
 
         const inertiaModal = useModal();
@@ -109,7 +151,7 @@ export default {
             if (inertiaModal?.value?.close) {
                 inertiaModal.value.close();
             }
-            Inertia.visit(route("comms.sms-templates"));
+            Inertia.visit(route("mass-comms.sms-templates"));
         };
         return { form, buttonText: operation, handleSubmit, handleCancel };
     },

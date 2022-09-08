@@ -10,9 +10,15 @@ use App\Domain\Locations\Events\LocationUpdated;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Locations\Projections\LocationDetails;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
+use Spatie\EventSourcing\Facades\Projectionist;
 
 class LocationProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        Location::truncate();
+        LocationDetails::truncate();
+    }
     private $details = ['poc_first', 'poc_last', 'poc_phone'];
 
     public function onLocationCreated(LocationCreated $event): void
@@ -26,6 +32,12 @@ class LocationProjector extends Projector
         $location->id = $event->aggregateRootUuid();
         $location->client_id = $event->clientId();
 
+        if (Projectionist::isReplaying()) {
+            if (count($location_table_data) != count($location_table_data, COUNT_RECURSIVE)) {
+                //dd($location_table_data);
+                $location_table_data['phone'] = '';
+            }
+        }
         $location->fill(
             $location_table_data
         )->writeable()->save();

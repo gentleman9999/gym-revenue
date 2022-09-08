@@ -3,8 +3,10 @@
 namespace App\Domain\Audiences;
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,13 +17,13 @@ class Audience extends GymRevProjection
 
     protected $hidden = ['client_id'];
 
-    protected $fillable = ['name', 'entity', 'filters'];
+    protected $fillable = ['name', 'entity', 'filters', 'editable'];
 
     protected $casts = [
         'filters' => 'array',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }
@@ -45,16 +47,31 @@ class Audience extends GymRevProjection
     {
         $entity = new $this->entity();
 
-        return $entity::withoutGlobalScopes()
+        $query = $entity::withoutGlobalScopes()
             ->whereClientId($this->client_id)
-            ->whereNull('member_id')
             ->when($this->filters !== null, function ($query) {
-                return $this->generateQueryFromFilters($query);
+                $this->generateQueryFromFilters($query);
             });
+
+        if ($entity instanceof Lead) {
+            $query->whereNull('member_id');
+        }
+
+        return $query;
     }
 
     protected function generateQueryFromFilters($query)
     {
+        $entity = (new ($this->entity));
+        $fillable = collect($entity->getFillable());
+//        dd($fillable);
+        foreach (array_keys($this->filters) as $filter) {
+            if (collect($entity->getFillable())->contains($filter)) {
+//                dd($this->filters[$filter]);
+                $query->whereIn($filter, $this->filters[$filter]);
+            }
+        }
+//        dd($this->filters);
         //TODO: this should convert the json filter structure into query builder.
         return $query;
     }

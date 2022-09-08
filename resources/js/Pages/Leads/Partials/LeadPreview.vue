@@ -1,39 +1,39 @@
 <template>
     <div class="grid grid-cols-6 gap-4">
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Name"
             :value="data.lead.first_name + ' ' + data.lead.last_name"
         />
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Email"
             :value="data.lead.email"
         />
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Phone 1"
             :value="data.lead.primary_phone"
         />
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Phone 2"
             :value="data.lead.alternate_phone"
         />
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Gender"
             :value="data.lead.gender"
         />
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Birthdate"
             :value="
                 new Date(data.lead.date_of_birth).toLocaleDateString('en-US')
             "
         />
         <lead-preview-item
-            class="field col-span-6 lg:col-span-3"
+            class="field col-span-6 md:col-span-3"
             label="Lead Owner Email"
             :value="
                 data.lead?.owner ? data.lead.owner.email : 'Not Yet Claimed'

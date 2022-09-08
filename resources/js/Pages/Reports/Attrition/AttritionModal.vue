@@ -5,7 +5,7 @@
         ref="modal"
         page-route="Attrition"
     >
-        <div class="flex flex-row w-full">
+        <div class="flex md:flex-row flex-col w-full">
             <attrition-running-total
                 class="min-w-fit no-favorite no-collapse"
             />

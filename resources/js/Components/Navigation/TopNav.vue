@@ -19,20 +19,6 @@
         <div class="max-w-8xl">
             <div class="flex justify-between h-16">
                 <div class="flex">
-                    <!-- <button
-                        v-show="!showingSidebar"
-                        @click="showingSidebar = true"
-                        class="pr-2"
-                    >
-                        <font-awesome-icon :icon="['fas', 'bars']" size="sm"/>
-                    </button> -->
-                    <!-- Logo -->
-                    <!-- <div class="flex-shrink-0 flex items-center bg-primary">
-                                          <inertia-link :href="route('dashboard')">
-                                              <jet-application-mark class="block h-8 w-auto" />
-                                          </inertia-link>
-                                      </div> -->
-
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 lg:flex">
                         <jet-nav-link
@@ -75,13 +61,6 @@
                             />
                         </div>
 
-                        <!-- <jet-nav-link
-                            :href="route('reports.page', 'Kpi')"
-                            :active="route().current('reports.pages')"
-                        >
-                            Reporting Dashboard
-                        </jet-nav-link> -->
-
                         <jet-nav-link
                             href="#"
                             :active="route().current('data.conversions')"
@@ -102,57 +81,8 @@
                         />
                     </div>
 
-                    <!--                    <div class="ml-3 relative">-->
-                    <!--                        <button @click="comingSoon()">-->
-                    <!--                            <font-awesome-icon-->
-                    <!--                                :icon="['fas', 'search']"-->
-                    <!--                                size="sm"-->
-                    <!--                            />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="ml-3 relative">-->
-                    <!--                        <button @click="comingSoon()">-->
-                    <!--                            <font-awesome-icon-->
-                    <!--                                :icon="['fas', 'plus-circle']"-->
-                    <!--                                size="sm"-->
-                    <!--                            />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="ml-3 relative">-->
-                    <!--                        <button @click="comingSoon()">-->
-                    <!--                            <font-awesome-icon-->
-                    <!--                                :icon="['fas', 'question-circle']"-->
-                    <!--                                size="sm"-->
-                    <!--                            />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="ml-3 relative">-->
-                    <!--                        <button @click="comingSoon()">-->
-                    <!--                            <font-awesome-icon-->
-                    <!--                                :icon="['fas', 'th']"-->
-                    <!--                                size="sm"-->
-                    <!--                            />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="ml-3 relative">-->
-                    <!--                        <button @click="comingSoon()">-->
-                    <!--                            <font-awesome-icon-->
-                    <!--                                :icon="['fas', 'user-circle']"-->
-                    <!--                                size="sm"-->
-                    <!--                            />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
                     <noty-bell></noty-bell>
                     <global-search placeholder="Search" size="xs" />
-                    <!--                    <div class="ml-3 relative">-->
-                    <!--                        <button @click="comingSoon()">-->
-                    <!--                            <font-awesome-icon-->
-                    <!--                                :icon="['far', 'file-medical']"-->
-                    <!--                                size="sm"-->
-                    <!--                            />-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
-                    <!-- Notifications -->
 
                     <!-- Settings Dropdown -->
                     <div class="ml-3 relative">
@@ -163,7 +93,7 @@
                 <div class="flex items-center lg:hidden">
                     <button
                         @click="toggleSideNav"
-                        class="h-full rounded-none px-6 inline-flex items-center justify-center p-2 rounded-md hover:bg-base-100 focus:outline-none focus:bg-base-100 focus: transition"
+                        class="h-full rounded-none px-6 inline-flex items-center justify-center p-2 rounded-md focus: transition"
                     >
                         <svg
                             class="h-6 w-6"
@@ -173,8 +103,8 @@
                         >
                             <path
                                 :class="{
-                                    hidden: showingNavigationDropdown,
-                                    'inline-flex': !showingNavigationDropdown,
+                                    hidden: !showingSidebar,
+                                    'inline-flex': showingSidebar,
                                 }"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -183,8 +113,8 @@
                             />
                             <path
                                 :class="{
-                                    hidden: !showingNavigationDropdown,
-                                    'inline-flex': showingNavigationDropdown,
+                                    hidden: showingSidebar,
+                                    'inline-flex': !showingSidebar,
                                 }"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -248,22 +178,18 @@ export default defineComponent({
     },
     props: {
         title: String,
+        showingSidebar: Boolean,
     },
     setup(props, { emit }) {
-        const showingSidebar = ref(false);
-        const showingNavigationDropdown = ref(false);
         const showingNotificationDropdown = ref(false);
 
         const logout = () => {
             Inertia.post(route("logout"));
         };
         const toggleSideNav = () => {
-            showingNavigationDropdown.value = !showingNavigationDropdown.value;
             emit("toggleSideNav");
         };
         return {
-            showingSidebar,
-            showingNavigationDropdown,
             showingNotificationDropdown,
             logout,
             comingSoon,

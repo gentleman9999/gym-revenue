@@ -9,15 +9,21 @@
             }"
         >
             <div class="w-full">
-                <data-table
-                    class="max-h-60 text-neutral-450"
-                    :columns="columns"
-                    :data="data"
-                />
+                <data-table class="kpi-table" :columns="columns" :data="data" />
             </div>
         </kpi-card>
     </kpi-card-wrapper>
 </template>
+<style scoped>
+.kpi-table {
+    @apply max-h-60 text-neutral-450;
+}
+@media only screen and (max-width: 768px) {
+    .kpi-table {
+        width: calc(100vw - 64px);
+    }
+}
+</style>
 <script setup>
 import { h } from "vue";
 

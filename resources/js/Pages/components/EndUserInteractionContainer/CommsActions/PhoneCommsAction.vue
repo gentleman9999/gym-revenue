@@ -34,7 +34,7 @@
             ></textarea>
         </div>
         <template #buttons>
-            <div class="mr-4">
+            <div class="mr-2 md:mr-4 md:mb-0 mb-3">
                 <a :href="`tel:${phone}`" class="btn btn-warning">
                     <i class="fad fa-phone-volume"></i> Call Lead
                 </a>

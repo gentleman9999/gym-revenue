@@ -17,7 +17,6 @@
                 :can-activate="false"
                 :topol-api-key="topolApiKey"
             />
-            <!--            <email-builder @close="handleClose" :products-url="plansUrl" />-->
         </template>
     </ModalableWrapper>
 </template>
@@ -32,7 +31,6 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 
 import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
-import EmailBuilder from "./Partials/EmailBuilder.vue";
 import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
 
 export default defineComponent({
@@ -55,7 +53,6 @@ export default defineComponent({
         EmailTemplateForm,
         ModalableWrapper,
         ModalSlot,
-        EmailBuilder,
     },
     setup() {
         const handleClose = () => console.log("doclose");

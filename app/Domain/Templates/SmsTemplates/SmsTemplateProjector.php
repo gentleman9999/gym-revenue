@@ -15,6 +15,11 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class SmsTemplateProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        SmsTemplate::truncate();
+    }
+
     public function onSmsTemplateCreated(SmsTemplateCreated $event)
     {
         DB::transaction(function () use ($event) {

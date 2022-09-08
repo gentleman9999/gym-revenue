@@ -33,7 +33,7 @@ class CreateEmailTemplate
         ];
     }
 
-    public function handle($data, $user = null): EmailTemplate
+    public function handle(array $data): EmailTemplate
     {
         $id = Uuid::new();
 
@@ -59,8 +59,7 @@ class CreateEmailTemplate
     public function asController(ActionRequest $request): EmailTemplate
     {
         return $this->handle(
-            $request->validated(),
-            $request->user()
+            $request->validated()
         );
     }
 
@@ -68,6 +67,6 @@ class CreateEmailTemplate
     {
         Alert::success("Email Template'{$template->name}' was created")->flash();
 
-        return Redirect::route('comms.email-templates.edit', $template->id);
+        return Redirect::route('mass-comms.email-templates.edit', $template->id);
     }
 }

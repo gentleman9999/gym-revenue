@@ -4,15 +4,15 @@
             <slot />
         </div>
 
-        <div class="flex flex-row">
+        <div class="flex flex-row items-center">
             <slot name="buttons" />
-            <div class="mr-4">
+            <div class="mr-2 md:mr-4">
                 <Button type="submit" success>
                     <i class="fad fa-books-medical"></i>
                     {{ submitText }}
                 </Button>
             </div>
-            <div class="mr-4">
+            <div class="mr-2 md:mr-4">
                 <Button type="button" error @click="form.reset()">
                     <i class="fad fa-trash"></i> Clear
                 </Button>

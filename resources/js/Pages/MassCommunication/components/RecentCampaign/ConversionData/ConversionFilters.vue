@@ -1,5 +1,7 @@
 <template>
-    <div class="flex flex-row space-x-4">
+    <div
+        class="flex flex-col space-y-2 items-end md:flex-row md:space-x-4 md:space-y-0"
+    >
         <select-box label="Category" :items="categories" size="xs" /><select-box
             label="Created By"
             :items="categories"

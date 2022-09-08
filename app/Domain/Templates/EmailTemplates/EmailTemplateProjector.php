@@ -16,6 +16,11 @@ use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class EmailTemplateProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        EmailTemplate::truncate();
+    }
+
     public function onEmailTemplateCreated(EmailTemplateCreated $event)
     {
         DB::transaction(function () use ($event) {

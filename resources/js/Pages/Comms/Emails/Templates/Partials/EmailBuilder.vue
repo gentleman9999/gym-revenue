@@ -1,26 +1,29 @@
 <template>
-    <div
-        v-if="showSpinner"
-        className="w-full h-full flex items-center justify-center"
-    >
-        <spinner />
-    </div>
-    <div
-        class="lg:w-[60rem] xl:w-[90rem]"
-        :class="{
-            hidden: showSpinner,
-        }"
-    >
-        <TopolEditor
-            :options="customOptions"
-            v-bind="$attrs"
-            @onClose="handleOnClose"
-            @onClosed="handleOnClose"
-            @onInit="handleOnInit"
-            @onLoaded="handleOnLoaded"
-            :class="{ hidden: showSpinner }"
-            style="position: unset"
-        />
+    <DesktopSupportOnly class="lg:hidden"> </DesktopSupportOnly>
+    <div class="hidden lg:flex">
+        <div
+            v-if="showSpinner"
+            className="w-full h-full flex items-center justify-center"
+        >
+            <spinner />
+        </div>
+        <div
+            class="lg:w-[60rem] xl:w-[90rem]"
+            :class="{
+                hidden: showSpinner,
+            }"
+        >
+            <TopolEditor
+                :options="customOptions"
+                v-bind="$attrs"
+                @onClose="handleOnClose"
+                @onClosed="handleOnClose"
+                @onInit="handleOnInit"
+                @onLoaded="handleOnLoaded"
+                :class="{ hidden: showSpinner }"
+                style="position: unset"
+            />
+        </div>
     </div>
 </template>
 
@@ -30,6 +33,7 @@ import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import Spinner from "@/Components/Spinner.vue";
 import theme from "@/theme.js";
+import DesktopSupportOnly from "./DesktopSupportOnly.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
 

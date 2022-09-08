@@ -5,12 +5,10 @@
                 SMS Template Management
             </h2>
         </div>
-        <div
-            class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
-        >
+        <div class="top-drop-row stop-drop-roll">
             <inertia-link
                 class="btn justify-self-end"
-                :href="route('comms.dashboard')"
+                :href="route('mass-comms.dashboard')"
             >
                 <span
                     ><font-awesome-icon
@@ -24,7 +22,7 @@
     </LayoutHeader>
 
     <gym-revenue-crud
-        base-route="comms.sms-templates"
+        base-route="mass-comms.sms-templates"
         model-name="SMS Template"
         model-key="template"
         :fields="fields"
@@ -48,7 +46,11 @@
         @close="handleCloseTextModal"
     ></confirm-send-form>
 </template>
-
+<style scoped>
+.top-drop-row {
+    @apply flex flex-row justify-center lg:justify-start md:ml-4;
+}
+</style>
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
@@ -83,7 +85,7 @@ export default defineComponent({
         };
         const handleConfirmTrash = () => {
             Inertia.delete(
-                route("comms.sms-templates.trash", confirmTrash.value)
+                route("mass-comms.sms-templates.trash", confirmTrash.value)
             );
             confirmTrash.value = null;
         };

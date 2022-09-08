@@ -43,7 +43,7 @@ class RestoreScheduledCampaign
     {
         Alert::success("Scheduled Campaign '{$scheduledCampaign->name}' was restored")->flash();
 
-        return Redirect::route('comms.scheduled-campaigns');
+        return Redirect::route('mass-comms.scheduled-campaigns');
     }
 
     public function asCommand(Command $command): void

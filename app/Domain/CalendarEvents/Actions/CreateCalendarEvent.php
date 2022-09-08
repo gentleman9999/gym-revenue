@@ -64,10 +64,11 @@ class CreateCalendarEvent
                 $user = User::find($user);
                 if ($user) {
                     AddCalendarAttendee::run([
+                        'client_id' => $data['client_id'],
                         'entity_type' => User::class,
                         'entity_id' => $user->id,
                         'entity_data' => $user,
-                        'calendar_event_id' => $id,
+                        'calendar_event_id' => $calendarEvent->id,
                         'invitation_status' => 'Invitation Pending',
                     ]);
                 }
@@ -80,6 +81,7 @@ class CreateCalendarEvent
                 $lead = Lead::whereId($lead)->select('id', 'first_name', 'last_name', 'email')->first();
                 if ($lead) {
                     AddCalendarAttendee::run([
+                        'client_id' => $data['client_id'],
                         'entity_type' => Lead::class,
                         'entity_id' => $lead->id,
                         'entity_data' => $lead,
@@ -96,6 +98,7 @@ class CreateCalendarEvent
                 $member = Member::whereId($member)->select('id', 'first_name', 'last_name', 'email')->first();
                 if ($member) {
                     AddCalendarAttendee::run([
+                        'client_id' => $data['client_id'],
                         'entity_type' => Member::class,
                         'entity_id' => $member->id,
                         'entity_data' => $member,

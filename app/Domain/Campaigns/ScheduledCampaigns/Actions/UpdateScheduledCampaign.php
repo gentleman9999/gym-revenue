@@ -32,12 +32,14 @@ class UpdateScheduledCampaign
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'max:50'],
-            'audience_id' => ['sometimes', 'exists:audiences,id'],
-            'send_at' => ['sometimes', 'after:now'],
-            'template_type' => ['sometimes', 'string'],
-            'template_id' => ['sometimes', 'string'],
-            'is_published' => ['sometimes', 'boolean'],
+            'name' => ['required', 'max:50'],
+            'audience_id' => ['required', 'exists:audiences,id'],
+            'send_at' => ['required', 'after:now'],
+            'email_template_id' => ['sometimes', 'string'],
+            'sms_template_id' => ['sometimes', 'string'],
+            'client_call_script' => ['sometimes', 'string'],
+            'client_id' => ['required', 'exists:clients,id'],
+//            'is_published' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -65,6 +67,6 @@ class UpdateScheduledCampaign
     {
         Alert::success("Scheduled Campaign '{$scheduledCampaign->name}' was updated")->flash();
 
-        return Redirect::route('comms.scheduled-campaigns.edit', $scheduledCampaign->id);
+        return Redirect::route('mass-comms.scheduled-campaigns.edit', $scheduledCampaign->id);
     }
 }

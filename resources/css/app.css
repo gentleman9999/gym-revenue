@@ -124,3 +124,7 @@
 .Vue-Toastification__toast--error {
     @apply bg-error text-primary-content;
 }
+
+.drawer.drawer-end .drawer-toggle:checked ~ .drawer-side {
+    @apply fixed top-0 right-0 w-full h-full;
+}

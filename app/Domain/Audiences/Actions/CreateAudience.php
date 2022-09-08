@@ -4,11 +4,16 @@ namespace App\Domain\Audiences\Actions;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Audiences\AudienceAggregate;
+//use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
+//use Lorisleiva\Actions\Concerns\AsController;
 
 class CreateAudience
 {
@@ -17,15 +22,23 @@ class CreateAudience
     public string $commandSignature = 'audience:create';
     public string $commandDescription = 'Creates a Audience with the given name.';
 
-    public function handle(array $payload): Audience
+    public function handle(array $data): Audience
     {
         $id = Uuid::new();
 
-        $aggy = AudienceAggregate::retrieve($id);
-
-        $aggy->create($payload)->persist();
+        AudienceAggregate::retrieve($id)->create($data)->persist();
 
         return Audience::findOrFail($id);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'string'],
+            'entity' => ['required', 'string'],
+            'filters' => ['required', 'array', 'min:1'],
+            'client_id' => ['string', 'required'],
+        ];
     }
 
     public function asCommand(Command $command): void
@@ -45,6 +58,20 @@ class CreateAudience
         $audience = $this->handle($payload);
 
         $command->info('Created Audience ' . $audience->name);
+    }
+
+    public function getControllerMiddleware(): array
+    {
+        return [InjectClientId::class];
+    }
+
+    public function asController(ActionRequest $request): Audience
+    {
+        $data = $request->validated();
+
+        return $this->handle(
+            $data
+        );
     }
 
     private function getClient($command): ?string

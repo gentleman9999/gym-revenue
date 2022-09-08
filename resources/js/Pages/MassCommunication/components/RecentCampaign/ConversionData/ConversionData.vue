@@ -5,9 +5,11 @@
             <conversion-filters />
         </div>
         <div class="conversion-data-body">
-            <div class="conversion-data-details w-2/3">
+            <div class="conversion-data-details lg:w-2/3 w-full">
                 <div class="conversion-data-date">April</div>
-                <div class="flex flex-row justify-between mb-4">
+                <div
+                    class="flex flex-col items-center md:flex-row md:justify-between mb-4"
+                >
                     <div
                         v-for="item in conversions"
                         :key="item.label"
@@ -19,7 +21,7 @@
                 </div>
                 <conversion-data-table />
             </div>
-            <div class="w-1/3 pl-6">
+            <div class="mt-4 lg:mt-0 lg:w-1/3 w-fit self-center lg:pl-6">
                 <conversion-summary />
             </div>
         </div>
@@ -42,13 +44,13 @@ let conversions = [
     @apply flex flex-col mt-12;
 }
 .conversion-data-header {
-    @apply flex flex-row justify-between pb-3;
+    @apply flex flex-row flex-wrap justify-between pb-3;
 }
 .conversion-data-title {
     @apply text-xl font-bold;
 }
 .conversion-data-body {
-    @apply flex flex-row border border-secondary justify-between rounded p-3;
+    @apply flex flex-col lg:flex-row border border-secondary justify-between rounded p-3;
 }
 .conversion-data-details {
     @apply flex flex-col;

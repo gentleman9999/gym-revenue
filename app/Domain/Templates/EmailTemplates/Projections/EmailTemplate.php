@@ -6,6 +6,8 @@ use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,7 +26,7 @@ class EmailTemplate extends GymRevProjection
         'thumbnail' => 'array',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
         static::updating(function ($model) {
@@ -42,7 +44,7 @@ class EmailTemplate extends GymRevProjection
         });
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
@@ -59,32 +61,32 @@ class EmailTemplate extends GymRevProjection
         });
     }
 
-    public function getMarkupAttribute($value)
+    public function getMarkupAttribute($value): false|string
     {
         return base64_decode($value);
     }
 
-    public function setMarkupAttribute($value)
+    public function setMarkupAttribute($value): void
     {
         $this->attributes['markup'] = base64_encode($value);
     }
 
-    public function creator()
+    public function creator(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
 
-    public function details()
+    public function details(): HasMany
     {
         return $this->hasMany(EmailTemplateDetails::class, 'email_template_id', 'id');
     }
 
-    public function detail()
+    public function detail(): HasOne
     {
         return $this->hasOne(EmailTemplateDetails::class, 'email_template_id', 'id');
     }
 
-    public function gateway()
+    public function gateway(): HasOne
     {
         return $this->detail()->whereDetail('email_gateway')->whereActive(1);
     }

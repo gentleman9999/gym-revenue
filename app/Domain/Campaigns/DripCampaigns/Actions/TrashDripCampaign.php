@@ -43,7 +43,7 @@ class TrashDripCampaign
     {
         Alert::success("Drip Campaign '{$dripCampaign->name}' was sent to trash")->flash();
 
-        return Redirect::route('comms.drip-campaigns');
+        return Redirect::route('mass-comms.drip-campaigns');
     }
 
     public function asCommand(Command $command): void

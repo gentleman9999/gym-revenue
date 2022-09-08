@@ -2,15 +2,26 @@
 
 namespace App\Domain\CalendarEvents;
 
+use App\Domain\CalendarAttendees\CalendarAttendee;
 use App\Domain\CalendarEvents\Events\CalendarEventCreated;
 use App\Domain\CalendarEvents\Events\CalendarEventDeleted;
 use App\Domain\CalendarEvents\Events\CalendarEventRestored;
 use App\Domain\CalendarEvents\Events\CalendarEventTrashed;
 use App\Domain\CalendarEvents\Events\CalendarEventUpdated;
+use App\Domain\CalendarEventTypes\CalendarEventType;
+use App\Domain\Reminders\Reminder;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CalendarEventProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        CalendarEvent::truncate();
+        CalendarEventType::truncate();
+        CalendarAttendee::truncate();
+        Reminder::truncate();
+    }
+
     public function onCalenderEventCreated(CalendarEventCreated $event): void
     {
         $calendarEvent = (new CalendarEvent())->writeable();

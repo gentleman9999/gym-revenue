@@ -4,7 +4,7 @@
             class="block overflow-y-scroll h-60 space-y-2 content-wrapper pt-2"
         >
             <div
-                class="inline-block selected-item border rounded h-fit text-neutral-900"
+                class="selected-item"
                 v-for="(item, index) in props.data"
                 :key="index"
                 :onClick="() => toggleSelect(item)"
@@ -15,7 +15,7 @@
         <div class="location-wrapper border rounded h-60"></div>
     </div>
 </template>
-<style scope>
+<style scoped>
 .content-wrapper {
     @apply z-1;
 }
@@ -23,9 +23,16 @@
     width: calc(100% - 24px);
     @apply absolute right-6 top-0;
 }
+
 .selected-item {
     width: calc(50% - 24px);
-    @apply bg-slate-100 ml-2 text-center cursor-pointer select-none;
+    @apply bg-slate-100 ml-2 text-center cursor-pointer select-none border rounded h-fit text-neutral-900 inline-block;
+}
+
+@media only screen and (max-width: 1024px) {
+    .selected-item {
+        width: auto;
+    }
 }
 </style>
 <script setup>

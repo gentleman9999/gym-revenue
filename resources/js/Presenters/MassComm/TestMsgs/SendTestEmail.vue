@@ -56,7 +56,7 @@ function handleSendingText() {
     loading.value = true;
 
     axios
-        .post("/comms/email-templates/test", {
+        .post(route("mass-comms.email-templates.test"), {
             templateId: props.templateId,
         })
         .then(({ data }) => {
