@@ -65,7 +65,7 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
 
         $notes = $misc['notes'] ?? false;
         if ($notes) {
-            //TODO: use action
+            // TODO: use action
             Note::create([
                 'entity_id' => $end_user->id,
                 'entity_type' => ($end_user::getDetailsModel())::class,

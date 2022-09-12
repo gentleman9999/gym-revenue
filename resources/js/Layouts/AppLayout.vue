@@ -55,6 +55,7 @@
             </div>
         </div>
     </div>
+    <twilo-ui />
     <InertiaModal>
         <template #default="{ close, props }">
             <DaisyModal
@@ -98,6 +99,9 @@ import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 import { Head } from "@inertiajs/inertia-vue3";
+
+import TwiloUi from "@/Components/TwiloUi/index.vue";
+
 const props = defineProps({
     title: {
         type: String,
