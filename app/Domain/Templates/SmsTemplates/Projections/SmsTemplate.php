@@ -64,6 +64,7 @@ class SmsTemplate extends GymRevProjection
         return $this->hasOne(SmsTemplateDetails::class, 'sms_template_id', 'id');
     }
 
+    //TODO: SMS Templates should not know about gateways. Move logic to campaigns.
     public function gateway(): HasOne
     {
         return $this->detail()->whereDetail('sms_gateway')->whereActive(1);

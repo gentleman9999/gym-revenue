@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property string $primary_phone
+ */
 class Lead extends EndUser
 {
     use Notifiable;
@@ -71,5 +74,10 @@ class Lead extends EndUser
             $query->whereIn('lead_source_id',  $leadsource);
             /* Filter for EndUser Sources */
         });
+    }
+
+    public function getPhoneNumber(): string
+    {
+        return $this->primary_phone;
     }
 }

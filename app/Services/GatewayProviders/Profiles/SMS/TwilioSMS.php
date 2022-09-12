@@ -4,7 +4,7 @@ namespace App\Services\GatewayProviders\Profiles\SMS;
 
 use Twilio\Rest\Client as TwilioClient;
 
-class Twilio extends SMSGatewayProvider
+class TwilioSMS extends SMSGatewayProvider
 {
     protected $twilio_no;
     protected $twilio_sid;
@@ -18,7 +18,7 @@ class Twilio extends SMSGatewayProvider
             'twilio_sid' => $this->twilio_sid = $access_credentials['twilio_sid'] ?? null,
             'twilio_token' => $this->twilio_token = $access_credentials['twilio_token'] ?? null,
         ];
-        parent::__construct($deets, 'Twilio', $user_id, $interpreter);
+        parent::__construct($deets, 'TwilioSMS', $user_id, $interpreter);
         $this->client = new TwilioClient($this->twilio_sid, $this->twilio_token);
     }
 

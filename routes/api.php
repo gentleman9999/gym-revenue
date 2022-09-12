@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(static function () {
+    Route::get('/user', static fn (Request $request) => $request->user());
 });
 
 Route::middleware('bearer')->prefix('leads')->group(function () {
@@ -32,8 +32,15 @@ Route::middleware('bearer')->prefix('members')->group(function () {
     Route::post('/batchupsert', \App\Domain\EndUsers\Members\Actions\BatchUpsertMemberApi::class);
 });
 
-Route::middleware('TwilioAuth')->prefix('twilio')->group(function () {
-    Route::post('/statusCallBack', \App\Domain\SMS\Actions\TwilioStatusCallback::class);
+Route::prefix('twilio')->group(function () {
+    Route::middleware('TwilioAuth')->group(static function () {
+        Route::post('/statusCallBack', \App\Domain\SMS\Actions\TwilioStatusCallback::class);
+
+        Route::prefix('call')->group(static function () {
+            Route::post('connect/{phone}', \App\Domain\VoiceCalls\Actions\ConnectPhone::class);
+            Route::post('status/{user}/provider/{gateway}', \App\Domain\VoiceCalls\Actions\UpdateStatus::class);
+        });
+    });
 });
 
 Route::middleware('MailgunAuth')->prefix('mailgun')->group(function () {

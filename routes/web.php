@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\VoiceCalls\Actions\InitiateCall;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -330,3 +331,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(fun
 
 Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\GetClients::class)->name('clients');
 Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');
+
+
+Route::middleware('auth:sanctum')->prefix('call')->group(static function () {
+    Route::get('initialize/{phone}/type/{type}', InitiateCall::class)->name('twilio.call.initialize')
+        ->whereIn('type', [InitiateCall::TYPE_LEAD, InitiateCall::TYPE_MEMBER]);
+    Route::get('status/{sid}', \App\Domain\VoiceCalls\Actions\GetStatus::class)->name('twilio.call.status');
+});

@@ -197,14 +197,14 @@ class ClientConfigurationProjector extends Projector
                 $gateway = (new ClientGatewaySetting())->writeable();
                 $gateway->client_id = $event->aggregateRootUuid();
                 $gateway->fill([
-                    'gateway_provider' => 'twilio',
+                    'gateway_provider' => 'twilio-sms',
                     'name' => 'twilioSID',
                     'value' => $payload['twilioSID'],
                 ]);
                 $gateway->save();
             } else {
                 $gateway->writeable()->update([
-                    'gateway_provider' => 'twilio',
+                    'gateway_provider' => 'twilio-sms',
                     'name' => 'twilioSID',
                     'value' => $payload['twilioSID'],
                 ]);
@@ -216,14 +216,14 @@ class ClientConfigurationProjector extends Projector
                 $gateway = (new ClientGatewaySetting())->writeable();
                 $gateway->client_id = $event->aggregateRootUuid();
                 $gateway->fill([
-                    'gateway_provider' => 'twilio',
+                    'gateway_provider' => 'twilio-sms',
                     'name' => 'twilioToken',
                     'value' => $payload['twilioToken'],
                 ]);
                 $gateway->save();
             } else {
                 $gateway->writeable()->update([
-                    'gateway_provider' => 'twilio',
+                    'gateway_provider' => 'twilio-sms',
                     'name' => 'twilioToken',
                     'value' => $payload['twilioToken'],
                 ]);
@@ -235,14 +235,14 @@ class ClientConfigurationProjector extends Projector
                 $gateway = (new ClientGatewaySetting())->writeable();
                 $gateway->client_id = $event->aggregateRootUuid();
                 $gateway->fill([
-                    'gateway_provider' => 'twilio',
+                    'gateway_provider' => 'twilio-sms',
                     'name' => 'twilioNumber',
                     'value' => $payload['twilioNumber'],
                 ]);
                 $gateway->save();
             } else {
                 $gateway->writeable()->update([
-                    'gateway_provider' => 'twilio',
+                    'gateway_provider' => 'twilio-sms',
                     'name' => 'twilioNumber',
                     'value' => $payload['twilioNumber'],
                 ]);

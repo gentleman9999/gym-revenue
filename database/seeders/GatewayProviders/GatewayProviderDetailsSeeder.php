@@ -18,23 +18,23 @@ class GatewayProviderDetailsSeeder extends Seeder
     {
         $gateways = GatewayProvider::getAllProvidersAsArray();
         $details = [
-            'twilio' => [
+            'twilio-sms' => [
                 [
-                    'gateway_id' => $gateways['twilio']['id'],
+                    'gateway_id' => $gateways['twilio-sms']['id'],
                     'detail' => 'access_credential',
                     'value' => 'twilio_sid',
                     'misc' => ['required' => true,'value' => 'AC6bad234db52cb4f7a8c466c92a8e8a50'],
                     'active' => 1,
                 ],
                 [
-                    'gateway_id' => $gateways['twilio']['id'],
+                    'gateway_id' => $gateways['twilio-sms']['id'],
                     'detail' => 'access_credential',
                     'value' => 'twilio_token',
                     'misc' => ['required' => true,'value' => '1531e87775390625d404a50bc0c15052'],
                     'active' => 1,
                 ],
                 [
-                    'gateway_id' => $gateways['twilio']['id'],
+                    'gateway_id' => $gateways['twilio-sms']['id'],
                     'detail' => 'access_credential',
                     'value' => 'twilio_no',
                     'misc' => ['required' => true,'value' => '+19562753856'],

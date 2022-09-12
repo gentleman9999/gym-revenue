@@ -5,7 +5,8 @@ namespace Database\Seeders\GatewayProviders;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GatewayProviders\GatewayProviderType;
 use App\Services\GatewayProviders\Profiles\Email\Mailgun;
-use App\Services\GatewayProviders\Profiles\SMS\Twilio;
+use App\Services\GatewayProviders\Profiles\SMS\TwilioSMS;
+use App\Services\GatewayProviders\Profiles\Voice\TwilioVoice;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -20,13 +21,26 @@ class GatewayProviderSeeder extends Seeder
     {
         $types = GatewayProviderType::getAllTypesAsArray();
         $gateways = [
-            'twilio' => [
+            'twilio-sms' => [
                 'name' => 'Twilio SMS',
-                'slug' => 'twilio',
+                'slug' => 'twilio-sms',
                 'desc' => 'Send SMS messages through Twilio, starting at $0.03/msg and bulk $0.01/msg',
                 'vendor' => 'Twilio, Inc',
                 'provider_type' => $types['sms']['id'],
-                'profile_class' => Twilio::class,
+                'profile_class' => TwilioSMS::class,
+                'provider_rate' => 0.03,
+                'provider_bulk_rate' => 0.03,
+                'gr_commission_rate' => 0.01,
+                'gr_commission_bulk_rate' => 0.01,
+                'active' => 1,
+            ],
+            'twilio-voice' => [
+                'name' => 'Twilio Voice',
+                'slug' => 'twilio-voice',
+                'desc' => 'Voice Calls provider by Twilio',
+                'vendor' => 'Twilio, Inc',
+                'provider_type' => $types['voice']['id'],
+                'profile_class' => TwilioVoice::class,
                 'provider_rate' => 0.03,
                 'provider_bulk_rate' => 0.03,
                 'gr_commission_rate' => 0.01,

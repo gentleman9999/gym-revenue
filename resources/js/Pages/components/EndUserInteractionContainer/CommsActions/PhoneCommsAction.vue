@@ -4,6 +4,7 @@
         submit-text="Submit"
         :form="form"
         :end-user-type="endUserType"
+        :allow-submit="form.callSid !== null"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
@@ -35,9 +36,15 @@
         </div>
         <template #buttons>
             <div class="mr-2 md:mr-4 md:mb-0 mb-3">
-                <a :href="`tel:${phone}`" class="btn btn-warning">
-                    <i class="fad fa-phone-volume"></i> Call Lead
-                </a>
+                <button
+                    @click="initializeCalls"
+                    type="button"
+                    class="btn btn-warning"
+                    :disabled="callStatus !== null"
+                >
+                    <i class="fad fa-phone-volume"></i>
+                    {{ callStatus || `Call ${endUserType}` }}
+                </button>
             </div>
         </template>
     </base-comms-action>
@@ -46,7 +53,10 @@
 <script setup>
 import { useGymRevForm } from "@/utils";
 import BaseCommsAction from "./BaseCommsAction.vue";
-const props = {
+import { onUnmounted, ref } from "vue";
+import { useToast } from "vue-toastification";
+
+const props = defineProps({
     id: {
         type: String,
         required: true,
@@ -63,7 +73,12 @@ const props = {
         type: String,
         required: true,
     },
-};
+    user: Object,
+});
+
+const callStatus = ref(null);
+let callWatchInterval = null;
+
 const phoneCallOptions = {
     "": "Select an Outcome",
     contacted: "Spoke with Lead.",
@@ -77,6 +92,7 @@ const form = useGymRevForm({
     method: "phone",
     outcome: null,
     notes: null,
+    callSid: null,
 });
 
 const callLead = () => {
@@ -86,4 +102,41 @@ const emit = defineEmits(["done"]);
 
 const help =
     'Use the text box below to jot down notes during the call with your customer. On your phone, or voice-enabled browser, click "Call Lead" to contact them instantly!';
+
+// clear ping interval.
+onUnmounted(clearCallPingInterval);
+
+async function initializeCalls() {
+    // Get toast interface
+    const toast = useToast();
+
+    try {
+        // initialize call.
+        const response = await axios.get(
+            route("twilio.call.initialize", [props.phone, props.endUserType])
+        );
+        callStatus.value = "Call in progress";
+        form.callSid = response.data.sid;
+
+        // Ping call status every 2 seconds. we can use ws if this is too expensive.
+        callWatchInterval = setInterval(async () => {
+            const call = await axios.get(
+                route("twilio.call.status", response.data.sid)
+            );
+            if (call.data.status === "completed") {
+                clearCallPingInterval();
+            }
+        }, 2000);
+    } catch (e) {
+        toast.error(e.response?.data.message || e.message);
+        clearCallPingInterval();
+    }
+}
+
+function clearCallPingInterval() {
+    if (callWatchInterval !== null) {
+        callStatus.value = null;
+        clearInterval(callWatchInterval);
+    }
+}
 </script>
