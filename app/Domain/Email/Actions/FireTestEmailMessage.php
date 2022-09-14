@@ -4,8 +4,10 @@ namespace App\Domain\Email\Actions;
 
 use App\Actions\Mail\MailgunBatchSend;
 use App\Domain\Email\EmailAggregate;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Users\Models\User;
 use App\Models\GatewayProviders\GatewayProvider;
+use App\Models\Utility\AppState;
 use App\Support\Uuid;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -19,17 +21,21 @@ class FireTestEmailMessage implements CreatesTeams
 {
     use AsAction;
 
-    public function handle($user): bool
+    public function handle(string $template_id, User $user): bool
     {
-        $client_id = $user->client_id;
+        if (AppState::isSimuationMode()) {
+            $user->email = env('TEST_EMAIL');
+        }
 
-        $mailgunResponse = MailgunBatchSend::run([$user->email], 'Test Message', 'Test');
+        /** @var EmailTemplate $template */
+        $template = EmailTemplate::find($template_id);
 
+        $mailgunResponse = MailgunBatchSend::run([$user->email], 'Test Message', $template->parseContent(['user' => $user]));
         $id = Uuid::new();
         $gateway = GatewayProvider::whereName('Mailgun')->first();
         $payload = [
             'id' => $id,
-            'client_id' => $client_id,
+            'client_id' => $user->client_id,
             'message_id' => substr($mailgunResponse->getId(), 1, -1),
             'recipient_type' => User::class,
             'recipient_id' => $user->id,
@@ -44,7 +50,7 @@ class FireTestEmailMessage implements CreatesTeams
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle($request->user());
+        return $this->handle($request->templateId, $request->user());
     }
 
     public function htmlResponse(): RedirectResponse

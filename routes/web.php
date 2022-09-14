@@ -285,6 +285,7 @@ Route::prefix('/communication-preferences')->group(function () {
 
 //TODO: this is the new mass-comm dash - will replace current one in near future.
 Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(function () {
+    Route::get('template-tokens', \App\Domain\Templates\Actions\TemplateParser::class)->name('mass-comms.template.tokens');
     Route::get('/campaigns/{type?}', \App\Http\Controllers\MassCommunicationController::class . '@campaignDash')->name('mass-comms.campaigns.dashboard');
     Route::prefix('audiences')->group(function () {
         Route::put('/{audience}', \App\Domain\Audiences\Actions\UpdateAudience::class)->name('mass-comms.audiences.update');

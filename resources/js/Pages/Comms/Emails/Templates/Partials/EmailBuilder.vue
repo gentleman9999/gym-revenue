@@ -14,6 +14,7 @@
             }"
         >
             <TopolEditor
+                v-if="customOptions"
                 :options="customOptions"
                 v-bind="$attrs"
                 @onClose="handleOnClose"
@@ -142,16 +143,11 @@ const customOptions = {
         {
             name: "Merge tags", // Group name
             items: [
-                {
-                    value: "%%recipient.first_name%%", // Text to be inserted
-                    text: "First name", // Shown text in the menu
-                    label: "Customer's first name", // Shown description title in the menu
-                },
-                {
+                /*{
                     value: "%%recipient.first_name%%",
                     text: "Last name",
                     label: "Customer's last name",
-                },
+                },*/
 
                 //Nested Merge Tags
                 {
@@ -221,9 +217,15 @@ const handleOnClose = (args) => {
     console.log("handleOnClose", args);
     emit("onClose", args);
 };
-// onMounted(()=>{
-//
-// })
+
+axios.get(route("mass-comms.template.tokens")).then(({ data }) => {
+    const tokens = [];
+    for (const prop in data) {
+        tokens.push({ value: data[prop], text: prop });
+    }
+    customOptions.mergeTags[0].items.unshift(...tokens);
+});
+
 watch(
     [ready],
     () => {

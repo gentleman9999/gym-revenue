@@ -6,12 +6,12 @@ namespace App\Domain\VoiceCalls\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Services\GatewayProviders\Voice\VoiceGatewayProviderService;
+use function auth;
 use Illuminate\Console\Command;
 use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Twilio\Rest\Api\V2010\Account\CallInstance;
-use function auth;
 
 class GetStatus
 {

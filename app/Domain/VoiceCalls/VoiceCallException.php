@@ -8,5 +8,4 @@ use Exception;
 
 class VoiceCallException extends Exception
 {
-
 }

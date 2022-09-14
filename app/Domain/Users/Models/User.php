@@ -26,8 +26,9 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Silber\Bouncer\Database\Role;
 
 /**
- * @property string $phone
  * @property string $client_id
+ * @property string $email
+ * @property string $phone
  * @property int    $id
  */
 class User extends Authenticatable
