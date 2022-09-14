@@ -28,33 +28,20 @@ class ClientConfigurationProjector extends Projector
 
     public function onClientCommsPrefsSet(ClientCommsPrefsSet $event): void
     {
-        $client = ClientCommunicationPreference::whereClientId($event->aggregateRootUuid())->first();
+        /** @var ClientCommunicationPreference $client */
+        $client = ClientCommunicationPreference::whereClientId($event->aggregateRootUuid())->first()?->writeable();
         if ($client) {
-            $client->writeable();
             $client->client_id = $event->clientId();
-            if (array_key_exists('sms', $event->commsPreferences)) {
-                $client->sms = $event->commsPreferences['sms'];
-            }
-            if (array_key_exists('email', $event->commsPreferences)) {
-                $client->email = $event->commsPreferences['email'];
-            }
-            $client->writeable()->save();
         } else {
             $client = (new ClientCommunicationPreference())->writeable();
             $client->client_id = $event->aggregateRootUuid();
-
-            if (array_key_exists('sms', $event->commsPreferences)) {
-                $client->fill([
-                    'sms' => $event->commsPreferences['sms'],
-                ]);
-            }
-            if (array_key_exists('email', $event->commsPreferences)) {
-                $client->fill([
-                    'email' => $event->commsPreferences['email'],
-                ]);
-            }
-            $client->save();
         }
+
+        foreach (array_keys(ClientCommunicationPreference::COMMUNICATION_TYPES) as $type) {
+            $client->{$type} = $event->commsPreferences[$type];
+        }
+
+        $client->save();
     }
 
     public function onLogoUploaded(ClientLogoUploaded $event): void

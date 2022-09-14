@@ -28,18 +28,12 @@ class ClientSettingsController extends Controller
         }
         $client = Client::with(['trial_membership_types', 'locations'])->find($client_id);
 
-        $test = [
-            ['name' => 'SMS', 'value' => 'SMS'],
-            ['name' => 'EMAIL', 'value' => 'EMAIL', 'enabled'],
-        ]; //TODO: make this actually pull available communication preferences
-
-
         return Inertia::render('ClientSettings/Index', [
             'availableServices' => collect(ClientServiceEnum::cases())->keyBy('name')->values()->map(function ($s) {
                 return ['value' => $s->value, 'name' => $s->name];
             }),
             'commPreferences' => ClientCommunicationPreference::first(),
-            'availableCommPreferences' => $test,
+            'availableCommPreferences' => ClientCommunicationPreference::COMMUNICATION_TYPES,
             'services' => $client->services ?? [],
             'trialMembershipTypes' => $client->trial_membership_types ?? [],
             'locations' => $client->locations ?? [],

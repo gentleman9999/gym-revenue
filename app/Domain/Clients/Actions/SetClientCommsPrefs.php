@@ -5,6 +5,7 @@ namespace App\Domain\Clients\Actions;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Clients\Projections\Client;
 use App\Http\Middleware\InjectClientId;
+use App\Models\ClientCommunicationPreference;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -26,12 +27,31 @@ class SetClientCommsPrefs
         return Client::findOrFail($payload['client_id']);
     }
 
+    /**
+     * Prepare the data for validation.
+     *
+     * @param ActionRequest $request
+     *
+     * @return void
+     */
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $request->mergeIfMissing([
+            ClientCommunicationPreference::COMMUNICATION_TYPES_EMAIL        => false,
+            ClientCommunicationPreference::COMMUNICATION_TYPES_SMS          => false,
+            ClientCommunicationPreference::COMMUNICATION_TYPES_VOICE        => false,
+            ClientCommunicationPreference::COMMUNICATION_TYPES_CONVERSATION => false,
+        ]);
+    }
+
     public function rules(): array
     {
         return [
-            'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'email' => ['sometimes', 'bool'],
-            'sms' => ['sometimes', 'bool'],
+            'client_id'                                                     => ['required', 'string', 'max:255', 'exists:clients,id'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_EMAIL        => ['required', 'bool'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_SMS          => ['required', 'bool'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_VOICE        => ['required', 'bool'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_CONVERSATION => ['required', 'bool'],
         ];
     }
 
@@ -51,11 +71,7 @@ class SetClientCommsPrefs
 
     public function asController(ActionRequest $request): Client
     {
-        $data = $request->validated();
-
-        return $this->handle(
-            $data,
-        );
+        return $this->handle($request->validated());
     }
 
     public function htmlResponse(Client $client): RedirectResponse

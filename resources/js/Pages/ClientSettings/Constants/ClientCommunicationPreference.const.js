@@ -1,0 +1,13 @@
+export const COMMUNICATION_TYPES_VOICE = 'voice';
+export const COMMUNICATION_TYPES_SMS = 'sms';
+export const COMMUNICATION_TYPES_EMAIL = 'email';
+export const COMMUNICATION_TYPES_CONVERSATION = 'conversation';
+
+const CLIENT_COMMUNICATION_PREFERENCE = Object.freeze({
+    [COMMUNICATION_TYPES_VOICE]: 'Voice',
+    [COMMUNICATION_TYPES_SMS]: 'SMS',
+    [COMMUNICATION_TYPES_EMAIL]: 'Email',
+    [COMMUNICATION_TYPES_CONVERSATION]: 'Conversation',
+});
+
+export default CLIENT_COMMUNICATION_PREFERENCE;
