@@ -1,18 +1,18 @@
 <template>
-    <div class="twilo-chat-input-container">
+    <div class="twilio-chat-input-container">
         <input
             v-model="msg"
-            class="twilo-chat-input"
+            class="twilio-chat-input"
             @keypress="handleKeyPress"
         />
         <Button class="w-1/4" secondary size="xs" @click="sendMsg">Send</Button>
     </div>
 </template>
 <style setup>
-.twilo-chat-input-container {
+.twilio-chat-input-container {
     @apply flex flex-row justify-between p-2 border-t border-secondary;
 }
-.twilo-chat-input {
+.twilio-chat-input {
     @apply w-2/3 bg-transparent rounded border border-secondary;
 }
 </style>

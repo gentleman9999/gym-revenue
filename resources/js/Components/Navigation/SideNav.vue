@@ -8,7 +8,9 @@
         }"
     >
         <!-- Sidebar Links -->
-        <nav class="flex-grow lg:block pb-4 lg:pb-0 overflow-hidden">
+        <nav
+            class="flex-grow lg:block pb-4 lg:pb-0 overflow-hidden overflow-y-auto"
+        >
             <div
                 class="flex-shrink-0 px-4 py-4 flex flex-row items-center justify-between"
                 v-if="$page.props.user.current_team.isClientUser"

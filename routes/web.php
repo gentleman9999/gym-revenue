@@ -165,6 +165,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     });
 });
 
+
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
@@ -347,6 +349,9 @@ Route::prefix('dynamicreports')->group(function () {
 Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\GetClients::class)->name('clients');
 Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');
 
+Route::prefix('chat')->group(function () {
+    Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
+});
 
 Route::middleware('auth:sanctum')->prefix('call')->group(static function () {
     Route::get('initialize/{phone}/type/{type}', InitiateCall::class)->name('twilio.call.initialize')
