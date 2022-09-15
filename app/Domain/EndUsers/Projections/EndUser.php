@@ -5,6 +5,7 @@ namespace App\Domain\EndUsers\Projections;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Models\User;
+use App\Interfaces\PhoneInterface;
 use App\Models\Endusers\MembershipType;
 use App\Models\GymRevProjection;
 use App\Models\Note;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Stringable;
 
-abstract class EndUser extends GymRevProjection
+abstract class EndUser extends GymRevProjection implements PhoneInterface
 {
     use Notifiable;
     use SoftDeletes;

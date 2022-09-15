@@ -318,14 +318,20 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(fun
     });
     Route::prefix('email-templates')->group(function () {
         Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('mass-comms.email-templates');
+        Route::post('/', \App\Domain\Templates\EmailTemplates\Actions\CreateEmailTemplate::class)->name('mass-comms.email-templates.store');
         Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('mass-comms.email-templates.create');
         Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('mass-comms.email-templates.export');
+        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('mass-comms.email-templates.test-msg');
+
+        Route::post('block', \App\Domain\Templates\EmailTemplateBlocks\Actions\CreateEmailTemplateBlock::class)->name('comms.email-templates.create-block');
+        Route::get('block', \App\Domain\Templates\EmailTemplateBlocks\Actions\GetEmailTemplateBlock::class)->name('comms.email-templates.get-blocks');
+        Route::delete('block/{block}', \App\Domain\Templates\EmailTemplateBlocks\Actions\DeleteEmailTemplateBlock::class)->name('comms.email-templates.delete-block');
+        Route::put('block/{block}', \App\Domain\Templates\EmailTemplateBlocks\Actions\UpdateEmailTemplateBlock::class)->name('comms.email-templates.update-block');
+
+        Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('mass-comms.email-templates.restore');
         Route::get('/{emailTemplate}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('mass-comms.email-templates.edit');
-        Route::post('/', \App\Domain\Templates\EmailTemplates\Actions\CreateEmailTemplate::class)->name('mass-comms.email-templates.store');
         Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('mass-comms.email-templates.update');
         Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('mass-comms.email-templates.trash');
-        Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('mass-comms.email-templates.restore');
-        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('mass-comms.email-templates.test-msg');
     });
     Route::get('/{type?}', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass-comms.dashboard');
 });

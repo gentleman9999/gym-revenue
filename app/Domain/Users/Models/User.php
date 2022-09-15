@@ -5,6 +5,7 @@ namespace App\Domain\Users\Models;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
+use App\Domain\VoiceCalls\Events\TwilioVoiceCall;
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Position;
@@ -307,5 +308,10 @@ class User extends Authenticatable
     public function allTeams(): Collection
     {
         return $this->teams->sortBy('name');
+    }
+
+    public function logTwilioVoiceCall(string $number_to_dial, string $type, string $sid): void
+    {
+        event(new TwilioVoiceCall(['number_to_dial' => $number_to_dial, 'type' => $type, 'sid' => $sid]));
     }
 }
