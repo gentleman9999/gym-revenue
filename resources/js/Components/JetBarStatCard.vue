@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex items-center p-4 bg-base-300 border rounded-lg shadow-xs dark:bg-gray-800"
+        class="flex items-center p-4 bg-base-300 border rounded-lg shadow-xs dark:bg-secondary-focus/20"
     >
         <div
             v-if="this.$slots.icon"

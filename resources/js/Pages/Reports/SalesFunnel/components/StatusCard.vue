@@ -4,7 +4,7 @@
         :class="
             statusSettings[status].bg
                 ? statusSettings[status].bg
-                : 'bg-neutral-900'
+                : 'bg-base-100'
         "
     >
         <div class="status-badge" :class="statusSettings[status].badge"></div>
@@ -34,15 +34,15 @@ const props = defineProps({
 const statusSettings = {
     leads: {
         label: "Leads",
-        badge: "bg-secondary",
+        badge: "bg-primary-focus",
     },
     booked: {
         label: "Booked Appointments",
-        badge: "bg-accent-600",
+        badge: "bg-accent-focus",
     },
     confirmed: {
         label: "Confirmed Appointments",
-        badge: "bg-secondary-300",
+        badge: "bg-secondary",
     },
     referrals: {
         label: "Referrals",
@@ -50,20 +50,20 @@ const statusSettings = {
     },
     contacts: {
         label: "Contacts",
-        badge: "bg-neutral-500",
+        badge: "bg-info",
     },
     active_booked: {
         label: "Booked Appointments",
-        badge: "bg-neutral-100",
+        badge: "bg-base-content",
     },
     sales: {
         label: "Sales",
-        badge: "bg-neutral-100",
-        bg: "bg-accent-500",
+        badge: "bg-base-content",
+        bg: "bg-accent",
     },
     rejections: {
         label: "Rejections",
-        badge: "bg-neutral-100",
+        badge: "bg-base-content",
         bg: "bg-error",
     },
 };

@@ -22,7 +22,7 @@
     @apply absolute right-6 top-0;
 }
 .available-item {
-    @apply cursor-pointer select-none;
+    @apply cursor-pointer select-none text-base-content;
 }
 </style>
 <script setup>

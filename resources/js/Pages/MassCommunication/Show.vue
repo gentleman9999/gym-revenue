@@ -150,16 +150,12 @@ const handleDone = () => {
 }
 
 .campaign-body {
-    @apply flex border border-secondary rounded p-4 bg-neutral-900;
+    @apply flex border border-secondary rounded p-4 bg-neutral;
 }
-</style>
-
-<style>
-main {
-    @apply !p-0;
-}
-
 #layout-header {
     @apply !p-0 !m-0 !max-w-none;
+}
+main {
+    @apply !p-0;
 }
 </style>

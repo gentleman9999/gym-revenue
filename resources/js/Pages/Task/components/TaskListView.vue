@@ -27,7 +27,7 @@
                 :class="{
                     'bg-secondary': props.taskType === 'incomplete_tasks',
                     'bg-error': props.taskType === 'overdue_tasks',
-                    'bg-neutral-500': props.taskType === 'completed_tasks',
+                    'bg-neutral': props.taskType === 'completed_tasks',
                 }"
             >
                 {{ headers[props.taskType] }}

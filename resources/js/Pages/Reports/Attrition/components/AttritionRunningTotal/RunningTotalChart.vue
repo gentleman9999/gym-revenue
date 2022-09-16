@@ -29,28 +29,28 @@ const options = {
                 x: 1,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
             {
                 x: 3,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
             {
                 x: 5,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
             {
                 x: 7,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
         ],
@@ -59,14 +59,14 @@ const options = {
                 y: 0,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
             {
                 y: 120,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
         ],

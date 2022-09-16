@@ -1,5 +1,5 @@
 <template>
-    <div class="border border-secondary rounded bg-neutral-900 mt-16 p-4">
+    <div class="border border-secondary rounded bg-neutral mt-16 p-4">
         <data-table
             :noHeader="true"
             :data="data"
@@ -96,7 +96,7 @@ const columns = [
         renderer: (value) => {
             return h(
                 "button",
-                { class: "bg-base-content text-neutral-500 rounded p-1" },
+                { class: "bg-base-content text-neutral rounded p-1" },
                 "Notes"
             );
         },

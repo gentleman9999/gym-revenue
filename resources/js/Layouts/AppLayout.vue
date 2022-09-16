@@ -7,7 +7,7 @@
             rel="stylesheet"
         />
     </Head>
-    <div class="w-100vw bg-neutral-800">
+    <div class="w-100vw">
         <jet-banner />
         <div class="font-sans antialiased">
             <top-nav

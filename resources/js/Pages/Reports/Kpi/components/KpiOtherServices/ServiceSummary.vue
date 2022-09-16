@@ -3,7 +3,7 @@
         <kpi-card class="w-full">
             <div class="flex flex-col">
                 <div
-                    class="flex flex-row justify-between border-b border-neutral-500 mb-4"
+                    class="flex flex-row justify-between border-b border-neutral mb-4"
                     v-for="item in summary"
                     :key="item.key"
                 >

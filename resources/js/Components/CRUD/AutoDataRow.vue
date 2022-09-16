@@ -156,7 +156,7 @@ export default defineComponent({
 
 <style scoped>
 td {
-    @apply text-center bg-black text-white my-2 mx-8 whitespace-nowrap overflow-hidden text-ellipsis py-4;
+    @apply text-center bg-neutral-focus text-white my-2 mx-8 whitespace-nowrap overflow-hidden text-ellipsis py-4;
 
     div.tabledata {
         @apply p-2 whitespace-nowrap overflow-hidden text-ellipsis;

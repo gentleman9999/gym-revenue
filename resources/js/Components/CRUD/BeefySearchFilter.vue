@@ -95,14 +95,14 @@ select {
     }
 
     button.toggle-filters {
-        @apply h-8 w-8 bg-base-content text-primary-200 rounded-3xl absolute right-[-0.75rem] top-[5rem] z-50 transition-all;
+        @apply h-8 w-8 bg-base-content text-primary rounded-3xl absolute right-[-0.75rem] top-[5rem] z-50 transition-all;
 
         > svg {
             @apply ml-2;
         }
 
         .hover-text {
-            @apply text-primary-200 rotate-90 absolute top-5 -left-6 opacity-0 transition-all;
+            @apply text-primary rotate-90 absolute top-5 -left-6 opacity-0 transition-all;
         }
     }
 }

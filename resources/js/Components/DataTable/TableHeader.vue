@@ -1,5 +1,5 @@
 <template>
-    <thead class="sticky top-0 bg-neutral-900 text-base-content">
+    <thead class="sticky top-0 bg-neutral text-base-content">
         <th
             v-for="column in columns"
             :key="column.field"

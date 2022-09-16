@@ -23,7 +23,7 @@
                 <multiselect
                     :id="option.key"
                     v-model="form.sharing[option.key]"
-                    class="bg-neutral-800 text-neutral-100 py-2"
+                    class="bg-neutral text-neutral py-2"
                     mode="tags"
                     :close-on-select="false"
                     :create-option="true"

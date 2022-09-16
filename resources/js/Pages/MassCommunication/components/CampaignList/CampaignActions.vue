@@ -10,7 +10,7 @@
 </template>
 <style scoped>
 .campaign-action {
-    @apply flex items-center justify-center border rounded bg-neutral-900 text-base-content w-12 h-11 m-auto;
+    @apply flex items-center justify-center border rounded bg-neutral text-base-content w-12 h-11 m-auto;
 }
 </style>
 <script setup>

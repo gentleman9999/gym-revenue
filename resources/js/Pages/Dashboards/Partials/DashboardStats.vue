@@ -3,6 +3,7 @@
         <dashboard-stat
             v-for="{ title, icon, type, value } in widgets"
             :value="value"
+            :key="value"
             :icon="icon"
             :type="type"
             :title="title"

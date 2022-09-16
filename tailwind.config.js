@@ -71,7 +71,6 @@ module.exports = {
     safelist: [/data-theme$/],
     theme: {
         extend: {
-            colors,
             fontFamily: {
                 sans: ["Nunito", ...defaultTheme.fontFamily.sans],
             },
@@ -133,31 +132,30 @@ module.exports = {
     ],
     daisyui: {
         themes: [
-            {
-                dark: {
-                    primary: colors.primary[500],
-                    "primary-focus": colors.primary[400],
-                    "primary-content": "#ffffff",
-                    secondary: colors.secondary[500],
-                    "secondary-focus": colors.secondary[600],
-                    "secondary-content": "#ffffff",
-                    accent: colors.accent[500],
-                    "accent-focus": colors.accent[600],
-                    "accent-content": "#ffffff",
-                    neutral: "#1c1c1c",
-                    "neutral-focus": colors.primary[900],
-                    "neutral-content": "#ffffff",
-                    "base-50": "#2e2e2e",
-                    "base-100": "#242424",
-                    "base-200": "#202020",
-                    "base-300": "#1c1c1c",
-                    "base-content": "#ffffff",
-                    info: "#2094f3",
-                    success: "#01B481",
-                    warning: "#ff9d00",
-                    error: "#ff0000",
-                },
+        "light",
+        {
+            dark: {
+                primary: "#073A76",
+                "primary-focus": "#0A56B0",
+                "primary-content": "#ffffff",
+                secondary: "#0074C8",
+                "secondary-focus": "#00599A",
+                "secondary-content": "#ffffff",
+                accent: "#82D300",
+                "accent-focus": "#6CAF00",
+                "accent-content": "#ffffff",
+                neutral: "#1c1c1c",
+                "neutral-focus": "#000A10",
+                "neutral-content": "#9E9E9E",
+                "base-100": "#242424",
+                "base-200": "#202020",
+                "base-300": "#1c1c1c",
+                "base-content": "#ffffff",
+                info: "#2094f3",
+                success: "#01B481",
+                warning: "#ff9d00",
+                error: "#ff0000",
             },
-        ],
+        }],
     },
 };

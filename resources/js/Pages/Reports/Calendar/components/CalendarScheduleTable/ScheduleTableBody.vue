@@ -3,7 +3,7 @@
         <tr
             v-for="item in props.data"
             :key="item.id"
-            class="hover:bg-neutral-300 hover:text-base-100"
+            class="hover:text-secondary cursor-pointer"
         >
             <td class="border-l border-secondary">
                 <div>{{ item.location }}</div>

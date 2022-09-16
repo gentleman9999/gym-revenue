@@ -6,7 +6,7 @@
     >
         <template #cardTitle>
             <div
-                class="text-base-content text-xl border-b border-neutral-450 pr-16"
+                class="text-base-content text-xl border-b border-neutral pr-16"
             >
                 Conversion Rates and Rolling
             </div>

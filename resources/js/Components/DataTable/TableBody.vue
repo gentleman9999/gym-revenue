@@ -4,7 +4,7 @@
             v-for="(item, idx) in data"
             :key="item?.id || idx"
             :class="{
-                'hover:bg-neutral-300': interactive,
+                'hover:bg-neutral': interactive,
                 'hover:text-primary-900': interactive,
             }"
         >
@@ -14,7 +14,7 @@
                 class="border-b"
                 :class="{
                     'border-secondary': border === 'secondary',
-                    'border-neutral-450': border !== 'secondary',
+                    'border-neutral': border !== 'secondary',
                     'border-l': col_ndx === 0 && rowBordered,
                     'border-t': rowBordered,
                     'border-r': col_ndx === columns.length - 1 && rowBordered,
@@ -28,7 +28,7 @@
                             !column.noSeparator &&
                             col_ndx !== columns.length - 1,
                         'border-secondary': border === 'secondary',
-                        'border-neutral-450': border !== 'secondary',
+                        'border-neutral': border !== 'secondary',
                     }"
                 >
                     <table-cell
@@ -42,7 +42,7 @@
         <tr
             v-if="!data?.length"
             :class="{
-                'hover:bg-neutral-300': interactive,
+                'hover:bg-neutral': interactive,
                 'hover:text-primary-900': interactive,
             }"
         >
@@ -50,7 +50,7 @@
                 :colspan="columns.length"
                 :class="{
                     'border-secondary': border === 'secondary',
-                    'border-neutral-450': border !== 'secondary',
+                    'border-neutral': border !== 'secondary',
                     'border-t': rowBordered,
                 }"
             >
@@ -58,7 +58,7 @@
                     class="flex items-center justify-center h-full"
                     :class="{
                         'border-secondary': border === 'secondary',
-                        'border-neutral-450': border !== 'secondary',
+                        'border-neutral': border !== 'secondary',
                     }"
                 >
                     <table-cell value="No campaigns found" :renderer="null" />

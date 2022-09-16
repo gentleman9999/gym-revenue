@@ -8,7 +8,7 @@
 </template>
 <style scoped>
 .folder-submenu {
-    @apply absolute py-2 shadow bg-base-300 rounded-md w-52 opacity-0 flex flex-col pointer-events-none;
+    @apply absolute py-2 shadow bg-base-100 rounded-md w-52 opacity-0 flex flex-col pointer-events-none;
     top: 50%;
     left: 40px;
     li {
