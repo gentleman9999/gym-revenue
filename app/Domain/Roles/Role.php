@@ -17,6 +17,7 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
+use App\Models\DynamicReport;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Note;
@@ -125,6 +126,11 @@ class Role extends \Silber\Bouncer\Database\Role
                 break;
             case 'scheduled-campaigns':
                 $entity = ScheduledCampaign::class;
+
+                break;
+
+            case 'dynamic-reports':
+                $entity = DynamicReport::class;
 
                 break;
         }

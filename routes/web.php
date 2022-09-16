@@ -339,10 +339,17 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(fun
 });
 
 Route::prefix('dynamicreports')->group(function () {
-    Route::get('/', \App\Http\Controllers\DynamicReportsController::class . '@index')->name('dr');
-    Route::get('/users', \App\Domain\DynamicReports\CreateUserReport::class)->name('dr.user');
-    Route::get('/leads', \App\Domain\DynamicReports\CreateLeadReport::class)->name('dr.lead');
-    Route::get('/members', \App\Domain\DynamicReports\CreateMemberReport::class)->name('dr.member');
+    Route::get('/', \App\Http\Controllers\DynamicReportsController::class . '@show')->name('dynamic-reports');
+    Route::get('/show', \App\Http\Controllers\DynamicReportsController::class . '@index')->name('dynamic-reports.show');
+    Route::get('/create', \App\Http\Controllers\DynamicReportsController::class . '@create')->name('dynamic-reports.create');
+    Route::post('/', \App\Domain\DynamicReports\Actions\CreateReport::class)->name('dynamic-reports.store');
+    Route::get('/edit/{dynamicReport}', \App\Http\Controllers\DynamicReportsController::class . '@edit')->name('dynamic-reports.edit');
+    Route::put('/{dynamicReport}', \App\Domain\DynamicReports\Actions\UpdateReport::class)->name('dynamic-reports.update');
+    Route::delete('/{dynamicReport}', \App\Domain\Departments\Actions\TrashDepartment::class)->name('dynamic-reports.trash');
+    Route::delete('/{dynamicReport}/force', \App\Domain\Departments\Actions\DeleteDepartment::class)->name('dynamic-reports.delete');
+    Route::get('/users', \App\Domain\DynamicReports\Actions\CreateUserReport::class)->name('dr.user');
+    Route::get('/leads', \App\Domain\DynamicReports\Actions\CreateLeadReport::class)->name('dr.lead');
+    Route::get('/members', \App\Domain\DynamicReports\Actions\CreateMemberReport::class)->name('dr.member');
     Route::get('/leadexport', \App\Domain\DynamicReports\Export\ExportLeadReport::class)->name('dr.exportlead');
 });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DynamicReports;
+namespace App\Domain\DynamicReports\Actions;
 
 use App\Domain\EndUsers\Members\Projections\Member;
 use Illuminate\Database\Eloquent\Collection;

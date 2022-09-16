@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\DynamicReports;
+namespace App\Domain\DynamicReports\Actions;
 
-use App\Domain\Users\Models\User;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use Illuminate\Database\Eloquent\Collection;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
@@ -10,16 +10,16 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class CreateUserReport
+class CreateLeadReport
 {
     use AsAction;
 
     public function handle($data): Collection
     {
-        $report = QueryBuilder::for(User::class)
-            ->allowedFilters(['first_name', 'last_name', 'email', 'alternate_email'])
+        $report = QueryBuilder::for(Lead::class)
+            ->allowedFilters(['first_name', 'last_name', 'email'])
                    ->get();
-        //dd($report->toSql());
+
 
         return $report;
     }

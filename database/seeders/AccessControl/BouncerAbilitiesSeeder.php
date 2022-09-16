@@ -27,7 +27,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
             'positions', 'email-templates', 'sms-templates',  'scheduled-campaigns', 'drip-campaigns',
-            'reminders', 'notes', 'folders', 'searches',
+            'reminders', 'notes', 'folders', 'searches', 'dynamic-reports',
         ]);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
@@ -60,12 +60,12 @@ class BouncerAbilitiesSeeder extends Seeder
             $this->allowReadInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'departments', 'positions', 'notes','folders', 'searches',
+                'email-templates', 'departments', 'positions', 'notes','folders', 'searches', 'dynamic-reports',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'sms-templates', 'departments', 'positions', 'notes', 'folders', 'searches',
+                'email-templates', 'sms-templates', 'departments', 'positions', 'notes', 'folders', 'searches', 'dynamic-reports',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
