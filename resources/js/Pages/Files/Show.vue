@@ -72,11 +72,11 @@
     @apply flex flex-row justify-between items-center;
 }
 
-.nav-desktop {
+.row.nav-desktop {
     @apply hidden md:flex;
 }
 
-.nav-mobile {
+.row.nav-mobile {
     @apply flex md:hidden mt-2;
 }
 </style>

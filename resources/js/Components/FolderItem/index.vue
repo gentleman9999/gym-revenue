@@ -9,6 +9,7 @@
         @dragover="$event.preventDefault()"
         @dragenter="$event.preventDefault()"
         @drop="handleDrop()"
+        @dblclick="browseFolder()"
     >
         <folder-icon
             :icon-size="iconSize"
@@ -31,7 +32,6 @@
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
             :handleShare="handleShare"
-            :handleBrowse="browseFolder"
         />
     </div>
 </template>
@@ -114,6 +114,8 @@ const handleClick = (event) => {
         browseFolder();
         return;
     }
+    if (event.buttons !== 2) return;
+
     event.preventDefault();
     event.stopPropagation();
     subMenu.value.focus();

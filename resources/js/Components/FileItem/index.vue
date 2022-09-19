@@ -87,7 +87,7 @@ const handleTrash = () => {
 const subMenu = ref(null);
 
 const handleClick = (event) => {
-    if (props.mode !== "desktop") {
+    if (props.mode !== "desktop" || event.buttons !== 2) {
         return;
     }
     event.preventDefault();
