@@ -132,7 +132,6 @@ module.exports = {
     ],
     daisyui: {
         themes: [
-        "light",
         {
             dark: {
                 primary: "#073A76",
