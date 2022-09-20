@@ -17,6 +17,8 @@ return new class () extends Migration {
             $table->foreignUuid('client_id');
             $table->boolean('sms');
             $table->boolean('email');
+            $table->boolean('voice')->default(false);
+            $table->boolean('conversation')->default(false);
             $table->timestamps();
         });
     }

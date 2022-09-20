@@ -16,24 +16,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class ClientCommunicationPreference extends GymRevProjection
 {
-    public const COMMUNICATION_TYPES_VOICE        = 'voice';
-    public const COMMUNICATION_TYPES_SMS          = 'sms';
-    public const COMMUNICATION_TYPES_EMAIL        = 'email';
+    use HasFactory;
+    public const COMMUNICATION_TYPES_VOICE = 'voice';
+    public const COMMUNICATION_TYPES_SMS = 'sms';
+    public const COMMUNICATION_TYPES_EMAIL = 'email';
     public const COMMUNICATION_TYPES_CONVERSATION = 'conversation';
 
     public const COMMUNICATION_TYPES = [
-        self::COMMUNICATION_TYPES_VOICE        => 'Voice',
-        self::COMMUNICATION_TYPES_EMAIL        => 'Email',
-        self::COMMUNICATION_TYPES_SMS          => 'SMS',
+        self::COMMUNICATION_TYPES_VOICE => 'Voice',
+        self::COMMUNICATION_TYPES_EMAIL => 'Email',
+        self::COMMUNICATION_TYPES_SMS => 'SMS',
         self::COMMUNICATION_TYPES_CONVERSATION => 'Conversation',
     ];
 
-    use HasFactory;
-
     protected $casts = [
-        self::COMMUNICATION_TYPES_VOICE        => 'bool',
-        self::COMMUNICATION_TYPES_SMS          => 'bool',
-        self::COMMUNICATION_TYPES_EMAIL        => 'bool',
+        self::COMMUNICATION_TYPES_VOICE => 'bool',
+        self::COMMUNICATION_TYPES_SMS => 'bool',
+        self::COMMUNICATION_TYPES_EMAIL => 'bool',
         self::COMMUNICATION_TYPES_CONVERSATION => 'bool',
     ];
 
@@ -45,7 +44,7 @@ class ClientCommunicationPreference extends GymRevProjection
     ];
 
     protected $hidden = [
-        'client_id'
+        'client_id',
     ];
 
     protected static function booted(): void

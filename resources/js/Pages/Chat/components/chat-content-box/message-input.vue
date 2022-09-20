@@ -14,12 +14,11 @@
 }
 </style>
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits, inject } from "vue";
 import Button from "@/Components/Button.vue";
 
 const msg = ref(null);
-
-const emit = defineEmits(["sendMsg"]);
+const sendMessage = inject("sendMessage");
 
 const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -27,7 +26,7 @@ const handleKeyPress = (e) => {
     }
 };
 const sendMsg = () => {
-    emit("sendMsg", msg.value);
+    sendMessage(msg.value);
     msg.value = "";
 };
 </script>

@@ -5,7 +5,7 @@
 </template>
 <style scoped>
 .messenger-search-container {
-    @apply w-fit mx-auto my-4;
+    @apply block my-4;
 }
 </style>
 <script setup>

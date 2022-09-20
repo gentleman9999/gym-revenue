@@ -37,9 +37,9 @@ class SetClientCommsPrefs
     public function prepareForValidation(ActionRequest $request): void
     {
         $request->mergeIfMissing([
-            ClientCommunicationPreference::COMMUNICATION_TYPES_EMAIL        => false,
-            ClientCommunicationPreference::COMMUNICATION_TYPES_SMS          => false,
-            ClientCommunicationPreference::COMMUNICATION_TYPES_VOICE        => false,
+            ClientCommunicationPreference::COMMUNICATION_TYPES_EMAIL => false,
+            ClientCommunicationPreference::COMMUNICATION_TYPES_SMS => false,
+            ClientCommunicationPreference::COMMUNICATION_TYPES_VOICE => false,
             ClientCommunicationPreference::COMMUNICATION_TYPES_CONVERSATION => false,
         ]);
     }
@@ -47,10 +47,10 @@ class SetClientCommsPrefs
     public function rules(): array
     {
         return [
-            'client_id'                                                     => ['required', 'string', 'max:255', 'exists:clients,id'],
-            ClientCommunicationPreference::COMMUNICATION_TYPES_EMAIL        => ['required', 'bool'],
-            ClientCommunicationPreference::COMMUNICATION_TYPES_SMS          => ['required', 'bool'],
-            ClientCommunicationPreference::COMMUNICATION_TYPES_VOICE        => ['required', 'bool'],
+            'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_EMAIL => ['required', 'bool'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_SMS => ['required', 'bool'],
+            ClientCommunicationPreference::COMMUNICATION_TYPES_VOICE => ['required', 'bool'],
             ClientCommunicationPreference::COMMUNICATION_TYPES_CONVERSATION => ['required', 'bool'],
         ];
     }

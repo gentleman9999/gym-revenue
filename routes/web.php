@@ -165,8 +165,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
     });
 });
 
-
-
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
@@ -195,8 +193,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('teams')->group(function
 });
 Route::middleware(['auth:sanctum', 'verified'])->prefix('settings')->group(function () {
     Route::get('/', \App\Http\Controllers\ClientSettingsController::class . '@index')->name('settings');
-    Route::post('/client-services', \App\Domain\Clients\Actions\SetClientServices::class)->name('settings.client-services.update');
-    Route::post('/client-comms-prefs', \App\Domain\Clients\Actions\SetClientCommsPrefs::class)->name('settings.client-comms-prefs.update');
+    Route::post('/twilio-services', \App\Domain\Clients\Actions\SetClientServices::class)->name('settings.twilio-services.update');
+    Route::post('/twilio-comms-prefs', \App\Domain\Clients\Actions\SetClientCommsPrefs::class)->name('settings.twilio-comms-prefs.update');
     Route::put('/social-media-set', \App\Domain\Clients\Actions\UpdateSocialMedias::class)->name('settings.social-media.update');
     Route::put('/gateway-set', \App\Domain\Clients\Actions\UpdateGateways::class)->name('settings.gateway.update');
     Route::post('/logo', \App\Domain\Clients\Actions\UploadLogo::class)->name('settings.logo.upload');
@@ -364,4 +362,12 @@ Route::middleware('auth:sanctum')->prefix('call')->group(static function () {
     Route::get('initialize/{phone}/type/{type}', InitiateCall::class)->name('twilio.call.initialize')
         ->whereIn('type', [InitiateCall::TYPE_LEAD, InitiateCall::TYPE_MEMBER]);
     Route::get('status/{sid}', \App\Domain\VoiceCalls\Actions\GetStatus::class)->name('twilio.call.status');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('conversation')->group(static function () {
+    Route::prefix('twilio')->group(static function () {
+        Route::get('get-api-token', \App\Domain\Conversations\Twilio\Actions\GetChatAccessToken::class)->name('twilio.api-token');
+        Route::get('get-conversation', \App\Domain\Conversations\Twilio\Actions\GetConversation::class)->name('twilio.get-conversation');
+        Route::put('conversation/{conversation_id}', \App\Domain\Conversations\Twilio\Actions\UpdateConversation::class)->name('twilio.update-conversation');
+    });
 });

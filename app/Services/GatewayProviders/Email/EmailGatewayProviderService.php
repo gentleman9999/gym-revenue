@@ -2,8 +2,8 @@
 
 namespace App\Services\GatewayProviders\Email;
 
+use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
-use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GatewayProviders\GatewayProviderType;
 use App\Services\GatewayProviders\GatewayProviderService;

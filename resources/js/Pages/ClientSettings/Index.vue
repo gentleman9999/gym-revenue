@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import ClientServicesForm from "./Partials/ClientServicesForm.vue";

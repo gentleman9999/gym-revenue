@@ -1,12 +1,18 @@
 <?php
 
-namespace App\Models\GatewayProviders;
+namespace App\Domain\Clients\Models;
 
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property string $gateway_id
+ * @property string $client_id
+ * @property string $nickname
+ * @property bool $active
+ */
 class ClientGatewayIntegration extends Model
 {
     use Notifiable;
@@ -21,9 +27,7 @@ class ClientGatewayIntegration extends Model
 
     protected $fillable = [
         'gateway_id',
-        'gateway_slug',
         'client_id',
-        'provider_type',
         'nickname',
         'active',
     ];
