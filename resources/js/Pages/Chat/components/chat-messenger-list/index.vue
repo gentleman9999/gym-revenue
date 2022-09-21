@@ -17,7 +17,7 @@
 </template>
 <style scoped>
 .chat-messenger-list-container {
-    @apply flex flex-col w-2/4 lg:w-1/4 h-full overflow-y-auto border-r border-neutral-content/70;
+    @apply flex flex-col w-[380px] h-full overflow-x-hidden overflow-y-auto border-r border-neutral-content/70;
 }
 </style>
 <script setup>

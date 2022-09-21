@@ -70,7 +70,8 @@ axios.get(route("twilio.api-token")).then(({ data }) => {
                     .map((p) => p.identity || p.attributes.identity)
                     .join(", "),
                 mySid,
-                items.map(MessageInfo.buildFromMessage)
+                items.map(MessageInfo.buildFromMessage),
+                participants.length > 2
             );
         });
     }

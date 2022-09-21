@@ -1,35 +1,31 @@
 <template>
-    <div class="messenger-container">
-        <div class="row">
-            <!--            <messenger-avatar :messenger="data" />-->
-            <div class="chat-messenger-info">
-                <div class="chat-messenger-name">
-                    {{ conversation.name }}
-                </div>
-                <div class="">{{ conversation.lastMessage.body }}</div>
+    <div class="px-3 py-2 border-b border-base-content/20 cursor-pointer">
+        <div class="grid grid-cols-4">
+            <div
+                class="col-span-3 overflow-hidden whitespace-nowrap overflow-ellipsis"
+            >
+                {{ conversation.name }}
+            </div>
+            <div class="text-right">
+                <span class="messenger-unread">2</span>
+                <span class="text-xs text-gray-300">{{
+                    conversation.lastMessage.dateFormatted()
+                }}</span>
             </div>
         </div>
-        <div class="row">
-            <span class="messenger-unread">2</span>
-            <span class="text-xs">{{
-                conversation.lastMessage.dateFormatted()
-            }}</span>
+        <div
+            class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[370px] text-sm text-gray-300"
+        >
+            {{ conversation.lastMessage.body }}
         </div>
     </div>
 </template>
 <style scoped>
-.messenger-container {
-    @apply flex flex-row px-4 py-2 items-center justify-between border-b border-base-content/20 cursor-pointer text-sm;
-    .row {
-        @apply flex flex-row space-x-4 items-center;
-    }
-}
 .messenger-unread {
-    @apply flex text-[10px] bg-secondary w-4 h-4 rounded-full items-center justify-center;
+    @apply bg-secondary rounded-full px-1 text-[10px] mr-3;
 }
 </style>
 <script setup>
-import MessengerAvatar from "./messenger-avatar.vue";
 import ConversationMsg from "@/Pages/Chat/models/ConversationMsg.js";
 const props = defineProps({
     conversation: ConversationMsg,

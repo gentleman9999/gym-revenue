@@ -1,8 +1,15 @@
 <template>
-    <div class="chat-message-container" :class="{ mine: isMine }">
-        <div class="chat-message">{{ message.body }}</div>
-        <div class="text-xs">
-            {{ message.creator }} <small>{{ message.dateFormatted() }}</small>
+    <div
+        class="chat-message-container mb-1 text-sm"
+        :class="{ mine: isMine }"
+        :title="message.dateFormatted()"
+    >
+        <div class="chat-message whitespace-pre-wrap">{{ message.body }}</div>
+        <div
+            v-if="hasMultiParticipants && !isMine"
+            class="text-[9px] text-gray-300 author"
+        >
+            {{ message.creator }}
         </div>
     </div>
 </template>
@@ -12,6 +19,7 @@ import MessageInfo from "@/Pages/Chat/models/MessageInfo.js";
 defineProps({
     message: MessageInfo,
     isMine: Boolean,
+    hasMultiParticipants: Boolean,
 });
 </script>
 <style scoped>
@@ -26,6 +34,9 @@ defineProps({
     @apply ml-auto;
 }
 .mine .chat-message {
-    @apply bg-accent-800;
+    @apply bg-green-700;
+}
+.author {
+    margin: 0 !important;
 }
 </style>

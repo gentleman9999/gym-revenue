@@ -1,16 +1,20 @@
 <template>
-    <div class="message-input-container">
-        <input v-model="msg" class="message-input" @keypress="handleKeyPress" />
-        <Button secondary size="xs" @click="sendMsg">Send</Button>
+    <div class="message-input-container mt-2">
+        <textarea
+            v-model="msg"
+            class="message-input text-sm"
+            rows="1"
+            @keypress="handleKeyPress"
+        />
+        <Button secondary size="sm" @click="sendMsg">Send</Button>
     </div>
 </template>
 <style scoped>
 .message-input-container {
-    @apply border-t border-neutral-content/20 flex flex-row w-full h-16 items-center px-4 space-x-4;
+    @apply border-t border-neutral-content/20 flex flex-row w-full items-center p-2 space-x-4;
 }
 .message-input {
-    @apply bg-transparent rounded border border-secondary;
-    width: -webkit-fill-available;
+    @apply bg-transparent rounded border border-secondary w-11/12;
 }
 </style>
 <script setup>
@@ -20,13 +24,17 @@ import Button from "@/Components/Button.vue";
 const msg = ref(null);
 const sendMessage = inject("sendMessage");
 
-const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+/**
+ * @param {KeyboardEvent} event
+ */
+function handleKeyPress(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
         sendMsg();
     }
-};
-const sendMsg = () => {
+}
+function sendMsg() {
     sendMessage(msg.value);
     msg.value = "";
-};
+}
 </script>

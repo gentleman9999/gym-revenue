@@ -10,6 +10,7 @@ export default class MessageInfo {
         this.datetime = new Date(datetime);
         this.creator = creator;
         this.sid = sid;
+        this.date = new Date();
     }
 
     /**
@@ -25,6 +26,15 @@ export default class MessageInfo {
     }
 
     dateFormatted() {
-        return this.datetime.toLocaleTimeString();
+        if (
+            this.datetime.setHours(0, 0, 0, 0) ===
+            this.date.setHours(0, 0, 0, 0)
+        ) {
+            return this.datetime
+                .toLocaleTimeString()
+                .replace(/(:\d{2})( [AP]M)$/, "$2");
+        }
+
+        return this.datetime.toLocaleDateString();
     }
 }
