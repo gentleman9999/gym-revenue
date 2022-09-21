@@ -26,6 +26,7 @@
                     <!-- End Sidebar -->
 
                     <div class="w-full relative">
+                        <div id="premaincontent"></div>
                         <!-- Content Container -->
                         <main
                             class="flex-1 relative z-0 pt-6 focus:outline-none"

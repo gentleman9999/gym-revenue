@@ -1,10 +1,11 @@
 <template>
-    <LayoutHeader :title="title">
+    <LayoutHeader :title="title" />
+    <teleport to="#premaincontent">
         <ToolBar
             :toggleDripBuilder="toggleDripBuilder"
             :toggleScheduleBuilder="toggleScheduleBuilder"
         />
-    </LayoutHeader>
+    </teleport>
     <jet-bar-container>
         <!-- dashboard 'nav' -->
         <div class="flex gap-2">

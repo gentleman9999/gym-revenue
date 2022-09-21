@@ -1,10 +1,13 @@
 <template>
-    <LayoutHeader title="Mass Communications Dashboard">
+    <LayoutHeader title="Mass Communications Dashboard"> </LayoutHeader>
+
+    <teleport to="#premaincontent">
         <ToolBar
             :toggleDripBuilder="toggleDripBuilder"
             :toggleScheduleBuilder="toggleScheduleBuilder"
         />
-    </LayoutHeader>
+    </teleport>
+
     <jet-bar-container>
         <div class="flex flex-wrap gap-2 justify-between">
             <h1 class="text-2xl">Mass Comms Dashboard</h1>
@@ -82,8 +85,8 @@
 import { ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import ToolBar from "./components/ToolBar.vue";
-import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
+import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import CampaignList from "./components/CampaignList/CampaignList.vue";
 import RecentCampaign from "./components/RecentCampaign/RecentCampaign.vue";
 import CampaignBuilder from "./components/Creator/CampaignBuilder.vue";
@@ -152,10 +155,14 @@ const handleDone = () => {
 .campaign-body {
     @apply flex border border-secondary rounded p-4 bg-neutral;
 }
-#layout-header {
-    @apply !p-0 !m-0 !max-w-none;
-}
+
 main {
     @apply !p-0;
+}
+</style>
+
+<style>
+.absolutely-hide {
+    @apply !hidden;
 }
 </style>
