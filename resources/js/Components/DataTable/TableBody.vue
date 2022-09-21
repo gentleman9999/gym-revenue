@@ -1,8 +1,8 @@
 <template>
     <tbody>
         <tr
-            v-for="item in data"
-            :key="item.id"
+            v-for="(item, idx) in data"
+            :key="item?.id || idx"
             :class="{
                 'hover:bg-neutral-300': interactive,
                 'hover:text-primary-900': interactive,
@@ -10,7 +10,7 @@
         >
             <td
                 v-for="(column, col_ndx) in columns"
-                :key="column.field + item.id"
+                :key="column.field + (item?.id || col_ndx)"
                 class="border-b"
                 :class="{
                     'border-secondary': border === 'secondary',
@@ -32,9 +32,36 @@
                     }"
                 >
                     <table-cell
-                        :value="item[column.field]"
+                        :value="item[column?.field]"
+                        :data="item"
                         :renderer="column.renderer ? column.renderer : null"
                     />
+                </div>
+            </td>
+        </tr>
+        <tr
+            v-if="!data?.length"
+            :class="{
+                'hover:bg-neutral-300': interactive,
+                'hover:text-primary-900': interactive,
+            }"
+        >
+            <td
+                :colspan="columns.length"
+                :class="{
+                    'border-secondary': border === 'secondary',
+                    'border-neutral-450': border !== 'secondary',
+                    'border-t': rowBordered,
+                }"
+            >
+                <div
+                    class="flex items-center justify-center h-full"
+                    :class="{
+                        'border-secondary': border === 'secondary',
+                        'border-neutral-450': border !== 'secondary',
+                    }"
+                >
+                    <table-cell value="No campaigns found" :renderer="null" />
                 </div>
             </td>
         </tr>

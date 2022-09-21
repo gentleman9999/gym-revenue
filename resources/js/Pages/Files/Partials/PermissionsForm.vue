@@ -2,15 +2,15 @@
     <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="col-span-6">
-                <jet-label for="filename" value="Current File Permissions" />
+                <jet-label for="filename" value="Current Permissions" />
                 <a
-                    :href="file.url"
-                    :download="file.filename"
+                    :href="item.url"
+                    :download="item.filename"
                     target="_blank"
                     class="link link-hover"
-                    >{{ file.filename }}</a
+                    >{{ itemType == "file" ? item.filename : item.name }}</a
                 >
-                <jet-input-error :message="form.errors.file" class="mt-2" />
+                <jet-input-error :message="form.errors.item" class="mt-2" />
             </div>
 
             <div class="form-control">
@@ -43,7 +43,6 @@
                 <jet-label for="employee" value="Employee" />
             </div>
             <jet-input-error :message="form.errors.permissions" class="mt-2" />
-            <input id="client_id" type="hidden" v-model="form.client_id" />
         </template>
 
         <template #actions>
@@ -53,13 +52,15 @@
                 :disabled="form.processing"
                 :loading="form.processing"
             >
-                {{ buttonText }}
+                Update
             </Button>
         </template>
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
+import { defineEmits, computed } from "vue";
+
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -70,33 +71,32 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
+const props = defineProps({
+    item: {
+        type: Object,
     },
-    props: ["clientId", "file"],
-    emits: ["success"],
-    setup(props, { emit }) {
-        let urlPrev = usePage().props.value.urlPrev;
-        const form = useGymRevForm({
-            permissions: props?.file?.permissions || [],
+});
+
+const itemType = computed(() => (props.item.filename ? "file" : "folder"));
+
+const emit = defineEmits(["submitted"]);
+
+let urlPrev = usePage().props.value.urlPrev;
+const form = useGymRevForm({
+    permissions: props?.file?.permissions || [],
+});
+
+let handleSubmit = async () => {
+    if (itemType.value === "file") {
+        form.dirty().put(route("files.update", props.item.id));
+        emit("success");
+    } else {
+        await Inertia.put(route("folders.update", props.item.id), {
+            id: props.item.id,
+            permissions: form.permissions,
         });
-
-        let handleSubmit = async () => {
-            form.dirty().put(route("files.update", props.file.id));
-            emit("success");
-        };
-
-        return {
-            form,
-            buttonText: "Update",
-            handleSubmit,
-            urlPrev,
-        };
-    },
+        emit("success");
+    }
 };
 </script>
 

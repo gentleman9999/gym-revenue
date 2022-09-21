@@ -11,4 +11,9 @@ class Member extends EndUser
     {
         return new MemberDetails();
     }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->primary_phone;
+    }
 }

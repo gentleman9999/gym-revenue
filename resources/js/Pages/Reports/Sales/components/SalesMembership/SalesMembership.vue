@@ -8,7 +8,11 @@
                 borderedTitle: true,
             }"
         >
-            <data-table :columns="columns" :data="data" class="mt-8" />
+            <data-table
+                :columns="columns"
+                :data="data"
+                class="mt-8 data-table"
+            />
             <template #cardTitle>
                 <div class="text-base-content text-bold text-lg">
                     Memberships
@@ -26,6 +30,13 @@
         <Button size="xs" secondary>Close</Button>
     </div>
 </template>
+<style scoped>
+@media only screen and (max-width: 768px) {
+    .data-table {
+        width: calc(100vw - 64px);
+    }
+}
+</style>
 <script setup>
 import SalesCardWrapper from "../SalesCardWrapper.vue";
 import SalesCard from "@/Components/Card.vue";

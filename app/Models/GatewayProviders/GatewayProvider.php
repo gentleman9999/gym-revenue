@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property string $id
+ */
 class GatewayProvider extends Model
 {
     use Notifiable;

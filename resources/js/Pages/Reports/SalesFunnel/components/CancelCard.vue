@@ -9,7 +9,7 @@
         <template #cardTitle>
             <div class="text-base-content text-lg text-bold">Canceled</div>
         </template>
-        <div class="w-40">
+        <div class="w-40 m-auto">
             <progress-chart :data="[progress]" :height="120" />
         </div>
     </Card>

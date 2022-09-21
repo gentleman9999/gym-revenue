@@ -7,6 +7,7 @@
             borderType="secondary"
             :rowBordered="true"
             :borderSeprated="false"
+            class="goal-table"
         >
             <template #thead>
                 <thead class="text-secondary">
@@ -35,6 +36,11 @@
         </data-table>
     </div>
 </template>
+<style>
+.goal-table table {
+    @apply w-max md:w-full;
+}
+</style>
 <script setup>
 import { h } from "vue";
 import DataTable from "@/Components/DataTable";

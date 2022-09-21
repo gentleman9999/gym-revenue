@@ -1,5 +1,5 @@
 <template>
-    <div class="px-20 mx-2">
+    <div class="md:px-20 mx-2">
         <data-table
             :data="data"
             :columns="columns"
@@ -7,10 +7,21 @@
             :interactive="true"
             :noHeader="true"
             borderType="secondary"
-            class="h-60"
+            class="overview-table"
         ></data-table>
     </div>
 </template>
+<style scoped>
+.overview-table {
+    @apply h-60;
+}
+@media only screen and (max-width: 768px) {
+    .overview-table {
+        width: calc(100vw - 50px);
+    }
+}
+</style>
+
 <script setup>
 import { h } from "vue";
 import DataTable from "@/Components/DataTable";

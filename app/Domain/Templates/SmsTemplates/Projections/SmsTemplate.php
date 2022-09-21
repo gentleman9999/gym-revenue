@@ -17,7 +17,7 @@ class SmsTemplate extends GymRevProjection
 
     protected $fillable = [ 'name', 'markup', 'active', 'team_id', 'created_by_user_id'];
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }
@@ -39,12 +39,12 @@ class SmsTemplate extends GymRevProjection
         });
     }
 
-    public function getMarkupAttribute($value)
+    public function getMarkupAttribute($value): false|string
     {
         return base64_decode($value);
     }
 
-    public function setMarkupAttribute($value)
+    public function setMarkupAttribute($value): void
     {
         $this->attributes['markup'] = base64_encode($value);
     }
@@ -64,6 +64,7 @@ class SmsTemplate extends GymRevProjection
         return $this->hasOne(SmsTemplateDetails::class, 'sms_template_id', 'id');
     }
 
+    //TODO: SMS Templates should not know about gateways. Move logic to campaigns.
     public function gateway(): HasOne
     {
         return $this->detail()->whereDetail('sms_gateway')->whereActive(1);

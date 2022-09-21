@@ -4,6 +4,7 @@ namespace App\Domain\Folders;
 
 use App\Domain\Folders\Events\FolderCreated;
 use App\Domain\Folders\Events\FolderDeleted;
+use App\Domain\Folders\Events\FolderSharingUpdated;
 use App\Domain\Folders\Events\FolderUpdated;
 use App\Models\Folder;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -24,6 +25,11 @@ class FolderProjector extends Projector
     }
 
     public function onFolderUpdated(FolderUpdated $event)
+    {
+        Folder::findOrFail($event->payload['id'])->updateOrFail($event->payload);
+    }
+
+    public function onFolderSharingUpdated(FolderSharingUpdated $event)
     {
         Folder::findOrFail($event->payload['id'])->updateOrFail($event->payload);
     }

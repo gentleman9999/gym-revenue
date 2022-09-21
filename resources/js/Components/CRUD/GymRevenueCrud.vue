@@ -4,7 +4,9 @@
             class="grid grid-cols-3 items-center flex-wrap mb-4 gap-x-4 gap-y-6"
         >
             <slot name="top-actions">
-                <div class="flex flex-row col-span-3 lg:col-span-2 gap-2">
+                <div
+                    class="flex flex-row col-span-3 lg:col-span-2 gap-2 flex-wrap"
+                >
                     <template v-for="action in Object.values(topActions)">
                         <button
                             v-if="
@@ -12,6 +14,7 @@
                                     ? action?.shouldRender()
                                     : true
                             "
+                            :key="action"
                             class="btn btn-sm text-xs"
                             :class="action.class"
                             @click.prevent="

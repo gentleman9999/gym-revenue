@@ -5,8 +5,8 @@
     <page-toolbar-nav title="Event Types" :links="navLinks" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <div class="flex flex-row items-center gap-4 mb-4">
-            <h1 class="text text-xl mr-8">Calendar</h1>
+        <div class="flex flex-row items-center gap-4 mb-4 flex-wrap">
+            <h1 class="text text-xl mr-8 w-full md:w-auto">Calendar</h1>
             <h2
                 class="text text-xl font-bold cursor-pointer flex flex-row"
                 @click="showDateSelectModal"
@@ -15,19 +15,16 @@
                 <arrow-icon direction="right" class="ml-2 items-center" />
             </h2>
             <div class="flex-grow" />
-            <!--                <button class="btn btn-sm text-xs btn-primary" @click="handleClickNewEvent">-->
-            <!--                    New Event-->
-            <!--                </button>-->
             <div class="form-control">
                 <select v-model="currentView" @change="handleChangeView">
-                    <option value="dayGridMonth">Month</option>
+                    <option v-if="!isMobile" value="dayGridMonth">Month</option>
                     <option value="timeGridWeek">Week</option>
                     <option value="timeGridDay">Day</option>
                 </select>
             </div>
             <simple-search-filter
                 v-model:modelValue="form.search"
-                class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
+                class="md:w-auto w-full lg:max-w-md md:mr-4 col-span-3 lg:col-span-1"
                 @reset="reset"
                 @clear-filters="clearFilters"
                 @clear-search="clearSearch"
@@ -159,12 +156,13 @@ export default defineComponent({
             "calendar",
             { start: "", end: "" }
         );
+
         const calendar = ref(null);
         const currentView = ref("timeGridWeek");
         const start = ref(null);
         const end = ref(null);
         const selectedDate = ref(null);
-
+        const isMobile = computed(() => window.innerWidth <= 480);
         const title = computed(() => {
             let option = {
                 year: "numeric",
@@ -483,6 +481,7 @@ export default defineComponent({
             },
             handleClickNewEvent,
             calendar,
+            isMobile,
             form,
             reset,
             clearSearch,

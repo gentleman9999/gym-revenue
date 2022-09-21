@@ -17,6 +17,11 @@
         </div>
     </div>
 </template>
+<style scoped>
+.stat {
+    @apply p-4 md:px-6;
+}
+</style>
 <script>
 import { defineComponent } from "vue";
 export default defineComponent({

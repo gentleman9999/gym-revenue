@@ -5,9 +5,9 @@
         ref="modal"
         page-route="Goals"
     >
-        <div class="flex flex-row">
-            <goals-actual-card class="mr-2" />
-            <goals-projecting-card class="w-64" />
+        <div class="flex flex-col md:flex-row">
+            <goals-actual-card class="md:mr-2" />
+            <goals-projecting-card class="md:w-64 w-full" />
         </div>
     </dashboard-widget-modal>
 </template>

@@ -43,7 +43,7 @@ class TrashScheduledCampaign
     {
         Alert::success("Scheduled Campaign '{$scheduledCampaign->name}' was sent to trash")->flash();
 
-        return Redirect::route('comms.scheduled-campaigns');
+        return Redirect::route('mass-comms.scheduled-campaigns');
     }
 
     public function asCommand(Command $command): void

@@ -8,12 +8,11 @@ use App\Models\Folder;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Laravel\Jetstream\Contracts\CreatesTeams;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateFolder implements CreatesTeams
+class CreateFolder
 {
     use AsAction;
 

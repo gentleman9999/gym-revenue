@@ -1,7 +1,7 @@
 <template>
     <sales-card-wrapper class="md:w-full">
-        <sales-card class="w-full">
-            <data-table :columns="columns" :data="data" />
+        <sales-card class="md:w-full md:px-4 px-4">
+            <data-table :columns="columns" :data="data" class="data-table" />
             <div class="flex flex-row space-x-4 justify-end py-6">
                 <Button secondary size="xs">Print</Button>
                 <Button secondary size="xs">Close</Button>
@@ -9,6 +9,13 @@
         </sales-card>
     </sales-card-wrapper>
 </template>
+<style scoped>
+@media only screen and (max-width: 768px) {
+    .data-table {
+        width: calc(100vw - 64px);
+    }
+}
+</style>
 <script setup>
 import SalesCardWrapper from "./SalesCardWrapper.vue";
 import SalesCard from "@/Components/Card.vue";

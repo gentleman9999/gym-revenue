@@ -1,7 +1,7 @@
 <template>
     <kpi-card-wrapper class="lg:w-1/2">
         <kpi-card
-            class="w-full"
+            class="kpi-card"
             header="Attachment Rate to Membership"
             :options="{
                 collapse: true,
@@ -18,10 +18,23 @@
                 more: true,
             }"
         >
-            <data-table :columns="columns" :data="data" />
+            <data-table :columns="columns" :data="data" class="kpi-table" />
         </kpi-card>
     </kpi-card-wrapper>
 </template>
+<style scoped>
+.kpi-card {
+    @apply w-full;
+}
+@media only screen and (max-width: 768px) {
+    .kpi-table {
+        width: calc(100vw - 96px);
+    }
+    .kpi-card {
+        width: calc(100vw - 64px);
+    }
+}
+</style>
 <script setup>
 import { h } from "vue";
 

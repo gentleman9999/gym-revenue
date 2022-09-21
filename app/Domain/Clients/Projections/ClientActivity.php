@@ -20,17 +20,17 @@ class ClientActivity extends GymRevProjection
         'amount' => 'integer',
     ];
 
-    public function getKeyName()
+    public function getKeyName(): string
     {
         return 'stored_event_id';
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'stored_event_id';
     }
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
     }

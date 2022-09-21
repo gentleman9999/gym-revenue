@@ -1,5 +1,5 @@
 <template>
-    <Card>
+    <Card class="mx-auto">
         <div class="grid-wrapper">
             <date-picker
                 inline

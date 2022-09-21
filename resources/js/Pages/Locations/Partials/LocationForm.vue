@@ -1,14 +1,7 @@
 <template>
     <jet-form-section @submitted="handleSubmit">
-        <!--        <template #title>-->
-        <!--            Location Details-->
-        <!--        </template>-->
-
-        <!--        <template #description>-->
-        <!--            {{ buttonText }} a location.-->
-        <!--        </template>-->
         <template #form>
-            <div class="col-span-4">
+            <div class="col-span-6 md:col-span-4">
                 <jet-label for="name" value="Name" />
                 <input
                     id="name"
@@ -19,7 +12,7 @@
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
-            <div class="col-span-2">
+            <div class="col-span-6 md:col-span-2">
                 <jet-label for="location_no" value="Location Number/ID" />
                 <input
                     id="location_no"
@@ -32,7 +25,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="col-span-4">
+            <div class="col-span-6 md:col-span-4">
                 <jet-label for="city" value="City" />
                 <input
                     id="city"
@@ -42,7 +35,7 @@
                 />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
-            <div class="col-span-1">
+            <div class="col-span-3 md:col-span-1">
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
@@ -55,7 +48,7 @@
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
-            <div class="col-span-1">
+            <div class="col-span-3 md:col-span-1">
                 <jet-label for="zip" value="ZIP Code" />
                 <input
                     id="zip"
@@ -84,7 +77,7 @@
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
 
-            <div class="col-span-2 space-y-2">
+            <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="phone" value="Phone" />
                 <input
                     id="phone"
@@ -95,7 +88,7 @@
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
 
-            <div class="col-span-2 space-y-2">
+            <div class="col-span-3 md:col-span-2 space-y-2">
                 <jet-label for="open_date" value="Open Date" />
                 <DatePicker
                     id="open_date"
@@ -111,7 +104,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="col-span-2 space-y-2">
+            <div class="col-span-3 md:col-span-2 space-y-2">
                 <jet-label for="close_date" value="Close Date" />
                 <DatePicker
                     id="close_date"
@@ -128,7 +121,7 @@
                 />
             </div>
 
-            <div class="col-span-2 space-y-2">
+            <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="poc_first" value="POC First" />
                 <input
                     id="poc_first"
@@ -141,7 +134,7 @@
                     class="mt-2"
                 />
             </div>
-            <div class="col-span-2 space-y-2">
+            <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="poc_last" value="POC Last" />
                 <input
                     id="poc_last"
@@ -151,7 +144,7 @@
                 />
                 <jet-input-error :message="form.errors.poc_last" class="mt-2" />
             </div>
-            <div class="col-span-2 space-y-2">
+            <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="poc_phone" value="POC Phone" />
                 <input
                     id="poc_phone"

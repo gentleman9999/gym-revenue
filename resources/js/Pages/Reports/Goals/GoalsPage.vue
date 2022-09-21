@@ -2,7 +2,7 @@
     <LayoutHeader title="Goals"> Goals </LayoutHeader>
     <jet-bar-container>
         <h3 class="pb-4">Report Fields</h3>
-        <div class="flex flex-row space-x-6">
+        <div class="flex flex-col md:flex-row md:space-x-6">
             <div>
                 <goals-actual-card
                     :options="{
@@ -25,12 +25,16 @@
         </div>
         <h3 class="mt-8">Goals</h3>
         <goal-filters class="mb-9" />
-        <div class="flex flex-row mx-[-8px]">
-            <div class="md:w-1/4 px-2" v-for="goal in goals" :key="goal.id">
+        <div class="flex md:flex-row flex-col flex-wrap mx-[-8px]">
+            <div
+                class="lg:w-1/4 md:w-1/2 px-2 mb-2"
+                v-for="goal in goals"
+                :key="goal.id"
+            >
                 <goal-card :data="goal" />
             </div>
         </div>
-        <goal-table class="mb-16" />
+        <goal-table class="mb-16 data-table" />
         <div class="flex justify-center">
             <Button secondary size="xs">Edit All Goals</Button>
         </div>
@@ -40,6 +44,11 @@
 <style scoped>
 h3 {
     @apply text-secondary font-semibold text-xl;
+}
+@media only screen and (max-width: 768px) {
+    .data-table {
+        width: calc(100vw - 32px);
+    }
 }
 </style>
 

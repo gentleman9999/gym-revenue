@@ -5,7 +5,7 @@
         ref="modal"
         page-route="SalesFunnel"
     >
-        <div class="flex flex-row space-x-2">
+        <div class="flex md:flex-row md:space-x-2 flex-col">
             <cancel-card class="no-collapse h-auto" progress="25" />
             <completed-card class="no-favorite no-collapse no-action" />
         </div>

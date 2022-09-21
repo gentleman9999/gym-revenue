@@ -17,8 +17,9 @@ return new class () extends Migration {
             $table->uuid('client_id');
             $table->uuid('audience_id');
             $table->string('name');
-            $table->string('template_type');
-            $table->string('template_id');
+            $table->string('email_template_id')->nullable();
+            $table->string('sms_template_id')->nullable();
+            $table->string('client_call_script')->nullable();
             $table->timestamp('send_at');
             $table->timestamp('completed_at')->nullable();
             $table->string('status')->nullable();

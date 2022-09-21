@@ -10,12 +10,22 @@ use App\Domain\Teams\Events\TeamMemberRemoved;
 use App\Domain\Teams\Events\TeamUpdated;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Domain\Teams\Models\TeamInvitation;
+use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use Laravel\Jetstream\Jetstream;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class TeamProjector extends Projector
 {
+    public function onStartingEventReplay()
+    {
+        Team::truncate();
+        TeamDetail::truncate();
+        TeamInvitation::truncate();
+        TeamUser::truncate();
+    }
+
     public function onTeamCreated(TeamCreated $event): void
     {
         $team = new Team();

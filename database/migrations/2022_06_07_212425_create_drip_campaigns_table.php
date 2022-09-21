@@ -17,7 +17,7 @@ return new class () extends Migration {
             $table->uuid('client_id');
             $table->string('name');
             $table->uuid('audience_id');
-            $table->timestamp('start_at');
+            $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->string('status');

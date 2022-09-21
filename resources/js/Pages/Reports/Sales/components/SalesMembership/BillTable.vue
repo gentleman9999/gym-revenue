@@ -1,5 +1,5 @@
 <template>
-    <div class="w-1/2 m-auto">
+    <div class="md:w-1/2 m-auto">
         <div class="flex flex-row text-center">
             <div class="text-secondary w-1/3">Bill Type</div>
             <div class="text-secondary w-1/3">Quantity</div>

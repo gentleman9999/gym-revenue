@@ -17,6 +17,7 @@ class ProviderTypeSeeder extends Seeder
     {
         $types = [
             'sms' => 'Gateways that Transmit SMS/Text Messages',
+            'voice' => 'Gateways that handles inbound/outbound voice calls',
             'email' => 'Gateways that Send Emails',
             'credit' => 'Gateways that Accept Credit Cards',
             'checking' => 'Gateways that Accept Checks',

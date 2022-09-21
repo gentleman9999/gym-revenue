@@ -10,46 +10,40 @@
 
     <jet-bar-container class="space-y-8">
         <div class="shadow stats">
-            <!--                <div class="stat">-->
-            <!--                    <div class="stat-title">Audience</div>-->
-            <!--                    <div class="stat-value">-->
-            <!--                        {{ stats["total_audience"] }}-->
-            <!--                    </div>-->
-            <!--                    <div class="stat-desc">Total</div>-->
-            <!--                </div>-->
             <mass-comm-stat
                 v-for="(lbl, slug) in audiences"
+                :key="lbl"
                 :title="lbl"
                 :value="stats['audience_breakdown'][slug]"
             />
         </div>
 
         <div
-            class="grid grid-cols-2 lg:flex flex-wrap xl:flex-row justify-center xl:justify-start gap-2 lg:gap-1"
+            class="grid grid-cols-1 md:grid-cols-2 lg:flex flex-wrap xl:flex-row justify-center xl:justify-start gap-2 lg:gap-1"
         >
             <mass-comm-data-button
-                :href="route('comms.email-templates')"
+                :href="route('mass-comms.email-templates')"
                 :active="stats['email_templates'].active"
                 :total="stats['email_templates'].created"
             >
                 Email Templates
             </mass-comm-data-button>
             <mass-comm-data-button
-                :href="route('comms.sms-templates')"
+                :href="route('mass-comms.sms-templates')"
                 :active="stats['sms_templates'].active"
                 :total="stats['sms_templates'].created"
             >
                 SMS Templates
             </mass-comm-data-button>
             <mass-comm-data-button
-                :href="route('comms.scheduled-campaigns')"
+                :href="route('mass-comms.scheduled-campaigns')"
                 :active="stats['scheduled_campaigns'].active"
                 :total="stats['scheduled_campaigns'].created"
             >
                 Scheduled Campaigns
             </mass-comm-data-button>
             <mass-comm-data-button
-                :href="route('comms.drip-campaigns')"
+                :href="route('mass-comms.drip-campaigns')"
                 :active="stats['drip_campaigns'].active"
                 :total="stats['drip_campaigns'].created"
             >
@@ -174,7 +168,7 @@ export default defineComponent({
     },
     props: ["title", "audiences", "activeAudience", "stats", "historyFeed"],
     setup(props) {
-        const baseRoute = "comms.dashboard";
+        const baseRoute = "mass-comms.dashboard";
         const { form, reset, clearFilters, clearSearch } = useSearchFilter(
             baseRoute,
             {
@@ -214,14 +208,14 @@ export default defineComponent({
         };
 
         const sendATestSMS = (data) => {
-            Inertia.post(route("comms.sms-templates.test-msg"));
+            Inertia.post(route("mass-comms.sms-templates.test-msg"));
         };
 
         const sendATestEmail = (data) => {
-            Inertia.post(route("comms.email-templates.test-msg"));
+            Inertia.post(route("mass-comms.email-templates.test-msg"));
         };
         const viewAudienceDashboard = (slug) => {
-            Inertia.visit(route("comms.dashboard") + "?audience=" + slug);
+            Inertia.visit(route("mass-comms.dashboard") + "?audience=" + slug);
         };
         return {
             fields,

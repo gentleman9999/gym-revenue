@@ -8,7 +8,7 @@ use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GatewayProviders\GatewayProviderType;
 use App\Services\GatewayProviders\GatewayProviderService;
 use App\Services\GatewayProviders\Profiles\SMS\SMSGatewayProvider;
-use App\Services\GatewayProviders\Profiles\SMS\Twilio;
+use App\Services\GatewayProviders\Profiles\SMS\TwilioSMS;
 
 class SMSGatewayProviderService extends GatewayProviderService
 {
@@ -50,7 +50,7 @@ class SMSGatewayProviderService extends GatewayProviderService
                         'twilio_sid' => env('TWILIO_SID'),
                         'twilio_token' => env('TWILIO_TOKEN'),
                     ];
-                    $results = new Twilio($deets, $user_id);
+                    $results = new TwilioSMS($deets, $user_id);
 
                 break;
                 // default will be the slug name given to the

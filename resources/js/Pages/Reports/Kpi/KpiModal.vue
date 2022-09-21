@@ -5,7 +5,7 @@
         ref="modal"
         page-route="Kpi"
     >
-        <div class="flex flex-row">
+        <div class="flex md:flex-row flex-col">
             <kpi-revenue-per-member-overall
                 class="lg:w-1/2 md:w-1/2 no-favorite no-collapse"
             />

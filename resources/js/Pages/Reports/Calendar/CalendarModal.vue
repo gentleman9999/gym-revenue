@@ -5,7 +5,7 @@
         ref="modal"
         page-route="Calendar"
     >
-        <div class="flex flex-row space-x-2">
+        <div class="flex md:flex-row md:space-x-2 flex-col">
             <calendar-summary-card
                 title="Confirmed"
                 :progress="[65]"

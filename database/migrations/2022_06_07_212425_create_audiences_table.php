@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->string('name');
             $table->string('entity');
             $table->json('filters')->nullable();
+            $table->boolean('editable')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

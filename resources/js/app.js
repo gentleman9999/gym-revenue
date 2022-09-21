@@ -1,4 +1,5 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
+import vClickOutside from "click-outside-vue3";
 
 import "./bootstrap";
 
@@ -17,26 +18,32 @@ createInertiaApp({
     resolve: async (name) => {
         const comps = import.meta.glob("./Pages/**/*.vue");
         const match = comps[`./Pages/${name}.vue`];
-        const page = (await match()).default;
-        // const module = await import(`./Pages/${name}.vue`);
-        // const page = module.default;
-        console.log({ name, page });
-        if (page.layout === undefined) {
-            if (name.startsWith("Invite/Show")) {
-                if (pageStore?.props?.value?.user) {
+        try {
+            const page = (await match()).default;
+            // const module = await import(`./Pages/${name}.vue`);
+            // const page = module.default;
+            console.log({ name, page });
+            if (page.layout === undefined) {
+                if (name.startsWith("Invite/Show")) {
+                    if (pageStore?.props?.value?.user) {
+                        page.layout = AppLayout;
+                    }
+                } else {
                     page.layout = AppLayout;
                 }
-            } else {
-                page.layout = AppLayout;
             }
-        }
 
-        return page;
+            return page;
+        } catch (e) {
+            console.error("Could not load Page component", name);
+            throw e;
+        }
     },
     setup({ el, app, props, plugin }) {
         return createApp({ render: () => h(app, props) })
             .use(plugin)
             .use(Toast)
+            .use(vClickOutside)
             .component("inertia-link", Link)
             .mixin({ methods: { route } })
             .mount(el);

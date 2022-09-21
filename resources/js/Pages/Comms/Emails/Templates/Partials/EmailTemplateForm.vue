@@ -24,6 +24,7 @@
             />
             <jet-input-error :message="form.errors.subject" class="mt-2" />
         </div>
+
         <!--        <div class="form-control col-span-6 flex flex-row" v-if="canActivate">-->
         <!--            <input-->
         <!--                type="checkbox"-->
@@ -42,8 +43,8 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
-                :loading="form.processing"
+                :disabled="form.processing || !form.isDirty || isProcessing"
+                :loading="form.processing || isProcessing"
                 @click="handleSubmit"
             >
                 {{ buttonText }}
@@ -72,11 +73,28 @@ export default {
         JetInputError,
         DaisyModal,
     },
-    props: ["clientId", "template", "canActivate", "topolApiKey"],
-    setup(props, context) {
+    props: {
+        template: {
+            type: Object,
+        },
+        canActivate: {
+            type: Boolean,
+            required: true,
+        },
+        topolApiKey: {
+            type: String,
+            required: true,
+        },
+        useInertia: {
+            type: Boolean,
+            default: true,
+        },
+    },
+    setup(props, { emit }) {
         const inertiaModal = useModal();
         const page = usePage();
         const nameModal = ref(null);
+        const isProcessing = ref(false);
         let template = props?.template || {
             markup: null,
             json: null,
@@ -95,37 +113,72 @@ export default {
 
         let handleSubmit = () => {
             if (!form.processing) {
-                form.dirty().put(
-                    route("comms.email-templates.update", template.id),
-                    {
-                        headers: { "X-Inertia-Modal-Redirect": true },
-                        // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
-                        onFinish: () => {
-                            if (closeAfterSave.value) {
-                                console.log(
-                                    "closeAfterSave",
-                                    closeAfterSave.value,
-                                    inertiaModal.value
-                                );
-                                handleOnClose();
-                            }
-                        },
-                    }
-                );
+                if (props.useInertia) {
+                    form.dirty().put(
+                        route("mass-comms.email-templates.update", template.id),
+                        {
+                            headers: { "X-Inertia-Modal-Redirect": true },
+                            // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
+                            onFinish: () => {
+                                if (closeAfterSave.value) {
+                                    console.log(
+                                        "closeAfterSave",
+                                        closeAfterSave.value,
+                                        inertiaModal.value
+                                    );
+                                    handleOnClose();
+                                }
+                            },
+                        }
+                    );
+                } else {
+                    isProcessing.value = true;
+                    axios
+                        .put(
+                            route(
+                                "mass-comms.email-templates.update",
+                                template.id
+                            ),
+                            form.dirty().data()
+                        )
+                        .then(({ data }) => {
+                            console.log(
+                                "closeAfterSave",
+                                closeAfterSave.value,
+                                inertiaModal.value
+                            );
+                            isProcessing.value = false;
+                            handleOnClose(data);
+                        });
+                }
             }
         };
         if (operation === "Create") {
             handleSubmit = () => {
                 if (!form.processing) {
-                    form.post(route("comms.email-templates.store"), {
-                        headers: { "X-Inertia-Modal-Redirect": true },
-                        onSuccess: () => {
-                            console.log("onSuccess-Create!");
-                            if (closeAfterSave.value) {
-                                handleOnClose();
-                            }
-                        },
-                    });
+                    if (props.useInertia) {
+                        form.post(route("mass-comms.email-templates.store"), {
+                            headers: { "X-Inertia-Modal-Redirect": true },
+                            onSuccess: () => {
+                                console.log("onSuccess-Create!");
+                                if (closeAfterSave.value) {
+                                    handleOnClose();
+                                }
+                            },
+                        });
+                    } else {
+                        isProcessing.value = true;
+                        axios
+                            .post(
+                                route("mass-comms.email-templates.store"),
+                                form.data()
+                            )
+                            .then(({ data }) => {
+                                console.log("onSuccess-Create!");
+                                isProcessing.value = false;
+                                handleOnClose(data);
+                            });
+                    }
                 }
             };
         }
@@ -148,12 +201,16 @@ export default {
             handleOnSave({ html, json });
         };
 
-        const handleOnClose = () => {
-            if (inertiaModal.value?.close) {
-                inertiaModal.value?.close();
+        const handleOnClose = (template) => {
+            if (props.useInertia) {
+                if (inertiaModal.value?.close) {
+                    inertiaModal.value?.close();
+                } else {
+                    //go back
+                    Inertia.visit(route("mass-comms.email-templates"));
+                }
             } else {
-                //go back
-                Inertia.visit(route("comms.email-templates"));
+                emit("done", template);
             }
         };
 
@@ -165,6 +222,7 @@ export default {
             handleOnSave,
             handleOnSaveAndClose,
             handleOnClose,
+            isProcessing,
         };
     },
 };

@@ -30,12 +30,14 @@ class ClientReactor extends Reactor
             'client_id' => $client->id,
             'name' => 'All Leads',
             'entity' => Lead::class,
+            'editable' => false,
         ]);
 
         CreateAudience::run([
             'client_id' => $client->id,
             'name' => 'All Members',
             'entity' => Member::class,
+            'editable' => false,
         ]);
     }
 }

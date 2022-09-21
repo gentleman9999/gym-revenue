@@ -16,14 +16,18 @@
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control col-span-6 md:col-span-3 flex flex-col">
                 <p>Select an audience</p>
                 <select
                     v-model="form.audience_id"
                     :disabled="!canEditActiveInputs"
                     id="audience_id"
                 >
-                    <option v-for="audience in audiences" :value="audience.id">
+                    <option
+                        v-for="audience in audiences"
+                        :value="audience.id"
+                        :key="audience.id"
+                    >
                         {{ audience.name }}
                     </option>
                 </select>
@@ -33,7 +37,7 @@
                 />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control md:col-span-3 col-span-6 flex flex-col">
                 <p>When should this campaign start?</p>
                 <date-picker
                     v-model="form.start_at"
@@ -47,7 +51,7 @@
                 <jet-input-error :message="form.errors.start_at" class="mt-2" />
             </div>
 
-            <div class="form-control col-span-3 flex flex-col">
+            <div class="form-control md:col-span-3 col-span-6 flex flex-col">
                 <p>Does this drip campaign have an end date?</p>
                 <date-picker
                     v-model="form.end_at"
@@ -82,7 +86,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="$inertia.visit(route('comms.drip-campaigns'))"
+                @click="$inertia.visit(route('mass-comms.drip-campaigns'))"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -190,14 +194,14 @@ export default {
 
         let handleSubmit = () => {
             form.transform(transformData).put(
-                route("comms.drip-campaigns.update", props.dripCampaign.id)
+                route("mass-comms.drip-campaigns.update", props.dripCampaign.id)
             );
         };
         if (operation === "Create") {
             handleSubmit = () =>
                 form
                     .transform(transformData)
-                    .post(route("comms.drip-campaigns.store"));
+                    .post(route("mass-comms.drip-campaigns.store"));
         }
 
         const canEditActiveInputs = computed(() => {

@@ -5,7 +5,7 @@
         <template #description> Information about the user.</template>
         <template #form>
             <!-- First Name -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="fname" value="First Name" />
                 <input
                     id="first_name"
@@ -20,7 +20,7 @@
                 />
             </div>
             <!-- Last Name -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="name" value="Last Name" />
                 <input
                     id="last_name"
@@ -34,7 +34,7 @@
                 />
             </div>
             <!-- (Work) Email -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="email" value="Work Email" />
                 <input
                     id="email"
@@ -46,7 +46,7 @@
             </div>
 
             <!-- Personal Email -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="email" value="Personal Email" />
                 <input
                     id="alternate_email"
@@ -61,7 +61,7 @@
             </div>
 
             <!-- Contact Phone # -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="phone" value="Contact Phone" />
                 <phone-input
                     id="phone"
@@ -94,7 +94,7 @@
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
             <!-- City -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="city" value="City" />
                 <input
                     id="city"
@@ -105,7 +105,7 @@
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
             <!-- State -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="state" value="State" />
                 <multiselect
                     id="state"
@@ -120,7 +120,7 @@
             </div>
 
             <!-- Zip -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="zip" value="Zip Code" />
                 <input
                     id="zip"
@@ -134,7 +134,7 @@
             <div class="form-divider" />
 
             <!-- Contact Preference -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label
                     for="contact_preference"
                     value="Contact Preference"
@@ -154,7 +154,10 @@
             </div>
 
             <!-- Security Role -->
-            <div class="form-control col-span-2" v-if="isClientUser">
+            <div
+                class="form-control col-span-6 md:col-span-2"
+                v-if="isClientUser"
+            >
                 <jet-label for="role_id" value="Security Role" />
                 <select
                     id="role_id"
@@ -172,7 +175,10 @@
                 <jet-input-error :message="form.errors.role_id" class="mt-2" />
             </div>
             <!-- Home Club -->
-            <div class="form-control col-span-2" v-if="isClientUser">
+            <div
+                class="form-control col-span-6 md:col-span-2"
+                v-if="isClientUser"
+            >
                 <jet-label for="home_location_id" value="Home Club" />
                 <select
                     id="home_location_id"
@@ -195,7 +201,7 @@
 
             <!-- Start Date -->
 
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="start_date" value="Date / Start of Work" />
                 <DatePicker
                     v-model="form['start_date']"
@@ -209,7 +215,7 @@
             </div>
 
             <!-- End Date -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="end_date" value="Date / End of Work" />
                 <DatePicker
                     v-model="form['end_date']"
@@ -220,7 +226,7 @@
             </div>
 
             <!-- Termination Date -->
-            <div class="form-control col-span-2">
+            <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="termination_date" value="Date of Termination" />
                 <DatePicker
                     v-model="form['termination_date']"
@@ -233,7 +239,10 @@
                 />
             </div>
             <div class="form-divider" v-if="isClientUser" />
-            <div class="form-control col-span-2" v-if="isClientUser">
+            <div
+                class="form-control col-span-6 md:col-span-2"
+                v-if="isClientUser"
+            >
                 <jet-label for="role_id" value="Select Departments" />
                 <select
                     v-model="selectedDepartment"
@@ -253,7 +262,10 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control col-span-2" v-if="isClientUser">
+            <div
+                class="form-control col-span-6 md:col-span-2"
+                v-if="isClientUser"
+            >
                 <jet-label for="role_id" value="Select Positions" />
                 <select
                     v-model="selectedPosition"
@@ -274,7 +286,7 @@
                 />
             </div>
             <div
-                class="flex justify-center items-end col-span-2"
+                class="flex justify-center items-end col-span-6 md:col-span-2"
                 v-if="isClientUser"
             >
                 <button
@@ -290,13 +302,15 @@
                 v-for="({ department, position }, ndx) in form.departments"
                 :key="position"
             >
-                <div class="col-span-2">
+                <div class="col-span-6 md:col-span-2">
                     {{ getDepartment(department)?.name }}
                 </div>
-                <div class="col-span-2">
+                <div class="col-span-6 md:col-span-2">
                     {{ getPosition(position)?.name }}
                 </div>
-                <div class="flex justify-center items-end col-span-2">
+                <div
+                    class="flex justify-center items-end col-span-6 md:col-span-2"
+                >
                     <button
                         class="btn btn-outline btn-error btn-sm"
                         type="button"

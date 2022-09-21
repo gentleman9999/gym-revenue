@@ -341,7 +341,7 @@
         </daisy-modal>
     </form>
 </template>
-<style scope>
+<style scoped>
 .toggle:checked:focus:focus {
     box-shadow: var(--handleoffset) 0 0 2px hsl(var(--b1)) inset,
         0 0 0 2px hsl(var(--b1)) inset, var(--focus-shadow);

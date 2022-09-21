@@ -13,7 +13,7 @@
         <div class="location-wrapper border rounded h-60"></div>
     </div>
 </template>
-<style scope>
+<style scoped>
 .content-wrapper {
     @apply z-1;
 }

@@ -5,12 +5,10 @@
                 Scheduled Campaigns Management
             </h2>
         </div>
-        <div
-            class="top-drop-row stop-drop-roll flex flex-row justify-center mb-4 lg:justify-start"
-        >
+        <div class="top-drop-row stop-drop-roll">
             <inertia-link
                 class="btn justify-self-end"
-                :href="route('comms.dashboard')"
+                :href="route('mass-comms.dashboard')"
             >
                 <span
                     ><font-awesome-icon
@@ -23,7 +21,7 @@
         </div>
     </LayoutHeader>
     <gym-revenue-crud
-        base-route="comms.scheduled-campaigns"
+        base-route="mass-comms.scheduled-campaigns"
         model-name="Scheduled Campaign"
         model-key="campaign"
         :fields="fields"
@@ -41,7 +39,11 @@
         audiences and/or templates.
     </confirm>
 </template>
-
+<style scoped>
+.top-drop-row {
+    @apply flex flex-row justify-center lg:justify-start md:ml-4;
+}
+</style>
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
@@ -74,7 +76,10 @@ export default defineComponent({
         };
         const handleConfirmTrash = () => {
             Inertia.delete(
-                route("comms.scheduled-campaigns.trash", confirmTrash.value)
+                route(
+                    "mass-comms.scheduled-campaigns.trash",
+                    confirmTrash.value
+                )
             );
             confirmTrash.value = null;
         };

@@ -4,7 +4,7 @@
             <template #title>
                 <h1>Executive Overview</h1>
                 <div
-                    class="flex flex-row text-base-content space-x-2 text-xs items-center"
+                    class="flex flex-row text-base-content space-x-2 text-xs items-center flex-wrap"
                 >
                     <span class="cursor-pointer text-secondary">Monthly</span>
                     <span class="cursor-pointer">Quartely</span>
@@ -17,7 +17,9 @@
     <jet-bar-container>
         <div class="flex flex-col">
             <overview-table />
-            <div class="flex flex-row mt-12 mb-4 justify-center px-20 w-full">
+            <div
+                class="flex md:flex-row flex-col mt-12 mb-4 justify-center lg:px-20 w-full"
+            >
                 <div class="px-2">
                     <cpa-cpl-clicks class="w-full" />
                 </div>

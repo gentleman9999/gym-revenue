@@ -15,6 +15,7 @@
             </div>
             <div class="card-footer">
                 <button-tabs
+                    class="md:flex hidden"
                     :items="buttons"
                     :activeIndex="activeIndex"
                     :onChange="setActive"

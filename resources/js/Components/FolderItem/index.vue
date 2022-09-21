@@ -9,7 +9,6 @@
         @dragover="$event.preventDefault()"
         @dragenter="$event.preventDefault()"
         @drop="handleDrop()"
-        @dblclick="browseFolder()"
     >
         <folder-icon
             :icon-size="iconSize"
@@ -23,6 +22,7 @@
             :folder="folder"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :handlePermissions="handlePermissions"
         />
 
         <folder-context-menu
@@ -30,6 +30,8 @@
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
+            :handleShare="handleShare"
+            :handleBrowse="browseFolder"
         />
     </div>
 </template>
@@ -76,6 +78,9 @@ const props = defineProps({
     handleTrash: {
         type: Function,
     },
+    handleShare: {
+        type: Function,
+    },
     moveFileToFolder: {
         type: Function,
     },
@@ -86,8 +91,19 @@ const handleRename = () => {
     subMenu.value.blur();
 };
 
+const handlePermissions = () => {
+    props.handlePermissions(props.folder);
+    subMenu.value.blur();
+};
+
 const handleTrash = () => {
     props.handleTrash(props.folder, "folder");
+    subMenu.value.blur();
+};
+
+const handleShare = () => {
+    console.log("handleShare");
+    props.handleShare(props.folder);
     subMenu.value.blur();
 };
 
@@ -95,12 +111,11 @@ const subMenu = ref(null);
 
 const handleClick = (event) => {
     if (props.mode !== "desktop") {
+        browseFolder();
         return;
     }
-    if (event.which == 3) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+    event.preventDefault();
+    event.stopPropagation();
     subMenu.value.focus();
 };
 const iconSize = computed({

@@ -25,6 +25,11 @@ use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Silber\Bouncer\Database\Role;
 
+/**
+ * @property string $phone
+ * @property string $client_id
+ * @property int    $id
+ */
 class User extends Authenticatable
 {
     use HasTeams;

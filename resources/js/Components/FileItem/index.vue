@@ -90,10 +90,8 @@ const handleClick = (event) => {
     if (props.mode !== "desktop") {
         return;
     }
-    if (event.which == 3) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+    event.preventDefault();
+    event.stopPropagation();
     subMenu.value.focus();
 };
 const iconSize = computed({

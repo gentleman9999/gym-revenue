@@ -39,6 +39,6 @@ class RestoreSmsTemplate
     {
         Alert::success("SMS Template'{$smsTemplate->name}' was restored")->flash();
 
-        return Redirect::route('comms.sms-templates');
+        return Redirect::route('mass-comms.sms-templates');
     }
 }

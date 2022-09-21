@@ -10,7 +10,10 @@
     <div class="w-100vw bg-neutral-800">
         <jet-banner />
         <div class="font-sans antialiased">
-            <top-nav @toggle-side-nav="toggleSideNav" />
+            <top-nav
+                @toggle-side-nav="toggleSideNav"
+                :showingSidebar="showingSidebar"
+            />
             <div class="font-sans antialiased">
                 <jet-banner />
 
@@ -30,10 +33,7 @@
                             class="flex-1 relative z-0 py-6 focus:outline-none"
                             tabindex="0"
                         >
-                            <div
-                                id="layout-header"
-                                class="max-w-fit mx-auto pt-3 px-4 sm:px-6 lg:px-8 text-lg font-semibold tracking-widest uppercase"
-                            ></div>
+                            <div id="layout-header"></div>
                             <!-- Replace with your content -->
                             <div>
                                 <!-- Content -->
@@ -55,6 +55,7 @@
             </div>
         </div>
     </div>
+    <twilo-ui />
     <InertiaModal>
         <template #default="{ close, props }">
             <DaisyModal
@@ -69,6 +70,9 @@
 </template>
 
 <style>
+#layout-header {
+    @apply flex md:flex-row flex-col items-center max-w-fit mx-auto pt-3 px-4 sm:px-6 lg:px-8 text-lg font-semibold tracking-widest uppercase;
+}
 .page-enter-active,
 .page-leave-active {
     transition: all 0.6s ease;
@@ -95,6 +99,9 @@ import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 import { Head } from "@inertiajs/inertia-vue3";
+
+import TwiloUi from "@/Components/TwiloUi/index.vue";
+
 const props = defineProps({
     title: {
         type: String,

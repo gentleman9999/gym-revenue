@@ -6,7 +6,7 @@
 
         <template #form>
             <div
-                class="col-span-6 sm:col-span-6 form-control flex-row items-center gap-4 border p-2"
+                class="col-span-6 sm:col-span-6 form-control flex-col lg:flex-row lg:items-center gap-4 border p-2"
             >
                 <jet-label for="mailgunDomain" value="Mailgun Domain" />
                 <input
@@ -38,7 +38,7 @@
             </div>
             <jet-input-error :message="form.errors.email" class="mt-2" />
             <div
-                class="col-span-6 sm:col-span-6 form-control flex-row items-center gap-4 border p-2"
+                class="col-span-6 sm:col-span-6 form-control flex-col lg:flex-row lg:items-center gap-4 border p-2"
             >
                 <jet-label for="twilioSID" value="Twilio SID" />
                 <input id="twilioSID" type="text" v-model="form.twilioSID" />

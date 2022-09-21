@@ -43,7 +43,7 @@ class RestoreDripCampaign
     {
         Alert::success("Drip Campaign '{$dripCampaign->name}' was restored")->flash();
 
-        return Redirect::route('comms.drip-campaigns');
+        return Redirect::route('mass-comms.drip-campaigns');
     }
 
     public function asCommand(Command $command): void

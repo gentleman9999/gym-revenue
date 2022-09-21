@@ -5,13 +5,13 @@
         ref="modal"
         page-route="Sales"
     >
-        <div class="flex flex-row">
+        <div class="flex flex-col md:flex-row">
             <sales-annual-fees />
             <card
                 :options="{
                     borderedTitle: true,
                 }"
-                class="w-1/2 flex flex-col"
+                class="w-full md:w-1/2 flex flex-col"
             >
                 <template #cardTitle>
                     <div class="text-xl text-base-content">

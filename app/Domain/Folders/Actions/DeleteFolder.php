@@ -6,12 +6,11 @@ use App\Domain\Folders\FolderAggregate;
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Laravel\Jetstream\Contracts\DeletesTeams;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class DeleteFolder implements DeletesTeams
+class DeleteFolder
 {
     use AsAction;
 

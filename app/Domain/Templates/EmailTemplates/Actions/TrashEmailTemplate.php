@@ -25,7 +25,7 @@ class TrashEmailTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('comms.email-templates.create', EmailTemplate::class);
+        return $current_user->can('mass-comms.email-templates.create', EmailTemplate::class);
     }
 
     public function asController(ActionRequest $request, EmailTemplate $emailTemplate): EmailTemplate
@@ -39,6 +39,6 @@ class TrashEmailTemplate
     {
         Alert::success("Email Template '{$emailTemplate->name}' was sent to trash")->flash();
 
-        return Redirect::route('comms.email-templates');
+        return Redirect::route('mass-comms.email-templates');
     }
 }

@@ -6,17 +6,21 @@ use App\Domain\CalendarAttendees\Events\CalendarAttendeeAccepted;
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeAdded;
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeDeclined;
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeDeleted;
-use App\Domain\CalendarEvents\CalendarEvent;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
+use Spatie\EventSourcing\Facades\Projectionist;
 
 class CalendarAttendeeProjector extends Projector
 {
     public function onCalendarAttendeeAdded(CalendarAttendeeAdded $event): void
     {
         $calendarAttendee = (new CalendarAttendee())->writeable();
-        $temp = ['client_id' => CalendarEvent::findOrFail($event->payload['calendar_event_id'])->client_id, 'id' => $event->aggregateRootUuid()];
-        $calendarAttendee->forceFill($temp);
+        $calendarAttendee->id = $event->aggregateRootUuid();
+        $calendarAttendee->client_id = $event->clientId();
         $calendarAttendee->fill($event->payload);
+        if (Projectionist::isReplaying()) {
+            unset($event->payload['entity_data']['relations']);
+            unset($event->payload['entity_data']['connection']);
+        }
         $calendarAttendee->save();
     }
 

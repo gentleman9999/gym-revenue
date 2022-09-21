@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\VoiceCalls\Actions\InitiateCall;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,55 +52,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
 Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {
     Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->name('profile.show');
     Route::post('/tokens', \App\Domain\Users\Actions\GrantAccessToken::class)->name('api-tokens.store');
-});
-Route::middleware(['auth:sanctum', 'verified'])->prefix('comms')->group(function () {
-    Route::get('/', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@index')->name('comms.dashboard');
-    Route::get('/export', \App\Http\Controllers\Comm\MassCommunicationsController::class . '@export')->name('comms.export');
-
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('scheduled-campaigns')->group(function () {
-        Route::get('', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@index')->name('comms.scheduled-campaigns');
-        Route::get('/create', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@create')->name('comms.scheduled-campaigns.create');
-        Route::get('/export', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@export')->name('comms.scheduled-campaigns.export');
-        Route::get('/{scheduledCampaign}', \App\Http\Controllers\Comm\ScheduledCampaignsController::class . '@edit')->name('comms.scheduled-campaigns.edit');
-        Route::post('/', \App\Domain\Campaigns\ScheduledCampaigns\Actions\CreateScheduledCampaign::class)->name('comms.scheduled-campaigns.store');
-        Route::put('/{scheduledCampaign}', \App\Domain\Campaigns\ScheduledCampaigns\Actions\UpdateScheduledCampaign::class)->name('comms.scheduled-campaigns.update');
-        Route::delete('/{scheduledCampaign}', \App\Domain\Campaigns\ScheduledCampaigns\Actions\TrashScheduledCampaign::class)->name('comms.scheduled-campaigns.trash');
-        Route::post('/{scheduledCampaign}/restore', \App\Domain\Campaigns\ScheduledCampaigns\Actions\RestoreScheduledCampaign::class)->withTrashed()->name('comms.scheduled-campaigns.restore');
-    });
-
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('drip-campaigns')->group(function () {
-        Route::get('', \App\Http\Controllers\Comm\DripCampaignsController::class . '@index')->name('comms.drip-campaigns');
-        Route::get('/create', \App\Http\Controllers\Comm\DripCampaignsController::class . '@create')->name('comms.drip-campaigns.create');
-        Route::get('/export', \App\Http\Controllers\Comm\DripCampaignsController::class . '@export')->name('comms.drip-campaigns.export');
-        Route::get('/{dripCampaign}', \App\Http\Controllers\Comm\DripCampaignsController::class . '@edit')->name('comms.drip-campaigns.edit');
-        Route::post('/', \App\Domain\Campaigns\DripCampaigns\Actions\CreateDripCampaign::class)->name('comms.drip-campaigns.store');
-        Route::put('/{dripCampaign}', \App\Domain\Campaigns\DripCampaigns\Actions\UpdateDripCampaign::class)->name('comms.drip-campaigns.update');
-        Route::delete('/{dripCampaign}', \App\Domain\Campaigns\DripCampaigns\Actions\TrashDripCampaign::class)->name('comms.drip-campaigns.trash');
-        Route::post('/{dripCampaign}/restore', \App\Domain\Campaigns\DripCampaigns\Actions\RestoreDripCampaign::class)->withTrashed()->name('comms.drip-campaigns.restore');
-    });
-
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('sms-templates')->group(function () {
-        Route::get('', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@index')->name('comms.sms-templates');
-        Route::get('/create', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@create')->name('comms.sms-templates.create');
-        Route::get('/export', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@export')->name('comms.sms-templates.export');
-        Route::get('/{smsTemplate}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@edit')->name('comms.sms-templates.edit');
-        Route::post('/', \App\Domain\Templates\SmsTemplates\Actions\CreateSmsTemplate::class)->name('comms.sms-templates.store');
-        Route::put('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\UpdateSmsTemplate::class)->name('comms.sms-templates.update');
-        Route::delete('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\TrashSmsTemplate::class)->name('comms.sms-templates.trash');
-        Route::post('/{smsTemplate}/restore', \App\Domain\Templates\SmsTemplates\Actions\RestoreSmsTemplate::class)->withTrashed()->name('comms.sms-templates.restore');
-        Route::post('/test', \App\Domain\SMS\Actions\FireTestMessage::class)->name('comms.sms-templates.test-msg');
-    });
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('email-templates')->group(function () {
-        Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('comms.email-templates');
-        Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('comms.email-templates.create');
-        Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('comms.email-templates.export');
-        Route::get('/{emailTemplate}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('comms.email-templates.edit');
-        Route::post('/', \App\Domain\Templates\EmailTemplates\Actions\CreateEmailTemplate::class)->name('comms.email-templates.store');
-        Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('comms.email-templates.update');
-        Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('comms.email-templates.trash');
-        Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('comms.email-templates.restore');
-        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('comms.email-templates.test-msg');
-    });
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function () {
@@ -159,6 +111,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(functi
     Route::post('/', \App\Domain\Folders\Actions\CreateFolder::class)->name('folders.store');
     Route::get('/viewFiles/{folder}', \App\Http\Controllers\FoldersController::class . '@viewFiles')->name('folders.viewFiles');
     Route::put('/{folder}', \App\Domain\Folders\Actions\UpdateFolder::class)->name('folders.update');
+    Route::put('/sharing/{folder}', \App\Domain\Folders\Actions\UpdateFolderSharing::class)->name('folders.sharing.update');
     Route::delete('/{folder}', \App\Domain\Folders\Actions\DeleteFolder::class)->name('folders.delete');
 });
 
@@ -331,10 +284,65 @@ Route::prefix('/communication-preferences')->group(function () {
 });
 
 //TODO: this is the new mass-comm dash - will replace current one in near future.
-Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-com')->group(function () {
-    Route::get('/', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass_com.dashboard');
-    Route::get('/{type}', \App\Http\Controllers\MassCommunicationController::class . '@page')->name('mass_com.page');
+Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(function () {
+    Route::get('/campaigns/{type?}', \App\Http\Controllers\MassCommunicationController::class . '@campaignDash')->name('mass-comms.campaigns.dashboard');
+    Route::prefix('audiences')->group(function () {
+        Route::put('/{audience}', \App\Domain\Audiences\Actions\UpdateAudience::class)->name('mass-comms.audiences.update');
+        Route::post('/', \App\Domain\Audiences\Actions\CreateAudience::class)->name('mass-comms.audiences.create');
+    });
+    Route::prefix('scheduledCampaigns')->group(function () {
+        Route::post('/', \App\Domain\Campaigns\ScheduledCampaigns\Actions\CreateScheduledCampaign::class)->name('mass-comms.scheduled-campaigns.store');
+        Route::put('/{scheduledCampaign}', \App\Domain\Campaigns\ScheduledCampaigns\Actions\UpdateScheduledCampaign::class)->name('mass-comms.scheduled-campaigns.update');
+        Route::delete('/{scheduledCampaign}', \App\Domain\Campaigns\ScheduledCampaigns\Actions\TrashScheduledCampaign::class)->name('mass-comms.scheduled-campaigns.trash');
+        Route::post('/{scheduledCampaign}/restore', \App\Domain\Campaigns\ScheduledCampaigns\Actions\RestoreScheduledCampaign::class)->withTrashed()->name('mass-comms.scheduled-campaigns.restore');
+        Route::get('/{scheduledCampaign}', \App\Http\Controllers\MassCommunicationController::class . '@getScheduledCampaign')->name('mass-comms.scheduled-campaigns.get');
+    });
+    Route::prefix('dripCampaigns')->group(function () {
+        Route::put('/{dripCampaign}', \App\Domain\Campaigns\DripCampaigns\Actions\UpdateDripCampaign::class)->name('mass-comms.drip-campaigns.update');
+        Route::post('/', \App\Domain\Campaigns\DripCampaigns\Actions\CreateDripCampaign::class)->name('mass-comms.drip-campaigns.store');
+        Route::get('/{dripCampaign}', \App\Http\Controllers\MassCommunicationController::class . '@getDripCampaign')->name('mass-comms.drip-campaigns.get');
+        Route::delete('/{dripCampaign}', \App\Domain\Campaigns\DripCampaigns\Actions\TrashDripCampaign::class)->name('mass-comms.drip-campaigns.trash');
+        Route::post('/{dripCampaign}/restore', \App\Domain\Campaigns\DripCampaigns\Actions\RestoreDripCampaign::class)->withTrashed()->name('mass-comms.drip-campaigns.restore');
+    });
+    Route::prefix('sms-templates')->group(function () {
+        Route::get('', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@index')->name('mass-comms.sms-templates');
+        Route::get('/create', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@create')->name('mass-comms.sms-templates.create');
+        Route::get('/export', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@export')->name('mass-comms.sms-templates.export');
+        Route::get('/{smsTemplate}', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@edit')->name('mass-comms.sms-templates.edit');
+        Route::post('/', \App\Domain\Templates\SmsTemplates\Actions\CreateSmsTemplate::class)->name('mass-comms.sms-templates.store');
+        Route::put('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\UpdateSmsTemplate::class)->name('mass-comms.sms-templates.update');
+        Route::delete('/{smsTemplate}', \App\Domain\Templates\SmsTemplates\Actions\TrashSmsTemplate::class)->name('mass-comms.sms-templates.trash');
+        Route::post('/{smsTemplate}/restore', \App\Domain\Templates\SmsTemplates\Actions\RestoreSmsTemplate::class)->withTrashed()->name('mass-comms.sms-templates.restore');
+        Route::post('/test', \App\Domain\SMS\Actions\FireTestMessage::class)->name('mass-comms.sms-templates.test-msg');
+    });
+    Route::prefix('email-templates')->group(function () {
+        Route::get('/', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('mass-comms.email-templates');
+        Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('mass-comms.email-templates.create');
+        Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('mass-comms.email-templates.export');
+        Route::get('/{emailTemplate}', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@edit')->name('mass-comms.email-templates.edit');
+        Route::post('/', \App\Domain\Templates\EmailTemplates\Actions\CreateEmailTemplate::class)->name('mass-comms.email-templates.store');
+        Route::put('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\UpdateEmailTemplate::class)->name('mass-comms.email-templates.update');
+        Route::delete('/{emailTemplate}', \App\Domain\Templates\EmailTemplates\Actions\TrashEmailTemplate::class)->name('mass-comms.email-templates.trash');
+        Route::post('/{emailTemplate}/restore', \App\Domain\Templates\EmailTemplates\Actions\RestoreEmailTemplate::class)->withTrashed()->name('mass-comms.email-templates.restore');
+        Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('mass-comms.email-templates.test-msg');
+    });
+    Route::get('/{type?}', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass-comms.dashboard');
+});
+
+Route::prefix('dynamicreports')->group(function () {
+    Route::get('/', \App\Http\Controllers\DynamicReportsController::class . '@index')->name('dr');
+    Route::get('/users', \App\Domain\DynamicReports\CreateUserReport::class)->name('dr.user');
+    Route::get('/leads', \App\Domain\DynamicReports\CreateLeadReport::class)->name('dr.lead');
+    Route::get('/members', \App\Domain\DynamicReports\CreateMemberReport::class)->name('dr.member');
+    Route::get('/leadexport', \App\Domain\DynamicReports\Export\ExportLeadReport::class)->name('dr.exportlead');
 });
 
 Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\GetClients::class)->name('clients');
 Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');
+
+
+Route::middleware('auth:sanctum')->prefix('call')->group(static function () {
+    Route::get('initialize/{phone}/type/{type}', InitiateCall::class)->name('twilio.call.initialize')
+        ->whereIn('type', [InitiateCall::TYPE_LEAD, InitiateCall::TYPE_MEMBER]);
+    Route::get('status/{sid}', \App\Domain\VoiceCalls\Actions\GetStatus::class)->name('twilio.call.status');
+});

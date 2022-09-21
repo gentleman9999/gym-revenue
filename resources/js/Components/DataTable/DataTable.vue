@@ -1,5 +1,5 @@
 <template>
-    <div :class="'overflow-y-auto max-w-[90vw] pr-2 ' + props.class">
+    <div class="overflow-y-auto max-w-[90vw] pr-2">
         <table
             :class="{
                 'border-separate': borderSeprated,
@@ -32,10 +32,6 @@ table {
 import TableHeader from "./TableHeader.vue";
 import TableBody from "./TableBody.vue";
 const props = defineProps({
-    class: {
-        type: String,
-        default: "",
-    },
     data: {
         type: Array,
         default: [],
