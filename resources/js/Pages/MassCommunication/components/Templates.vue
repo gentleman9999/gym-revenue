@@ -76,10 +76,16 @@
                 @done="handleEmailTemplateDone"
             />
             <sms-template-form
-                v-else-if="template_type === 'sms'"
+                v-if="template_type === 'sms'"
                 :can-activate="false"
                 :use-inertia="false"
                 @done="handleSmsTemplateDone"
+            />
+
+            <call-script
+                v-if="template_type === 'call'"
+                @save="handleCallTemplateDone"
+                @cancel="handleCancel"
             />
             <!-- <h2 class="text-2xl text-center">Email Template Form</h2> -->
             <!-- <p class="text-lg font-bold text-center">should be open here</p> -->
@@ -102,6 +108,7 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 import TemplatePreview from "./Templates/TemplatePreview.vue";
 import EmailTemplateForm from "@/Pages/Comms/Emails/Templates/Partials/EmailTemplateForm.vue";
 import SmsTemplateForm from "@/Pages/Comms/SMS/Templates/Partials/SmsTemplateForm.vue";
+import CallScript from "./Creator/CallScript.vue";
 
 library.add(faPlus);
 
@@ -171,6 +178,27 @@ const handleSmsTemplateDone = (template) => {
                 document.getElementById(template.id)?.offsetLeft || 0;
         },
     });
+};
+
+const handleCallTemplateDone = (template) => {
+    console.log("handlecallTemplateDone", template);
+    Inertia.reload({
+        only: ["call_templates"],
+        onFinish: () => {
+            templateBuilderStep.value = false;
+            updateSelected(template.id);
+            console.log({
+                templateScrollContainer: templateScrollContainer.value,
+            });
+            //TODO: animate this
+            templateScrollContainer.value.scrollLeft =
+                document.getElementById(template.id)?.offsetLeft || 0;
+        },
+    });
+};
+
+const handleCancel = () => {
+    templateBuilderStep.value = false;
 };
 
 const templateScrollContainer = ref(null);

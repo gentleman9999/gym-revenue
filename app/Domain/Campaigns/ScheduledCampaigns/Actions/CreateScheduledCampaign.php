@@ -42,7 +42,7 @@ class CreateScheduledCampaign
             'send_at' => ['required', 'after:now'],
             'email_template_id' => ['sometimes', 'string'],
             'sms_template_id' => ['sometimes', 'string'],
-            'client_call_script' => ['sometimes', 'string'],
+            'call_template_id' => ['sometimes', 'string'],
             'client_id' => ['required', 'exists:clients,id'],
 //            'is_published' => ['sometimes', 'boolean'],
         ];

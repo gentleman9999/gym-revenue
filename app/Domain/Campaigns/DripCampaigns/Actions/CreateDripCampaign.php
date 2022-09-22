@@ -37,7 +37,7 @@ class CreateDripCampaign
             $insertDay['day_of_campaign'] = $day['day_in_campaign'];
             $insertDay['email_template_id'] = $day['email'];
             $insertDay['sms_template_id'] = $day['sms'];
-            $insertDay['client_call_script'] = $day['call'];
+            $insertDay['call_template_id'] = $day['call'];
             CreateDripCampaignDay::run($insertDay);
         }
 

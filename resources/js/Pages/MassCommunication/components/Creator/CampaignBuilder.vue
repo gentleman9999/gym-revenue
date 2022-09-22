@@ -97,6 +97,7 @@
         :topol-api-key="topolApiKey"
         :email_templates="emailTemplates"
         :sms_templates="smsTemplates"
+        :call_templates="callTemplates"
         :temp_audiences="propAudiences"
         @back="
             () => {
@@ -202,6 +203,9 @@ const emailTemplates = computed(() => {
 });
 const smsTemplates = computed(() => {
     return usePage().props.value.sms_templates;
+});
+const callTemplates = computed(() => {
+    return usePage().props.value.call_templates;
 });
 
 const currentStep = ref("audience-picker");

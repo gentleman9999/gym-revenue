@@ -14,6 +14,7 @@ use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
@@ -128,7 +129,12 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = ScheduledCampaign::class;
 
                 break;
-
+                
+            case 'call-templates':
+                $entity = CallScriptTemplate::class;
+                
+                break;
+                
             case 'dynamic-reports':
                 $entity = DynamicReport::class;
 

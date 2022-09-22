@@ -7,6 +7,7 @@ use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Models\Endusers\MembershipType;
@@ -66,6 +67,11 @@ class MassCommunicationController extends Controller
         $sms_templates = SmsTemplate::with('creator')
             ->filter(request()->only('search', 'trashed'))
             ->sort()->get();
+
+        $call_script_templates = CallScriptTemplate::with('creator')
+            ->filter(request()->only('search', 'trashed'))
+            ->sort()->get();
+
         $campaigns = $Model::all();
         $campaigns = $campaigns->toArray();
 
@@ -76,6 +82,7 @@ class MassCommunicationController extends Controller
                 'filters' => request()->all('search', 'trashed'),
                 'email_templates' => $email_templates->toArray(),
                 'sms_templates' => $sms_templates->toArray(),
+                'call_templates' => $call_script_templates->toArray(),
                 'audiences' => $audience,
                 'member_types' => $member_types,
                 'lead_types' => $lead_types,

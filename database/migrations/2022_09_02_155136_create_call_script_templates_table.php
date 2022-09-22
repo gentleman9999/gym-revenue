@@ -12,17 +12,17 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('scheduled_campaigns', function (Blueprint $table) {
+        Schema::create('call_script_templates', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->uuid('client_id');
-            $table->uuid('audience_id');
             $table->string('name');
-            $table->string('email_template_id')->nullable();
-            $table->string('sms_template_id')->nullable();
-            $table->string('call_template_id')->nullable();
-            $table->timestamp('send_at');
-            $table->timestamp('completed_at')->nullable();
-            $table->string('status')->nullable();
+            $table->longText('script')->nullable();
+            $table->longText('json')->nullable();
+            $table->json('thumbnail')->nullable();
+            $table->boolean('active')->default(1);
+            $table->uuid('client_id')->nullable()->index();
+            $table->uuid('team_id')->nullable();
+            $table->string('created_by_user_id');
+            //$table->unique(['client_id','team_id']);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +35,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('scheduled_campaigns');
+        Schema::dropIfExists('callscript_templates');
     }
 };

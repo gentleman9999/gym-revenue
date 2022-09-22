@@ -29,7 +29,7 @@ class UpdateDripCampaignDay
             'day_of_campaign' => ['required'],
             'email_template_id' => ['sometimes', 'nullable'],
             'sms_template_id' => ['sometimes', 'nullable'],
-            'client_call_script' => ['sometimes', 'nullable'],
+            'call_template_id' => ['sometimes', 'nullable'],
         ];
     }
 

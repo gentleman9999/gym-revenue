@@ -90,11 +90,21 @@
             </div>
         </div>
 
-        <CallScript
+        <!-- <CallScript
             v-if="currentEditor === 'call'"
             @cancel="handleCancelScript"
             @save="(script) => handleSave('call', script)"
             :message="days[currentDayIndex]?.call?.message"
+        /> -->
+
+        <Templates
+            v-if="currentEditor === 'call'"
+            @cancel="handleCancelScript"
+            @save="(template) => handleSave('call', template)"
+            :selected="days[currentDayIndex].call"
+            :templates="call_templates"
+            :topol-api-key="topolApiKey"
+            :template_type="'call'"
         />
 
         <Templates
@@ -158,6 +168,10 @@ const props = defineProps({
         default: [],
     },
     sms_templates: {
+        type: Array,
+        default: [],
+    },
+    call_templates: {
         type: Array,
         default: [],
     },
@@ -276,6 +290,8 @@ const saveCampaign = async () => {
                     call:
                         typeof d?.call?.message === "string"
                             ? d.call.message
+                            : typeof d?.call === "string"
+                            ? d.call
                             : null,
                     email: typeof d?.email === "string" ? d.email : null,
                     sms: typeof d?.sms === "string" ? d.sms : null,

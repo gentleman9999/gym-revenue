@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col items-center min-w-[12rem] mx-1" :id="temp_id">
         <div
-            v-if="template_type !== 'sms'"
+            v-if="template_type === 'email'"
             :style="`background-image: url(${thumbsrc})`"
             class="h-48 w-40 bg-white border-secondary border relative bg-no-repeat bg-contain bg-center"
         >
@@ -20,10 +20,10 @@
         </div>
 
         <button
-            class="bg-base-content bg-opacity-0 hover:bg-opacity-20 relative rounded-md py-12 px-4 transition-all duration-300"
+            class="bg-base-content bg-opacity-0 hover:bg-opacity-20 relative rounded-md py-12 px-4 transition-all duration-300 w-full"
             :class="{ '!bg-secondary !bg-opacity-50': selected }"
             @click="$emit('submit', temp_id)"
-            v-if="template_type === 'sms'"
+            v-if="template_type === 'sms' || template_type === 'call'"
         >
             <div
                 v-if="selected"
@@ -35,8 +35,17 @@
             <div
                 class="max-w-[10rem] max-h-20 p-4 mx-auto rounded-lg bg-white bg-opacity-30 relative whitespace-pre"
             >
-                <p class="text-xs text-ellipsis overflow-hidden">
+                <p
+                    v-if="template_type === 'sms'"
+                    class="text-xs text-ellipsis overflow-hidden"
+                >
                     {{ template_item?.markup }}
+                </p>
+                <p
+                    v-if="template_type === 'call'"
+                    class="text-xs text-ellipsis overflow-hidden"
+                >
+                    {{ template_item?.script }}
                 </p>
             </div>
 
