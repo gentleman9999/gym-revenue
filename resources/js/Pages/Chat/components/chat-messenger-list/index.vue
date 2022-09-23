@@ -1,16 +1,15 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
     <div class="chat-messenger-list-container">
-        <!--        <messenger-header />-->
-        <!--        <messenger-search />-->
         <div>
-            <div v-show="conversations.length === 0" class="text-center mt-10">
+            <div v-if="conversations.length === 0" class="text-center mt-10">
                 No active chats
             </div>
             <chat-messenger
-                v-for="(conversation, sid) in conversations"
-                :key="sid"
+                v-else
+                v-for="(conversation, index) in conversations"
+                :key="index"
                 :conversation="conversation"
-                @click="$emit('view-conversation', sid)"
+                @click="$emit('view-conversation', index)"
             />
         </div>
     </div>
@@ -21,13 +20,12 @@
 }
 </style>
 <script setup>
-import MessengerHeader from "./messenger-header/index.vue";
-import MessengerSearch from "./messenger-search.vue";
 import ChatMessenger from "./chat-messenger/index.vue";
 defineEmits(["view-conversation"]);
-defineProps({
+const props = defineProps({
+    /** @type {Array<ConversationMsg>} */
     conversations: {
-        type: Object,
+        type: Array,
         required: true,
     },
 });

@@ -19,7 +19,9 @@
                             :has-multi-participants="
                                 conversation.hasMultiParticipants
                             "
-                            :is-mine="message.sid === conversation.sid"
+                            :is-mine="
+                                message.participantSid === conversation.sid
+                            "
                         />
                     </div>
                 </div>
@@ -58,7 +60,7 @@ const chatWrapper = ref(null);
 onUpdated(() => {
     chatWrapper.value.lastElementChild.scrollIntoView({
         block: "end",
-        behavior: "smooth",
+        behavior: "auto",
     });
 });
 </script>

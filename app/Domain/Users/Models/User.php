@@ -32,6 +32,7 @@ use Silber\Bouncer\Database\Role;
  * @property string                         $client_id
  * @property int                            $id
  * @property string                         $last_name
+ * @property string                         $first_name
  * @property Client                         $client
  * @property Collection<ClientConversation> $twilioClientConversation
  */

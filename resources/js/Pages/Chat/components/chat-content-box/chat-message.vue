@@ -1,5 +1,6 @@
 <template>
     <div
+        ref="messageElement"
         class="chat-message-container mb-1 text-sm"
         :class="{ mine: isMine }"
         :title="message.dateFormatted()"
@@ -9,17 +10,25 @@
             v-if="hasMultiParticipants && !isMine"
             class="text-[9px] text-gray-300 author"
         >
-            {{ message.creator }}
+            {{ message.author }}
         </div>
     </div>
 </template>
 <script setup>
 import MessageInfo from "@/Pages/Chat/models/MessageInfo.js";
+import { onMounted, ref } from "vue";
 
-defineProps({
+const props = defineProps({
     message: MessageInfo,
     isMine: Boolean,
     hasMultiParticipants: Boolean,
+});
+
+/** @type {Ref<HTMLElement>} */
+const messageElement = ref(null);
+
+onMounted(function () {
+    setTimeout(() => props.message.markAsRead(), 1000);
 });
 </script>
 <style scoped>

@@ -82,7 +82,7 @@ class TwilioService
      */
     public function getAccessToken(User $user, array $grants, int $ttl = 3600): array
     {
-        $identity = $user->last_name;
+        $identity = "{$user->first_name} {$user->last_name}";
         $token = new AccessToken($this->sid, $this->api_key, $this->api_secret, $ttl, $identity);
         array_map([$token, 'addGrant'], $grants);
 
@@ -136,8 +136,42 @@ class TwilioService
      */
     public function addParticipantToConversation(string $conversation_sid, User $user): ParticipantInstance
     {
+        $role_name = 'conversation-agent';
+        $role = null;
+
+        // check if we already have this role.
+        foreach ($this->twilio->conversations->v1->roles->read() as $role_instance) {
+            if ($role_instance->friendlyName === $role_name) {
+                $role = $role_instance;
+
+                break;
+            }
+        }
+
+        $role ??= $this->twilio->conversations->v1->roles->create($role_name, 'conversation', [
+            'addParticipant',
+            'deleteAnyMessage',
+            'addNonChatParticipant',
+            'removeParticipant',
+            'editNotificationLevel',
+            'deleteOwnMessage',
+            'deleteConversation',
+            'editAnyParticipantAttributes',
+            'editAnyMessage',
+            'editAnyMessageAttributes',
+            'editConversationAttributes',
+            'editConversationName',
+            'editOwnMessage',
+            'editOwnMessageAttributes',
+            'leaveConversation',
+            'sendMediaMessage',
+            'sendMessage',
+            'editOwnParticipantAttributes',
+        ]);
+
         return $this->twilio->conversations->v1->conversations($conversation_sid)->participants->create([
-            'identity' => $user->last_name,
+            'identity' => "{$user->first_name} {$user->last_name}" ,
+            'roleSid' => $role->sid,
         ]);
     }
 
