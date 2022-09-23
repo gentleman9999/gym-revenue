@@ -125,6 +125,7 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = DripCampaign::class;
 
                 break;
+                
             case 'scheduled-campaigns':
                 $entity = ScheduledCampaign::class;
 

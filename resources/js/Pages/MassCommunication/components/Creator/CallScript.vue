@@ -1,6 +1,6 @@
 <template>
     <div
-        class="bg-black p-8 border-secondary border rounded-md max-w-5xl w-full"
+        class="bg-black p-4 border-secondary border rounded-md max-w-md w-full"
     >
         <div
             class="p-4 bg-secondary-content text-black border-secondary border rounded-md"
@@ -25,8 +25,7 @@
                 <textarea
                     id="callscriptscript"
                     v-model="scriptMessage"
-                    cols="30"
-                    rows="10"
+                    rows="5"
                     class="border-secondary bg-primary-content resize-none mt-1"
                 ></textarea>
             </div>
@@ -66,20 +65,17 @@ const props = defineProps({
         default: "",
     },
     template_item: {
-        type: Object,
-        default: "",
-    },
-    isNew: {
-        type: Boolean,
-        default: true,
+        type: [Object, null],
+        default: null,
     },
 });
 
-const emit = defineEmits(["save", "cancel"]);
+const emit = defineEmits(["done", "cancel"]);
 
-const scriptName = ref(props.name);
-const scriptMessage = ref(props.script);
+const scriptName = ref(props?.template_item?.name ?? "");
+const scriptMessage = ref(props?.template_item?.script ?? "");
 const loading = ref(false);
+
 const checkInvalid = computed(() => {
     if (scriptName.value?.trim() === "")
         return "You must give your call script a name";
@@ -95,17 +91,26 @@ const handleSubmit = async () => {
     loading.value = true;
 
     try {
-        const res = await axios.post(route("mass-comms.call-templates.store"), {
+        const data = {
             script: scriptMessage.value,
             name: scriptName.value,
-        });
+        };
+
+        const res =
+            typeof props?.template_item?.id === "undefined"
+                ? await axios.post(route("mass-comms.call-templates.store"), {
+                      ...data,
+                  })
+                : await axios.put(
+                      route(
+                          "mass-comms.call-templates.update",
+                          props.template_item.id
+                      ),
+                      { ...data }
+                  );
 
         if (res.status === "OK" || res.status === 200 || res.status === 201) {
-            toastInfo("Call Script Created!");
-            emit("save", {
-                script: scriptMessage.value,
-                id: res?.data?.id,
-            });
+            emit("done", res.data);
         }
 
         loading.value = false;
@@ -115,8 +120,4 @@ const handleSubmit = async () => {
         loading.value = false;
     }
 };
-
-onMounted(() => {
-    scriptMessage.value = props.script;
-});
 </script>

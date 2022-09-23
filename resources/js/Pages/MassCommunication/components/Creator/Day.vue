@@ -111,7 +111,7 @@ const props = defineProps({
         default: false,
     },
     phoneActive: {
-        type: Boolean,
+        type: [Boolean, String, Number],
         default: false,
     },
     multiday: {
@@ -160,7 +160,7 @@ const upperLimit = computed(() => {
 });
 
 const disableSubtractDay = computed(() => {
-    if (props.day_ix <= 1) return true;
+    if (props.index === 0 && props.day_ix > 0) return false;
     if (props.day_ix - 1 <= lowerLimit.value) return true;
     return false;
 });

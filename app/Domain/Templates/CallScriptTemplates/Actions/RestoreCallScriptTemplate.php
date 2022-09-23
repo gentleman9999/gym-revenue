@@ -25,7 +25,7 @@ class RestoreCallScriptTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('callscript-templates.restore', CallScriptTemplate::class);
+        return $current_user->can('call-templates.restore', CallScriptTemplate::class);
     }
 
     public function asController(ActionRequest $request, CallScriptTemplate $CallScriptTemplate): CallScriptTemplate

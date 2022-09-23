@@ -347,18 +347,27 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(fun
         Route::delete('/', \App\Domain\Templates\CallScriptTemplates\Actions\TrashCallScriptTemplate::class)->name('mass-comms.call-templates.trash');
         Route::post('/restore', \App\Domain\Templates\CallScriptTemplates\Actions\RestoreCallScriptTemplate::class)->withTrashed()->name('mass-comms.call-templates.restore');
     });
-    Route::middleware(['auth:sanctum', 'verified'])->prefix('call-templates')->group(function () {
+    Route::prefix('call-templates')->group(function () {
         Route::get('/', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@index')->name('mass-comms.call-templates');
         Route::get('/create', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@create')->name('mass-comms.call-templates.create');
         Route::get('/export', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@export')->name('mass-comms.call-templates.export');
-        Route::get('/{emailTemplate}', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@edit')->name('mass-comms.call-templates.edit');
+        Route::get('/{callscriptTemplate}', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@edit')->name('mass-comms.call-templates.edit');
         Route::post('/', \App\Domain\Templates\CallScriptTemplates\Actions\CreateCallScriptTemplate::class)->name('mass-comms.call-templates.store');
-        Route::put('/{emailTemplate}', \App\Domain\Templates\CallScriptTemplates\Actions\UpdateCallScriptTemplate::class)->name('mass-comms.call-templates.update');
-        Route::delete('/{emailTemplate}', \App\Domain\Templates\CallScriptTemplates\Actions\TrashCallScriptTemplate::class)->name('mass-comms.call-templates.trash');
-        Route::post('/{emailTemplate}/restore', \App\Domain\Templates\CallScriptTemplates\Actions\RestoreCallScriptTemplate::class)->withTrashed()->name('mass-comms.call-templates.restore');
+        Route::put('/{callscriptTemplate}', \App\Domain\Templates\CallScriptTemplates\Actions\UpdateCallScriptTemplate::class)->name('mass-comms.call-templates.update');
+        Route::delete('/{callscriptTemplate}', \App\Domain\Templates\CallScriptTemplates\Actions\TrashCallScriptTemplate::class)->name('mass-comms.call-templates.trash');
+        Route::post('/{callscriptTemplate}/restore', \App\Domain\Templates\CallScriptTemplates\Actions\RestoreCallScriptTemplate::class)->withTrashed()->name('mass-comms.call-templates.restore');
     });
     Route::get('/{type?}', \App\Http\Controllers\MassCommunicationController::class . '@index')->name('mass-comms.dashboard');
 });
+
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('templates')->group(function () {
+    Route::get('/', \App\Http\Controllers\TemplatesController::class . '@index')->name('templates');
+    Route::get('/sms-templates', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@index')->name('mass-comms.sms-templates');
+    Route::get('/email-templates', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('mass-comms.email-templates');
+    Route::get('/call-templates', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@index')->name('mass-comms.call-templates');
+});
+
 
 Route::prefix('dynamicreports')->group(function () {
     Route::get('/', \App\Http\Controllers\DynamicReportsController::class . '@show')->name('dynamic-reports');

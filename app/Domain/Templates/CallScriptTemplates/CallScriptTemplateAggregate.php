@@ -4,6 +4,7 @@ namespace App\Domain\Templates\CallScriptTemplates;
 
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateCreated;
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateThumbnailUpdated;
+use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateTrashed;
 use App\Domain\Templates\CallScriptTemplates\Events\CallScriptTemplateUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
@@ -25,7 +26,7 @@ class CallScriptTemplateAggregate extends AggregateRoot
 
     public function trash(): static
     {
-        $this->recordThat(new CampaignTemplateTrashed());
+        $this->recordThat(new CallScriptTemplateTrashed());
 
         return $this;
     }

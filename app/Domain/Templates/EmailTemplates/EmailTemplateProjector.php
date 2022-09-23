@@ -61,7 +61,7 @@ class EmailTemplateProjector extends Projector
     public function onEmailTemplateTrashed(EmailTemplateTrashed $event): void
     {
         DB::transaction(function () use ($event) {
-            EmailTemplate::withTrashed()->findOrFail($event->aggregateRootUuid()) - writeable()->delete();
+            EmailTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->delete();
             EmailTemplateDetails::withTrashed()->whereEmailTemplateId($event->aggregateRootUuid())->delete();
         });
     }

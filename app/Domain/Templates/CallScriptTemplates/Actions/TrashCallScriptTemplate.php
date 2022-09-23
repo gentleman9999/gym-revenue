@@ -2,8 +2,8 @@
 
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
-use App\Domain\CallScripts\DripCallScripts\CallScriptTemplate;
 use App\Domain\Templates\CallScriptTemplates\CallScriptTemplateAggregate;
+use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -25,13 +25,13 @@ class TrashCallScriptTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('callscript-templates.trash', CallScriptTemplate::class);
+        return $current_user->can('call-templates.trash', CallScriptTemplate::class);
     }
 
     public function asController(ActionRequest $request, CallScriptTemplate $callscriptTemplate): CallScriptTemplate
     {
         return $this->handle(
-            $callscriptTemplate->id,
+            $callscriptTemplate,
         );
     }
 

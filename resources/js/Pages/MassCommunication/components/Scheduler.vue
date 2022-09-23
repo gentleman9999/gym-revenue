@@ -1,148 +1,155 @@
 <template>
-    <daisy-modal
+    <!-- <daisy-modal
         :open="true"
         :showCloseButton="false"
         :closable="false"
-        class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none"
-    >
+        class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none flex-grow"
+    > -->
+
+    <ModalUnopinionated>
         <div
-            v-if="currentEditor === 'default'"
-            class="bg-black p-8 border-secondary border rounded-md max-w-5xl w-full"
-            :class="{ 'max-w-sm text-center': campaignType === 'scheduled' }"
+            class="flex flex-col h-full w-full justify-center items-center bg-black bg-opacity-80"
         >
-            <h2 class="font-bold py-2 text-lg">
-                {{
-                    campaignType === "drip"
-                        ? "Build your drip campaign by day"
-                        : "Build your scheduled campaign"
-                }}
-            </h2>
             <div
-                v-if="campaignType === 'scheduled'"
-                class="border border-secondary rounded-md py-4 px-2"
+                v-if="currentEditor === 'default'"
+                class="bg-black p-8 border-secondary border rounded-md max-w-5xl w-full"
+                :class="{
+                    'max-w-sm text-center': campaignType === 'scheduled',
+                }"
             >
-                <Day
-                    :index="0"
-                    :mailActive="days[0].email"
-                    :smsActive="days[0].sms"
-                    :phoneActive="days[0].call"
-                    :date="days[0].date"
-                    @email="() => updateEditor(0, 'email')"
-                    @phone="() => updateEditor(0, 'call')"
-                    @sms="() => updateEditor(0, 'sms')"
-                    @reset-email="() => resetField(0, 'email')"
-                    @reset-sms="() => resetField(0, 'sms')"
-                    @reset-call="() => resetField(0, 'call')"
-                    @date="(t) => handleSave('date', t)"
-                    :multiday="false"
-                />
-            </div>
+                <h2 class="font-bold py-2 text-lg">
+                    {{
+                        campaignType === "drip"
+                            ? "Build your drip campaign by day"
+                            : "Build your scheduled campaign"
+                    }}
+                </h2>
+                <div
+                    v-if="campaignType === 'scheduled'"
+                    class="border border-secondary rounded-md py-4 px-2"
+                >
+                    <Day
+                        :index="0"
+                        :mailActive="days[0].email"
+                        :smsActive="days[0].sms"
+                        :phoneActive="days[0].call"
+                        :date="days[0].date"
+                        @email="() => updateEditor(0, 'email')"
+                        @phone="() => updateEditor(0, 'call')"
+                        @sms="() => updateEditor(0, 'sms')"
+                        @reset-email="() => resetField(0, 'email')"
+                        @reset-sms="() => resetField(0, 'sms')"
+                        @reset-call="() => resetField(0, 'call')"
+                        @date="(t) => handleSave('date', t)"
+                        :multiday="false"
+                    />
+                </div>
 
-            <div
-                v-if="campaignType === 'drip'"
-                class="border border-secondary rounded-md py-4 px-2 overflow-x-scroll overflow-y-hidden flex"
-            >
-                <Day
-                    v-for="(day, ix) in days"
-                    :all_days="days"
-                    :day_ix="day.day_in_campaign"
-                    :index="ix"
-                    :mailActive="day.email"
-                    :smsActive="day.sms"
-                    :phoneActive="day.call"
-                    @email="() => updateEditor(ix, 'email')"
-                    @phone="() => updateEditor(ix, 'call')"
-                    @sms="() => updateEditor(ix, 'sms')"
-                    @day_ix="(ind) => updateDayIx(ix, ind)"
-                    @reset-email="(i) => resetField(i, 'email')"
-                    @reset-sms="(i) => resetField(i, 'sms')"
-                    @reset-call="(i) => resetField(i, 'call')"
-                    :multiday="true"
-                />
+                <div
+                    v-if="campaignType === 'drip'"
+                    class="border border-secondary rounded-md py-4 px-2 overflow-x-scroll overflow-y-hidden flex"
+                >
+                    <Day
+                        v-for="(day, ix) in days"
+                        :all_days="days"
+                        :day_ix="day.day_in_campaign"
+                        :index="ix"
+                        :mailActive="day.email"
+                        :smsActive="day.sms"
+                        :phoneActive="day.call"
+                        @email="() => updateEditor(ix, 'email')"
+                        @phone="() => updateEditor(ix, 'call')"
+                        @sms="() => updateEditor(ix, 'sms')"
+                        @day_ix="(ind) => updateDayIx(ix, ind)"
+                        @reset-email="(i) => resetField(i, 'email')"
+                        @reset-sms="(i) => resetField(i, 'sms')"
+                        @reset-call="(i) => resetField(i, 'call')"
+                        :multiday="true"
+                    />
 
-                <div class="flex items-center">
-                    <div class="w-8 h-[0.125rem] bg-base-content mx-2" />
+                    <div class="flex items-center">
+                        <div class="w-8 h-[0.125rem] bg-base-content mx-2" />
+                        <button
+                            @click="addDay"
+                            class="bg-secondary rounded-full h-8 w-8"
+                        >
+                            <font-awesome-icon icon="plus" />
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-8">
                     <button
-                        @click="addDay"
-                        class="bg-secondary rounded-full h-8 w-8"
+                        :disabled="loading"
+                        @click="$emit('back')"
+                        class="selector-btn disabled:opacity-25 disabled:cursor-not-allowed bg-neutral hover:bg-neutral-content hover:bg-opacity-25 active:opacity-50"
                     >
-                        <font-awesome-icon icon="plus" />
+                        Back
                     </button>
+
+                    <button
+                        :disabled="loading"
+                        @click="saveCampaign"
+                        class="selector-btn bg-primary hover:bg-secondary active:opacity-50 disabled:opacity-25 disabled:cursor-not-allowed"
+                    >
+                        Save Campaign
+                    </button>
+                    <span></span>
                 </div>
             </div>
-            <div class="flex justify-between mt-8">
-                <button
-                    :disabled="loading"
-                    @click="$emit('back')"
-                    class="disabled:opacity-25 disabled:cursor-not-allowed"
-                >
-                    Back
-                </button>
 
-                <button
-                    :disabled="loading"
-                    @click="saveCampaign"
-                    class="text-base-content disabled:opacity-25 disabled:cursor-not-allowed rounded-md px-2 py-1 text-base bg-secondary"
-                >
-                    Save Campaign
-                </button>
-                <span></span>
-            </div>
+            <Templates
+                v-if="currentEditor === 'call'"
+                @cancel="handleCancelScript"
+                @save="(template) => handleSave('call', template)"
+                :selected="days[currentDayIndex].call"
+                :templates="call_templates"
+                :topol-api-key="topolApiKey"
+                :template_type="'call'"
+            />
+
+            <Templates
+                v-if="currentEditor === 'email'"
+                @cancel="handleCancelScript"
+                @save="(template) => handleSave('email', template)"
+                :selected="days[currentDayIndex].email"
+                :templates="email_templates"
+                :topol-api-key="topolApiKey"
+                :template_type="'email'"
+            />
+
+            <Templates
+                v-if="currentEditor === 'sms'"
+                @cancel="handleCancelScript"
+                @save="(template) => handleSave('sms', template)"
+                :selected="days[currentDayIndex].sms"
+                :templates="sms_templates"
+                :topol-api-key="topolApiKey"
+                :template_type="'sms'"
+            />
+            <!-- </daisy-modal> -->
         </div>
-
-        <!-- <CallScript
-            v-if="currentEditor === 'call'"
-            @cancel="handleCancelScript"
-            @save="(script) => handleSave('call', script)"
-            :message="days[currentDayIndex]?.call?.message"
-        /> -->
-
-        <Templates
-            v-if="currentEditor === 'call'"
-            @cancel="handleCancelScript"
-            @save="(template) => handleSave('call', template)"
-            :selected="days[currentDayIndex].call"
-            :templates="call_templates"
-            :topol-api-key="topolApiKey"
-            :template_type="'call'"
-        />
-
-        <Templates
-            v-if="currentEditor === 'email'"
-            @close="handleCancelScript"
-            @save="(template) => handleSave('email', template)"
-            :selected="days[currentDayIndex].email"
-            :templates="email_templates"
-            :topol-api-key="topolApiKey"
-            :template_type="'email'"
-        />
-
-        <Templates
-            v-if="currentEditor === 'sms'"
-            @close="handleCancelScript"
-            @save="(template) => handleSave('sms', template)"
-            :selected="days[currentDayIndex].sms"
-            :templates="sms_templates"
-            :topol-api-key="topolApiKey"
-            :template_type="'sms'"
-        />
-    </daisy-modal>
+    </ModalUnopinionated>
 </template>
 
+<style scoped>
+.selector-btn {
+    @apply px-2 py-1 block transition-all rounded-md border border-transparent;
+}
+</style>
+
 <script setup>
+import axios from "axios";
 import { ref, computed } from "vue";
 import { faPlus } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { transformDate } from "@/utils/transformDate";
-import { transformDayTemplate } from "./Creator/helpers";
 import { toastInfo, toastError } from "@/utils/createToast";
-import axios from "axios";
 
+import ModalUnopinionated from "@/Components/ModalUnopinionated.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 
 import Day from "./Creator/Day.vue";
-import CallScript from "./Creator/CallScript.vue";
 import Templates from "./Templates.vue";
 library.add(faPlus);
 

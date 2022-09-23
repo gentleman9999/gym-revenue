@@ -48,7 +48,7 @@ class UpdateCallScriptTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('callscript-templates.update', CallScriptTemplate::class);
+        return $current_user->can('call-templates.update', CallScriptTemplate::class);
     }
 
     public function asController(ActionRequest $request, CallScriptTemplate $callscriptTemplate): CallScriptTemplate

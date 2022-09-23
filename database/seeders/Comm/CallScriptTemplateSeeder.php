@@ -46,7 +46,6 @@ class CallScriptTemplateSeeder extends Seeder
             ]);
 
             //$template->active = 1;
-
             //UpdateCallScriptTemplate::run($template, $template->toArray());
         }
     }

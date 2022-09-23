@@ -71,7 +71,7 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
 const tailwindColors = theme.colors;
-const daisyuiColors = theme.daisyui.themes[0].dark;
+const daisyuiColors = theme.daisyui.themes[1].dark;
 
 const props = defineProps({
     title: {
@@ -124,7 +124,7 @@ const customOptions = {
             350: tailwindColors.neutral[500],
             300: tailwindColors.neutral[450],
             200: tailwindColors.neutral[300],
-            white: tailwindColors.white,
+            // white: tailwindColors.white,
             primary: daisyuiColors.primary,
             "primary-light": daisyuiColors["primary-focus"],
             "primary-dark": daisyuiColors["primary-content"],
@@ -133,7 +133,7 @@ const customOptions = {
             error: daisyuiColors.error,
             "error-light": daisyuiColors.warning,
             success: daisyuiColors.success,
-            "success-light": tailwindColors.primary[300],
+            "success-light": daisyuiColors["secondary-content"],
             active: daisyuiColors.secondary,
             "active-light": daisyuiColors["secondary-focus"],
         },

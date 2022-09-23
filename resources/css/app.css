@@ -12,6 +12,10 @@
         @apply relative bg-gradient-to-b from-base-300 to-base-100;
     }
 
+    .totalcenter {
+        @apply flex flex-col items-center justify-center;
+    }
+
     /* Apply defaults to forms */
     [type="text"] {
         @apply input input-bordered border-2;
@@ -70,6 +74,7 @@
 .dp__input {
     @apply input;
 }
+
 .dp__disabled {
     @apply !bg-base-300;
 }

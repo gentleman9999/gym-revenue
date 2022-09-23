@@ -31,7 +31,7 @@ class DeleteCallScriptTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('callscript-templates.delete', CallScriptTemplate::class);
+        return $current_user->can('call-templates.delete', CallScriptTemplate::class);
     }
 
     public function asController(ActionRequest $request): CallScriptTemplate

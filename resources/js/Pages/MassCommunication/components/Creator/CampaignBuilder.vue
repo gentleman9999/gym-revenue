@@ -4,7 +4,7 @@
         :open="true"
         :showCloseButton="false"
         :closable="false"
-        class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none"
+        class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none flex-grow"
     >
         <div class="text-center">
             <h1 class="text-2xl">Create a map of your contact's journey</h1>
@@ -75,10 +75,15 @@
         </div>
 
         <div class="flex justify-between max-w-lg w-full mt-8 relative">
-            <button @click="$emit('close')" class="">Back</button>
+            <button
+                @click="$emit('close')"
+                class="selector-btn disabled:opacity-25 disabled:cursor-not-allowed bg-neutral hover:bg-neutral-content hover:bg-opacity-25 active:opacity-50"
+            >
+                Cancel
+            </button>
             <button
                 @click="handleAdvancementCheck"
-                class="border border-secondary px-2 py-1 rounded-md hover:bg-secondary transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+                class="selector-btn bg-primary hover:bg-secondary active:opacity-50 disabled:opacity-25 disabled:cursor-not-allowed"
             >
                 Next
             </button>
@@ -122,6 +127,12 @@
         @save="updateAudiences"
     />
 </template>
+
+<style scoped>
+.selector-btn {
+    @apply px-2 py-1 block transition-all rounded-md border border-transparent;
+}
+</style>
 
 <script setup>
 import { computed, ref } from "vue";
@@ -216,7 +227,7 @@ const tempAudience = ref(null);
  * to the user to fix it before submission
  */
 const advancementDisabled = computed(() => {
-    if (form.value.audience === "off-default")
+    if (typeof form.value.audience !== "string")
         return "You must choose an audience.";
     if (!form.value.name || form.value.name.trim() === "")
         return "You must name your campaign.";
