@@ -82,7 +82,7 @@ class TwilioService
      */
     public function getAccessToken(User $user, array $grants, int $ttl = 3600): array
     {
-        $identity = "{$user->first_name} {$user->last_name}";
+        $identity = $user->name;
         $token = new AccessToken($this->sid, $this->api_key, $this->api_secret, $ttl, $identity);
         array_map([$token, 'addGrant'], $grants);
 
@@ -170,7 +170,7 @@ class TwilioService
         ]);
 
         return $this->twilio->conversations->v1->conversations($conversation_sid)->participants->create([
-            'identity' => "{$user->first_name} {$user->last_name}" ,
+            'identity' => $user->name,
             'roleSid' => $role->sid,
         ]);
     }

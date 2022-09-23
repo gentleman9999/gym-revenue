@@ -7,6 +7,8 @@ namespace App\Domain\Conversations\Twilio;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Events\ClientConversationCreated;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
+use App\Domain\Notifications\Actions\CreateNotification;
+use App\Domain\Notifications\Notification;
 use App\Models\GatewayProviders\GatewayProvider;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 use Twilio\Exceptions\ConfigurationException;
@@ -26,6 +28,7 @@ class ClientConversationReactor extends Reactor
     {
         /** @var Client $client */
         $client = Client::find($event->clientId());
+        /** @var ClientConversation $conversation */
         $conversation = ClientConversation::where($payload = [
             'conversation_id' => $event->payload['conversation_id'],
             'gateway_provider_id' => $client->getGatewayProviderBySlug(GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION)->id,
@@ -43,7 +46,7 @@ class ClientConversationReactor extends Reactor
 
             $twilio_service = $client->getTwilioService();
             $conversation_sid = $event->payload['conversation_id'];
-            $identity = $event->payload['author'];
+            $identity = $event->payload['sender'];
 
             if ($found_free_agent) {
                 $payload['user_conversation_id'] = $twilio_service->addParticipantToConversation($conversation_sid, $user)->sid;
@@ -59,6 +62,13 @@ class ClientConversationReactor extends Reactor
             if ($identity !== null) {
                 $twilio_service->setIdentityForParticipant($identity, $event->payload['participant_id'], $conversation_sid);
             }
+        } else {
+            $user = $conversation->user;
         }
+
+        CreateNotification::run([
+            'text' => "You have a new message from {$event->payload['sender']}",
+            'type' => Notification::TYPE_NEW_CONVERSATION,
+        ], $user);
     }
 }

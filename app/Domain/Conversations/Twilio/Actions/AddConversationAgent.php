@@ -30,6 +30,7 @@ class AddConversationAgent
     public function asCommand(Command $command): void
     {
         foreach ($command->argument('user') as $user_id) {
+            /** @var User $user */
             $this->handle($user = User::find($user_id));
             $command->info("{$user->first_name} {$user->last_name} is now a chat agent!");
         }

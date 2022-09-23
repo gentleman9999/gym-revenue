@@ -1,5 +1,5 @@
 <template>
-    <Button class="twilio-ui-button" secondary @click="$emit('toggle')">
+    <Button class="twilio-ui-button hidden" secondary @click="$emit('toggle')">
         <font-awesome-icon :icon="['fa', 'user-md-chat']" size="lg" />
     </Button>
 </template>

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Conversations\Twilio\Models;
 
+use App\Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * @property ?User $user
  * @method static create(array $payload): ClientVoiceCallLog
  */
 class ClientConversation extends Model
@@ -29,4 +32,9 @@ class ClientConversation extends Model
         'gateway_provider_id',
         'user_conversation_id',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

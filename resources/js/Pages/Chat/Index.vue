@@ -1,5 +1,9 @@
 <template>
-    <div class="chat-container">
+    <div
+        ref="chatContainer"
+        class="chat-container"
+        data-chat-external-target-attr="chat-container"
+    >
         <chat-messenger-list
             :key="refreshKey"
             :conversations="sortedConversation"
@@ -19,7 +23,7 @@
 }
 </style>
 <script setup>
-import { computed, provide, ref } from "vue";
+import { computed, onMounted, provide, ref } from "vue";
 import ChatContentBox from "./components/chat-content-box/index.vue";
 import ChatMessengerList from "./components/chat-messenger-list/index.vue";
 import { Client as ConversationsClient } from "@twilio/conversations";
@@ -29,6 +33,8 @@ import MessageInfo from "@/Pages/Chat/models/MessageInfo.js";
 /** @type {Ref<Array<ConversationMsg>>} */
 const conversations = ref([]);
 const activeConversation = ref(null);
+/** @type {Ref<HTMLElement>} */
+const chatContainer = ref(null);
 const refreshKey = ref(0);
 
 const sortedConversation = computed(() => {
@@ -36,13 +42,18 @@ const sortedConversation = computed(() => {
     return conversations.value.sort((a, b) => b.updatedAt - a.updatedAt);
 });
 
+onMounted(() => {
+    // I'm attaching a refresh event to the chat element, so it can be refreshed out of this components scope.
+    // @see resources/js/utils/parseNotificationResponse.buildConversationNotification
+    // An alternative to this would be to use "usePage", but somehow it feels hackery to me.
+    chatContainer.value.addEventListener("refresh", refreshChatList);
+});
+
 axios.get(route("twilio.api-token")).then(({ data }) => {
     const client = new ConversationsClient(data.token);
 
     client.on("messageUpdated", ({ updateReasons }) => {
-        if (updateReasons.includes("attributes")) {
-            refreshKey.value++;
-        }
+        updateReasons.includes("attributes") && refreshChatList();
     });
 
     client.on("messageAdded", async (message) => {
@@ -114,6 +125,10 @@ provide("sendMessage", sendMessage);
 
 function setActiveConversation(index) {
     activeConversation.value = conversations.value[index];
+}
+
+function refreshChatList() {
+    refreshKey.value++;
 }
 
 function sendMessage(message) {

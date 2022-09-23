@@ -14,14 +14,14 @@ class StartConversation
 {
     use AsAction;
 
-    public function handle(string $client_id, string $conversation_sid, string $participant_sid, ?string $author): void
+    public function handle(string $client_id, string $conversation_sid, string $participant_sid, ?string $sender): void
     {
         $uuid = (string) Uuid::uuid4();
         ClientConversationAggregates::retrieve($uuid)->clientConversationCreated([
             'client_id' => $client_id,
             'conversation_id' => $conversation_sid,
             'participant_id' => $participant_sid,
-            'author' => $author,
+            'sender' => $sender,
         ])->persist();
     }
 

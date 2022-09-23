@@ -5,6 +5,8 @@ namespace App\Domain\CalendarEvents;
 use App\Domain\CalendarAttendees\CalendarAttendee;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Notifications\Validations\NotifiableInterface;
+use App\Domain\Notifications\Validations\NotificationValidationException;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\Carbon;
 use App\Models\File;
@@ -23,7 +25,7 @@ use Illuminate\Notifications\Notifiable;
  *
  * @mixin Builder
  */
-class CalendarEvent extends GymRevProjection
+class CalendarEvent extends GymRevProjection implements NotifiableInterface
 {
     use Notifiable;
     use SoftDeletes;
@@ -86,5 +88,14 @@ class CalendarEvent extends GymRevProjection
                 $query->where('entity_data', 'like', '%"id": ' . $filters['viewUser'] . ',%');
             });
         });
+    }
+
+    public function entityDataValidation(array $data): void
+    {
+        if (! isset($data['entity']['start'], $data['entity']['title'])) {
+            throw new NotificationValidationException(
+                'entity should be of format: ["entity" => ["start" => "2022-01-01", "title" => "foo"]'
+            );
+        }
     }
 }
