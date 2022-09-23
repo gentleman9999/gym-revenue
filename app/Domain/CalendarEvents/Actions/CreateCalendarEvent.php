@@ -34,6 +34,7 @@ class CreateCalendarEvent
             'start' => ['required'],
             'end' => ['required'],
             'event_type_id' => ['required', 'exists:calendar_event_types,id'],
+            'owner_id' => ['sometimes'],
 //            'client_id' => ['required', 'exists:clients,id'],
             'user_attendees' => ['sometimes'],
             'lead_attendees' => ['sometimes'],
@@ -42,11 +43,15 @@ class CreateCalendarEvent
         ];
     }
 
-    public function handle($data)
+    public function handle($data, ?User $user = null): CalendarEvent
     {
         $id = Uuid::new();
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
+
+        if ($user) {
+            $data['owner_id'] = $user->id;
+        }
 
         CalendarEventAggregate::retrieve($id)
             ->create($data)
@@ -138,6 +143,7 @@ class CreateCalendarEvent
         $data['client_id'] = $request->user()->client_id;
         $calendar = $this->handle(
             $data,
+            $request->user(),
         );
 
         Alert::success("Calendar Event '{$calendar->title}' was created")->flash();

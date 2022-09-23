@@ -60,12 +60,12 @@ class BouncerAbilitiesSeeder extends Seeder
             $this->allowReadInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'departments', 'positions', 'notes','folders', 'searches','call-templates', 'dynamic-reports',
+                'email-templates', 'sms-templates', 'departments', 'positions', 'notes','folders', 'searches','dynamic-reports','call-templates',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
-                'email-templates', 'sms-templates', 'departments', 'positions', 'notes', 'folders', 'searches','call-templates', 'dynamic-reports',
+                'email-templates', 'sms-templates', 'departments', 'positions', 'notes', 'folders', 'searches','dynamic-reports','call-templates',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);

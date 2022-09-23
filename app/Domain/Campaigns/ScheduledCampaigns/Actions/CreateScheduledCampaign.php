@@ -3,11 +3,16 @@
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Domain\Audiences\Audience;
+use App\Domain\CalendarEvents\Actions\CreateCalendarEvent;
+use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaignAggregate;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
+use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;
@@ -25,11 +30,46 @@ class CreateScheduledCampaign
     public string $commandSignature = 'scheduled-campaign:create';
     public string $commandDescription = 'Creates a ScheduledCampaign with the given name.';
 
-    public function handle(array $payload): ScheduledCampaign
+    public function handle(array $payload, User $user): ScheduledCampaign
     {
         $id = Uuid::new();
 
+        $owner_id = $user->id;
+        $location_id = $user->current_location_id;
+
         ScheduledCampaignAggregate::retrieve($id)->create($payload)->persist();
+        if ($payload['call_template_id']) {
+            $audience = Audience::find($payload['audience_id']);
+            $endUsers = new $audience['entity']();
+            $leads = false;
+            if ($endUsers instanceof Lead) {
+                $people = $audience->getCallable();
+                $leads = true;
+            } elseif ($endUsers instanceof Member) {
+                $people = $audience->getCallable();
+            }
+            $event_type_id = CalendarEventType::whereClientId($payload['client_id'])
+                ->where('type', '=', 'Task')->first()->id;
+            foreach ($people as $person) {
+                $task = [
+                    'title' => 'Call Script Task for ' . $payload['name'] . ' Scheduled Campaign',
+                    'client_id' => $payload['client_id'],
+                    'description' => 'Use the Call script Template for ' . $payload['name'] . ' Scheduled Campaign and call the audience assigned',
+                    'full_day_event' => false,
+                    'start' => $payload['send_at'],
+                    'end' => $payload['send_at'],
+                    'event_type_id' => $event_type_id,
+                    'owner_id' => $owner_id,
+                    'user_attendees' => request()->user,
+                    'lead_attendees' => ($leads ? [$person->id] : []),
+                    'member_attendees' => ($leads ? [] : [$person->id]),
+                    'location_id' => $location_id,
+                    'editable' => false,
+                    'call_task' => true,
+                ];
+                CreateCalendarEvent::run($task);
+            }
+        }
 
         return ScheduledCampaign::findOrFail($id);
     }
@@ -63,7 +103,8 @@ class CreateScheduledCampaign
     public function asController(ActionRequest $request): ScheduledCampaign
     {
         return $this->handle(
-            $request->validated()
+            $request->validated(),
+            $request->user(),
         );
     }
 
@@ -92,7 +133,11 @@ class CreateScheduledCampaign
         $send_at = CarbonImmutable::now();
 
         $payload = compact('name', 'client_id', 'audience_id', 'template_type', 'template_id', 'send_at');
-        $scheduledCampaign = $this->handle($payload);
+        $user = new User();
+        $user->id = $payload['owner_id'];
+        $user->current_location_id = $payload['location_id'];
+
+        $scheduledCampaign = $this->handle($payload, $user);
 
         $command->info('Created ScheduledCampaign ' . $scheduledCampaign->name);
     }

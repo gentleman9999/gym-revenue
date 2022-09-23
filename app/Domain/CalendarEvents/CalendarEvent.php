@@ -34,7 +34,7 @@ class CalendarEvent extends GymRevProjection
         static::addGlobalScope(new ClientScope());
     }
 
-    protected $fillable = ['title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'owner_id', 'event_completion', 'location_id'];
+    protected $fillable = ['title', 'description', 'full_day_event', 'start', 'end', 'color', 'event_type_id', 'owner_id', 'event_completion', 'location_id', 'editable', 'call_task'];
 
     public function client(): BelongsTo
     {

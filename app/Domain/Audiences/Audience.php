@@ -43,6 +43,11 @@ class Audience extends GymRevProjection
         return $this->getEntityBaseQuery()->whereUnsubscribedEmail(0)->get();
     }
 
+    public function getCallable(): Collection
+    {
+        return $this->getEntityBaseQuery()->whereNotNull('primary_phone')->get();
+    }
+
     protected function getEntityBaseQuery(): Builder
     {
         $entity = new $this->entity();

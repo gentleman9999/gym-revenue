@@ -129,12 +129,12 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = ScheduledCampaign::class;
 
                 break;
-                
+
             case 'call-templates':
                 $entity = CallScriptTemplate::class;
-                
+
                 break;
-                
+
             case 'dynamic-reports':
                 $entity = DynamicReport::class;
 

@@ -2,8 +2,8 @@
 
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
-use App\Domain\CallScripts\DripCallScripts\CallScriptTemplate;
 use App\Domain\Templates\CallScriptTemplates\CallScriptTemplateAggregate;
+use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;

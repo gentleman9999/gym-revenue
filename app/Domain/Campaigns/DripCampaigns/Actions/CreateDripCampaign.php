@@ -54,7 +54,7 @@ class CreateDripCampaign
             'end_at' => ['sometimes', 'nullable', 'after:start_at'],
             'completed_at' => ['sometimes', 'nullable', 'after:start_at'],
             'days' => ['array', 'min:1'],
-//            'status' => ['required', 'DRAFT'],
+            'status' => ['required'],
         ];
     }
 

@@ -31,6 +31,7 @@ class CreateLeadAndMemberDetailsTable extends Migration
         $table->string('field');
         $table->string('value')->nullable();
         $table->mediumText('misc')->nullable();
+        $table->string('entity_id')->nullable();
         $table->boolean('active')->default(1);
         $table->timestamps();
         $table->softDeletes();

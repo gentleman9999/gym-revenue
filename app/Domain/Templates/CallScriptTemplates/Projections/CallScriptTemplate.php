@@ -19,12 +19,10 @@ class CallScriptTemplate extends GymRevProjection
         'name' => 'string',
     ];
 
-    //protected static function booted()
-    //{
-    //    static::addGlobalScope(new ClientScope());
-    //    static::updating(function ($model) {
-    //    });
-    //}
+    protected static function booted()
+    {
+        static::addGlobalScope(new ClientScope());
+    }
 
     public function scopeFilter($query, array $filters)
     {

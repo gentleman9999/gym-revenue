@@ -38,7 +38,8 @@
         "symfony/mailgun-mailer": "^6.1",
         "tightenco/ziggy": "^1.4",
         "twilio/sdk": "^6.31",
-        "wnx/sidecar-browsershot": "^1.1"
+        "wnx/sidecar-browsershot": "^1.1",
+      "ext-intl": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.20",

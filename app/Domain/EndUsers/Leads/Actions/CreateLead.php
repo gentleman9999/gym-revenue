@@ -51,7 +51,8 @@ class CreateLead extends CreateEndUser
     {
         $data = $request->validated();
         $lead = $this->handle(
-            $data
+            $data,
+            request()->user(),
         );
 
         if ($request->user()) {

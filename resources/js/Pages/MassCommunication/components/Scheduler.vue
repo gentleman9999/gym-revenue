@@ -312,7 +312,7 @@ const saveCampaign = async () => {
             fmtCampaign.sms_template_id = fmtCampaign.days[0].sms;
         }
         if (fmtCampaign.days[0]?.call) {
-            fmtCampaign.client_call_script = fmtCampaign.days[0].call;
+            fmtCampaign.call_template_id = fmtCampaign.days[0].call;
         }
         delete fmtCampaign.days;
     }
