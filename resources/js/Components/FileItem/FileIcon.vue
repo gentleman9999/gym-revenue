@@ -2,6 +2,10 @@
     <div
         class="file-icon-wrapper"
         v-if="!['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(extension)"
+        :class="{
+            'w-9 flex justify-center': iconSize == '2x',
+            'w-min': iconSize == '3x',
+        }"
     >
         <font-awesome-icon
             icon="file"
@@ -22,7 +26,7 @@
 </template>
 <style scoped>
 .file-icon-wrapper {
-    @apply relative w-min;
+    @apply relative;
 }
 .file-ext {
     @apply absolute inset-0 text-base-content flex items-center justify-center text-xs font-bold uppercase;

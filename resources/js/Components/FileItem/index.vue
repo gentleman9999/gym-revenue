@@ -117,6 +117,6 @@ const filename = computed({
 const { emit } = useEventsBus();
 
 const handleDrag = (e) => {
-    emit("select_file", props.file.id);
+    emit("selected_item", { type: "file", data: props.file });
 };
 </script>

@@ -29,6 +29,7 @@
                     :create-option="true"
                     :options="option.options"
                     :classes="multiselectClasses"
+                    :searchable="true"
                 />
             </div>
             <jet-input-error :message="form.errors.sharing" class="mt-2" />
@@ -46,7 +47,11 @@
         </template>
     </jet-form-section>
 </template>
-
+<style>
+.focus\:shadow-none:focus {
+    box-shadow: none !important;
+}
+</style>
 <script setup>
 import { defineEmits, computed } from "vue";
 
