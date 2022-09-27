@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Stringable;
 
+/**
+ * @property string $id
+ */
 abstract class EndUser extends GymRevProjection implements PhoneInterface
 {
     use Notifiable;

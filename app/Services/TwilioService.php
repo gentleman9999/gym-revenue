@@ -186,4 +186,9 @@ class TwilioService
     {
         // $conversation->services('ISd936515f10bb49d7bde01d510219ccbb')->delete();
     }
+
+    public function formatNumber(string $number, string $country_code = 'US'): string
+    {
+        return $this->twilio->lookups->v1->phoneNumbers($number)->fetch(['countryCode' => $country_code])->phoneNumber;
+    }
 }

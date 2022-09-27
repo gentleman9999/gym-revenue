@@ -2,10 +2,12 @@ let foo = 0;
 export default class MessageInfo {
     /**
      * @param {Message} message
+     * @param {boolean} isInfo
      */
-    constructor(message) {
+    constructor(message, isInfo = false) {
         this.date = new Date();
         this.message = message;
+        this.isInfo = isInfo;
     }
 
     /**

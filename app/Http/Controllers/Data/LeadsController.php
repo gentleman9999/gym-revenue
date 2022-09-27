@@ -400,6 +400,7 @@ class LeadsController extends Controller
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
+            'hasTwilioConversation' => $lead->client->hasTwilioConversationEnabled(),
         ]);
     }
 

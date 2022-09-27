@@ -2,7 +2,9 @@
     <div class="fa-sm text-center py-2">
         <div class="mb-1">{{ message }}</div>
         <div>
-            <a href="/chat" class="btn w-max rounded btn-xs mr-1">View</a>
+            <a :href="route('chat')" class="btn w-max rounded btn-xs mr-1"
+                >View</a
+            >
             <Button
                 size="xs"
                 class="ml-1 close-btn"

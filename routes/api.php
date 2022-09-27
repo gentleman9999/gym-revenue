@@ -35,7 +35,7 @@ Route::middleware('bearer')->prefix('members')->group(function () {
 Route::prefix('twilio')->group(static function () {
     Route::middleware('TwilioAuth')->group(static function () {
         Route::post('/statusCallBack', \App\Domain\SMS\Actions\TwilioStatusCallback::class);
-        Route::post('conversation/{client_id}', \App\Domain\Conversations\Twilio\Actions\StartConversation::class);
+        Route::post('conversation/{client_id}', \App\Domain\Conversations\Twilio\Actions\JoinConversation::class);
 
         Route::prefix('call')->group(static function () {
             Route::post('connect/{phone}', \App\Domain\VoiceCalls\Actions\ConnectPhone::class);

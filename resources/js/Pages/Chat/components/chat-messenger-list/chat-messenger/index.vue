@@ -24,7 +24,11 @@
         <div
             class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[370px] text-sm"
         >
-            {{ conversation.lastMessage.body }}
+            {{
+                conversation.lastMessage.isInfo
+                    ? "..."
+                    : conversation.lastMessage.body
+            }}
         </div>
     </div>
 </template>

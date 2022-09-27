@@ -2,7 +2,7 @@
     <div
         ref="messageElement"
         class="chat-message-container mb-1 text-sm"
-        :class="{ mine: isMine }"
+        :class="{ mine: isMine, 'is-info': message.isInfo }"
         :title="message.dateFormatted()"
     >
         <div class="chat-message whitespace-pre-wrap">{{ message.body }}</div>
@@ -47,5 +47,11 @@ onMounted(function () {
 }
 .author {
     margin: 0 !important;
+}
+.is-info {
+    @apply text-xs block text-center opacity-50 w-full;
+}
+.is-info .chat-message {
+    @apply bg-transparent text-xs;
 }
 </style>

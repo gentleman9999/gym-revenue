@@ -17,9 +17,7 @@
                     >
                         <end-user-actions
                             :count="interactionCount"
-                            :handleClick="
-                                (value) => (activeContactMethod = value)
-                            "
+                            :handleClick="toggleContactModal"
                             :end-user-type="endUserType"
                         />
                     </div>
@@ -117,7 +115,14 @@ const props = defineProps({
     ownerUserId: {
         type: Number,
     },
+    hasTwilioConversation: {
+        type: Boolean,
+        required: true,
+    },
 });
+
+const showViewModal = ref(null);
+const commsHistoryRef = ref(null);
 const activeContactMethod = ref("");
 
 const fullName = computed({
@@ -151,29 +156,30 @@ const borderStyle = computed({
     },
 });
 
-const modalTitle = computed({
-    get() {
-        switch (activeContactMethod.value) {
-            case "email":
-                return "Email " + props.endUserType;
-            case "phone":
-                return "Call " + props.endUserType;
-            case "sms":
-                return "Text " + props.endUserType;
-        }
-    },
+watch([activeContactMethod], () => {
+    activeContactMethod.value && showViewModal.value.open();
 });
-const commsHistoryRef = ref(null);
+
+defineExpose({
+    goToEndUserDetailIndex,
+});
+
 function goToEndUserDetailIndex(index) {
     if (index !== undefined && index !== null) {
         commsHistoryRef.value.goToEndUserDetailIndex(index);
     }
 }
-const showViewModal = ref(null);
-watch([activeContactMethod], () => {
-    activeContactMethod.value && showViewModal.value.open();
-});
-defineExpose({
-    goToEndUserDetailIndex,
-});
+
+function toggleContactModal(type) {
+    // If conversation is enabled, we want to redirect the user to the chat page.
+    if (type === "sms" && props.hasTwilioConversation) {
+        window.location.href = route("end-user-chat", [
+            props.endUserType,
+            props.id,
+        ]);
+        return;
+    }
+
+    activeContactMethod.value = type;
+}
 </script>

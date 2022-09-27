@@ -389,6 +389,7 @@ Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Act
 
 Route::prefix('chat')->group(function () {
     Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
+    Route::get('/{end_user_type}/{id}', \App\Http\Controllers\ChatController::class . '@index')->name('end-user-chat');
 });
 
 Route::middleware('auth:sanctum')->prefix('call')->group(static function () {

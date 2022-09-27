@@ -179,4 +179,9 @@ class Client extends GymRevProjection
             "No client integration configured for provider '{$slug}'"
         );
     }
+
+    public function hasTwilioConversationEnabled(): bool
+    {
+        return $this->gatewayIntegration()->where(['slug' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION])->exists();
+    }
 }
