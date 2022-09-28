@@ -71,7 +71,7 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
 const tailwindColors = theme.colors;
-const daisyuiColors = theme.daisyui.themes[1].dark;
+const daisyuiColors = theme.daisyui.themes[0].dark;
 
 const props = defineProps({
     title: {

@@ -1,5 +1,3 @@
-import { Inertia } from "@inertiajs/inertia";
-
 /**
  * Returns the type of template the passed object resembles - or null if none found
  * @param {Object} t - object to test for template resemblance
@@ -89,6 +87,7 @@ export function truncateEllipsis(str, max = 90) {
     return substr + " ...";
 }
 
+/** animation helpers */
 export const lerp = (x, y, a) => x * (1 - a) + y * a;
 export const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 export const invlerp = (x, y, a) => clamp((a - x) / (y - x));

@@ -95,26 +95,29 @@
         </TemplateList>
     </jet-bar-container>
 
-    <daisy-modal
-        :open="templateCreator !== null"
-        :showCloseButton="false"
-        :closable="false"
-        class="h-full w-full bg-transparent border-none flex flex-col justify-center items-center shadow-none"
-    >
+    <ModalUnopinionated v-if="templateCreator !== null">
         <!-- builder components -->
-        <component
-            :is="templateCreator"
-            :template_item="currentTemplate"
-            :template="currentTemplate"
-            :topol-api-key="topolApiKey"
-            :can-activate="false"
-            :use-inertia="false"
-            @done="reloadTemplates"
-            @onClose="closeEditor"
-            @cancel="closeEditor"
-            @error="handleErrors"
-        />
-    </daisy-modal>
+        <div
+            class="flex flex-col h-full w-full justify-center items-center bg-black bg-opacity-80"
+        >
+            <div
+                class="bg-neutral p-8 border-secondary border rounded-md scale-90"
+            >
+                <component
+                    :is="templateCreator"
+                    :template_item="currentTemplate"
+                    :template="currentTemplate"
+                    :topol-api-key="topolApiKey"
+                    :can-activate="false"
+                    :use-inertia="false"
+                    @done="reloadTemplates"
+                    @onClose="closeEditor"
+                    @cancel="closeEditor"
+                    @error="handleErrors"
+                />
+            </div>
+        </div>
+    </ModalUnopinionated>
 </template>
 
 <script setup>
@@ -125,7 +128,7 @@ import { toastInfo, toastError, toastSuccess } from "@/utils/createToast";
 import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
 
-import DaisyModal from "@/Components/DaisyModal.vue";
+import ModalUnopinionated from "@/Components/ModalUnopinionated.vue";
 
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
