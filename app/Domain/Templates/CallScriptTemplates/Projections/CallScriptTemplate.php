@@ -13,7 +13,7 @@ class CallScriptTemplate extends GymRevProjection
     use SoftDeletes;
     use Sortable;
 
-    protected $fillable = [ 'name', 'script', 'active', 'team_id', 'created_by_user_id'];
+    protected $fillable = [ 'name', 'script', 'active', 'use_once', 'team_id', 'created_by_user_id'];
 
     protected $casts = [
         'name' => 'string',

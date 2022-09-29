@@ -41,7 +41,7 @@ class DripCampaignSeeder extends Seeder
             // Create an email template record
             $email_t = EmailTemplate::whereClientId($client['id'])->first()->id;
             $sms_t = SmsTemplate::whereClientId($client['id'])->first()->id;
-            $call_t = CallScriptTemplate::whereClientId($client['id'])->first()->id;
+            $call_t = CallScriptTemplate::whereClientId($client['id'])->whereUseOnce(false)->first()->id;
             foreach ($audiences as $audience) {
                 for ($i = 1; $i <= $amountOfEvents; $i++) {
                     $datebetween = abs(($dateend - $datestart) / $daystep);

@@ -222,6 +222,10 @@ const actionDone = (template) => {
         toastSuccess(templateType + " Template Saved!");
     }
 
+    if (template.reuse) {
+        emit("save", selectedTemplate.value);
+    }
+
     Inertia.reload({
         only: [refreshProp],
         onFinish: () => {

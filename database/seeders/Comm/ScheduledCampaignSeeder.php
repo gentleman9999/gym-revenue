@@ -56,7 +56,7 @@ class ScheduledCampaignSeeder extends Seeder
             $audiences = Audience::whereClientId($client['id'])->get()->toArray();
             $email_template = EmailTemplate::whereClientId($client['id'])->first()->toArray()['id'];
             $sms_template = SmsTemplate::whereClientId($client['id'])->first()->toArray()['id'];
-            $call_template = CallScriptTemplate::whereClientId($client['id'])->first()->toArray()['id'];
+            $call_template = CallScriptTemplate::whereClientId($client['id'])->whereUseOnce(false)->first()->toArray()['id'];
             $users = User::whereClientId($client['id'])->get();
             foreach ($users as $user) {
                 $rolesForUser = $user->getRoles();

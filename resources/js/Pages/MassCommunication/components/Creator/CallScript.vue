@@ -45,6 +45,13 @@
                 >
                     Save
                 </button>
+                <button
+                    @click="handleSubmit(true)"
+                    class="px-2 py-1 border-secondary border rounded-md mt-4 bg-secondary transition-all text-base-content hover:bg-base-content hover:text-secondary disabled:opacity-25 disabled:cursor-not-allowed"
+                    :disabled="loading"
+                >
+                    One time use
+                </button>
             </div>
         </div>
     </div>
@@ -84,7 +91,7 @@ const checkInvalid = computed(() => {
     return false;
 });
 
-const handleSubmit = async () => {
+const handleSubmit = async (once = false) => {
     if (loading.value) return;
     if (typeof checkInvalid.value === "string")
         return toastError(checkInvalid.value);
@@ -94,6 +101,7 @@ const handleSubmit = async () => {
         const data = {
             script: scriptMessage.value,
             name: scriptName.value,
+            use_once: once,
         };
 
         const res =
@@ -110,7 +118,7 @@ const handleSubmit = async () => {
                   );
 
         if (res.status === "OK" || res.status === 200 || res.status === 201) {
-            emit("done", res.data);
+            emit("done", { ...res.data, use_once: once });
         }
 
         loading.value = false;

@@ -19,19 +19,6 @@ class CallScriptTemplateSeeder extends Seeder
     {
         $default_markup = "Hi this is a call script for a client at GymRevenue!  -GymmieBot";
 
-//        // For Cape & Bay
-//        VarDumper::dump('Default Call script template for Cape & Bay');
-//        $template = CreateCallScriptTemplate::run([
-//            'name' => "Baby's First Call Script Template (;",
-//            'active' => 1,
-//            'markup' => $default_markup,
-//            'json' => ''
-//        ]);
-//
-//        $template->active = 1;
-//
-//        UpdateEmailTemplate::run($template->toArray());
-//
         $clients = Client::whereActive(1)->get();
         // For each client
         foreach ($clients as $client) {

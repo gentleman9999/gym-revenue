@@ -69,6 +69,7 @@ class MassCommunicationController extends Controller
             ->sort()->get();
 
         $call_script_templates = CallScriptTemplate::with('creator')
+            ->whereUseOnce(false)
             ->filter(request()->only('search', 'trashed'))
             ->sort()->get();
 

@@ -19,6 +19,7 @@ return new class () extends Migration {
             $table->longText('json')->nullable();
             $table->json('thumbnail')->nullable();
             $table->boolean('active')->default(1);
+            $table->boolean('use_once')->default(0);
             $table->uuid('client_id')->nullable()->index();
             $table->uuid('team_id')->nullable();
             $table->string('created_by_user_id');

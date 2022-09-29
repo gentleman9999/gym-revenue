@@ -18,6 +18,7 @@ class CallScriptTemplatesController extends Controller
 
         $templates = CallScriptTemplate::with('creator')
                 ->filter(request()->only('search', 'trashed'))
+                ->whereUseOnce(false)
                 ->sort()
                 ->paginate($page_count)
                 ->appends(request()->except('page'));
@@ -58,6 +59,7 @@ class CallScriptTemplatesController extends Controller
 
         if (! empty($templates_model)) {
             $templates = CallScriptTemplate::with('creator')
+                ->whereUseOnce(false)
                 ->filter(request()->only('search', 'trashed'))
                 ->get();
         }

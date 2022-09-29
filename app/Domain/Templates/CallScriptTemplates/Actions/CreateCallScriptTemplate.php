@@ -2,8 +2,8 @@
 
 namespace App\Domain\Templates\CallScriptTemplates\Actions;
 
-use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\CallScriptTemplates\CallScriptTemplateAggregate;
+use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +28,7 @@ class CreateCallScriptTemplate
            'name' => ['string', 'required'],
            'script' => ['string', 'required'],
            'active' => ['sometimes'],
+           'use_once' => ['sometimes'],
         ];
     }
 
