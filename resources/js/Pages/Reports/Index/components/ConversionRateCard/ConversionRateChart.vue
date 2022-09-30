@@ -123,6 +123,6 @@ const options = {
             columnWidth: 60,
         },
     },
-    colors: ["hsl(var(--s))", "var(--color-secondary-700)"],
+    colors: ["hsl(var(--p))", "hsl(var(--pf))"],
 };
 </script>

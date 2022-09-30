@@ -1,3 +1,8 @@
+import { useNotifications } from "@/utils/useNotifications.js";
+import ConversationNotification from "@/Pages/Chat/components/ConversationNotification.vue";
+
+const { dismissNotification } = useNotifications();
+
 const isToday = (date) => {
     const today = new Date();
     return (
@@ -49,28 +54,109 @@ const getDayOfWeek = (date) => {
     }
 };
 
+const NOTIFICATION_TYPES = Object.freeze({
+    /** @see App\Domain\Notifications::TYPE_CALENDAR_EVENT_REMINDER */
+    TYPE_CALENDAR_EVENT_REMINDER: "CALENDAR_EVENT_REMINDER",
+    /** @see App\Domain\Notifications::TYPE_NEW_CONVERSATION */
+    TYPE_NEW_CONVERSATION: "NEW_CONVERSATION",
+    /** @see App\Domain\Notifications::TYPE_DEFAULT */
+    TYPE_DEFAULT: "DEFAULT_NOTIFICATION",
+});
+
+/**
+ *
+ * @param {{ text:string|object, id:string, state:string, type:string, entity_type?:string, entity?:object}} notification
+ * @param options
+ * @returns {{options: {timeout: boolean}, text: (string|Object)}}
+ */
+function notificationResponse(notification, options = {}) {
+    // Allow onClose call without disrupting dismissNotification
+    const onClose = new Promise((resolve) => {
+        resolve(typeof options.onClose === "function" && options.onClose());
+    });
+
+    options = Object.assign({ timeout: false }, options);
+    options.onClose = () =>
+        onClose.then(() => dismissNotification(notification.id));
+
+    return {
+        text: notification.text,
+        options,
+    };
+}
+
+/**
+ * Builds notification response for TYPE_CALENDAR_EVENT_REMINDER
+ *
+ * @param {{ text:string, id:string, state:string, type:string, entity: {start: string, title: string }}} notification
+ * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}}
+ */
+function buildCalenderNotification(notification) {
+    const start = new Date(notification.entity.start);
+    const date = start.toLocaleDateString();
+    const time = start.toLocaleTimeString();
+
+    let start_at;
+    if (isToday(start)) {
+        start_at = `at ${time}`;
+    } else if (isThisWeek(start)) {
+        start_at = `on ${getDayOfWeek(start)} at ${time}`;
+    } else {
+        start_at = `on ${date} at ${time}`;
+    }
+
+    return notificationResponse(
+        notification,
+        `${notification.entity.title} ${start_at}`
+    );
+}
+
+/**
+ * @param {{ text:string, id:string, state:string, type:string}} notification
+ *
+ * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}|null}
+ */
+function buildConversationNotification(notification) {
+    const chatElement = document.querySelector(
+        '.chat-container[data-chat-external-target-attr="chat-container"]'
+    );
+    // If chatElement is set, that means we are on the chat page.
+    // We don't want to trigger any notifications while at chat page, instead we want to refresh the chat list
+    // and silently delete the notification.
+    if (chatElement !== null) {
+        chatElement.dispatchEvent(new Event("refresh"));
+        dismissNotification(notification.id);
+        return null;
+    }
+
+    notification.text = {
+        component: ConversationNotification,
+        props: { message: notification.text },
+    };
+
+    return notificationResponse(notification, {
+        closeOnClick: false, // We want to close with the button in our component
+        position: "bottom-left",
+        closeButton: false,
+        icon: false,
+        toastClassName: "conversation-container",
+    });
+}
+
+/**
+ * @param {{ text:string, id:string, state:string, type:string, entity_type?:string, entity?:object}} notification
+ *
+ * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}|null}
+ */
 export const parseNotificationResponse = (notification) => {
     console.log({ notification });
-    let state = "info";
-    let timeout = false;
-    let text = notification.text;
-    if (
-        notification?.entity_type ===
-            "App\\Domain\\CalendarEvents\\CalendarEvent" &&
-        notification.entity
-    ) {
-        const start = new Date(notification.entity?.start);
-        const date = start.toLocaleDateString();
-        const time = start.toLocaleTimeString();
 
-        let start_at = "";
-        if (isToday(start)) {
-            start_at = `at ${time}`;
-        } else if (isThisWeek(start)) {
-            start_at = `on ${getDayOfWeek(start)} at ${time}`;
-        }
-        start_at = `on ${date} at ${time}`;
-        text = `${notification.entity.title} ${start_at}`;
+    switch (notification.type) {
+        case NOTIFICATION_TYPES.TYPE_CALENDAR_EVENT_REMINDER:
+            return buildCalenderNotification(notification);
+        case NOTIFICATION_TYPES.TYPE_NEW_CONVERSATION:
+            return buildConversationNotification(notification);
+        default:
+            return notificationResponse(notification);
     }
-    return { text, state, timeout };
 };

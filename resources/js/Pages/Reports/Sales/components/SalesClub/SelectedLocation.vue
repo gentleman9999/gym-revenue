@@ -26,7 +26,7 @@
 
 .selected-item {
     width: calc(50% - 24px);
-    @apply bg-slate-100 ml-2 text-center cursor-pointer select-none border rounded h-fit text-neutral-900 inline-block;
+    @apply bg-slate-100 ml-2 text-center cursor-pointer select-none border rounded h-fit text-neutral/90 inline-block;
 }
 
 @media only screen and (max-width: 1024px) {

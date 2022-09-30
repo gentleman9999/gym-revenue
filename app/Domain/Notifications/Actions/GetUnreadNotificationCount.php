@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notifications\Actions;
 
 use App\Domain\Notifications\Notification;
@@ -10,23 +12,13 @@ class GetUnreadNotificationCount
 {
     use AsAction;
 
-    public function handle(User $user): int
+    public function handle(int $user_id): int
     {
-        //TODO: is this efficient as possible? is it actually doing a db count or counting the results?
-        return Notification::whereUserId($user->id)->count();
+        return Notification::where(['user_id' => $user_id])->count();
     }
-
-//    public function authorize(ActionRequest $request): bool
-//    {
-//        return true;
-//    }
 
     public function asController(ActionRequest $request): int
     {
-//        $data = $request->validated();
-        return $this->handle(
-            $request->user()
-        );
-//        return $notifications;
+        return $this->handle($request->user()->id);
     }
 }

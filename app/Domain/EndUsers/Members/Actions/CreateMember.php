@@ -34,9 +34,9 @@ class CreateMember extends CreateEndUser
     public function asController(ActionRequest $request)
     {
         $data = $request->validated();
-
         $member = $this->handle(
-            $data
+            $data,
+            request()->user(),
         );
 
         if ($request->user()) {

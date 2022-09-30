@@ -36,7 +36,7 @@ const options = {
             show: false,
         },
     },
-    colors: ["var(--color-secondary-500)", "var(--color-secondary-700)"],
+    colors: ["hsl(var(--p))", "hsl(var(--pf))"],
     fill: {
         type: "gradient",
         opacity: 0.7,

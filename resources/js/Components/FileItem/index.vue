@@ -87,7 +87,7 @@ const handleTrash = () => {
 const subMenu = ref(null);
 
 const handleClick = (event) => {
-    if (props.mode !== "desktop") {
+    if (props.mode !== "desktop" || event.buttons !== 2) {
         return;
     }
     event.preventDefault();
@@ -117,6 +117,6 @@ const filename = computed({
 const { emit } = useEventsBus();
 
 const handleDrag = (e) => {
-    emit("select_file", props.file.id);
+    emit("selected_item", { type: "file", data: props.file });
 };
 </script>

@@ -3,11 +3,11 @@
 namespace App\Actions\Clients\Activity\Comms;
 
 use App\Aggregates\Clients\ClientAggregate;
+use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Users\Models\User;
 use App\Models\Clients\Features\CommAudience;
 use App\Models\Clients\Features\SmsCampaigns;
 use App\Models\Endusers\AudienceMember;
-use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\Utility\AppState;
 use Carbon\Carbon;

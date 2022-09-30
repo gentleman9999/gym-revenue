@@ -1,5 +1,5 @@
 <template>
-    <DesktopSupportOnly class="lg:hidden"> </DesktopSupportOnly>
+    <DesktopSupportOnly class="lg:hidden" />
     <div class="hidden lg:flex">
         <div
             v-if="showSpinner"
@@ -8,35 +8,68 @@
             <spinner />
         </div>
         <div
-            class="lg:w-[60rem] xl:w-[90rem]"
-            :class="{
-                hidden: showSpinner,
-            }"
+            :class="{ 'sm:w-[60rem] xl:w-[90rem]': true, hidden: showSpinner }"
         >
             <TopolEditor
+                v-if="customOptions"
                 :options="customOptions"
                 v-bind="$attrs"
                 @onClose="handleOnClose"
                 @onClosed="handleOnClose"
                 @onInit="handleOnInit"
                 @onLoaded="handleOnLoaded"
+                @onBlockSave="createBlock"
+                @onBlockRemove="deleteBlock"
+                @onBlockEdit="updateBlock"
                 :class="{ hidden: showSpinner }"
                 style="position: unset"
             />
         </div>
+
+        <daisy-modal ref="blockModal" style="width: 400px">
+            <div class="form-control">
+                <label for="name" class="label">Name</label>
+                <input
+                    type="text"
+                    v-model="blockForm.name"
+                    id="name"
+                    class="form-control w-full"
+                />
+            </div>
+            <template #actions>
+                <div class="flex-grow" />
+                <Button
+                    type="button"
+                    v-if="blockForm.id !== null"
+                    class="btn-success"
+                    @click="saveBlock(false)"
+                >
+                    Update
+                </Button>
+                <Button
+                    type="button"
+                    class="btn-secondary"
+                    @click="saveBlock(true)"
+                >
+                    {{ blockForm.id ? "Save As New" : "Save" }}
+                </Button>
+            </template>
+        </daisy-modal>
     </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, reactive, ref, toRaw, watch } from "vue";
+import Button from "@/Components/Button.vue";
 import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import Spinner from "@/Components/Spinner.vue";
 import theme from "@/theme.js";
+
 import DesktopSupportOnly from "./DesktopSupportOnly.vue";
+import DaisyModal from "@/Components/DaisyModal.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
-
 const tailwindColors = theme.colors;
 const daisyuiColors = theme.daisyui.themes[0].dark;
 
@@ -91,7 +124,7 @@ const customOptions = {
             350: tailwindColors.neutral[500],
             300: tailwindColors.neutral[450],
             200: tailwindColors.neutral[300],
-            white: tailwindColors.white,
+            // white: tailwindColors.white,
             primary: daisyuiColors.primary,
             "primary-light": daisyuiColors["primary-focus"],
             "primary-dark": daisyuiColors["primary-content"],
@@ -100,7 +133,7 @@ const customOptions = {
             error: daisyuiColors.error,
             "error-light": daisyuiColors.warning,
             success: daisyuiColors.success,
-            "success-light": tailwindColors.primary[300],
+            "success-light": daisyuiColors["secondary-content"],
             active: daisyuiColors.secondary,
             "active-light": daisyuiColors["secondary-focus"],
         },
@@ -119,7 +152,7 @@ const customOptions = {
         //     hidden: true,
         // },
     },
-    // savedBlocks: [],
+    savedBlocks: [],
     api: {
         // Your own endpoint for uploading images
         IMAGE_UPLOAD: "/images/upload",
@@ -142,16 +175,11 @@ const customOptions = {
         {
             name: "Merge tags", // Group name
             items: [
-                {
-                    value: "%%recipient.first_name%%", // Text to be inserted
-                    text: "First name", // Shown text in the menu
-                    label: "Customer's first name", // Shown description title in the menu
-                },
-                {
+                /*{
                     value: "%%recipient.first_name%%",
                     text: "Last name",
                     label: "Customer's last name",
-                },
+                },*/
 
                 //Nested Merge Tags
                 {
@@ -200,6 +228,100 @@ const customOptions = {
 };
 const ready = ref(false);
 const showSpinner = ref(true);
+const blocks = ref([]);
+const blockModal = ref(null);
+const blockForm = reactive({
+    name: null,
+    id: null,
+    definition: null,
+    set(id, name) {
+        this.id = id;
+        this.name = name;
+    },
+});
+
+// watchers
+watch(blocks, (value) => TopolPlugin.setSavedBlocks(toRaw(value)), {
+    deep: true,
+});
+
+// Methods
+function createBlock({ definition }) {
+    blockForm.definition = definition;
+    blockModal.value.open();
+}
+
+function updateBlock(id) {
+    const block = blocks.value[getBlockIndexById(id)];
+    blockForm.set(id, block.name);
+    // I couldn't find a documentation or a better way to do this. Feel free to update
+    // If you have a better approach.
+    TopolPlugin.load(
+        JSON.stringify({
+            tagName: "mj-global-style",
+            children: [
+                {
+                    tagName: "mj-container",
+                    attributes: {
+                        "background-color": "#ffffff",
+                        containerWidth: 600,
+                    },
+                    children: [block.definition],
+                },
+            ],
+            attributes: {
+                "mj-text": { "line-height": 1.5 },
+                "mj-button": [],
+                "mj-section": { "background-color": "#ffffff" },
+            },
+        })
+    );
+
+    TopolPlugin.createNotification({ text: `Editing ${block.name}` });
+}
+
+function deleteBlock(id) {
+    if (window.confirm("Are you sure?")) {
+        axios
+            .delete(route("comms.email-templates.delete-block", id))
+            .then(({ data }) => {
+                blocks.value.splice(getBlockIndexById(id), 1);
+            });
+    }
+}
+
+function saveBlock(isNew = false) {
+    const definition = toRaw(blockForm.definition);
+    if (blockForm.id !== null && !isNew) {
+        axios
+            .put(
+                route("comms.email-templates.update-block", blockForm.id),
+                blockForm
+            )
+            .then(({ data }) => {
+                const block = blocks.value[getBlockIndexById(blockForm.id)];
+                block.definition = definition;
+                block.name = blockForm.name;
+            });
+    } else {
+        const blockData = { name: blockForm.name, definition };
+        axios
+            .post(route("comms.email-templates.create-block"), blockData)
+            .then(({ data }) => {
+                blocks.value.push({ ...blockData, id: data.id });
+            });
+
+        blockForm.set(null, null);
+    }
+
+    blockModal.value.close();
+    TopolPlugin.createNotification({ text: "Saved", type: "success" });
+}
+
+function getBlockIndexById(id) {
+    return blocks.value.findIndex((b) => b.id === id);
+}
+
 const handleOnSave = (args) => {
     console.log("handleOnSave", args);
 };
@@ -212,6 +334,10 @@ const handleOnInit = (args) => {
         showSpinner.value = false;
     }
     emit("onInit", args);
+
+    axios.get(route("comms.email-templates.get-blocks")).then(({ data }) => {
+        blocks.value = data.blocks;
+    });
 };
 const handleOnLoaded = (args) => {
     showSpinner.value = false;
@@ -221,9 +347,15 @@ const handleOnClose = (args) => {
     console.log("handleOnClose", args);
     emit("onClose", args);
 };
-// onMounted(()=>{
-//
-// })
+
+axios.get(route("mass-comms.template.tokens")).then(({ data }) => {
+    const tokens = [];
+    for (const prop in data) {
+        tokens.push({ value: data[prop], text: prop });
+    }
+    customOptions.mergeTags[0].items.unshift(...tokens);
+});
+
 watch(
     [ready],
     () => {
@@ -234,4 +366,6 @@ watch(
     },
     { immediate: true }
 );
+
+onUnmounted(TopolPlugin.destroy);
 </script>

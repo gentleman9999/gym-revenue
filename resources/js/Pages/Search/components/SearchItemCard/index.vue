@@ -18,7 +18,7 @@
 </template>
 <style scoped>
 .item-wrapper {
-    @apply flex flex-row justify-between items-center border border-secondary rounded relative p-8 bg-neutral-900;
+    @apply flex flex-row justify-between items-center border border-secondary rounded relative p-8 bg-neutral;
 }
 .item-type {
     @apply bg-info p-0.5 rounded px-2;

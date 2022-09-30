@@ -14,6 +14,7 @@ use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Clients\Projections\Client;
 use App\Models\ClientCommunicationPreference;
 use App\Models\File;
+use App\Models\GatewayProviders\GatewayProvider;
 use Illuminate\Support\Facades\Storage;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -28,33 +29,20 @@ class ClientConfigurationProjector extends Projector
 
     public function onClientCommsPrefsSet(ClientCommsPrefsSet $event): void
     {
-        $client = ClientCommunicationPreference::whereClientId($event->aggregateRootUuid())->first();
+        /** @var ClientCommunicationPreference $client */
+        $client = ClientCommunicationPreference::whereClientId($event->aggregateRootUuid())->first()?->writeable();
         if ($client) {
-            $client->writeable();
             $client->client_id = $event->clientId();
-            if (array_key_exists('sms', $event->commsPreferences)) {
-                $client->sms = $event->commsPreferences['sms'];
-            }
-            if (array_key_exists('email', $event->commsPreferences)) {
-                $client->email = $event->commsPreferences['email'];
-            }
-            $client->writeable()->save();
         } else {
             $client = (new ClientCommunicationPreference())->writeable();
             $client->client_id = $event->aggregateRootUuid();
-
-            if (array_key_exists('sms', $event->commsPreferences)) {
-                $client->fill([
-                    'sms' => $event->commsPreferences['sms'],
-                ]);
-            }
-            if (array_key_exists('email', $event->commsPreferences)) {
-                $client->fill([
-                    'email' => $event->commsPreferences['email'],
-                ]);
-            }
-            $client->save();
         }
+
+        foreach (array_keys(ClientCommunicationPreference::COMMUNICATION_TYPES) as $type) {
+            $client->{$type} = $event->commsPreferences[$type];
+        }
+
+        $client->save();
     }
 
     public function onLogoUploaded(ClientLogoUploaded $event): void
@@ -113,140 +101,38 @@ class ClientConfigurationProjector extends Projector
 
     public function onClientGatewaySet(ClientGatewaySet $event): void
     {
-        //TODO: fire off action to set client_gateway_integration
+        /** @var Client $client */
+        $client = Client::find($event->aggregateRootUuid());
         $payload = $event->payload;
-        if (array_key_exists('mailgunDomain', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('mailgunDomain')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunDomain',
-                    'value' => $payload['mailgunDomain'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writeable()->update([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunDomain',
-                    'value' => $payload['mailgunDomain'],
-                ]);
+        $known_gateways = [];
+        $settings = [
+            'mailgunDomain' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            'mailgunSecret' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            'mailgunFromAddress' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            'mailgunFromName' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            'twilioSID' => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
+            'twilioToken' => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
+            'twilioNumber' => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
+            'twilioConversationServiceSID' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION,
+        ];
+
+        foreach ($settings as $name => $provider) {
+            if (! isset($payload[$name])) {
+                continue;
             }
-        }
-        if (array_key_exists('mailgunSecret', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('mailgunSecret')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunSecret',
-                    'value' => $payload['mailgunSecret'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writeable()->update([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunSecret',
-                    'value' => $payload['mailgunSecret'],
-                ]);
+
+            if (! isset($known_gateways[$provider])) {
+                $known_gateways[$provider] = $client->getGatewayProviderBySlug($provider);
             }
-        }
-        if (array_key_exists('mailgunFromAddress', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('mailgunFromAddress')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunFromAddress',
-                    'value' => $payload['mailgunFromAddress'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writebale()->update([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunFromAddress',
-                    'value' => $payload['mailgunFromAddress'],
-                ]);
-            }
-        }
-        if (array_key_exists('mailgunFromName', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('mailgunFromName')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunFromName',
-                    'value' => $payload['mailgunFromName'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writeable()->update([
-                    'gateway_provider' => 'mailgun',
-                    'name' => 'mailgunFromName',
-                    'value' => $payload['mailgunFromName'],
-                ]);
-            }
-        }
-        if (array_key_exists('twilioSID', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('twilioSID')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'twilio-sms',
-                    'name' => 'twilioSID',
-                    'value' => $payload['twilioSID'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writeable()->update([
-                    'gateway_provider' => 'twilio-sms',
-                    'name' => 'twilioSID',
-                    'value' => $payload['twilioSID'],
-                ]);
-            }
-        }
-        if (array_key_exists('twilioToken', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('twilioToken')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'twilio-sms',
-                    'name' => 'twilioToken',
-                    'value' => $payload['twilioToken'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writeable()->update([
-                    'gateway_provider' => 'twilio-sms',
-                    'name' => 'twilioToken',
-                    'value' => $payload['twilioToken'],
-                ]);
-            }
-        }
-        if (array_key_exists('twilioNumber', $payload)) {
-            $gateway = ClientGatewaySetting::whereName('twilioNumber')->first();
-            if (is_null($gateway)) {
-                $gateway = (new ClientGatewaySetting())->writeable();
-                $gateway->client_id = $event->aggregateRootUuid();
-                $gateway->fill([
-                    'gateway_provider' => 'twilio-sms',
-                    'name' => 'twilioNumber',
-                    'value' => $payload['twilioNumber'],
-                ]);
-                $gateway->save();
-            } else {
-                $gateway->writeable()->update([
-                    'gateway_provider' => 'twilio-sms',
-                    'name' => 'twilioNumber',
-                    'value' => $payload['twilioNumber'],
-                ]);
-            }
+
+            $gateway = ClientGatewaySetting::whereName($name)->first() ?: new ClientGatewaySetting();
+            $gateway->fill([
+                'gateway_provider' => $known_gateways[$provider]->id,
+                'name' => $name,
+                'value' => $payload[$name],
+                'client_id' => $client->id,
+            ]);
+            $gateway->writeable()->save();
         }
     }
 }

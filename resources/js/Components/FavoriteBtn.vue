@@ -3,7 +3,7 @@
         :class="{
             'favorite-btn text-2xl': true,
             'text-secondary': value,
-            'text-neutral-500': !value,
+            'text-neutral': !value,
         }"
         @click="isFavorite = !isFavorite"
     >

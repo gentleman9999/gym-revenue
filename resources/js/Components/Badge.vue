@@ -5,7 +5,7 @@
             'bg-warning': type === 'warning',
             'bg-error': type === 'error',
             'bg-accent': type === 'accent',
-            'bg-neutral-500': type === 'neutral',
+            'bg-neutral': type === 'neutral',
         }"
     >
         {{ label }}

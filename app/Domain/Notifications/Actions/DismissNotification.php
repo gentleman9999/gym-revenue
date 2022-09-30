@@ -1,47 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notifications\Actions;
 
-use App\Domain\Notifications\Notification;
-use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 use Illuminate\Console\Command;
+use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class DismissNotification
 {
     use AsAction;
+    public string $commandSignature = 'notifications:dismiss {user_id} {id}';
 
-    public string $commandSignature = 'notifications:dismiss {id}';
-
-    public function handle(Notification $notification, User $user): void
+    public function handle(string $user_id, string $notification_id): void
     {
-        UserAggregate::retrieve($user->id)->dismissNotification($notification->id)->persist();
+        UserAggregate::retrieve($user_id)->dismissNotification($notification_id)->persist();
     }
 
-//    public function authorize(ActionRequest $request): bool
-//    {
-//        return true;
-//    }
-
-    public function asController(ActionRequest $request, Notification $notification): int
+    public function asController(ActionRequest $request, string $id): int
     {
-        $this->handle(
-            $notification,
-        );
+        $user_id = $request->user()->id;
+        $this->handle((string) $user_id, $id);
 
-        return GetUnreadNotificationCount::run($request->user());
+        return GetUnreadNotificationCount::run($user_id);
+    }
+
+    public function jsonResponse(int $unread_notification_count): JsonResponse
+    {
+        return new JsonResponse(['count' => $unread_notification_count]);
     }
 
     //command for ez development testing
     public function asCommand(Command $command): void
     {
-        $notification = Notification::findOrFail($command->argument('id'));
-        $this->handle(
-            $notification,
-            User::findOrFail($notification->user->id)
-        );
+        $this->handle($command->argument('user_id'), $command->argument('id'));
         $command->info('Notification Dismissed');
     }
 }

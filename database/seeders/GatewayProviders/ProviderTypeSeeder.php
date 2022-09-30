@@ -25,6 +25,7 @@ class ProviderTypeSeeder extends Seeder
             'crm' => 'Gateways that manage EndUser and Employee Resources',
             'prospect' => 'Gateways that manage Prospects and Leads',
             'analytics' => 'Gateways that Manage Trackers and Resource Data',
+            'chat' => 'Gateways that handles chats',
         ];
 
         foreach ($types as $slug => $desc) {

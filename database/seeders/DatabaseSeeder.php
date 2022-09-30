@@ -9,7 +9,10 @@ use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\LocationSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
+use Database\Seeders\Comm\CallScriptTemplateSeeder;
+use Database\Seeders\Comm\DripCampaignSeeder;
 use Database\Seeders\Comm\EmailTemplateSeeder;
+use Database\Seeders\Comm\ScheduledCampaignSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
@@ -132,6 +135,10 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running SMS Template  Seeder');
         $this->call(SMSTemplateSeeder::class);
 
+        // Baby's First SMS Templates are Seeded for each client
+        VarDumper::dump('Running Call Script Template  Seeder');
+        $this->call(CallScriptTemplateSeeder::class);
+
         // CalendarEventType Seeder
         VarDumper::dump('Running Calender Event Type Seeder');
         $this->call(CalendarEventTypeSeeder::class);
@@ -140,6 +147,16 @@ class DatabaseSeeder extends Seeder
         if (env('SEED_CALENDAR_EVENTS', false) === true) {
             VarDumper::dump('Running Calender Event Seeder');
             $this->call(CalendarEventSeeder::class);
+        }
+
+        if (env('SEED_CALENDAR_EVENTS', false) === true) {
+            VarDumper::dump('Running Scheduled Campaign Seeder');
+            $this->call(ScheduledCampaignSeeder::class);
+        }
+
+        if (env('SEED_CALENDAR_EVENTS', false) === true) {
+            VarDumper::dump('Running Drip Campaign Seeder');
+            $this->call(DripCampaignSeeder::class);
         }
     }
 }

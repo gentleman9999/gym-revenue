@@ -22,7 +22,7 @@ class ScheduledCampaignProjector extends Projector
         $scheduledCampaign->fill($event->payload);
         $scheduledCampaign->id = $event->aggregateRootUuid();
         $scheduledCampaign->client_id = $event->payload['client_id'];
-        $scheduledCampaign->status = CampaignStatusEnum::DRAFT;
+        //$scheduledCampaign->status = CampaignStatusEnum::DRAFT;
         $scheduledCampaign->save();
     }
 

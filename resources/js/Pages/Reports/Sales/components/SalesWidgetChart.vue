@@ -29,7 +29,7 @@ const options = {
         "hsl(var(--wa))",
         "hsl(var(--er))",
         "hsl(var(--in))",
-        "var(--color-neutral-300)",
+        "hsl(var(--a))",
     ],
     legend: {
         show: false,

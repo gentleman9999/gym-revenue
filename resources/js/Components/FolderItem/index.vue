@@ -5,10 +5,13 @@
             'folder-desktop': props.mode === 'desktop',
             'folder-list': props.mode === 'list',
         }"
+        :draggable="true"
+        @dragstart="handleDrag($event)"
         @contextmenu="$event.preventDefault()"
-        @dragover="$event.preventDefault()"
-        @dragenter="$event.preventDefault()"
+        @dragover="preventDragDefault($event)"
+        @dragenter="preventDragDefault($event)"
         @drop="handleDrop()"
+        @dblclick="browseFolder()"
     >
         <folder-icon
             :icon-size="iconSize"
@@ -31,13 +34,12 @@
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
             :handleShare="handleShare"
-            :handleBrowse="browseFolder"
         />
     </div>
 </template>
 <style scoped>
 .folder {
-    @apply relative cursor-pointer;
+    @apply relative cursor-pointer select-all;
 }
 .folder:-moz-drag-over {
     @apply bg-primary/50;
@@ -114,6 +116,8 @@ const handleClick = (event) => {
         browseFolder();
         return;
     }
+    if (event.buttons !== 2) return;
+
     event.preventDefault();
     event.stopPropagation();
     subMenu.value.focus();
@@ -135,17 +139,29 @@ const foldername = computed({
     },
 });
 
-const selectedFile = ref(null);
+const selectedItem = ref(null);
 const handleDrop = () => {
-    props.moveFileToFolder(selectedFile.value, props.folder.id);
+    if (selectedItem.value.type === "file") {
+        props.moveFileToFolder(selectedItem.value.data.id, props.folder.id);
+    }
 };
 
 const setFile = (data) => {
-    selectedFile.value = data[0];
+    selectedItem.value = data[0];
 };
 
-const { bus } = useEventsBus();
-watch(() => bus.value.get("select_file"), setFile);
+const { emit, bus } = useEventsBus();
+watch(() => bus.value.get("selected_item"), setFile);
+
+const handleDrag = (e) => {
+    emit("selected_item", { type: "folder", data: props.folder });
+};
+
+const preventDragDefault = (e) => {
+    if (selectedItem.value.type === "file") {
+        e.preventDefault();
+    }
+};
 
 const browseFolder = () => {
     // TODO browse to the folder

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="gr-dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <footer class="bg-base-200 p-2 text-gray-400 w-full">
+        <footer class="bg-base-200 p-2 text-base-content opacity-60 w-full">
 
             <div class="text-muted ml-auto mr-auto text-center">
                 <div class="inner-footer">
@@ -35,4 +35,10 @@
             <!-- <script src="http://localhost:3000/browser-sync/browser-sync-client.js"></script> -->
         @endenv
     </body>
+    <script>
+        let theme = localStorage.getItem("theme")
+        if (theme) {
+            document.getElementsByTagName("html")[0].dataset.theme=theme;
+        }
+    </script>
 </html>

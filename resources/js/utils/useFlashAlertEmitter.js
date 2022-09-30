@@ -30,7 +30,7 @@ export const useFlashAlertEmitter = () => {
                         typeof text === "string" && text.length > 0
                             ? text
                             : "Feature Coming Soon!";
-                    generateToast(type, toastText);
+                    generateToast(toastText, { type });
                 });
             });
         },

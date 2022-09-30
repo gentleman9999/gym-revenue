@@ -8,7 +8,7 @@
         noHeader
     >
         <template #thead>
-            <thead class="text-secondary bg-neutral-900">
+            <thead class="text-secondary bg-neutral">
                 <th></th>
                 <th>Name</th>
                 <th>Unit(s) Sold</th>

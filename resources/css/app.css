@@ -12,6 +12,10 @@
         @apply relative bg-gradient-to-b from-base-300 to-base-100;
     }
 
+    .totalcenter {
+        @apply flex flex-col items-center justify-center;
+    }
+
     /* Apply defaults to forms */
     [type="text"] {
         @apply input input-bordered border-2;
@@ -70,6 +74,7 @@
 .dp__input {
     @apply input;
 }
+
 .dp__disabled {
     @apply !bg-base-300;
 }
@@ -77,11 +82,11 @@
 * {
     --fc-neutral-bg-color: hsla(var(--n) / var(--tw-bg-opacity, 1));
     --fc-list-event-dot-width: 10px;
-    --fc-list-event-hover-bg-color: theme("colors.primary.500");
+    --fc-list-event-hover-bg-color: hsl(var(--p));
     --fc-neutral-bg-color: hsla(var(--s) / var(--tw-bg-opacity, 0.5));
-    --fc-page-bg-color: theme("colors.base-200");
-    --fc-list-event-hover-bg-color: theme("colors.primary.500");
-    --fc-event-border-color: theme("colors.neutral.500");
+    --fc-page-bg-color: hsl(var(--bc));
+    --fc-list-event-hover-bg-color: hsl(var(--p));
+    --fc-event-border-color: hsl(var(--n));
     --fc-border-color: hsla(var(--bc) / var(--tw-bg-opacity, 0.3));
     --fc-today-bg-color: hsla(var(--p) / var(--tw-bg-opacity, 0.3));
 }
@@ -96,7 +101,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply border rounded-lg bg-neutral-300 border-neutral-500;
+    @apply border rounded-lg bg-secondary border-neutral;
 }
 
 .tabledata .badge {

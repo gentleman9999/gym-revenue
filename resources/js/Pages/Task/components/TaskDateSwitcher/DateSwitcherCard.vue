@@ -15,7 +15,7 @@
         @apply bg-secondary text-base-content;
     }
 
-    @apply flex flex-col w-24 rounded border border-secondary text-base-content bg-base-300 font-bold text-center cursor-pointer;
+    @apply flex flex-col w-24 rounded border border-secondary text-base-content bg-base-100 font-bold text-center cursor-pointer;
 }
 .switcher-date {
     @apply text-5xl pt-2.5;

@@ -150,9 +150,9 @@ export const transformDayTemplate = (src) => {
                 ? src?.sms_template_id
                 : false,
         call:
-            typeof src?.client_call_script === "string" &&
-            src?.client_call_script !== "0"
-                ? { message: src?.client_call_script }
+            typeof src?.call_template_id === "string" &&
+            src?.call_template_id !== "0"
+                ? src?.call_template_id
                 : false,
         day_in_campaign:
             typeof src?.day_of_campaign === "number"

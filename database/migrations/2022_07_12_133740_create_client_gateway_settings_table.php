@@ -15,7 +15,7 @@ return new class () extends Migration {
         Schema::create('client_gateway_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('client_id');
-            $table->string('gateway_provider');
+            $table->uuid('gateway_provider');
             $table->string('name')->nullable();
             $table->string('value')->nullable();
             $table->timestamps();

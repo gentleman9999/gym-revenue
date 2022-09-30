@@ -28,6 +28,8 @@ class CreateCalendarEventsTable extends Migration
             $table->dateTime('event_completion')->nullable();
             $table->uuid('location_id')->nullable();
             $table->index(['client_id', 'event_type_id']);
+            $table->boolean('editable')->default(true);
+            $table->boolean('call_task')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

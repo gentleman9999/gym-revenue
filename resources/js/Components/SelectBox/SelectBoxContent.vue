@@ -5,6 +5,6 @@
 </template>
 <style scoped>
 .select-box-content {
-    @apply bg-neutral-300 border border-secondary rounded cursor-pointer py-2 absolute z-20 right-0;
+    @apply bg-base-200 border border-secondary rounded cursor-pointer py-2 absolute z-20 right-0;
 }
 </style>

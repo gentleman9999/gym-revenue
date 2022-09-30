@@ -12,19 +12,18 @@
                 <h1 class="text-secondary text-2xl mr-4">Sources</h1>
                 <button
                     @click="() => (entityTab = 'leads')"
-                    class="text-secondary md:text-lg px-2 py-1 border-secondary border rounded-md"
+                    class="text-primary-content md:text-lg px-2 py-1 border-secondary border rounded-md"
                     :class="{
-                        'text-base-content bg-secondary': entityTab === 'leads',
+                        'bg-secondary': entityTab === 'leads',
                     }"
                 >
                     Leads
                 </button>
                 <button
                     @click="() => (entityTab = 'members')"
-                    class="text-secondary md:text-lg px-2 py-1 border-secondary border rounded-md ml-2"
+                    class="text-primary-content md:text-lg px-2 py-1 border-secondary border rounded-md ml-2"
                     :class="{
-                        'text-base-content bg-secondary':
-                            entityTab === 'members',
+                        'bg-secondary': entityTab === 'members',
                     }"
                 >
                     Members
@@ -133,7 +132,7 @@ const entityTab = ref(
         ? "members"
         : "leads"
 );
-const titleVal = ref(props?.audience?.title);
+const titleVal = ref(props?.audience?.title ?? "");
 const loading = ref(false);
 const leadTypes = ref(props.leadTypes);
 const membershipTypes = ref(props.membershipTypes);
@@ -176,6 +175,11 @@ const handleSaveCheck = () => {
  * Attempt to save the modifications on the back end
  */
 const handleSave = async () => {
+    if (typeof saveDisabled === "string") {
+        toastError(saveDisabled);
+        return;
+    }
+
     try {
         let filters = { lead_type_id: selectedIds.value };
         let entity = "App\\Domain\\EndUsers\\Leads\\Projections\\Lead";

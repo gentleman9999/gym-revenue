@@ -18,7 +18,9 @@
                     stroke-linejoin="round"
                 ></path>
             </svg>
-            <div class="badge badge-error">{{ unreadCount }}</div>
+            <div class="badge badge-error text-base-content">
+                {{ unreadCount }}
+            </div>
         </button>
 
         <div

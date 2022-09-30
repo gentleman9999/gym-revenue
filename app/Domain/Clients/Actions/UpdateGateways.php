@@ -33,6 +33,7 @@ class UpdateGateways
             'twilioSID' => ['sometimes', 'string', 'nullable'],
             'twilioToken' => ['sometimes', 'string', 'nullable'],
             'twilioNumber' => ['sometimes', 'string', 'nullable'],
+            'twilioConversationServiceSID' => ['sometimes', 'string', 'nullable'],
         ];
     }
 

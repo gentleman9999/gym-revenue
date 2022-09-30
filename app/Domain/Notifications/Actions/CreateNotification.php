@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notifications\Actions;
 
+use App\Domain\Notifications\Notification;
+use App\Domain\Notifications\Validations\NotifiableInterface;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 use App\Support\Uuid;
@@ -30,27 +34,35 @@ class CreateNotification
         ];
     }
 
-    public function handle($data, $user): void
+    public function handle(array $data, User $user): void
     {
-        $id = Uuid::new();
-        $data['id'] = $id;
+        // Default payloads if not specified.
+        $data += [
+            'id' => (string) Uuid::new(),
+            'state' => Notification::STATE_DEFAULT,
+            'type' => Notification::TYPE_DEFAULT,
+        ];
 
-        UserAggregate::retrieve($user->id)
+        // This is a simple validation to assert that all required argument needed for an entity is specified.
+        // Example. CalendarEvent requires that "entity" should have "start" and "title" property.
+        if (isset($data['entity_type']) && (($entity = $data['entity_type']) instanceof NotifiableInterface)) {
+            /** @var $entity NotifiableInterface */
+            $entity->entityDataValidation($data);
+        }
+
+        UserAggregate::retrieve((string) $user->id)
             ->createNotification($data)
             ->persist();
-
-//        return Notification::findOrFail($id);
     }
 
     //command for ez development testing
     public function asCommand(Command $command): void
     {
         $this->handle(
-            [
-            'text' => $command->argument('text'),
-        ],
+            ['text' => $command->argument('text')],
             User::findOrFail($command->argument('user_id'))
         );
+
         $command->info('Notification Created');
     }
 }

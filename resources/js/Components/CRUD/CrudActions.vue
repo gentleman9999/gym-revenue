@@ -9,7 +9,7 @@
         <slot>
             <ul
                 tabindex="0"
-                class="p-2 shadow menu dropdown-content bg-base-300 rounded-box w-52"
+                class="p-2 shadow menu dropdown-content text-base-content bg-base-300 rounded-box w-52"
             >
                 <li v-for="[key, action] in Object.entries(actions)" :key="key">
                     <a

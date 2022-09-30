@@ -3,6 +3,7 @@
 namespace App\Domain\Reminders;
 
 use App\Domain\Notifications\Actions\CreateNotification;
+use App\Domain\Notifications\Notification;
 use App\Domain\Reminders\Events\ReminderTriggered;
 use App\Domain\Users\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +26,7 @@ class ReminderReactor extends Reactor implements ShouldQueue
             'text' => "Reminder",
             'entity_type' => $reminder->entity_type,
             'entity' => $entity ,
-            'type' => 'CALENDAR_EVENT_REMINDER',
+            'type' => Notification::TYPE_CALENDAR_EVENT_REMINDER,
             //TODO:we prob dont need to store text, since the UI should be build
             // the the view based on entity_type and the entity's data
             'misc' => [

@@ -16,7 +16,7 @@
 </template>
 <style scoped>
 .kpi-table {
-    @apply max-h-60 text-neutral-450;
+    @apply max-h-60 text-neutral-content;
 }
 @media only screen and (max-width: 768px) {
     .kpi-table {

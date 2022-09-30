@@ -26,7 +26,7 @@ const options = {
     },
     labels: ["Calls", "Meetings", "Success", "Leads"],
     colors: [
-        "var(--color-neutral-300)",
+        "hsl(var(--bc))",
         "hsl(var(--s))",
         "hsl(var(--a))",
         "hsl(var(--wa))",

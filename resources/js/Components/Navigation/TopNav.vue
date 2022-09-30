@@ -88,6 +88,21 @@
                     <div class="ml-3 relative">
                         <settings-dropdown :logout="logout" />
                     </div>
+                    <!--                    hidden until we enable themes.-->
+                    <!--                    <div>-->
+                    <!--                        <button @click="toggleTheme">-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                v-if="theme === 'light'"-->
+                    <!--                                :icon="['fa', 'sun']"-->
+                    <!--                                size="md"-->
+                    <!--                            />-->
+                    <!--                            <font-awesome-icon-->
+                    <!--                                v-if="theme === 'dark'"-->
+                    <!--                                :icon="['fa', 'moon']"-->
+                    <!--                                size="md"-->
+                    <!--                            />-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
                 </div>
                 <!-- Hamburger -->
                 <div class="flex items-center lg:hidden">
@@ -142,6 +157,8 @@ import {
     faSearch,
     faTh,
     faUserCircle,
+    faSun,
+    faMoon,
 } from "@fortawesome/pro-solid-svg-icons";
 import { faFileMedical } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -161,7 +178,9 @@ library.add(
     faPlusCircle,
     faQuestionCircle,
     faTh,
-    faUserCircle
+    faUserCircle,
+    faSun,
+    faMoon
 );
 
 export default defineComponent({
@@ -189,11 +208,22 @@ export default defineComponent({
         const toggleSideNav = () => {
             emit("toggleSideNav");
         };
+        const theme = ref(localStorage.getItem("theme") || "dark");
+
+        const toggleTheme = () => {
+            theme.value = theme.value === "dark" ? "light" : "dark";
+            localStorage.setItem("theme", theme.value);
+            document.getElementsByTagName("html")[0].dataset.theme =
+                theme.value;
+        };
+
         return {
             showingNotificationDropdown,
             logout,
             comingSoon,
             toggleSideNav,
+            theme,
+            toggleTheme,
         };
     },
 });

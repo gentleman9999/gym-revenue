@@ -23,12 +23,13 @@
                 <multiselect
                     :id="option.key"
                     v-model="form.sharing[option.key]"
-                    class="bg-neutral-800 text-neutral-100 py-2"
+                    class="bg-neutral text-neutral py-2"
                     mode="tags"
                     :close-on-select="false"
                     :create-option="true"
                     :options="option.options"
                     :classes="multiselectClasses"
+                    :searchable="true"
                 />
             </div>
             <jet-input-error :message="form.errors.sharing" class="mt-2" />
@@ -46,7 +47,11 @@
         </template>
     </jet-form-section>
 </template>
-
+<style>
+.focus\:shadow-none:focus {
+    box-shadow: none !important;
+}
+</style>
 <script setup>
 import { defineEmits, computed } from "vue";
 

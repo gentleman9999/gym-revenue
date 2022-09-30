@@ -182,7 +182,7 @@ import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses, getFormObjectFromData } from "@/utils";
-import { generateToast } from "@/utils/createToast";
+import { toastWarning } from "@/utils/createToast";
 
 export default {
     components: {
@@ -228,10 +228,7 @@ export default {
         const form = useForm(campaign);
 
         const handleCampaignLaunched = () => {
-            generateToast(
-                "warning",
-                "Woops! This campaign has launched.  Reloading..."
-            );
+            toastWarning("Woops! This campaign has launched.  Reloading...");
             Inertia.reload({ preserveState: true, preserveScroll: true });
         };
 

@@ -3,12 +3,15 @@
 namespace App\Domain\Users\Models;
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Conversations\Twilio\Models\ClientConversation;
+use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -26,9 +28,14 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Silber\Bouncer\Database\Role;
 
 /**
- * @property string $phone
- * @property string $client_id
- * @property int    $id
+ * @property string                         $phone
+ * @property string                         $client_id
+ * @property int                            $id
+ * @property string                         $last_name
+ * @property string                         $first_name
+ * @property string                         $name       Full name
+ * @property Client                         $client
+ * @property Collection<ClientConversation> $twilioClientConversation
  */
 class User extends Authenticatable
 {
@@ -162,6 +169,11 @@ class User extends Authenticatable
         return $this->hasMany(File::class, 'user_id', 'id');
     }
 
+    public function twilioClientConversation(): HasMany
+    {
+        return $this->hasMany(ClientConversation::class, 'user_id', 'id');
+    }
+
     public function contact_preference(): HasOne
     {
         return $this->detail()->where('field', '=', 'contact_preference');
@@ -286,7 +298,7 @@ class User extends Authenticatable
 
     public function departments(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Domain\Departments\Department::class, 'user_department', 'user_id', 'department_id');
+        return $this->belongsToMany(Department::class, 'user_department', 'user_id', 'department_id');
     }
 
     public function positions(): BelongsToMany

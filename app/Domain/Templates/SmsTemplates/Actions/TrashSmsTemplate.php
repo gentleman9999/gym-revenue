@@ -2,7 +2,7 @@
 
 namespace App\Domain\Templates\SmsTemplates\Actions;
 
-use App\Domain\Campaigns\DripCampaigns\SmsTemplate;
+use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Templates\SmsTemplates\SmsTemplateAggregate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -25,13 +25,13 @@ class TrashSmsTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('mass-comms.sms-templates.create', SmsTemplate::class);
+        return $current_user->can('sms-templates.create', SmsTemplate::class);
     }
 
     public function asController(ActionRequest $request, SmsTemplate $smsTemplate): SmsTemplate
     {
         return $this->handle(
-            $smsTemplate->id,
+            $smsTemplate,
         );
     }
 

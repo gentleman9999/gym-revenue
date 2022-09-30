@@ -26,7 +26,7 @@ class ScheduledCampaign extends Projection
 
     protected $hidden = ['client_id'];
 
-    protected $fillable = ['name', 'audience_id', 'send_at', 'email_template_id', 'sms_template_id', 'client_call_script', 'template_type', 'template_id'];
+    protected $fillable = ['name', 'audience_id', 'send_at', 'email_template_id', 'sms_template_id', 'call_template_id', 'template_type', 'template_id'];
 
     protected $appends = ['is_published', 'can_publish', 'can_unpublish', 'daysCount'];
 

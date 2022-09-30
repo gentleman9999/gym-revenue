@@ -1,5 +1,11 @@
 <template>
-    <div class="folder-icon-wrapper">
+    <div
+        class="folder-icon-wrapper"
+        :class="{
+            'w-9 flex justify-center': iconSize == '2x',
+            'w-min': iconSize == '3x',
+        }"
+    >
         <font-awesome-icon
             icon="folder"
             :size="iconSize"
@@ -9,7 +15,7 @@
 </template>
 <style scoped>
 .folder-icon-wrapper {
-    @apply relative w-min;
+    @apply relative;
 }
 </style>
 <script setup>

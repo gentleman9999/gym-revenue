@@ -19,7 +19,7 @@ return new class () extends Migration {
             $table->string('name');
             $table->string('email_template_id')->nullable();
             $table->string('sms_template_id')->nullable();
-            $table->string('client_call_script')->nullable();
+            $table->string('call_template_id')->nullable();
             $table->timestamp('send_at');
             $table->timestamp('completed_at')->nullable();
             $table->string('status')->nullable();

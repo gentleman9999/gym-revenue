@@ -18,7 +18,7 @@ class DripCampaignDay extends GymRevProjection
     public mixed $dayOfCampaign;
     protected $hidden = ['client_id'];
 
-    protected $fillable = ['drip_campaign_id', 'day_of_campaign', 'email_template_id', 'sms_template_id', 'client_call_script'];
+    protected $fillable = ['drip_campaign_id', 'day_of_campaign', 'email_template_id', 'sms_template_id', 'call_template_id'];
 
     public function dripCampaignDay(): BelongsTo
     {

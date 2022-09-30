@@ -2,8 +2,8 @@
 
 namespace App\Domain\Templates\EmailTemplates\Actions;
 
-use App\Domain\Campaigns\DripCampaigns\EmailTemplate;
 use App\Domain\Templates\EmailTemplates\EmailTemplateAggregate;
+use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -25,13 +25,13 @@ class TrashEmailTemplate
     {
         $current_user = $request->user();
 
-        return $current_user->can('mass-comms.email-templates.create', EmailTemplate::class);
+        return $current_user->can('email-templates.trash', EmailTemplate::class);
     }
 
-    public function asController(ActionRequest $request, EmailTemplate $emailTemplate): EmailTemplate
+    public function asController(EmailTemplate $emailTemplate): EmailTemplate
     {
         return $this->handle(
-            $emailTemplate->id,
+            $emailTemplate,
         );
     }
 

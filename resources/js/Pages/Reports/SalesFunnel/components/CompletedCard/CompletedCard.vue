@@ -60,7 +60,7 @@ const data = [
         percent: 23,
     },
     {
-        class: "badge bg-neutral-300",
+        class: "badge bg-base-content",
         key: "calls",
         label: "Calls",
         percent: 34,

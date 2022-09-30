@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\GatewayProviders\Voice;
 
+use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Users\Models\User;
-use App\Models\GatewayProviders\ClientGatewayIntegration;
 use App\Models\GatewayProviders\GatewayProviderType;
 use App\Services\GatewayProviders\Exceptions\GatewayProviderException;
 use App\Services\GatewayProviders\GatewayProviderService;

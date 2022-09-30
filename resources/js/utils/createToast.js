@@ -12,25 +12,11 @@ const opt = (added) => Object.assign(defaults, added);
 
 /**
  *
- * @param {string} kind type of toast with a default of 'info'
  * @param {string} text message supplied to toast window with a default if supplied value is nullish
  * @param {object?} opts override default options
  */
-export const generateToast = (kind, text, opts = {}) => {
-    let toastType =
-        kind === "warning"
-            ? "warning"
-            : kind === "error"
-            ? "error"
-            : kind === "success"
-            ? "success"
-            : "info";
-    let toastText =
-        typeof text === "string" && text.length > 0
-            ? text
-            : "You Can't Do That!";
-    let component = useToast();
-    return component(toastText, { type: toastType, ...opt(opts) });
+export const generateToast = (text, opts = {}) => {
+    return useToast()(text, opt(opts));
 };
 
 /**

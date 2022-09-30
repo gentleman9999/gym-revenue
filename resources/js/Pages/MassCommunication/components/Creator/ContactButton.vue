@@ -25,7 +25,7 @@
         <button
             v-if="hovered && active"
             @click="$emit('reset')"
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 text-sm px-2 py-0 bg-neutral-800 border-red-500 border hover:bg-red-500 rounded-md"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 text-sm px-2 py-0 bg-neutral border-red-500 border hover:bg-red-500 rounded-md"
         >
             Reset
         </button>

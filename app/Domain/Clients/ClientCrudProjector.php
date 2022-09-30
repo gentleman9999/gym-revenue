@@ -7,6 +7,7 @@ use App\Domain\Clients\Events\ClientDeleted;
 use App\Domain\Clients\Events\ClientRestored;
 use App\Domain\Clients\Events\ClientTrashed;
 use App\Domain\Clients\Events\ClientUpdated;
+use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Clients\Projections\Client;
@@ -17,7 +18,6 @@ use App\Models\ClientEmailLog;
 use App\Models\Clients\ClientBillableActivity;
 use App\Models\Clients\Features\ClientService;
 use App\Models\ClientSmsLog;
-use App\Models\GatewayProviders\ClientGatewayIntegration;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class ClientCrudProjector extends Projector
