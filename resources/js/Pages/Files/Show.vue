@@ -29,6 +29,9 @@
     </div>
 
     <!-- Section for Modals -->
+    <daisy-modal id="confirmModal" ref="confirmModal">
+        <confirm-modal :data="item2Remove" @success="confirmTrash" />
+    </daisy-modal>
     <daisy-modal
         id="renameModal"
         ref="renameModal"
@@ -72,11 +75,11 @@
     @apply flex flex-row justify-between items-center;
 }
 
-.nav-desktop {
+.row.nav-desktop {
     @apply hidden md:flex;
 }
 
-.nav-mobile {
+.row.nav-mobile {
     @apply flex md:hidden mt-2;
 }
 </style>
@@ -96,6 +99,7 @@ import FileActions from "./Partials/FileActions.vue";
 import FileContents from "./Partials/FileContents.vue";
 import FileSearch from "./Partials/FileSearch.vue";
 import FileNav from "./Partials/FileNav.vue";
+import ConfirmModal from "./Partials/ConfirmModal.vue";
 const props = defineProps({
     sessions: {
         type: Array,
@@ -121,6 +125,7 @@ const props = defineProps({
 const selectedItem = ref(null);
 const selectedItemPermissions = ref(null);
 const folder2Share = ref(null);
+const item2Remove = ref(null);
 
 const handleRename = (data, type) => {
     selectedItem.value = data;
@@ -135,16 +140,29 @@ const handleShare = (data) => {
 };
 
 const handleTrash = (data, type) => {
-    if (type === "file") {
-        Inertia.delete(route("files.trash", data.id));
+    confirmModal.value.open();
+    item2Remove.value = {
+        name: type === "file" ? data.filename : data.name,
+        id: data.id,
+        type: type,
+        count: data.files?.length,
+    };
+};
+
+const confirmTrash = () => {
+    let id = item2Remove.value.id;
+    if (item2Remove.value.type === "file") {
+        Inertia.delete(route("files.trash", id));
     } else {
-        Inertia.delete(route("folders.delete", data.id));
+        Inertia.delete(route("folders.delete", id));
     }
+    confirmModal.value.close();
 };
 
 const renameModal = ref(null);
 const permissionsModal = ref(null);
 const shareModal = ref(null);
+const confirmModal = ref(null);
 
 watchEffect(() => {
     if (selectedItem.value) {
@@ -154,7 +172,6 @@ watchEffect(() => {
         permissionsModal.value.open();
     }
     if (folder2Share.value) {
-        // console.log("folder to share")
         shareModal.value.open();
     }
 });

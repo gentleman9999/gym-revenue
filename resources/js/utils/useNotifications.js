@@ -49,7 +49,7 @@ Promise.all([getInitialValues]);
 
 const dismissNotification = async (id) => {
     const response = await axios.post(route("notifications.dismiss", id));
-    const newUnreadCount = response.data;
+    const newUnreadCount = response.data.count;
     console.log({ response, newUnreadCount });
     unreadCount.value = newUnreadCount;
 };

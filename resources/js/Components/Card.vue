@@ -9,7 +9,7 @@
         <div
             class="flex flex-row justify-between items-start mb-3"
             :class="{
-                'border-b border-neutral-500': options.borderedTitle,
+                'border-b border-neutral': options.borderedTitle,
             }"
         >
             <!-- Can use one of them to display header -->
@@ -93,7 +93,7 @@ const props = defineProps({
 });
 const derivedClass = computed({
     get() {
-        return `px-4 py-3 border border-secondary rounded bg-neutral-900 relative mb-3 ${
+        return `px-4 py-3 border border-secondary rounded bg-neutral relative mb-3 ${
             props.class
         } ${props.label ? "mt-9" : ""}`;
     },

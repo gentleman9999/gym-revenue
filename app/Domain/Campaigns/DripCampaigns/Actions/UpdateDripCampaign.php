@@ -34,7 +34,7 @@ class UpdateDripCampaign
                 $dayData['day_of_campaign'] = $day['day_in_campaign'];
                 $dayData['email_template_id'] = $day['email'];
                 $dayData['sms_template_id'] = $day['sms'];
-                $dayData['client_call_script'] = $day['call'];
+                $dayData['call_template_id'] = $day['call'];
                 if (! array_key_exists('id', $day)) {
                     //new day
                     $dayData['drip_campaign_id'] = $dripCampaign->id;

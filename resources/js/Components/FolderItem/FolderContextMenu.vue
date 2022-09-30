@@ -3,12 +3,11 @@
         <li @click="handleTrash">Trash</li>
         <li @click="handleRename">Rename</li>
         <li @click="handleShare">Share</li>
-        <li @click="handleBrowse()">Look Up</li>
     </ul>
 </template>
 <style scoped>
 .folder-submenu {
-    @apply absolute py-2 shadow bg-base-300 rounded-md w-52 opacity-0 flex flex-col pointer-events-none;
+    @apply absolute py-2 shadow bg-base-100 rounded-md w-0 opacity-0 flex flex-col pointer-events-none;
     top: 50%;
     left: 40px;
     li {
@@ -16,7 +15,7 @@
     }
 }
 :focus {
-    @apply opacity-100 z-10 pointer-events-auto;
+    @apply opacity-100 z-10 pointer-events-auto w-52;
 }
 </style>
 <script setup>

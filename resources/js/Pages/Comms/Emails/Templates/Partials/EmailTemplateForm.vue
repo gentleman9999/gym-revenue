@@ -1,7 +1,7 @@
 <template>
     <email-builder
         @onSave="handleOnSave"
-        @onSaveAndClose="handleOnSaveAndClose"
+        @onSaveAndClose="handleOnSave"
         @onClose="handleOnClose"
         :json="template?.json || null"
         :title="template?.name || undefined"
@@ -119,15 +119,8 @@ export default {
                         {
                             headers: { "X-Inertia-Modal-Redirect": true },
                             // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
-                            onFinish: () => {
-                                if (closeAfterSave.value) {
-                                    console.log(
-                                        "closeAfterSave",
-                                        closeAfterSave.value,
-                                        inertiaModal.value
-                                    );
-                                    handleOnClose();
-                                }
+                            onFinish: ({ data }) => {
+                                emit("done", data);
                             },
                         }
                     );
@@ -142,13 +135,8 @@ export default {
                             form.dirty().data()
                         )
                         .then(({ data }) => {
-                            console.log(
-                                "closeAfterSave",
-                                closeAfterSave.value,
-                                inertiaModal.value
-                            );
                             isProcessing.value = false;
-                            handleOnClose(data);
+                            emit("done", data);
                         });
                 }
             }
@@ -159,11 +147,8 @@ export default {
                     if (props.useInertia) {
                         form.post(route("mass-comms.email-templates.store"), {
                             headers: { "X-Inertia-Modal-Redirect": true },
-                            onSuccess: () => {
-                                console.log("onSuccess-Create!");
-                                if (closeAfterSave.value) {
-                                    handleOnClose();
-                                }
+                            onSuccess: ({ data }) => {
+                                emit("done", data);
                             },
                         });
                     } else {
@@ -176,7 +161,7 @@ export default {
                             .then(({ data }) => {
                                 console.log("onSuccess-Create!");
                                 isProcessing.value = false;
-                                handleOnClose(data);
+                                emit("done", data);
                             });
                     }
                 }
@@ -210,7 +195,7 @@ export default {
                     Inertia.visit(route("mass-comms.email-templates"));
                 }
             } else {
-                emit("done", template);
+                emit("cancel", template);
             }
         };
 

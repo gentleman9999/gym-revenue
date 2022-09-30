@@ -125,13 +125,24 @@ export default {
                     .then(({ data }) => {
                         console.log("closeAfterSave", data);
                         emit("done", data);
+                    })
+                    .catch((err) => {
+                        emit("error", err);
                     });
             }
         };
         if (operation === "Create") {
             if (props.useInertia) {
                 handleSubmit = () =>
-                    form.post(route("mass-comms.sms-templates.store"));
+                    form
+                        .post(route("mass-comms.sms-templates.store"))
+                        .then(({ data }) => {
+                            console.log("closeAfterSave", data);
+                            emit("done", data);
+                        })
+                        .catch((err) => {
+                            emit("error", err);
+                        });
             } else {
                 handleSubmit = () =>
                     axios
@@ -142,6 +153,9 @@ export default {
                         .then(({ data }) => {
                             console.log("closeAfterSave", data);
                             emit("done", data);
+                        })
+                        .catch((err) => {
+                            emit("error", err);
                         });
             }
         }

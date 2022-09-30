@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Notifications;
 
 use App\Domain\Notifications\Events\NotificationCreated;
@@ -19,8 +21,6 @@ class NotificationProjector extends Projector
 
     public function onNotificationDismissed(NotificationDismissed $event): void
     {
-        $notification = Notification::find($event->id);
-        $notification->deleted_at = $event->createdAt();
-        $notification->save();
+        Notification::find($event->id)->writeable()->delete();
     }
 }

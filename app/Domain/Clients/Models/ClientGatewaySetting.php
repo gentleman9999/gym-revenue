@@ -10,7 +10,12 @@ class ClientGatewaySetting extends GymRevProjection
 {
     use HasFactory;
 
-    protected $fillable = ['gateway_provider', 'name', 'value'];
+    protected $fillable = [
+        'gateway_provider',
+        'name',
+        'value',
+        'client_id',
+    ];
 
     protected $hidden = ['client_id'];
 

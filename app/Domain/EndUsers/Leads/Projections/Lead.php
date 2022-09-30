@@ -2,6 +2,7 @@
 
 namespace App\Domain\EndUsers\Leads\Projections;
 
+use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\LeadSources\LeadSource;
@@ -17,6 +18,7 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * @property string $primary_phone
+ * @property Client  $client
  */
 class Lead extends EndUser
 {

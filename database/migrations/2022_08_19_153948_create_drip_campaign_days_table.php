@@ -16,9 +16,9 @@ return new class () extends Migration {
             $table->uuid('id')->unique()->primary();
             $table->uuid('drip_campaign_id');
             $table->unsignedInteger('day_of_campaign');
-            $table->uuid('email_template_id')->nullable();
-            $table->uuid('sms_template_id')->nullable();
-            $table->longText('client_call_script')->nullable();
+            $table->string('email_template_id')->nullable();
+            $table->string('sms_template_id')->nullable();
+            $table->string('call_template_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

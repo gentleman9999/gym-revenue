@@ -29,14 +29,14 @@ const options = {
                 x: 0,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
             {
                 x: 7,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
         ],
@@ -45,19 +45,19 @@ const options = {
                 y: 0,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
             {
                 y: 150,
                 strokeDashArray: 0,
                 style: {
-                    color: "var(--color-neutral-500)",
+                    color: "var(--color-neutral)",
                 },
             },
         ],
     },
-    colors: ["var(--color-secondary-500)", "var(--color-secondary-700)"],
+    colors: ["hsl(var(--p))", "hsl(var(--pf))"],
     fill: {
         type: "gradient",
         opacity: 0.7,

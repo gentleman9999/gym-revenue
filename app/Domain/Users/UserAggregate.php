@@ -321,9 +321,9 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function dismissNotification(string $id): static
+    public function dismissNotification(string $notification_id): static
     {
-        $this->recordThat(new NotificationDismissed($id));
+        $this->recordThat(new NotificationDismissed($notification_id));
 
         return $this;
     }

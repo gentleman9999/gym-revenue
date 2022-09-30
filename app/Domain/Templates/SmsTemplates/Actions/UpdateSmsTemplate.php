@@ -24,7 +24,7 @@ class UpdateSmsTemplate
     {
         return [
             'name' => ['string', 'sometimes'],
-            'markup' => ['string', 'sometimes', 'required|max:130'],
+            'markup' => ['string', 'sometimes', 'required', 'max:130'],
         ];
     }
 

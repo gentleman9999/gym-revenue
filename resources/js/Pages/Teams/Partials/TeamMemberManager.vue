@@ -55,6 +55,7 @@
                             addTeamMemberForm.processing ||
                             !addTeamMemberForm.isDirty
                         "
+                        primary
                     >
                         Add
                     </Button>
@@ -93,7 +94,7 @@
                             <div class="flex items-center">
                                 <!-- Cancel Team Invitation -->
                                 <button
-                                    class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
+                                    class="cursor-pointer ml-6 text-sm text-warning/50 focus:outline-none"
                                     @click="cancelTeamInvitation(invitation)"
                                     v-if="userPermissions.canRemoveTeamMembers"
                                 >
@@ -158,7 +159,7 @@
 
                                 <!-- Leave Team -->
                                 <button
-                                    class="cursor-pointer ml-6 text-sm text-red-500"
+                                    class="cursor-pointer ml-6 text-sm text-warning/50"
                                     @click="confirmLeavingTeam"
                                     v-if="$page.props.user.id === user.id"
                                 >
@@ -167,7 +168,7 @@
 
                                 <!-- Remove Team Member -->
                                 <button
-                                    class="cursor-pointer ml-6 text-sm text-red-500"
+                                    class="cursor-pointer ml-6 text-sm text-warning/50"
                                     @click="confirmTeamMemberRemoval(user)"
                                     v-else-if="
                                         userPermissions.canRemoveTeamMembers

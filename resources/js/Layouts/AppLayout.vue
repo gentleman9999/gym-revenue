@@ -7,7 +7,7 @@
             rel="stylesheet"
         />
     </Head>
-    <div class="w-100vw bg-neutral-800">
+    <div class="w-100vw">
         <jet-banner />
         <div class="font-sans antialiased">
             <top-nav
@@ -17,9 +17,7 @@
             <div class="font-sans antialiased">
                 <jet-banner />
 
-                <div
-                    class="lg:flex flex-col lg:flex-row lg:min-h-screen w-full"
-                >
+                <div class="page-body">
                     <!-- Sidebar -->
                     <side-nav
                         @toggle="showingSidebar = !showingSidebar"
@@ -28,9 +26,10 @@
                     <!-- End Sidebar -->
 
                     <div class="w-full relative">
+                        <div id="premaincontent"></div>
                         <!-- Content Container -->
                         <main
-                            class="flex-1 relative z-0 py-6 focus:outline-none"
+                            class="flex-1 relative z-0 pt-6 focus:outline-none"
                             tabindex="0"
                         >
                             <div id="layout-header"></div>
@@ -55,7 +54,7 @@
             </div>
         </div>
     </div>
-    <twilo-ui />
+    <twilio-ui></twilio-ui>
     <InertiaModal>
         <template #default="{ close, props }">
             <DaisyModal
@@ -82,6 +81,10 @@
 .page-leave-to {
     opacity: 0;
 }
+.page-body {
+    @apply lg:flex flex-col lg:flex-row w-full overflow-y-auto;
+    height: calc(100vh - 128px);
+}
 </style>
 
 <script setup>
@@ -100,7 +103,7 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
 import { Head } from "@inertiajs/inertia-vue3";
 
-import TwiloUi from "@/Components/TwiloUi/index.vue";
+import TwilioUi from "@/Components/TwilioUi/index.vue";
 
 const props = defineProps({
     title: {

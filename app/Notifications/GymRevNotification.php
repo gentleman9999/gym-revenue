@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -11,59 +13,55 @@ use Illuminate\Notifications\Notification;
 class GymRevNotification extends Notification implements ShouldBroadcast
 {
     use Queueable;
+    public readonly array $notification_data;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(public readonly int $user_id, public readonly array $notification_data)
+    public function __construct(public readonly int $user_id, array $payload)
     {
-        //
+        // we are wrapping this is a "payload" because laravel have some reserved keys, e.g
+        // "id" and "type", and so type and id gets overridden if specified.
+        $this->notification_data = ['payload' => $payload];
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param object $_
+     *
      * @return array
      */
-    public function via($notifiable)
+    public function via(object $_): array
     {
         //TODO: look at $notifiable (user) and figure out which channel to broadcast on based on their preferences.
-//        return ['mail'];
         return ['broadcast'];
     }
 
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @param object $_
+     *
+     * @return MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(object $_): MailMessage
     {
         return (new MailMessage())
-                    ->line("You've got a generic notification!")
+                    ->line('You\'ve got a generic notification!')
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using Gym Revenue!');
     }
 
     /**
-     * Get the array representation of the notification.
+     * @param object $_
      *
-     * @param  mixed  $notifiable
-     * @return array
+     * @return BroadcastMessage
      */
-//    public function toArray($notifiable)
-//    {
-//        return [
-//            //
-//        ];
-//    }
-
-    public function toBroadcast($notifiable): BroadcastMessage
+    public function toBroadcast(object $_): BroadcastMessage
     {
-        return new BroadcastMessage(array_merge($this->notification_data, ['notification_id' => $this->notification_data['id']]));
+        return new BroadcastMessage($this->notification_data);
     }
 }

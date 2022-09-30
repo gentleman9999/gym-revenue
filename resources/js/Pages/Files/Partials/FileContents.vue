@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row flex-wrap mt-4">
+    <div class="flex flex-row flex-wrap mt-4" draggable="false">
         <folder-item
             v-for="folder in folders"
             :folder="folder"
@@ -20,11 +20,13 @@
             :handlePermissions="handlePermissions"
             :handleTrash="handleTrash"
         />
+        <recycle-bin-item :handleTrash="handleTrash" :mode="displayMode" />
     </div>
 </template>
 <script setup>
 import FileItem from "@/Components/FileItem/index.vue";
 import FolderItem from "@/Components/FolderItem/index.vue";
+import RecycleBinItem from "@/Components/RecycleBinItem/index.vue";
 import { Inertia } from "@inertiajs/inertia";
 const props = defineProps({
     files: {

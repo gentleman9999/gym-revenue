@@ -60,6 +60,19 @@ class GatewayProviderSeeder extends Seeder
                 'gr_commission_bulk_rate' => 0.01,
                 'active' => 1,
             ],
+            'twilio-conversation' => [
+                'name' => 'Twilio Conversation',
+                'slug' => 'twilio-conversation',
+                'desc' => 'Create 1-to-1 or multiparty conversations for customer care and conversational commerce',
+                'vendor' => 'Twilio, Inc',
+                'provider_type' => $types['chat']['id'],
+                'profile_class' => TwilioVoice::class,
+                'provider_rate' => 0.03,
+                'provider_bulk_rate' => 0.03,
+                'gr_commission_rate' => 0.01,
+                'gr_commission_bulk_rate' => 0.01,
+                'active' => 1,
+            ],
         ];
 
 

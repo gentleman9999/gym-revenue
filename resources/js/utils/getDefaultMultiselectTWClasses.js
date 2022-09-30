@@ -19,10 +19,9 @@ export const getDefaultMultiselectTWClasses = () => ({
         "flex items-center justify-center p-1 mx-0.5 rounded-sm hover:bg-black hover:bg-opacity-10 group",
     tagRemoveIcon:
         "bg-multiselect-remove text-base-con bg-center bg-no-repeat opacity-30 inline-block w-3 h-3 group-hover:opacity-60",
-    tagsSearchWrapper:
-        "inline-block relative mx-1 mb-1 flex-grow flex-shrink h-full",
+    tagsSearchWrapper: "inline-block relative flex-grow flex-shrink h-full",
     tagsSearch:
-        "absolute inset-0 border-0 outline-none focus:ring-0 appearance-none p-0 text-base font-sans box-border w-full",
+        "absolute inset-0 border-0 outline-none focus:ring-0 appearance-none p-0 text-base font-sans box-border border-none focus:shadow-none mt-[-14px]",
     tagsSearchCopy: "invisible whitespace-pre-wrap inline-block h-px",
     placeholder:
         "flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5 text-base-content text-opacity-50",

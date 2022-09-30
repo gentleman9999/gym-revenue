@@ -14,9 +14,11 @@ use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
+use App\Models\DynamicReport;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Note;
@@ -123,8 +125,19 @@ class Role extends \Silber\Bouncer\Database\Role
                 $entity = DripCampaign::class;
 
                 break;
+
             case 'scheduled-campaigns':
                 $entity = ScheduledCampaign::class;
+
+                break;
+
+            case 'call-templates':
+                $entity = CallScriptTemplate::class;
+
+                break;
+
+            case 'dynamic-reports':
+                $entity = DynamicReport::class;
 
                 break;
         }

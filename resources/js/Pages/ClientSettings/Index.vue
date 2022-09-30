@@ -20,6 +20,7 @@
                     :user="$page.props.user"
                     :comm-preferences="commPreferences"
                     :available-comm-preferences="availableCommPreferences"
+                    :gateways="gateways"
                 />
 
                 <jet-section-border />
@@ -79,7 +80,7 @@ export default defineComponent({
             required: true,
         },
         availableCommPreferences: {
-            type: Array,
+            type: Object,
             required: true,
         },
         trialMembershipTypes: {

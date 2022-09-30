@@ -44,7 +44,7 @@
                 :month-change-on-scroll="false"
                 :auto-apply="true"
                 :close-on-scroll="true"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-neutral"
                 dark
             />
             <jet-input-error :message="form.errors.start" class="mt-2" />
@@ -63,7 +63,7 @@
                     :auto-apply="true"
                     :close-on-scroll="true"
                     :disabled="calendar_event?.type.type === 'Task'"
-                    class="bg-neutral-800 text-neutral-100"
+                    class="bg-neutral text-neutral"
                     dark
                 />
                 <jet-input-error :message="form.errors.end" class="mt-2" />
@@ -73,7 +73,7 @@
                 <jet-label for="user_attendees" value="Select User Attendees" />
                 <multiselect
                     v-model="form.user_attendees"
-                    class="bg-neutral-800 text-neutral-100 py-2"
+                    class="bg-neutral text-neutral py-2"
                     id="user_attendees"
                     mode="tags"
                     :close-on-select="false"
@@ -95,7 +95,7 @@
             <input
                 id="title"
                 type="text"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-neutral"
                 v-model="form.title"
                 autofocus
             />
@@ -105,7 +105,7 @@
             <jet-label for="description" value="Description" />
             <textarea
                 id="description"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-neutral"
                 v-model="form.description"
             />
             <jet-input-error :message="form.errors.description" class="mt-2" />
@@ -114,7 +114,7 @@
             <jet-label for="calendar_event_type" value="Event Type" />
             <select
                 v-model="form.event_type_id"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-neutral"
             >
                 <option
                     v-for="{ id, name } in calendarEventTypes"
@@ -136,10 +136,7 @@
 
         <div class="col-span-6">
             <jet-label for="location_id" value="Event Location" />
-            <select
-                v-model="form.location_id"
-                class="bg-neutral-800 text-neutral-100"
-            >
+            <select v-model="form.location_id" class="bg-neutral text-neutral">
                 <option v-for="{ id, name } in locations" :value="id">
                     {{ name }}
                 </option>
@@ -153,7 +150,7 @@
             <jet-label for="lead_attendees" value="Select Lead Attendees" />
             <multiselect
                 v-model="form.lead_attendees"
-                class="py-2 bg-neutral-800 text-neutral-100"
+                class="py-2 bg-neutral text-neutral"
                 id="lead_attendees"
                 mode="tags"
                 :close-on-select="false"
@@ -172,7 +169,7 @@
             <jet-label for="member_attendees" value="Select Member Attendees" />
             <multiselect
                 v-model="form.member_attendees"
-                class="py-2 bg-neutral-800 text-neutral-100"
+                class="py-2 bg-neutral text-neutral"
                 id="member_attendees"
                 mode="tags"
                 :close-on-select="false"
@@ -249,7 +246,7 @@
                 <input
                     id="my_reminder"
                     type="text"
-                    class="bg-neutral-800 text-neutral-100"
+                    class="bg-neutral text-neutral"
                     v-model="form.my_reminder"
                 />
                 <jet-input-error

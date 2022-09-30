@@ -1,6 +1,9 @@
 <template>
     <teleport to="body">
-        <div class="modal" :class="{ 'modal-open': isOpen }">
+        <div
+            class="modal !bg-black !bg-opacity-80"
+            :class="{ 'modal-open': isOpen }"
+        >
             <div v-if="closable" class="absolute inset-0" @click="close"></div>
             <div
                 class="modal-box bg-base-200 max-h-[90vh] max-w-[90vw] overflow-auto border-[1px] border-secondary w-fit pt-8 rounded-lg"

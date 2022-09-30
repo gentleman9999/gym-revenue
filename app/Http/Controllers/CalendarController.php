@@ -6,7 +6,9 @@ use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Leads\Projections\LeadDetails;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\EndUsers\Members\Projections\MemberDetails;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
@@ -67,14 +69,30 @@ class CalendarController extends Controller
                                 ->first() ?? null,
                         ];
                     }
+
                     if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
+
+                        $call_outcome = LeadDetails::whereField('call_outcome')
+                            ->whereLeadId($attendee->entity_id)
+                            ->whereEntityId($event->id)->first();
                     }
                     if ($attendee->entity_type == Member::class) {
                         $member_attendees[]['id'] = $attendee->entity_id;
+
+                        $call_outcome = MemberDetails::whereField('call_outcome')
+                            ->whereMemberId($attendee->entity_id)
+                            ->whereEntityId($event->id)->first();
+                    }
+                    if ($event->call_task == 1) {
+                        if (isset($call_outcome)) {
+                            $event->callOutcome = $call_outcome['value'];
+                            $event->callOutcomeId = $call_outcome['id'];
+                        }
                     }
                 }
             }
+
             $eventsForTeam[$key]->user_attendees = $user_attendees;
             $eventsForTeam[$key]->lead_attendees = $lead_attendees;
             $eventsForTeam[$key]->member_attendees = $member_attendees;

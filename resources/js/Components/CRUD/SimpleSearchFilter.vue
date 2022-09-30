@@ -7,7 +7,7 @@
                         <span class="inline-flex rounded-md h-full">
                             <button
                                 type="button"
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-base-300 hover:bg-base-100 hover: focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
+                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-base-100 hover:bg-base-100 hover: focus:outline-none focus:bg-base-100 active:bg-base-100 transition"
                             >
                                 Filter
                                 <svg
@@ -71,7 +71,7 @@
 
 <style scoped>
 label {
-    @apply label label-text py-0 text-xs text-gray-400;
+    @apply label label-text py-0 text-xs text-base-content/40;
 }
 input {
     @apply input input-sm input-bordered;

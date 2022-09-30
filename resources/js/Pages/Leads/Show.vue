@@ -19,6 +19,7 @@
             :interaction-count="interactionCount"
             :agreement-number="lead.agreement_number"
             :owner-user-id="lead.owner_user_id"
+            :has-twilio-conversation="hasTwilioConversation"
         />
     </jet-bar-container>
 </template>
@@ -50,6 +51,10 @@ export default defineComponent({
         interactionCount: {
             type: Number,
             default: 0,
+        },
+        hasTwilioConversation: {
+            type: Boolean,
+            required: true,
         },
     },
     setup(props) {

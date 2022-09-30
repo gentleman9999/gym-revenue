@@ -4,6 +4,7 @@ namespace App\Domain\Templates\EmailTemplates;
 
 use App\Domain\Templates\EmailTemplates\Events\EmailTemplateCreated;
 use App\Domain\Templates\EmailTemplates\Events\EmailTemplateThumbnailUpdated;
+use App\Domain\Templates\EmailTemplates\Events\EmailTemplateTrashed;
 use App\Domain\Templates\EmailTemplates\Events\EmailTemplateUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 

@@ -5,7 +5,7 @@
             :class="{
                 'bg-secondary': type === 'secondary',
                 'bg-error': type === 'warning',
-                'bg-neutral-500': type === 'gray',
+                'bg-neutral-content': type === 'gray',
             }"
         >
             {{ title }}

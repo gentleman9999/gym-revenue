@@ -19,10 +19,11 @@ class DripCampaignProjector extends Projector
     public function onDripCampaignCreated(DripCampaignCreated $event): void
     {
         $dripCampaign = (new DripCampaign())->writeable();
+        unset($event->payload['days']);
         $dripCampaign->fill($event->payload);
         $dripCampaign->id = $event->aggregateRootUuid();
         $dripCampaign->client_id = $event->payload['client_id'];
-        $dripCampaign->status = CampaignStatusEnum::DRAFT;
+        //$dripCampaign->status = CampaignStatusEnum::DRAFT;
         $dripCampaign->save();
     }
 

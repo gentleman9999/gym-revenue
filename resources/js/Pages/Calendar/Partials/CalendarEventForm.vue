@@ -11,7 +11,10 @@
                     type="checkbox"
                     class="toggle ml-2"
                     v-model="form.full_day_event"
-                    :disabled="calendar_event?.type.type == 'Task'"
+                    :disabled="
+                        calendar_event?.type.type == 'Task' ||
+                        calendar_event?.editable === 0
+                    "
                 />
                 <jet-input-error :message="form.errors.start" class="mt-2" />
             </div>
@@ -39,6 +42,7 @@
                 required
                 id="start"
                 v-model="form.start"
+                :disabled="calendar_event?.editable === 0"
                 :enable-time-picker="!form.full_day_event"
                 :format="dateFormat"
                 :month-change-on-scroll="false"
@@ -97,7 +101,7 @@
                 type="text"
                 class="bg-neutral-800 text-neutral-100"
                 v-model="form.title"
-                autofocus
+                :disabled="calendar_event?.editable === 0"
             />
             <jet-input-error :message="form.errors.title" class="mt-2" />
         </div>
@@ -107,12 +111,14 @@
                 id="description"
                 class="bg-neutral-800 text-neutral-100"
                 v-model="form.description"
+                :disabled="calendar_event?.editable === 0"
             />
             <jet-input-error :message="form.errors.description" class="mt-2" />
         </div>
         <div v-if="calendarEventTypes.length > 1" class="col-span-6">
             <jet-label for="calendar_event_type" value="Event Type" />
             <select
+                :disabled="calendar_event?.editable === 0"
                 v-model="form.event_type_id"
                 class="bg-neutral-800 text-neutral-100"
             >
@@ -137,6 +143,7 @@
         <div class="col-span-6">
             <jet-label for="location_id" value="Event Location" />
             <select
+                :disabled="calendar_event?.editable === 0"
                 v-model="form.location_id"
                 class="bg-neutral-800 text-neutral-100"
             >
@@ -153,9 +160,14 @@
             <jet-label for="lead_attendees" value="Select Lead Attendees" />
             <multiselect
                 v-model="form.lead_attendees"
+                :class="{
+                    'opacity-75 cursor-not-allowed border-none':
+                        calendar_event?.editable === 0,
+                }"
                 class="py-2 bg-neutral-800 text-neutral-100"
                 id="lead_attendees"
                 mode="tags"
+                :disabled="calendar_event?.editable === 0"
                 :close-on-select="false"
                 :create-option="true"
                 :options="
@@ -172,9 +184,14 @@
             <jet-label for="member_attendees" value="Select Member Attendees" />
             <multiselect
                 v-model="form.member_attendees"
+                :class="{
+                    'opacity-75 cursor-not-allowed border-none':
+                        calendar_event?.editable === 0,
+                }"
                 class="py-2 bg-neutral-800 text-neutral-100"
                 id="member_attendees"
                 mode="tags"
+                :disabled="calendar_event?.editable === 0"
                 :close-on-select="false"
                 :create-option="true"
                 :options="
@@ -193,7 +210,13 @@
         >
             <jet-label for="attendeesModal" value="View All Attendees" />
             <button
-                @click.prevent="showAttendeesModal.open"
+                @click.prevent="
+                    () => {
+                        if (calendar_event?.editable === 1) {
+                            showAttendeesModal.open;
+                        }
+                    }
+                "
                 class="btn w-max rounded btn-secondary btn-sm"
             >
                 Open List
@@ -229,6 +252,28 @@
                 :message="form.errors.complete_event"
                 class="mt-2"
             />
+        </div>
+
+        <div v-if="calendar_event?.call_task === 1" class="flex flex-col">
+            <label class="text-lg mt-8 mb-4" for="callOutcome"
+                >Call Outcome</label
+            >
+            <input
+                v-model="callOutcomeField"
+                class="py-6 mt-2 !border-2 !border-secondary"
+                type="text"
+                name=""
+                id="callOutcome"
+            />
+
+            <Button
+                @click="handleSubmitCallOutcome"
+                class="mt-4 mx-auto"
+                secondary
+                size="sm"
+                type="button"
+                >Save outcome</Button
+            >
         </div>
 
         <template v-if="calendar_event?.im_attending">
@@ -295,7 +340,13 @@
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
 
-        <div class="flex flex-row col-span-6 mt-8">
+        <div
+            v-if="
+                calendar_event?.call_task === 0 &&
+                calendar_event?.editable === 1
+            "
+            class="flex flex-row col-span-6 mt-8"
+        >
             <div class="flex-grow" />
             <Button
                 type="button"
@@ -364,8 +415,10 @@ label {
 </style>
 
 <script>
+import axios from "axios";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { computed, watch, watchEffect, ref } from "vue";
+import { toastError, toastSuccess } from "@/utils/createToast";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
@@ -408,7 +461,7 @@ export default {
         "start_date",
         "locations",
     ],
-    setup(props, { emit }) {
+    setup: function (props, { emit }) {
         const page = usePage();
 
         const handleReminderDelete = (id) => {
@@ -424,6 +477,12 @@ export default {
             Inertia.put(route("calendar.complete_event", id));
             emit("submitted");
         };
+
+        const callOutcomeField = ref(
+            props?.calendar_event?.callOutcome
+                ? props.calendar_event.callOutcome
+                : ""
+        );
 
         const calendar_event = props.calendar_event;
 
@@ -551,11 +610,53 @@ export default {
             form.full_day_event ? "MM/dd/yyyy" : "MM/dd/yyyy hh:mm"
         );
 
+        const handleSubmitCallOutcome = async () => {
+            console.log("call outcome being sent");
+
+            if (calendarEvent.callOutcomeId) {
+                await axios
+                    .post(route("tasks.call-outcome.update"), {
+                        outcome: callOutcomeField.value,
+                        outcomeId: calendarEvent.callOutcomeId,
+                        id: calendar_event?.id,
+                        lead_attendees: calendarEventForm.lead_attendees,
+                        member_attendees: calendarEventForm.member_attendees,
+                    })
+                    .then((res) => {
+                        emit("submitted");
+                        toastSuccess("Call outcome saved!");
+                    })
+                    .catch((err) => {
+                        toastError(
+                            "There was a problem saving the call outcome"
+                        );
+                    });
+            } else {
+                await axios
+                    .post(route("tasks.call-outcome"), {
+                        outcome: callOutcomeField.value,
+                        id: calendar_event?.id,
+                        lead_attendees: calendarEventForm.lead_attendees,
+                        member_attendees: calendarEventForm.member_attendees,
+                    })
+                    .then((res) => {
+                        emit("submitted");
+                        toastSuccess("Call outcome saved!");
+                    })
+                    .catch((err) => {
+                        toastError(
+                            "There was a problem saving the call outcome"
+                        );
+                    });
+            }
+        };
+
         return {
             form,
             buttonText: operation,
             handleSubmit,
             calendarEventTypes,
+            callOutcomeField,
             dateFormat,
             calendar_event,
             closeModals,
@@ -568,6 +669,7 @@ export default {
             handleReminderDelete,
             handleReminderCreate,
             handleCompleteTask,
+            handleSubmitCallOutcome,
             multiselectClasses: {
                 ...getDefaultMultiselectTWClasses(),
                 dropdown:

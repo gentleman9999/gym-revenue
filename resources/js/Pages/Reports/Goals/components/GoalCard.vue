@@ -46,13 +46,13 @@ const goal_types = ["Company", "DMA", "Location", "Employee"];
 </script>
 <style scoped>
 .goal-card-wrapper {
-    @apply border border-error rounded p-4 bg-neutral-900;
+    @apply border border-error rounded p-4 bg-neutral;
 }
 .goal-card-header {
     @apply flex flex-row justify-between;
 }
 .goal-card-title {
-    @apply text-xl text-secondary font-bold border-b border-neutral-500;
+    @apply text-xl text-secondary font-bold border-b border-neutral;
 }
 h5 {
     @apply text-lg font-bold;
