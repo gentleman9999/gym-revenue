@@ -397,7 +397,7 @@ Route::prefix('dynamicreports')->group(function () {
 Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\GetClients::class)->name('clients');
 Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');
 
-Route::prefix('chat')->group(function () {
+Route::middleware('auth:sanctum')->prefix('chat')->group(function () {
     Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
     Route::get('/{end_user_type}/{id}', \App\Http\Controllers\ChatController::class . '@index')->name('end-user-chat');
 });

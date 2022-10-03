@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Conversations\Twilio\Actions;
 
+use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Exceptions\ConversationException;
 use Illuminate\Console\Command;
@@ -19,16 +20,16 @@ class RegisterConversation
 
     /**
      * @param Client      $client
-     * @param string|null $conversation_sid
+     * @param string|null $messenger_id
      *
      * @return void
      * @throws ConfigurationException
      * @throws ConversationException
      * @throws TwilioException
      */
-    public function handle(Client $client, ?string $conversation_sid): void
+    public function handle(Client $client, ?string $messenger_id): void
     {
-        $client->getTwilioService()->createConversationForClient($conversation_sid);
+        $client->getTwilioService()->createConversationForClient($messenger_id);
     }
 
     /**
@@ -42,11 +43,16 @@ class RegisterConversation
     public function asCommand(Command $command): void
     {
         $name = $command->choice('Select Client', Client::all()->pluck('name')->toArray());
-        $sid = $command->ask('Enter Conversation SID (Press Enter if you dont have one)');
 
+        /** @var Client $client */
         $client = Client::where(['name' => $name])->first();
-        $this->handle($client, $sid);
+        $messenger_id = $client->getNamedGatewaySettings()[ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID] ?? null;
+        // Ask for new messenger ID if not was found on client setting.
+        if ($messenger_id === null) {
+            $messenger_id = $command->ask('Enter Messenger ID. Press Enter to disable messenger conversation');
+        }
+
+        $this->handle($client, $messenger_id);
         $command->info("Conversation has been initialized for '{$client->name}'");
-        $command->warn('Dont forget to enable "Autocreate a Conversation" for Default Messaging Service for Conversations/Integration');
     }
 }

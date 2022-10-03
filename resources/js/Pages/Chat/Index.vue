@@ -159,6 +159,16 @@ async function addConversation(conversationSid, mySid, updatedAt) {
             );
         }
 
+        // Currently, when we have a new conversation, we clear existing conversation and reset them.
+        // The issue with this approach is that the rerender is very noticeable, so instead, we want
+        // to take out existing conversation one at a time.
+        const index = conversations.value.findIndex(
+            (m) => m.conversation.sid === conversation.sid
+        );
+        if (index >= 0) {
+            conversations.value.splice(index, 1);
+        }
+
         conversations.value.push(
             new ConversationMsg(
                 conversation,

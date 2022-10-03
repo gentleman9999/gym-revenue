@@ -1,17 +1,16 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div class="chat-messenger-list-container">
-        <div>
-            <div v-if="conversations.length === 0" class="text-center mt-10">
-                No active chats
-            </div>
+        <div v-if="conversations.length === 0" class="text-center mt-10">
+            No active chats
+        </div>
+        <TransitionGroup v-else name="chats" tag="div">
             <chat-messenger
-                v-else
                 v-for="(conversation, index) in conversations"
                 :key="index"
                 :conversation="conversation"
                 @click="$emit('view-conversation', index)"
             />
-        </div>
+        </TransitionGroup>
     </div>
 </template>
 <style scoped>
@@ -30,3 +29,14 @@ const props = defineProps({
     },
 });
 </script>
+<style>
+.chats-enter-active,
+.chats-leave-active {
+    transition: all 0.2s ease;
+}
+.chats-enter-from,
+.chats-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+</style>
