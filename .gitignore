@@ -19,3 +19,5 @@ yarn-error.log
 .env.staging
 .php-cs-fixer.cache
 docker-compose.yml
+/_ide_helper.php
+/_ide_helper_models.php

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Email\Actions;
 
-use App\Actions\Mail\MailgunBatchSend;
+use App\Actions\Mail\MailgunSend;
 use App\Domain\Email\EmailAggregate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Users\Models\User;
@@ -30,8 +32,8 @@ class FireTestEmailMessage implements CreatesTeams
         /** @var EmailTemplate $template */
         $template = EmailTemplate::find($template_id);
 
-        $mailgunResponse = MailgunBatchSend::run([$user->email], 'Test Message', $template->parseContent(['user' => $user]));
-        $id = Uuid::new();
+        $mailgunResponse = MailgunSend::run([$user->email], 'Test Message', $template->parseContent(['user' => $user]));
+        $id = (string) Uuid::new();
         $gateway = GatewayProvider::whereName('Mailgun')->first();
         $payload = [
             'id' => $id,

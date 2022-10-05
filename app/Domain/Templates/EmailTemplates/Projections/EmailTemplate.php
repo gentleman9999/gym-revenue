@@ -2,11 +2,11 @@
 
 namespace App\Domain\Templates\EmailTemplates\Projections;
 
-use App\Domain\Templates\Actions\TemplateParser;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use App\Services\TemplateParserService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -95,8 +95,8 @@ class EmailTemplate extends GymRevProjection
         return $this->detail()->whereDetail('email_gateway')->whereActive(1);
     }
 
-    public function parseContent(array $data = [], string $type = TemplateParser::TYPE_EVAL): string
+    public function parseContent(array $data = []): string
     {
-        return TemplateParser::run($this->markup, $data, $type);
+        return (new TemplateParserService($this->markup))->swapTokens($data);
     }
 }

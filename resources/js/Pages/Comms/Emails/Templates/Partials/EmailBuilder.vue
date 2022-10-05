@@ -173,13 +173,13 @@ const customOptions = {
     },
     mergeTags: [
         {
-            name: "Merge tags", // Group name
+            name: "Tags", // Group name
             items: [
                 /*{
                     value: "%%recipient.first_name%%",
                     text: "Last name",
                     label: "Customer's last name",
-                },*/
+                },
 
                 //Nested Merge Tags
                 {
@@ -196,10 +196,10 @@ const customOptions = {
                             label: "Customer's last name 2",
                         },
                     ],
-                },
+                },*/
             ],
         },
-        {
+        /*        {
             name: "Special links", // Group name
             items: [
                 {
@@ -223,7 +223,7 @@ const customOptions = {
                     label: "Call to Action",
                 },
             ],
-        },
+        },*/
     ],
 };
 const ready = ref(false);
