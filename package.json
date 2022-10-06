@@ -35,6 +35,7 @@
         "vue-loader": "^17.0.0"
     },
     "dependencies": {
+        "@apollo/client": "^3.7.0",
         "@fortawesome/fontawesome-pro": "^5.15.4",
         "@fortawesome/fontawesome-svg-core": "^1.2.36",
         "@fortawesome/pro-duotone-svg-icons": "^5.15.4",
@@ -50,11 +51,14 @@
         "@fullcalendar/vue3": "^5.11.1",
         "@topol.io/editor-vue": "^0.0.0-beta.11",
         "@twilio/conversations": "^2.1.0",
+        "@vue/apollo-composable": "^4.0.0-beta.1",
         "@vueform/multiselect": "^2.3.1",
         "@vuepic/vue-datepicker": "^3.2.1",
         "canvg": "^3.0.9",
         "daisyui": "^1.21.0",
         "dompurify": "^2.3.3",
+        "graphql": "^16.6.0",
+        "graphql-tag": "^2.12.6",
         "html2canvas": "^1.4.0",
         "jspdf": "^2.5.0",
         "lodash.clonedeep": "^4.5.0",

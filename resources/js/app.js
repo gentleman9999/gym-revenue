@@ -3,15 +3,39 @@ import vClickOutside from "click-outside-vue3";
 
 import "./bootstrap";
 
-import { createApp, h } from "vue";
+import { createApp, h, provide } from "vue";
 import { createInertiaApp, Link, usePage } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
 import Toast from "vue-toastification";
+import {
+    ApolloClient,
+    createHttpLink,
+    InMemoryCache,
+} from "@apollo/client/core";
+import { DefaultApolloClient } from "@vue/apollo-composable";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
 
 const pageStore = usePage();
+
+// HTTP connection to the API
+const httpLink = createHttpLink({
+    // You should use an absolute URL here
+    uri: "http://localhost:8000/graphql",
+    headers: {
+        "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
+    },
+});
+
+// Cache implementation
+const cache = new InMemoryCache();
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+    link: httpLink,
+    cache,
+});
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -40,7 +64,12 @@ createInertiaApp({
         }
     },
     setup({ el, app, props, plugin }) {
-        return createApp({ render: () => h(app, props) })
+        return createApp({
+            setup() {
+                provide(DefaultApolloClient, apolloClient);
+            },
+            render: () => h(app, props),
+        })
             .use(plugin)
             .use(Toast)
             .use(vClickOutside)

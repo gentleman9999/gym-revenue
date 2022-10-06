@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
@@ -117,6 +117,9 @@ import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
+
+import { useQuery } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -140,6 +143,20 @@ export default defineComponent({
         "potentialRoles",
     ],
     setup(props) {
+        const { result } = useQuery(gql`
+            query Users {
+                users {
+                    data {
+                        id
+                        name
+                        email
+                    }
+                }
+            }
+        `);
+        watch(() => {
+            console.log("users-result", result.value);
+        });
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);

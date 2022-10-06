@@ -7,13 +7,13 @@
         <link rel="icon" type="image/png" href="{{ asset($asset_name) }}">
 
         <title inertia>{{ env('APP_NAME', 'Laravel') }}</title>
-
         <!-- Scripts -->
         @routes
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 {{--        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>--}}
     </head>
     <body class="font-sans antialiased flex flex-col min-h-screen">
+    {{ csrf_field() }}
         <div class="flex flex-1">
             <div class="flex-1">
               @inertia

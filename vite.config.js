@@ -35,6 +35,15 @@ export default defineConfig({
         },
         ViteWebfontDownload(),
     ],
+    module: {
+        rules: [
+            {
+                test: /\.gql$/,
+                exclude: /node_modules/,
+                loader: 'graphql-tag/loader',
+            },
+        ],
+    },
     resolve: {
         alias: {
             '@': '/resources/js',
