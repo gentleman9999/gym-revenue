@@ -1,0 +1,10 @@
+extend type Query {
+    users(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+    ): [User!]!
+    @orderBy(column: "email")
+    @paginate(defaultCount: 10)
+        @can(ability: "users.read", model: "App\\Domain\\Users\\Models\\User")
+
+}

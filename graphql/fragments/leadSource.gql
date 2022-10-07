@@ -1,5 +1,3 @@
-#import lead.graphql
-
 "Lead Sources"
 type LeadSource {
     "Unique primary key."

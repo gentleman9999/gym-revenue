@@ -1,88 +1,102 @@
 <template>
     <LayoutHeader title="Users" />
-    <!--        security roles not yet implemented - hide for now-->
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
-    <gym-revenue-crud
-        v-if="users"
-        base-route="users"
-        model-name="User"
-        model-key="user"
-        :fields="fields"
-        :resource="users"
-        :actions="actions"
-        :top-actions="topActions"
-        :preview-component="UserPreview"
-    >
-        <template #filter>
-            <beefy-search-filter
-                v-model:modelValue="form.search"
-                :filtersActive="filtersActive"
-                class="w-full max-w-md mr-4"
-                @reset="reset"
-                @clear-filters="clearFilters"
-                @clear-search="clearSearch"
+    <ApolloQuery :query="(gql) => user_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                base-route="users"
+                model-name="User"
+                model-key="user"
+                :fields="fields"
+                :resource="getUsers(data)"
+                :actions="actions"
+                :top-actions="topActions"
+                :preview-component="UserPreview"
+                @update-page="(value) => (param = { ...param, page: value })"
             >
-                <div class="form-control" v-if="clubs?.length">
-                    <label for="club" class="label label-text py-1 text-xs">
-                        Club
-                    </label>
-                    <select
-                        id="club"
-                        class="mt-1 w-full form-select"
-                        v-model="form.club"
+                <template #filter>
+                    <beefy-search-filter
+                        v-model:modelValue="form.search"
+                        :filtersActive="filtersActive"
+                        class="w-full max-w-md mr-4"
+                        @reset="reset"
+                        @clear-filters="clearFilters"
+                        @clear-search="clearSearch"
                     >
-                        <option></option>
-                        <option
-                            v-for="club in clubs"
-                            :key="club.gymrevenue_id"
-                            :value="club.gymrevenue_id"
-                        >
-                            {{ club.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-control" v-if="teams?.length">
-                    <label for="team" class="label label-text py-1 text-xs">
-                        Team
-                    </label>
-                    <select
-                        id="team"
-                        class="mt-1 w-full form-select"
-                        v-model="form.team"
-                    >
-                        <option></option>
-                        <option
-                            v-for="team in teams"
-                            :value="team.id"
-                            :key="team.id"
-                        >
-                            {{ team.name }}
-                        </option>
-                    </select>
-                </div>
+                        <div class="form-control" v-if="clubs?.length">
+                            <label
+                                for="club"
+                                class="label label-text py-1 text-xs"
+                            >
+                                Club
+                            </label>
+                            <select
+                                id="club"
+                                class="mt-1 w-full form-select"
+                                v-model="form.club"
+                            >
+                                <option></option>
+                                <option
+                                    v-for="club in clubs"
+                                    :key="club.gymrevenue_id"
+                                    :value="club.gymrevenue_id"
+                                >
+                                    {{ club.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-control" v-if="teams?.length">
+                            <label
+                                for="team"
+                                class="label label-text py-1 text-xs"
+                            >
+                                Team
+                            </label>
+                            <select
+                                id="team"
+                                class="mt-1 w-full form-select"
+                                v-model="form.team"
+                            >
+                                <option></option>
+                                <option
+                                    v-for="team in teams"
+                                    :value="team.id"
+                                    :key="team.id"
+                                >
+                                    {{ team.name }}
+                                </option>
+                            </select>
+                        </div>
 
-                <div class="form-control">
-                    <label for="roles" class="label label-text py-1 text-xs">
-                        Security Role:
-                    </label>
-                    <select
-                        id="roles"
-                        class="mt-1 w-full form-select"
-                        v-model="form.roles"
-                    >
-                        <option></option>
-                        <option
-                            v-for="role in potentialRoles"
-                            :value="role.id"
-                            :key="role.id"
-                        >
-                            {{ role.title }}
-                        </option>
-                    </select>
-                </div>
-            </beefy-search-filter>
+                        <div class="form-control">
+                            <label
+                                for="roles"
+                                class="label label-text py-1 text-xs"
+                            >
+                                Security Role:
+                            </label>
+                            <select
+                                id="roles"
+                                class="mt-1 w-full form-select"
+                                v-model="form.roles"
+                            >
+                                <option></option>
+                                <option
+                                    v-for="role in potentialRoles"
+                                    :value="role.id"
+                                    :key="role.id"
+                                >
+                                    {{ role.title }}
+                                </option>
+                            </select>
+                        </div>
+                    </beefy-search-filter>
+                </template>
+            </gym-revenue-crud>
         </template>
-    </gym-revenue-crud>
+    </ApolloQuery>
+
     <confirm
         title="Really Delete?"
         v-if="confirmDelete"
@@ -122,7 +136,7 @@ import FileManager from "./Partials/FileManager.vue";
 
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-
+import { useGymRevForm } from "@/utils";
 export default defineComponent({
     components: {
         BeefySearchFilter,
@@ -145,15 +159,18 @@ export default defineComponent({
         "potentialRoles",
     ],
     setup(props) {
-        const users = ref(null);
-        const { result } = useQuery(gql`
-            query Users {
-                users(page: 1) {
+        const param = ref({
+            page: 1,
+        });
+        const user_query = gql`
+            query Users($page: Int) {
+                users(page: $page) {
                     data {
                         id
                         name
                         email
                         manager
+                        role
                         home_team: default_team {
                             name
                         }
@@ -168,10 +185,13 @@ export default defineComponent({
                     }
                 }
             }
-        `);
-        watch(() => {
-            users.value = _.cloneDeep(result?.value?.users);
-        });
+        `;
+        // users.value =
+
+        const getUsers = (data) => {
+            return _.cloneDeep(data.users);
+        };
+
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
@@ -315,7 +335,9 @@ export default defineComponent({
             importUser,
             closeModals,
             filtersActive,
-            users,
+            user_query,
+            param,
+            getUsers,
         };
     },
 });

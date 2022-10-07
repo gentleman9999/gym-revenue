@@ -91,7 +91,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'name',
+        'profile_photo_url', 'name', 'role',
     ];
 
     /**
@@ -289,6 +289,11 @@ class User extends Authenticatable
     public function getNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getRoleAttribute()
+    {
+        return  $this->roles[0]->name ?? "";
     }
 
     public function getIsManagerAttribute()

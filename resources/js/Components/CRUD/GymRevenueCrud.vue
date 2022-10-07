@@ -90,7 +90,11 @@
         </template>
 
         <slot name="pagination">
-            <!-- <pagination class="mt-4" :links="resource.links" /> -->
+            <pagination
+                class="mt-4"
+                :pagination="resource.pagination"
+                @update-page="(value) => $emit('update-page', value)"
+            />
         </slot>
     </jet-bar-container>
     <preview-modal

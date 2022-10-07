@@ -21,4 +21,6 @@ type User {
     manager: String
 
     default_team: Team
+
+    role: String
 }

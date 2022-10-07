@@ -13,6 +13,8 @@ import {
     InMemoryCache,
 } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
+import VueApolloComponents from "@vue/apollo-components";
+import { createApolloProvider } from "@vue/apollo-option";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -37,6 +39,9 @@ const apolloClient = new ApolloClient({
     cache,
 });
 
+const apolloProvider = createApolloProvider({
+    defaultClient: apolloClient,
+});
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: async (name) => {
@@ -71,6 +76,8 @@ createInertiaApp({
             render: () => h(app, props),
         })
             .use(plugin)
+            .use(apolloProvider)
+            .use(VueApolloComponents)
             .use(Toast)
             .use(vClickOutside)
             .component("inertia-link", Link)
