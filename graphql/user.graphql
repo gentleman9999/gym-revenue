@@ -17,4 +17,8 @@ type User {
 
     "When the account was last updated."
     updated_at: DateTime!
+
+    manager: String
+
+    default_team: Team
 }

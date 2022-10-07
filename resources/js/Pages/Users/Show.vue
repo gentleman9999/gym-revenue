@@ -3,6 +3,7 @@
     <!--        security roles not yet implemented - hide for now-->
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
     <gym-revenue-crud
+        v-if="users"
         base-route="users"
         model-name="User"
         model-key="user"
@@ -103,6 +104,7 @@
 
 <script>
 import { defineComponent, ref, computed, watch } from "vue";
+import * as _ from "lodash";
 import { usePage } from "@inertiajs/inertia-vue3";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
@@ -135,7 +137,7 @@ export default defineComponent({
         FileManager,
     },
     props: [
-        "users",
+        // "users",
         "filters",
         "clubs",
         "teams",
@@ -143,6 +145,7 @@ export default defineComponent({
         "potentialRoles",
     ],
     setup(props) {
+        const users = ref(null);
         const { result } = useQuery(gql`
             query Users {
                 users(page: 1) {
@@ -150,8 +153,12 @@ export default defineComponent({
                         id
                         name
                         email
+                        manager
+                        home_team: default_team {
+                            name
+                        }
                     }
-                    paginatorInfo {
+                    pagination: paginatorInfo {
                         current_page: currentPage
                         last_page: lastPage
                         from: firstItem
@@ -163,8 +170,7 @@ export default defineComponent({
             }
         `);
         watch(() => {
-            console.log("users-result", result.value);
-            console.log("props.users", props.users);
+            users.value = _.cloneDeep(result?.value?.users);
         });
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
@@ -204,7 +210,7 @@ export default defineComponent({
                 name: "manager",
                 label: "Manager",
             },
-            "home_team",
+            "home_team.name",
         ];
         if (page.props.value.user.current_team.isClientTeam) {
             fields = [
@@ -220,7 +226,7 @@ export default defineComponent({
                     name: "manager",
                     label: "Manager",
                 },
-                "home_team",
+                "home_team.name",
             ];
         }
 
@@ -309,6 +315,7 @@ export default defineComponent({
             importUser,
             closeModals,
             filtersActive,
+            users,
         };
     },
 });

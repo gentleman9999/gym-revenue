@@ -90,7 +90,7 @@
         </template>
 
         <slot name="pagination">
-            <pagination class="mt-4" :links="resource.links" />
+            <!-- <pagination class="mt-4" :links="resource.links" /> -->
         </slot>
     </jet-bar-container>
     <preview-modal
@@ -284,7 +284,7 @@ export default defineComponent({
             export: {
                 label: "Export",
                 handler: () => exportToCsv(props.resource.data),
-                shouldRender: () => !!props.resource.total,
+                shouldRender: () => !!props.resource?.pagination.total,
                 class: ["btn-secondary"],
             },
             exportAll: {
@@ -301,7 +301,7 @@ export default defineComponent({
                     exportToCsv(data);
                 },
                 class: ["btn-secondary"],
-                shouldRender: () => !!props.resource.total,
+                shouldRender: () => !!props.resource?.pagination.total,
             },
         };
         let topActions = [];
