@@ -145,17 +145,26 @@ export default defineComponent({
     setup(props) {
         const { result } = useQuery(gql`
             query Users {
-                users {
+                users(page: 1) {
                     data {
                         id
                         name
                         email
+                    }
+                    paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
                     }
                 }
             }
         `);
         watch(() => {
             console.log("users-result", result.value);
+            console.log("props.users", props.users);
         });
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);

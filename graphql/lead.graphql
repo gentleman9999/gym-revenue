@@ -1,0 +1,21 @@
+"Leads"
+type Lead {
+    "Unique primary key."
+    id: ID!
+
+    "Non-unique name."
+    name: String!
+
+    "Unique email address."
+    email: String!
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+
+    lead_source_id: String!
+
+    leadSource: LeadSource @hasOne
+}
