@@ -1,18 +1,24 @@
 <template>
     <LayoutHeader title="Event Types" />
     <page-toolbar-nav title="Event Types" :links="navLinks" />
-    <gym-revenue-crud
-        base-route="calendar.event_types"
-        model-name="Event Type"
-        model-key="calendar-event-types"
-        :fields="fields"
-        :resource="calendarEventTypes"
-        :actions="{
-            trash: {
-                handler: ({ data }) => handleClickTrash(data),
-            },
-        }"
-    />
+    <ApolloQuery :query="(gql) => event_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                :resource="getEventTypes(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                base-route="calendar.event_types"
+                model-name="Event Type"
+                model-key="calendar-event-types"
+                :fields="fields"
+                :actions="{
+                    trash: {
+                        handler: ({ data }) => handleClickTrash(data),
+                    },
+                }"
+            />
+        </template>
+    </ApolloQuery>
     <confirm
         title="Really Trash Event Type?"
         v-if="confirmTrash"
@@ -33,6 +39,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -43,7 +50,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["calendarEventTypes", "filters"],
+    props: ["filters"],
     setup(props) {
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -103,6 +110,35 @@ export default defineComponent({
                 active: false,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
+        const event_query = gql`
+            query CalendarEventTypes($page: Int) {
+                calendar_event_types(page: $page) {
+                    data {
+                        id
+                        name
+                        description
+                        type
+                        created_at
+                        updated_at
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
+
+        const getEventTypes = (data) => {
+            return _.cloneDeep(data.calendar_event_types);
+        };
 
         return {
             fields,
@@ -111,6 +147,9 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
+            param,
+            event_query,
+            getEventTypes,
         };
     },
 });

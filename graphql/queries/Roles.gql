@@ -1,0 +1,9 @@
+extend type Query {
+    roles(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        title: String @where(operator: "like")
+    ): [Role!]!
+    @orderBy(column: "title")
+    @paginate(defaultCount: 10)
+        @can(ability: "roles.read", model: "App\\Domain\\Roles\\Role")
+}

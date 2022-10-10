@@ -1,5 +1,5 @@
 <template>
-    <button type="button" @click.prevent.stop="handleClick">
+    <button type="button" @click.prevent.stop="handleClick" class="capitalize">
         {{ field.label }}
         <font-awesome-icon
             v-if="direction === 'DESC'"

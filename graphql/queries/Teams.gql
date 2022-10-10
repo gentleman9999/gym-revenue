@@ -1,0 +1,9 @@
+extend type Query {
+    teams(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+    ): [Team!]!
+    @orderBy(column: "name")
+    @paginate(defaultCount: 10)
+        @can(ability: "teams.read", model: "App\\Domain\\Teams\\Models\\Team")
+}

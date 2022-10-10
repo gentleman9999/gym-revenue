@@ -1,18 +1,25 @@
 <template>
     <LayoutHeader title="Positions" />
     <page-toolbar-nav title="Positions" :links="navLinks" />
-    <gym-revenue-crud
-        base-route="positions"
-        model-name="Position"
-        model-key="positions"
-        :fields="fields"
-        :resource="positions"
-        :actions="{
-            trash: {
-                handler: ({ data }) => handleClickTrash(data),
-            },
-        }"
-    />
+    <ApolloQuery :query="(gql) => position_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                base-route="positions"
+                model-name="Position"
+                model-key="positions"
+                :fields="fields"
+                :resource="getPositions(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                :actions="{
+                    trash: {
+                        handler: ({ data }) => handleClickTrash(data),
+                    },
+                }"
+            />
+        </template>
+    </ApolloQuery>
+
     <confirm
         title="Really Trash Position?"
         v-if="confirmTrash"
@@ -34,6 +41,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -44,7 +52,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["positions", "filters"],
+    props: ["filters"],
     setup(props) {
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
@@ -84,7 +92,33 @@ export default defineComponent({
                 active: true,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
+        const position_query = gql`
+            query Positions($page: Int) {
+                positions(page: $page) {
+                    data {
+                        id
+                        name
+                        created_at
+                        updated_at
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
 
+        const getPositions = (data) => {
+            return _.cloneDeep(data.positions);
+        };
         return {
             fields,
             confirmTrash,
@@ -92,6 +126,9 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
+            param,
+            position_query,
+            getPositions,
         };
     },
 });

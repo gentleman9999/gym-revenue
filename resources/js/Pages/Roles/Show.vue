@@ -1,21 +1,27 @@
 <template>
     <LayoutHeader title="Security Roles" />
     <page-toolbar-nav title="Security Roles" :links="navLinks" />
-    <gym-revenue-crud
-        base-route="roles"
-        model-name="Role"
-        model-key="role"
-        :fields="fields"
-        :resource="roles"
-        :actions="{
-            trash: false,
-            restore: false,
-            delete: {
-                label: 'Delete',
-                handler: ({ data }) => handleClickDelete(data),
-            },
-        }"
-    />
+    <ApolloQuery :query="(gql) => role_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                base-route="roles"
+                model-name="Role"
+                model-key="role"
+                :fields="fields"
+                :resource="getRoles(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                :actions="{
+                    trash: false,
+                    restore: false,
+                    delete: {
+                        label: 'Delete',
+                        handler: ({ data }) => handleClickDelete(data),
+                    },
+                }"
+            />
+        </template>
+    </ApolloQuery>
     <confirm
         title="Really Trash Security Role?"
         v-if="confirmDelete"
@@ -37,6 +43,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -47,7 +54,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["roles", "filters"],
+    props: ["filters"],
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
@@ -88,6 +95,33 @@ export default defineComponent({
             },
         ];
 
+        const param = ref({
+            page: 1,
+        });
+        const role_query = gql`
+            query Roles($page: Int) {
+                roles(page: $page) {
+                    data {
+                        id
+                        title
+                        created_at
+                        updated_at
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
+
+        const getRoles = (data) => {
+            return _.cloneDeep(data.roles);
+        };
         return {
             fields,
             confirmDelete,
@@ -95,6 +129,9 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
+            param,
+            role_query,
+            getRoles,
         };
     },
 });

@@ -1,0 +1,6 @@
+type Role {
+    id: ID!
+    title: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}

@@ -1,0 +1,9 @@
+extend type Query {
+    positions(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+    ): [Position!]!
+    @orderBy(column: "name")
+    @paginate(defaultCount: 10)
+        @can(ability: "positions.read", model: "App\\Models\\Position")
+}

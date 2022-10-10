@@ -134,9 +134,7 @@ import { getDefaultMultiselectTWClasses } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
 
-import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { useGymRevForm } from "@/utils";
 export default defineComponent({
     components: {
         BeefySearchFilter,
@@ -150,14 +148,7 @@ export default defineComponent({
         DaisyModal,
         FileManager,
     },
-    props: [
-        // "users",
-        "filters",
-        "clubs",
-        "teams",
-        "clientName",
-        "potentialRoles",
-    ],
+    props: ["filters", "clubs", "teams", "clientName", "potentialRoles"],
     setup(props) {
         const param = ref({
             page: 1,
@@ -186,7 +177,6 @@ export default defineComponent({
                 }
             }
         `;
-        // users.value =
 
         const getUsers = (data) => {
             return _.cloneDeep(data.users);
@@ -230,7 +220,10 @@ export default defineComponent({
                 name: "manager",
                 label: "Manager",
             },
-            "home_team.name",
+            {
+                name: "home_team.name",
+                label: "Home Team",
+            },
         ];
         if (page.props.value.user.current_team.isClientTeam) {
             fields = [

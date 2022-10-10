@@ -1,0 +1,6 @@
+type Position {
+    id: ID!
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}

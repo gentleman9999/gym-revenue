@@ -30,15 +30,7 @@ class DepartmentsController extends Controller
             return Redirect::back();
         }
 
-        $depts = Department::whereClientId($client_id)
-            ->with('positions')
-            ->filter($request->only('search', 'trashed'))
-            ->sort()
-            ->paginate(10)
-            ->appends(request()->except('page'));
-
         return Inertia::render('Departments/Show', [
-            'departments' => $depts,
             'positions' => Position::all(),
             'filters' => $request->all('search', 'trashed', 'state'),
         ]);

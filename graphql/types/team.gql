@@ -2,4 +2,6 @@ type Team {
     id: ID!
     name: String
     home_team: Boolean
+    created_at: DateTime
+    updated_at: DateTime
 }
