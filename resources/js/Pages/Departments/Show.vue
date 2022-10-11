@@ -10,6 +10,7 @@
                 model-key="departments"
                 :fields="fields"
                 :resource="getDepartments(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
                 :actions="{
                     trash: {
                         handler: ({ data }) => handleClickTrash(data),

@@ -15,15 +15,25 @@
                 :selectedDate="selectedDate"
                 :setSelectedDate="setSelectedDate"
             />
-            <task-list-view
-                v-for="taskType in taskTypes"
-                :key="taskType"
-                :task-type="taskType"
-                :fields="fields"
-                :tasks="getTaskData(taskType)"
-                :on-double-click="handleDoubleClick"
-                @edit="handleOnEdit"
-            />
+            <ApolloQuery :query="(gql) => task_query" :variables="param">
+                <template v-slot="{ result: { data } }">
+                    <div v-if="data">
+                        <task-list-view
+                            v-for="taskType in taskTypes"
+                            :updatePage="
+                                (value) => (param = { ...param, page: value })
+                            "
+                            :resource="getTasks(data)"
+                            :key="taskType"
+                            :task-type="taskType"
+                            :fields="fields"
+                            :tasks="getTaskData(taskType)"
+                            :on-double-click="handleDoubleClick"
+                            @edit="handleOnEdit"
+                        />
+                    </div>
+                </template>
+            </ApolloQuery>
         </div>
     </div>
     <confirm
@@ -91,6 +101,7 @@ import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher.vue";
 import TaskListView from "./components/TaskListView.vue";
 import pickBy from "lodash/pickBy";
 import { transformDate } from "@/utils/transformDate";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -270,7 +281,36 @@ export default defineComponent({
             console.log("handeOnEdit", data);
             openEventForm(data);
         };
+        const param = ref({
+            page: 1,
+        });
+        const task_query = gql`
+            query Tasks($page: Int) {
+                tasks(page: $page) {
+                    data {
+                        id
+                        title
+                        owner {
+                            id
+                        }
+                        start
+                        created_at
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
 
+        const getTasks = (data) => {
+            return _.cloneDeep(data.tasks);
+        };
         return {
             fields,
             confirmDelete,
@@ -297,6 +337,9 @@ export default defineComponent({
             switchMonth,
             handleDoubleClick,
             handleOnEdit,
+            param,
+            task_query,
+            getTasks,
         };
     },
 });

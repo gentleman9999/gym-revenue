@@ -6,6 +6,7 @@
         class="border-transparent"
         :resource="tasks"
         :fields="fields"
+        @update-page="updatePage"
         :actions="{
             edit: {
                 label: 'Edit',
@@ -57,6 +58,9 @@ const props = defineProps({
     fields: {
         type: Array,
         required: true,
+    },
+    updatePage: {
+        type: Function,
     },
 });
 

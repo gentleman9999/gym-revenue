@@ -1,0 +1,8 @@
+type CalendarEvent {
+    id: ID!
+    title: String!
+    owner: User!
+    start: DateTime
+    created_at: DateTime
+    event_completion: DateTime
+}
