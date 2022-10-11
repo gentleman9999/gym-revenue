@@ -2,7 +2,7 @@ import { ref, watchEffect, onBeforeUnmount } from "vue";
 import { useUser } from "@/utils/useUser";
 import { useNotifications } from "@/utils/useNotifications";
 import { generateToast } from "@/utils/createToast";
-import { parseNotificationResponse } from "@/utils";
+import { parseNotificationResponse, resolveEntityType } from "@/utils";
 
 export const useNotificationAlertEmitter = () => {
     const user = useUser();
@@ -12,10 +12,39 @@ export const useNotificationAlertEmitter = () => {
     const handleIncomingNotification = (e) => {
         console.log({ e });
         incrementUnreadCount();
-        const response = parseNotificationResponse(e.payload);
-        if (response !== null) {
-            generateToast(response.text, response.options);
-        }
+
+        const { text, state, timeout } = parseNotificationResponse(e);
+
+        generateToast(state, text, {
+            onClose: async () => {
+                resolveEntityType(e);
+                console.log(
+                    "we can figure out how to route based on event type here!"
+                );
+                // axios.post(route('notifications.dismiss', e.notification_id));
+                await dismissNotification(e.notification_id);
+            },
+            timeout,
+        });
+
+        // didn't delete in case above doesn't work and need to fix it (cant test yet)
+        // let alert = {
+        //     type: state || "info",
+        //     theme: "sunset",
+        //     text,
+        //     timeout: timeout || false,
+        //     callbacks: {
+        //         onClose: async () => {
+        //             console.log(
+        //                 "we can figure out how to route based on event type here!"
+        //             );
+        //             // axios.post(route('notifications.dismiss', e.notification_id));
+        //             await dismissNotification(e.notification_id);
+        //         },
+        //     },
+        // };
+        // new Noty(alert).show();
+
     };
     onBeforeUnmount(() => {
         //cleanup old listeners

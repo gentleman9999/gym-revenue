@@ -43,11 +43,16 @@ class CreateCalendarEvent
         ];
     }
 
+
     public function handle($data, ?User $user = null): CalendarEvent
+
     {
         $id = Uuid::new();
         $data['color'] = CalendarEventType::whereId($data['event_type_id'])->first()->color;
         //Pulling eventType color for this table because that's how fullCalender.IO wants it
+        if ($user) {
+            $data['owner_id'] = $user->id;
+        }
 
         if ($user) {
             $data['owner_id'] = $user->id;

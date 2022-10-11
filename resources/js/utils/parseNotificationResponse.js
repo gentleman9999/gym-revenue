@@ -165,3 +165,42 @@ export const parseNotificationResponse = (notification) => {
             return notificationResponse(notification);
     }
 };
+
+/**
+ * Entity type resolver
+ *  create a case for the desired entity type, and a function for it as well.
+ *  call your function within the case and break out (don't return).
+ *
+ *  we can use multiple cases if certain needed functionality overlap for multiple types,
+ *  simply do not break for these cases & add another case which passes for both types
+ *  -below- the case specific functionality, then break on the case that catches multiple
+ *  overlapping types.
+ *
+ * @param {Object} e event or notification (they're both the same)
+ * @returns {void}
+ */
+export function resolveEntityType(e) {
+    switch (e.entity.type) {
+        case "TASK_OVERDUE":
+            resolveOverdueTask(e);
+            break;
+
+        default:
+            unresolvableEntity(e);
+            break;
+    }
+}
+
+/** @entity {TASK_OVERDUE} */
+export function resolveOverdueTask(notif) {
+    let gotoUrl = new URL("../tasks", window.location);
+    gotoUrl.searchParams.append("start", notif?.entity?.start);
+
+    window.location = gotoUrl.href;
+}
+
+/** @entity {Unresolved} */
+export function unresolvableEntity(notif) {
+    console.log("Entity type is unresolvable:", notif?.entity?.type);
+    console.log("Entity:", notif);
+}
