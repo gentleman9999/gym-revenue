@@ -1,0 +1,8 @@
+type Location {
+    id: ID!
+    gymrevenue_id: String
+    name: String
+    city: String
+    state: String
+    active: Boolean
+}

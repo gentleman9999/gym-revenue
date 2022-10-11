@@ -5,6 +5,10 @@ type Lead {
 
     "Non-unique name."
     name: String!
+    
+    first_name: String
+ 
+    last_name: String
 
     "Unique email address."
     email: String!
@@ -18,4 +22,9 @@ type Lead {
     lead_source_id: String!
 
     leadSource: LeadSource @hasOne
+
+    location: Location
+    lead_type: LeadType
+
+    owner_user_id: String
 }

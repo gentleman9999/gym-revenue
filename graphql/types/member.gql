@@ -1,0 +1,8 @@
+type Member {
+    id: ID!
+    first_name: String
+    last_name: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    location: Location!
+}

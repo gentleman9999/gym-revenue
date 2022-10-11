@@ -1,0 +1,7 @@
+type Reminder {
+    id: ID!
+    name: String!
+    description: String
+    remind_time: DateTime
+    triggered_at: DateTime
+}

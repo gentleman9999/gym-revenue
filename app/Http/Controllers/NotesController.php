@@ -31,13 +31,8 @@ class NotesController extends Controller
         }
 
         $page_count = 10;
-        $notes = Note::whereCreatedByUserId($client_id)
-            ->paginate($page_count)
-        ;
 
-        return Inertia::render('Notes/Show', [
-            'notes' => $notes,
-        ]);
+        return Inertia::render('Notes/Show');
     }
 
     public function create()

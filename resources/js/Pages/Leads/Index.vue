@@ -23,22 +23,28 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-
-    <gym-revenue-crud
-        :resource="leads"
-        model-key="lead"
-        :fields="fields"
-        :base-route="baseRoute"
-        :top-actions="{
-            create: { label: 'Add Lead' },
-        }"
-        :actions="actions"
-        :preview-component="LeadPreview"
-    >
-        <template #filter>
-            <leads-filters :base-route="baseRoute" />
+    <ApolloQuery :query="(gql) => lead_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                :resource="getLeads(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                model-key="lead"
+                :fields="fields"
+                :base-route="baseRoute"
+                :top-actions="{
+                    create: { label: 'Add Lead' },
+                }"
+                :actions="actions"
+                :preview-component="LeadPreview"
+            >
+                <template #filter>
+                    <leads-filters :base-route="baseRoute" />
+                </template>
+            </gym-revenue-crud>
         </template>
-    </gym-revenue-crud>
+    </ApolloQuery>
+
     <confirm
         title="Really Trash?"
         v-if="confirmTrash"
@@ -84,6 +90,7 @@ import LeadPreview from "@/Pages/Leads/Partials/LeadPreview.vue";
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -286,6 +293,40 @@ export default defineComponent({
                 active: false,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
+        const lead_query = gql`
+            query Leads($page: Int) {
+                leads(page: $page) {
+                    data {
+                        id
+                        created_at
+                        first_name
+                        last_name
+                        location {
+                            name
+                        }
+                        lead_type {
+                            name
+                        }
+                        owner_user_id
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
+
+        const getLeads = (data) => {
+            return _.cloneDeep(data.leads);
+        };
 
         return {
             handleClickTrash,
@@ -299,6 +340,9 @@ export default defineComponent({
             baseRoute,
             LeadPreview,
             trashReason,
+            param,
+            lead_query,
+            getLeads,
         };
     },
 });

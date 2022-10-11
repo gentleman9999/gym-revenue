@@ -2,61 +2,71 @@
     <LayoutHeader title="Locations">
         <h2 class="font-semibold text-xl leading-tight">Locations</h2>
     </LayoutHeader>
-    <gym-revenue-crud
-        base-route="locations"
-        model-name="Location"
-        model-key="location"
-        :fields="fields"
-        :resource="locations"
-        :actions="{
-            trash: {
-                label: 'Close Club',
-                handler: ({ data }) => handleClickTrash(data.id),
-            },
-        }"
-        :top-actions="topActions"
-        :preview-component="LocationPreview"
-    >
-        <template #filter>
-            <simple-search-filter
-                v-model:modelValue="form.search"
-                class="w-full max-w-md mr-4"
-                @reset="reset"
-                @clear-filters="clearFilters"
-                @clear-search="clearSearch"
+    <ApolloQuery :query="(gql) => location_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                :resource="getLocations(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                base-route="locations"
+                model-name="Location"
+                model-key="location"
+                :fields="fields"
+                :actions="{
+                    trash: {
+                        label: 'Close Club',
+                        handler: ({ data }) => handleClickTrash(data.id),
+                    },
+                }"
+                :top-actions="topActions"
+                :preview-component="LocationPreview"
             >
-                <template #content>
-                    <div class="py-2 text-xs w-60">
-                        <div class="block py-2 text-xs text-white">
-                            Closed Clubs:
-                        </div>
-                        <select
-                            v-model="form.trashed"
-                            class="mt-1 w-full form-select"
-                        >
-                            <option :value="null" />
-                            <option value="with">With Closed</option>
-                            <option value="only">Only Closed</option>
-                        </select>
-                        <div class="block py-2 text-xs text-white">State:</div>
-                        <select
-                            v-model="form.state"
-                            class="mt-1 w-full form-select"
-                        >
-                            <option :value="null" />
-                            <option
-                                v-for="state in this.$page.props.eachstate"
-                                :value="state.state"
-                                :key="state.state"
-                            >
-                                {{ state.state }}
-                            </option>
-                        </select>
-                    </div>
+                <template #filter>
+                    <simple-search-filter
+                        v-model:modelValue="form.search"
+                        class="w-full max-w-md mr-4"
+                        @reset="reset"
+                        @clear-filters="clearFilters"
+                        @clear-search="clearSearch"
+                    >
+                        <template #content>
+                            <div class="py-2 text-xs w-60">
+                                <div class="block py-2 text-xs text-white">
+                                    Closed Clubs:
+                                </div>
+                                <select
+                                    v-model="form.trashed"
+                                    class="mt-1 w-full form-select"
+                                >
+                                    <option :value="null" />
+                                    <option value="with">With Closed</option>
+                                    <option value="only">Only Closed</option>
+                                </select>
+                                <div class="block py-2 text-xs text-white">
+                                    State:
+                                </div>
+                                <select
+                                    v-model="form.state"
+                                    class="mt-1 w-full form-select"
+                                >
+                                    <option :value="null" />
+                                    <option
+                                        v-for="state in this.$page.props
+                                            .eachstate"
+                                        :value="state.state"
+                                        :key="state.state"
+                                    >
+                                        {{ state.state }}
+                                    </option>
+                                </select>
+                            </div>
+                        </template>
+                    </simple-search-filter>
                 </template>
-            </simple-search-filter>
+            </gym-revenue-crud>
         </template>
-    </gym-revenue-crud>
+    </ApolloQuery>
+
     <confirm
         title="Really Close This Club?"
         v-if="confirmTrash"
@@ -90,6 +100,7 @@ import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -147,7 +158,34 @@ export default defineComponent({
                 class: "btn-primary",
             },
         };
+        const param = ref({
+            page: 1,
+        });
+        const location_query = gql`
+            query Locations($page: Int) {
+                locations(page: $page) {
+                    data {
+                        id
+                        name
+                        city
+                        state
+                        active
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
 
+        const getLocations = (data) => {
+            return _.cloneDeep(data.locations);
+        };
         return {
             handleClickTrash,
             confirmTrash,
@@ -162,6 +200,9 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
+            param,
+            location_query,
+            getLocations,
         };
     },
     computed: {

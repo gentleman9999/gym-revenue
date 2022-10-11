@@ -1,21 +1,27 @@
 <template>
     <LayoutHeader title="Notes" />
     <page-toolbar-nav title="Notes" :links="navLinks" />
-    <gym-revenue-crud
-        base-route="notes"
-        model-name="Note"
-        model-key="note"
-        :fields="fields"
-        :resource="notes"
-        :actions="{
-            trash: false,
-            restore: false,
-            delete: {
-                label: 'Delete',
-                handler: ({ data }) => handleClickDelete(data),
-            },
-        }"
-    />
+    <ApolloQuery :query="(gql) => note_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                :resource="getNotes(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                base-route="notes"
+                model-name="Note"
+                model-key="note"
+                :fields="fields"
+                :actions="{
+                    trash: false,
+                    restore: false,
+                    delete: {
+                        label: 'Delete',
+                        handler: ({ data }) => handleClickDelete(data),
+                    },
+                }"
+            />
+        </template>
+    </ApolloQuery>
     <confirm
         title="Really Trash Note?"
         v-if="confirmDelete"
@@ -34,6 +40,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -44,7 +51,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["notes", "filters"],
+    props: [],
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
@@ -72,6 +79,33 @@ export default defineComponent({
                 active: true,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
+        const note_query = gql`
+            query Notes($page: Int) {
+                notes(page: $page) {
+                    data {
+                        id
+                        title
+                        note
+                        active
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
+
+        const getNotes = (data) => {
+            return _.cloneDeep(data.notes);
+        };
 
         return {
             fields,
@@ -80,6 +114,9 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
+            param,
+            note_query,
+            getNotes,
         };
     },
 });

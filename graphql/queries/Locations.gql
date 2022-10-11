@@ -1,0 +1,7 @@
+extend type Query {
+    locations(
+        name: String @where(operator: "like")
+    ): [Location!]!
+    @orderBy(column: "name")
+    @paginate(defaultCount: 10)
+}

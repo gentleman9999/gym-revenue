@@ -22,21 +22,27 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-    <gym-revenue-crud
-        :resource="members"
-        model-key="member"
-        :fields="fields"
-        :base-route="baseRoute"
-        :top-actions="{
-            create: { label: 'Add Member' },
-        }"
-        :actions="actions"
-        :preview-component="MemberPreview"
-    >
-        <template #filter>
-            <member-filters :base-route="baseRoute" />
+    <ApolloQuery :query="(gql) => member_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                :resource="getMembers(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                model-key="member"
+                :fields="fields"
+                :base-route="baseRoute"
+                :top-actions="{
+                    create: { label: 'Add Member' },
+                }"
+                :actions="actions"
+                :preview-component="MemberPreview"
+            >
+                <template #filter>
+                    <member-filters :base-route="baseRoute" />
+                </template>
+            </gym-revenue-crud>
         </template>
-    </gym-revenue-crud>
+    </ApolloQuery>
     <confirm
         title="Really Trash?"
         v-if="confirmTrash"
@@ -81,6 +87,7 @@ import MemberPreview from "@/Pages/Members/Partials/MemberPreview.vue";
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import usePage from "@/Components/InertiaModal/usePage";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -186,7 +193,37 @@ export default defineComponent({
                 active: false,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
+        const member_query = gql`
+            query Members($page: Int) {
+                members(page: $page) {
+                    data {
+                        id
+                        first_name
+                        last_name
+                        created_at
+                        updated_at
+                        location {
+                            name
+                        }
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
 
+        const getMembers = (data) => {
+            return _.cloneDeep(data.members);
+        };
         return {
             handleClickTrash,
             confirmTrash,
@@ -199,6 +236,9 @@ export default defineComponent({
             baseRoute,
             MemberPreview,
             trashReason,
+            param,
+            member_query,
+            getMembers,
         };
     },
 });

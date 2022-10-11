@@ -1,0 +1,8 @@
+extend type Query {
+    reminders(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+    ): [Reminder!]!
+    @orderBy(column: "name")
+    @paginate(defaultCount: 10)
+}

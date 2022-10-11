@@ -13,21 +13,12 @@ class RemindersController extends Controller
     public function index(Request $request)
     {
         $client_id = request()->user()->client_id;
-        $user_id = request()->user()->id;
 
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
         }
-        $page_count = 10;
-        $roles = request()->user()->getRoles();
-        $security_group = request()->user()->securityGroup();
 
-        $reminders = Reminder::with('client')
-                ->whereUserId($user_id);
-
-        return Inertia::render('Reminders/Show', [
-            'reminders' => $reminders->paginate($page_count),
-        ]);
+        return Inertia::render('Reminders/Show');
     }
 
     public function create()

@@ -1,22 +1,28 @@
 <template>
     <LayoutHeader title="Reminders" />
     <page-toolbar-nav title="Reminders" :links="navLinks" />
-    <gym-revenue-crud
-        base-route="reminders"
-        model-name="Reminder"
-        model-key="reminder"
-        :fields="fields"
-        :resource="reminders"
-        :actions="{
-            trash: false,
-            restore: false,
-            delete: {
-                label: 'Delete',
-                handler: ({ data }) => handleClickDelete(data),
-            },
-        }"
-        :top-actions="false"
-    />
+    <ApolloQuery :query="(gql) => reminder_query" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                base-route="reminders"
+                model-name="Reminder"
+                model-key="reminder"
+                :fields="fields"
+                :resource="getReminders(data)"
+                @update-page="(value) => (param = { ...param, page: value })"
+                :actions="{
+                    trash: false,
+                    restore: false,
+                    delete: {
+                        label: 'Delete',
+                        handler: ({ data }) => handleClickDelete(data),
+                    },
+                }"
+                :top-actions="false"
+            />
+        </template>
+    </ApolloQuery>
     <confirm
         title="Really Trash Reminder?"
         v-if="confirmDelete"
@@ -36,6 +42,7 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -47,7 +54,7 @@ export default defineComponent({
         Button,
         PageToolbarNav,
     },
-    props: ["reminders", "filters"],
+    props: [],
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
@@ -100,6 +107,34 @@ export default defineComponent({
                 active: false,
             },
         ];
+        const param = ref({
+            page: 1,
+        });
+        const reminder_query = gql`
+            query Reminders($page: Int) {
+                reminders(page: $page) {
+                    data {
+                        id
+                        name
+                        description
+                        remind_time
+                        triggered_at
+                    }
+                    pagination: paginatorInfo {
+                        current_page: currentPage
+                        last_page: lastPage
+                        from: firstItem
+                        to: lastItem
+                        per_page: perPage
+                        total
+                    }
+                }
+            }
+        `;
+
+        const getReminders = (data) => {
+            return _.cloneDeep(data.reminders);
+        };
 
         return {
             fields,
@@ -108,6 +143,9 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
+            param,
+            reminder_query,
+            getReminders,
         };
     },
 });

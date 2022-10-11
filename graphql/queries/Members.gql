@@ -1,0 +1,8 @@
+extend type Query {
+    members(
+        first_name: String @where(operator: "like")
+    ): [Member!]!
+    @orderBy(column: "first_name")
+    @paginate(defaultCount: 10)
+        @can(ability: "members.read", model: "App\\Domain\\EndUsers\\Members\\Projections\\Member")
+}
