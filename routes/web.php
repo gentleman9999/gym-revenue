@@ -398,6 +398,14 @@ Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\G
 Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');
 
 Route::middleware('auth:sanctum')->prefix('chat')->group(function () {
+    Route::prefix('internals')->group(static function () {
+        Route::post('create', \App\Domain\Chat\Actions\CreateChat::class)->name('start-internal-chats');
+        Route::get('get', \App\Domain\Chat\Actions\GetChat::class)->name('get-internal-chats');
+        Route::get('interlocutors', \App\Domain\Chat\Actions\GetInterlocutor::class)->name('get-internal-chats-interlocutors');
+        Route::PUT('mark-as-read/{uuid}', \App\Domain\Chat\Actions\UpdateMessage::class)->name('mark-internal-chats-as-read');
+        Route::post('message', \App\Domain\Chat\Actions\CreateMessage::class)->name('message-internal-chats');
+    });
+
     Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
     Route::get('/{end_user_type}/{id}', \App\Http\Controllers\ChatController::class . '@index')->name('end-user-chat');
 });

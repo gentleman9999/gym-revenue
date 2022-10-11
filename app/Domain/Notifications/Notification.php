@@ -21,6 +21,7 @@ class Notification extends GymRevProjection
     /** @see resources/js/utils/parseNotificationResponse::NOTIFICATION_TYPES */
     public const TYPE_CALENDAR_EVENT_REMINDER = 'CALENDAR_EVENT_REMINDER';
     public const TYPE_NEW_CONVERSATION = 'NEW_CONVERSATION';
+    public const TYPE_NEW_MESSAGE = 'NEW_MESSAGE';
     public const TYPE_DEFAULT = 'DEFAULT_NOTIFICATION';
 
     public const STATE_INFO = 'info';

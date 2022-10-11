@@ -54,13 +54,15 @@ const getDayOfWeek = (date) => {
     }
 };
 
-const NOTIFICATION_TYPES = Object.freeze({
+export const NOTIFICATION_TYPES = Object.freeze({
     /** @see App\Domain\Notifications::TYPE_CALENDAR_EVENT_REMINDER */
     TYPE_CALENDAR_EVENT_REMINDER: "CALENDAR_EVENT_REMINDER",
     /** @see App\Domain\Notifications::TYPE_NEW_CONVERSATION */
     TYPE_NEW_CONVERSATION: "NEW_CONVERSATION",
     /** @see App\Domain\Notifications::TYPE_DEFAULT */
     TYPE_DEFAULT: "DEFAULT_NOTIFICATION",
+    /** @see App\Domain\Notifications::TYPE_NEW_MESSAGE */
+    TYPE_NEW_MESSAGE: "NEW_MESSAGE",
 });
 
 /**
@@ -124,7 +126,9 @@ function buildConversationNotification(notification) {
     // We don't want to trigger any notifications while at chat page, instead we want to refresh the chat list
     // and silently delete the notification.
     if (chatElement !== null) {
-        chatElement.dispatchEvent(new Event("refresh"));
+        chatElement.dispatchEvent(
+            new CustomEvent("refresh", { detail: notification })
+        );
         dismissNotification(notification.id);
         return null;
     }
@@ -155,6 +159,7 @@ export const parseNotificationResponse = (notification) => {
         case NOTIFICATION_TYPES.TYPE_CALENDAR_EVENT_REMINDER:
             return buildCalenderNotification(notification);
         case NOTIFICATION_TYPES.TYPE_NEW_CONVERSATION:
+        case NOTIFICATION_TYPES.TYPE_NEW_MESSAGE:
             return buildConversationNotification(notification);
         default:
             return notificationResponse(notification);
