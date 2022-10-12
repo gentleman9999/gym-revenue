@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Comm;
 
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Http\Controllers\Controller;
+use App\Models\File;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -63,5 +65,14 @@ class EmailTemplatesController extends Controller
         }
 
         return $templates;
+    }
+
+    public function getFiles(): Collection
+    {
+        $files = File::where('extension', '=', 'jpg')
+            ->orWhere('extension', '=', 'png')
+            ->get();
+
+        return $files;
     }
 }
