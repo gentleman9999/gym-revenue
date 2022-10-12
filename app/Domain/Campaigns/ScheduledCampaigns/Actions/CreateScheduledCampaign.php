@@ -10,6 +10,7 @@ use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaignAggregate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Locations\Projections\Location;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
@@ -33,6 +34,10 @@ class CreateScheduledCampaign
     public function handle(array $payload, User $user): ScheduledCampaign
     {
         $id = Uuid::new();
+
+        //NEEDED FOR LIVE REPORTING
+        $location = Location::whereClientId($payload['client_id'])->first();
+        $payload['gymrevenue_id'] = $location->gymrevenue_id;
 
         $owner_id = $user->id;
         $location_id = $user->current_location_id;

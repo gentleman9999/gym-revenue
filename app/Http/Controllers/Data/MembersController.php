@@ -9,8 +9,10 @@ use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -83,6 +85,19 @@ class MembersController extends Controller
             $members->setCollection($sortedResult);
         }
 
+        if ($user->current_location_id) {
+            $newMemberCount = LiveReportsByDay::whereEntity('member')
+                ->where('date', '=', date('Y-m-d'))
+                ->whereAction(LiveReportingEnum::ADDED)
+                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+            if ($newMemberCount) {
+                $newMemberCount = $newMemberCount->value;
+            } else {
+                $newMemberCount = 0;
+            }
+        } else {
+            $newMemberCount = 0;
+        }
 
         $available_member_owners = [];
         foreach ($team_users as $team_user) {
@@ -110,7 +125,7 @@ class MembersController extends Controller
                 'lastupdated'
             ),
             'grlocations' => Location::all(),
-
+            'newMemberCount' => $newMemberCount,
         ]);
     }
 
