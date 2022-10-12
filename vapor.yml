@@ -24,7 +24,7 @@ environments:
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
-          - 'php artisan sidecar:activate'
+          - 'php artisan sidecar:activate --pre-warm'
           - 'php artisan migrate:fresh --seed --force'
     staging:
         domain: stage.gymrevenue.com
@@ -48,7 +48,7 @@ environments:
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:staging && rm -rf node_modules'
         deploy:
-          - 'php artisan sidecar:activate'
+          - 'php artisan sidecar:activate --pre-warm'
           - 'php artisan migrate:fresh --seed'
     develop:
         domain: dev.gymrevenue.com
@@ -72,5 +72,5 @@ environments:
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:dev && rm -rf node_modules'
         deploy:
-           - 'php artisan sidecar:activate'
-           - 'php artisan migrate:fresh --seed'
+            - 'php artisan sidecar:activate --pre-warm'
+            - 'php artisan migrate:fresh --seed'
