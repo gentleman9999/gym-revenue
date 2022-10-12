@@ -62,6 +62,8 @@ export const NOTIFICATION_TYPES = Object.freeze({
     /** @see App\Domain\Notifications::TYPE_DEFAULT */
     TYPE_DEFAULT: "DEFAULT_NOTIFICATION",
     /** @see App\Domain\Notifications::TYPE_NEW_MESSAGE */
+    TYPE_TASK_OVERDUE: "TASK_OVERDUE",
+    /** @see App\Domain\Notifications::TYPE_TASK_OVERDUE */
     TYPE_NEW_MESSAGE: "NEW_MESSAGE",
 });
 
@@ -73,13 +75,11 @@ export const NOTIFICATION_TYPES = Object.freeze({
  */
 function notificationResponse(notification, options = {}) {
     // Allow onClose call without disrupting dismissNotification
-    const onClose = new Promise((resolve) => {
-        resolve(typeof options.onClose === "function" && options.onClose());
-    });
-
-    options = Object.assign({ timeout: false }, options);
-    options.onClose = () =>
-        onClose.then(() => dismissNotification(notification.id));
+    const onClose = options.onClose;
+    options.onClose = () => {
+        dismissNotification(notification.id);
+        typeof onClose === "function" && onClose();
+    };
 
     return {
         text: notification.text,
@@ -148,6 +148,22 @@ function buildConversationNotification(notification) {
 }
 
 /**
+ * @param {{ text:string, id:string, state:string, type:string, entity:object}} notification
+ *
+ * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}|null}
+ */
+function resolveOverdueTask(notification) {
+    return notificationResponse(notification, {
+        onClose: () => {
+            let gotoUrl = new URL("../tasks", window.location);
+            gotoUrl.searchParams.append("start", notification.entity.start);
+
+            window.location = gotoUrl.href;
+        },
+    });
+}
+
+/**
  * @param {{ text:string, id:string, state:string, type:string, entity_type?:string, entity?:object}} notification
  *
  * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}|null}
@@ -161,46 +177,9 @@ export const parseNotificationResponse = (notification) => {
         case NOTIFICATION_TYPES.TYPE_NEW_CONVERSATION:
         case NOTIFICATION_TYPES.TYPE_NEW_MESSAGE:
             return buildConversationNotification(notification);
+        case NOTIFICATION_TYPES.TYPE_TASK_OVERDUE:
+            return resolveOverdueTask(notification);
         default:
             return notificationResponse(notification);
     }
 };
-
-/**
- * Entity type resolver
- *  create a case for the desired entity type, and a function for it as well.
- *  call your function within the case and break out (don't return).
- *
- *  we can use multiple cases if certain needed functionality overlap for multiple types,
- *  simply do not break for these cases & add another case which passes for both types
- *  -below- the case specific functionality, then break on the case that catches multiple
- *  overlapping types.
- *
- * @param {Object} e event or notification (they're both the same)
- * @returns {void}
- */
-export function resolveEntityType(e) {
-    switch (e.entity.type) {
-        case "TASK_OVERDUE":
-            resolveOverdueTask(e);
-            break;
-
-        default:
-            unresolvableEntity(e);
-            break;
-    }
-}
-
-/** @entity {TASK_OVERDUE} */
-export function resolveOverdueTask(notif) {
-    let gotoUrl = new URL("../tasks", window.location);
-    gotoUrl.searchParams.append("start", notif?.entity?.start);
-
-    window.location = gotoUrl.href;
-}
-
-/** @entity {Unresolved} */
-export function unresolvableEntity(notif) {
-    console.log("Entity type is unresolvable:", notif?.entity?.type);
-    console.log("Entity:", notif);
-}
