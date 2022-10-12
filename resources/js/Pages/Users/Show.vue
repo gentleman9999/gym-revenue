@@ -13,7 +13,7 @@
                 :actions="actions"
                 :top-actions="topActions"
                 :preview-component="UserPreview"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
             >
                 <template #filter>
                     <beefy-search-filter
@@ -152,6 +152,9 @@ export default defineComponent({
     setup(props) {
         const param = ref({
             page: 1,
+            filter: {
+                search: "",
+            },
         });
         const user_query = gql`
             query Users($page: Int) {
@@ -310,6 +313,9 @@ export default defineComponent({
             },
         };
 
+        const handleCrudUpdate = (key, value) => {
+            param.value = { ...param.value, [key]: value };
+        };
         return {
             confirmDelete,
             fields,
@@ -331,6 +337,7 @@ export default defineComponent({
             user_query,
             param,
             getUsers,
+            handleCrudUpdate,
         };
     },
 });

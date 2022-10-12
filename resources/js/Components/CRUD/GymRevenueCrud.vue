@@ -29,10 +29,12 @@
             <slot name="filter">
                 <simple-search-filter
                     v-model:modelValue="form.search"
+                    @update:modelValue="
+                        $emit('update', 'filter', {
+                            search: form.search,
+                        })
+                    "
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
-                    @reset="reset"
-                    @clear-filters="clearFilters"
-                    @clear-search="clearSearch"
                 >
                     <div
                         class="block py-2 text-xs text-base-content text-opacity-80"
@@ -93,7 +95,7 @@
             <pagination
                 class="mt-4"
                 :pagination="resource.pagination"
-                @update-page="(value) => $emit('update-page', value)"
+                @update-page="(value) => $emit('update', 'page', value)"
             />
         </slot>
     </jet-bar-container>
@@ -124,6 +126,7 @@ import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PreviewModal from "@/Components/CRUD/PreviewModal.vue";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 import { useSearchFilter } from "./helpers/useSearchFilter";
+
 import { flattenObj } from "@/Components/CRUD/helpers/getData";
 import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizationModal.vue";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";

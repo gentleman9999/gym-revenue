@@ -6,6 +6,10 @@ type User {
     "Non-unique name."
     name: String!
 
+    first_name: String
+
+    last_name: String
+
     "Unique email address."
     email: String!
 
