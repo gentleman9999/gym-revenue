@@ -1,7 +1,6 @@
 extend type Query {
     calendar_event_types(
-        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-        name: String @where(operator: "like")
+        filter: Filter @scope
     ): [CalendarEventType!]!
     @orderBy(column: "name")
     @paginate(defaultCount: 10)

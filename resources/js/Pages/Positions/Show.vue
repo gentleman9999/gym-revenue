@@ -10,7 +10,7 @@
                 model-key="positions"
                 :fields="fields"
                 :resource="getPositions(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 :actions="{
                     trash: {
                         handler: ({ data }) => handleClickTrash(data),
@@ -96,8 +96,8 @@ export default defineComponent({
             page: 1,
         });
         const position_query = gql`
-            query Positions($page: Int) {
-                positions(page: $page) {
+            query Positions($page: Int, $filter: Filter) {
+                positions(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -119,6 +119,22 @@ export default defineComponent({
         const getPositions = (data) => {
             return _.cloneDeep(data.positions);
         };
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             fields,
             confirmTrash,
@@ -129,6 +145,7 @@ export default defineComponent({
             param,
             position_query,
             getPositions,
+            handleCrudUpdate,
         };
     },
 });

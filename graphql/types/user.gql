@@ -24,6 +24,8 @@ type User {
 
     manager: String
 
+    zip: String
+    
     default_team: Team
 
     role: String

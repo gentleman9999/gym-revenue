@@ -6,7 +6,7 @@
             <gym-revenue-crud
                 v-if="data"
                 :resource="getEventTypes(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 base-route="calendar.event_types"
                 model-name="Event Type"
                 model-key="calendar-event-types"
@@ -114,8 +114,8 @@ export default defineComponent({
             page: 1,
         });
         const event_query = gql`
-            query CalendarEventTypes($page: Int) {
-                calendar_event_types(page: $page) {
+            query CalendarEventTypes($page: Int, $filter: Filter) {
+                calendar_event_types(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -139,7 +139,22 @@ export default defineComponent({
         const getEventTypes = (data) => {
             return _.cloneDeep(data.calendar_event_types);
         };
-
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             fields,
             confirmTrash,
@@ -150,6 +165,7 @@ export default defineComponent({
             param,
             event_query,
             getEventTypes,
+            handleCrudUpdate,
         };
     },
 });

@@ -10,7 +10,7 @@
                 model-key="reminder"
                 :fields="fields"
                 :resource="getReminders(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 :actions="{
                     trash: false,
                     restore: false,
@@ -47,7 +47,6 @@ import gql from "graphql-tag";
 export default defineComponent({
     components: {
         LayoutHeader,
-
         GymRevenueCrud,
         Confirm,
         JetBarContainer,
@@ -58,7 +57,6 @@ export default defineComponent({
     setup(props) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
-            console.log("click delete", item);
             confirmDelete.value = item;
         };
 
@@ -111,8 +109,8 @@ export default defineComponent({
             page: 1,
         });
         const reminder_query = gql`
-            query Reminders($page: Int) {
-                reminders(page: $page) {
+            query Reminders($page: Int, $filter: Filter) {
+                reminders(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -135,7 +133,22 @@ export default defineComponent({
         const getReminders = (data) => {
             return _.cloneDeep(data.reminders);
         };
-
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             fields,
             confirmDelete,
@@ -146,6 +159,7 @@ export default defineComponent({
             param,
             reminder_query,
             getReminders,
+            handleCrudUpdate,
         };
     },
 });

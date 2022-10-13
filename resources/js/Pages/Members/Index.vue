@@ -27,7 +27,7 @@
             <gym-revenue-crud
                 v-if="data"
                 :resource="getMembers(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 model-key="member"
                 :fields="fields"
                 :base-route="baseRoute"
@@ -38,7 +38,7 @@
                 :preview-component="MemberPreview"
             >
                 <template #filter>
-                    <member-filters :base-route="baseRoute" />
+                    <member-filters :handleCrudUpdate="handleCrudUpdate" />
                 </template>
             </gym-revenue-crud>
         </template>
@@ -197,8 +197,8 @@ export default defineComponent({
             page: 1,
         });
         const member_query = gql`
-            query Members($page: Int) {
-                members(page: $page) {
+            query Members($page: Int, $filter: Filter) {
+                members(page: $page, filter: $filter) {
                     data {
                         id
                         first_name
@@ -224,6 +224,22 @@ export default defineComponent({
         const getMembers = (data) => {
             return _.cloneDeep(data.members);
         };
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             handleClickTrash,
             confirmTrash,
@@ -239,6 +255,7 @@ export default defineComponent({
             param,
             member_query,
             getMembers,
+            handleCrudUpdate,
         };
     },
 });

@@ -1,9 +1,7 @@
 extend type Query {
-    leads(filter: LeadsInput @scope): [Lead!]!
+    leads(
+        filter: Filter @scope
+    ): [Lead!]!
     @paginate(defaultCount: 10)
         @can(ability: "leads.read", model: "App\\Domain\\EndUsers\\Leads\\Projections\\Lead")
-}
-
-input LeadsInput {
-    nameSearch: String
 }

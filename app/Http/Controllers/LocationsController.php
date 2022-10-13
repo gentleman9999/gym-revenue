@@ -19,7 +19,6 @@ class LocationsController extends Controller
         $user = request()->user();
         $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
-        $page_count = 10;
 
         if (is_null($client_id)) {
             return Redirect::route('dashboard');
@@ -31,14 +30,6 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
-            $locations = $locations
-                ->filter($request->only('search', 'trashed'))
-                ->sort()
-                ->paginate($page_count)
-                ->appends(request()->except('page'));
-        }
-
         if ((! is_null($client_id))) {
             $client = Client::find($client_id);
             $title = "{$client->name} Locations";
@@ -47,7 +38,6 @@ class LocationsController extends Controller
         }
 
         return Inertia::render('Locations/Show', [
-            'locations' => $locations,
             'title' => $title,
             'isClientUser' => $is_client_user,
             'filters' => $request->all('search', 'trashed'),

@@ -13,15 +13,17 @@
                 :resource="getTeams(data)"
                 :actions="actions"
                 :preview-component="TeamPreview"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
             >
                 <template #filter>
                     <beefy-search-filter
                         v-model:modelValue="form.search"
-                        :filtersActive="filtersActive"
+                        @update:modelValue="
+                            handleCrudUpdate('filter', {
+                                search: form.search,
+                            })
+                        "
                         class="w-full max-w-md mr-4"
-                        @reset="reset"
-                        @clear-filters="clearFilters"
                         @clear-search="clearSearch"
                     >
                         <div class="form-control">
@@ -64,6 +66,7 @@
                                 <option></option>
                                 <option
                                     v-for="club in clubs"
+                                    :key="club.gymrevenue_id"
                                     :value="club.gymrevenue_id"
                                 >
                                     {{ club.name }}
@@ -111,14 +114,35 @@ export default defineComponent({
         Multiselect,
     },
     props: ["filters", "clubs", "preview", "potentialUsers"],
-    setup(props) {
+    setup(props, { emit }) {
         const baseRoute = "teams";
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
-        const { form, reset, clearFilters, clearSearch, filtersActive } =
-            useSearchFilter("teams", {
-                club: null,
+        const form = ref({
+            search: "",
+        });
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
+        const clearSearch = () => {
+            form.value.search = "";
+            handleCrudUpdate("filter", {
+                search: "",
             });
+        };
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -152,10 +176,13 @@ export default defineComponent({
         });
         const param = ref({
             page: 1,
+            filter: {
+                search: "",
+            },
         });
         const team_query = gql`
-            query Teams($page: Int) {
-                teams(page: $page) {
+            query Teams($page: Int, $filter: Filter) {
+                teams(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -185,16 +212,14 @@ export default defineComponent({
             Inertia,
             handleConfirmDelete,
             form,
-            reset,
             TeamPreview,
             baseRoute,
-            clearFilters,
             clearSearch,
-            filtersActive,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             param,
             team_query,
             getTeams,
+            handleCrudUpdate,
         };
     },
 });

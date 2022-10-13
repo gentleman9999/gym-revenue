@@ -28,7 +28,7 @@
             <gym-revenue-crud
                 v-if="data"
                 :resource="getLeads(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 model-key="lead"
                 :fields="fields"
                 :base-route="baseRoute"
@@ -39,7 +39,7 @@
                 :preview-component="LeadPreview"
             >
                 <template #filter>
-                    <leads-filters :base-route="baseRoute" />
+                    <leads-filters :handleCrudUpdate="handleCrudUpdate" />
                 </template>
             </gym-revenue-crud>
         </template>
@@ -297,8 +297,8 @@ export default defineComponent({
             page: 1,
         });
         const lead_query = gql`
-            query Leads($page: Int) {
-                leads(page: $page) {
+            query Leads($page: Int, $filter: Filter) {
+                leads(page: $page, filter: $filter) {
                     data {
                         id
                         created_at
@@ -327,7 +327,22 @@ export default defineComponent({
         const getLeads = (data) => {
             return _.cloneDeep(data.leads);
         };
-
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             handleClickTrash,
             confirmTrash,
@@ -343,6 +358,7 @@ export default defineComponent({
             param,
             lead_query,
             getLeads,
+            handleCrudUpdate,
         };
     },
 });

@@ -1,6 +1,6 @@
 extend type Query {
     members(
-        first_name: String @where(operator: "like")
+        filter: Filter @scope
     ): [Member!]!
     @orderBy(column: "first_name")
     @paginate(defaultCount: 10)

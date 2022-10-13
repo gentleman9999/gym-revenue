@@ -1,6 +1,6 @@
 extend type Query {
     notes(
-        title: String @where(operator: "like")
+        filter: Filter @scope
     ): [Note!]!
     @orderBy(column: "title")
     @paginate(defaultCount: 10)

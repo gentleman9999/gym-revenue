@@ -7,7 +7,3 @@ extend type Query {
     @paginate(defaultCount: 10)
         @can(ability: "users.read", model: "App\\Domain\\Users\\Models\\User")
 }
-
-input Filter {
-    search: String
-}

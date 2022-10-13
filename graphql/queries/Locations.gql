@@ -1,6 +1,6 @@
 extend type Query {
     locations(
-        name: String @where(operator: "like")
+        filter: Filter @scope
     ): [Location!]!
     @orderBy(column: "name")
     @paginate(defaultCount: 10)

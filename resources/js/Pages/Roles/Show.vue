@@ -10,7 +10,7 @@
                 model-key="role"
                 :fields="fields"
                 :resource="getRoles(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 :actions="{
                     trash: false,
                     restore: false,
@@ -99,8 +99,8 @@ export default defineComponent({
             page: 1,
         });
         const role_query = gql`
-            query Roles($page: Int) {
-                roles(page: $page) {
+            query Roles($page: Int, $filter: Filter) {
+                roles(page: $page, filter: $filter) {
                     data {
                         id
                         title
@@ -122,6 +122,22 @@ export default defineComponent({
         const getRoles = (data) => {
             return _.cloneDeep(data.roles);
         };
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             fields,
             confirmDelete,
@@ -132,6 +148,7 @@ export default defineComponent({
             param,
             role_query,
             getRoles,
+            handleCrudUpdate,
         };
     },
 });

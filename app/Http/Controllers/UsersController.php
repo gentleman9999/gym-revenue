@@ -29,88 +29,16 @@ class UsersController extends Controller
         $clientName = 'Cape & Bay/GymRevenue';
         $filterKeys = ['search', 'club', 'team', 'roles',];
 
-        //Populating Role Filter
-        $team_users = User::with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
+        $client = Client::find($client_id);
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find($request->user()->default_team_id);
-            }
-            $client = Client::find($client_id);
-
-            $is_default_team = $client->default_team_id == $current_team->id;
-
             $locations = Location::all();
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
             $clientName = $client->name;
-
-            // If the active team is a client's-default team get all members
-            if ($is_default_team) {
-                $users = User::with(['teams', 'home_location'])
-                    ->filter($request->only($filterKeys))->sort()
-                    ->paginate(10)
-                    ->appends(request()->except('page'));
-            } else {
-                // else - get the members of that team
-                $team_users = TeamUser::whereTeamId($current_team->id)->get();
-                $user_ids = [];
-                foreach ($team_users as $team_user) {
-                    $user_ids[] = $team_user->user_id;
-                }
-                $users = User::whereIn('users.id', $user_ids)
-                    ->with(['teams', 'home_location'])
-                    ->filter($request->only($filterKeys))
-                    ->sort()
-                    ->paginate(10)
-                    ->appends(request()->except('page'));
-            }
-
-            foreach ($users as $idx => $user) {
-                if ($user->getRole()) {
-                    $users[$idx]->role = $user->getRole();
-                }
-
-                $users[$idx]->home_team = $user->default_team->name;
-            }
-        } else {
-            //cb team selected
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $team = Team::find($session_team['id']);
-            } else {
-                $team = Team::find($request->user()->default_team_id);
-            }
-
-            $users = User::with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
-                return $query->where('teams.id', '=', $team->id);
-            })->filter($request->only($filterKeys))->sort()
-                ->paginate(10)->appends(request()->except('page'));
-
-            foreach ($users as $idx => $user) {
-                $users[$idx]->role = $user->getRole();
-                $default_team = $user->default_team;
-                $users[$idx]->home_team = $default_team->name;
-            }
-        }
-
-        //THIS DOESN'T WORK BECAUSE OF PAGINATION BUT IT MAKES IT LOOK LIKE IT'S WORKING FOR NOW
-        //MUST FIX BY DEMO 6/15/22
-        //THIS BLOCK HAS TO BE REMOVED & QUERIES REWRITTEN WITH JOINS SO ACTUAL SORTING WORKS WITH PAGINATION
-        if ($request->get('sort') != '') {
-            if ($request->get('dir') == 'DESC') {
-                $sortedResult = $users->getCollection()->sortByDesc($request->get('sort'))->values();
-            } else {
-                $sortedResult = $users->getCollection()->sortBy($request->get('sort'))->values();
-            }
-            $users->setCollection($sortedResult);
         }
 
         return Inertia::render('Users/Show', [
-            'users' => $users,
             'filters' => $request->all($filterKeys),
             'clubs' => $locations,
             'teams' => $teams,

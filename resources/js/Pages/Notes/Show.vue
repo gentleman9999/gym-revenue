@@ -6,7 +6,7 @@
             <gym-revenue-crud
                 v-if="data"
                 :resource="getNotes(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 base-route="notes"
                 model-name="Note"
                 model-key="note"
@@ -83,8 +83,8 @@ export default defineComponent({
             page: 1,
         });
         const note_query = gql`
-            query Notes($page: Int) {
-                notes(page: $page) {
+            query Notes($page: Int, $filter: Filter) {
+                notes(page: $page, filter: $filter) {
                     data {
                         id
                         title
@@ -107,6 +107,23 @@ export default defineComponent({
             return _.cloneDeep(data.notes);
         };
 
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
+
         return {
             fields,
             confirmDelete,
@@ -117,6 +134,7 @@ export default defineComponent({
             param,
             note_query,
             getNotes,
+            handleCrudUpdate,
         };
     },
 });

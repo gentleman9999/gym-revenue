@@ -1,7 +1,7 @@
 extend type Query {
     teams(
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-        name: String @where(operator: "like")
+        filter: Filter @scope
     ): [Team!]!
     @orderBy(column: "name")
     @paginate(defaultCount: 10)

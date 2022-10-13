@@ -34,6 +34,8 @@
                             search: form.search,
                         })
                     "
+                    @clear-search="clearSearch"
+                    @clear-filters="clearFilters"
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
                 >
                     <div
@@ -43,6 +45,11 @@
                     </div>
                     <select
                         v-model="form.trashed"
+                        @update:modelValue="
+                            $emit('update', 'filter', {
+                                trashed: form.trashed,
+                            })
+                        "
                         class="mt-1 w-full form-select"
                     >
                         <option :value="null" />
@@ -202,11 +209,23 @@ export default defineComponent({
         },
     },
 
-    setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            props.baseRoute
-        );
-
+    setup(props, { emit }) {
+        const form = ref({
+            search: "",
+            trashed: "",
+        });
+        const clearSearch = () => {
+            form.value.search = "";
+            emit("update", "filter", {
+                search: "",
+            });
+        };
+        const clearFilters = () => {
+            form.value.trashed = "";
+            emit("update", "filter", {
+                trashed: "",
+            });
+        };
         const fields = getFields(props);
         const customizedFields = getCustomizedFields(fields, props.modelKey);
 
@@ -330,7 +349,6 @@ export default defineComponent({
         return {
             form,
             topActions,
-            reset,
             clearFilters,
             clearSearch,
             customizationModal,

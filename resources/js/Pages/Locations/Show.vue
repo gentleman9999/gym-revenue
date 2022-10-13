@@ -7,7 +7,7 @@
             <gym-revenue-crud
                 v-if="data"
                 :resource="getLocations(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 base-route="locations"
                 model-name="Location"
                 model-key="location"
@@ -24,8 +24,12 @@
                 <template #filter>
                     <simple-search-filter
                         v-model:modelValue="form.search"
+                        @update:modelValue="
+                            handleCrudUpdate('filter', {
+                                search: form.search,
+                            })
+                        "
                         class="w-full max-w-md mr-4"
-                        @reset="reset"
                         @clear-filters="clearFilters"
                         @clear-search="clearSearch"
                     >
@@ -37,6 +41,11 @@
                                 <select
                                     v-model="form.trashed"
                                     class="mt-1 w-full form-select"
+                                    @update:modelValue="
+                                        handleCrudUpdate('filter', {
+                                            trashed: form.trashed,
+                                        })
+                                    "
                                 >
                                     <option :value="null" />
                                     <option value="with">With Closed</option>
@@ -48,6 +57,11 @@
                                 <select
                                     v-model="form.state"
                                     class="mt-1 w-full form-select"
+                                    @update:modelValue="
+                                        handleCrudUpdate('state', {
+                                            state: form.state,
+                                        })
+                                    "
                                 >
                                     <option :value="null" />
                                     <option
@@ -123,15 +137,40 @@ export default defineComponent({
         "SearchFilter",
         "clientId",
     ],
-    setup(props) {
-        const baseRoute = "locations";
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            baseRoute,
-            {
-                //  preserveState: false,
-            }
-        );
+    setup(props, { emit }) {
+        const form = ref({
+            search: "",
+            trashed: "",
+        });
 
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
+        const clearSearch = () => {
+            form.value.search = "";
+            handleCrudUpdate("filter", {
+                search: "",
+            });
+        };
+        const clearFilters = () => {
+            form.value.trashed = "";
+            handleCrudUpdate("filter", {
+                trashed: "",
+            });
+        };
         const confirmTrash = ref(null);
         const handleClickTrash = (id) => {
             confirmTrash.value = id;
@@ -162,8 +201,8 @@ export default defineComponent({
             page: 1,
         });
         const location_query = gql`
-            query Locations($page: Int) {
-                locations(page: $page) {
+            query Locations($page: Int, $filter: Filter) {
+                locations(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -186,13 +225,13 @@ export default defineComponent({
         const getLocations = (data) => {
             return _.cloneDeep(data.locations);
         };
+
         return {
             handleClickTrash,
             confirmTrash,
             handleConfirmTrash,
             Inertia,
             form,
-            reset,
             clearFilters,
             clearSearch,
             LocationPreview,
@@ -203,6 +242,7 @@ export default defineComponent({
             param,
             location_query,
             getLocations,
+            handleCrudUpdate,
         };
     },
     computed: {

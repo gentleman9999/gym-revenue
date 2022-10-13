@@ -18,11 +18,13 @@
                 <template #filter>
                     <beefy-search-filter
                         v-model:modelValue="form.search"
+                        @update:modelValue="
+                            handleCrudUpdate('filter', {
+                                search: form.search,
+                            })
+                        "
                         :filtersActive="filtersActive"
                         class="w-full max-w-md mr-4"
-                        @reset="reset"
-                        @clear-filters="clearFilters"
-                        @clear-search="clearSearch"
                     >
                         <div class="form-control" v-if="clubs?.length">
                             <label
@@ -125,12 +127,11 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import UserPreview from "@/Pages/Users/Partials/UserPreview.vue";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
 
@@ -157,8 +158,8 @@ export default defineComponent({
             },
         });
         const user_query = gql`
-            query Users($page: Int) {
-                users(page: $page) {
+            query Users($page: Int, $filter: Filter) {
+                users(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -189,11 +190,8 @@ export default defineComponent({
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
 
-        const { form, reset, clearFilters, clearSearch, filtersActive } =
-            useSearchFilter("users", {
-                team: null,
-                club: null,
-            });
+        const form = useGymRevForm({});
+
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
             confirmDelete.value = user;
@@ -314,7 +312,20 @@ export default defineComponent({
         };
 
         const handleCrudUpdate = (key, value) => {
-            param.value = { ...param.value, [key]: value };
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
         };
         return {
             confirmDelete,
@@ -323,9 +334,6 @@ export default defineComponent({
             Inertia,
             handleConfirmDelete,
             form,
-            reset,
-            clearFilters,
-            clearSearch,
             navLinks,
             UserPreview,
             multiselectClasses: getDefaultMultiselectTWClasses(),
@@ -333,7 +341,6 @@ export default defineComponent({
             handleClickImport,
             importUser,
             closeModals,
-            filtersActive,
             user_query,
             param,
             getUsers,

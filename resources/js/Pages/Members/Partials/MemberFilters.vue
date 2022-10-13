@@ -1,11 +1,13 @@
 <template>
     <beefy-search-filter
         v-model:modelValue="form.search"
-        :filtersActive="filtersActive"
         class="w-full max-w-md mr-4"
-        @reset="reset"
-        @clear-filters="clearFilters"
         @clear-search="clearSearch"
+        @update:modelValue="
+            handleCrudUpdate('filter', {
+                search: form.search,
+            })
+        "
     >
         <div class="form-control">
             <label for="nameSearch" class="label label-text py-1 text-xs">
@@ -128,37 +130,24 @@ button {
 }
 </style>
 
-<script>
-import { defineComponent } from "vue";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
+<script setup>
+import { ref } from "vue";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
 
-export default defineComponent({
-    components: {
-        BeefySearchFilter,
-        Multiselect,
-        DatePicker,
-    },
-    props: {
-        baseRoute: {
-            type: String,
-            required: true,
-        },
-    },
-    setup(props) {
-        const { form, reset, clearFilters, clearSearch, filtersActive } =
-            useSearchFilter(props.baseRoute);
-        return {
-            form,
-            reset,
-            clearFilters,
-            clearSearch,
-            filtersActive,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-        };
-    },
+const props = defineProps({
+    handleCrudUpdate: Function,
 });
+
+const form = ref({
+    search: "",
+});
+const clearSearch = () => {
+    form.value.search = "";
+    props.handleCrudUpdate("filter", {
+        search: "",
+    });
+};
 </script>

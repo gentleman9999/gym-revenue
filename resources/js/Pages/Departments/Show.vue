@@ -10,7 +10,7 @@
                 model-key="departments"
                 :fields="fields"
                 :resource="getDepartments(data)"
-                @update-page="(value) => (param = { ...param, page: value })"
+                @update="handleCrudUpdate"
                 :actions="{
                     trash: {
                         handler: ({ data }) => handleClickTrash(data),
@@ -95,8 +95,8 @@ export default defineComponent({
             page: 1,
         });
         const department_query = gql`
-            query Departments($page: Int) {
-                departments(page: $page) {
+            query Departments($page: Int, $filter: Filter) {
+                departments(page: $page, filter: $filter) {
                     data {
                         id
                         name
@@ -118,7 +118,22 @@ export default defineComponent({
         const getDepartments = (data) => {
             return _.cloneDeep(data.departments);
         };
-
+        const handleCrudUpdate = (key, value) => {
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         return {
             fields,
             confirmTrash,
@@ -129,6 +144,7 @@ export default defineComponent({
             param,
             department_query,
             getDepartments,
+            handleCrudUpdate,
         };
     },
 });
