@@ -1,11 +1,22 @@
 <template>
     <daisy-modal id="previewModal" ref="previewModal" @close="close">
-        <component
-            v-if="previewData"
-            :is="previewComponent"
-            v-bind="{ [modelKey]: previewData }"
-            :data="previewData"
-        />
+        <ApolloQuery
+            :query="(gql) => queries[modelKey]"
+            :variables="queryParam"
+            v-if="queryParam"
+        >
+            <template v-slot="{ result: { data, loading, error } }">
+                <div v-if="loading">Loading...</div>
+                <div v-else-if="error">Error</div>
+                <component
+                    v-else-if="data"
+                    :is="previewComponent"
+                    v-bind="{ ...data }"
+                    :data="data"
+                />
+                <div v-else>No result</div>
+            </template>
+        </ApolloQuery>
     </daisy-modal>
 </template>
 
@@ -14,10 +25,12 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import {
+    queryParam,
     clearPreviewData,
-    previewData,
 } from "@/Components/CRUD/helpers/previewData";
+import queries from "@/gql/queries";
 
+console.log("queryParam", queryParam);
 export default {
     components: { DaisyModal },
     props: {
@@ -46,7 +59,7 @@ export default {
         }
 
         watchEffect(() => {
-            if (previewData.value) {
+            if (queryParam.value) {
                 open();
             }
             // else{
@@ -56,7 +69,7 @@ export default {
         onUnmounted(() => {
             clearPreviewData();
         });
-        return { close, previewModal, previewData };
+        return { close, previewModal, queryParam, queries };
     },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <LayoutHeader title="Users" />
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
-    <ApolloQuery :query="(gql) => user_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['users']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -136,6 +136,7 @@ import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
 
 import gql from "graphql-tag";
+import queries from "@/gql/queries.js";
 export default defineComponent({
     components: {
         BeefySearchFilter,
@@ -157,30 +158,6 @@ export default defineComponent({
                 search: "",
             },
         });
-        const user_query = gql`
-            query Users($page: Int, $filter: Filter) {
-                users(page: $page, filter: $filter) {
-                    data {
-                        id
-                        name
-                        email
-                        manager
-                        role
-                        home_team: default_team {
-                            name
-                        }
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getUsers = (data) => {
             return _.cloneDeep(data.users);
@@ -341,7 +318,7 @@ export default defineComponent({
             handleClickImport,
             importUser,
             closeModals,
-            user_query,
+            queries,
             param,
             getUsers,
             handleCrudUpdate,

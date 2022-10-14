@@ -2,7 +2,7 @@ extend type Query {
     reminders(
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
         filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
     ): [Reminder!]!
-    @orderBy(column: "name")
     @paginate(defaultCount: 10)
 }

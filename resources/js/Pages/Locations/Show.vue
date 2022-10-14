@@ -110,7 +110,6 @@ import { Inertia } from "@inertiajs/inertia";
 import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";

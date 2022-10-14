@@ -68,6 +68,11 @@
                     :form="form"
                     @open-customizer="openCustomizationModal"
                     :actions="actions"
+                    @update="
+                        $emit('update', 'orderBy', [
+                            { column: form.sort, order: form.dir },
+                        ])
+                    "
                 >
                     <template #title>
                         <slot name="title"></slot>
@@ -213,6 +218,7 @@ export default defineComponent({
         const form = ref({
             search: "",
             trashed: "",
+            dir: "DESC",
         });
         const clearSearch = () => {
             form.value.search = "";

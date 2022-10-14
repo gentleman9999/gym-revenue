@@ -1,8 +1,8 @@
 extend type Query {
     members(
         filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
     ): [Member!]!
-    @orderBy(column: "first_name")
     @paginate(defaultCount: 10)
         @can(ability: "members.read", model: "App\\Domain\\EndUsers\\Members\\Projections\\Member")
 }

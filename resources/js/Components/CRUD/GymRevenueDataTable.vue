@@ -17,6 +17,8 @@
                                     :form="form"
                                     :field="header"
                                     v-model="form.sort"
+                                    @update:modelValue="$emit('update')"
+                                    @update:direction="$emit('update')"
                                     v-model:direction="form.dir"
                                 />
                                 <template v-else>

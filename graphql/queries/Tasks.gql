@@ -2,7 +2,7 @@ extend type Query {
     tasks(
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
         title: String @where(operator: "like")
-    ): [CalendarEvent!]!
-    @orderBy(column: "title")
+        orderBy: [OrderByClause!] @orderBy
+  ): [CalendarEvent!]!
     @paginate(defaultCount: 10)
 }

@@ -1,7 +1,7 @@
 extend type Query {
     locations(
         filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
     ): [Location!]!
-    @orderBy(column: "name")
     @paginate(defaultCount: 10)
 }
