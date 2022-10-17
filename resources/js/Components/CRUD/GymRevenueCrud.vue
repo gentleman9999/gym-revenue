@@ -117,6 +117,12 @@
         :model-name="modelName"
         :model-key="modelKey"
     />
+    <edit-modal
+        v-if="editComponent"
+        :edit-component="editComponent"
+        :model-name="modelName"
+        :model-key="modelKey"
+    />
     <crud-column-customization-modal
         :fields="fields"
         :model-key="modelKey"
@@ -136,6 +142,7 @@ import GymRevenueDataTable from "./GymRevenueDataTable.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PreviewModal from "@/Components/CRUD/PreviewModal.vue";
+import EditModal from "@/Components/CRUD/EditModal.vue";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 import { useSearchFilter } from "./helpers/useSearchFilter";
 
@@ -155,6 +162,7 @@ export default defineComponent({
         JetBarContainer,
         LeadForm,
         PreviewModal,
+        EditModal,
     },
     props: {
         fields: {
@@ -204,6 +212,9 @@ export default defineComponent({
             default: GymRevenueDataCards,
         },
         previewComponent: {
+            type: Object,
+        },
+        editComponent: {
             type: Object,
         },
         onDoubleClick: {

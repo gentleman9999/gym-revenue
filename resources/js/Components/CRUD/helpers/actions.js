@@ -2,13 +2,14 @@ import { Inertia } from "@inertiajs/inertia";
 import { computed } from "vue";
 import { merge } from "lodash";
 import { preview } from "@/Components/CRUD/helpers/previewData";
+import { edit } from "@/Components/CRUD/helpers/gqlData";
 
 export const defaults = Object.freeze({
-    edit: {
-        label: "Edit",
-        handler: ({ baseRoute, data }) =>
-            Inertia.visitInModal(route(`${baseRoute}.edit`, data.id)),
-    },
+    // edit: {
+    //     label: "Edit",
+    //     handler: ({ baseRoute, data }) =>
+    //         Inertia.visitInModal(route(`${baseRoute}.edit`, data.id)),
+    // },
     trash: {
         label: "Trash",
         handler: ({ baseRoute, data }) =>
@@ -35,12 +36,14 @@ export const getDefaults = ({ previewComponent }) => {
             preview: {
                 label: "Preview",
                 handler: async ({ baseRoute, data }) => {
-                    // const routeName = `${baseRoute}.view`;
-                    // const resp = await axios.get(
-                    //     route(routeName, data.id),
-                    // );
-                    // setPreviewData(resp.data);
                     preview(baseRoute, data["id"]);
+                },
+            },
+            edit: {
+                label: "Edit",
+                handler: async ({ baseRoute, data }) => {
+                    console.log("actions.edit", data);
+                    edit(data["id"]);
                 },
             },
         },
