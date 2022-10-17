@@ -105,6 +105,7 @@
 
         <slot name="pagination">
             <pagination
+                v-if="resource"
                 class="mt-4"
                 :pagination="resource.pagination"
                 @update-page="(value) => $emit('update', 'page', value)"

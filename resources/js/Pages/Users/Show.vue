@@ -13,7 +13,7 @@
                 :actions="actions"
                 :top-actions="topActions"
                 :preview-component="UserPreview"
-                :edit-component="Edit"
+                :edit-component="UserForm"
                 @update="handleCrudUpdate"
             >
                 <template #filter>
@@ -130,8 +130,7 @@ import Confirm from "@/Components/Confirm.vue";
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import UserPreview from "@/Pages/Users/Partials/UserPreview.vue";
-import Edit from "@/Pages/Users/Partials/UserForm.vue";
-// import Edit from "./Edit.vue";
+import UserForm from "@/Pages/Users/Partials/UserForm.vue";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
@@ -149,7 +148,7 @@ export default defineComponent({
         SimpleSearchFilter,
         PageToolbarNav,
         UserPreview,
-        Edit,
+        UserForm,
         Multiselect,
         DaisyModal,
         FileManager,

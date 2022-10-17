@@ -1,8 +1,7 @@
 import { Inertia } from "@inertiajs/inertia";
 import { computed } from "vue";
 import { merge } from "lodash";
-import { preview } from "@/Components/CRUD/helpers/previewData";
-import { edit } from "@/Components/CRUD/helpers/gqlData";
+import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
 
 export const defaults = Object.freeze({
     // edit: {
@@ -36,7 +35,7 @@ export const getDefaults = ({ previewComponent }) => {
             preview: {
                 label: "Preview",
                 handler: async ({ baseRoute, data }) => {
-                    preview(baseRoute, data["id"]);
+                    preview(data["id"]);
                 },
             },
             edit: {

@@ -1,30 +1,22 @@
 "Leads"
 type Lead {
-    "Unique primary key."
     id: ID!
-
-    "Non-unique name."
     name: String!
-    
     first_name: String
- 
     last_name: String
-
-    "Unique email address."
     email: String!
-
-    "When the account was created."
     created_at: DateTime!
-
-    "When the account was last updated."
     updated_at: DateTime!
-
     lead_source_id: String!
-
     leadSource: LeadSource @hasOne
-
     location: Location
     lead_type: LeadType
-
     owner_user_id: String
+    primary_phone: String
+    alternate_phone: String
+    gender: Boolean
+    date_of_birth: DateTime!
+    interaction_count: InteractionCount! @method(name: "getInteractionCount")
+    preview_note: [String]! @method(name: "getPreviewNote")
+    club_location: Location @method(name: "getClubLocation")
 }

@@ -1,7 +1,7 @@
 <template>
     <daisy-modal id="previewModal" ref="previewModal" @close="close">
         <ApolloQuery
-            :query="(gql) => queries[modelKey]"
+            :query="(gql) => queries[modelKey].preview"
             :variables="queryParam"
             v-if="queryParam"
         >
@@ -12,7 +12,6 @@
                     v-else-if="data"
                     :is="previewComponent"
                     v-bind="{ ...data }"
-                    :data="data"
                 />
                 <div v-else>No result</div>
             </template>
@@ -26,8 +25,9 @@ import { ref, watchEffect, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import {
     queryParam,
-    clearPreviewData,
-} from "@/Components/CRUD/helpers/previewData";
+    clearQueryParam,
+    purpose,
+} from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
 
 console.log("queryParam", queryParam);
@@ -55,19 +55,18 @@ export default {
         }
 
         function close() {
-            clearPreviewData();
+            clearQueryParam();
         }
 
         watchEffect(() => {
-            if (queryParam.value) {
+            if (queryParam.value && purpose.value === "preview") {
                 open();
+            } else {
+                close();
             }
-            // else{
-            //     close();
-            // }
         });
         onUnmounted(() => {
-            clearPreviewData();
+            clearQueryParam();
         });
         return { close, previewModal, queryParam, queries };
     },

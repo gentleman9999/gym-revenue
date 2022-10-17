@@ -1,7 +1,7 @@
 <template>
     <daisy-modal id="editModal" ref="editModal" @close="close">
         <ApolloQuery
-            :query="(gql) => queries[modelKey]"
+            :query="(gql) => queries[modelKey].edit"
             :variables="queryParam"
             v-if="queryParam"
         >
@@ -18,8 +18,6 @@
             </template>
         </ApolloQuery>
     </daisy-modal>
-    <div>queryParam: {{ queryParam }}</div>
-    <div>purpose: {{ purpose }}</div>
 </template>
 
 <script>
