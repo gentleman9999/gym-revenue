@@ -10,7 +10,6 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Http\Controllers\Controller;
-use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -275,21 +274,6 @@ class MembersController extends Controller
             'user_id' => $user->id,
             'locations' => $locations,
             'interactionCount' => $member_aggy->getInteractionCount(),
-        ]);
-    }
-
-    public function show(Member $member)
-    {
-        $aggy = MemberAggregate::retrieve($member->id);
-        $preview_note = Note::select('note')->whereEntityId($member->id)->get();
-
-
-        return Inertia::render('Members/Show', [
-            'member' => $member->load(['detailsDesc']),
-            'preview_note' => $preview_note,
-            'interactionCount' => $aggy->getInteractionCount(),
-            'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
-            'hasTwilioConversation' => $member->client->hasTwilioConversationEnabled(),
         ]);
     }
 

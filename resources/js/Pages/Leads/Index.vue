@@ -23,7 +23,7 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-    <ApolloQuery :query="(gql) => lead_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['leads']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -91,6 +91,7 @@ import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import gql from "graphql-tag";
+import queries from "@/gql/queries";
 
 export default defineComponent({
     components: {
@@ -296,33 +297,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const lead_query = gql`
-            query Leads($page: Int, $filter: Filter) {
-                leads(page: $page, filter: $filter) {
-                    data {
-                        id
-                        created_at
-                        first_name
-                        last_name
-                        location {
-                            name
-                        }
-                        lead_type {
-                            name
-                        }
-                        owner_user_id
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getLeads = (data) => {
             return _.cloneDeep(data.leads);
@@ -356,7 +330,7 @@ export default defineComponent({
             LeadPreview,
             trashReason,
             param,
-            lead_query,
+            queries,
             getLeads,
             handleCrudUpdate,
         };

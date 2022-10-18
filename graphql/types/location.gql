@@ -1,8 +1,12 @@
 type Location {
     id: ID!
     gymrevenue_id: String
+    location_no: String
     name: String
     city: String
     state: String
     active: Boolean
+    zip: String
+    address1: String
+    address2: String
 }

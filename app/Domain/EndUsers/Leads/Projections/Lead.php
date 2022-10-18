@@ -9,9 +9,7 @@ use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
-use App\Domain\Locations\Projections\Location;
 use App\Models\Endusers\TrialMembership;
-use App\Models\Note;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -86,20 +84,5 @@ class Lead extends EndUser
         $aggy = LeadAggregate::retrieve($this->id);
 
         return $aggy->getInteractionCount();
-    }
-
-    public function getPreviewNote()
-    {
-        return Note::select('note')->whereEntityId($this->id)->get();
-    }
-
-    public function getClubLocation()
-    {
-        return Location::where('gymrevenue_id', $this->gr_location_id)->first();
-    }
-
-    public function getPhoneNumber(): string
-    {
-        return $this->primary_phone;
     }
 }

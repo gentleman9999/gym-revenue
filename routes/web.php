@@ -41,7 +41,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::get('/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
     Route::get('/export', \App\Http\Controllers\LocationsController::class . '@export')->name('locations.export');
     Route::get('/{location}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
-    Route::get('/view/{location}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
     Route::post('/', \App\Domain\Locations\Actions\CreateLocation::class)->name('locations.store');
     Route::post('/import', \App\Domain\Locations\Actions\ImportLocations::class)->name('locations.import');
     Route::put('/{location}', \App\Domain\Locations\Actions\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
@@ -60,7 +59,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
         Route::post('/create', \App\Domain\EndUsers\Leads\Actions\CreateLead::class)->name('data.leads.store');
-        Route::get('/show/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{lead}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{lead}', \App\Domain\EndUsers\Leads\Actions\UpdateLead::class)->name('data.leads.update');
         Route::put('/assign/{lead}', \App\Domain\EndUsers\Leads\Actions\AssignLeadToRep::class)->name('data.leads.assign');
@@ -79,7 +77,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
         Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
         Route::post('/', \App\Domain\EndUsers\Members\Actions\CreateMember::class)->name('data.members.store');
-        Route::get('/show/{member}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
         Route::get('/edit/{member}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
         Route::put('/{member}', \App\Domain\EndUsers\Members\Actions\UpdateMember::class)->name('data.members.update');
         Route::post('/contact/{member}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');

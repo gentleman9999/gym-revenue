@@ -22,7 +22,7 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-    <ApolloQuery :query="(gql) => member_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['members']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -88,7 +88,7 @@ import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import usePage from "@/Components/InertiaModal/usePage";
 import gql from "graphql-tag";
-
+import queries from "@/gql/queries";
 export default defineComponent({
     components: {
         MemberFilters,
@@ -196,30 +196,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const member_query = gql`
-            query Members($page: Int, $filter: Filter) {
-                members(page: $page, filter: $filter) {
-                    data {
-                        id
-                        first_name
-                        last_name
-                        created_at
-                        updated_at
-                        location {
-                            name
-                        }
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getMembers = (data) => {
             return _.cloneDeep(data.members);
@@ -253,7 +229,7 @@ export default defineComponent({
             MemberPreview,
             trashReason,
             param,
-            member_query,
+            queries,
             getMembers,
             handleCrudUpdate,
         };

@@ -2,7 +2,15 @@ type Member {
     id: ID!
     first_name: String
     last_name: String
+    email: String
+    primary_phone: String
+    alternate_phone: String
+    gender: String
+    date_of_birth: DateTime!
     created_at: DateTime!
     updated_at: DateTime!
     location: Location!
+    interaction_count: InteractionCount! @method(name: "getInteractionCount")
+    preview_note: [String]! @method(name: "getPreviewNote")
+    club_location: Location @method(name: "getClubLocation")
 }

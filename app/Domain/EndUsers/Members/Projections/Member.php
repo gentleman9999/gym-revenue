@@ -3,6 +3,7 @@
 namespace App\Domain\EndUsers\Members\Projections;
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Members\MemberAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\EndUsers\Projections\EndUserDetails;
 
@@ -16,8 +17,10 @@ class Member extends EndUser
         return new MemberDetails();
     }
 
-    public function getPhoneNumber(): ?string
+    public function getInteractionCount()
     {
-        return $this->primary_phone;
+        $aggy = MemberAggregate::retrieve($this->id);
+
+        return $aggy->getInteractionCount();
     }
 }

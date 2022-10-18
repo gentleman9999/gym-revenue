@@ -192,4 +192,19 @@ abstract class EndUser extends GymRevProjection implements PhoneInterface
     {
         return $this->first_name.' '.$this->last_name;
     }
+
+    public function getPreviewNote()
+    {
+        return Note::select('note')->whereEntityId($this->id)->get();
+    }
+
+    public function getClubLocation()
+    {
+        return Location::where('gymrevenue_id', $this->gr_location_id)->first();
+    }
+
+    public function getPhoneNumber(): string
+    {
+        return $this->primary_phone;
+    }
 }

@@ -2,7 +2,7 @@
     <LayoutHeader title="Locations">
         <h2 class="font-semibold text-xl leading-tight">Locations</h2>
     </LayoutHeader>
-    <ApolloQuery :query="(gql) => location_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['locations']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -114,6 +114,7 @@ import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
 import gql from "graphql-tag";
+import queries from "@/gql/queries.js";
 
 export default defineComponent({
     components: {
@@ -199,27 +200,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const location_query = gql`
-            query Locations($page: Int, $filter: Filter) {
-                locations(page: $page, filter: $filter) {
-                    data {
-                        id
-                        name
-                        city
-                        state
-                        active
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getLocations = (data) => {
             return _.cloneDeep(data.locations);
@@ -239,9 +219,9 @@ export default defineComponent({
             importLocation,
             topActions,
             param,
-            location_query,
             getLocations,
             handleCrudUpdate,
+            queries,
         };
     },
     computed: {

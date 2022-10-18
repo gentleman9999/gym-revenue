@@ -2,7 +2,7 @@
     <LayoutHeader title="Teams">
         <h2 class="font-semibold text-xl leading-tight">Team Management</h2>
     </LayoutHeader>
-    <ApolloQuery :query="(gql) => team_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['teams']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -103,6 +103,7 @@ import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import gql from "graphql-tag";
+import queries from "@/gql/queries";
 
 export default defineComponent({
     components: {
@@ -180,26 +181,6 @@ export default defineComponent({
                 search: "",
             },
         });
-        const team_query = gql`
-            query Teams($page: Int, $filter: Filter) {
-                teams(page: $page, filter: $filter) {
-                    data {
-                        id
-                        name
-                        created_at
-                        updated_at
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getTeams = (data) => {
             return _.cloneDeep(data.teams);
@@ -217,7 +198,7 @@ export default defineComponent({
             clearSearch,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             param,
-            team_query,
+            queries,
             getTeams,
             handleCrudUpdate,
         };
