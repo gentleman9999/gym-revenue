@@ -27,7 +27,7 @@ const pageStore = usePage();
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
-    uri: "http://localhost:8000/graphql",
+    uri: import.meta.env.VITE_GRAPHQL_URI || "/graphql",
     headers: {
         "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
     },
