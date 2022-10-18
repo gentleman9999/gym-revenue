@@ -3,7 +3,7 @@
         <ApolloQuery
             :query="(gql) => queries[modelKey].edit"
             :variables="queryParam"
-            v-if="queryParam"
+            v-if="queryParam && purpose === 'edit'"
         >
             <template v-slot="{ result: { data, loading, error } }">
                 <div v-if="loading">Loading...</div>
@@ -12,7 +12,6 @@
                     v-else-if="data"
                     :is="editComponent"
                     v-bind="{ ...data }"
-                    :data="data"
                 />
                 <div v-else>No result</div>
             </template>
@@ -23,7 +22,6 @@
 <script>
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
-import { usePage } from "@inertiajs/inertia-vue3";
 import {
     queryParam,
     clearQueryParam,
@@ -47,8 +45,7 @@ export default {
         },
     },
     setup() {
-        const page = usePage();
-        const editModal = ref();
+        const editModal = ref(null);
 
         function open() {
             editModal?.value?.open();
@@ -60,6 +57,7 @@ export default {
 
         watchEffect(() => {
             if (queryParam.value && purpose.value === "edit") {
+                console.log("edit");
                 open();
             }
         });

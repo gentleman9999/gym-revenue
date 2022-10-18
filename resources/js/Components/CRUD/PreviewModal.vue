@@ -3,7 +3,7 @@
         <ApolloQuery
             :query="(gql) => queries[modelKey].preview"
             :variables="queryParam"
-            v-if="queryParam"
+            v-if="queryParam && purpose === 'preview'"
         >
             <template v-slot="{ result: { data, loading, error } }">
                 <div v-if="loading">Loading...</div>
@@ -22,7 +22,6 @@
 <script>
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
-import { usePage } from "@inertiajs/inertia-vue3";
 import {
     queryParam,
     clearQueryParam,
@@ -30,7 +29,6 @@ import {
 } from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
 
-console.log("queryParam", queryParam);
 export default {
     components: { DaisyModal },
     props: {
@@ -47,8 +45,7 @@ export default {
         },
     },
     setup() {
-        const page = usePage();
-        const previewModal = ref();
+        const previewModal = ref(null);
 
         function open() {
             previewModal?.value?.open();
@@ -60,15 +57,14 @@ export default {
 
         watchEffect(() => {
             if (queryParam.value && purpose.value === "preview") {
+                console.log("preview");
                 open();
-            } else {
-                close();
             }
         });
         onUnmounted(() => {
             clearQueryParam();
         });
-        return { close, previewModal, queryParam, queries };
+        return { close, previewModal, queryParam, queries, purpose };
     },
 };
 </script>

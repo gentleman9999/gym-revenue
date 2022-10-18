@@ -4,11 +4,6 @@ import { merge } from "lodash";
 import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
 
 export const defaults = Object.freeze({
-    // edit: {
-    //     label: "Edit",
-    //     handler: ({ baseRoute, data }) =>
-    //         Inertia.visitInModal(route(`${baseRoute}.edit`, data.id)),
-    // },
     trash: {
         label: "Trash",
         handler: ({ baseRoute, data }) =>
@@ -24,30 +19,38 @@ export const defaults = Object.freeze({
     },
 });
 
-export const getDefaults = ({ previewComponent }) => {
+export const getDefaults = ({ previewComponent, editComponent }) => {
     const hasPreviewComponent = !!previewComponent;
+    const hasEditComponent = !!editComponent;
 
-    if (!hasPreviewComponent) {
-        return defaults;
+    let ret = defaults;
+    if (hasPreviewComponent) {
+        ret = merge(
+            {
+                preview: {
+                    label: "Preview",
+                    handler: async ({ baseRoute, data }) => {
+                        preview(data["id"]);
+                    },
+                },
+            },
+            defaults
+        );
     }
-    return merge(
-        {
-            preview: {
-                label: "Preview",
-                handler: async ({ baseRoute, data }) => {
-                    preview(data["id"]);
+    if (hasEditComponent) {
+        ret = merge(
+            {
+                edit: {
+                    label: "Edit",
+                    handler: async ({ baseRoute, data }) => {
+                        edit(data["id"]);
+                    },
                 },
             },
-            edit: {
-                label: "Edit",
-                handler: async ({ baseRoute, data }) => {
-                    console.log("actions.edit", data);
-                    edit(data["id"]);
-                },
-            },
-        },
-        defaults
-    );
+            defaults
+        );
+    }
+    return ret;
 };
 
 export const getActions = (props) => {
