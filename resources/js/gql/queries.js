@@ -52,10 +52,12 @@ const LEADS = gql`
                 created_at
                 first_name
                 last_name
-                location {
+                opportunity
+                lead_type: leadType {
+                    id
                     name
                 }
-                lead_type {
+                location {
                     name
                 }
                 owner_user_id

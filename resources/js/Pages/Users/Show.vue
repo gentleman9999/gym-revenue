@@ -210,17 +210,15 @@ export default defineComponent({
             fields = [
                 "name",
                 "email",
-                {
-                    name: "home_location.name",
-                    label: "Home Club",
-                    // transform: (data) => data?.home_location?.name,
-                },
                 "role",
                 {
                     name: "manager",
                     label: "Manager",
                 },
-                "home_team.name",
+                {
+                    name: "home_team.name",
+                    label: "Home Club",
+                },
             ];
         }
 

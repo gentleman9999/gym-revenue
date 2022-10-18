@@ -179,7 +179,7 @@ export default defineComponent({
         const fields = [
             { name: "created_at", label: "Created" },
             {
-                name: "opportunity.value",
+                name: "opportunity",
                 label: "Opportunity",
                 component: CrudBadge,
                 props: {

@@ -10,7 +10,7 @@ type Lead {
     lead_source_id: String!
     leadSource: LeadSource @hasOne
     location: Location
-    lead_type: LeadType
+    leadType: LeadType @hasOne
     owner_user_id: String
     primary_phone: String
     alternate_phone: String
@@ -19,4 +19,5 @@ type Lead {
     interaction_count: InteractionCount! @method(name: "getInteractionCount")
     preview_note: [String]! @method(name: "getPreviewNote")
     club_location: Location @method(name: "getClubLocation")
+    opportunity: String
 }
