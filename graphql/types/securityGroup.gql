@@ -1,0 +1,4 @@
+type SecurityGroups {
+    value: String
+    name: String
+}

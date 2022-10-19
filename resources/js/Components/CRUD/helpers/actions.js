@@ -4,6 +4,12 @@ import { merge } from "lodash";
 import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
 
 export const defaults = Object.freeze({
+    edit: {
+        label: "Edit",
+        handler: async ({ baseRoute, data }) => {
+            edit(data["id"]);
+        },
+    },
     trash: {
         label: "Trash",
         handler: ({ baseRoute, data }) =>
@@ -19,13 +25,11 @@ export const defaults = Object.freeze({
     },
 });
 
-export const getDefaults = ({ previewComponent, editComponent }) => {
+export const getDefaults = ({ previewComponent }) => {
     const hasPreviewComponent = !!previewComponent;
-    const hasEditComponent = !!editComponent;
 
-    let ret = defaults;
     if (hasPreviewComponent) {
-        ret = merge(
+        return merge(
             {
                 preview: {
                     label: "Preview",
@@ -37,20 +41,7 @@ export const getDefaults = ({ previewComponent, editComponent }) => {
             defaults
         );
     }
-    if (hasEditComponent) {
-        ret = merge(
-            {
-                edit: {
-                    label: "Edit",
-                    handler: async ({ baseRoute, data }) => {
-                        edit(data["id"]);
-                    },
-                },
-            },
-            defaults
-        );
-    }
-    return ret;
+    return defaults;
 };
 
 export const getActions = (props) => {

@@ -1,6 +1,10 @@
 type Role {
     id: ID!
     title: String!
+    name: String
     created_at: DateTime!
     updated_at: DateTime!
+    abilities: [Ability]! @method(name: "abilities")
+    availableAbilities: [Ability]! @method(name: "availableAbilities")
+    securityGroups: [SecurityGroups] @method(name: "securityGroups")
 }

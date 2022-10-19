@@ -19,6 +19,49 @@ const USER_PREVIEW = gql`
         }
     }
 `;
+
+const USER_EDIT = gql`
+    query User($id: ID) {
+        user(id: $id) {
+            first_name
+            last_name
+            contact_preference {
+                value
+            }
+            alternate_email
+            address1
+            address2
+            city
+            state
+            zip
+            phone
+            start_date
+            end_date
+            positions {
+                id
+                name
+            }
+            departments {
+                id
+                name
+            }
+            termination_date
+            isClientUser
+        }
+        availableDepartments: departments(filter: { client_id: $id }) {
+            data {
+                id
+                name
+            }
+        }
+        availablePositions: positions(filter: { client_id: $id }) {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
 const USERS = gql`
     query Users($page: Int, $filter: Filter, $orderBy: [OrderByClause!]) {
         users(page: $page, filter: $filter, orderBy: $orderBy) {
@@ -227,10 +270,50 @@ const TEAM_PREVIEW = gql`
     }
 `;
 
+const ROLES = gql`
+    query Roles($page: Int, $filter: Filter) {
+        roles(page: $page, filter: $filter) {
+            data {
+                id
+                title
+                created_at
+                updated_at
+            }
+            pagination: paginatorInfo {
+                current_page: currentPage
+                last_page: lastPage
+                from: firstItem
+                to: lastItem
+                per_page: perPage
+                total
+            }
+        }
+    }
+`;
+
+const ROLE_EDIT = gql`
+    query Role($id: ID) {
+        role(id: $id) {
+            id
+            name
+            abilities {
+                name
+            }
+            availableAbilities {
+                name
+                title
+            }
+            securityGroups {
+                value
+                name
+            }
+        }
+    }
+`;
 export default {
     user: {
         preview: USER_PREVIEW,
-        edit: USER_PREVIEW,
+        edit: USER_EDIT,
     },
     lead: {
         preview: LEAD_PREVIEW,
@@ -248,9 +331,13 @@ export default {
         preview: TEAM_PREVIEW,
         edit: TEAM_PREVIEW,
     },
+    role: {
+        edit: ROLE_EDIT,
+    },
     users: USERS,
     leads: LEADS,
     locations: LOCATIONS,
     members: MEMBERS,
     teams: TEAMS,
+    roles: ROLES,
 };

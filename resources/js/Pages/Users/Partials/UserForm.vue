@@ -156,7 +156,7 @@
             <!-- Security Role -->
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="isClientUser"
+                v-if="user.isClientUser"
             >
                 <jet-label for="role_id" value="Security Role" />
                 <select
@@ -177,7 +177,7 @@
             <!-- Home Club -->
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="isClientUser"
+                v-if="user.isClientUser"
             >
                 <jet-label for="home_location_id" value="Home Club" />
                 <select
@@ -238,10 +238,10 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-divider" v-if="isClientUser" />
+            <div class="form-divider" v-if="user.isClientUser" />
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="isClientUser"
+                v-if="user.isClientUser"
             >
                 <jet-label for="role_id" value="Select Departments" />
                 <select
@@ -264,7 +264,7 @@
             </div>
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="isClientUser"
+                v-if="user.isClientUser"
             >
                 <jet-label for="role_id" value="Select Positions" />
                 <select
@@ -287,7 +287,7 @@
             </div>
             <div
                 class="flex justify-center items-end col-span-6 md:col-span-2"
-                v-if="isClientUser"
+                v-if="user.isClientUser"
             >
                 <button
                     class="btn btn-success"
@@ -399,7 +399,7 @@
             </Button>
         </template>
     </jet-form-section>
-    <jet-form-section v-if="isClientUser && user?.files" class="mt-16">
+    <jet-form-section v-if="user.isClientUser && user?.files" class="mt-16">
         <template #title> Documents</template>
 
         <template #description> Documents attached to the user.</template>
@@ -492,6 +492,7 @@ import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
 import { useModal } from "@/Components/InertiaModal";
+import * as _ from "lodash";
 
 export default {
     components: {
@@ -509,7 +510,6 @@ export default {
     props: [
         "user",
         "clientName",
-        "isClientUser",
         "roles",
         "locations",
         "availablePositions",
@@ -526,13 +526,14 @@ export default {
 
         const wantsToDeleteFile = ref(null);
         const page = usePage();
-        let user = props.user;
+        let user = _.cloneDeep(props.user);
 
         const team_id = page.props.value.user.current_team_id;
 
         let operation = "Update";
-        if (user) {
-            if (props.isClientUser) {
+        console.log("gql-props", props);
+        if (props.user) {
+            if (props.user.isClientUser) {
                 user.role_id = user["role_id"];
             }
             user.contact_preference = user["contact_preference"]?.value;
@@ -576,7 +577,7 @@ export default {
                 departments: [],
             };
             //only add client specific when applicable to make user validation rules work better
-            if (props.isClientUser) {
+            if (props.user.isClientUser) {
                 user.home_location_id = null;
                 user.notes = { title: "", note: "" };
                 user.start_date = null;
@@ -605,7 +606,7 @@ export default {
         };
 
         const selectableDepartments = computed(() =>
-            props.availableDepartments.filter(
+            props.availableDepartments.data.filter(
                 ({ id, positions }) =>
                     positions?.filter((p) => !selectedPosition.value !== p.id)
                         .length
@@ -766,10 +767,12 @@ export default {
             form.departments.splice(ndx, 1);
         };
         const getDepartment = (id) => {
-            return props.availableDepartments.find((item) => item.id === id);
+            return props.availableDepartments.data.find(
+                (item) => item.id === id
+            );
         };
         const getPosition = (id) => {
-            return props.availablePositions.find((item) => item.id === id);
+            return props.availablePositions.data.find((item) => item.id === id);
         };
 
         const getPositions = (id_arr) => {

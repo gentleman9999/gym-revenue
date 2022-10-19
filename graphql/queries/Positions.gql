@@ -1,9 +1,17 @@
 extend type Query {
     positions(
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-        filter: Filter @scope
+        filter: PositionFilter @scope
         orderBy: [OrderByClause!] @orderBy
     ): [Position!]!
     @paginate(defaultCount: 10)
         @can(ability: "positions.read", model: "App\\Models\\Position")
+}
+
+
+input PositionFilter {
+    search: String
+    trashed: String
+    state: String
+    client_id: ID
 }

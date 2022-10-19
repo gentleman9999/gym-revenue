@@ -119,7 +119,6 @@
         :model-key="modelKey"
     />
     <edit-modal
-        v-if="editComponent"
         :edit-component="editComponent"
         :model-name="modelName"
         :model-key="modelKey"

@@ -1,7 +1,7 @@
 <template>
     <LayoutHeader title="Security Roles" />
     <page-toolbar-nav title="Security Roles" :links="navLinks" />
-    <ApolloQuery :query="(gql) => role_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['roles']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -11,6 +11,7 @@
                 :fields="fields"
                 :resource="getRoles(data)"
                 @update="handleCrudUpdate"
+                :edit-component="RoleForm"
                 :actions="{
                     trash: false,
                     restore: false,
@@ -43,8 +44,8 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import gql from "graphql-tag";
-
+import queries from "@/gql/queries.js";
+import RoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
 export default defineComponent({
     components: {
         LayoutHeader,
@@ -53,6 +54,7 @@ export default defineComponent({
         JetBarContainer,
         Button,
         PageToolbarNav,
+        RoleForm,
     },
     props: ["filters"],
     setup(props) {
@@ -98,26 +100,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const role_query = gql`
-            query Roles($page: Int, $filter: Filter) {
-                roles(page: $page, filter: $filter) {
-                    data {
-                        id
-                        title
-                        created_at
-                        updated_at
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getRoles = (data) => {
             return _.cloneDeep(data.roles);
@@ -146,9 +128,10 @@ export default defineComponent({
             Inertia,
             navLinks,
             param,
-            role_query,
+            queries,
             getRoles,
             handleCrudUpdate,
+            RoleForm,
         };
     },
 });

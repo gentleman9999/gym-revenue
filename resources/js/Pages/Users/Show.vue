@@ -137,7 +137,6 @@ import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
 
-import gql from "graphql-tag";
 import queries from "@/gql/queries.js";
 export default defineComponent({
     components: {
@@ -314,6 +313,7 @@ export default defineComponent({
             form,
             navLinks,
             UserPreview,
+            UserForm,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             topActions,
             handleClickImport,

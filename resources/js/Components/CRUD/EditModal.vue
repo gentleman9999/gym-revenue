@@ -2,8 +2,8 @@
     <daisy-modal id="editModal" ref="editModal" @close="close">
         <ApolloQuery
             :query="(gql) => queries[modelKey].edit"
-            :variables="queryParam"
-            v-if="queryParam && purpose === 'edit'"
+            :variables="editParam"
+            v-if="editParam"
         >
             <template v-slot="{ result: { data, loading, error } }">
                 <div v-if="loading">Loading...</div>
@@ -22,11 +22,7 @@
 <script>
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
-import {
-    queryParam,
-    clearQueryParam,
-    purpose,
-} from "@/Components/CRUD/helpers/gqlData";
+import { editParam, clearEditParam } from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
 
 export default {
@@ -52,19 +48,20 @@ export default {
         }
 
         function close() {
-            clearQueryParam();
+            clearEditParam();
         }
 
         watchEffect(() => {
-            if (queryParam.value && purpose.value === "edit") {
-                console.log("edit");
+            if (editParam.value) {
                 open();
+            } else {
+                close();
             }
         });
         onUnmounted(() => {
-            clearQueryParam();
+            clearEditParam();
         });
-        return { close, editModal, queryParam, queries, purpose };
+        return { close, editModal, editParam, queries };
     },
 };
 </script>

@@ -1,22 +1,23 @@
 import { ref } from "vue";
 
-export const purpose = ref("preview");
-export const queryParam = ref(null);
+export const previewParam = ref(null);
+export const editParam = ref(null);
 
-export const clearQueryParam = () => {
-    queryParam.value = null;
+export const clearPreviewParam = () => {
+    previewParam.value = null;
+};
+export const clearEditParam = () => {
+    editParam.value = null;
 };
 
 export const preview = async (id) => {
-    purpose.value = "preview";
-    queryParam.value = {
+    previewParam.value = {
         id: id,
     };
 };
 
 export const edit = async (id) => {
-    purpose.value = "edit";
-    queryParam.value = {
+    editParam.value = {
         id: id,
     };
 };

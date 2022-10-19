@@ -18,12 +18,14 @@ use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Domain\Users\Models\User;
+use App\Enums\SecurityGroupEnum;
 use App\Models\DynamicReport;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use Bouncer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Silber\Bouncer\Database\Concerns\HasAbilities;
 use Twilio\TwiML\Voice\Task;
@@ -158,6 +160,23 @@ class Role extends \Silber\Bouncer\Database\Role
             } elseif ($trashed === 'only') {
                 $query->onlyTrashed();
             }
+        });
+    }
+
+    public function abilities()
+    {
+        return Bouncer::role()->find($this->id)->getAbilities()->toArray();
+    }
+
+    public function availableAbilities()
+    {
+        return Bouncer::ability()->whereEntityId(null)->get(['name', 'title', 'id']);
+    }
+
+    public function securityGroups()
+    {
+        return collect(SecurityGroupEnum::cases())->keyBy('name')->except('ADMIN')->values()->map(function ($s) {
+            return ['value' => $s->value, 'name' => $s->name];
         });
     }
 }

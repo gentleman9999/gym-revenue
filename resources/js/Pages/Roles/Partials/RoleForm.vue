@@ -20,8 +20,9 @@
                     v-model="form.group"
                 >
                     <option
-                        v-for="{ name, value } in securityGroups"
+                        v-for="{ name, value } in role.securityGroups"
                         :value="value"
+                        :key="value"
                     >
                         {{ name }}
                     </option>
@@ -36,6 +37,7 @@
                 v-for="[groupName, availableAbilities] in Object.entries(
                     groupedAvailableAbilities
                 )"
+                :key="groupName"
             >
                 <div class="grid grid-cols-6">
                     <div class="flex flex-row col-span-6 items-center pb-4">
@@ -64,6 +66,7 @@
                     <div
                         class="flex flex-row items-center gap-4 col-span-6 xl:col-span-3 pb-4"
                         v-for="availableAbility in availableAbilities"
+                        :key="availableAbility"
                     >
                         <input
                             :id="`${availableAbility.name}`"
@@ -129,16 +132,8 @@ export default {
         JetLabel,
     },
     props: {
-        availableAbilities: {
-            type: Array,
-            default: [],
-        },
         role: {
             type: Object,
-        },
-        securityGroups: {
-            type: Array,
-            default: [],
         },
     },
     setup(props, context) {
@@ -177,7 +172,7 @@ export default {
 
         let groupedAvailableAbilities = computed(() => {
             let grouped = {};
-            props.availableAbilities.forEach((availableAbility) => {
+            props.role.availableAbilities.forEach((availableAbility) => {
                 let group = availableAbility.name.split(".")[0];
                 if (group === "*") {
                     return;
