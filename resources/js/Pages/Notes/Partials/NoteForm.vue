@@ -27,8 +27,6 @@
                 <input :id="active" type="checkbox" v-model="form.active" />
                 <jet-input-error :message="form.errors.active" class="mt-2" />
             </div>
-
-            <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
         <template #actions>
@@ -77,10 +75,6 @@ export default {
         JetLabel,
     },
     props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
         note: {
             type: Object,
         },
@@ -94,7 +88,6 @@ export default {
                 note: "",
                 active: false,
                 id: "",
-                client_id: props.clientId,
             };
             operation = "Create";
         }
@@ -104,7 +97,6 @@ export default {
             note: note.note,
             active: note.active,
             id: note.id,
-            client_id: props.clientId,
         });
 
         const modal = useModal();

@@ -164,17 +164,17 @@
                 <jet-label for="club_id" value="Club" />
                 <select
                     class=""
-                    v-model="form['gr_location_id']"
+                    v-model="form['club_id']"
                     required
                     id="club_id"
                 >
                     <option value="">Select a Club</option>
                     <option
-                        v-for="(name, clubId) in locations"
-                        :key="clubId"
-                        :value="clubId"
+                        v-for="location in lead.locations"
+                        :key="location.id"
+                        :value="location.id"
                     >
-                        {{ name }}
+                        {{ location.name }}
                     </option>
                 </select>
                 <jet-input-error
@@ -237,11 +237,11 @@
                 >
                     <option value="">Select a Lead Owner</option>
                     <option
-                        v-for="(oname, uid) in lead_owners"
-                        :value="uid"
-                        :key="uid"
+                        v-for="{ user } in lead.lead_owners"
+                        :value="user.id"
+                        :key="user.id"
                     >
-                        {{ oname }}
+                        {{ user.name }}
                     </option>
                 </select>
                 <jet-input-error
@@ -420,6 +420,7 @@ import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
+import * as _ from "lodash";
 
 library.add(faUserCircle);
 
@@ -434,16 +435,7 @@ export default {
         VueJsonPretty,
         PhoneInput,
     },
-    props: [
-        "userId",
-        "lead",
-        "locations",
-        "lead_types",
-        "lead_sources",
-        "lead_owners",
-        "lead_statuses",
-        "interactionCount",
-    ],
+    props: ["userId", "lead", "lead_types", "lead_statuses", "lead_sources"],
     computed: {
         borderStyle() {
             let color = "transparent";
@@ -473,7 +465,8 @@ export default {
             });
         }
 
-        let lead = props.lead;
+        let lead = _.cloneDeep(props.lead);
+
         let operation = "Update";
         let leadData = null;
         if (!lead) {
@@ -505,10 +498,10 @@ export default {
                 email: lead.email,
                 primary_phone: lead.primary_phone,
                 alternate_phone: lead.alternate_phone,
-                club_id: lead.club_id,
+                club_id: lead.location.id,
                 gr_location_id: lead.gr_location_id,
-                lead_type_id: lead.lead_type_id,
-                lead_source_id: lead.lead_source_id,
+                lead_type_id: lead.leadType.id,
+                lead_source_id: lead.leadSource.id,
                 profile_picture: null,
                 gender: lead.gender,
                 agreement_number: lead.agreement_number,
@@ -516,7 +509,7 @@ export default {
                 opportunity: lead.opportunity,
                 notes: { title: "", note: "" },
                 owner_user_id: lead.owner_user_id,
-                lead_status_id: props.lead?.lead_status_id || "",
+                lead_status_id: props.lead?.lead_status?.id || "",
             };
         }
         const lastUpdated = computed(() =>

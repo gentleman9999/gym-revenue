@@ -6,4 +6,5 @@ type CalendarEventType {
     type: String
     created_at: DateTime
     updated_at: DateTime
+    client: Client @belongsTo
 }

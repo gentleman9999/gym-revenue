@@ -21,7 +21,7 @@
 
             <div
                 class="col-span-6 sm:col-span-4"
-                v-if="availableLocations?.length"
+                v-if="availableLocations?.data.length"
             >
                 <jet-label for="locations" value="Locations" />
                 <multiselect
@@ -31,9 +31,9 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                        availableLocations.map((location) => ({
+                        availableLocations.data.map((location) => ({
                             label: location.name,
-                            value: location.gymrevenue_id,
+                            value: location.id,
                         }))
                     "
                     :classes="multiselectClasses"
@@ -71,6 +71,7 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
+import * as _ from "lodash";
 
 export default defineComponent({
     components: {
@@ -86,20 +87,15 @@ export default defineComponent({
             type: Object,
         },
         availableLocations: {
-            type: Array,
+            type: Object,
             required: true,
-        },
-        locations: {
-            type: Array,
-            required: false,
-            default: [],
         },
     },
 
     setup(props) {
         const page = usePage();
         let operation = "Update";
-        let team = props.team;
+        let team = _.cloneDeep(props.team);
         if (!team) {
             team = {
                 name: "",
@@ -107,9 +103,7 @@ export default defineComponent({
             };
             operation = "Create";
         } else {
-            team.locations = props.locations.map((detail) => detail.value);
-            team.client_id = page.props.value.user?.client_id;
-            console.log("team.locations", team.locations);
+            team.locations = team.locations.map((detail) => detail.value);
         }
         const form = useGymRevForm(team);
 

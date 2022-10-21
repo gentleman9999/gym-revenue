@@ -13,6 +13,7 @@
                 :resource="getTeams(data)"
                 :actions="actions"
                 :preview-component="TeamPreview"
+                :edit-component="TeamForm"
                 @update="handleCrudUpdate"
             >
                 <template #filter>
@@ -98,12 +99,11 @@ import Confirm from "@/Components/Confirm.vue";
 import TeamPreview from "@/Pages/Teams/Partials/TeamPreview.vue";
 import { preview } from "@/Components/CRUD/helpers/previewData";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
-import gql from "graphql-tag";
 import queries from "@/gql/queries";
+import TeamForm from "@/Pages/Teams/Partials/TeamForm.vue";
 
 export default defineComponent({
     components: {
@@ -201,6 +201,7 @@ export default defineComponent({
             queries,
             getTeams,
             handleCrudUpdate,
+            TeamForm,
         };
     },
 });

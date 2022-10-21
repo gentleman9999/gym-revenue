@@ -1,7 +1,7 @@
 <template>
     <LayoutHeader title="Notes" />
     <page-toolbar-nav title="Notes" :links="navLinks" />
-    <ApolloQuery :query="(gql) => note_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['notes']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -10,6 +10,7 @@
                 base-route="notes"
                 model-name="Note"
                 model-key="note"
+                :edit-component="NoteForm"
                 :fields="fields"
                 :actions="{
                     trash: false,
@@ -40,7 +41,8 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import gql from "graphql-tag";
+import queries from "@/gql/queries";
+import NoteForm from "@/Pages/Notes/Partials/NoteForm.vue";
 
 export default defineComponent({
     components: {
@@ -82,26 +84,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const note_query = gql`
-            query Notes($page: Int, $filter: Filter) {
-                notes(page: $page, filter: $filter) {
-                    data {
-                        id
-                        title
-                        note
-                        active
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getNotes = (data) => {
             return _.cloneDeep(data.notes);
@@ -132,9 +114,10 @@ export default defineComponent({
             Inertia,
             navLinks,
             param,
-            note_query,
+            queries,
             getNotes,
             handleCrudUpdate,
+            NoteForm,
         };
     },
 });

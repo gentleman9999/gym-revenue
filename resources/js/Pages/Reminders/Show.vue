@@ -1,7 +1,7 @@
 <template>
     <LayoutHeader title="Reminders" />
     <page-toolbar-nav title="Reminders" :links="navLinks" />
-    <ApolloQuery :query="(gql) => reminder_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['reminders']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -20,6 +20,7 @@
                     },
                 }"
                 :top-actions="false"
+                :edit-component="ReminderForm"
             />
         </template>
     </ApolloQuery>
@@ -42,7 +43,8 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import gql from "graphql-tag";
+import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
+import queries from "@/gql/queries";
 
 export default defineComponent({
     components: {
@@ -108,27 +110,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const reminder_query = gql`
-            query Reminders($page: Int, $filter: Filter) {
-                reminders(page: $page, filter: $filter) {
-                    data {
-                        id
-                        name
-                        description
-                        remind_time
-                        triggered_at
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getReminders = (data) => {
             return _.cloneDeep(data.reminders);
@@ -157,9 +138,10 @@ export default defineComponent({
             Inertia,
             navLinks,
             param,
-            reminder_query,
             getReminders,
             handleCrudUpdate,
+            queries,
+            ReminderForm,
         };
     },
 });

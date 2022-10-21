@@ -1,7 +1,7 @@
 <template>
     <LayoutHeader title="Event Types" />
     <page-toolbar-nav title="Event Types" :links="navLinks" />
-    <ApolloQuery :query="(gql) => event_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['eventTypes']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -9,7 +9,8 @@
                 @update="handleCrudUpdate"
                 base-route="calendar.event_types"
                 model-name="Event Type"
-                model-key="calendar-event-types"
+                model-key="eventType"
+                :edit-component="CalendarEventTypeForm"
                 :fields="fields"
                 :actions="{
                     trash: {
@@ -39,7 +40,8 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import gql from "graphql-tag";
+import queries from "@/gql/queries";
+import CalendarEventTypeForm from "@/Pages/Calendar/EventTypes/Partials/CalendarEventTypeForm.vue";
 
 export default defineComponent({
     components: {
@@ -113,28 +115,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const event_query = gql`
-            query CalendarEventTypes($page: Int, $filter: Filter) {
-                calendar_event_types(page: $page, filter: $filter) {
-                    data {
-                        id
-                        name
-                        description
-                        type
-                        created_at
-                        updated_at
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getEventTypes = (data) => {
             return _.cloneDeep(data.calendar_event_types);
@@ -163,9 +143,10 @@ export default defineComponent({
             Inertia,
             navLinks,
             param,
-            event_query,
+            queries,
             getEventTypes,
             handleCrudUpdate,
+            CalendarEventTypeForm,
         };
     },
 });

@@ -2,6 +2,7 @@ type Member {
     id: ID!
     first_name: String
     last_name: String
+    middle_name: String
     email: String
     primary_phone: String
     alternate_phone: String
@@ -10,7 +11,15 @@ type Member {
     created_at: DateTime!
     updated_at: DateTime!
     location: Location!
+    gr_location_id: ID
     interaction_count: InteractionCount! @method(name: "getInteractionCount")
     preview_note: [String]! @method(name: "getPreviewNote")
     club_location: Location @method(name: "getClubLocation")
+    locations: [Location] @method(name: "getLocations")
+    agreement_number: String
+    external_id: String
+    misc: String
+    all_notes: String
+    notes: [Note] @hasMany
+    client: Client @hasOne
 }

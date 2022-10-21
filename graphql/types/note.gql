@@ -3,4 +3,5 @@ type Note {
     title: String
     note: String
     active: Boolean
+    read: Boolean
 }

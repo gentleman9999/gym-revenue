@@ -201,6 +201,7 @@ import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import { transformDate } from "@/utils/transformDate";
+import * as _ from "lodash";
 
 export default {
     components: {
@@ -211,24 +212,11 @@ export default {
         DatePicker,
         multiselect: Multiselect,
     },
-    props: [
-        "clientId",
-        "location",
-        "phone",
-        "poc_first",
-        "poc_last",
-        "poc_phone",
-        "open_date",
-        "close_date",
-        "location_no",
-    ],
+    props: ["location"],
     setup(props, context) {
         const page = usePage();
 
-        let location = props.location;
-        let poc_first = props.poc_first;
-        let poc_last = props.poc_last;
-        let poc_phone = props.poc_phone;
+        let location = _.cloneDeep(props.location);
 
         let operation = "Update";
         if (!location) {
@@ -250,14 +238,16 @@ export default {
             };
             operation = "Create";
         } else {
-            location.phone = location.phone;
-            location.poc_first = poc_first;
-            location.poc_last = poc_last;
-            location.poc_phone = poc_phone;
-            location.open_date = location.open_date;
-            location.close_date = location.close_date;
-            location.address1 = location.address1;
-            location.address2 = location.address2;
+            location.poc_first = location.details.filter(
+                (item) => item.field === "poc_first"
+            )[0]?.value;
+            location.poc_last = location.details.filter(
+                (item) => item.field === "poc_last"
+            )[0]?.value;
+            location.poc_phone = location.details.filter(
+                (item) => item.field === "poc_phone"
+            )[0]?.value;
+            location.client_id = location.client.id;
         }
 
         const transformData = (data) => ({

@@ -106,16 +106,16 @@ export default {
             type: String,
             required: true,
         },
-        calendarEventType: {
+        eventType: {
             type: Object,
         },
     },
 
     setup(props) {
-        let calendarEventType = props.calendarEventType;
+        let eventType = props.eventType;
         let operation = "Update";
-        if (!calendarEventType) {
-            calendarEventType = {
+        if (!eventType) {
+            eventType = {
                 id: null,
                 name: "",
                 description: "",
@@ -126,14 +126,12 @@ export default {
             operation = "Create";
         }
 
-        const form = useGymRevForm(calendarEventType);
+        const form = useGymRevForm(eventType);
 
         let handleSubmit = () =>
             form
                 .dirty()
-                .put(
-                    route("calendar.event_types.update", calendarEventType.id)
-                );
+                .put(route("calendar.event_types.update", eventType.id));
         if (operation === "Create") {
             handleSubmit = () => form.post(route("calendar.event_types.store"));
         }

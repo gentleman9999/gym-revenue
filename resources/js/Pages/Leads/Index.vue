@@ -37,6 +37,7 @@
                 }"
                 :actions="actions"
                 :preview-component="LeadPreview"
+                :edit-component="LeadForm"
             >
                 <template #filter>
                     <leads-filters :handleCrudUpdate="handleCrudUpdate" />
@@ -90,8 +91,8 @@ import LeadPreview from "@/Pages/Leads/Partials/LeadPreview.vue";
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import gql from "graphql-tag";
 import queries from "@/gql/queries";
+import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 
 export default defineComponent({
     components: {
@@ -333,6 +334,7 @@ export default defineComponent({
             queries,
             getLeads,
             handleCrudUpdate,
+            LeadForm,
         };
     },
 });

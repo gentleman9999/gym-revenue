@@ -3,4 +3,6 @@ type Position {
     name: String!
     created_at: DateTime!
     updated_at: DateTime!
+    departments: [Department]! @belongsToMany
+    client_id: ID
 }

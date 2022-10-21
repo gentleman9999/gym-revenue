@@ -12,6 +12,7 @@
                 model-name="Location"
                 model-key="location"
                 :fields="fields"
+                :edit-component="LocationForm"
                 :actions="{
                     trash: {
                         label: 'Close Club',
@@ -113,9 +114,8 @@ import JetBarContainer from "@/Components/JetBarContainer.vue";
 import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
-import gql from "graphql-tag";
 import queries from "@/gql/queries.js";
-
+import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
 export default defineComponent({
     components: {
         LayoutHeader,
@@ -222,6 +222,7 @@ export default defineComponent({
             getLocations,
             handleCrudUpdate,
             queries,
+            LocationForm,
         };
     },
     computed: {

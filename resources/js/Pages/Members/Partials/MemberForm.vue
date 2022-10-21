@@ -169,11 +169,11 @@
                 >
                     <option value="">Select a Club</option>
                     <option
-                        v-for="(name, clubId) in locations"
-                        :value="clubId"
-                        :key="clubId"
+                        v-for="location in member.locations"
+                        :value="location.id"
+                        :key="location.id"
                     >
-                        {{ name }}
+                        {{ location.name }}
                     </option>
                 </select>
                 <jet-input-error
@@ -313,6 +313,7 @@ import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
+import * as _ from "lodash";
 
 library.add(faUserCircle);
 
@@ -326,7 +327,7 @@ export default {
         DatePicker,
         PhoneInput,
     },
-    props: ["userId", "clientId", "member", "locations", "interactionCount"],
+    props: ["userId", "clientId", "member", "interactionCount"],
     setup(props, context) {
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
@@ -334,8 +335,7 @@ export default {
                 note: note,
             });
         }
-
-        let member = props.member;
+        let member = _.cloneDeep(props.member);
         let operation = "Update";
         let memberData = null;
         if (!member) {
@@ -364,12 +364,13 @@ export default {
                 primary_phone: member.primary_phone,
                 alternate_phone: member.alternate_phone,
                 club_id: member.club_id,
-                client_id: props.clientId,
-                gr_location_id: member.gr_location_id,
+                client_id: member.client.id,
+                gr_location_id: member.location.id,
                 profile_picture: null,
                 gender: member.gender,
                 notes: { title: "", note: "" },
                 date_of_birth: member.date_of_birth,
+                locations: member.locations,
             };
         }
         const borderStyle = computed(() => {

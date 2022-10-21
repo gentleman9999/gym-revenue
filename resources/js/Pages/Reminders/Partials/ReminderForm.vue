@@ -40,7 +40,6 @@
                     class="mt-2"
                 />
             </div>
-            <!--            <input id="client_id" type="hidden" v-model="form.client_id" />-->
         </template>
 
         <template #actions>
@@ -92,10 +91,6 @@ export default {
         usePage,
     },
     props: {
-        clientId: {
-            type: String,
-            required: true,
-        },
         reminder: {
             type: Object,
         },
@@ -107,7 +102,6 @@ export default {
             reminder = {
                 name: "",
                 id: "",
-                client_id: props.clientId,
                 description: "",
                 remind_time: 0,
             };
@@ -119,7 +113,6 @@ export default {
             id: reminder.id,
             description: reminder.description,
             remind_time: reminder.remind_time,
-            client_id: props.clientId,
         });
 
         let handleSubmit = () =>

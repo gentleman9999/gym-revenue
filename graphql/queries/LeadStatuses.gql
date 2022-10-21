@@ -1,0 +1,6 @@
+extend type Query {
+    lead_statuses(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [LeadStatus!]! @all
+}

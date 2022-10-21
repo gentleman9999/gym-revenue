@@ -9,4 +9,9 @@ type Location {
     zip: String
     address1: String
     address2: String
+    phone: String
+    open_date: DateTime
+    close_date: DateTime
+    details: [LocationDetails] @hasMany
+    client: Client @belongsTo
 }

@@ -1,16 +1,17 @@
 <template>
     <LayoutHeader title="Departments" />
     <page-toolbar-nav title="Departments" :links="navLinks" />
-    <ApolloQuery :query="(gql) => department_query" :variables="param">
+    <ApolloQuery :query="(gql) => queries['departments']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
                 base-route="departments"
                 model-name="Department"
-                model-key="departments"
+                model-key="department"
                 :fields="fields"
                 :resource="getDepartments(data)"
                 @update="handleCrudUpdate"
+                :edit-component="DepartmentForm"
                 :actions="{
                     trash: {
                         handler: ({ data }) => handleClickTrash(data),
@@ -40,7 +41,8 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import gql from "graphql-tag";
+import queries from "@/gql/queries";
+import DepartmentForm from "@/Pages/Departments/Partials/DepartmentForm.vue";
 
 export default defineComponent({
     components: {
@@ -50,6 +52,7 @@ export default defineComponent({
         JetBarContainer,
         Button,
         PageToolbarNav,
+        DepartmentForm,
     },
     props: ["filters"],
     setup(props) {
@@ -94,26 +97,6 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const department_query = gql`
-            query Departments($page: Int, $filter: Filter) {
-                departments(page: $page, filter: $filter) {
-                    data {
-                        id
-                        name
-                        created_at
-                        updated_at
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
         const getDepartments = (data) => {
             return _.cloneDeep(data.departments);
@@ -142,9 +125,10 @@ export default defineComponent({
             Inertia,
             navLinks,
             param,
-            department_query,
+            queries,
             getDepartments,
             handleCrudUpdate,
+            DepartmentForm,
         };
     },
 });

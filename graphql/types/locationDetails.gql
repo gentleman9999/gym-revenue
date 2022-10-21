@@ -1,0 +1,5 @@
+type LocationDetails{
+    id: ID
+    field: String
+    value: String
+}

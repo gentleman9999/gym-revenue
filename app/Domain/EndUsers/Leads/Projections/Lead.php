@@ -9,6 +9,7 @@ use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
+use App\Domain\Teams\Models\Team;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -84,5 +85,18 @@ class Lead extends EndUser
         $aggy = LeadAggregate::retrieve($this->id);
 
         return $aggy->getInteractionCount();
+    }
+
+    public function getTeamUsers()
+    {
+        $session_team = session()->get('current_team');
+        if ($session_team && array_key_exists('id', $session_team)) {
+            $current_team = Team::find($session_team['id']);
+        } else {
+            $current_team = Team::find($this->default_team_id);
+        }
+        $team_users = $current_team->team_users()->get();
+
+        return $team_users;
     }
 }

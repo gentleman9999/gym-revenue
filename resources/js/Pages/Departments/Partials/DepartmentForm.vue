@@ -21,7 +21,7 @@
                     :close-on-select="false"
                     :create-option="true"
                     :options="
-                        positions.map((position) => ({
+                        positions.data.map((position) => ({
                             label: position.name,
                             value: position.id,
                         }))
@@ -66,6 +66,7 @@ import { useModal } from "@/Components/InertiaModal";
 import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
+import * as _ from "lodash";
 
 const props = defineProps({
     clientId: {
@@ -76,11 +77,10 @@ const props = defineProps({
         type: Object,
     },
     positions: {
-        type: Array,
+        type: Object,
     },
 });
-
-let department = props.department;
+let department = _.cloneDeep(props.department);
 let operation = "Update";
 if (!department) {
     department = {
@@ -90,6 +90,8 @@ if (!department) {
         positions: [],
     };
     operation = "Create";
+} else {
+    department.positions = department.positions.map((pos) => pos.id);
 }
 
 const form = useGymRevForm(department);

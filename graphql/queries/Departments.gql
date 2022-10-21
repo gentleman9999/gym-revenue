@@ -1,14 +1,14 @@
 extend type Query {
     departments(
         "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-        filter: DeartmentFilter @scope
+        filter: DepartmentFilter @scope
         orderBy: [OrderByClause!] @orderBy
     ): [Department!]!
     @paginate(defaultCount: 10)
         @can(ability: "departments.read", model: "App\\Domain\\Departments\\Department")
 }
 
-input DeartmentFilter {
+input DepartmentFilter {
     search: String
     trashed: String
     state: String

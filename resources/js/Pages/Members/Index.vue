@@ -36,6 +36,7 @@
                 }"
                 :actions="actions"
                 :preview-component="MemberPreview"
+                :edit-component="MemberForm"
             >
                 <template #filter>
                     <member-filters :handleCrudUpdate="handleCrudUpdate" />
@@ -83,6 +84,7 @@ import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import MemberFilters from "@/Pages/Members/Partials/MemberFilters.vue";
 import MemberPreview from "@/Pages/Members/Partials/MemberPreview.vue";
+import MemberForm from "@/Pages/Members/Partials/MemberForm.vue";
 
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
@@ -227,6 +229,7 @@ export default defineComponent({
             navLinks,
             baseRoute,
             MemberPreview,
+            MemberForm,
             trashReason,
             param,
             queries,

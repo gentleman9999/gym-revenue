@@ -4,6 +4,8 @@ namespace App\Domain\EndUsers\Projections;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
+use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Models\User;
 use App\Interfaces\PhoneInterface;
 use App\Models\Endusers\MembershipType;
@@ -203,8 +205,73 @@ abstract class EndUser extends GymRevProjection implements PhoneInterface
         return Location::where('gymrevenue_id', $this->gr_location_id)->first();
     }
 
+    public function getLocations()
+    {
+        $client_id = $this->client_id;
+        $is_client_user = $client_id !== null;
+        $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
+
+        return $locations_records;
+    }
+
     public function getPhoneNumber(): string
     {
         return $this->primary_phone;
+    }
+
+    private function setUpLocationsObject(bool $is_client_user, string $client_id = null)
+    {
+        $results = [];
+        /**
+         * BUSINESS RULES
+         * 1. All Locations
+         *  - Cape & Bay user
+         *  - The active_team is the current client's default_team (gets all the client's locations)
+         * 2. Scoped Locations
+         *  - The active_team is not the current client's default_team
+         *      so get the teams listed in team_details
+         * 3. No Locations
+         *  - The active_team is not the current client's default_team
+         *      but there are no locations assigned in team_details
+         *  - (Bug or Feature?) - The current client is null (cape & bay)
+         *      but the user is not a cape & bay user.
+         */
+
+        if ((! is_null($client_id))) {
+            $session_team = session()->get('current_team');
+            if ($session_team && array_key_exists('id', $session_team)) {
+                $current_team = Team::find($session_team['id']);
+            } else {
+                $current_team = Team::find(auth()->user()->default_team_id);
+            }
+            $client = Client::find($client_id);
+
+            // The active_team is the current client's default_team (gets all the client's locations)
+            if ($current_team->id == $client->home_team_id) {
+                $results = new Location();
+            } else {
+                // The active_team is not the current client's default_team
+                $team_locations = TeamDetail::whereTeamId($current_team->id)
+                    ->where('field', '=', 'team-location')
+                    ->get();
+
+                if (count($team_locations) > 0) {
+                    $in_query = [];
+                    // so get the teams listed in team_details
+                    foreach ($team_locations as $team_location) {
+                        $in_query[] = $team_location->value;
+                    }
+
+                    $results = Location::whereIn('gymrevenue_id', $in_query);
+                }
+            }
+        } else {
+            // Cape & Bay user
+            if (! $is_client_user) {
+                $results = new Location();
+            }
+        }
+
+        return $results;
     }
 }

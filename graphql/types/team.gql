@@ -5,6 +5,8 @@ type Team {
     created_at: DateTime
     updated_at: DateTime
     users: [User]! @hasMany
+    user: TeamUser @hasMany
     locations: [Location]! @hasMany
     client: Client @belongsTo
+    client_id: ID
 }
