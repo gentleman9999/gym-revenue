@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Domain\CalendarEvents\CalendarEvent;
+use App\Domain\CalendarEventTypes\CalendarEventType;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,5 +25,44 @@ class Tasks extends Model
                 $query->where('description', 'like', '%' . $search . '%');
             });
         });
+    }
+
+    public function taskId()
+    {
+        return CalendarEventType::whereClientId($this->client_id)
+            ->whereType('Task')
+            ->first()
+            ->id;
+    }
+
+    public function scopeIncomplete()
+    {
+        return CalendarEvent::with('owner')
+            ->whereEventTypeId($this->taskId())
+            ->whereOwnerId(request()->user()->id)
+            ->whereNull('event_completion')
+            ->with('type')
+            ->get();
+    }
+
+    public function scopeComplete()
+    {
+        return CalendarEvent::with('owner')
+            ->whereEventTypeId($this->taskId())
+            ->whereOwnerId(request()->user()->id)
+            ->whereNotNull('event_completion')
+            ->with('type')
+            ->get();
+    }
+
+    public function scopeOverdue()
+    {
+        return CalendarEvent::with('owner')
+            ->whereEventTypeId($this->taskId())
+            ->whereOwnerId(request()->user()->id)
+            ->whereNull('event_completion')
+            ->whereDate('start', '<', date('Y-m-d H:i:s'))
+            ->with('type')
+            ->get();
     }
 }
