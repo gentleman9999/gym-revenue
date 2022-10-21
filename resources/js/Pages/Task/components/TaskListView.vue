@@ -8,16 +8,8 @@
         :fields="fields"
         @update-page="updatePage"
         :actions="{
-            edit: {
-                label: 'Edit',
-                handler: ({ data }) => editTask(data),
-            },
             trash: false,
             restore: false,
-            // delete: {
-            //     label: 'Delete',
-            //     handler: ({ data }) => handleClickDelete(data),
-            // },
         }"
     >
         <template #top-actions><div></div></template>
