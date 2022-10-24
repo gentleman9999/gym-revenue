@@ -652,6 +652,68 @@ const REMINDER_EDIT = gql`
     }
 `;
 
+const TASKS = gql`
+    query Tasks($page: Int) {
+        incomplete_tasks(page: $page) {
+            data {
+                id
+                title
+                owner {
+                    id
+                }
+                start
+                created_at
+            }
+            pagination: paginatorInfo {
+                current_page: currentPage
+                last_page: lastPage
+                from: firstItem
+                to: lastItem
+                per_page: perPage
+                total
+            }
+        }
+        complete_tasks(page: $page) {
+            data {
+                id
+                title
+                owner {
+                    id
+                }
+                start
+                created_at
+            }
+            pagination: paginatorInfo {
+                current_page: currentPage
+                last_page: lastPage
+                from: firstItem
+                to: lastItem
+                per_page: perPage
+                total
+            }
+        }
+        overdue_tasks(page: $page) {
+            data {
+                id
+                title
+                owner {
+                    id
+                }
+                start
+                created_at
+            }
+            pagination: paginatorInfo {
+                current_page: currentPage
+                last_page: lastPage
+                from: firstItem
+                to: lastItem
+                per_page: perPage
+                total
+            }
+        }
+    }
+`;
+
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -702,4 +764,5 @@ export default {
     eventTypes: EVENT_TYPES,
     notes: NOTES,
     reminders: REMINDERS,
+    tasks: TASKS,
 };

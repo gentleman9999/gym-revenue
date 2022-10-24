@@ -1,8 +1,23 @@
 extend type Query {
-    tasks(
-        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-        title: String @where(operator: "like")
+    incomplete_tasks(
+        incomplete: TaskFilter @scope
         orderBy: [OrderByClause!] @orderBy
-  ): [CalendarEvent!]!
+    ): [CalendarEvent!]!
     @paginate(defaultCount: 10)
+
+    complete_tasks(
+        complete: TaskFilter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [CalendarEvent!]!
+    @paginate(defaultCount: 10)
+
+    overdue_tasks(
+        overdue: TaskFilter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [CalendarEvent!]!
+    @paginate(defaultCount: 10)
+}
+
+input TaskFilter {
+    start: DateTime
 }

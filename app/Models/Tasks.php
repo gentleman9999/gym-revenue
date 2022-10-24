@@ -35,34 +35,56 @@ class Tasks extends Model
             ->id;
     }
 
-    public function scopeIncomplete()
+    public function scopeIncomplete($query, array $filters)
     {
-        return CalendarEvent::with('owner')
+        // $filters: 'date' => ...
+        // example: App\Domain\Teams\Models\Team
+        $query->with('owner')
             ->whereEventTypeId($this->taskId())
             ->whereOwnerId(request()->user()->id)
             ->whereNull('event_completion')
             ->with('type')
             ->get();
+
+        // return CalendarEvent::with('owner')
+        //     ->whereEventTypeId($this->taskId())
+        //     ->whereOwnerId(request()->user()->id)
+        //     ->whereNull('event_completion')
+        //     ->with('type')
+        //     ->get();
     }
 
-    public function scopeComplete()
+    public function scopeComplete($query, array $filters)
     {
-        return CalendarEvent::with('owner')
+        $query->with('owner')
             ->whereEventTypeId($this->taskId())
             ->whereOwnerId(request()->user()->id)
             ->whereNotNull('event_completion')
             ->with('type')
             ->get();
+        // return CalendarEvent::with('owner')
+        //     ->whereEventTypeId($this->taskId())
+        //     ->whereOwnerId(request()->user()->id)
+        //     ->whereNotNull('event_completion')
+        //     ->with('type')
+        //     ->get();
     }
 
-    public function scopeOverdue()
+    public function scopeOverdue($query, array $filters)
     {
-        return CalendarEvent::with('owner')
+        $query->with('owner')
             ->whereEventTypeId($this->taskId())
             ->whereOwnerId(request()->user()->id)
             ->whereNull('event_completion')
             ->whereDate('start', '<', date('Y-m-d H:i:s'))
             ->with('type')
             ->get();
+        // return CalendarEvent::with('owner')
+        //     ->whereEventTypeId($this->taskId())
+        //     ->whereOwnerId(request()->user()->id)
+        //     ->whereNull('event_completion')
+        //     ->whereDate('start', '<', date('Y-m-d H:i:s'))
+        //     ->with('type')
+        //     ->get();
     }
 }
