@@ -1,7 +1,10 @@
 <template>
     <div
         class="px-3 py-2 border-b border-base-content/20 cursor-pointer conversation"
-        :class="{ 'has-unread': hasUnreadMessage }"
+        :class="{
+            'has-unread': hasUnreadMessage,
+            'internal-chat': conversation.isInternal,
+        }"
     >
         <div class="grid grid-cols-4">
             <div
@@ -43,6 +46,9 @@
 .has-unread {
     @apply text-blue-400;
 }
+.internal-chat {
+    border-left: 2px solid #ff0000;
+}
 </style>
 <script setup>
 import ConversationMsg from "@/Pages/Chat/models/ConversationMsg.js";
@@ -50,6 +56,8 @@ import { computed } from "vue";
 const props = defineProps({
     conversation: ConversationMsg,
 });
+
+console.log(props.conversation);
 
 const hasUnreadMessage = computed(
     () => props.conversation.unreadMessagesCount > 0

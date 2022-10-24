@@ -12,8 +12,10 @@ use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -99,6 +101,21 @@ class LeadsController extends Controller
             ];
         }
 
+        if ($user->current_location_id) {
+            $newLeadCount = LiveReportsByDay::whereEntity('lead')
+                ->where('date', '=', date('Y-m-d'))
+                ->whereAction(LiveReportingEnum::ADDED)
+                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+
+            if ($newLeadCount) {
+                $newLeadCount = $newLeadCount->value;
+            } else {
+                $newLeadCount = 0;
+            }
+        } else {
+            $newLeadCount = 0;
+        }
+
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
             'routeName' => request()->route()->getName(),
@@ -126,6 +143,7 @@ class LeadsController extends Controller
             'grlocations' => Location::all(),
             'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
+            'newLeadCount' => $newLeadCount,
         ]);
     }
 

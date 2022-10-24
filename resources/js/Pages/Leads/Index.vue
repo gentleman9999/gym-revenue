@@ -7,7 +7,14 @@
         <div class="flex flex-row md:space-x-2 flex-wrap">
             <div class="flex w-full lg:w-3/5 flex-wrap">
                 <div class="w-4/5 m-auto md:w-1/3 px-2">
-                    <calendar-summary-card title="Confirmed" :progress="[65]" />
+                    <div
+                        class="px-4 py-3 border border-secondary rounded bg-neutral relative mb-3"
+                    >
+                        <p class="text-base-content text-lg">New Leads Today</p>
+                        <div class="h-52 mb-4 mt-5 totalcenter">
+                            <span class="text-8xl">{{ newLeadCount }}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="w-4/5 m-auto md:w-1/3 px-2">
                     <calendar-summary-card title="Canceled" :progress="[25]" />
@@ -119,6 +126,8 @@ export default defineComponent({
         "opportunities",
         "claimed",
         "nameSearch",
+        "newLeadCount",
+        "deletedLeadCount",
     ],
     setup(props) {
         const page = usePage();

@@ -27,7 +27,7 @@ class BouncerAbilitiesSeeder extends Seeder
             'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
             'positions', 'email-templates', 'sms-templates',  'scheduled-campaigns', 'drip-campaigns',
-            'reminders', 'notes', 'folders', 'searches', 'dynamic-reports', 'call-templates', 'conversation',
+            'reminders', 'notes', 'folders', 'searches', 'dynamic-reports', 'call-templates', 'conversation', 'chat',
         ]);
         $operations = collect(['create', 'read', 'update', 'trash', 'restore', 'delete']);
 
@@ -61,13 +61,13 @@ class BouncerAbilitiesSeeder extends Seeder
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
                 'email-templates', 'sms-templates', 'call-templates', 'departments', 'positions', 'notes', 'folders',
-                'dynamic-reports', 'searches',
+                'dynamic-reports', 'searches', 'chat',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
                 'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
                 'email-templates', 'sms-templates', 'call-templates', 'departments', 'positions', 'notes', 'folders',
-                 'dynamic-reports', 'searches',
+                 'dynamic-reports', 'searches', 'chat',
             ], 'Account Owner', $client);
 
             $this->allowImpersonationInGroup(['users'], 'Account Owner', $client);
@@ -75,13 +75,13 @@ class BouncerAbilitiesSeeder extends Seeder
             /** Regional Admin */
             $this->allowReadInGroup(
                 ['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles',
-                'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates', 'sms-templates', 'searches', 'folders', 'call-templates',],
+                'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates', 'sms-templates', 'searches', 'folders', 'call-templates', 'chat', ],
                 'Regional Admin',
                 $client
             );
             $this->allowEditInGroup(
                 ['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles',
-                'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates', 'sms-templates', 'folders', 'call-templates',],
+                'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates', 'sms-templates', 'folders', 'call-templates', 'chat', ],
                 'Regional Admin',
                 $client
             );
@@ -89,20 +89,21 @@ class BouncerAbilitiesSeeder extends Seeder
 
             /** Location Manager */
             $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'access_tokens',
-                'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders', 'searches', 'email-templates', 'sms-templates', 'folders', 'files','call-templates',], 'Location Manager', $client);
+                'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders', 'searches', 'email-templates',
+                'sms-templates', 'folders', 'files','call-templates', 'chat', ], 'Location Manager', $client);
             $this->allowEditInGroup(['users', 'leads', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns',
-                'scheduled-campaigns', 'positions', 'departments', 'reminders', 'folders', 'files',], 'Location Manager', $client);
+                'scheduled-campaigns', 'positions', 'departments', 'reminders', 'folders', 'files', 'chat', ], 'Location Manager', $client);
             $this->allowImpersonationInGroup(['users'], 'Location Manager', $client);
 
             /** Sales Rep */
             $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'drip-campaigns',
-                'scheduled-campaigns', 'reminders', 'folders', 'searches', 'files',
+                'scheduled-campaigns', 'reminders', 'folders', 'searches', 'files', 'chat',
             ], 'Sales Rep', $client);
-            $this->allowEditInGroup(['leads', 'tasks', 'calendar', 'reminders', 'files', 'folders',], 'Sales Rep', $client);
+            $this->allowEditInGroup(['leads', 'tasks', 'calendar', 'reminders', 'files', 'folders', 'chat'], 'Sales Rep', $client);
 
             /** Employee */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'reminders'], 'Employee', $client);
-            $this->allowEditInGroup(['leads', 'tasks'], 'Employee', $client);
+            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'reminders', 'chat'], 'Employee', $client);
+            $this->allowEditInGroup(['leads', 'tasks', 'chat'], 'Employee', $client);
 
             $roles_allowed_to_contact_leads = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
             foreach ($roles_allowed_to_contact_leads as $role) {

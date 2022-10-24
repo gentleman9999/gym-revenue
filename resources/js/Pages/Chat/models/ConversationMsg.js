@@ -2,10 +2,11 @@ export default class ConversationMsg {
     /**
      * @param {Conversation} conversation
      * @param {string} name
-     * @param {string} sid
-     * @param {Array<MessageInfo>} messages
-     * @param {Boolean} hasMultiParticipants
+     * @param {string} sid the chat participant id of current user.
+     * @param {MessageInfo[]} messages
+     * @param {boolean} hasMultiParticipants
      * @param {Date} updatedAt
+     * @param {boolean} isInternal
      */
     constructor(
         conversation,
@@ -13,7 +14,8 @@ export default class ConversationMsg {
         sid,
         messages,
         hasMultiParticipants,
-        updatedAt
+        updatedAt,
+        isInternal = false
     ) {
         this.conversation = conversation;
         this.name = name;
@@ -21,6 +23,7 @@ export default class ConversationMsg {
         this.messages = messages;
         this.hasMultiParticipants = hasMultiParticipants;
         this.updatedAt = updatedAt;
+        this.isInternal = isInternal;
     }
 
     /**
@@ -31,7 +34,9 @@ export default class ConversationMsg {
     }
 
     get unreadMessagesCount() {
-        return this.messages.filter((msg) => !msg.attributes.read).length;
+        return this.messages.filter(
+            (msg) => !msg.attributes.read && !msg.isInfo
+        ).length;
     }
 
     touch() {

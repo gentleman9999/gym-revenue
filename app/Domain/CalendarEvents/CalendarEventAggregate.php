@@ -4,6 +4,7 @@ namespace App\Domain\CalendarEvents;
 
 use App\Domain\CalendarEvents\Events\CalendarEventCreated;
 use App\Domain\CalendarEvents\Events\CalendarEventDeleted;
+use App\Domain\CalendarEvents\Events\CalendarEventNotified;
 use App\Domain\CalendarEvents\Events\CalendarEventRestored;
 use App\Domain\CalendarEvents\Events\CalendarEventTrashed;
 use App\Domain\CalendarEvents\Events\CalendarEventUpdated;
@@ -42,6 +43,13 @@ class CalendarEventAggregate extends AggregateRoot
     public function update(array $payload): static
     {
         $this->recordThat(new CalendarEventUpdated($payload));
+
+        return $this;
+    }
+
+    public function notify(array $payload): static
+    {
+        $this->recordThat(new CalendarEventNotified($payload));
 
         return $this;
     }

@@ -5,7 +5,9 @@ namespace App\Domain\Roles;
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
+use App\Domain\Chat\Models\Chat;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
@@ -40,111 +42,34 @@ class Role extends \Silber\Bouncer\Database\Role
 
     public static function getEntityFromGroup(string $group): ?string
     {
-        $entity = null;
-        switch ($group) {
-            case 'users':
-                $entity = User::class;
-
-                break;
-            case 'locations':
-                $entity = Location::class;
-
-                break;
-            case 'leads':
-                $entity = Lead::class;
-
-                break;
-            case 'lead-statuses':
-                $entity = LeadStatus::class;
-
-                break;
-            case 'lead-sources':
-                $entity = LeadSource::class;
-
-                break;
-            case 'members':
-                $entity = Member::class;
-
-                break;
-            case 'teams':
-                $entity = Team::class;
-
-                break;
-            case 'files':
-                $entity = File::class;
-
-                break;
-            case 'calendar':
-                $entity = CalendarEvent::class;
-
-                break;
-            case 'roles':
-                $entity = Role::class;
-
-                break;
-            case 'task':
-                $entity = Task::class;
-
-                break;
-            case 'positions':
-                $entity = Position::class;
-
-                break;
-            case 'departments':
-                $entity = Department::class;
-
-                break;
-            case 'reminders':
-                $entity = Reminder::class;
-
-                break;
-            case 'client':
-                $entity = Client::class;
-
-                break;
-
-            case 'email-templates':
-                $entity = EmailTemplate::class;
-
-                break;
-
-            case 'sms-templates':
-                $entity = SmsTemplate::class;
-
-                break;
-
-            case 'notes':
-                $entity = Note::class;
-
-                break;
-
-            case 'folders':
-                $entity = Folder::class;
-
-                break;
-
-            case 'drip-campaigns':
-                $entity = DripCampaign::class;
-
-                break;
-
-            case 'scheduled-campaigns':
-                $entity = ScheduledCampaign::class;
-
-                break;
-
-            case 'call-templates':
-                $entity = CallScriptTemplate::class;
-
-                break;
-
-            case 'dynamic-reports':
-                $entity = DynamicReport::class;
-
-                break;
-        }
-
-        return $entity;
+        return match ($group) {
+            'users' => User::class,
+            'locations' => Location::class,
+            'leads' => Lead::class,
+            'lead-statuses' => LeadStatus::class,
+            'lead-sources' => LeadSource::class,
+            'members' => Member::class,
+            'teams' => Team::class,
+            'files' => File::class,
+            'calendar' => CalendarEvent::class,
+            'roles' => Role::class,
+            'task' => Task::class,
+            'positions' => Position::class,
+            'departments' => Department::class,
+            'reminders' => Reminder::class,
+            'client' => Client::class,
+            'email-templates' => EmailTemplate::class,
+            'sms-templates' => SmsTemplate::class,
+            'notes' => Note::class,
+            'folders' => Folder::class,
+            'drip-campaigns' => DripCampaign::class,
+            'scheduled-campaigns' => ScheduledCampaign::class,
+            'call-templates' => CallScriptTemplate::class,
+            'dynamic-reports' => DynamicReport::class,
+            'chat' => Chat::class,
+            'conversation' => ClientConversation::class,
+            default => null,
+        };
     }
 
     public function scopeFilter($query, array $filters): void

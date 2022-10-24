@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Conversations\Twilio\Actions;
 
+use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Users\Models\User;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
@@ -20,7 +21,7 @@ class AddConversationAgent
 
     public function handle(User $user): void
     {
-        Bouncer::allow($user)->to(self::CHAT_CONVERSATION_ABILITY_NAME);
+        Bouncer::allow($user)->to(self::CHAT_CONVERSATION_ABILITY_NAME, ClientConversation::class);
     }
 
     public function asController(ActionRequest $request)

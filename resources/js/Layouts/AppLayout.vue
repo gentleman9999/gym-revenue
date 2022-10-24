@@ -89,15 +89,10 @@
 
 <script setup>
 import { defineComponent, ref, onMounted } from "vue";
-import JetApplicationMark from "@/Jetstream/ApplicationMark.vue";
 import JetBanner from "@/Jetstream/Banner.vue";
-import JetNavLink from "@/Jetstream/NavLink.vue";
-import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink.vue";
-import JetBarNavigationMenu from "@/Components/JetBarNavigationMenu.vue";
 import TopNav from "@/Components/Navigation/TopNav.vue";
 import SideNav from "@/Components/Navigation/SideNav.vue";
 import { Link } from "@inertiajs/inertia-vue3";
-import NotyBell from "@/Components/NotyBell.vue";
 import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";

@@ -321,6 +321,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('mass-comms')->group(fun
         Route::get('/create', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@create')->name('mass-comms.email-templates.create');
         Route::get('/export', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@export')->name('mass-comms.email-templates.export');
         Route::post('/test', \App\Domain\Email\Actions\FireTestEmailMessage::class)->name('mass-comms.email-templates.test-msg');
+        Route::get('/getfiles', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@getFiles')->name('mass-comms.email-templates.get-files');
 
         Route::post('block', \App\Domain\Templates\EmailTemplateBlocks\Actions\CreateEmailTemplateBlock::class)->name('comms.email-templates.create-block');
         Route::get('block', \App\Domain\Templates\EmailTemplateBlocks\Actions\GetEmailTemplateBlock::class)->name('comms.email-templates.get-blocks');
@@ -372,6 +373,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('templates')->group(func
     Route::get('/', \App\Http\Controllers\TemplatesController::class . '@index')->name('templates');
     Route::get('/sms-templates', \App\Http\Controllers\Comm\SmsTemplatesController::class . '@index')->name('mass-comms.sms-templates');
     Route::get('/email-templates', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@index')->name('mass-comms.email-templates');
+    Route::get('/email-templates/images', \App\Http\Controllers\Comm\EmailTemplatesController::class . '@getFiles')->name('mass-comms.email-templates.get-files');
+    Route::post('/email-templates/images', \App\Domain\Templates\EmailTemplateBlocks\Actions\UploadFile::class)->name('mass-comms.email-templates.store-files');
     Route::get('/call-templates', \App\Http\Controllers\Comm\CallScriptTemplatesController::class . '@index')->name('mass-comms.call-templates');
 });
 
@@ -395,6 +398,14 @@ Route::middleware('auth:sanctum')->get('/clients', \App\Domain\Clients\Actions\G
 Route::middleware('auth:sanctum')->get('/clients/teams', \App\Domain\Clients\Actions\GetTeams::class)->name('clients.teams');
 
 Route::middleware('auth:sanctum')->prefix('chat')->group(function () {
+    Route::prefix('internals')->group(static function () {
+        Route::post('create', \App\Domain\Chat\Actions\CreateChat::class)->name('start-internal-chats');
+        Route::get('get', \App\Domain\Chat\Actions\GetChat::class)->name('get-internal-chats');
+        Route::get('interlocutors', \App\Domain\Chat\Actions\GetInterlocutor::class)->name('get-internal-chats-interlocutors');
+        Route::PUT('mark-as-read/{uuid}', \App\Domain\Chat\Actions\UpdateMessage::class)->name('mark-internal-chats-as-read');
+        Route::post('message', \App\Domain\Chat\Actions\CreateMessage::class)->name('message-internal-chats');
+    });
+
     Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
     Route::get('/{end_user_type}/{id}', \App\Http\Controllers\ChatController::class . '@index')->name('end-user-chat');
 });
