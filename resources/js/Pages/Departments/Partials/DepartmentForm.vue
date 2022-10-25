@@ -86,7 +86,6 @@ if (!department) {
     department = {
         name: "",
         id: null,
-        client_id: props.clientId,
         positions: [],
     };
     operation = "Create";

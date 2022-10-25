@@ -20,7 +20,7 @@
                     v-model="form.group"
                 >
                     <option
-                        v-for="{ name, value } in role.securityGroups"
+                        v-for="{ name, value } in securityGroups"
                         :value="value"
                         :key="value"
                     >
@@ -136,6 +136,12 @@ export default {
         role: {
             type: Object,
         },
+        availableAbilities: {
+            type: Array,
+        },
+        securityGroups: {
+            type: Array,
+        },
     },
     setup(props, context) {
         let role = _.cloneDeep(props.role);
@@ -174,7 +180,7 @@ export default {
 
         let groupedAvailableAbilities = computed(() => {
             let grouped = {};
-            props.role.availableAbilities.forEach((availableAbility) => {
+            props.availableAbilities.forEach((availableAbility) => {
                 let group = availableAbility.name.split(".")[0];
                 if (group === "*") {
                     return;

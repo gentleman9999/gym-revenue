@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @php $asset_name = ((date('H') >= 23) || (date('H') < 16 )) ? '/img/gr-dark-logo.png' : '/img/gr-light-logo.png' @endphp
         <link rel="icon" type="image/png" href="{{ asset($asset_name) }}">
-
         <title inertia>{{ env('APP_NAME', 'Laravel') }}</title>
         <!-- Scripts -->
         @routes

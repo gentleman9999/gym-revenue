@@ -156,7 +156,7 @@
             <!-- Security Role -->
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="user.isClientUser"
+                v-if="isClientUser"
             >
                 <jet-label for="role_id" value="Security Role" />
                 <select
@@ -177,7 +177,7 @@
             <!-- Home Club -->
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="user.isClientUser"
+                v-if="isClientUser"
             >
                 <jet-label for="home_location_id" value="Home Club" />
                 <select
@@ -238,10 +238,10 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-divider" v-if="user.isClientUser" />
+            <div class="form-divider" v-if="isClientUser" />
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="user.isClientUser"
+                v-if="isClientUser"
             >
                 <jet-label for="role_id" value="Select Departments" />
                 <select
@@ -264,7 +264,7 @@
             </div>
             <div
                 class="form-control col-span-6 md:col-span-2"
-                v-if="user.isClientUser"
+                v-if="isClientUser"
             >
                 <jet-label for="role_id" value="Select Positions" />
                 <select
@@ -287,7 +287,7 @@
             </div>
             <div
                 class="flex justify-center items-end col-span-6 md:col-span-2"
-                v-if="user.isClientUser"
+                v-if="isClientUser"
             >
                 <button
                     class="btn btn-success"
@@ -399,7 +399,7 @@
             </Button>
         </template>
     </jet-form-section>
-    <jet-form-section v-if="user.isClientUser && user?.files" class="mt-16">
+    <jet-form-section v-if="isClientUser && user?.files" class="mt-16">
         <template #title> Documents</template>
 
         <template #description> Documents attached to the user.</template>
@@ -470,7 +470,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, inject } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -533,7 +533,7 @@ export default {
         let operation = "Update";
         console.log("gql-props", props);
         if (props.user) {
-            if (props.user.isClientUser) {
+            if (props.isClientUser) {
                 user.role_id = user["role_id"];
             }
             user.contact_preference = user["contact_preference"]?.value;
@@ -577,7 +577,7 @@ export default {
                 departments: [],
             };
             //only add client specific when applicable to make user validation rules work better
-            if (props.user.isClientUser) {
+            if (props.isClientUser) {
                 user.home_location_id = null;
                 user.notes = { title: "", note: "" };
                 user.start_date = null;

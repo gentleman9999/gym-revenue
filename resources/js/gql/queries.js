@@ -22,6 +22,7 @@ const USER_PREVIEW = gql`
 
 const USER_EDIT = gql`
     query User($id: ID) {
+        isClientUser(id: $id)
         user(id: $id) {
             first_name
             last_name
@@ -62,6 +63,25 @@ const USER_EDIT = gql`
         }
     }
 `;
+
+const USER_CREATE = gql`
+    query User($id: ID) {
+        isClientUser(id: $id)
+        availableDepartments: departments(filter: { client_id: $id }) {
+            data {
+                id
+                name
+            }
+        }
+        availablePositions: positions(filter: { client_id: $id }) {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const USERS = gql`
     query Users($page: Int, $filter: Filter, $orderBy: [OrderByClause!]) {
         users(page: $page, filter: $filter, orderBy: $orderBy) {
@@ -141,6 +161,35 @@ const LEAD_PREVIEW = gql`
     }
 `;
 
+const LEAD_CREATE = gql`
+    query Lead {
+        lead_owners: leadOwners {
+            user {
+                id
+                name
+            }
+        }
+        lead_types {
+            id
+            name
+        }
+        lead_statuses {
+            id
+            status
+        }
+        lead_sources {
+            id
+            name
+        }
+        locations {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const LEAD_EDIT = gql`
     query Lead($id: ID) {
         lead(id: $id) {
@@ -170,12 +219,6 @@ const LEAD_EDIT = gql`
                 id
             }
             owner_user_id
-            lead_owners {
-                user {
-                    id
-                    name
-                }
-            }
             lead_status {
                 id
             }
@@ -191,7 +234,15 @@ const LEAD_EDIT = gql`
                 smsCount
             }
             owner_user_id
-            locations {
+        }
+        lead_owners: leadOwners {
+            user {
+                id
+                name
+            }
+        }
+        locations {
+            data {
                 id
                 name
             }
@@ -339,10 +390,6 @@ const MEMBER_EDIT = gql`
             location {
                 id
             }
-            locations {
-                id
-                name
-            }
             notes {
                 id
                 title
@@ -350,6 +397,19 @@ const MEMBER_EDIT = gql`
                 read
             }
             all_notes
+        }
+        locations: memberLocations {
+            id
+            name
+        }
+    }
+`;
+
+const MEMBER_CREATE = gql`
+    query Member {
+        locations: memberLocations {
+            id
+            name
         }
     }
 `;
@@ -425,7 +485,17 @@ const TEAM_EDIT = gql`
         }
     }
 `;
-
+const TEAM_CREATE = gql`
+    query AvailableLocations {
+        availableLocations: locations {
+            data {
+                id
+                name
+                gymrevenue_id
+            }
+        }
+    }
+`;
 const ROLES = gql`
     query Roles($page: Int, $filter: Filter) {
         roles(page: $page, filter: $filter) {
@@ -455,14 +525,29 @@ const ROLE_EDIT = gql`
             abilities {
                 name
             }
-            availableAbilities {
-                name
-                title
-            }
-            securityGroups {
-                value
-                name
-            }
+        }
+        availableAbilities {
+            id
+            name
+            title
+        }
+        securityGroups {
+            value
+            name
+        }
+    }
+`;
+
+const ROLE_CREATE = gql`
+    query Role {
+        availableAbilities {
+            id
+            name
+            title
+        }
+        securityGroups {
+            value
+            name
         }
     }
 `;
@@ -508,6 +593,17 @@ const DEPARTMENT_EDIT = gql`
     }
 `;
 
+const DEPARTMENT_CREATE = gql`
+    query Position {
+        positions {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const POSITIONS = gql`
     query Positions($page: Int, $filter: PositionFilter) {
         positions(page: $page, filter: $filter) {
@@ -540,6 +636,17 @@ const POSITION_EDIT = gql`
                 name
             }
         }
+        departments {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
+const POSITION_CREATE = gql`
+    query Departments {
         departments {
             data {
                 id
@@ -619,6 +726,12 @@ const NOTE_EDIT = gql`
     }
 `;
 
+const DEFAULT_CREATE = gql`
+    query DefaultQuery($id: ID) {
+        clientId(id: $id)
+    }
+`;
+
 const REMINDERS = gql`
     query Reminders($page: Int, $filter: Filter) {
         reminders(page: $page, filter: $filter) {
@@ -652,7 +765,7 @@ const REMINDER_EDIT = gql`
     }
 `;
 
-const TASKS = gql`
+const TASKS_INCOMPLETE = gql`
     query Tasks($page: Int) {
         incomplete_tasks(page: $page) {
             data {
@@ -673,7 +786,11 @@ const TASKS = gql`
                 total
             }
         }
-        complete_tasks(page: $page) {
+    }
+`;
+const TASKS_COMPLETED = gql`
+    query Tasks($page: Int) {
+        completed_tasks(page: $page) {
             data {
                 id
                 title
@@ -692,6 +809,10 @@ const TASKS = gql`
                 total
             }
         }
+    }
+`;
+const TASKS_OVERDUE = gql`
+    query Tasks($page: Int) {
         overdue_tasks(page: $page) {
             data {
                 id
@@ -718,9 +839,11 @@ export default {
     user: {
         preview: USER_PREVIEW,
         edit: USER_EDIT,
+        create: USER_CREATE,
     },
     lead: {
         preview: LEAD_PREVIEW,
+        create: LEAD_CREATE,
         edit: LEAD_EDIT,
     },
     location: {
@@ -730,22 +853,28 @@ export default {
     member: {
         preview: MEMBER_PREVIEW,
         edit: MEMBER_EDIT,
+        create: MEMBER_CREATE,
     },
     team: {
         preview: TEAM_PREVIEW,
         edit: TEAM_EDIT,
+        create: TEAM_CREATE,
     },
     role: {
         edit: ROLE_EDIT,
+        create: ROLE_CREATE,
     },
     department: {
         edit: DEPARTMENT_EDIT,
+        create: DEPARTMENT_CREATE,
     },
     position: {
         edit: POSITION_EDIT,
+        create: POSITION_CREATE,
     },
     eventType: {
         edit: EVENT_TYPES_EDIT,
+        create: DEFAULT_CREATE,
     },
     note: {
         edit: NOTE_EDIT,
@@ -764,5 +893,9 @@ export default {
     eventTypes: EVENT_TYPES,
     notes: NOTES,
     reminders: REMINDERS,
-    tasks: TASKS,
+    tasks: {
+        incomplete_tasks: TASKS_INCOMPLETE,
+        completed_tasks: TASKS_COMPLETED,
+        overdue_tasks: TASKS_OVERDUE,
+    },
 };

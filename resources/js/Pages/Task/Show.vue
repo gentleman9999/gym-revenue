@@ -15,25 +15,15 @@
                 :selectedDate="selectedDate"
                 :setSelectedDate="setSelectedDate"
             />
-            <ApolloQuery :query="(gql) => task_query" :variables="param">
-                <template v-slot="{ result: { data } }">
-                    <div v-if="data">
-                        <task-list-view
-                            v-for="taskType in taskTypes"
-                            :updatePage="
-                                (value) => (param = { ...param, page: value })
-                            "
-                            :resource="getTasks(data)"
-                            :key="taskType"
-                            :task-type="taskType"
-                            :fields="fields"
-                            :tasks="getTaskData(taskType)"
-                            :on-double-click="handleDoubleClick"
-                            @edit="handleOnEdit"
-                        />
-                    </div>
-                </template>
-            </ApolloQuery>
+            <task-list-view
+                v-for="taskType in taskTypes"
+                :updatePage="(value) => (param = { ...param, page: value })"
+                :key="taskType"
+                :task-type="taskType"
+                :fields="fields"
+                :on-double-click="handleDoubleClick"
+                @edit="handleOnEdit"
+            />
         </div>
     </div>
     <confirm
@@ -101,7 +91,6 @@ import MonthSwitcher from "./components/TaskDateSwitcher/MonthSwitcher.vue";
 import TaskListView from "./components/TaskListView.vue";
 import pickBy from "lodash/pickBy";
 import { transformDate } from "@/utils/transformDate";
-import gql from "graphql-tag";
 
 export default defineComponent({
     components: {
@@ -243,16 +232,6 @@ export default defineComponent({
             "overdue_tasks",
             "completed_tasks",
         ];
-        const getData = function () {
-            let options = {
-                preserveState: true,
-                preserveScroll: true,
-            };
-            let query = {
-                start: selectedDateFormatted.value,
-            };
-            Inertia.get(route("tasks"), pickBy(query), options);
-        };
 
         const handleDoubleClick = ({ data }) => {
             openEventForm(data);
@@ -260,21 +239,6 @@ export default defineComponent({
         const openEventForm = (data) => {
             selectedCalendarEvent.value = data;
             editEventModal.value.open();
-        };
-        watch([selectedDate], getData, { deep: true });
-
-        const getTaskData = (taskType) => {
-            switch (taskType) {
-                case "incomplete_tasks":
-                    return props.incomplete_tasks;
-                case "overdue_tasks":
-                    return props.overdue_tasks;
-                case "completed_tasks":
-                    return props.completed_tasks;
-                //TODO: why are we doing thism we should all of that alreadyx
-                default:
-                    throw new Error("unknown taskType " + taskType);
-            }
         };
 
         const handleOnEdit = (data) => {
@@ -284,33 +248,7 @@ export default defineComponent({
         const param = ref({
             page: 1,
         });
-        const task_query = gql`
-            query Tasks($page: Int) {
-                tasks(page: $page) {
-                    data {
-                        id
-                        title
-                        owner {
-                            id
-                        }
-                        start
-                        created_at
-                    }
-                    pagination: paginatorInfo {
-                        current_page: currentPage
-                        last_page: lastPage
-                        from: firstItem
-                        to: lastItem
-                        per_page: perPage
-                        total
-                    }
-                }
-            }
-        `;
 
-        const getTasks = (data) => {
-            return _.cloneDeep(data.tasks);
-        };
         return {
             fields,
             confirmDelete,
@@ -333,13 +271,10 @@ export default defineComponent({
             setStartOfTheWeek,
             taskTypes,
             selectedDateFormatted,
-            getTaskData,
             switchMonth,
             handleDoubleClick,
             handleOnEdit,
             param,
-            task_query,
-            getTasks,
         };
     },
 });

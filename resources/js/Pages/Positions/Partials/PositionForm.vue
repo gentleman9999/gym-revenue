@@ -86,11 +86,11 @@ const props = defineProps({
 
 let position = _.cloneDeep(props.position);
 let operation = "Update";
+
 if (!position) {
     position = {
         name: "",
         id: null,
-        client_id: props.clientId,
         departments: [],
     };
     operation = "Create";

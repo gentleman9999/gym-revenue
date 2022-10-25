@@ -170,7 +170,7 @@
                 >
                     <option value="">Select a Club</option>
                     <option
-                        v-for="location in lead.locations"
+                        v-for="location in locations.data"
                         :key="location.id"
                         :value="location.id"
                     >
@@ -237,7 +237,7 @@
                 >
                     <option value="">Select a Lead Owner</option>
                     <option
-                        v-for="{ user } in lead.lead_owners"
+                        v-for="{ user } in lead_owners"
                         :value="user.id"
                         :key="user.id"
                     >
@@ -421,6 +421,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
 import * as _ from "lodash";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 library.add(faUserCircle);
 
@@ -435,7 +436,15 @@ export default {
         VueJsonPretty,
         PhoneInput,
     },
-    props: ["userId", "lead", "lead_types", "lead_statuses", "lead_sources"],
+    props: [
+        "userId",
+        "lead",
+        "lead_owners",
+        "lead_types",
+        "lead_statuses",
+        "lead_sources",
+        "locations",
+    ],
     computed: {
         borderStyle() {
             let color = "transparent";
@@ -459,6 +468,8 @@ export default {
         },
     },
     setup(props, context) {
+        const page = usePage();
+        console.log("page", page);
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
                 note: note,
@@ -485,7 +496,7 @@ export default {
                 gender: "",
                 date_of_birth: null,
                 opportunity: "",
-                owner_user_id: props.userId,
+                owner_user_id: page.props.value.user.id,
                 lead_status: "",
                 notes: { title: "", note: "" },
             };

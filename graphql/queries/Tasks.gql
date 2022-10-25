@@ -5,7 +5,7 @@ extend type Query {
     ): [CalendarEvent!]!
     @paginate(defaultCount: 10)
 
-    complete_tasks(
+    completed_tasks(
         complete: TaskFilter @scope
         orderBy: [OrderByClause!] @orderBy
     ): [CalendarEvent!]!

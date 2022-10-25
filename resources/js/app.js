@@ -47,6 +47,7 @@ provideApolloClient(apolloClient);
 const apolloProvider = createApolloProvider({
     defaultClient: apolloClient,
 });
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: async (name) => {

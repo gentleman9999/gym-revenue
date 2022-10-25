@@ -123,6 +123,11 @@
         :model-name="modelName"
         :model-key="modelKey"
     />
+    <create-modal
+        :create-component="editComponent"
+        :model-name="modelName"
+        :model-key="modelKey"
+    />
     <crud-column-customization-modal
         :fields="fields"
         :model-key="modelKey"
@@ -133,7 +138,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, inject } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import Pagination from "@/Components/Pagination.vue";
@@ -143,6 +148,7 @@ import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PreviewModal from "@/Components/CRUD/PreviewModal.vue";
 import EditModal from "@/Components/CRUD/EditModal.vue";
+import CreateModal from "@/Components/CRUD/CreateModal.vue";
 import LeadForm from "@/Pages/Leads/Partials/LeadForm.vue";
 import { useSearchFilter } from "./helpers/useSearchFilter";
 
@@ -151,6 +157,8 @@ import CrudColumnCustomizationModal from "@/Components/CRUD/CrudColumnCustomizat
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 import { getFields } from "@/Components/CRUD/helpers/getFields";
 import { getActions } from "@/Components/CRUD/helpers/actions";
+import { create } from "@/Components/CRUD/helpers/gqlData";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 export default defineComponent({
     components: {
@@ -163,6 +171,7 @@ export default defineComponent({
         LeadForm,
         PreviewModal,
         EditModal,
+        CreateModal,
     },
     props: {
         fields: {
@@ -226,6 +235,8 @@ export default defineComponent({
     },
 
     setup(props, { emit }) {
+        const page = usePage();
+
         const form = ref({
             search: "",
             trashed: "",
@@ -320,7 +331,7 @@ export default defineComponent({
             create: {
                 label: `Create ${props.modelName}`,
                 handler: () => {
-                    Inertia.visitInModal(route(`${props.baseRoute}.create`));
+                    create(page.props.value.user.id);
                 },
                 class: ["btn-primary"],
             },

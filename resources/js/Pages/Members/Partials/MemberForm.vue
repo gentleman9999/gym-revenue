@@ -169,7 +169,7 @@
                 >
                     <option value="">Select a Club</option>
                     <option
-                        v-for="location in member.locations"
+                        v-for="location in locations"
                         :value="location.id"
                         :key="location.id"
                     >
@@ -314,6 +314,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
 import * as _ from "lodash";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 library.add(faUserCircle);
 
@@ -327,11 +328,12 @@ export default {
         DatePicker,
         PhoneInput,
     },
-    props: ["userId", "clientId", "member", "interactionCount"],
+    props: ["member", "interactionCount", "locations"],
     setup(props, context) {
+        const clientId = usePage().props.value.user.client_id;
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
-                client_id: props.clientId,
+                client_id: clientId,
                 note: note,
             });
         }
@@ -347,7 +349,7 @@ export default {
                 primary_phone: "",
                 alternate_phone: "",
                 club_id: "",
-                client_id: props.clientId,
+                client_id: clientId,
                 gr_location_id: null,
                 profile_picture: null,
                 gender: "",
