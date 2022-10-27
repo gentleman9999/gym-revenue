@@ -112,7 +112,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('folders')->group(functi
     Route::get('/viewFiles/{folder}', \App\Http\Controllers\FoldersController::class . '@viewFiles')->name('folders.viewFiles');
     Route::put('/{folder}', \App\Domain\Folders\Actions\UpdateFolder::class)->name('folders.update');
     Route::put('/sharing/{folder}', \App\Domain\Folders\Actions\UpdateFolderSharing::class)->name('folders.sharing.update');
+    Route::delete('/{folder}/trash', \App\Domain\Folders\Actions\TrashFolder::class)->name('folders.trash');
     Route::delete('/{folder}', \App\Domain\Folders\Actions\DeleteFolder::class)->name('folders.delete');
+    Route::post('/{id}/restore', \App\Domain\Folders\Actions\RestoreFolder::class)->name('folders.restore');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(function () {

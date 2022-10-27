@@ -25,15 +25,18 @@
             :folder="folder"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :handleRestore="handleRestore"
             :handlePermissions="handlePermissions"
+            :showTrash="showTrash"
         />
 
         <folder-context-menu
             ref="subMenu"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
-            :handlePermissions="handlePermissions"
-            :handleShare="handleShare"
+            :handleRestore="handleRestore"
+            :handlePermissions="handlePermissions" 
+            :showTrash="showTrash"
         />
     </div>
 </template>
@@ -83,9 +86,13 @@ const props = defineProps({
     handleShare: {
         type: Function,
     },
-    moveFileToFolder: {
+    handleRestore:{
         type: Function,
     },
+    moveFileToFolder: {
+        type: Function,
+    }
+    
 });
 
 const handleRename = () => {
@@ -106,6 +113,11 @@ const handleTrash = () => {
 const handleShare = () => {
     console.log("handleShare");
     props.handleShare(props.folder);
+    subMenu.value.blur();
+};
+
+const handleRestore = () => {
+    props.handleRestore(props.folder, "folder");
     subMenu.value.blur();
 };
 
@@ -167,4 +179,7 @@ const browseFolder = () => {
     // TODO browse to the folder
     Inertia.get(route("folders.viewFiles", props.folder.id));
 };
+
+const showTrash = props.folder.deleted_at ? false : true;
+
 </script>

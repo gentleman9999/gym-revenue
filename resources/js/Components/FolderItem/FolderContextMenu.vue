@@ -1,8 +1,9 @@
 <template>
     <ul tabindex="1" ref="subMenu" class="folder-submenu">
-        <li @click="handleTrash">Trash</li>
+        <li v-if="showTrash" @click="handleTrash">Trash</li>
         <li @click="handleRename">Rename</li>
         <li @click="handleShare">Share</li>
+        <li v-if="!showTrash" @click="handleRestore">Restore</li>
     </ul>
 </template>
 <style scoped>
@@ -30,9 +31,16 @@ const props = defineProps({
     handleShare: {
         type: Function,
     },
+    handleRestore: {
+        type: Function,
+    },
     handleBrowse: {
         type: Function,
     },
+    showTrash: {
+        type: Boolean,
+    }
+
 });
 
 const subMenu = ref(null);

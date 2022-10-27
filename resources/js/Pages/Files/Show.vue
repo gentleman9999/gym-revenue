@@ -25,6 +25,7 @@
             :handlePermissions="handlePermissions"
             :handleTrash="handleTrash"
             :handleShare="handleShare"
+            :handleRestore="handleRestore"
         />
     </div>
 
@@ -154,7 +155,15 @@ const confirmTrash = () => {
     if (item2Remove.value.type === "file") {
         Inertia.delete(route("files.trash", id));
     } else {
-        Inertia.delete(route("folders.delete", id));
+        Inertia.delete(route("folders.trash", data.id));
+    }
+};
+
+const handleRestore = (data, type) => {
+    if (type === "file") {
+        Inertia.post(route("files.restore", data.id));
+    } else {
+        Inertia.post(route("folders.restore", data.id));
     }
     confirmModal.value.close();
 };

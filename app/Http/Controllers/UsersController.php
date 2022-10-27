@@ -108,7 +108,6 @@ class UsersController extends Controller
             }
             $users->setCollection($sortedResult);
         }
-
         return Inertia::render('Users/Show', [
             'users' => $users,
             'filters' => $request->all($filterKeys),
