@@ -21,11 +21,12 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Actions\CreateUser;
 use App\Domain\Users\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\Feature\Utilities\UserUtility;
 
 beforeEach(function () {
-    //
+    Mail::fake();
 });
 
 //Endpoints
@@ -131,7 +132,6 @@ it('should not allow user to invite team member', function () {
     UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
     $this->actingAs($user);
-    ;
 
     //create new user
     UserUtility::createUser();
@@ -171,7 +171,6 @@ it('should be able to delete team', function () {
     UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
     $this->actingAs($user);
-    ;
 
     //give them admin access to create a new team
     Bouncer::allow('Admin')->everything();
@@ -323,7 +322,6 @@ it('should successfully add team members using AddOrInviteTeamMembers action', f
 it('should produce three TeamMemberAdded events', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
-    ;
     //create new user
     [$user, $user2, $user3] = UserUtility::createUser(count: 3);
 
@@ -371,11 +369,9 @@ it('should inviteTeamMember', function () {
 it('it should throw exception:his user has already been invited to the team on inviteTeamMember action', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
-    ;
 
     //create new user
     $user = UserUtility::createUser();
-    ;
     $response = InviteTeamMember::run($team, $user->email);
 
     $this->assertEquals($response, $user->email);
@@ -406,7 +402,6 @@ it('should InviteTeamMembers', function () {
 it('should remove InviteTeamMembers using the RemoveTeamMember action', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
-    ;
     //create new user
     [$user, $user2, $user3] = UserUtility::createUser(count: 3);
 
