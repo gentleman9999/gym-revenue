@@ -17,7 +17,11 @@ class UpdateTeamName implements UpdatesTeamNames
 
     public function handle(string $id, string $name): Team
     {
-        return UpdateTeam::run($id, ['name' => $name]);
+//        return UpdateTeam::run($id, ['name' => $name]);
+
+        $team = Team::where('id', $id)->first();
+
+        return UpdateTeam::run($team, ['name' => $name]);
     }
 
     /**

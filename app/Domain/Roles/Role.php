@@ -26,10 +26,15 @@ use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use Database\Factories\RoleFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Silber\Bouncer\Database\Concerns\HasAbilities;
 use Twilio\TwiML\Voice\Task;
 
+/**
+ * @method static RoleFactory factory()
+ */
 class Role extends \Silber\Bouncer\Database\Role
 {
     use HasFactory;
@@ -37,6 +42,16 @@ class Role extends \Silber\Bouncer\Database\Role
     use Sortable;
 
     protected $fillable = ['name', 'title', 'group'];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return RoleFactory::new();
+    }
 
     public static function getEntityFromGroup(string $group): ?string
     {

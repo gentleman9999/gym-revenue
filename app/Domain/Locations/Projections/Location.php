@@ -7,7 +7,9 @@ use App\Domain\Teams\Models\Team;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Location
  *
  * @mixin Builder
+ * @method static \Database\Factories\LocationFactory factory()
  */
 class Location extends GymRevProjection
 {
@@ -34,6 +37,16 @@ class Location extends GymRevProjection
     protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return LocationFactory::new();
     }
 
     public function client(): BelongsTo

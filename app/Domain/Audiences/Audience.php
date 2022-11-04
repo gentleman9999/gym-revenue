@@ -6,14 +6,22 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
+use Database\Factories\AudienceFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ *
+ * @method static AudienceFactory factory()
+ */
 class Audience extends GymRevProjection
 {
     use SoftDeletes;
+    use HasFactory;
 
     protected $hidden = ['client_id'];
 
@@ -26,6 +34,16 @@ class Audience extends GymRevProjection
     protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return AudienceFactory::new();
     }
 
     public function client(): BelongsTo

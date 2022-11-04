@@ -5,6 +5,7 @@ namespace App\Domain\Teams;
 use App\Domain\Teams\Events\TeamCreated;
 use App\Domain\Teams\Events\TeamDeleted;
 use App\Domain\Teams\Events\TeamMemberAdded;
+use App\Domain\Teams\Events\TeamMemberInvited;
 use App\Domain\Teams\Events\TeamMemberRemoved;
 use App\Domain\Teams\Events\TeamRestored;
 use App\Domain\Teams\Events\TeamTrashed;

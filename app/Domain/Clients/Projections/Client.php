@@ -9,6 +9,7 @@ use App\Domain\Conversations\Twilio\Actions\AddConversationAgent;
 use App\Domain\Conversations\Twilio\Exceptions\ConversationException;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\LeadSources\LeadSource;
+use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
@@ -19,7 +20,10 @@ use App\Models\File;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GymRevProjection;
 use App\Services\TwilioService;
+use Database\Factories\ClientFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -32,11 +36,14 @@ use Twilio\Exceptions\ConfigurationException;
  * @property Collection       $gatewaySettings
  * @property string           $id
  * @property Collection<User> $users
+ *
+ * @method static ClientFactory factory()
  */
 class Client extends GymRevProjection
 {
     use Notifiable;
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -46,6 +53,16 @@ class Client extends GymRevProjection
     protected $casts = [
         'services' => 'array',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return ClientFactory::new();
+    }
 
     public function locations(): HasMany
     {
@@ -59,7 +76,7 @@ class Client extends GymRevProjection
 
     public function lead_types(): HasMany
     {
-        return $this->hasMany(\App\Domain\LeadTypes\LeadType::class);
+        return $this->hasMany(LeadType::class);
     }
 
     public function lead_sources(): HasMany
