@@ -2,10 +2,16 @@
 
 namespace App\Domain\EndUsers\Events;
 
+use App\Domain\EndUsers\Projections\EndUser;
 use App\StorableEvents\EntityTrashed;
 
-abstract class EndUserTrashed extends EntityTrashed
+class EndUserTrashed extends EntityTrashed
 {
+    public function getEntity(): string
+    {
+        return EndUser::class;
+    }
+
     public string $reason;
 
     public function __construct(string $reason)

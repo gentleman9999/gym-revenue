@@ -3,8 +3,7 @@
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Roles\Role;
 use App\Domain\Users\Models\User;
 use Bouncer;
@@ -24,7 +23,7 @@ class BouncerAbilitiesSeeder extends Seeder
         Bouncer::allow('Admin')->everything(); // I mean....right?
 
         $crud_models = collect([
-            'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members',
+            'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',
             'positions', 'email-templates', 'sms-templates',  'scheduled-campaigns', 'drip-campaigns',
             'reminders', 'notes', 'folders', 'searches', 'dynamic-reports', 'call-templates', 'conversation', 'chat',
@@ -58,13 +57,13 @@ class BouncerAbilitiesSeeder extends Seeder
 
             /** Account Owner */
             $this->allowReadInGroup([
-                'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
+                'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
                 'email-templates', 'sms-templates', 'call-templates', 'departments', 'positions', 'notes', 'folders',
                 'dynamic-reports', 'searches', 'chat',
             ], 'Account Owner', $client);
             $this->allowEditInGroup([
-                'users', 'locations', 'leads', 'lead-statuses', 'lead-sources', 'members', 'files', 'teams',
+                'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources', 'files', 'teams',
                 'calendar', 'roles', 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns',
                 'email-templates', 'sms-templates', 'call-templates', 'departments', 'positions', 'notes', 'folders',
                  'dynamic-reports', 'searches', 'chat',
@@ -74,13 +73,13 @@ class BouncerAbilitiesSeeder extends Seeder
 
             /** Regional Admin */
             $this->allowReadInGroup(
-                ['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles',
+                ['users', 'locations', 'endusers', 'files', 'teams', 'calendar', 'roles',
                 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates', 'sms-templates', 'searches', 'folders', 'call-templates', 'chat', ],
                 'Regional Admin',
                 $client
             );
             $this->allowEditInGroup(
-                ['users', 'locations', 'leads', 'members', 'files', 'teams', 'calendar', 'roles',
+                ['users', 'locations', 'endusers', 'files', 'teams', 'calendar', 'roles',
                 'classifications', 'access_tokens', 'drip-campaigns', 'scheduled-campaigns', 'email-templates', 'sms-templates', 'folders', 'call-templates', 'chat', ],
                 'Regional Admin',
                 $client
@@ -88,28 +87,27 @@ class BouncerAbilitiesSeeder extends Seeder
             $this->allowImpersonationInGroup(['users'], 'Regional Admin', $client);
 
             /** Location Manager */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'access_tokens',
+            $this->allowReadInGroup(['users', 'locations', 'endusers', 'teams', 'tasks', 'calendar', 'access_tokens',
                 'drip-campaigns', 'scheduled-campaigns', 'positions', 'departments', 'reminders', 'searches', 'email-templates',
                 'sms-templates', 'folders', 'files','call-templates', 'chat', ], 'Location Manager', $client);
-            $this->allowEditInGroup(['users', 'leads', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns',
+            $this->allowEditInGroup(['users', 'endusers', 'teams', 'tasks', 'calendar', 'access_tokens', 'drip-campaigns',
                 'scheduled-campaigns', 'positions', 'departments', 'reminders', 'folders', 'files', 'chat', ], 'Location Manager', $client);
             $this->allowImpersonationInGroup(['users'], 'Location Manager', $client);
 
             /** Sales Rep */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'drip-campaigns',
+            $this->allowReadInGroup(['users', 'locations', 'endusers', 'teams', 'tasks', 'calendar', 'drip-campaigns',
                 'scheduled-campaigns', 'reminders', 'folders', 'searches', 'files', 'chat',
             ], 'Sales Rep', $client);
-            $this->allowEditInGroup(['leads', 'tasks', 'calendar', 'reminders', 'files', 'folders', 'chat'], 'Sales Rep', $client);
+            $this->allowEditInGroup(['endusers', 'tasks', 'calendar', 'reminders', 'files', 'folders', 'chat'], 'Sales Rep', $client);
 
             /** Employee */
-            $this->allowReadInGroup(['users', 'locations', 'leads', 'members', 'teams', 'tasks', 'calendar', 'reminders', 'chat'], 'Employee', $client);
-            $this->allowEditInGroup(['leads', 'tasks', 'chat'], 'Employee', $client);
+            $this->allowReadInGroup(['users', 'locations', 'endusers', 'teams', 'tasks', 'calendar', 'reminders', 'chat'], 'Employee', $client);
+            $this->allowEditInGroup(['endusers', 'tasks', 'chat'], 'Employee', $client);
 
-            $roles_allowed_to_contact_leads = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
-            foreach ($roles_allowed_to_contact_leads as $role) {
-                VarDumper::dump("Allowing $role to contact leads for teams");
-                Bouncer::allow($role)->to('leads.contact', Lead::class);
-                Bouncer::allow($role)->to('members.contact', Member::class);
+            $roles_allowed_to_contact_endusers = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
+            foreach ($roles_allowed_to_contact_endusers as $role) {
+                VarDumper::dump("Allowing $role to contact endusers for teams");
+                Bouncer::allow($role)->to('enduser.contact', EndUser::class);
             }
             Bouncer::allow('Account Owner')->to('manage-client-settings');
         }

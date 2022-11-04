@@ -2,9 +2,13 @@
 
 namespace App\Domain\EndUsers\Actions;
 
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
+use Illuminate\Support\Facades\Redirect;
+use Lorisleiva\Actions\ActionRequest;
+use Prologue\Alerts\Facades\Alert;
 
-abstract class UpdateEndUser extends BaseEndUserAction
+class UpdateEndUser extends BaseEndUserAction
 {
     /**
      * Get the validation rules that apply to the action.
@@ -37,8 +41,25 @@ abstract class UpdateEndUser extends BaseEndUserAction
 
     public function handle(EndUser $endUser, array $data)
     {
-        ($this->getAggregate())::retrieve($endUser->id)->update($data)->persist();
+        EndUserAggregate::retrieve($endUser->id)->update($data)->persist();
 
         return $endUser->refresh();
+    }
+
+    public function asController(ActionRequest $request, EndUser $endUser): EndUser
+    {
+        $data = $request->validated();
+
+        return $this->handle(
+            $endUser,
+            $data,
+        );
+    }
+
+    public function htmlResponse(EndUser $endUser)
+    {
+        Alert::success("End User '{$endUser->first_name} {$endUser->last_name}' was updated")->flash();
+
+        return Redirect::back();
     }
 }

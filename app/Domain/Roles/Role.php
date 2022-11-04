@@ -9,8 +9,7 @@ use App\Domain\Chat\Models\Chat;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Locations\Projections\Location;
@@ -58,10 +57,9 @@ class Role extends \Silber\Bouncer\Database\Role
         return match ($group) {
             'users' => User::class,
             'locations' => Location::class,
-            'leads' => Lead::class,
+            'endusers' => EndUser::class,
             'lead-statuses' => LeadStatus::class,
             'lead-sources' => LeadSource::class,
-            'members' => Member::class,
             'teams' => Team::class,
             'files' => File::class,
             'calendar' => CalendarEvent::class,

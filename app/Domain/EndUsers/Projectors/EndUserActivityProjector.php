@@ -8,20 +8,26 @@ use App\Domain\EndUsers\Events\EndUserUpdatedCommunicationPreferences;
 use App\Domain\EndUsers\Events\EndUserWasCalledByRep;
 use App\Domain\EndUsers\Events\EndUserWasEmailedByRep;
 use App\Domain\EndUsers\Events\EndUserWasTextMessagedByRep;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Users\Models\User;
 use App\Models\Note;
+use Illuminate\Support\Facades\DB;
+use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
-abstract class EndUserActivityProjector extends BaseEndUserProjector
+class EndUserActivityProjector extends Projector
 {
     public function onEndUserClaimedByRep(EndUserClaimedByRep $event): void
     {
-        if (($this->getModel())::class !== $event->getEntity()) {
-            return;
-        }
-        $end_user = $this->getModel()::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
-        $end_user->owner_user_id = $event->claimedByUserId;
-        $end_user->save();
+        DB::transaction(function () use ($event) {
+            $end_user = EndUser::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
+            $end_user->owner_user_id = $event->claimedByUserId;
+            $end_user->save();
+
+            $end_user = Lead::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
+            $end_user->owner_user_id = $event->claimedByUserId;
+            $end_user->save();
+        });
     }
 
     public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void

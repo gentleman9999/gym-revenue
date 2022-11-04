@@ -3,7 +3,6 @@
 namespace App\Domain\Audiences;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use Database\Factories\AudienceFactory;
@@ -75,10 +74,6 @@ class Audience extends GymRevProjection
             ->when($this->filters !== null, function ($query) {
                 $this->generateQueryFromFilters($query);
             });
-
-        if ($entity instanceof Lead) {
-            $query->whereNull('member_id');
-        }
 
         return $query;
     }

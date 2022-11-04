@@ -13,8 +13,6 @@ use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-//use Lorisleiva\Actions\Concerns\AsController;
-
 class CreateAudience
 {
     use AsAction;

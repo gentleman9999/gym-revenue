@@ -4,7 +4,7 @@ namespace App\Domain\EndUsers\Events;
 
 use App\StorableEvents\GymRevCrudEvent;
 
-abstract class OldEndUserProfilePictureDeleted extends GymRevCrudEvent
+class OldEndUserProfilePictureDeleted extends GymRevCrudEvent
 {
     public array $file;
 
@@ -16,5 +16,10 @@ abstract class OldEndUserProfilePictureDeleted extends GymRevCrudEvent
     protected function getOperation(): string
     {
         return "OLD_PROFILE_PICTURE_DELETED";
+    }
+
+    public function getEntity(): string
+    {
+        return EndUser::class;
     }
 }

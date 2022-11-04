@@ -5,14 +5,8 @@ namespace App\Domain\EndUsers\Leads\Projections;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\EndUsers\Projections\EndUserDetails;
-use App\Domain\LeadSources\LeadSource;
-use App\Domain\LeadStatuses\LeadStatus;
-use App\Domain\LeadTypes\LeadType;
-use App\Models\Endusers\TrialMembership;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -36,26 +30,6 @@ class Lead extends EndUser
     public static function getDetailsModel(): EndUserDetails
     {
         return new LeadDetails();
-    }
-
-    public function leadType(): HasOne
-    {
-        return $this->hasOne(LeadType::class, 'id', 'lead_type_id');
-    }
-
-    public function leadSource(): HasOne
-    {
-        return $this->hasOne(LeadSource::class, 'id', 'lead_source_id');
-    }
-
-    public function lead_status(): HasOne
-    {
-        return $this->hasOne(LeadStatus::class, 'id', 'lead_status_id');
-    }
-
-    public function trialMemberships(): HasMany
-    {
-        return $this->hasMany(TrialMembership::class)->orderBy('start_date', 'DESC');
     }
 
     public function scopeFilter($query, array $filters): void
