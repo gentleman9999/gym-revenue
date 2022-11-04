@@ -428,3 +428,12 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('conversation')->group(s
         Route::put('conversation/{conversation_id}', \App\Domain\Conversations\Twilio\Actions\UpdateConversation::class)->name('twilio.update-conversation');
     });
 });
+
+Route::prefix('checkin')->group(function () {
+    Route::get('/', \App\Http\Controllers\CheckInController::class . '@index')->name('checkin.index');
+    Route::get('/login', \App\Http\Controllers\CheckInController::class . '@login')->name('checkin.login');
+    Route::get('/register', \App\Http\Controllers\CheckInController::class . '@register')->name('checkin.register');
+    Route::get('/account', \App\Http\Controllers\CheckInController::class . '@account')->name('checkin.account');
+    Route::get('/club', \App\Http\Controllers\CheckInController::class . '@club')->name('checkin.club');
+    Route::get('/result', \App\Http\Controllers\CheckInController::class . '@result')->name('checkin.result');
+});
