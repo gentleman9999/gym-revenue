@@ -39,8 +39,7 @@ const props = defineProps({
     },
     showTrash: {
         type: Boolean,
-    }
-
+    },
 });
 
 const subMenu = ref(null);

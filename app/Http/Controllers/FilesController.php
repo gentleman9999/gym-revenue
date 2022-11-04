@@ -43,7 +43,6 @@ class FilesController extends Controller
                     ->paginate($page_count)
                     ->appends(request()->except('page'));
         } else {
-
             if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
                 $files = File::with('client')
                     ->whereClientId($client_id)

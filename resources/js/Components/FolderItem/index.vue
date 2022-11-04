@@ -35,7 +35,7 @@
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handleRestore="handleRestore"
-            :handlePermissions="handlePermissions" 
+            :handlePermissions="handlePermissions"
             :showTrash="showTrash"
         />
     </div>
@@ -86,13 +86,12 @@ const props = defineProps({
     handleShare: {
         type: Function,
     },
-    handleRestore:{
+    handleRestore: {
         type: Function,
     },
     moveFileToFolder: {
         type: Function,
-    }
-    
+    },
 });
 
 const handleRename = () => {
@@ -181,5 +180,4 @@ const browseFolder = () => {
 };
 
 const showTrash = props.folder.deleted_at ? false : true;
-
 </script>

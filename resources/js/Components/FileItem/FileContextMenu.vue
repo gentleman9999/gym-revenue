@@ -31,12 +31,12 @@ const props = defineProps({
     handleTrash: {
         type: Function,
     },
-    handleRestore:{
+    handleRestore: {
         type: Function,
     },
     showTrash: {
         type: Boolean,
-    }
+    },
 });
 
 const subMenu = ref(null);

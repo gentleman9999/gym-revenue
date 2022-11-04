@@ -5,10 +5,10 @@
         {{ defaultTransform.created_at(folder.created_at) }}
     </div>
     <div class="md:w-2/6 w-3/6 flex-wrap">
-        <Button ghost @click="handleRestore" v-if="!showTrash">  
+        <Button ghost @click="handleRestore" v-if="!showTrash">
             <font-awesome-icon icon="trash-restore" class="text-base-content" />
-        </Button> 
-        <Button ghost @click="handleTrash"  v-if="showTrash">
+        </Button>
+        <Button ghost @click="handleTrash" v-if="showTrash">
             <font-awesome-icon icon="trash" class="text-base-content" />
         </Button>
         <Button ghost @click="handleRename">
@@ -27,7 +27,12 @@ import Button from "@/Components/Button.vue";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTrash, faEdit, faSlidersH, faTrashRestore } from "@fortawesome/pro-solid-svg-icons";
+import {
+    faTrash,
+    faEdit,
+    faSlidersH,
+    faTrashRestore,
+} from "@fortawesome/pro-solid-svg-icons";
 
 library.add(faTrash, faEdit, faSlidersH, faTrashRestore);
 
