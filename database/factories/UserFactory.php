@@ -55,7 +55,7 @@ class UserFactory extends Factory
     public function configure(): Factory
     {
         return $this->afterMaking(function (User $user) {
-            $user->team_id = Team::factory();
+            $user->team_id ??= Team::factory()->create()->id;
 
             return $user;
         });
