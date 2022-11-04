@@ -506,8 +506,9 @@ class LeadsController extends Controller
             }
 
             $data['user'] = auth()->user()->id;
-
-            switch (request()->get('method')) {
+            // Remove following If statement prior to going live
+            if ($lead->isCBorGR($lead)) {
+                switch (request()->get('method')) {
                     case 'email':
                         $aggy->email($data)->persist();
                         Alert::success("Email sent to lead")->flash();
@@ -529,6 +530,9 @@ class LeadsController extends Controller
                     default:
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
+            } else {
+                Alert::error("Lead does not have a Cape and Bay or Gym Revenue email address.")->flash();
+            }
         }
 
 //        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);

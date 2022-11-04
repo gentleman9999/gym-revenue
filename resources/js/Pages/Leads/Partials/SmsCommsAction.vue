@@ -4,6 +4,7 @@
         :lead-id="leadId"
         submit-text="Send Message"
         :form="form"
+        :allow-submit="true"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">

@@ -2,6 +2,7 @@
 
 namespace App\Domain\EndUsers\Projectors;
 
+use App\Actions\Mail\MailgunSend;
 use App\Domain\EndUsers\Events\EndUserClaimedByRep;
 use App\Domain\EndUsers\Events\EndUserUpdatedCommunicationPreferences;
 use App\Domain\EndUsers\Events\EndUserWasCalledByRep;
@@ -34,7 +35,10 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'emailed_by_rep', $event->modifiedBy(), $misc);
+        //$mailgunResponse = MailgunSend::run([$end_user->email], $misc['subject'], $misc['message']);
+
+
+        $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'emailed_by_rep', $event->modifiedBy(), $misc);
     }
 
     public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
@@ -43,10 +47,9 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
             return;
         }
         $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
-        $user = User::find($event->modifiedBy());
 
         $misc = $event->payload;
-        $misc['user_email'] = $user->email;
+
         ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'sms_by_rep', $event->modifiedBy(), $misc);
     }
 

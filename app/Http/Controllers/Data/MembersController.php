@@ -9,6 +9,7 @@ use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Domain\Users\Models\User;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
@@ -384,8 +385,9 @@ class MembersController extends Controller
                     $data['interaction_count']++;
                 }
             }
-
-            switch (request()->get('method')) {
+            // Remove following If statement prior to going live
+            if ($member->isCBorGR($member)) {
+                switch (request()->get('method')) {
                     case 'email':
                         $aggy->email($data)->persist();
                         Alert::success("Email sent to member")->flash();
@@ -407,6 +409,9 @@ class MembersController extends Controller
                     default:
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
+            } else {
+                Alert::error("Member does not have a Cape and Bay or Gym Revenue email address.")->flash();
+            }
         }
 
         return Redirect::back()->with('selectedMemberDetailIndex', 0);
