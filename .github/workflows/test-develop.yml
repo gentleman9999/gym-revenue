@@ -5,7 +5,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  laravel:
+  test:
     name: Laravel (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
     env:
