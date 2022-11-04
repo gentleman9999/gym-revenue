@@ -27,8 +27,8 @@ class FileProjector extends Projector
 
         if ($event->user !== null) {
             $user = User::find($event->user);
-            $file->user_id = $user->id;
-            $file->client_id = $user->client_id;
+            $file->user_id = request()->user()->id;
+            $file->client_id = request()->user()->client_id;
         }
 
         $file->fill($file_table_data);

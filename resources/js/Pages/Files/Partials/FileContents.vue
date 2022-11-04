@@ -12,7 +12,7 @@
             :handleShare="handleShare"
         />
         <file-item
-            v-for="file in files.data"
+            v-for="file in files"
             :file="file"
             :key="file?.id"
             :mode="displayMode"

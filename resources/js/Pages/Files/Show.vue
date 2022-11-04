@@ -12,20 +12,30 @@
         </div>
         <div class="row">
             <file-nav :folderName="folderName" class="nav-desktop" />
-            <file-search />
+            <file-search
+                :form="form"
+                @search="(value) => (form.filter.search = value)"
+            />
         </div>
         <div class="row">
             <file-nav :folderName="folderName" class="nav-mobile" />
         </div>
-        <file-contents
-            :files="files"
-            :folders="$page.props.folders"
-            :displayMode="displayMode"
-            :handleRename="handleRename"
-            :handlePermissions="handlePermissions"
-            :handleTrash="handleTrash"
-            :handleShare="handleShare"
-        />
+        <ApolloQuery :query="(gql) => queries['files']" :variables="form">
+            <template v-slot="{ result: { data, loading, error } }">
+                <div v-if="loading">Loading...</div>
+                <div v-else-if="error">Error</div>
+                <file-contents
+                    v-else-if="data"
+                    v-bind="{ ...data }"
+                    :displayMode="displayMode"
+                    :handleRename="handleRename"
+                    :handlePermissions="handlePermissions"
+                    :handleTrash="handleTrash"
+                    :handleShare="handleShare"
+                />
+                <div v-else>Loading...</div>
+            </template>
+        </ApolloQuery>
     </div>
 
     <!-- Section for Modals -->
@@ -100,6 +110,9 @@ import FileContents from "./Partials/FileContents.vue";
 import FileSearch from "./Partials/FileSearch.vue";
 import FileNav from "./Partials/FileNav.vue";
 import ConfirmModal from "./Partials/ConfirmModal.vue";
+
+import queries from "@/gql/queries";
+
 const props = defineProps({
     sessions: {
         type: Array,
@@ -185,4 +198,6 @@ const updateDisplayMode = (value) => {
 const goRoot = () => {
     Inertia.get(route("files"));
 };
+
+const form = ref({ filter: {} });
 </script>

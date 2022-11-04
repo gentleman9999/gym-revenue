@@ -1,0 +1,6 @@
+extend type Query {
+    files(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [File!]! @all
+}

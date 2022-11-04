@@ -55,7 +55,7 @@
                     name="search"
                     placeholder="Search…"
                     :value="modelValue"
-                    @input="$emit('update:modelValue', $event.target.value)"
+                    @input="$emit('updateSearch', $event.target.value)"
                 />
                 <button
                     class="flex items-center justify-center absolute inset-y-0 right-2 text-sm"

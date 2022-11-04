@@ -835,6 +835,26 @@ const TASKS_OVERDUE = gql`
     }
 `;
 
+const FILE_FOLDERS = gql`
+    query FilesAndFolders($filter: Filter) {
+        files(filter: $filter) {
+            id
+            extension
+            url
+            filename
+            created_at
+            size
+        }
+        folders {
+            id
+            url
+            name
+            created_at
+            size
+        }
+    }
+`;
+
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -898,4 +918,5 @@ export default {
         completed_tasks: TASKS_COMPLETED,
         overdue_tasks: TASKS_OVERDUE,
     },
+    files: FILE_FOLDERS,
 };

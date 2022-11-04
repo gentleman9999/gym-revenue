@@ -1,0 +1,8 @@
+type File {
+    id: ID
+    extension: String
+    url: String
+    filename: String
+    created_at: DateTime
+    size: Int
+}

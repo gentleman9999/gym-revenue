@@ -1,11 +1,8 @@
 <template>
     <div class="flex flex-row w-full justify-end mt-2">
         <simple-search-filter
-            v-model:modelValue="form.search"
+            @updateSearch="$emit('search', value)"
             class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
-            @reset="reset"
-            @clear-filters="clearFilters"
-            @clear-search="clearSearch"
         >
             <div class="block py-2 text-xs text-base-content text-opacity-80">
                 Trashed:
@@ -20,6 +17,8 @@
 </template>
 <script setup>
 import SimpleSearchFilter from "@/Components/CRUD/SimpleSearchFilter.vue";
-import { useSearchFilter } from "@/Components/CRUD/helpers/useSearchFilter";
-const { form, reset, clearFilters, clearSearch } = useSearchFilter("files");
+
+const props = defineProps({
+    form: Object,
+});
 </script>

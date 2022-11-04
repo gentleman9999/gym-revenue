@@ -1,0 +1,8 @@
+type Folder {
+    id: ID
+    url: String
+    name: String
+    created_at: DateTime
+    size: Int
+    files: hasMany
+}

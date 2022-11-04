@@ -60,7 +60,17 @@ class File extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
+        $client_id = request()->user()->client_id;
+        $security_group = request()->user()->securityGroup();
+
+        $query->whereClientId($client_id)
+        // ->whereUserId(null)
+        ->whereHidden(false)
+        ->whereEntityType(null)
+        ->when(! key_exists('search', $filters) ?? null, function ($query) {
+            $query->whereFolder(null);
+        })
+        ->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('filename', 'like', '%' . $search . '%');
             });
