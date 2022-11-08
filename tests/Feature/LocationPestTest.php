@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\DeleteLocation;
 use App\Domain\Locations\Actions\RestoreLocation;
@@ -17,7 +18,10 @@ beforeEach(function () {
 
 function createLocation(array $attributes = []): Location
 {
-    return CreateLocation::run($attributes + Location::factory()->raw() + ['shouldCreateTeam' => true]);
+    return CreateLocation::run($attributes + Location::factory()->raw() + [
+        'shouldCreateTeam' => true,
+        'client_id' => Client::factory()->create()->id,
+    ]);
 }
 
 

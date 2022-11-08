@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Teams\Models\Team;
@@ -28,7 +30,7 @@ beforeEach(function () {
 it('should have an update user event', function () {
     $first_name = fake()->firstName;
     $last_name = fake()->lastName;
-    $user = UserUtility::createUser();
+    $user = UserUtility::createUserWithoutTeam();
 
     //run the update user action
     UpdateUser::run($user->id, [
@@ -136,7 +138,6 @@ it('should return 200 on route users/create', function () {
 
     $response = $this->get('/users/create', []);
 
-
     $this->assertEquals(200, $response->status());
 });
 
@@ -215,7 +216,7 @@ it('should reset user password on ResetPassword action', function () {
 
 it('should update the user password on route user-password.update', function () {
     $old_password = 'Hello123!';
-    $new_password = fake()->unique()->password;
+    $new_password = fake()->unique()->password(8);
 
     $role = UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
@@ -235,7 +236,7 @@ it('should update the user password on route user-password.update', function () 
 
 it('should have a UserPasswordUpdated event on route user-password.update', function () {
     $old_password = "Hello123!";
-    $new_password = fake()->unique()->password;
+    $new_password = fake()->unique()->password(8);
 
     $role = UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();

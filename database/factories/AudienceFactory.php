@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Domain\Audiences\Audience;
-use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -33,7 +32,6 @@ class AudienceFactory extends AbstractProjectionFactory
             'name' => $this->faker->company,
             'entity' => Lead::class,
             'filters' => null,
-            'client_id' => Client::factory(),
         ];
     }
 }

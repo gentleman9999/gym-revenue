@@ -19,8 +19,6 @@ use App\Domain\Teams\Events\TeamMemberInvited;
 use App\Domain\Teams\Events\TeamUpdated;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
-use App\Domain\Users\Actions\CreateUser;
-use App\Domain\Users\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\Feature\Utilities\UserUtility;
@@ -79,7 +77,7 @@ it('should add user to team', function () {
     $this->actingAs($user);
 
     //create new user
-    $user = CreateUser::run(User::factory()->raw());
+    $user = UserUtility::createUserWithoutTeam();
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
 
@@ -87,7 +85,7 @@ it('should add user to team', function () {
         'emails' => [$user->email],
     ]);
 
-    //user should be on the the newly created team
+    //user should be on the newly created team
     $tu = TeamUser::where('user_id', $user->id)->first();
 
     $this->assertEquals($tu->team_id, $team->id);
@@ -297,7 +295,7 @@ it('should produce an update event', function () {
 it('should successfully add team members using AddOrInviteTeamMembers action', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     AddOrInviteTeamMembers::run($team, [
         $user->email,
@@ -323,7 +321,7 @@ it('should produce three TeamMemberAdded events', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     AddOrInviteTeamMembers::run($team, [
         $user->email,
@@ -340,7 +338,7 @@ it('should have three from the response from AddOrInviteTeamMembers action', fun
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     $response = AddOrInviteTeamMembers::run($team, [
         $user->email,
@@ -360,7 +358,7 @@ it('should inviteTeamMember', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    $user = UserUtility::createUser();
+    $user = UserUtility::createUserWithoutTeam();
     $response = InviteTeamMember::run($team, $user->email);
 
     $this->assertEquals($response, $user->email);
@@ -371,7 +369,7 @@ it('it should throw exception:his user has already been invited to the team on i
     $team = CreateTeam::run(Team::factory()->raw());
 
     //create new user
-    $user = UserUtility::createUser();
+    $user = UserUtility::createUserWithoutTeam();
     $response = InviteTeamMember::run($team, $user->email);
 
     $this->assertEquals($response, $user->email);
@@ -388,7 +386,7 @@ it('should InviteTeamMembers', function () {
     $team = CreateTeam::run(Team::factory()->raw());
 
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     $response = InviteTeamMembers::run($team, [
         $user->email,
@@ -403,8 +401,7 @@ it('should remove InviteTeamMembers using the RemoveTeamMember action', function
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
-
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     AddTeamMembers::run($team, [$user, $user2, $user3]);
 
@@ -421,7 +418,7 @@ it('should not add InviteTeamMembers that are already added', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     InviteTeamMembers::run($team, [
         $user->email,
@@ -440,7 +437,7 @@ it('should produce InviteTeamMemberInvited event', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     InviteTeamMembers::run($team, [
         $user->email,
@@ -457,7 +454,7 @@ it('should add member to team using AddTeamMember action', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    $user = UserUtility::createUser();
+    $user = UserUtility::createUserWithoutTeam();
 
     AddTeamMember::run($team, $user);
     $teamuser = TeamUser::where('team_id', $team->id)->first();
@@ -469,7 +466,7 @@ it('should add members to team using AddTeamMembers action', function () {
     //create a new team
     $team = CreateTeam::run(Team::factory()->raw());
     //create new user
-    [$user, $user2, $user3] = UserUtility::createUser(count: 3);
+    [$user, $user2, $user3] = UserUtility::createUserWithoutTeam(count: 3);
 
     AddTeamMembers::run($team, [$user, $user2, $user3]);
 

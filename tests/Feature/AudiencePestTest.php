@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Audiences\Actions\DeleteAudience;
 use App\Domain\Audiences\Actions\RestoreAudience;
 use App\Domain\Audiences\Actions\TrashAudience;
@@ -12,26 +11,27 @@ use App\Domain\Audiences\Events\AudienceCreated;
 use App\Domain\Audiences\Events\AudienceRestored;
 use App\Domain\Audiences\Events\AudienceTrashed;
 use App\Domain\Audiences\Events\AudienceUpdated;
+use Tests\Feature\Utilities\AudienceUtility;
 
 beforeEach(function () {
     //
 });
 
 it('create audience using the CreateAudience action', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
 
     $this->assertTrue($audience instanceof Audience);
 });
 
 it('should produce an AudienceCreated event', function () {
-    CreateAudience::run(Audience::factory()->raw());
+    AudienceUtility::create();
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
     $this->assertContains(AudienceCreated::class, array_column($storedEvents, 'event_class'));
 });
 
 it('should delete audience with DeleteAudience action', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
 
     $numberAtCreation = Audience::all()->count();
     DeleteAudience::run($audience->id);
@@ -42,7 +42,7 @@ it('should delete audience with DeleteAudience action', function () {
 });
 
 it('should delete event', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
     DeleteAudience::run($audience->id);
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
@@ -50,7 +50,7 @@ it('should delete event', function () {
 });
 
 it('should Trash the an Audience item using the TrashAudience action', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
     TrashAudience::run($audience);
     $audience = Audience::withTrashed()->findOrFail($audience->id);
 
@@ -58,7 +58,7 @@ it('should Trash the an Audience item using the TrashAudience action', function 
 });
 
 it('should produce a Trash event', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
     TrashAudience::run($audience);
     Audience::withTrashed()->findOrFail($audience->id);
     $storedEvents = DB::table('stored_events')->get()->toArray();
@@ -67,7 +67,7 @@ it('should produce a Trash event', function () {
 });
 
 it('should restore audience item with action RestoreAudience', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
     TrashAudience::run($audience);
 
     $audience = Audience::withTrashed()->findOrFail($audience->id);
@@ -81,7 +81,7 @@ it('should restore audience item with action RestoreAudience', function () {
 });
 
 it('should produce a restore event', function () {
-    $audience = CreateAudience::run(Audience::factory()->raw());
+    $audience = AudienceUtility::create();
 
     TrashAudience::run($audience);
     RestoreAudience::run($audience);
@@ -95,7 +95,7 @@ it('should update an audience item', function () {
     $oldName = fake()->unique()->name;
     $newName = fake()->unique()->name;
 
-    $audience = CreateAudience::run(Audience::factory()->raw(['name' => $oldName]));
+    $audience = AudienceUtility::create(['name' => $oldName]);
     UpdateAudience::run($audience, ['name' => $newName,]);
 
     $this->assertEquals($newName, $audience->name);
@@ -104,7 +104,7 @@ it('should update an audience item', function () {
 it('should produce an update event', function () {
     $oldName = fake()->unique()->name;
     $newName = fake()->unique()->name;
-    $audience = CreateAudience::run(Audience::factory()->raw(['name' => $oldName]));
+    $audience = AudienceUtility::create(['name' => $oldName]);
 
     UpdateAudience::run($audience, ['name' => $newName]);
     $storedEvents = DB::table('stored_events')->get()->toArray();

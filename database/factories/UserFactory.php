@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -48,7 +46,6 @@ class UserFactory extends Factory
             'email' => "{$first_name}.{$last_name}@{$this->faker->freeEmailDomain}",
             'phone' => $phone,
             'role_id' => 1,
-            'client_id' => Client::factory(),
         ];
     }
 
@@ -59,9 +56,5 @@ class UserFactory extends Factory
 
             return $user;
         });
-    }
-
-    public function withTeam()
-    {
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -38,7 +37,6 @@ class LocationFactory extends Factory
             'state' => $this->faker->stateAbbr,
             'zip' => substr($this->faker->postcode, 0, 5),
             'phone' => $phone,
-            'client_id' => Client::factory(),
         ];
     }
 }

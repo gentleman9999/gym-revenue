@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,7 +29,6 @@ class TeamFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid,
-            'client_id' => Client::factory(),
             'name' => $this->faker->unique()->company,
             'home_team' => 1,
         ];
