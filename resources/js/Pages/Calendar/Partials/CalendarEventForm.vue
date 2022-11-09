@@ -339,11 +339,11 @@
         </template>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
-
         <div
             v-if="
-                calendar_event?.call_task === 0 &&
-                calendar_event?.editable === 1
+                (calendar_event?.call_task === 0 &&
+                    calendar_event?.editable === 1) ||
+                !calendar_event
             "
             class="flex flex-row col-span-6 mt-8"
         >
