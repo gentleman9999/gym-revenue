@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\BillingSchedules\Projections;
 
 use App\Domain\Clients\Projections\Client;

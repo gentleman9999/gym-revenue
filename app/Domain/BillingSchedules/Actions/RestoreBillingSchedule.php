@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\BillingSchedules\Actions;
 
 use App\Domain\BillingSchedules\BillingScheduleAggregate;
@@ -12,8 +14,8 @@ class RestoreBillingSchedule
 {
     use AsAction;
 
-    public string $commandSignature = 'audience:restore {id}';
-    public string $commandDescription = 'Restores the audience';
+    public string $command_signature = 'audience:restore {id}';
+    public string $command_description = 'Restores the audience';
 
     public function handle(BillingSchedule $billing_schedule): BillingSchedule
     {

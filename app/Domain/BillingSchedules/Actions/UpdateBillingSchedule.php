@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\BillingSchedules\Actions;
 
 use App\Domain\BillingSchedules\BillingScheduleAggregate;
@@ -29,7 +31,7 @@ class UpdateBillingSchedule
             'should_renew_automatically' => ['sometimes', 'boolean'],
             'term_length' => 'sometimes',
             'min_terms' => 'sometimes',
-            'amount' => 'sometimes',
+            'amount' => ['sometimes', 'float' ],
 
         ];
     }

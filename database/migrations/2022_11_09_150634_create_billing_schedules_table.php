@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +16,10 @@ return new class () extends Migration {
     {
         Schema::create('billing_schedules', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('client_id')->index();
+            $table->foreignUuid('client_id')
+                ->references('id')
+                ->on('clients')
+                ->cascadeOnDelete();
             $table->string('type');
             $table->boolean('is_open_ended')->nullable();
             $table->boolean('is_renewable')->nullable();
