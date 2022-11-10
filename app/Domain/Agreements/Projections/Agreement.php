@@ -2,6 +2,7 @@
 
 namespace App\Domain\Agreements\Projections;
 
+use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Models\GymRevProjection;
@@ -25,6 +26,11 @@ class Agreement extends GymRevProjection
     public function client(): HasOne
     {
         return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    public function category(): HasOne
+    {
+        return $this->hasOne(AgreementCategory::class, 'id', 'client_id');
     }
 
     public function location(): HasOne

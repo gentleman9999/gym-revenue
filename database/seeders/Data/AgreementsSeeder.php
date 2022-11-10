@@ -3,6 +3,7 @@
 namespace Database\Seeders\Data;
 
 use App\Domain\Agreements\Actions\CreateAgreement;
+use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Projections\EndUser;
@@ -27,6 +28,7 @@ class AgreementsSeeder extends Seeder
                 VarDumper::dump($client->name);
                 $users = User::whereClientId($client->id)->get()->toArray();
                 $endusers = EndUser::whereClientId($client->id)->get()->toArray();
+                $categories = AgreementCategory::whereClientId($client->id)->get()->toArray();
                 // For each client, get all the locations
                 if (count($client->locations) > 0) {
                     foreach ($client->locations as $idx => $location) {
@@ -34,6 +36,7 @@ class AgreementsSeeder extends Seeder
                         for ($x = 0; $x <= $amountOfAgreements; $x++) {
                             $enduser = $endusers[array_rand($endusers, 1)];
                             $agreement_data['client_id'] = $client->id;
+                            $agreement_data['agreement_category_id'] = $categories[array_rand($categories, 1)]['id'];
                             $agreement_data['gr_location_id'] = $location->gymrevenue_id;
                             $agreement_data['created_by'] = $users[array_rand($users, 1)]['id'];
                             $agreement_data['end_user_id'] = $enduser['id'];

@@ -12,14 +12,11 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('agreements', function (Blueprint $table) {
+        Schema::create('agreement_categories', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->uuid('client_id')->index();
-            $table->string('gr_location_id')->nullable();
-            $table->unsignedBigInteger('created_by');
-            $table->uuid('end_user_id');
-            $table->uuid('agreement_template_id');
-            $table->boolean('active')->default(false);
+            $table->string('name');
+            $table->unique(['client_id', 'name']);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +29,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('agreements');
+        Schema::dropIfExists('agreement_categories');
     }
 };

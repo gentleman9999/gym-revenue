@@ -15,6 +15,7 @@ class CreateAgreement
     {
         return [
             'client_id' => 'required',
+            'agreement_category_id' => ['required', 'exists:agreement_categories,id'],
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'created_by' => 'required',
             'agreement_json' => 'required',

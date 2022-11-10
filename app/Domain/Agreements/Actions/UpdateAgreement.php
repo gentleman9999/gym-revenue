@@ -5,8 +5,11 @@ namespace App\Domain\Agreements\Actions;
 use App\Domain\Agreements\AgreementAggregate;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Http\Middleware\InjectClientId;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Prologue\Alerts\Facades\Alert;
 
 class UpdateAgreement
 {
@@ -22,6 +25,7 @@ class UpdateAgreement
     public function rules(): array
     {
         return [
+            'agreement_category_id' => ['required', 'exists:agreement_categories,id'],
             'gr_location_id' => ['sometimes', 'string'],
             'agreement_json' => ['sometimes', 'json'],
         ];
@@ -40,5 +44,12 @@ class UpdateAgreement
             $agreement,
             $data
         );
+    }
+
+    public function htmlResponse(Agreement $agreement): RedirectResponse
+    {
+        Alert::success("Agreement '{$agreement->name}' was created")->flash();
+
+        return Redirect::route('agreements.edit', $agreement->id);
     }
 }
