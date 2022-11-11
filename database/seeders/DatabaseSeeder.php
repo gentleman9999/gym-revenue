@@ -15,7 +15,9 @@ use Database\Seeders\Comm\EmailTemplateSeeder;
 use Database\Seeders\Comm\ScheduledCampaignSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Data\AgreementsSeeder;
+use Database\Seeders\Data\AgreementTemplateBillingScheduleSeeder;
 use Database\Seeders\Data\AgreementTemplatesSeeder;
+use Database\Seeders\Data\BillingScheduleSeeder;
 use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
 use Database\Seeders\Data\EndUserSeeder;
@@ -133,6 +135,11 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Agreements Data Seeder');
         $this->call(AgreementsSeeder::class);
 
+        VarDumper::dump('Running Billing Schedule Data Seeder');
+        $this->call(BillingScheduleSeeder::class);
+
+        VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
+        $this->call(AgreementTemplateBillingScheduleSeeder::class);
 
         // This seeder generates dummy leads for each client
 //        VarDumper::dump('Running Leads Dummy Data Seeder');

@@ -6,11 +6,25 @@ use App\Domain\AgreementTemplates\AgreementTemplateAggregate;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
+
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateAgreementTemplate
 {
     use AsAction;
+
+    /**
+     * Get the validation rules that apply to the action.
+     *
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            'billing_schedule' => ['required, exists:agreement_template_billing_schedule'],
+        ];
+    }
 
     public function getControllerMiddleware(): array
     {
@@ -23,5 +37,12 @@ class CreateAgreementTemplate
         AgreementTemplateAggregate::retrieve($id)->create($data)->persist();
 
         return AgreementTemplate::findOrFail($id);
+    }
+
+    public function asController(ActionRequest $request): AgreementTemplate
+    {
+        $data = $request->validated();
+
+        return ($this->handle($data));
     }
 }

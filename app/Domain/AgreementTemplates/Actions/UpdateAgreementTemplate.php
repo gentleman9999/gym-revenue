@@ -12,11 +12,11 @@ class UpdateAgreementTemplate
 {
     use AsAction;
 
-    public function handle(AgreementTemplate $audience, array $payload): AgreementTemplate
+    public function handle(AgreementTemplate $agreement_template, array $payload): AgreementTemplate
     {
-        AgreementTemplateAggregate::retrieve($audience->id)->update($payload)->persist();
+        AgreementTemplateAggregate::retrieve($agreement_template->id)->update($payload)->persist();
 
-        return $audience->refresh();
+        return $agreement_template->refresh();
     }
 
     public function rules(): array
@@ -24,6 +24,7 @@ class UpdateAgreementTemplate
         return [
             'gr_location_id' => ['sometimes', 'string'],
             'agreement_json' => ['sometimes', 'json'],
+            'billing_schedule' => ['required, exists:agreement_template_billing_schedule'],
         ];
     }
 

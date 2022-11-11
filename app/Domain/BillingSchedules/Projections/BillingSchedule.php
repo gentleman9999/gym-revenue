@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\BillingSchedules\Projections;
 
+use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\Clients\Projections\Client;
 use App\Enums\BillingScheduleTypesEnum;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,5 +33,10 @@ class BillingSchedule extends GymRevProjection
     public function client(): HasOne
     {
         return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    public function agreementTemplate(): BelongsToMany
+    {
+        return $this->belongsToMany(AgreementTemplate::class, 'agreement_template_billing_schedule', 'agreement_template_id', 'billing_schedule_id');
     }
 }
