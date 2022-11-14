@@ -40,9 +40,9 @@ class EndUserActivityProjector extends Projector
 
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
-        
+
         //$mailgunResponse = MailgunSend::run([$end_user->email], $misc['subject'], $misc['message']);
-        
+
         $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'emailed_by_rep', $event->modifiedBy(), $misc);
     }
 

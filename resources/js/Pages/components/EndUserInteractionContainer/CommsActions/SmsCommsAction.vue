@@ -5,7 +5,7 @@
         submit-text="Send Message"
         :form="form"
         :end-user-type="endUserType"
-        :allow-submit="true"
+        :allow-submit="charsUsed"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
