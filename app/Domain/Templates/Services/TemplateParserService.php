@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Domain\Templates\Services;
 
 use Illuminate\Support\Arr;
 

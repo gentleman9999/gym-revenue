@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Mail;
 
+use App\Domain\Templates\Services\TemplateParserService;
 use App\Domain\Users\Models\User;
 use App\Models\Utility\AppState;
-use App\Services\TemplateParserService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Env;
@@ -47,8 +47,12 @@ class MailgunBatchSend extends Action
         // The maximum number of recipients allowed for Batch Sending is 1,000.
         foreach (array_chunk($recipients, 1000) as $emails) {
             foreach ($emails as $email) {
+                // Data structure:
+                //  $list['foo@bar'] = ['user.first_name' => 'foo', 'user.last_name' => 'bar', ...]
+                // Data access:
+                // "%recipient.user.first_name%
                 $list[$email] = $parser->getReplacedToken([
-                    'user' => $users[$email][0], // access with "%recipient.user.first_name%
+                    'user' => $users[$email][0], // 0 index here is because groupBy pushes items to a new array.
                     // Register data replacements here...
                 ]);
             }
@@ -69,7 +73,7 @@ class MailgunBatchSend extends Action
         }
     }
 
-    public function asCommand(Command $command)
+    public function asCommand(Command $command): void
     {
         $this->handle($command->argument('email'), 'Test', '{{user.first_name}} {{ user.last_name}} {{test.blank}}');
     }

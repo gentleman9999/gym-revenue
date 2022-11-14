@@ -14,7 +14,7 @@ use Mailgun\Model\Message\SendResponse;
 class MailgunSend extends Action
 {
     use AsAction;
-    public string $commandSignature = 'batch-email-test {email*}';
+    public string $commandSignature = 'email-test {email*}';
 
     /**
      * Execute the action and return a result.

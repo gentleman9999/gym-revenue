@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Templates\Actions;
 
-use App\Services\TemplateParserService;
+use App\Domain\Templates\Services\TemplateParserService;
 use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
