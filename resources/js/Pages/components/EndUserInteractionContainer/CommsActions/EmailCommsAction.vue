@@ -5,7 +5,6 @@
         :form="form"
         :allow-submit="isFormValid"
         :end-user-type="endUserType"
-        :allow-submit="true"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
