@@ -8,10 +8,11 @@
             placeholder="Search…"
             :value="modelValue"
             @input="$emit('update:modelValue', $event.target.value)"
+            ref="searchInput"
         />
         <button
             class="flex items-center justify-center absolute inset-y-0 right-2 text-sm"
-            @click="$emit('clear-search')"
+            @click="clearSearch()"
         >
             X
         </button>
@@ -142,47 +143,39 @@ button.filter-open {
 }
 </style>
 
-<script>
-import { defineComponent, ref, computed } from "vue";
+<script setup>
+import { ref, computed } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faChevronUp, faChevronRight } from "@fortawesome/pro-solid-svg-icons";
 library.add(faChevronRight);
 
-export default defineComponent({
-    components: {
-        FontAwesomeIcon,
+const props = defineProps({
+    modelValue: { String, required: true },
+    maxWidth: {
+        type: Number,
+        default: 300,
     },
-    props: {
-        modelValue: { String, required: true },
-        maxWidth: {
-            type: Number,
-            default: 300,
-        },
-        filtersActive: {
-            type: Boolean,
-            default: false,
-        },
-    },
-
-    setup(props) {
-        const visible = ref(false);
-        const isHovered = ref(false);
-
-        const filtersOn = computed(() => {
-            return props.filtersActive;
-        });
-
-        const toggleFilterDrawer = () => {
-            visible.value = !visible.value;
-        };
-
-        return {
-            visible,
-            isHovered,
-            toggleFilterDrawer,
-            filtersOn,
-        };
+    filtersActive: {
+        type: Boolean,
+        default: false,
     },
 });
+
+const visible = ref(false);
+const isHovered = ref(false);
+const searchInput = ref(null);
+const emit = defineEmits(["update:modelValue"]);
+
+const clearSearch = () => {
+    emit("update:modelValue", "");
+    searchInput.value.value = "";
+};
+const filtersOn = computed(() => {
+    return props.filtersActive;
+});
+
+const toggleFilterDrawer = () => {
+    visible.value = !visible.value;
+};
 </script>

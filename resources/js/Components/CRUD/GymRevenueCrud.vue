@@ -28,12 +28,8 @@
             </slot>
             <slot name="filter">
                 <simple-search-filter
-                    v-model:modelValue="form.search"
-                    @update:modelValue="
-                        $emit('update', 'filter', {
-                            search: form.search,
-                        })
-                    "
+                    :modelValue="form.search"
+                    @update-search="handleSearch"
                     @clear-search="clearSearch"
                     @clear-filters="clearFilters"
                     class="w-full max-w-md mr-4 col-span-3 lg:col-span-1"
@@ -242,6 +238,13 @@ export default defineComponent({
             trashed: "",
             dir: "DESC",
         });
+        const handleSearch = (value) => {
+            form.value.search = value;
+            console.log(form.value);
+            emit("update", "filter", {
+                search: value,
+            });
+        };
         const clearSearch = () => {
             form.value.search = "";
             emit("update", "filter", {
@@ -379,6 +382,7 @@ export default defineComponent({
             topActions,
             clearFilters,
             clearSearch,
+            handleSearch,
             customizationModal,
             openCustomizationModal,
             actions,

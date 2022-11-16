@@ -2,7 +2,6 @@
     <beefy-search-filter
         v-model:modelValue="form.search"
         class="w-full max-w-md mr-4"
-        @clear-search="clearSearch"
         @update:modelValue="
             handleCrudUpdate('filter', {
                 search: form.search,
@@ -144,10 +143,4 @@ const props = defineProps({
 const form = ref({
     search: "",
 });
-const clearSearch = () => {
-    form.value.search = "";
-    props.handleCrudUpdate("filter", {
-        search: "",
-    });
-};
 </script>

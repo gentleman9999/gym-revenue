@@ -25,7 +25,6 @@
                             })
                         "
                         class="w-full max-w-md mr-4"
-                        @clear-search="clearSearch"
                     >
                         <div class="form-control">
                             <label
@@ -137,12 +136,6 @@ export default defineComponent({
                     [key]: value,
                 };
             }
-        };
-        const clearSearch = () => {
-            form.value.search = "";
-            handleCrudUpdate("filter", {
-                search: "",
-            });
         };
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {

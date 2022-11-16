@@ -60,7 +60,7 @@
                 />
                 <button
                     class="flex items-center justify-center absolute inset-y-0 right-2 text-sm"
-                    @click="clearSearch()"
+                    @click="clearSearch"
                     aria-label="Close Filters"
                 >
                     X
