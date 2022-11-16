@@ -4,7 +4,7 @@ namespace App\Domain\EndUsers\Actions;
 
 use function request;
 
-abstract class ReadEndUsers extends BaseEndUserAction
+class ReadEndUsers extends BaseEndUserAction
 {
     protected function getRelationshipsToLoad(): array
     {

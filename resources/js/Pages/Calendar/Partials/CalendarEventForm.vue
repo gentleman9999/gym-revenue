@@ -1,7 +1,7 @@
 <template>
     <form
         @submit="handleSubmit"
-        class="w-full flex flex-col px-6 py-6 space-y-4"
+        class="w-full flex flex-col px-6 py-6 space-y-4 mb-12"
     >
         <div class="flex flex-row justify-between">
             <div class="flex">
@@ -99,7 +99,7 @@
             <input
                 id="title"
                 type="text"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-base-content"
                 v-model="form.title"
                 :disabled="calendar_event?.editable === 0"
             />
@@ -109,7 +109,7 @@
             <jet-label for="description" value="Description" />
             <textarea
                 id="description"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-base-content"
                 v-model="form.description"
                 :disabled="calendar_event?.editable === 0"
             />
@@ -120,7 +120,7 @@
             <select
                 :disabled="calendar_event?.editable === 0"
                 v-model="form.event_type_id"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-base-content"
             >
                 <option
                     v-for="{ id, name } in calendarEventTypes"
@@ -145,7 +145,7 @@
             <select
                 :disabled="calendar_event?.editable === 0"
                 v-model="form.location_id"
-                class="bg-neutral-800 text-neutral-100"
+                class="bg-neutral text-base-content"
             >
                 <option v-for="{ id, name } in locations" :value="id">
                     {{ name }}
@@ -339,11 +339,11 @@
         </template>
 
         <input id="client_id" type="hidden" v-model="form.client_id" />
-
         <div
             v-if="
-                calendar_event?.call_task === 0 &&
-                calendar_event?.editable === 1
+                (calendar_event?.call_task === 0 &&
+                    calendar_event?.editable === 1) ||
+                !calendar_event
             "
             class="flex flex-row col-span-6 mt-8"
         >

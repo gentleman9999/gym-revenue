@@ -52,10 +52,6 @@ class CreateCalendarEvent
             $data['owner_id'] = $user->id;
         }
 
-        if ($user) {
-            $data['owner_id'] = $user->id;
-        }
-
         CalendarEventAggregate::retrieve($id)
             ->create($data)
             ->persist();

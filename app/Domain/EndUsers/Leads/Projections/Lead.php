@@ -13,8 +13,6 @@ use App\Domain\Teams\Models\Team;
 use App\Models\Endusers\TrialMembership;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -38,26 +36,6 @@ class Lead extends EndUser
     public static function getDetailsModel(): EndUserDetails
     {
         return new LeadDetails();
-    }
-
-    public function leadType(): HasOne
-    {
-        return $this->hasOne(LeadType::class, 'id', 'lead_type_id');
-    }
-
-    public function leadSource(): HasOne
-    {
-        return $this->hasOne(LeadSource::class, 'id', 'lead_source_id');
-    }
-
-    public function lead_status(): HasOne
-    {
-        return $this->hasOne(LeadStatus::class, 'id', 'lead_status_id');
-    }
-
-    public function trialMemberships(): HasMany
-    {
-        return $this->hasMany(TrialMembership::class)->orderBy('start_date', 'DESC');
     }
 
     public function scopeFilter($query, array $filters): void
@@ -98,5 +76,10 @@ class Lead extends EndUser
         $team_users = $current_team->team_users()->get();
 
         return $team_users;
+    }
+
+    public function isCBorGR(EndUser $user)
+    {
+        return (str_ends_with($user['email'], '@capeandbay.com') || str_ends_with($user['email'], '@gymrevenue.com'));
     }
 }

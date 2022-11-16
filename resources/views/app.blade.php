@@ -20,16 +20,7 @@
             </div>
         </div>
 
-        <footer class="bg-base-200 p-2 text-base-content opacity-60 w-full">
 
-            <div class="text-muted ml-auto mr-auto text-center">
-                <div class="inner-footer">
-                    <small><b>CONCEPTUAL PROTOTYPE</b> | v.<b>{!! env('APP_VERSION') !!}</b> | Build <b>{!! env('APP_BUILD') !!}</b></small> | <b><small>© 2022 GymRevenue.</small></b>
-                    <br />
-                    <b><small>GymRevenue is a Registered Trademark of <a href="https://capeandbay.com" target="_blank">Cape & Bay, LLC</a>. All Rights Reserved. </small></b>
-                </div>
-            </div>
-        </footer>
         @env ('local')
             <!-- <script src="http://localhost:3000/browser-sync/browser-sync-client.js"></script> -->
         @endenv

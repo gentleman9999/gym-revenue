@@ -14,7 +14,7 @@
                 class="border-b"
                 :class="{
                     'border-secondary': border === 'secondary',
-                    'border-neutral': border !== 'secondary',
+                    'border-base-content/60': border !== 'secondary',
                     'border-l': col_ndx === 0 && rowBordered,
                     'border-t': rowBordered,
                     'border-r': col_ndx === columns.length - 1 && rowBordered,

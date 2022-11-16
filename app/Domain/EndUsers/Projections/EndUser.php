@@ -2,12 +2,15 @@
 
 namespace App\Domain\EndUsers\Projections;
 
+use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Customers\Projections\Customer;
+use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Models\User;
-use App\Interfaces\PhoneInterface;
 use App\Models\Endusers\MembershipType;
 use App\Models\GymRevProjection;
 use App\Models\Note;
@@ -19,19 +22,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Stringable;
 
 /**
  * @property string $id
  */
-abstract class EndUser extends GymRevProjection implements PhoneInterface
+class EndUser extends GymRevProjection
 {
     use Notifiable;
     use SoftDeletes;
     use HasFactory;
     use Sortable;
+    //Adding comment as a test
 
     protected array $shared_fillable = [
+        'first_name', 'middle_name', 'last_name', 'gender',
+        'primary_phone', 'alternate_phone', 'gr_location_id',
+        'ip_address', 'membership_type_id', 'date_of_birth',
+        'opportunity', 'misc', 'owner_user_id', 'profile_picture',
+    ];
+
+    protected $fillable = [
         'first_name', 'middle_name', 'last_name', 'gender',
         'primary_phone', 'alternate_phone', 'gr_location_id',
         'ip_address', 'membership_type_id', 'date_of_birth',
@@ -48,18 +58,6 @@ abstract class EndUser extends GymRevProjection implements PhoneInterface
     public function getFillable(): array
     {
         return array_merge($this->shared_fillable, $this->fillable);
-    }
-
-    abstract public static function getDetailsModel(): EndUserDetails;
-
-    public static function getModelName(): Stringable
-    {
-        return str(class_basename((new static())::class));
-    }
-
-    public static function getDetailFields(): array
-    {
-        return [];
     }
 
     protected static function booted(): void
@@ -273,5 +271,20 @@ abstract class EndUser extends GymRevProjection implements PhoneInterface
         }
 
         return $results;
+    }
+    public function determineEndUserType(): string
+    {
+        $type = Lead::class;
+        $agreements = Agreement::whereEndUserId($this->id)->get();
+        foreach ($agreements as $agreement) {
+            if ($agreement->active) {
+                $type = Member::class;
+            }
+            if ($type != Member::class) {
+                $type = Customer::class;
+            }
+        }
+
+        return $type;
     }
 }

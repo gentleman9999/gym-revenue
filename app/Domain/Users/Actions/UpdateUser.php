@@ -112,6 +112,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     {
         $this->updatingSelf = true;
         $input['client_id'] = $user->client_id;
+        $input['id'] = $user->id;
         $this->handle($input['id'], $input);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Domain\EndUsers\Events;
 
 use App\StorableEvents\GymRevCrudEvent;
 
-abstract class EndUserWasCalledByRep extends GymRevCrudEvent
+class EndUserWasCalledByRep extends GymRevCrudEvent
 {
     public array $payload;
 
@@ -17,5 +17,10 @@ abstract class EndUserWasCalledByRep extends GymRevCrudEvent
     protected function getOperation(): string
     {
         return "CALLED";
+    }
+
+    public function getEntity(): string
+    {
+        return EndUser::class;
     }
 }

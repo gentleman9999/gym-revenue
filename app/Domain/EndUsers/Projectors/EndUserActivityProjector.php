@@ -2,25 +2,32 @@
 
 namespace App\Domain\EndUsers\Projectors;
 
+use App\Actions\Mail\MailgunSend;
 use App\Domain\EndUsers\Events\EndUserClaimedByRep;
 use App\Domain\EndUsers\Events\EndUserUpdatedCommunicationPreferences;
 use App\Domain\EndUsers\Events\EndUserWasCalledByRep;
 use App\Domain\EndUsers\Events\EndUserWasEmailedByRep;
 use App\Domain\EndUsers\Events\EndUserWasTextMessagedByRep;
+use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Users\Models\User;
 use App\Models\Note;
+use Illuminate\Support\Facades\DB;
+use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
-abstract class EndUserActivityProjector extends BaseEndUserProjector
+class EndUserActivityProjector extends Projector
 {
     public function onEndUserClaimedByRep(EndUserClaimedByRep $event): void
     {
-        if (($this->getModel())::class !== $event->getEntity()) {
-            return;
-        }
-        $end_user = $this->getModel()::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
-        $end_user->owner_user_id = $event->claimedByUserId;
-        $end_user->save();
+        DB::transaction(function () use ($event) {
+            $end_user = EndUser::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
+            $end_user->owner_user_id = $event->claimedByUserId;
+            $end_user->save();
+
+            $end_user = Lead::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable();
+            $end_user->owner_user_id = $event->claimedByUserId;
+            $end_user->save();
+        });
     }
 
     public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void
@@ -34,7 +41,9 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, $end_user->client_id, 'emailed_by_rep', $event->modifiedBy(), $misc);
+        //$mailgunResponse = MailgunSend::run([$end_user->email], $misc['subject'], $misc['message']);
+
+        $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'emailed_by_rep', $event->modifiedBy(), $misc);
     }
 
     public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
@@ -43,10 +52,9 @@ abstract class EndUserActivityProjector extends BaseEndUserProjector
             return;
         }
         $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
-        $user = User::find($event->modifiedBy());
 
         $misc = $event->payload;
-        $misc['user_email'] = $user->email;
+
         ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'sms_by_rep', $event->modifiedBy(), $misc);
     }
 

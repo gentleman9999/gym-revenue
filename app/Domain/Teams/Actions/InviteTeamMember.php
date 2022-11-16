@@ -63,7 +63,7 @@ class InviteTeamMember implements InvitesTeamMembers
      * @param  string|null  $role
      * @return void
      */
-    protected function validate($team, string $email, ?string $role)
+    protected function validate($team, string $email)
     {
         Validator::make([
             'email' => $email,

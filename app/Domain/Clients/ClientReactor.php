@@ -2,6 +2,8 @@
 
 namespace App\Domain\Clients;
 
+use App\Domain\Agreements\AgreementCategories\Actions\CreateAgreementCategory;
+use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Projections\Client;
@@ -38,6 +40,16 @@ class ClientReactor extends Reactor
             'name' => 'All Members',
             'entity' => Member::class,
             'editable' => false,
+        ]);
+
+        CreateAgreementCategory::run([
+            'client_id' => (string)$client->id,
+            'name' => AgreementCategory::NAME_MEMBERSHIP,
+        ]);
+
+        CreateAgreementCategory::run([
+            'client_id' => $client->id,
+            'name' => AgreementCategory::NAME_PERSONAL_TRAINING,
         ]);
     }
 }

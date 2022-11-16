@@ -9,8 +9,7 @@ use App\Domain\Chat\Models\Chat;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Locations\Projections\Location;
@@ -28,10 +27,15 @@ use App\Models\Note;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
 use Bouncer;
+use Database\Factories\RoleFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Silber\Bouncer\Database\Concerns\HasAbilities;
 use Twilio\TwiML\Voice\Task;
 
+/**
+ * @method static RoleFactory factory()
+ */
 class Role extends \Silber\Bouncer\Database\Role
 {
     use HasFactory;
@@ -40,15 +44,24 @@ class Role extends \Silber\Bouncer\Database\Role
 
     protected $fillable = ['name', 'title', 'group'];
 
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return RoleFactory::new();
+    }
+
     public static function getEntityFromGroup(string $group): ?string
     {
         return match ($group) {
             'users' => User::class,
             'locations' => Location::class,
-            'leads' => Lead::class,
+            'endusers' => EndUser::class,
             'lead-statuses' => LeadStatus::class,
             'lead-sources' => LeadSource::class,
-            'members' => Member::class,
             'teams' => Team::class,
             'files' => File::class,
             'calendar' => CalendarEvent::class,

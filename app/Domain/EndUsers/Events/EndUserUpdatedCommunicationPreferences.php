@@ -4,7 +4,7 @@ namespace App\Domain\EndUsers\Events;
 
 use App\StorableEvents\GymRevCrudEvent;
 
-abstract class EndUserUpdatedCommunicationPreferences extends GymRevCrudEvent
+class EndUserUpdatedCommunicationPreferences extends GymRevCrudEvent
 {
     public bool $email;
     public bool $sms;
@@ -19,5 +19,10 @@ abstract class EndUserUpdatedCommunicationPreferences extends GymRevCrudEvent
     protected function getOperation(): string
     {
         return "COMMUNICATION_PREFERENCES_UPDATED";
+    }
+
+    public function getEntity(): string
+    {
+        return EndUser::class;
     }
 }

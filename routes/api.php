@@ -18,19 +18,13 @@ Route::middleware('auth:sanctum')->group(static function () {
     Route::get('/user', static fn (Request $request) => $request->user());
 });
 
-Route::middleware('bearer')->prefix('leads')->group(function () {
-    Route::get('/', \App\Domain\EndUsers\Leads\Actions\ReadLeads::class);
-    Route::post('/create', \App\Domain\EndUsers\Leads\Actions\CreateLeadApi::class);
-    Route::post('/upsert', \App\Domain\EndUsers\Leads\Actions\UpsertLeadApi::class);
-    Route::post('/batchupsert', \App\Domain\EndUsers\Leads\Actions\BatchUpsertLeadApi::class);
+Route::middleware('bearer')->prefix('endUsers')->group(function () {
+    Route::get('/', \App\Domain\EndUsers\Actions\ReadEndUsers::class);
+    Route::post('/create', \App\Domain\EndUsers\Actions\CreateEndUserApi::class);
+    Route::post('/upsert', \App\Domain\EndUsers\Actions\UpsertEndUserApi::class);
+    Route::post('/batchupsert', \App\Domain\EndUsers\Actions\BatchUpsertEndUserApi::class);
 });
 
-Route::middleware('bearer')->prefix('members')->group(function () {
-    Route::get('/', \App\Domain\EndUsers\Members\Actions\ReadMembers::class);
-    Route::post('/create', \App\Domain\EndUsers\Members\Actions\CreateMemberApi::class);
-    Route::post('/upsert', \App\Domain\EndUsers\Members\Actions\UpsertMemberApi::class);
-    Route::post('/batchupsert', \App\Domain\EndUsers\Members\Actions\BatchUpsertMemberApi::class);
-});
 
 Route::prefix('twilio')->group(static function () {
     Route::middleware('TwilioAuth')->group(static function () {

@@ -26,7 +26,6 @@ class SecondaryTeamsSeeder extends Seeder
                 'name' => 'Cape & Bay Developers',
                 'home_team' => 0,
                 'members' => [
-                    'angel@capeandbay.com',
                     'shivam@capeandbay.com',
                     'philip@capeandbay.com',
                     'sterling@capeandbay.com',

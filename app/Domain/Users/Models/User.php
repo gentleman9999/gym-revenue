@@ -11,7 +11,9 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -36,6 +38,8 @@ use Silber\Bouncer\Database\Role;
  * @property string                         $name       Full name
  * @property Client                         $client
  * @property Collection<ClientConversation> $twilioClientConversation
+ *
+ * @method static UserFactory factory()
  */
 class User extends Authenticatable
 {
@@ -93,6 +97,16 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url', 'name', 'role',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return UserFactory::new();
+    }
 
     /**
      * Determine if the user belongs to the given team.

@@ -6,10 +6,11 @@
             :key="folder?.id"
             :mode="displayMode"
             :handleRename="handleRename"
-            :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
             :moveFileToFolder="moveFileToFolder"
             :handleShare="handleShare"
+            :handleRestore="handleRestore"
+            :handleTrash="handleTrash"
         />
         <file-item
             v-for="file in files"
@@ -19,6 +20,7 @@
             :handleRename="handleRename"
             :handlePermissions="handlePermissions"
             :handleTrash="handleTrash"
+            :handleRestore="handleRestore"
         />
         <recycle-bin-item :handleTrash="handleTrash" :mode="displayMode" />
     </div>
@@ -48,6 +50,9 @@ const props = defineProps({
         type: Function,
     },
     handleShare: {
+        type: Function,
+    },
+    handleRestore: {
         type: Function,
     },
 });

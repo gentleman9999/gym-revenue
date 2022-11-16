@@ -5,6 +5,7 @@ namespace App\Domain\CalendarEvents\Actions;
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEvents\CalendarEventAggregate;
 use App\Domain\CalendarEventTypes\CalendarEventType;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -24,12 +25,11 @@ class CheckOverdueTasks
 
         foreach ($taskIds as $taskId) {
             $tasks = CalendarEvent::whereEventTypeId($taskId->id)
-                ->whereDate('start', '<', date('Y-m-d H:i:s'))
+                ->whereDate('start', '<', Carbon::now())
                 ->whereOverdueReminderSent(false)
                 ->whereNotNull('owner_id')
                 ->get();
 
-            //VarDumper::dump($tasks->toArray());
 
             foreach ($tasks as $task) {
                 VarDumper::dump("Found task: ".$task->title);

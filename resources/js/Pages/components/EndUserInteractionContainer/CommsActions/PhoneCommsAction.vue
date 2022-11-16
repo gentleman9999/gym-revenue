@@ -4,7 +4,7 @@
         submit-text="Submit"
         :form="form"
         :end-user-type="endUserType"
-        :allow-submit="form.callSid !== null"
+        :allow-submit="isFormValid"
         @done="$emit('done')"
     >
         <div v-if="!hideHelpText">
@@ -53,7 +53,7 @@
 <script setup>
 import { useGymRevForm } from "@/utils";
 import BaseCommsAction from "./BaseCommsAction.vue";
-import { onUnmounted, ref } from "vue";
+import { onUnmounted, ref, computed } from "vue";
 import { useToast } from "vue-toastification";
 
 const props = defineProps({
@@ -139,4 +139,8 @@ function clearCallPingInterval() {
         clearInterval(callWatchInterval);
     }
 }
+
+const isFormValid = computed(
+    () => form.outcome?.length && form.notes?.length && form.callSid !== null
+);
 </script>

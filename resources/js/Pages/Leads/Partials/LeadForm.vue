@@ -182,50 +182,6 @@
                     class="mt-2"
                 />
             </div>
-            <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="lead_source_id" value="Source" />
-                <select
-                    class=""
-                    v-model="form['lead_source_id']"
-                    required
-                    id="lead_source_id"
-                >
-                    <option value="">Select a Source</option>
-                    <option
-                        v-for="source in lead_sources"
-                        :value="source.id"
-                        :key="source.id"
-                    >
-                        {{ source.name }}
-                    </option>
-                </select>
-                <jet-input-error
-                    :message="form.errors['lead_source_id']"
-                    class="mt-2"
-                />
-            </div>
-            <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="lead_type_id" value="Lead Type" />
-                <select
-                    class=""
-                    v-model="form['lead_type_id']"
-                    required
-                    id="lead_type_id"
-                >
-                    <option value="">Select a Lead Type</option>
-                    <option
-                        v-for="lead in lead_types"
-                        :value="lead.id"
-                        :key="lead.id"
-                    >
-                        {{ lead.name }}
-                    </option>
-                </select>
-                <jet-input-error
-                    :message="form.errors['lead_type_id']"
-                    class="mt-2"
-                />
-            </div>
             <!-- lead owner dropdown will not disable if field is only unchanged field -->
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="lead_owner" value="Lead Owner" />
@@ -246,28 +202,6 @@
                 </select>
                 <jet-input-error
                     :message="form.errors['owner_user_id']"
-                    class="mt-2"
-                />
-            </div>
-
-            <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="lead_status_id" value="Lead Status" />
-                <select
-                    class=""
-                    v-model="form['lead_status_id']"
-                    id="lead_status_id"
-                >
-                    <option value="">Select a Lead Status</option>
-                    <option
-                        v-for="status in lead_statuses"
-                        :value="status.id"
-                        :key="status.id"
-                    >
-                        {{ status.status }}
-                    </option>
-                </select>
-                <jet-input-error
-                    :message="form.errors['lead_status_id']"
                     class="mt-2"
                 />
             </div>

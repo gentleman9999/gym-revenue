@@ -5,7 +5,7 @@ namespace App\Domain\EndUsers\Actions;
 use App\Support\Uuid;
 use Lorisleiva\Actions\ActionRequest;
 
-abstract class CreateEndUserApi extends BaseEndUserAction
+class CreateEndUserApi extends BaseEndUserAction
 {
     /**
      * Get the validation rules that apply to the action.
