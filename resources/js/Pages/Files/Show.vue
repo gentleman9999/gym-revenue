@@ -2,43 +2,46 @@
     <LayoutHeader title="File Management">
         <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
     </LayoutHeader>
-    <div class="files-container">
-        <div class="row">
-            <file-actions :folderName="folderName" />
-            <file-display-mode
-                :display-mode="displayMode"
-                :handleChange="updateDisplayMode"
-            />
-        </div>
-        <div class="row">
-            <file-nav :folderName="folderName" class="nav-desktop" />
-            <file-search
-                :form="form"
-                @search="(value) => (form.filter.search = value)"
-            />
-        </div>
-        <div class="row">
-            <file-nav :folderName="folderName" class="nav-mobile" />
-        </div>
-        <ApolloQuery :query="(gql) => queries['files']" :variables="form">
-            <template v-slot="{ result: { data, loading, error } }">
-                <div v-if="loading">Loading...</div>
-                <div v-else-if="error">Error</div>
+    <ApolloQuery :query="(gql) => queries['files']" :variables="form">
+        <template v-slot="{ result: { data, loading, error } }">
+            <div v-if="loading">Loading...</div>
+            <div v-else-if="error">Error</div>
+            <div class="files-container" v-else-if="data">
+                <div class="row">
+                    <file-actions :folderName="data.folderContent.name" />
+                    <file-display-mode
+                        :display-mode="displayMode"
+                        :handleChange="updateDisplayMode"
+                    />
+                </div>
+                <div class="row">
+                    <file-nav
+                        :folderName="data.folderContent.name"
+                        class="file-nav"
+                        @browse-root="setFolderId(null)"
+                    />
+                    <file-search
+                        :form="form"
+                        @search="handleFilter('search', $event)"
+                        @trashed="handleFilter('trashed', $event)"
+                        class="file-search"
+                    />
+                </div>
                 <file-contents
-                    v-else-if="data"
-                    v-bind="{ ...data }"
+                    v-bind="{ ...data.folderContent }"
                     :displayMode="displayMode"
                     :handleRename="handleRename"
                     :handlePermissions="handlePermissions"
                     :handleTrash="handleTrash"
                     :handleShare="handleShare"
                     :handleRestore="handleRestore"
+                    @browse-folder="setFolderId"
+                    @trashed="handleFilter('trashed', 'only')"
                 />
-                <div v-else>Loading...</div>
-            </template>
-        </ApolloQuery>
-    </div>
-
+            </div>
+            <div v-else>Loading...</div>
+        </template>
+    </ApolloQuery>
     <!-- Section for Modals -->
     <daisy-modal id="confirmModal" ref="confirmModal">
         <confirm-modal :data="item2Remove" @success="confirmTrash" />
@@ -85,13 +88,11 @@
 .row {
     @apply flex flex-row justify-between items-center;
 }
-
-.row.nav-desktop {
-    @apply hidden md:flex;
+.file-nav {
+    @apply flex mt-2 md:mt-0;
 }
-
-.row.nav-mobile {
-    @apply flex md:hidden mt-2;
+.file-search {
+    @apply hidden md:flex;
 }
 </style>
 
@@ -208,5 +209,29 @@ const goRoot = () => {
     Inertia.get(route("files"));
 };
 
-const form = ref({ filter: {} });
+const form = ref({
+    id: null,
+    filter: {
+        search: "",
+    },
+});
+
+const setFolderId = (value) => {
+    form.value = {
+        id: value,
+        filter: {
+            ...form.value.filter,
+            trashed: value ? form.value.filter.trashed : null,
+        },
+    };
+};
+const handleFilter = (key, value) => {
+    form.value = {
+        ...form.value,
+        filter: {
+            ...form.value.filter,
+            [key]: value,
+        },
+    };
+};
 </script>

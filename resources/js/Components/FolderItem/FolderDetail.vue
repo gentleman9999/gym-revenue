@@ -1,5 +1,5 @@
 <template>
-    <div class="w-1/6 hidden md:visible">{{ folder.files.length }} file(s)</div>
+    <div class="w-1/6 hidden md:visible">{{ folder.files_count }} file(s)</div>
     <div class="w-1/6 uppercase hidden md:visible">folder</div>
     <div class="w-2/6 hidden md:visible">
         {{ defaultTransform.created_at(folder.created_at) }}

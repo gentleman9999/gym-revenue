@@ -1,7 +1,7 @@
 <template>
     <div class="row space-x-2 cursor-pointer">
         <span
-            @click="goRoot()"
+            @click="$emit('browse-root')"
             class="hover:bg-base-content/20 rounded px-2 py-1"
         >
             <font-awesome-icon icon="home" class="text-base-content" />
@@ -21,7 +21,6 @@ span {
 }
 </style>
 <script setup>
-import { Inertia } from "@inertiajs/inertia";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faHome, faAngleRight } from "@fortawesome/pro-solid-svg-icons";
@@ -32,8 +31,4 @@ const props = defineProps({
         type: String,
     },
 });
-
-const goRoot = () => {
-    Inertia.get(route("files"));
-};
 </script>

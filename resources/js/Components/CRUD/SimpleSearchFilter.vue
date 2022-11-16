@@ -39,7 +39,7 @@
                             </div>
                         </slot>
                         <button
-                            @click="$emit('clear-filters')"
+                            @click="clearSearch"
                             class="btn btn-sm btn-outline mt-4 w-full"
                         >
                             Clear Filters
@@ -55,11 +55,12 @@
                     name="search"
                     placeholder="Search…"
                     :value="modelValue"
+                    ref="searchInput"
                     @input="$emit('updateSearch', $event.target.value)"
                 />
                 <button
                     class="flex items-center justify-center absolute inset-y-0 right-2 text-sm"
-                    @click="$emit('clear-search')"
+                    @click="clearSearch()"
                     aria-label="Close Filters"
                 >
                     X
@@ -81,20 +82,21 @@ select {
 }
 </style>
 
-<script>
+<script setup>
 import Dropdown from "@/Components/Dropdown.vue";
-import { defineComponent } from "vue";
+import { ref } from "vue";
 
-export default defineComponent({
-    components: {
-        Dropdown,
-    },
-    props: {
-        modelValue: String,
-        maxWidth: {
-            type: Number,
-            default: 300,
-        },
+const props = defineProps({
+    modelValue: String,
+    maxWidth: {
+        type: Number,
+        default: 300,
     },
 });
+const searchInput = ref(null);
+const emit = defineEmits(["clear-search"]);
+const clearSearch = () => {
+    emit("clear-search");
+    searchInput.value.value = "";
+};
 </script>

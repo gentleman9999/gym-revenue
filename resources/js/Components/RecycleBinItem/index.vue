@@ -69,9 +69,12 @@ const setItem = (data) => {
 const { bus } = useEventsBus();
 watch(() => bus.value.get("selected_item"), setItem);
 
+const vueEmit = defineEmits(["browse-trash"]);
 const browseRecycleBin = () => {
-    // Inertia.get(route("folders.viewFiles", props.folder.id));
+    // TODO browse to the folder
+    vueEmit("browse-trash");
 };
+
 const handleDrop = () => {
     props.handleTrash(selectedItem.value.data, selectedItem.value.type);
 };

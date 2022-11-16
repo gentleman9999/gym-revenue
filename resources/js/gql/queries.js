@@ -836,21 +836,23 @@ const TASKS_OVERDUE = gql`
 `;
 
 const FILE_FOLDERS = gql`
-    query FilesAndFolders($filter: Filter) {
-        files(filter: $filter) {
-            id
-            extension
-            url
-            filename
-            created_at
-            size
-        }
-        folders {
-            id
-            url
+    query FilesAndFolders($id: ID, $filter: Filter) {
+        folderContent(id: $id, filter: $filter) {
             name
-            created_at
-            size
+            files {
+                id
+                extension
+                url
+                filename
+                created_at
+                size
+            }
+            folders {
+                id
+                name
+                created_at
+                files_count
+            }
         }
     }
 `;

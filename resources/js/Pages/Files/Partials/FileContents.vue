@@ -11,6 +11,7 @@
             :handleShare="handleShare"
             :handleRestore="handleRestore"
             :handleTrash="handleTrash"
+            @browse-folder="$emit('browse-folder', $event)"
         />
         <file-item
             v-for="file in files"
@@ -22,7 +23,11 @@
             :handleTrash="handleTrash"
             :handleRestore="handleRestore"
         />
-        <recycle-bin-item :handleTrash="handleTrash" :mode="displayMode" />
+        <recycle-bin-item
+            :handleTrash="handleTrash"
+            :mode="displayMode"
+            @browse-trash="$emit('trashed')"
+        />
     </div>
 </template>
 <script setup>
