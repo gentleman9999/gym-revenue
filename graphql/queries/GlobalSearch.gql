@@ -1,0 +1,7 @@
+extend type Query {
+    globalSearch(
+        term: String,
+        limit: Int
+    ): [GlobalSearchResult]!
+}
+

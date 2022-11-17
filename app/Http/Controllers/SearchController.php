@@ -75,10 +75,10 @@ class SearchController extends Controller
         $client_id = request()->user()->client_id;
         if (! is_null($term)) {
             $search = Search::new()
-                ->add(Member::where('client_id', '=', $client_id), ['first_name', 'middle_name', 'last_name', 'email', 'primary_phone', 'alternate_phone', 'agreement_number'])
+                ->add(Member::where('client_id', '=', $client_id), ['first_name', 'middle_name', 'last_name', 'email', 'primary_phone', 'alternate_phone'])
                 ->add(User::where('client_id', '=', $client_id), ['first_name', 'last_name'])
                 ->add(CalendarEvent::where('client_id', '=', $client_id), ['title', 'description'])
-                ->add(Lead::where('client_id', '=', $client_id), ['first_name', 'middle_name', 'last_name', 'email', 'primary_phone', 'alternate_phone', 'member_id'])
+                ->add(Lead::where('client_id', '=', $client_id), ['first_name', 'middle_name', 'last_name', 'email', 'primary_phone', 'alternate_phone'])
                 ->add(Reminder::class, ['name', 'description'])
                 ->add(Note::class, ['note', 'title'])
                 ->add(File::where('client_id', '=', $client_id), ['filename', 'original_filename'])

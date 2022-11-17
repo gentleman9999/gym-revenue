@@ -1,0 +1,6 @@
+type GlobalSearchResult {
+    id: ID!
+    name: String!
+    type: String!
+    link: String!
+}

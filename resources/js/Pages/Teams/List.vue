@@ -188,7 +188,6 @@ export default defineComponent({
             form,
             TeamPreview,
             baseRoute,
-            clearSearch,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             param,
             queries,
