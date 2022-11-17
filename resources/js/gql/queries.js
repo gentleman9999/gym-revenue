@@ -857,6 +857,16 @@ const FILE_FOLDERS = gql`
     }
 `;
 
+const GLOBAL_SEARCH = gql`
+    query GlobalSearch($term: String, $limit: Int) {
+        globalSearch(term: $term, limit: $limit) {
+            id
+            name
+            type
+            link
+        }
+    }
+`;
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -921,4 +931,5 @@ export default {
         overdue_tasks: TASKS_OVERDUE,
     },
     files: FILE_FOLDERS,
+    global_search: GLOBAL_SEARCH,
 };
