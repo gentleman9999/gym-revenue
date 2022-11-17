@@ -17,7 +17,7 @@
                         }"
                         :value="term"
                         :display-value="() => props.initialValue"
-                        @change="term = $event.target.value"
+                        @change="handleChange"
                         @focus="showOptions = true"
                         @blur="showOptions = false"
                         id="global-search-input"
@@ -37,9 +37,9 @@
                         class="absolute mt-1 max-h-66 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                     >
                         <ComboboxOptions v-if="term !== ''">
-                            <template v-if="hints?.length">
+                            <template v-if="hints?.data?.length">
                                 <ComboboxOption
-                                    v-for="hint in hints"
+                                    v-for="hint in hints.data"
                                     as="template"
                                     :key="hint.id"
                                     :value="hint"
@@ -90,10 +90,13 @@
                             </div>
                         </ComboboxOptions>
                         <button
-                            v-if="search_hints.total > search_hints.per_page"
+                            v-if="
+                                hints?.paginatorInfo?.total >
+                                hints?.paginatorInfo?.perPage
+                            "
                             class="relative select-none py-4 px-4 opacity-50 text-base-300"
                         >
-                            View all {{ search_hints.total }} results...
+                            View all {{ hints.paginatorInfo.total }} results...
                         </button>
                     </div>
                 </TransitionRoot>
@@ -128,9 +131,6 @@ import { useQuery } from "@vue/apollo-composable";
 library.add(faCheck);
 
 const props = defineProps({
-    // term: {
-    //     type: String,
-    // },
     size: {
         type: String,
         default: "sm",
@@ -159,13 +159,16 @@ const { result } = useQuery(
     queries["global_search"],
     {
         term: term,
-        limit: 4,
+        pagination: {
+            limit: 4,
+            page: 1,
+        },
     },
     {
         throttle: 500,
     }
 );
-const hints = computed(() => result.value?.globalSearch ?? []);
+const hints = computed(() => result.value?.globalSearch ?? {});
 
 let selected = ref({});
 
@@ -182,5 +185,11 @@ const handleCombo = (val) => {
     // selected.value=hint;
     document.activeElement.blur();
     term.value = "";
+};
+
+const emit = defineEmits(["change"]);
+const handleChange = (e) => {
+    term.value = e.target.value;
+    emit("change", term.value);
 };
 </script>

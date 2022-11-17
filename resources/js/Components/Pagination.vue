@@ -1,14 +1,15 @@
 <template>
-    <div class="btn-group" v-if="pagination.last_page > 1">
+    <div class="btn-group" v-if="paginatorInfo.lastPage > 1">
         <template v-for="(page, ndx) in pages" :key="ndx">
             <div
                 class="btn btn-outline hover:text-base-content"
                 :class="{
-                    'bg-primary': page === pagination.current_page,
+                    'bg-primary': page === paginatorInfo.currentPage,
                     'btn-disabled disabled':
-                        (ndx === 0 && pagination.current_page === 1) ||
+                        (ndx === 0 && paginatorInfo.currentPage === 1) ||
                         (ndx === pages.length - 1 &&
-                            pagination.current_page === pagination.last_page),
+                            paginatorInfo.currentPage ===
+                                paginatorInfo.lastPage),
                 }"
                 @click="updatePage(page, ndx)"
             >
@@ -22,31 +23,31 @@
 import { computed } from "vue";
 
 const props = defineProps({
-    pagination: Object,
+    paginatorInfo: Object,
 });
 
 const pages = computed(() => {
-    let temp = [props.pagination.current_page];
-    props.pagination.current_page > 1 &&
-        temp.unshift(props.pagination.current_page - 1);
-    props.pagination.current_page < props.pagination.last_page &&
-        temp.push(props.pagination.current_page + 1);
+    let temp = [props.paginatorInfo.currentPage];
+    props.paginatorInfo.currentPage > 1 &&
+        temp.unshift(props.paginatorInfo.currentPage - 1);
+    props.paginatorInfo.currentPage < props.paginatorInfo.lastPage &&
+        temp.push(props.paginatorInfo.currentPage + 1);
     return ["« Previous", ...temp, "Next »"];
 });
 
 const emit = defineEmits(["update-page"]);
 const updatePage = (page, ndx) => {
-    const { current_page, last_page } = props.pagination;
-    if (page === current_page) return;
+    const { currentPage, lastPage } = props.paginatorInfo;
+    if (page === currentPage) return;
     if (
-        (ndx === 0 && current_page === 1) ||
-        (ndx === pages.value.length - 1 && current_page === last_page)
+        (ndx === 0 && currentPage === 1) ||
+        (ndx === pages.value.length - 1 && currentPage === lastPage)
     )
         return;
 
     let updated = page;
-    if (ndx === 0) updated = current_page - 1;
-    else if (ndx === pages.value.length - 1) updated = current_page + 1;
+    if (ndx === 0) updated = currentPage - 1;
+    else if (ndx === pages.value.length - 1) updated = currentPage + 1;
     emit("update-page", updated);
 };
 </script>

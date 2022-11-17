@@ -103,7 +103,7 @@
             <pagination
                 v-if="resource"
                 class="mt-4"
-                :pagination="resource.pagination"
+                :paginatorInfo="resource.paginatorInfo"
                 @update-page="(value) => $emit('update', 'page', value)"
             />
         </slot>
@@ -341,7 +341,7 @@ export default defineComponent({
             export: {
                 label: "Export",
                 handler: () => exportToCsv(props.resource.data),
-                shouldRender: () => !!props.resource?.pagination.total,
+                shouldRender: () => !!props.resource?.paginatorInfo.total,
                 class: ["btn-secondary"],
             },
             exportAll: {
@@ -358,7 +358,7 @@ export default defineComponent({
                     exportToCsv(data);
                 },
                 class: ["btn-secondary"],
-                shouldRender: () => !!props.resource?.pagination.total,
+                shouldRender: () => !!props.resource?.paginatorInfo.total,
             },
         };
         let topActions = [];

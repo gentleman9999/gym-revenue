@@ -2,6 +2,7 @@
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 #import types/*.gql
+#import inputs/*.gql
 
 type Query {
     me: User @auth

@@ -11,14 +11,15 @@
                     name="term"
                     :initial-value="term"
                     :animate="false"
+                    @change="term = $event"
                 />
             </div>
         </div>
     </div>
-    <search-result :results="results" />
+    <search-result :results="data" @update-page="page = $event" />
 </template>
 <script setup>
-import { defineComponent, ref } from "vue";
+import { computed, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GlobalSearch from "@/Components/GlobalSearch.vue";
 import { Inertia } from "@inertiajs/inertia";
@@ -27,15 +28,31 @@ import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import SearchResult from "./components/SearchResult/index.vue";
-const props = defineProps({
-    term: {
-        type: String,
-        default: "",
+import { useQuery } from "@vue/apollo-composable";
+import queries from "@/gql/queries";
+
+const term = ref("");
+const page = ref(1);
+
+const { result } = useQuery(
+    queries["global_search"],
+    {
+        term: term,
+        pagination: {
+            limit: 10,
+            page: page,
+        },
     },
-    results: {
-        type: Object,
-    },
-});
-const fields = ["name"];
-const results = props.results;
+    {
+        throttle: 500,
+    }
+);
+
+const data = computed(
+    () =>
+        result.value?.globalSearch ?? {
+            data: [],
+            paginatorInfo: {},
+        }
+);
 </script>

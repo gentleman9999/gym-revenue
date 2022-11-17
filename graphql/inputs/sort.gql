@@ -1,0 +1,4 @@
+input SortInput {
+    field: String = "id"
+    direction: String = "asc"
+}

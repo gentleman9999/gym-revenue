@@ -95,12 +95,12 @@ const USERS = gql`
                     name
                 }
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -125,12 +125,12 @@ const LEADS = gql`
                 }
                 owner_user_id
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -272,12 +272,12 @@ const LOCATIONS = gql`
                 state
                 active
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -333,12 +333,12 @@ const MEMBERS = gql`
                     name
                 }
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -422,12 +422,12 @@ const TEAMS = gql`
                 created_at
                 updated_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -505,12 +505,12 @@ const ROLES = gql`
                 created_at
                 updated_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -561,12 +561,12 @@ const DEPARTMENTS = gql`
                 created_at
                 updated_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -613,12 +613,12 @@ const POSITIONS = gql`
                 created_at
                 updated_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -667,12 +667,12 @@ const EVENT_TYPES = gql`
                 created_at
                 updated_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -703,12 +703,12 @@ const NOTES = gql`
                 note
                 active
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -742,12 +742,12 @@ const REMINDERS = gql`
                 remind_time
                 triggered_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -777,12 +777,12 @@ const TASKS_INCOMPLETE = gql`
                 start
                 created_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -800,12 +800,12 @@ const TASKS_COMPLETED = gql`
                 start
                 created_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -823,12 +823,12 @@ const TASKS_OVERDUE = gql`
                 start
                 created_at
             }
-            pagination: paginatorInfo {
-                current_page: currentPage
-                last_page: lastPage
-                from: firstItem
-                to: lastItem
-                per_page: perPage
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
                 total
             }
         }
@@ -858,12 +858,22 @@ const FILE_FOLDERS = gql`
 `;
 
 const GLOBAL_SEARCH = gql`
-    query GlobalSearch($term: String, $limit: Int) {
-        globalSearch(term: $term, limit: $limit) {
-            id
-            name
-            type
-            link
+    query GlobalSearch($term: String, $pagination: PaginationInput) {
+        globalSearch(term: $term, pagination: $pagination) {
+            data {
+                id
+                name
+                type
+                link
+            }
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
+                total
+            }
         }
     }
 `;

@@ -1,4 +1,9 @@
 type GlobalSearchResult {
+    paginatorInfo: PaginatorInfo
+    data: [GlobalSearchItem]!
+}
+
+type GlobalSearchItem {
     id: ID!
     name: String!
     type: String!

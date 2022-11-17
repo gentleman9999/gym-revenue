@@ -32,12 +32,21 @@ final class GlobalSearch
                 ->beginWithWildcard()
                 ->includeModelType()
                 ->orderByRelevance()
-                ->paginate(
-                    $perPage = $args['limit'],
-                )
+                ->paginate($perPage = $args['pagination']['limit'], $pageName = 'page', $page = $args['pagination']['page'])
                 ->search($args['term']);
 
-            return $this->parseResult($search);
+            $result = [];
+            $result['paginatorInfo'] = [
+                'currentPage' => $search->currentPage(),
+                'lastPage' => $search->lastPage(),
+                'firstItem' => $search->firstItem(),
+                'lastItem' => $search->lastItem(),
+                'perPage' => $search->perPage(),
+                'total' => $search->total(),
+            ];
+            $result['data'] = $this->parseResult($search);
+
+            return $result;
         }
 
         return [];
@@ -69,7 +78,6 @@ final class GlobalSearch
 
                     break;
                 case "CalendarEvent":
-//                        TODO: this should open up the calendar event
                     $sr->link = 'calendar';
 
                     break;
