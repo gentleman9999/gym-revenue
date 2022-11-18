@@ -694,6 +694,59 @@ const EVENT_TYPES_EDIT = gql`
     }
 `;
 
+const CALENDAR_EVENTS = gql`
+    query CalendarEventsQuery($param: CalendarEventInput) {
+        calendarEvents(param: $param) {
+            id
+            title
+            owner_id
+            start
+            end
+            title
+            description
+            full_day_event
+            event_type_id
+            client_id
+        }
+    }
+`;
+
+const CALENDAR_EVENT_GET = gql`
+    query CalendarEventGetQuery($id: ID) {
+        calendarEvent(id: $id) {
+            id
+            title
+            start
+            end
+            description
+            editable
+            event_type_id
+            full_day_event
+            event_completion
+            type {
+                type
+            }
+            user_attendees {
+                id
+            }
+            lead_attendees {
+                id
+            }
+            member_attendees {
+                id
+            }
+            attendees {
+                id
+            }
+            location_id
+            client_id
+            call_task
+            im_attending
+            my_reminder
+        }
+    }
+`;
+
 const NOTES = gql`
     query Notes($page: Int, $filter: Filter) {
         notes(page: $page, filter: $filter) {
@@ -924,6 +977,9 @@ export default {
     reminder: {
         edit: REMINDER_EDIT,
     },
+    event: {
+        get: CALENDAR_EVENT_GET,
+    },
     users: USERS,
     leads: LEADS,
     locations: LOCATIONS,
@@ -942,4 +998,5 @@ export default {
     },
     files: FILE_FOLDERS,
     global_search: GLOBAL_SEARCH,
+    events: CALENDAR_EVENTS,
 };

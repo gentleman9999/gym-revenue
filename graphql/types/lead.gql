@@ -10,7 +10,7 @@ type Lead {
     updated_at: DateTime!
     leadSource: LeadSource @hasOne
     location: Location
-    leadType: LeadType @hasOne
+    leadType: LeadType
     lead_status: LeadStatus @hasOne
     lead_owners: [TeamUser] @method(name: "getTeamUsers")
     owner_user_id: String

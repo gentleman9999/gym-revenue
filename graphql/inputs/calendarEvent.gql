@@ -1,0 +1,6 @@
+input CalendarEventInput {
+    search: String
+    start: String
+    end: String
+    viewUser: ID
+}

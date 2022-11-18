@@ -1,8 +1,30 @@
 type CalendarEvent {
     id: ID!
     title: String!
+    description: String
+    full_day_event: Int
+    event_type_id: ID
+    client_id: ID
     owner: User!
+    owner_id: ID
     start: DateTime
+    end: DateTime
     created_at: DateTime
     event_completion: DateTime
+
+    editable: Int
+    full_day_event: Int
+    type: CalendarEventType
+    user_attendees: [EventAttendee]
+    lead_attendees: [EventAttendee]
+    member_attendees: [EventAttendee]
+    attendees: [EventAttendee]
+    location_id: ID
+    call_task: Int
+    im_attending: Boolean
+    my_reminder: String
+}
+
+type EventAttendee {
+    id: ID
 }

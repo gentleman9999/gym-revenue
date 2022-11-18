@@ -147,7 +147,7 @@
                 v-model="form.location_id"
                 class="bg-neutral text-base-content"
             >
-                <option v-for="{ id, name } in locations" :value="id">
+                <option v-for="{ id, name } in locations" :value="id" :key="id">
                     {{ name }}
                 </option>
             </select>

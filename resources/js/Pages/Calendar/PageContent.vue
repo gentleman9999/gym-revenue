@@ -23,7 +23,8 @@
                 </select>
             </div>
             <simple-search-filter
-                v-model:modelValue="form.search"
+                :modelValue="param.search"
+                @update-search="handleSearch"
                 class="md:w-auto w-full lg:max-w-md md:mr-4 col-span-3 lg:col-span-1"
                 @reset="reset"
                 @clear-filters="clearFilters"
@@ -34,7 +35,10 @@
                 >
                     View User Calendar:
                 </div>
-                <select v-model="form.viewUser" class="mt-1 w-full form-select">
+                <select
+                    v-model="param.viewUser"
+                    class="mt-1 w-full form-select"
+                >
                     <option :value="null" />
                     <option
                         v-for="{ name, id } in client_users"
@@ -51,7 +55,7 @@
                     Type:
                 </div>
                 <select
-                    v-model="form.calendar_event_type"
+                    v-model="param.calendar_event_type"
                     class="mt-1 w-full form-select"
                 >
                     <option :value="null" />
@@ -68,7 +72,7 @@
                 >
                     Trashed:
                 </div>
-                <select v-model="form.trashed" class="mt-1 w-full form-select">
+                <select v-model="param.trashed" class="mt-1 w-full form-select">
                     <option :value="null" />
                     <option value="with">With Trashed</option>
                     <option value="only">Only Trashed</option>
@@ -123,6 +127,8 @@ import ArrowIcon from "@/Components/Icons/Arrow.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Button from "@/Components/Button.vue";
+import { useQuery } from "@vue/apollo-composable";
+import queries from "@/gql/queries";
 
 export default defineComponent({
     components: {
@@ -138,7 +144,7 @@ export default defineComponent({
     },
     props: [
         "sessions",
-        "calendar_events",
+        // "calendar_events",
         "calendar_event_types",
         "title",
         "isClientUser",
@@ -152,9 +158,49 @@ export default defineComponent({
     ],
 
     setup(props) {
-        const { form, reset, clearFilters, clearSearch } = useSearchFilter(
-            "calendar",
-            { start: "", end: "" }
+        const form = ref({});
+        const handleSearch = (value) => {
+            param.value = {
+                ...param.value,
+                search: value,
+            };
+        };
+        const reset = () => {
+            param.value = {
+                ...param.value,
+                search: null,
+                viewUser: null,
+                viewUser: null,
+                calendar_event_type: null,
+                trashed: null,
+            };
+        };
+        const clearFilters = () => {
+            param.value = {
+                ...param.value,
+                viewUser: null,
+                calendar_event_type: null,
+                trashed: null,
+            };
+        };
+        const clearSearch = () => {
+            param.value = {
+                ...param.value,
+                search: null,
+            };
+        };
+        const param = ref({});
+        const { result } = useQuery(
+            queries["events"],
+            {
+                param: param,
+            },
+            {
+                throttle: 500,
+            }
+        );
+        const calendar_events = computed(
+            () => result.value?.calendarEvents ?? []
         );
 
         const calendar = ref(null);
@@ -188,11 +234,11 @@ export default defineComponent({
         const onViewChanged = () => {
             start.value = calendar.value.getApi().view.activeStart;
             start.end = calendar.value.getApi().view.activeEnd;
-            console.log({
-                start,
-                end,
-                calendarView: calendar.value.getApi().view,
-            });
+            param.value = {
+                ...param.value,
+                start: start.value,
+                end: start.end,
+            };
         };
 
         const handleDroppedEvent = (data) => {
@@ -213,7 +259,7 @@ export default defineComponent({
         };
 
         watchEffect(() => {
-            if (!props.calendar_events) {
+            if (!calendar_events.value) {
                 return;
             }
             const fullCalendarApi = calendar.value?.getApi();
@@ -326,7 +372,7 @@ export default defineComponent({
                 ) => {
                     updateStartEnd(startStr, endStr);
                     successCallback(
-                        props.calendar_events.map((data) => ({
+                        calendar_events.value.map((data) => ({
                             ...data,
                             start: new Date(data.start + " UTC"),
                             end: new Date(data.end + " UTC"),
@@ -483,6 +529,8 @@ export default defineComponent({
             calendar,
             isMobile,
             form,
+            param,
+            handleSearch,
             reset,
             clearSearch,
             clearFilters,
