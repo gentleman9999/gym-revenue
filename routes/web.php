@@ -134,6 +134,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function
     Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
     Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
     Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+    Route::get('/export', \App\Http\Controllers\NotesController::class . '@export')->name('notes.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(function () {

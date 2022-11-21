@@ -32,8 +32,8 @@ class NotesController extends Controller
 
         $page_count = 10;
         $notes = Note::whereCreatedByUserId($client_id)
-            ->paginate($page_count)
-        ;
+            ->filter($request->only('search', 'trashed'))
+            ->paginate($page_count);
 
         return Inertia::render('Notes/Show', [
             'notes' => $notes,
@@ -82,5 +82,17 @@ class NotesController extends Controller
         return Inertia::render('Notes/Edit', [
             'note' => $note,
         ]);
+    }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $user = request()->user();
+
+        if (is_null($user->client_id) || $user->cannot('notes.read', Note::class)) {
+            abort(403);
+        }
+
+        return Note::whereCreatedByUserId($user->client_id)->get();
     }
 }
