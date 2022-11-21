@@ -22,7 +22,7 @@ class UpdateEndUser extends BaseEndUserAction
             'middle_name' => ['sometimes'],
             'last_name' => ['sometimes', 'max:30'],
             'email' => ['sometimes', 'email:rfc,dns'],
-            'primary_phone' => ['sometimes'],
+            'primary_phone' => ['required', 'string', 'min:10'],
             'alternate_phone' => ['sometimes'],
             'gr_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'],
             'profile_picture' => 'sometimes',
