@@ -289,7 +289,6 @@ class MembersController extends Controller
             'member' => $memberData,
             'user_id' => $user->id,
             'locations' => $locations,
-//            'interactionCount' => $member_aggy->getInteractionCount(),
         ]);
     }
 
@@ -363,7 +362,7 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function contact(Member $member)
+    public function contact(EndUser $end_user): \Illuminate\Http\RedirectResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.contact', EndUser::class)) {
@@ -373,7 +372,7 @@ class MembersController extends Controller
         }
 
         if (array_key_exists('method', request()->all())) {
-            $aggy = EndUserAggregate::retrieve($member->id);
+            $aggy = EndUserAggregate::retrieve($end_user->id);
             $data = request()->all();
 
             $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -384,7 +383,7 @@ class MembersController extends Controller
                 }
             }
             // Remove following If statement prior to going live
-            if ($member->isCBorGR($member)) {
+            if ($end_user->isCBorGR()) {
                 switch (request()->get('method')) {
                     case 'email':
                         $aggy->email($data)->persist();
@@ -426,12 +425,15 @@ class MembersController extends Controller
         $data = Member::whereId($endUser->id)->first();
         $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
         $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
+        $aggy = EndUserAggregate::retrieve($endUser->id);
+
         $data = [
             'member' => $endUser,
             'user_id' => $user->id,
             'club_location' => $locid,
-//            'interactionCount' => $member_aggy->getInteractionCount(),
+            'interactionCount' => $aggy->getInteractionCount(),
             'preview_note' => $preview_note,
+
         ];
 
         return $data;

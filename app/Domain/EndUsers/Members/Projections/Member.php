@@ -29,9 +29,4 @@ class Member extends EndUser
     {
         return $this->primary_phone;
     }
-
-    public function isCBorGR(EndUser $user)
-    {
-        return (str_ends_with($user['email'], '@capeandbay.com') || str_ends_with($user['email'], '@gymrevenue.com'));
-    }
 }

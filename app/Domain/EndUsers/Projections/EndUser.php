@@ -206,4 +206,9 @@ class EndUser extends GymRevProjection
 
         return $type;
     }
+
+    public function isCBorGR(): bool
+    {
+        return (str_ends_with($this->email, '@capeandbay.com') || str_ends_with($this->email, '@gymrevenue.com'));
+    }
 }

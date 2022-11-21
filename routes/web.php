@@ -64,7 +64,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{endUser}', \App\Domain\EndUsers\Actions\UpdateEndUser::class)->name('data.leads.update');
         Route::put('/assign/{endUser}', \App\Domain\EndUsers\Actions\AssignEndUserToRep::class)->name('data.leads.assign');
-        Route::post('/contact/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
@@ -82,7 +82,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
         Route::put('/{endUser}', \App\Domain\EndUsers\Actions\UpdateEndUser::class)->name('data.members.update');
-        Route::post('/contact/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
         Route::delete('/delete/{endUser}', \App\Domain\EndUsers\Actions\TrashEndUser::class)->name('data.members.trash');
         Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.members.restore');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
