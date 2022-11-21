@@ -3,10 +3,8 @@
 namespace App\Aggregates\Clients;
 
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeAccepted;
-use App\Domain\CalendarAttendees\Events\CalendarAttendeeAdded;
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeDeclined;
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeDeleted;
-use App\Domain\CalendarAttendees\Events\CalendarAttendeeInvited;
 use App\Domain\CalendarEvents\Events\CalendarEventCreated;
 use App\Domain\CalendarEvents\Events\CalendarEventDeleted;
 use App\Domain\CalendarEvents\Events\CalendarEventRestored;
@@ -91,23 +89,9 @@ class CalendarAggregate extends AggregateRoot
         return $this;
     }
 
-    public function addCalendarAttendee(string $updated_by_user_id, array $payload)
-    {
-        $this->recordThat(new CalendarAttendeeAdded($this->uuid(), $updated_by_user_id, $payload));
-
-        return $this;
-    }
-
     public function deleteCalendarAttendee(string $updated_by_user_id, array $payload)
     {
         $this->recordThat(new CalendarAttendeeDeleted($this->uuid(), $updated_by_user_id, $payload));
-
-        return $this;
-    }
-
-    public function inviteCalendarAttendee(string $updated_by_user_id, array $payload)
-    {
-        $this->recordThat(new CalendarAttendeeInvited($this->uuid(), $updated_by_user_id, $payload));
 
         return $this;
     }
