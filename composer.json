@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ext-intl": "*",
         "doctrine/dbal": "^3.2",
         "fakerphp/faker": "^1.20",
         "friendsofphp/php-cs-fixer": "^3.8",
@@ -30,6 +31,7 @@
         "protonemedia/laravel-cross-eloquent-search": "^3.0",
         "pusher/pusher-php-server": "^7.0",
         "sendgrid/sendgrid": "^8.0",
+        "sentry/sentry-laravel": "^3.0",
         "silber/bouncer": "^v1.0.0",
         "spatie/browsershot": "^3.54",
         "spatie/laravel-event-sourcing": "^7.2",
@@ -38,8 +40,7 @@
         "symfony/mailgun-mailer": "^6.1",
         "tightenco/ziggy": "^1.4",
         "twilio/sdk": "^6.31",
-        "wnx/sidecar-browsershot": "^1.1",
-      "ext-intl": "*"
+        "wnx/sidecar-browsershot": "^1.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",
