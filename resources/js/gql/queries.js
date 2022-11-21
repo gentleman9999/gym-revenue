@@ -251,10 +251,6 @@ const LEAD_EDIT = gql`
             id
             name
         }
-        lead_statuses {
-            id
-            status
-        }
         lead_sources {
             id
             name
