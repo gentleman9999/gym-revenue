@@ -3,7 +3,7 @@
 namespace App\Domain\EndUsers\Members\Projections;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Members\MemberAggregate;
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Models\Traits\Sortable;
@@ -28,7 +28,7 @@ class Member extends EndUser
 
     public function getInteractionCount()
     {
-        $aggy = MemberAggregate::retrieve($this->id);
+        $aggy = EndUserAggregate::retrieve($this->id);
 
         return $aggy->getInteractionCount();
     }

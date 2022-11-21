@@ -528,7 +528,7 @@ class LeadsController extends Controller
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-//            'statuses' => LeadStatus::get(['id', 'status']),
+        //    'statuses' => LeadStatus::get(['id', 'status']),
         ]);
     }
 

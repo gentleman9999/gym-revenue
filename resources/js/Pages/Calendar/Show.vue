@@ -30,9 +30,9 @@
             <drawer-content :toggleSwitch="toggleSwitch">
                 <template #eventForm>
                     <calendar-event-form
-                        :calendar_event="selectedEvent"
+                        :calendar_event="eventData"
                         :duration="duration"
-                        :key="selectedEvent"
+                        :key="eventData"
                         :client_users="client_users"
                         :lead_users="lead_users"
                         :member_users="members_users"
@@ -47,12 +47,14 @@
     </drawer-layout>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import PageContent from "./PageContent.vue";
 import CalendarEventForm from "@/Pages/Calendar/Partials/CalendarEventForm.vue";
 import DrawerLayout from "./components/DrawerLayout.vue";
 import DrawerContent from "./components/DrawerContent.vue";
+import { useQuery } from "@vue/apollo-composable";
+import queries from "@/gql/queries";
 
 const props = defineProps({
     sessions: {
@@ -124,14 +126,13 @@ const resetCalendarEventForm = () => {
 
 const selectedEvent = ref(null);
 const setSelectedEvent = (id) => {
-    if (id === -1) {
-        selectedEvent.value = null;
-    } else {
-        selectedEvent.value = props.calendar_events.find(
-            (event) => event.id === id
-        );
-    }
+    selectedEvent.value = id;
 };
+
+const { result } = useQuery(queries["event"]["get"], {
+    id: selectedEvent,
+});
+const eventData = computed(() => result.value?.event ?? null);
 const handleChange = (e) => {
     if (!e.target.checked) {
         setSelectedEvent(-1);

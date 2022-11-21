@@ -18,7 +18,7 @@ type CalendarEvent {
     user_attendees: [EventAttendee]
     lead_attendees: [EventAttendee]
     member_attendees: [EventAttendee]
-    attendees: [EventAttendee]
+    attendees: [EventAttendeeDetail]
     location_id: ID
     call_task: Int
     im_attending: Boolean
@@ -27,4 +27,18 @@ type CalendarEvent {
 
 type EventAttendee {
     id: ID
+}
+
+type EventAttendeeDetail {
+    id: ID
+    entity_type: String
+    invitation_status: String
+    entity_data: AttendeeDetailData
+}
+type AttendeeDetailData {
+    profile_photo_url: String
+    name: String
+    first_name: String
+    last_name: String
+    email: String
 }

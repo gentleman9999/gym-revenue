@@ -8,10 +8,10 @@ type Lead {
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
-    leadSource: LeadSource @hasOne
+    leadSource: LeadSource
     location: Location
     leadType: LeadType
-    lead_status: LeadStatus @hasOne
+    lead_status: LeadStatus
     lead_owners: [TeamUser] @method(name: "getTeamUsers")
     owner_user_id: String
     primary_phone: String

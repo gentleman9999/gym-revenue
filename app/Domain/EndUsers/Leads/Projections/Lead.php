@@ -3,14 +3,10 @@
 namespace App\Domain\EndUsers\Leads\Projections;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\LeadAggregate;
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\EndUsers\Projections\EndUserDetails;
-use App\Domain\LeadSources\LeadSource;
-use App\Domain\LeadStatuses\LeadStatus;
-use App\Domain\LeadTypes\LeadType;
 use App\Domain\Teams\Models\Team;
-use App\Models\Endusers\TrialMembership;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,7 +56,7 @@ class Lead extends EndUser
 
     public function getInteractionCount()
     {
-        $aggy = LeadAggregate::retrieve($this->id);
+        $aggy = EndUserAggregate::retrieve($this->id);
 
         return $aggy->getInteractionCount();
     }

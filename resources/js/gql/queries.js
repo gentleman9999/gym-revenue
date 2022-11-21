@@ -713,7 +713,7 @@ const CALENDAR_EVENTS = gql`
 
 const CALENDAR_EVENT_GET = gql`
     query CalendarEventGetQuery($id: ID) {
-        calendarEvent(id: $id) {
+        event: calendarEventQuery(id: $id) {
             id
             title
             start
@@ -737,6 +737,15 @@ const CALENDAR_EVENT_GET = gql`
             }
             attendees {
                 id
+                entity_type
+                invitation_status
+                entity_data {
+                    profile_photo_url
+                    name
+                    first_name
+                    last_name
+                    email
+                }
             }
             location_id
             client_id
