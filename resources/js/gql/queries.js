@@ -823,9 +823,9 @@ const REMINDER_EDIT = gql`
     }
 `;
 
-const TASKS_INCOMPLETE = gql`
-    query Tasks($page: Int) {
-        incomplete_tasks(page: $page) {
+const TASKS = gql`
+    query TasksQuery($param: TaskParam, $pagination: PaginationInput) {
+        tasks(param: $param, pagination: $pagination) {
             data {
                 id
                 title
@@ -846,53 +846,6 @@ const TASKS_INCOMPLETE = gql`
         }
     }
 `;
-const TASKS_COMPLETED = gql`
-    query Tasks($page: Int) {
-        completed_tasks(page: $page) {
-            data {
-                id
-                title
-                owner {
-                    id
-                }
-                start
-                created_at
-            }
-            paginatorInfo {
-                currentPage
-                lastPage
-                firstItem
-                lastItem
-                perPage
-                total
-            }
-        }
-    }
-`;
-const TASKS_OVERDUE = gql`
-    query Tasks($page: Int) {
-        overdue_tasks(page: $page) {
-            data {
-                id
-                title
-                owner {
-                    id
-                }
-                start
-                created_at
-            }
-            paginatorInfo {
-                currentPage
-                lastPage
-                firstItem
-                lastItem
-                perPage
-                total
-            }
-        }
-    }
-`;
-
 const FILE_FOLDERS = gql`
     query FilesAndFolders($id: ID, $filter: Filter) {
         folderContent(id: $id, filter: $filter) {
@@ -996,11 +949,7 @@ export default {
     eventTypes: EVENT_TYPES,
     notes: NOTES,
     reminders: REMINDERS,
-    tasks: {
-        incomplete_tasks: TASKS_INCOMPLETE,
-        completed_tasks: TASKS_COMPLETED,
-        overdue_tasks: TASKS_OVERDUE,
-    },
+    tasks: TASKS,
     files: FILE_FOLDERS,
     global_search: GLOBAL_SEARCH,
     events: CALENDAR_EVENTS,

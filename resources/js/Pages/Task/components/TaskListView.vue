@@ -1,8 +1,5 @@
 <template>
-    <ApolloQuery
-        :query="(gql) => queries['tasks'][taskType]"
-        :variables="param"
-    >
+    <ApolloQuery :query="(gql) => queries['tasks']" :variables="param">
         <template v-slot="{ result: { data } }">
             <gym-revenue-crud
                 v-if="data"
@@ -12,7 +9,7 @@
                 class="border-transparent"
                 :resource="getTasks(data)"
                 :fields="fields"
-                @update-page="updatePage"
+                @update="handleCrudUpdate"
                 :actions="{
                     trash: false,
                     restore: false,
@@ -44,24 +41,82 @@
 }
 </style>
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
 
 const props = defineProps({
     taskType: {
         type: String,
         required: true,
     },
-    fields: {
-        type: Array,
-        required: true,
-    },
-    updatePage: {
-        type: Function,
+    start: {
+        type: String,
     },
 });
+const fields = [
+    {
+        name: "title",
+        label: "Title",
+    },
+    {
+        name: "start",
+        label: "Due At",
+    },
+    {
+        name: "created_at",
+        label: "Created At",
+    },
+    {
+        name: "event_completion",
+        label: "Completed At",
+    },
+];
 
+const param = ref({
+    param: {
+        type: props.taskType,
+        start: props.start,
+    },
+    pagination: {
+        page: 1,
+    },
+});
+watch(
+    () => props.start,
+    (newValue) => {
+        console.log("newValue", newValue);
+        param.value = {
+            ...param.value,
+            param: {
+                ...param.value.param,
+                start: newValue,
+            },
+        };
+    }
+);
+
+watch(props.start, () => {
+    param.value = {
+        ...param.value,
+        param: {
+            ...param.value.param,
+            start: props.start,
+        },
+    };
+});
+
+const handleCrudUpdate = (key, value) => {
+    if (key === "page") {
+        param.value = {
+            ...param.value,
+            pagination: {
+                page: value,
+            },
+        };
+    }
+};
 const emit = defineEmits(["edit"]);
 
 const headers = {
@@ -71,7 +126,7 @@ const headers = {
 };
 
 const getTasks = (data) => {
-    return _.cloneDeep(data[props.taskType]);
+    return _.cloneDeep(data.tasks);
 };
 
 const editTask = (item) => {

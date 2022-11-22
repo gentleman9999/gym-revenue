@@ -1,23 +1,11 @@
 extend type Query {
-    incomplete_tasks(
-        incomplete: TaskFilter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [CalendarEvent!]!
-    @paginate(defaultCount: 10)
-
-    completed_tasks(
-        complete: TaskFilter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [CalendarEvent!]!
-    @paginate(defaultCount: 10)
-
-    overdue_tasks(
-        overdue: TaskFilter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [CalendarEvent!]!
-    @paginate(defaultCount: 10)
+    tasks(
+        param: TaskParam
+        pagination: PaginationInput
+    ): Tasks
 }
 
-input TaskFilter {
-    start: DateTime
+input TaskParam {
+    start: String
+    type: String
 }

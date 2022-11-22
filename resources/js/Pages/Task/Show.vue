@@ -17,12 +17,11 @@
             />
             <task-list-view
                 v-for="taskType in taskTypes"
-                :updatePage="(value) => (param = { ...param, page: value })"
                 :key="taskType"
                 :task-type="taskType"
-                :fields="fields"
                 :on-double-click="handleDoubleClick"
                 @edit="handleOnEdit"
+                :start="selectedDate"
             />
         </div>
     </div>
@@ -169,24 +168,6 @@ export default defineComponent({
             );
             setStartOfTheWeek(start_date);
         };
-        const fields = [
-            {
-                name: "title",
-                label: "Title",
-            },
-            {
-                name: "start",
-                label: "Due At",
-            },
-            {
-                name: "created_at",
-                label: "Created At",
-            },
-            {
-                name: "event_completion",
-                label: "Completed At",
-            },
-        ];
 
         let navLinks = [
             {
@@ -245,12 +226,7 @@ export default defineComponent({
             console.log("handeOnEdit", data);
             openEventForm(data);
         };
-        const param = ref({
-            page: 1,
-        });
-
         return {
-            fields,
             confirmDelete,
             handleConfirmDelete,
             handleClickDelete,
@@ -274,7 +250,6 @@ export default defineComponent({
             switchMonth,
             handleDoubleClick,
             handleOnEdit,
-            param,
         };
     },
 });

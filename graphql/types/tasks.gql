@@ -1,0 +1,4 @@
+type Tasks {
+    paginatorInfo: PaginatorInfo
+    data: [CalendarEvent]!
+}
