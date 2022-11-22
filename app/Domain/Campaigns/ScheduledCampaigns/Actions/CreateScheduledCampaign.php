@@ -3,13 +3,9 @@
 namespace App\Domain\Campaigns\ScheduledCampaigns\Actions;
 
 use App\Domain\Audiences\Audience;
-use App\Domain\CalendarEvents\Actions\CreateCalendarEvent;
-use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaignAggregate;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
@@ -43,38 +39,6 @@ class CreateScheduledCampaign
         $location_id = $user->current_location_id;
 
         ScheduledCampaignAggregate::retrieve($id)->create($payload)->persist();
-        if ($payload['call_template_id']) {
-            $audience = Audience::find($payload['audience_id']);
-            $endUsers = new $audience['entity']();
-            $leads = false;
-            if ($endUsers instanceof Lead) {
-                $people = $audience->getCallable();
-                $leads = true;
-            } elseif ($endUsers instanceof Member) {
-                $people = $audience->getCallable();
-            }
-            $event_type_id = CalendarEventType::whereClientId($payload['client_id'])
-                ->where('type', '=', 'Task')->first()->id;
-            foreach ($people as $person) {
-                $task = [
-                    'title' => 'Call Script Task for ' . $payload['name'] . ' Scheduled Campaign',
-                    'client_id' => $payload['client_id'],
-                    'description' => 'Use the Call script Template for ' . $payload['name'] . ' Scheduled Campaign and call the audience assigned',
-                    'full_day_event' => false,
-                    'start' => $payload['send_at'],
-                    'end' => $payload['send_at'],
-                    'event_type_id' => $event_type_id,
-                    'owner_id' => $owner_id,
-                    'user_attendees' => request()->user,
-                    'lead_attendees' => ($leads ? [$person->id] : []),
-                    'member_attendees' => ($leads ? [] : [$person->id]),
-                    'location_id' => $location_id,
-                    'editable' => false,
-                    'call_task' => true,
-                ];
-                CreateCalendarEvent::run($task);
-            }
-        }
 
         return ScheduledCampaign::findOrFail($id);
     }
