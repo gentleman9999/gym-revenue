@@ -20,6 +20,11 @@ class CapeAndBayUserSeeder extends UserSeeder
 
         return [
             [
+                'first_name' => 'Parth',
+                'last_name' => 'Jasani',
+                'email' => 'parth.jasani@bacancy.com',
+            ],
+            [
                 'first_name' => 'Pravin',
                 'last_name' => 'Kumar',
                 'email' => 'pravin.kumar@bacancy.com',
