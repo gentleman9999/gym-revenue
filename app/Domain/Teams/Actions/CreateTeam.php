@@ -8,6 +8,7 @@ use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rule;
 use Laravel\Jetstream\Contracts\CreatesTeams;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -31,11 +32,11 @@ class CreateTeam implements CreatesTeams
      *
      * @return array
      */
-    public function rules(): array
+    public function rules(ActionRequest $request): array
     {
         return [
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
-            'name' => ['required', 'max:50'],
+            'name' => ['bail', 'required', 'max:50', Rule::unique('teams')->where('client_id', $request->client_id)],
             'home_team' => ['sometimes', 'boolean'],
             'locations' => ['sometimes', 'array'],
         ];
