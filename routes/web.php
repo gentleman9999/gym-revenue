@@ -437,3 +437,11 @@ Route::prefix('checkin')->group(function () {
     Route::get('/club', \App\Http\Controllers\CheckInController::class . '@club')->name('checkin.club');
     Route::get('/result', \App\Http\Controllers\CheckInController::class . '@result')->name('checkin.result');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('contracts')->group(function () {
+    Route::post('/', \App\Domain\Contracts\Actions\CreateContract::class)->name('contract.store');
+    Route::put('/{id}', \App\Domain\Contracts\Actions\UpdateContract::class)->name('contract.update');
+    Route::delete('/{id}', \App\Domain\Contracts\Actions\TrashContract::class)->name('contract.trash');
+    Route::delete('/{id}/force', \App\Domain\Contracts\Actions\DeleteContract::class)->name('contract.delete');
+    Route::post('/{id}/restore', \App\Domain\Contracts\Actions\RestoreContract::class)->withTrashed()->name('contract.restore');
+});
