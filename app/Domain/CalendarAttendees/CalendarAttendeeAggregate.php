@@ -25,13 +25,6 @@ class CalendarAttendeeAggregate extends AggregateRoot
         return $this;
     }
 
-    public function invite(): static
-    {
-        $this->recordThat(new CalendarAttendeeInvited());
-
-        return $this;
-    }
-
     public function decline(): static
     {
         $this->recordThat(new CalendarAttendeeDeclined());
@@ -42,6 +35,13 @@ class CalendarAttendeeAggregate extends AggregateRoot
     public function accept(): static
     {
         $this->recordThat(new CalendarAttendeeAccepted());
+
+        return $this;
+    }
+
+    public function invite(array $payload): static
+    {
+        $this->recordThat(new CalendarAttendeeInvited($payload));
 
         return $this;
     }

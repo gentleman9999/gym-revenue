@@ -107,10 +107,8 @@ function buildCalenderNotification(notification) {
         start_at = `on ${date} at ${time}`;
     }
 
-    return notificationResponse(
-        notification,
-        `${notification.entity.title} ${start_at}`
-    );
+    notification.text = `${notification.entity.title} ${start_at}`;
+    return notificationResponse(notification);
 }
 
 /**

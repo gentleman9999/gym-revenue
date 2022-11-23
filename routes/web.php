@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
     return redirect('login');
     /*
@@ -63,7 +62,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{endUser}', \App\Domain\EndUsers\Actions\UpdateEndUser::class)->name('data.leads.update');
         Route::put('/assign/{endUser}', \App\Domain\EndUsers\Actions\AssignEndUserToRep::class)->name('data.leads.assign');
-        Route::post('/contact/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
@@ -81,7 +80,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
         Route::put('/{endUser}', \App\Domain\EndUsers\Actions\UpdateEndUser::class)->name('data.members.update');
-        Route::post('/contact/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
+        Route::post('/contact/{end_user}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
         Route::delete('/delete/{endUser}', \App\Domain\EndUsers\Actions\TrashEndUser::class)->name('data.members.trash');
         Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.members.restore');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
@@ -133,6 +132,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function
     Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
     Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
     Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+    Route::get('/export', \App\Http\Controllers\NotesController::class . '@export')->name('notes.export');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('searches')->group(function () {
@@ -435,4 +435,12 @@ Route::prefix('checkin')->group(function () {
     Route::get('/account', \App\Http\Controllers\CheckInController::class . '@account')->name('checkin.account');
     Route::get('/club', \App\Http\Controllers\CheckInController::class . '@club')->name('checkin.club');
     Route::get('/result', \App\Http\Controllers\CheckInController::class . '@result')->name('checkin.result');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('contracts')->group(function () {
+    Route::post('/', \App\Domain\Contracts\Actions\CreateContract::class)->name('contract.store');
+    Route::put('/{id}', \App\Domain\Contracts\Actions\UpdateContract::class)->name('contract.update');
+    Route::delete('/{id}', \App\Domain\Contracts\Actions\TrashContract::class)->name('contract.trash');
+    Route::delete('/{id}/force', \App\Domain\Contracts\Actions\DeleteContract::class)->name('contract.delete');
+    Route::post('/{id}/restore', \App\Domain\Contracts\Actions\RestoreContract::class)->withTrashed()->name('contract.restore');
 });

@@ -272,6 +272,7 @@ class EndUser extends GymRevProjection
 
         return $results;
     }
+
     public function determineEndUserType(): string
     {
         $type = Lead::class;
@@ -286,5 +287,10 @@ class EndUser extends GymRevProjection
         }
 
         return $type;
+    }
+
+    public function isCBorGR(): bool
+    {
+        return (str_ends_with($this->email, '@capeandbay.com') || str_ends_with($this->email, '@gymrevenue.com'));
     }
 }

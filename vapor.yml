@@ -12,6 +12,9 @@ environments:
         storage: gymrevenue-west
         runtime: docker
         balancer: lb-gymrevenue
+        concurrency:
+          group: ${{ github.workflow }}-${{ github.ref }}
+          cancel-in-progress: true
         queues:
             - grp-production-events
             - grp-production-jobs
@@ -31,6 +34,9 @@ environments:
         memory: 2048
         cli-memory: 512
         network: gymrevenue-vpc-network
+        concurrency:
+          group: ${{ github.workflow }}-${{ github.ref }}
+          cancel-in-progress: true
         database: gr-west-dev
         cache: gr-cache
         cli-timeout: 900
@@ -55,6 +61,9 @@ environments:
         memory: 2048
         cli-memory: 512
         network: gymrevenue-vpc-network
+        concurrency:
+          group: ${{ github.workflow }}-${{ github.ref }}
+          cancel-in-progress: true
         database: gr-west-dev
         cache: gr-cache
         cli-timeout: 900

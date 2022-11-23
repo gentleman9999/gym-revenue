@@ -78,4 +78,16 @@ class NotesController extends Controller
             'note' => $note,
         ]);
     }
+
+    //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
+    public function export(Request $request)
+    {
+        $user = request()->user();
+
+        if (is_null($user->client_id) || $user->cannot('notes.read', Note::class)) {
+            abort(403);
+        }
+
+        return Note::whereCreatedByUserId($user->client_id)->get();
+    }
 }

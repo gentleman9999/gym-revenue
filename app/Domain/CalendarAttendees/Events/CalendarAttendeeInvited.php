@@ -3,9 +3,9 @@
 namespace App\Domain\CalendarAttendees\Events;
 
 use App\Domain\CalendarAttendees\CalendarAttendee;
-use App\StorableEvents\GymRevCrudEvent;
+use App\StorableEvents\EntityCreated;
 
-class CalendarAttendeeInvited extends GymRevCrudEvent
+class CalendarAttendeeInvited extends EntityCreated
 {
     public function getEntity(): string
     {

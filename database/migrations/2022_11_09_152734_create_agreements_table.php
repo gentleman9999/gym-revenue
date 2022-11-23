@@ -24,6 +24,11 @@ return new class () extends Migration {
             $table->unsignedBigInteger('created_by');
             $table->uuid('end_user_id');
             $table->uuid('agreement_template_id');
+            $table->uuid('contract_id')->nullable();
+            $table->foreign('contract_id')
+                        ->references('id')
+                        ->on('contracts')
+                        ->cascadeOnDelete();
             $table->boolean('active')->default(false);
             $table->softDeletes();
             $table->timestamps();

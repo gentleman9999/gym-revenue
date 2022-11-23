@@ -461,7 +461,7 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function contact(Lead $lead)
+    public function contact(EndUser $end_user): \Illuminate\Http\RedirectResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.contact', EndUser::class)) {
@@ -472,7 +472,7 @@ class LeadsController extends Controller
 
 
         if (array_key_exists('method', request()->all())) {
-            $aggy = LeadAggregate::retrieve($lead->id);
+            $aggy = EndUserAggregate::retrieve($end_user->id);
             $data = request()->all();
 
             $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -485,7 +485,7 @@ class LeadsController extends Controller
 
             $data['user'] = auth()->user()->id;
             // Remove following If statement prior to going live
-            if ($lead->isCBorGR($lead)) {
+            if ($end_user->isCBorGR()) {
                 switch (request()->get('method')) {
                     case 'email':
                         $aggy->email($data)->persist();

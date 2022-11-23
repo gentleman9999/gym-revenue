@@ -18,6 +18,8 @@ import {
 } from "@vue/apollo-composable";
 import VueApolloComponents from "@vue/apollo-components";
 import { createApolloProvider } from "@vue/apollo-option";
+import * as Sentry from "@sentry/browser";
+import { BrowserTracing } from "@sentry/tracing";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -93,3 +95,16 @@ createInertiaApp({
 });
 
 InertiaProgress.init({ color: "#4B5563" });
+Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_LARAVEL_DSN,
+
+    // Alternatively, use `process.env.npm_package_version` for a dynamic release version
+    // if your build tool supports it.
+    release: import.meta.env.VITE_SENTRY_RELEASE,
+    integrations: [new BrowserTracing()],
+
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE,
+});

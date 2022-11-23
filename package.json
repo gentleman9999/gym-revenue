@@ -49,6 +49,8 @@
         "@fullcalendar/list": "^5.11.0",
         "@fullcalendar/timegrid": "^5.11.0",
         "@fullcalendar/vue3": "^5.11.1",
+        "@sentry/browser": "^7.19.0",
+        "@sentry/tracing": "^7.19.0",
         "@topol.io/editor-vue": "^0.0.0-beta.11",
         "@twilio/conversations": "^2.1.0",
         "@vue/apollo-components": "^4.0.0-alpha.20",
