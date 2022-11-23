@@ -47,7 +47,7 @@ final class TasksQuery
                         ->whereNull('event_completion')
                         ->with('type')
                         ->filter($args['param'])
-                        ->paginate(10, ['*'], $args['pagination']['page']);
+                        ->paginate(10, ['*'], 'page', $args['pagination']['page']);
 
                     break;
                 case 'completed_tasks':
@@ -57,7 +57,7 @@ final class TasksQuery
                         ->whereNotNull('event_completion')
                         ->with('type')
                         ->filter($args['param'])
-                        ->paginate(10, ['*'], $args['pagination']['page']);
+                        ->paginate(10, ['*'], 'page', $args['pagination']['page']);
 
                     break;
                 case 'overdue_tasks':
@@ -68,7 +68,7 @@ final class TasksQuery
                         ->whereDate('start', '<', date('Y-m-d H:i:s'))
                         ->with('type')
                         ->filter($args['param'])
-                        ->paginate(10, ['*'], $args['pagination']['page']);
+                        ->paginate(10, ['*'], 'page', $args['pagination']['page']);
 
                     break;
             }
