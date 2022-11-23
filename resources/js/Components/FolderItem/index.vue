@@ -11,7 +11,7 @@
         @dragover="preventDragDefault($event)"
         @dragenter="preventDragDefault($event)"
         @drop="handleDrop()"
-        @dblclick="browseFolder()"
+        @dblclick="$emit('browse', folder.id)"
     >
         <folder-icon
             :icon-size="iconSize"

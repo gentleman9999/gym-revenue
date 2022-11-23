@@ -9,6 +9,7 @@
             :handlePermissions="handlePermissions"
             :moveFileToFolder="moveFileToFolder"
             :handleShare="handleShare"
+            @browse="(id) => $emit('browse', id)"
             :handleRestore="handleRestore"
             :handleTrash="handleTrash"
         />

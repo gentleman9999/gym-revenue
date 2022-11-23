@@ -11,11 +11,19 @@
             />
         </div>
         <div class="row">
-            <file-nav :folderName="folderName" class="nav-desktop" />
+            <file-nav
+                :folderName="folderName"
+                @rootdir="rootDirectory"
+                class="nav-desktop"
+            />
             <file-search />
         </div>
         <div class="row">
-            <file-nav :folderName="folderName" class="nav-mobile" />
+            <file-nav
+                :folderName="folderName"
+                @rootdir="rootDirectory"
+                class="nav-mobile"
+            />
         </div>
         <file-contents
             :files="files"
@@ -26,6 +34,8 @@
             :handleTrash="handleTrash"
             :handleShare="handleShare"
             :handleRestore="handleRestore"
+            @browse="changeDirectory"
+
         />
     </div>
 
@@ -86,7 +96,7 @@
 </style>
 
 <script setup>
-import { watchEffect, ref } from "vue";
+import { watchEffect, ref, onMounted, watch } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import RenameForm from "./Partials/RenameForm.vue";
 import PermissionsForm from "./Partials/PermissionsForm.vue";
@@ -128,6 +138,13 @@ const selectedItemPermissions = ref(null);
 const folder2Share = ref(null);
 const item2Remove = ref(null);
 
+const displayMode = ref("desktop");
+
+const renameModal = ref(null);
+const permissionsModal = ref(null);
+const shareModal = ref(null);
+const confirmModal = ref(null);
+
 const handleRename = (data, type) => {
     selectedItem.value = data;
 };
@@ -168,11 +185,6 @@ const handleRestore = (data, type) => {
     confirmModal.value.close();
 };
 
-const renameModal = ref(null);
-const permissionsModal = ref(null);
-const shareModal = ref(null);
-const confirmModal = ref(null);
-
 watchEffect(() => {
     if (selectedItem.value) {
         renameModal.value.open();
@@ -185,13 +197,15 @@ watchEffect(() => {
     }
 });
 
-const displayMode = ref("desktop");
-
 const updateDisplayMode = (value) => {
     displayMode.value = value;
 };
 
-const goRoot = () => {
-    Inertia.get(route("files"));
+const rootDirectory = () => {
+    Inertia.get(route("files"), {}, { preserveState: true });
+};
+
+const changeDirectory = (id) => {
+    Inertia.get(route("folders.viewFiles", id), {}, { preserveState: true });
 };
 </script>

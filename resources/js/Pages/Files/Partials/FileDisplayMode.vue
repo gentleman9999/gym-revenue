@@ -25,7 +25,8 @@ library.add(faList, faDesktop);
 
 const props = defineProps({
     displayMode: {
-        type: Boolean,
+        type: String,
+        default: "desktop",
     },
     handleChange: {
         type: Function,
