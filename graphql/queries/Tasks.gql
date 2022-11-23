@@ -1,5 +1,5 @@
 extend type Query {
-    tasks(
+    tasksQuery(
         param: TaskParam
         pagination: PaginationInput
     ): Tasks

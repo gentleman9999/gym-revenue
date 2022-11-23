@@ -6,7 +6,7 @@ use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use DateTime;
 
-final class Tasks
+final class TasksQuery
 {
     /**
      * @param  null  $_

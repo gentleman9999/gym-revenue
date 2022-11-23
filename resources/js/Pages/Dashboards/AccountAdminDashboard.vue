@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import JetBarAlert from "@/Components/JetBarAlert.vue";
@@ -74,6 +74,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader.vue";
 import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats.vue";
+import { useQuery } from "@vue/apollo-composable";
+import queries from "@/gql/queries";
 
 library.add(
     faBars,
@@ -101,13 +103,14 @@ const props = defineProps({
     accountName: {
         type: String,
     },
-    widgets: {
-        type: Array,
-    },
     announcements: {
         type: Array,
     },
 });
+
+const { result } = useQuery(queries["widgets"]);
+const widgets = computed(() => result.value?.widgets ?? {});
+
 const showAnnouncement = ref(false);
 const announcementModal = ref(false);
 const anModal = ref(null);

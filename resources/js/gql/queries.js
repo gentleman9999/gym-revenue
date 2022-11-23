@@ -825,7 +825,7 @@ const REMINDER_EDIT = gql`
 
 const TASKS = gql`
     query TasksQuery($param: TaskParam, $pagination: PaginationInput) {
-        tasks(param: $param, pagination: $pagination) {
+        tasks: tasksQuery(param: $param, pagination: $pagination) {
             data {
                 id
                 title
@@ -885,6 +885,17 @@ const GLOBAL_SEARCH = gql`
                 perPage
                 total
             }
+        }
+    }
+`;
+
+const WIDGETS = gql`
+    query WidgetQuery {
+        widgets: widgetsQuery {
+            title
+            value
+            type
+            icon
         }
     }
 `;
@@ -953,4 +964,5 @@ export default {
     files: FILE_FOLDERS,
     global_search: GLOBAL_SEARCH,
     events: CALENDAR_EVENTS,
+    widgets: WIDGETS,
 };

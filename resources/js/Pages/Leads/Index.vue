@@ -203,18 +203,6 @@ export default defineComponent({
             { name: "last_name", label: "Last Name" },
             { name: "location.name", label: "Location" },
             {
-                name: "lead_type.name",
-                label: "Type",
-                component: CrudBadge,
-                props: {
-                    getProps: ({ data: { lead_type } }) => ({
-                        class: badgeClasses(lead_type?.id),
-                        text: lead_type?.name,
-                    }),
-                },
-                // transform: data=>data?.lead_type
-            },
-            {
                 name: "owner_user_id",
                 label: "Status",
                 component: LeadAvailabilityBadge,
