@@ -1,0 +1,4 @@
+type DashboardProps implements DashboardProp {
+    teamName: String
+    accountName: String
+}
