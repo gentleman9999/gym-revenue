@@ -1,12 +1,15 @@
 <template>
     <LayoutHeader title="Dashboard">
-        <dashboard-header :team-name="teamName" :account-name="accountName" />
+        <dashboard-header
+            :team-name="props.teamName"
+            :account-name="props.accountName"
+        />
     </LayoutHeader>
 
     <jet-bar-container>
         <!-- @todo - leave the jet-bar-alert here and make it contextual, dynamic, pusher-enabled? -->
         <!-- <jet-bar-alert text="This is an alert message" /> -->
-        <dashboard-stats :widgets="widgets" />
+        <dashboard-stats :widgets="props.widgets" />
 
         <div class="container max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="grid xl:grid-cols-2 gap-4">
@@ -74,8 +77,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DashboardHeader from "@/Pages/Dashboards/Partials/DashboardHeader.vue";
 import DashboardStats from "@/Pages/Dashboards/Partials/DashboardStats.vue";
-import { useQuery } from "@vue/apollo-composable";
 import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
 
 library.add(
     faBars,
@@ -90,26 +93,9 @@ library.add(
     faUsers,
     faUser
 );
-const props = defineProps({
-    teamName: {
-        type: String,
-    },
-    teams: {
-        type: Array,
-    },
-    clients: {
-        type: Array,
-    },
-    accountName: {
-        type: String,
-    },
-    announcements: {
-        type: Array,
-    },
-});
 
-const { result } = useQuery(queries["widgets"]);
-const widgets = computed(() => result.value?.widgets ?? {});
+const { result } = useQuery(queries["dashboardQuery"]);
+const props = computed(() => result.value?.props ?? {});
 
 const showAnnouncement = ref(false);
 const announcementModal = ref(false);
@@ -130,7 +116,7 @@ const switchToTeam = (teamId) => {
 };
 
 onMounted(() => {
-    if (props.announcements.length > 0) {
+    if (props.value.announcements.length > 0) {
         showAnnouncement.value = true;
     }
     console.log("GymRevenue Dashboard");

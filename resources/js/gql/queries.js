@@ -899,6 +899,33 @@ const WIDGETS = gql`
         }
     }
 `;
+
+const DASHBOARD_QUERY = gql`
+    query DashboardQuery {
+        props: dashboardQuery {
+            teamName
+            accountName
+            teams {
+                id
+                name
+                client {
+                    name
+                }
+            }
+            announcements {
+                id
+                version
+                notes
+            }
+            widgets {
+                title
+                value
+                type
+                icon
+            }
+        }
+    }
+`;
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -965,4 +992,5 @@ export default {
     global_search: GLOBAL_SEARCH,
     events: CALENDAR_EVENTS,
     widgets: WIDGETS,
+    dashboardQuery: DASHBOARD_QUERY,
 };

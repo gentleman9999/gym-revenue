@@ -1,9 +1,9 @@
 <template>
     <LayoutHeader title="Dashboard">
-        <!-- @todo - move this to its own component when announcements scale out -->
+        <!-- @todo - move this to its own component when props.announcements scale out -->
         <div
             class="flex flex-row justify-center pb-4"
-            v-if="announcements.length > 0 && showAnnouncement"
+            v-if="props.announcements.length > 0 && showAnnouncement"
         >
             <div class="alert alert-info xl:grid-cols-4">
                 <div class="flex-1 flex-col">
@@ -23,7 +23,7 @@
                         </svg>
                         <label
                             >New Version deployed! - v{{
-                                announcements[0].version
+                                props.announcements[0].version
                             }}</label
                         >
                     </div>
@@ -31,7 +31,7 @@
                     <br />
                     <ul>
                         <li
-                            v-for="(note, x) in announcements[0].notes"
+                            v-for="(note, x) in props.announcements[0].notes"
                             v-show="x < 3"
                         >
                             * {{ note }}
@@ -98,14 +98,17 @@
                             </svg>
                             <label
                                 >New Version deployed! - v{{
-                                    announcements[0].version
+                                    props.announcements[0].version
                                 }}</label
                             >
                         </div>
 
                         <br />
                         <ul>
-                            <li v-for="(note, x) in announcements[0].notes">
+                            <li
+                                v-for="(note, x) in props.announcements[0]
+                                    .notes"
+                            >
                                 * {{ note }}
                             </li>
                         </ul>
@@ -132,10 +135,10 @@
         </div>
         <div class="flex flex-row justify-between">
             <div>
-                <p>Dashboard - {{ teamName }}</p>
+                <p>Dashboard - {{ props.teamName }}</p>
             </div>
             <div>
-                <p>{{ accountName }}</p>
+                <p>{{ props.accountName }}</p>
             </div>
         </div>
     </LayoutHeader>
@@ -146,7 +149,7 @@
 
         <jet-bar-stats-container>
             <jet-bar-stat-card
-                v-for="(widget, idx) in widgets"
+                v-for="(widget, idx) in props.widgets"
                 :title="widget.title"
                 :number="widget.value"
                 :type="widget.type"
@@ -190,7 +193,10 @@
                                 "
                             >
                                 <tbody>
-                                    <tr v-for="team in teams" class="hover">
+                                    <tr
+                                        v-for="team in props.teams"
+                                        class="hover"
+                                    >
                                         <td>
                                             {{ team["name"] }}
                                         </td>
@@ -226,7 +232,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import JetBarAlert from "@/Components/JetBarAlert.vue";
@@ -250,6 +256,8 @@ import {
     faUser,
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
 
 library.add(
     faBars,
@@ -265,26 +273,8 @@ library.add(
     faUser
 );
 
-const props = defineProps({
-    teamName: {
-        type: String,
-    },
-    teams: {
-        type: Array,
-    },
-    clients: {
-        type: Array,
-    },
-    accountName: {
-        type: String,
-    },
-    widgets: {
-        type: Array,
-    },
-    announcements: {
-        type: Array,
-    },
-});
+const { result } = useQuery(queries["dashboardQuery"]);
+const props = computed(() => result.value?.props ?? {});
 
 const showAnnouncement = ref(false);
 const announcementModal = ref(false);
@@ -305,7 +295,7 @@ const switchToTeam = (teamId) => {
 };
 
 onMounted(() => {
-    if (props.announcements.length > 0) {
+    if (props.value.announcements.length > 0) {
         showAnnouncement.value = true;
     }
 });

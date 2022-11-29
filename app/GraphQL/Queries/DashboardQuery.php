@@ -34,37 +34,28 @@ final class DashboardQuery
         $client = $team->client;
         $announcements = [];
         $team_name = $team->name;
+        $widgets = $this->service->getDashboardWidgets();
         if ($client !== null) {
-            $clients = collect([$client]);
             $account = $client->name;
 
             return [
                 'teamName' => $team_name,
                 'accountName' => $account,
-                // 'clients' => $clients,
-                // 'announcements' => $announcements,
+                'announcements' => $announcements,
+                'widgets' => $widgets,
             ];
         } else {
             $account = 'GymRevenue';
-            $clients = $this->clients->all();
             $announcements = $this->service->getAppStateAnnouncements();
 
             $teams = $user->allTeams()->load('client');
 
-            if (count($clients) > 0) {
-                $clients = $clients->toArray();
-                foreach ($clients as $idx => $client) {
-                    $clients[$idx]['created_at'] = date('M d, Y', strtotime($client['created_at']));
-                    $clients[$idx]['updated_at'] = date('M d, Y', strtotime($client['updated_at']));
-                }
-            }
-
             return [
                 'accountName' => $account,
                 'teamName' => $team_name,
-                // 'teams' => $teams,
-                // 'clients' => $clients,
-                // 'announcements' => $announcements,
+                'teams' => $teams,
+                'announcements' => $announcements,
+                'widgets' => $widgets,
             ];
         }
     }
