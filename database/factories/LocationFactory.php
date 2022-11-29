@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Domain\Locations\Projections\Location;
+use App\Enums\LocationTypeEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LocationFactory extends Factory
@@ -37,6 +38,7 @@ class LocationFactory extends Factory
             'state' => $this->faker->stateAbbr,
             'zip' => substr($this->faker->postcode, 0, 5),
             'phone' => $phone,
+            'location_type' => LocationTypeEnum::STORE,
         ];
     }
 }

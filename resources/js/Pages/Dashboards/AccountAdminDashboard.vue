@@ -116,7 +116,7 @@ const switchToTeam = (teamId) => {
 };
 
 onMounted(() => {
-    if (props.value.announcements.length > 0) {
+    if (props.value.announcements?.length > 0) {
         showAnnouncement.value = true;
     }
     console.log("GymRevenue Dashboard");

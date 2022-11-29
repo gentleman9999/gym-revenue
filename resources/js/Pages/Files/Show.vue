@@ -18,7 +18,7 @@
                     <file-nav
                         :folderName="data.folderContent.name"
                         class="file-nav"
-                        @browse-root="setFolderId(null)"
+                        @rootdir="rootDirectory"
                     />
                     <file-search
                         :form="form"
@@ -35,13 +35,14 @@
                     :handleTrash="handleTrash"
                     :handleShare="handleShare"
                     :handleRestore="handleRestore"
-                    @browse-folder="setFolderId"
+                    @browse="changeDirectory"
                     @trashed="handleFilter('trashed', 'only')"
                 />
             </div>
             <div v-else>Loading...</div>
         </template>
     </ApolloQuery>
+
     <!-- Section for Modals -->
     <daisy-modal id="confirmModal" ref="confirmModal">
         <confirm-modal :data="item2Remove" @success="confirmTrash" />
@@ -97,11 +98,10 @@
 </style>
 
 <script setup>
-import { watchEffect, ref } from "vue";
+import { watchEffect, ref, onMounted, watch } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import RenameForm from "./Partials/RenameForm.vue";
 import PermissionsForm from "./Partials/PermissionsForm.vue";
-import { Inertia } from "@inertiajs/inertia";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileItem from "@/Components/FileItem/index.vue";
 import ShareForm from "./Partials/ShareForm.vue";
@@ -141,6 +141,13 @@ const selectedItem = ref(null);
 const selectedItemPermissions = ref(null);
 const folder2Share = ref(null);
 const item2Remove = ref(null);
+
+const displayMode = ref("desktop");
+
+const renameModal = ref(null);
+const permissionsModal = ref(null);
+const shareModal = ref(null);
+const confirmModal = ref(null);
 
 const handleRename = (data, type) => {
     selectedItem.value = data;
@@ -182,11 +189,6 @@ const handleRestore = (data, type) => {
     confirmModal.value.close();
 };
 
-const renameModal = ref(null);
-const permissionsModal = ref(null);
-const shareModal = ref(null);
-const confirmModal = ref(null);
-
 watchEffect(() => {
     if (selectedItem.value) {
         renameModal.value.open();
@@ -199,14 +201,8 @@ watchEffect(() => {
     }
 });
 
-const displayMode = ref("desktop");
-
 const updateDisplayMode = (value) => {
     displayMode.value = value;
-};
-
-const goRoot = () => {
-    Inertia.get(route("files"));
 };
 
 const form = ref({
@@ -216,15 +212,26 @@ const form = ref({
     },
 });
 
-const setFolderId = (value) => {
+const rootDirectory = () => {
     form.value = {
-        id: value,
+        id: null,
         filter: {
             ...form.value.filter,
-            trashed: value ? form.value.filter.trashed : null,
+            trashed: null,
         },
     };
 };
+
+const changeDirectory = (id) => {
+    form.value = {
+        id: id,
+        filter: {
+            ...form.value.filter,
+            trashed: id ? form.value.filter.trashed : null,
+        },
+    };
+};
+
 const handleFilter = (key, value) => {
     form.value = {
         ...form.value,
