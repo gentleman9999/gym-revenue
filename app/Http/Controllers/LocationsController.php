@@ -7,6 +7,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Locations\Projections\LocationDetails;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Enums\LocationTypeEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -65,6 +66,7 @@ class LocationsController extends Controller
         }
 
         return Inertia::render('Locations/Create', [
+            'locationTypes' => LocationTypeEnum::asArray(),
         ]);
     }
 
@@ -97,6 +99,7 @@ class LocationsController extends Controller
             'poc_first' => $poc_first,
             'poc_last' => $poc_last,
             'poc_phone' => $poc_phone,
+            'locationTypes' => LocationTypeEnum::asArray(),
         ]);
     }
 

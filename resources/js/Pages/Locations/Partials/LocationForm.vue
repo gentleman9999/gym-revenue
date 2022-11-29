@@ -157,6 +157,21 @@
                     class="mt-2"
                 />
             </div>
+            <div class="col-span-6 md:col-span-2">
+                <jet-label for="location_type" value="Location Types" />
+                <multiselect
+                    id="location_type"
+                    class="mt-1 multiselect"
+                    v-model="form.location_type"
+                    :searchable="true"
+                    :options="optionLocationTypes"
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error
+                    :message="form.errors.location_type"
+                    class="mt-2"
+                />
+            </div>
 
             <input id="client_id" type="hidden" v-model="form.client_id" />
             <jet-input-error :message="form.errors.client_id" class="mt-2" />
@@ -178,7 +193,7 @@
             <Button
                 class="btn-secondary"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.isDirty"
+                :disabled="!isFormValid"
                 :loading="form.processing"
             >
                 {{ buttonText }}
@@ -188,6 +203,7 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -201,6 +217,7 @@ import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import { transformDate } from "@/utils/transformDate";
+import { parseLocationTypeDisplayName } from "@/utils/locationTypeEnum";
 
 export default {
     components: {
@@ -221,6 +238,7 @@ export default {
         "open_date",
         "close_date",
         "location_no",
+        "locationTypes",
     ],
     setup(props, context) {
         const page = usePage();
@@ -229,6 +247,7 @@ export default {
         let poc_first = props.poc_first;
         let poc_last = props.poc_last;
         let poc_phone = props.poc_phone;
+        let locationTypes = props.locationTypes;
 
         let operation = "Update";
         if (!location) {
@@ -247,6 +266,7 @@ export default {
                 close_date: null,
                 location_no: "",
                 client_id: props.clientId,
+                location_type: "",
             };
             operation = "Create";
         } else {
@@ -267,6 +287,11 @@ export default {
         });
 
         const form = useGymRevForm(location);
+
+        const isFormValid = computed(
+            () => form.isDirty && form.location_type.trim()?.length
+        );
+
         //
         //    form.put(`/locations/${location.id}`);
         let handleSubmit = () =>
@@ -291,6 +316,13 @@ export default {
             handleSubmit,
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
+            isFormValid,
+            optionLocationTypes: locationTypes.map(function (locationType) {
+                return {
+                    value: locationType.value,
+                    label: parseLocationTypeDisplayName(locationType),
+                };
+            }),
         };
     },
 };
