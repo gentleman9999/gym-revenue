@@ -4,10 +4,12 @@ namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
+use App\Enums\LocationTypeEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -41,6 +43,7 @@ class CreateLocation
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
+            'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
         ];
     }
 

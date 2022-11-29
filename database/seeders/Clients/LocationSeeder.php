@@ -6,6 +6,7 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\ImportLocations;
 use App\Domain\Locations\Projections\Location;
+use App\Enums\LocationTypeEnum;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
@@ -24,11 +25,12 @@ class LocationSeeder extends Seeder
             // The Kalamazoo
             [
                 'client' => 'The Kalamazoo',
-                'name' => 'The Kalamazoo 1',
+                'name' => 'The Kalamazoo 1 HQ',
                 'state' => 'LA',
                 'city' => 'Shreveport',
                 'zip' => '71101',
                 'location_no' => '001',
+                'location_type' => LocationTypeEnum::HQ,
                 //'gymrevenue_id' => 'TK12'
             ],
             // FitnessTruth
@@ -39,6 +41,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abbott',
                 'zip' => '76621',
                 'location_no' => 'FT13',
+                'location_type' => LocationTypeEnum::OFFICE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -47,6 +50,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abernathy',
                 'zip' => '79311',
                 'location_no' => 'FT14',
+                'location_type' => LocationTypeEnum::OFFICE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -55,6 +59,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abram',
                 'zip' => '78572',
                 'location_no' => 'FT15',
+                'location_type' => LocationTypeEnum::OFFICE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -63,6 +68,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abbott',
                 'zip' => '76621',
                 'location_no' => 'FT16',
+                'location_type' => LocationTypeEnum::OFFICE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -71,6 +77,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abernathy',
                 'zip' => '79311',
                 'location_no' => 'FT17',
+                'location_type' => LocationTypeEnum::STORE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -79,6 +86,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abbott',
                 'zip' => '76621',
                 'location_no' => 'FT18',
+                'location_type' => LocationTypeEnum::STORE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -87,6 +95,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abbott',
                 'zip' => '76621',
                 'location_no' => 'FT19',
+                'location_type' => LocationTypeEnum::STORE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -95,6 +104,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abernathy',
                 'zip' => '79311',
                 'location_no' => 'TR40',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'FT20'
             ],
             [
@@ -104,6 +114,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Abbott',
                 'zip' => '76621',
                 'location_no' => 'FT21',
+                'location_type' => LocationTypeEnum::STORE,
             ],
             [
                 'client' => 'FitnessTruth',
@@ -112,6 +123,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Adams',
                 'zip' => '37010',
                 'location_no' => 'FT22',
+                'location_type' => LocationTypeEnum::STORE,
             ],
             // The Z
             [
@@ -121,6 +133,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Honolulu',
                 'zip' => '96795',
                 'location_no' => 'TZ01',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'TZ01'
             ],
             [
@@ -130,6 +143,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Honolulu',
                 'zip' => '96795',
                 'location_no' => 'TZ02',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'TZ02'
             ],
             [
@@ -139,6 +153,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Honolulu',
                 'zip' => '96796',
                 'location_no' => 'TZ03',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'TZ03'
             ],
             [
@@ -148,6 +163,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Honolulu',
                 'zip' => '96797',
                 'location_no' => 'TZ04',
+                'location_type' => LocationTypeEnum::STORE,
                 // 'gymrevenue_id' => 'TZ04'
             ],
             [
@@ -157,6 +173,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Honolulu',
                 'zip' => '96798',
                 'location_no' => 'TZ05',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'TZ05'
             ],
             [
@@ -166,6 +183,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Waimanalo',
                 'zip' => '96795',
                 'location_no' => 'TZ06',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'TZ06'
             ],
 
@@ -177,6 +195,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Los Angeles',
                 'zip' => '90001',
                 'location_no' => 'ST01',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST07'
             ],
             [
@@ -186,6 +205,7 @@ class LocationSeeder extends Seeder
                 'city' => 'San Diego',
                 'zip' => '22400',
                 'location_no' => 'ST02',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST08'
             ],
             [
@@ -195,6 +215,7 @@ class LocationSeeder extends Seeder
                 'city' => 'San Jose',
                 'zip' => '94088',
                 'location_no' => 'ST03',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST09'
             ],
             [
@@ -204,6 +225,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Portland',
                 'zip' => '97035',
                 'location_no' => 'ST05',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST10'
             ],
             [
@@ -213,6 +235,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Redmond',
                 'zip' => '98052',
                 'location_no' => 'STMS',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST11'
             ],
             [
@@ -222,6 +245,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Portland',
                 'zip' => '97035',
                 'location_no' => 'ST05',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST11'
             ],
             // SciFi Purple Gyms
@@ -231,6 +255,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Advance',
                 'zip' => '27006',
                 'location_no' => 'PF01',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'PF26'
             ],
             [
@@ -239,6 +264,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Advance',
                 'zip' => '27006',
                 'location_no' => 'PF02',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'PF27'
             ],
             [
@@ -247,6 +273,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Ponte Vedra Beach',
                 'zip' => '32004',
                 'location_no' => 'PF03',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'PF28'
             ],
             [
@@ -255,6 +282,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Callahan',
                 'zip' => '32011',
                 'location_no' => 'PF04',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'PF29'
             ],
             // iFit
@@ -264,6 +292,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Tampa',
                 'zip' => '33605',
                 'location_no' => 'I01',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF30'
             ],
             [
@@ -272,6 +301,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Lake City',
                 'zip' => '32025',
                 'location_no' => 'I02',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF31'
             ],
             [
@@ -280,6 +310,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Hilliard',
                 'zip' => '32046',
                 'location_no' => 'I03',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF32'
             ],
             [
@@ -288,6 +319,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Orange Park',
                 'zip' => '32065',
                 'location_no' => 'I04',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF33'
             ],
             [
@@ -296,6 +328,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Tampa',
                 'zip' => '33601',
                 'location_no' => 'I05',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF34'
             ],
             [
@@ -304,6 +337,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Atlanta',
                 'zip' => '30301',
                 'location_no' => 'I06',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF35'
             ],
             [
@@ -312,6 +346,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Atlanta',
                 'zip' => '30302',
                 'location_no' => 'I13',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF36'
             ],
             [
@@ -320,6 +355,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Atlanta',
                 'zip' => '30303',
                 'location_no' => 'I12',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF37'
             ],
             [
@@ -328,6 +364,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Virginia Beach',
                 'zip' => '23450',
                 'location_no' => 'I11',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF38'
             ],
             [
@@ -336,6 +373,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Virginia Beach',
                 'zip' => '23451',
                 'location_no' => 'I10',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'IF39'
             ],
         ];
@@ -348,6 +386,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Amarillo',
                 'zip' => '79106',
                 'location_no' => 'TR66',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST07'
             ];
             $locations[] = [
@@ -357,6 +396,7 @@ class LocationSeeder extends Seeder
                 'city' => 'Antioch',
                 'zip' => '37013',
                 'location_no' => 'TR77',
+                'location_type' => LocationTypeEnum::STORE,
                 //'gymrevenue_id' => 'ST07'
             ];
         }

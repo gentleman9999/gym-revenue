@@ -3,17 +3,21 @@
 namespace App\Http\Controllers\Data;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Actions\UpdateLeadCommunicationPreferences;
-use App\Domain\EndUsers\Leads\LeadAggregate;
+use App\Domain\EndUsers\EndUserAggregate;
+//use App\Domain\EndUsers\Leads\Actions\UpdateLeadCommunicationPreferences;
+//use App\Domain\EndUsers\Leads\LeadAggregate;
 use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -27,7 +31,7 @@ class LeadsController extends Controller
     public function index(Request $request)
     {
         $user = request()->user();
-        if ($user->cannot('leads.read', Lead::class)) {
+        if ($user->cannot('endusers.read', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -43,10 +47,8 @@ class LeadsController extends Controller
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
                 ->with('location')
-                ->with('leadType')
                 ->with('membershipType')
-                ->with('leadSource')
-                ->with('detailsDesc')
+                //->with('leadSource')
                 ->with('notes')
                 ->filter($request->only(
                     'search',
@@ -54,7 +56,7 @@ class LeadsController extends Controller
                     'typeoflead',
                     'createdat',
                     'grlocation',
-                    'leadsource',
+                    //'leadsource',
                     'claimed',
                     'opportunity',
                     'claimed',
@@ -99,6 +101,21 @@ class LeadsController extends Controller
             ];
         }
 
+        if ($user->current_location_id) {
+            $newLeadCount = LiveReportsByDay::whereEntity('lead')
+                ->where('date', '=', date('Y-m-d'))
+                ->whereAction(LiveReportingEnum::ADDED)
+                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+
+            if ($newLeadCount) {
+                $newLeadCount = $newLeadCount->value;
+            } else {
+                $newLeadCount = 0;
+            }
+        } else {
+            $newLeadCount = 0;
+        }
+
         return Inertia::render('Leads/Index', [
             'leads' => $prospects,
             'routeName' => request()->route()->getName(),
@@ -122,10 +139,10 @@ class LeadsController extends Controller
                 'lastupdated'
             ),
             'owners' => $available_lead_owners,
-            'lead_types' => LeadType::all(),
             'grlocations' => Location::all(),
             'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
+            'newLeadCount' => $newLeadCount,
         ]);
     }
 
@@ -186,7 +203,7 @@ class LeadsController extends Controller
         $team_users = $current_team->team_users()->get();
 
 
-        if ($user->cannot('leads.create', Lead::class)) {
+        if ($user->cannot('endusers.create', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -197,9 +214,9 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $lead_types = LeadType::all();
+        //$lead_types = LeadType::all();
         $lead_sources = LeadSource::all();
-        $lead_statuses = LeadStatus::all();
+        //$lead_statuses = LeadStatus::all();
 
 
         /**
@@ -215,9 +232,9 @@ class LeadsController extends Controller
         return Inertia::render('Leads/Create', [
             'user_id' => $user->id,
             'locations' => $locations,
-            'lead_types' => $lead_types,
+            //'lead_types' => $lead_types,
             'lead_sources' => $lead_sources,
-            'lead_statuses' => $lead_statuses,
+            //'lead_statuses' => $lead_statuses,
             'lead_owners' => $available_lead_owners,
         ]);
     }
@@ -307,10 +324,10 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function edit(Lead $lead)
+    public function edit(EndUser $endUser)
     {
         $user = request()->user();
-        if ($user->cannot('leads.update', Lead::class)) {
+        if ($user->cannot('endusers.update', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -330,12 +347,6 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $lead_types = LeadType::all();
-        $lead_sources = LeadSource::all();
-        $lead_statuses = LeadStatus::all();
-
-        $lead_aggy = LeadAggregate::retrieve($lead->id);
-
         $session_team = session()->get('current_team');
         if ($session_team && array_key_exists('id', $session_team)) {
             $current_team = Team::find($session_team['id']);
@@ -353,20 +364,10 @@ class LeadsController extends Controller
             $available_lead_owners[$team_user->user_id] = "{$team_user->user->name}";
         }
 
-        $lead->load(
-            [
-            'trialMemberships',
-            'owner',
-            'lead_status',
-            'last_updated',
-            'notes',
-            ]
-        );
-
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $lead->toArray();
-        $leadData['all_notes'] = $lead->notes->toArray();
+        $leadData = $endUser->toArray();
+        $leadData['all_notes'] = $endUser->notes->toArray();
 
         foreach ($leadData['all_notes'] as $key => $value) {
             if (ReadReceipt::whereNoteId($leadData['all_notes'][$key]['id'])->first()) {
@@ -380,27 +381,22 @@ class LeadsController extends Controller
             'lead' => $leadData,
             'user_id' => $user->id,
             'locations' => $locations,
-            'lead_types' => $lead_types,
-            'lead_sources' => $lead_sources,
-            'lead_statuses' => $lead_statuses,
-            'trialDates' => $lead_aggy->trial_dates,
             'lead_owners' => $available_lead_owners,
-            'interactionCount' => $lead_aggy->getInteractionCount(),
         ]);
     }
 
-    public function show(Lead $lead)
+    public function show(EndUser $endUser)
     {
-        $aggy = LeadAggregate::retrieve($lead->id);
-        $preview_note = Note::select('note')->whereEntityId($lead->id)->get();
+        $aggy = EndUserAggregate::retrieve($endUser->id);
+        $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
 
         return Inertia::render('Leads/Show', [
-            'lead' => $lead->load(['detailsDesc', 'trialMemberships']),
+            'lead' => $endUser,
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
-            'hasTwilioConversation' => $lead->client->hasTwilioConversationEnabled(),
+            'hasTwilioConversation' => $endUser->client->hasTwilioConversationEnabled(),
         ]);
     }
 
@@ -465,10 +461,10 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function contact(Lead $lead)
+    public function contact(EndUser $end_user): \Illuminate\Http\RedirectResponse
     {
         $user = request()->user();
-        if ($user->cannot('leads.contact', Lead::class)) {
+        if ($user->cannot('endusers.contact', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back()->with('selectedLeadDetailIndex', 0);
@@ -476,7 +472,7 @@ class LeadsController extends Controller
 
 
         if (array_key_exists('method', request()->all())) {
-            $aggy = LeadAggregate::retrieve($lead->id);
+            $aggy = EndUserAggregate::retrieve($end_user->id);
             $data = request()->all();
 
             $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -488,8 +484,9 @@ class LeadsController extends Controller
             }
 
             $data['user'] = auth()->user()->id;
-
-            switch (request()->get('method')) {
+            // Remove following If statement prior to going live
+            if ($end_user->isCBorGR()) {
+                switch (request()->get('method')) {
                     case 'email':
                         $aggy->email($data)->persist();
                         Alert::success("Email sent to lead")->flash();
@@ -511,6 +508,9 @@ class LeadsController extends Controller
                     default:
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
+            } else {
+                Alert::error("Lead does not have a Cape and Bay or Gym Revenue email address.")->flash();
+            }
         }
 
 //        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
@@ -528,31 +528,26 @@ class LeadsController extends Controller
     public function statuses(Request $request)
     {
         return Inertia::render('Leads/Statuses', [
-            'statuses' => LeadStatus::get(['id', 'status']),
+//            'statuses' => LeadStatus::get(['id', 'status']),
         ]);
     }
 
-    public function view(Lead $lead)
+    public function view(EndUser $endUser)
     {
         $user = request()->user();
-        if ($user->cannot('leads.read', Lead::class)) {
+        if ($user->cannot('endusers.read', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
-        $user = request()->user();
-        $lead_aggy = LeadAggregate::retrieve($lead->id);
-        $locid = Location::where('gymrevenue_id', $lead->gr_location_id)->first();
-        $preview_note = Note::select('note')->whereEntityId($lead->id)->get();
+        $lead_aggy = EndUserAggregate::retrieve($endUser->id);
+        $locid = Location::where('gymrevenue_id', $endUser->gr_location_id)->first();
+        $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
         return [
-            'lead' => $lead->load(
+            'lead' => $endUser->load(
                 [
-                    'detailsDesc',
-                    'trialMemberships',
                     'owner',
-                    'lead_status',
-                    'last_updated',
                 ]
             ),
             'user_id' => $user->id,
@@ -566,7 +561,7 @@ class LeadsController extends Controller
     public function export(Request $request)
     {
         $user = request()->user();
-        if ($user->cannot('leads.read', Lead::class)) {
+        if ($user->cannot('endusers.read', EndUser::class)) {
             abort(403);
         }
 
@@ -604,20 +599,5 @@ class LeadsController extends Controller
         }
 
         return $prospects;
-    }
-
-    public function leadCommunicationPreferences(Request $request, Lead $lead)
-    {
-        return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead']);
-    }
-
-    public function updateLeadCommunicationPreferences(Request $request, Lead $lead)
-    {
-        $lead = UpdateLeadCommunicationPreferences::run($lead->id, [
-            'email' => $request->subscribe_email === 'on' ? false : true,
-            'sms' => $request->subscribe_sms === 'on' ? false : true,
-            ]);
-
-        return view('comms-prefs', ['client' => $lead->client, 'entity' => $lead, 'entity_type' => 'lead', 'success' => true]);
     }
 }

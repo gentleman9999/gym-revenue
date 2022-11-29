@@ -25,7 +25,7 @@ class TeamLocationsSeeder extends Seeder
                 'value' => 'TKH001',
             ],
             [
-                'team_id' => Team::fetchTeamIDFromName('The Kalamazoo 1'),
+                'team_id' => Team::fetchTeamIDFromName('The Kalamazoo 1 HQ'),
                 'name' => 'team-location',
                 'value' => 'TKH001',
             ],

@@ -137,7 +137,8 @@ class TeamController extends Controller
     //TODO:we could do a ton of cleanup here between shared codes with index. just ran out of time.
     public function export(Request $request)
     {
-        $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
+        $client_id = $request->user()->client_id;
+        $teams = Team::where('client_id', $client_id)->get();
 
         return $teams;
     }

@@ -2,9 +2,13 @@
 
 namespace App\Domain\EndUsers\Reactors;
 
+use App\Actions\Mail\MailgunSend;
+use App\Actions\Sms\Twilio\FireTwilioMsg;
 use App\Domain\EndUsers\Events\EndUserCreated;
 use App\Domain\EndUsers\Events\EndUserProfilePictureMoved;
 use App\Domain\EndUsers\Events\EndUserUpdated;
+use App\Domain\EndUsers\Events\EndUserWasEmailedByRep;
+use App\Domain\EndUsers\Events\EndUserWasTextMessagedByRep;
 use App\Domain\EndUsers\Events\OldEndUserProfilePictureDeleted;
 use Illuminate\Support\Facades\Storage;
 
@@ -66,5 +70,25 @@ abstract class EndUserCrudReactor extends BaseEndUserReactor
             $aggy->moveProfilePicture($file);
         }
         $aggy->persist();
+    }
+
+    public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
+    {
+        if (($this->getModel())::class !== $event->getEntity()) {
+            return;
+        }
+        $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid());
+        $misc = $event->payload;
+        FireTwilioMsg::run($end_user->primary_phone, $misc['message']);
+    }
+
+    public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void
+    {
+        if (($this->getModel())::class !== $event->getEntity()) {
+            return;
+        }
+        $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
+        $misc = $event->payload;
+        MailgunSend::run([$end_user->email], $misc['subject'], $misc['message']);
     }
 }

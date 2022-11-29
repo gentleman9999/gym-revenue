@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Domain\Locations\Actions\CreateLocation;
+use App\Enums\LocationTypeEnum;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -34,6 +35,7 @@ class LocationsImportWithHeader implements ToCollection, WithHeadingRow
                 'poc_last' => $row['poc_last'] ?? null,
                 'poc_phone' => $row['poc_phone'] ?? null,
                 'shouldCreateTeam' => true,
+                'location_type' => LocationTypeEnum::STORE,
             ]);
         }
     }

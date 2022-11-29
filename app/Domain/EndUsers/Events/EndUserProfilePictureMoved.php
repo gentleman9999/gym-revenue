@@ -4,7 +4,7 @@ namespace App\Domain\EndUsers\Events;
 
 use App\StorableEvents\GymRevCrudEvent;
 
-abstract class EndUserProfilePictureMoved extends GymRevCrudEvent
+class EndUserProfilePictureMoved extends GymRevCrudEvent
 {
     public array $file;
     public ?array $oldFile;
@@ -19,5 +19,10 @@ abstract class EndUserProfilePictureMoved extends GymRevCrudEvent
     protected function getOperation(): string
     {
         return "PROFILE_PICTURE_MOVED";
+    }
+
+    public function getEntity(): string
+    {
+        return EndUser::class;
     }
 }

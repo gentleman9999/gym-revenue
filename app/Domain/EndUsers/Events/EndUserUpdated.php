@@ -2,8 +2,13 @@
 
 namespace App\Domain\EndUsers\Events;
 
+use App\Domain\EndUsers\Projections\EndUser;
 use App\StorableEvents\EntityUpdated;
 
-abstract class EndUserUpdated extends EntityUpdated
+class EndUserUpdated extends EntityUpdated
 {
+    public function getEntity(): string
+    {
+        return EndUser::class;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Projectors\Clients;
 
+use App\Domain\Users\Models\User;
 use App\Models\File;
 use App\StorableEvents\Clients\Files\FileCreated;
 use App\StorableEvents\Clients\Files\FileDeleted;
@@ -21,7 +22,16 @@ class FileProjector extends Projector
         $file_table_data = array_filter($event->data, function ($key) {
             return in_array($key, (new File())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
-        $file = File::create($file_table_data);
+
+        $file = new File();
+
+        if ($event->user !== null) {
+            $user = User::find($event->user);
+            $file->user_id = $user->id;
+            $file->client_id = $user->client_id;
+        }
+
+        $file->fill($file_table_data);
         //TODO: consider moving this to reactor?
         $file->url = Storage::disk('s3')->url($file->key);
         $file->save();

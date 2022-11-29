@@ -19,6 +19,7 @@ class DripCampaignProjector extends Projector
     public function onDripCampaignCreated(DripCampaignCreated $event): void
     {
         $dripCampaign = (new DripCampaign())->writeable();
+        unset($event->payload['gymrevenue_id']);
         unset($event->payload['days']);
         $dripCampaign->fill($event->payload);
         $dripCampaign->id = $event->aggregateRootUuid();

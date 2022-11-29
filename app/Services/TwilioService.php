@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Domain\Clients\Actions\UpdateGateways;
+use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Exceptions\ConversationException;
 use App\Domain\Users\Models\User;
 use App\Models\Utility\AppState;
 use Illuminate\Support\Env;
-use Illuminate\Support\Facades\DB;
 use Twilio\Exceptions\ConfigurationException;
 use Twilio\Exceptions\RestException;
 use Twilio\Exceptions\TwilioException;
@@ -19,6 +19,11 @@ use Twilio\Rest\Client as TwilioClient;
 use Twilio\Rest\Conversations\V1\Conversation\ParticipantInstance;
 use TypeError;
 
+/**
+ *
+ * Error code ref
+ * https://www.twilio.com/docs/api/errors
+ */
 class TwilioService
 {
     public readonly TwilioClient $twilio;
@@ -28,6 +33,7 @@ class TwilioService
     public readonly ?string      $api_key;
     public readonly ?string      $api_secret;
     public readonly ?string      $conversation_service_sid;
+    public readonly ?string      $messenger_id;
     private static array         $instances = [];
 
     /**
@@ -55,10 +61,11 @@ class TwilioService
         isset($settings['twilioNumber']) || throw new ConversationException('"twilioNumber" is required');
 
         $this->twilio = new TwilioClient($this->sid = $settings['twilioSID'], $this->token = $settings['twilioToken']);
-        $this->number = $settings['twilioNumber'];
-        $this->api_key = $settings['twilioApiKey'];
-        $this->api_secret = $settings['twilioApiSecret'];
-        $this->conversation_service_sid = $settings['twilioConversationServiceSID'] ?? null;
+        $this->number = $settings[ClientGatewaySetting::NAME_TWILIO_NUMBER];
+        $this->api_key = $settings[ClientGatewaySetting::NAME_TWILIO_API_KEY];
+        $this->api_secret = $settings[ClientGatewaySetting::NAME_TWILIO_API_SECRET];
+        $this->conversation_service_sid = $settings[ClientGatewaySetting::NAME_TWILIO_CONVERSATION_SERVICES_ID] ?? null;
+        $this->messenger_id = $settings[ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID] ?? null;
     }
 
     /**
@@ -91,38 +98,69 @@ class TwilioService
 
     /**
      *
-     * @param string|null $conversation_sid If conversation already exist, we can pass the conversation id, else,
-     *                                      a new one is created.
+     * @param string|null $messenger_id     Facebook messenger ID
      *
      * @return void
      * @throws TwilioException
      */
-    public function createConversationForClient(?string $conversation_sid): void
+    public function createConversationForClient(?string $messenger_id): void
     {
-        DB::transaction(function () use ($conversation_sid): void {
-            $conversation = $this->twilio->conversations->v1;
-            $client_id = $this->client->id;
-            $host = Env::get('EXPOSED_APP_URL', Env::get('APP_URL'));
+        $conversation = $this->twilio->conversations->v1;
+        $message = $this->twilio->messaging->v1;
+        $client_id = $this->client->id;
+        $host = Env::get('EXPOSED_APP_URL', Env::get('APP_URL'));
+        $endpoint = "{$host}/api/twilio/conversation/{$client_id}";
 
-            try {
-                // Check if service already exist.
-                $conversation_sid = $conversation->services($this->conversation_service_sid)->fetch()->sid;
-            } catch (RestException|TypeError) {
-                $conversation_sid ??= $conversation->services->create('Chat service')->sid;
-                UpdateGateways::run(['client_id' => $client_id, 'twilioConversationServiceSID' => $conversation_sid]);
+        // Delete existing address configurations for sms and messenger
+        // https://www.twilio.com/docs/conversations/api/address-configuration-resource?code-sample=code-delete-address-configuration&code-language=PHP&code-sdk-version=6.x
+        foreach ($conversation->addressConfigurations->read(['sms', 'messenger']) as $record) {
+            $conversation->addressConfigurations($record->sid)->delete();
+        }
+
+        // Delete existing conversation services
+        foreach ($conversation->services->read() as $record) {
+            $conversation->services($record->sid)->delete();
+        }
+
+        // https://www.twilio.com/docs/conversations/api/service-resource#create-a-service-resource
+        $conversation_sid ??= $conversation->services->create('conversation-service')->sid;
+
+        $message_sid = null;
+        $message_service_name = 'conversation-message-service';
+        // Check if message service exist
+        foreach ($message->services->read() as $record) {
+            if ($record->friendlyName === $message_service_name) {
+                $message_sid = $record->sid;
+
+                break;
             }
+        }
 
-            // https://www.twilio.com/docs/conversations/conversations-webhooks#webhook-action-triggers
-            $conversation->services($conversation_sid)->configuration->webhooks()->update([
-                // https://www.twilio.com/docs/conversations/conversations-webhooks#webhook-action-triggers
-                'filters' => ['onConversationAdded', 'onMessageAdded'],
-                'method' => 'POST',
-                'postWebhookUrl' => "{$host}/api/twilio/conversation/{$client_id}",
-            ]);
+        // https://www.twilio.com/docs/messaging/services/api#create-a-service-resource
+        $message_sid ??= $message->services->create($message_service_name)->sid;
 
-            // Service as default conversation
-            $conversation->configuration()->update(['defaultChatServiceSid' => $conversation_sid]);
-        });
+        $this->updateOrCreateAddressConfig('sms', $this->number, 'sms-address-config', $conversation_sid, $endpoint);
+        $this->updateOrCreateAddressConfig(
+            'messenger',
+            $this->formatMessengerId($messenger_id ?? $this->messenger_id),
+            'messenger-address-config',
+            $conversation_sid,
+            $endpoint
+        );
+
+        // Service as default conversation
+        // https://www.twilio.com/docs/conversations/api/configuration-resource?code-sample=code-update-configuration&code-language=PHP&code-sdk-version=6.x
+        $conversation->configuration()->update([
+            'defaultChatServiceSid' => $conversation_sid,
+            'defaultMessagingServiceSid' => $message_sid,
+        ]);
+
+        // Save conversation and messenger id if provided in the database.
+        UpdateGateways::run([
+            ClientGatewaySetting::NAME_CLIENT_ID => $client_id,
+            ClientGatewaySetting::NAME_TWILIO_CONVERSATION_SERVICES_ID => $conversation_sid,
+            ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID => $messenger_id,
+        ]);
     }
 
     /**
@@ -136,11 +174,12 @@ class TwilioService
      */
     public function addParticipantToConversation(string $conversation_sid, User $user): ParticipantInstance
     {
+        $conversation = $this->twilio->conversations->v1;
         $role_name = 'conversation-agent';
         $role = null;
 
         // check if we already have this role.
-        foreach ($this->twilio->conversations->v1->roles->read() as $role_instance) {
+        foreach ($conversation->roles->read() as $role_instance) {
             if ($role_instance->friendlyName === $role_name) {
                 $role = $role_instance;
 
@@ -148,7 +187,7 @@ class TwilioService
             }
         }
 
-        $role ??= $this->twilio->conversations->v1->roles->create($role_name, 'conversation', [
+        $role ??= $conversation->roles->create($role_name, 'conversation', [
             'addParticipant',
             'deleteAnyMessage',
             'addNonChatParticipant',
@@ -169,7 +208,7 @@ class TwilioService
             'editOwnParticipantAttributes',
         ]);
 
-        return $this->twilio->conversations->v1->conversations($conversation_sid)->participants->create([
+        return $conversation->conversations($conversation_sid)->participants->create([
             'identity' => $user->name,
             'roleSid' => $role->sid,
         ]);
@@ -182,13 +221,59 @@ class TwilioService
             ->update(['attributes' => json_encode(['identity' => $identity])]);
     }
 
-    public function deleteService()
-    {
-        // $conversation->services('ISd936515f10bb49d7bde01d510219ccbb')->delete();
-    }
-
     public function formatNumber(string $number, string $country_code = 'US'): string
     {
         return $this->twilio->lookups->v1->phoneNumbers($number)->fetch(['countryCode' => $country_code])->phoneNumber;
+    }
+
+    private function formatMessengerId(?string $id): ?string
+    {
+        return $id === null ? null : 'messenger:' . ltrim($id, 'messenger:');
+    }
+
+    /**
+     * Adds sms, whatsapp and messenger auto conversation create.
+     *
+     * @param string      $type    Type of Address, value can be whatsapp, messenger or sms.
+     * @param string|null $address The unique address to be configured. The address can be a
+     *                             whatsapp address or phone number
+     * @param string      $name
+     * @param string      $conversation_sid
+     * @param string      $endpoint
+     *
+     * @return void
+     * @throws TwilioException
+     */
+    private function updateOrCreateAddressConfig(
+        string $type,
+        ?string $address,
+        string $name,
+        string $conversation_sid,
+        string $endpoint
+    ): void {
+        if ($address === null) {
+            return;
+        }
+
+        $conversation = $this->twilio->conversations->v1;
+
+        try {
+            $sid = $conversation->addressConfigurations($address)->fetch()->sid;
+        } catch (RestException|TypeError) {
+            $sid = $conversation->addressConfigurations->create($type, $address)->sid;
+        }
+
+        // https://www.twilio.com/docs/conversations/api/address-configuration-resource?code-sample=code-update-address-configuration&code-language=PHP&code-sdk-version=6.x
+        // https://www.twilio.com/docs/conversations/facebook-messenger#setting-up-conversation-autocreation
+        // https://www.twilio.com/docs/conversations/api/address-configuration-resource#create-an-addressconfiguration-resource
+        $conversation->addressConfigurations($sid)->update([
+            'friendlyName' => $name,
+            'autoCreationEnabled' => true,
+            'autoCreationType' => 'webhook',
+            'autoCreationConversationServiceSid' => $conversation_sid,
+            'autoCreationWebhookUrl' => $endpoint,
+            'autoCreationWebhookMethod' => 'POST',
+            'autoCreationWebhookFilters' => ['onParticipantAdded', 'onMessageAdded'],
+        ]);
     }
 }

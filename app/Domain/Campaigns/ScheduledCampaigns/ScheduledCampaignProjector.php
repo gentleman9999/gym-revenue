@@ -18,6 +18,7 @@ class ScheduledCampaignProjector extends Projector
 {
     public function onScheduledCampaignCreated(ScheduledCampaignCreated $event): void
     {
+        unset($event->payload['gymrevenue_id']);
         $scheduledCampaign = (new ScheduledCampaign())->writeable();
         $scheduledCampaign->fill($event->payload);
         $scheduledCampaign->id = $event->aggregateRootUuid();

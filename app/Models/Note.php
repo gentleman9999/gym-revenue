@@ -23,7 +23,8 @@ class Note extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-//                $query->where('note', 'like', '%' . $search . '%');
+                $query->where('title', 'like', '%' . $search . '%');
+                $query->orWhere('note', 'like', '%' . $search . '%');
             });
         })->when($filters['trashed'] ?? null, function ($query, $trashed) {
             if ($trashed === 'with') {

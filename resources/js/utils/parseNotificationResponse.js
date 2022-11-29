@@ -54,13 +54,17 @@ const getDayOfWeek = (date) => {
     }
 };
 
-const NOTIFICATION_TYPES = Object.freeze({
+export const NOTIFICATION_TYPES = Object.freeze({
     /** @see App\Domain\Notifications::TYPE_CALENDAR_EVENT_REMINDER */
     TYPE_CALENDAR_EVENT_REMINDER: "CALENDAR_EVENT_REMINDER",
     /** @see App\Domain\Notifications::TYPE_NEW_CONVERSATION */
     TYPE_NEW_CONVERSATION: "NEW_CONVERSATION",
     /** @see App\Domain\Notifications::TYPE_DEFAULT */
     TYPE_DEFAULT: "DEFAULT_NOTIFICATION",
+    /** @see App\Domain\Notifications::TYPE_NEW_MESSAGE */
+    TYPE_TASK_OVERDUE: "TASK_OVERDUE",
+    /** @see App\Domain\Notifications::TYPE_TASK_OVERDUE */
+    TYPE_NEW_MESSAGE: "NEW_MESSAGE",
 });
 
 /**
@@ -71,13 +75,11 @@ const NOTIFICATION_TYPES = Object.freeze({
  */
 function notificationResponse(notification, options = {}) {
     // Allow onClose call without disrupting dismissNotification
-    const onClose = new Promise((resolve) => {
-        resolve(typeof options.onClose === "function" && options.onClose());
-    });
-
-    options = Object.assign({ timeout: false }, options);
-    options.onClose = () =>
-        onClose.then(() => dismissNotification(notification.id));
+    const onClose = options.onClose;
+    options.onClose = () => {
+        dismissNotification(notification.id);
+        typeof onClose === "function" && onClose();
+    };
 
     return {
         text: notification.text,
@@ -105,10 +107,8 @@ function buildCalenderNotification(notification) {
         start_at = `on ${date} at ${time}`;
     }
 
-    return notificationResponse(
-        notification,
-        `${notification.entity.title} ${start_at}`
-    );
+    notification.text = `${notification.entity.title} ${start_at}`;
+    return notificationResponse(notification);
 }
 
 /**
@@ -124,7 +124,9 @@ function buildConversationNotification(notification) {
     // We don't want to trigger any notifications while at chat page, instead we want to refresh the chat list
     // and silently delete the notification.
     if (chatElement !== null) {
-        chatElement.dispatchEvent(new Event("refresh"));
+        chatElement.dispatchEvent(
+            new CustomEvent("refresh", { detail: notification })
+        );
         dismissNotification(notification.id);
         return null;
     }
@@ -144,6 +146,22 @@ function buildConversationNotification(notification) {
 }
 
 /**
+ * @param {{ text:string, id:string, state:string, type:string, entity:object}} notification
+ *
+ * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}|null}
+ */
+function resolveOverdueTask(notification) {
+    return notificationResponse(notification, {
+        onClose: () => {
+            let gotoUrl = new URL("../tasks", window.location);
+            gotoUrl.searchParams.append("start", notification.entity.start);
+
+            window.location = gotoUrl.href;
+        },
+    });
+}
+
+/**
  * @param {{ text:string, id:string, state:string, type:string, entity_type?:string, entity?:object}} notification
  *
  * @returns {{options: {onClose: (function(): Promise<void>), timeout: boolean}, text: string, state: string}|null}
@@ -155,7 +173,10 @@ export const parseNotificationResponse = (notification) => {
         case NOTIFICATION_TYPES.TYPE_CALENDAR_EVENT_REMINDER:
             return buildCalenderNotification(notification);
         case NOTIFICATION_TYPES.TYPE_NEW_CONVERSATION:
+        case NOTIFICATION_TYPES.TYPE_NEW_MESSAGE:
             return buildConversationNotification(notification);
+        case NOTIFICATION_TYPES.TYPE_TASK_OVERDUE:
+            return resolveOverdueTask(notification);
         default:
             return notificationResponse(notification);
     }

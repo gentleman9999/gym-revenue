@@ -6,13 +6,17 @@ use App\Domain\CalendarEvents\Actions\CreateCalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\DripCampaigns\DripCampaignDay;
-use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Users\Models\User;
 use App\Support\Uuid;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Lorisleiva\Actions\ActionRequest;
+use Prologue\Alerts\Facades\Alert;
 
-abstract class CreateEndUser extends BaseEndUserAction
+class CreateEndUser extends BaseEndUserAction
 {
     public function rules(): array
     {
@@ -41,14 +45,13 @@ abstract class CreateEndUser extends BaseEndUserAction
     public function handle(array $data, ?User $user = null): EndUser
     {
         $id = Uuid::new();
-        $data['agreement_number'] = floor(time() - 99999999);
+        EndUserAggregate::retrieve($id)->create($data)->persist();
 
-        ($this->getAggregate())::retrieve($id)->create($data)->persist();
-
+        //TODO move this to reactor
         if (array_key_exists('lead_type_id', $data) || array_key_exists('agreement_number', $data)) {
             $leadAttendees = null;
             $memberAttendees = null;
-            if (Lead::whereId($id)->exists()) {
+            if (EndUser::whereId($id)->exists()) {
                 $leadAttendees = [$id];
             } else {
                 $memberAttendees = [$id];
@@ -88,6 +91,27 @@ abstract class CreateEndUser extends BaseEndUserAction
             }
         }
 
-        return ($this->getModel())::findOrFail($id);
+        return EndUser::findOrFail($id);
+    }
+
+    public function asController(ActionRequest $request)
+    {
+        $data = $request->validated();
+        $endUser = $this->handle(
+            $data
+        );
+
+        if ($request->user()) {
+            EndUserAggregate::retrieve($endUser->id)->claim($request->user()->id)->persist();
+        }
+
+        return $endUser->refresh();
+    }
+
+    public function htmlResponse(EndUser $endUser): RedirectResponse
+    {
+        Alert::success("End User '{$endUser->first_name}' was created")->flash();
+
+        return Redirect::back();
     }
 }

@@ -17,7 +17,7 @@ class DeleteCalendarEvent
 
     public function handle(CalendarEvent $calendarEvent): CalendarEvent
     {
-        CalendarEventAggregate::retrieve($$calendarEvent->id)->delete()->persist();
+        CalendarEventAggregate::retrieve($calendarEvent->id)->delete()->persist();
 
         return $calendarEvent;
     }

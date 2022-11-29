@@ -7,7 +7,9 @@ use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Conversations\Twilio\Actions\AddConversationAgent;
 use App\Domain\Conversations\Twilio\Exceptions\ConversationException;
+use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\LeadSources\LeadSource;
+use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
@@ -18,25 +20,30 @@ use App\Models\File;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GymRevProjection;
 use App\Services\TwilioService;
+use Database\Factories\ClientFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Twilio\Exceptions\ConfigurationException;
 
 /**
- * @property Collection $gatewaySettings
- * @property string     $id
+ * @property Collection       $gatewaySettings
+ * @property string           $id
+ * @property Collection<User> $users
+ *
+ * @method static ClientFactory factory()
  */
 class Client extends GymRevProjection
 {
     use Notifiable;
     use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -46,6 +53,16 @@ class Client extends GymRevProjection
     protected $casts = [
         'services' => 'array',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return ClientFactory::new();
+    }
 
     public function locations(): HasMany
     {
@@ -59,7 +76,7 @@ class Client extends GymRevProjection
 
     public function lead_types(): HasMany
     {
-        return $this->hasMany(\App\Domain\LeadTypes\LeadType::class);
+        return $this->hasMany(LeadType::class);
     }
 
     public function lead_sources(): HasMany
@@ -154,22 +171,36 @@ class Client extends GymRevProjection
     }
 
     /**
+     * Get all user who has AddConversationAgent::CHAT_CONVERSATION_ABILITY_NAME ability
+     *
      * @return User|null
      */
     public function getNextFreeConversationAgent(): ?User
     {
-        $permission_name = AddConversationAgent::CHAT_CONVERSATION_ABILITY_NAME;
+        $users = $this->users()
+            ->leftJoin('client_conversations', 'users.id', '=', 'client_conversations.user_id')
+            ->oldest('client_conversations.updated_at')
+            ->get();
 
-        return User::join('abilities as a', 'a.name', '=', DB::raw("'{$permission_name}'"))
-            ->join('permissions as p', static function (JoinClause $join) {
-                $join->on('users.id', '=', 'p.entity_id')
-                     ->on('a.id', '=', 'p.ability_id');
-            })
-            ->leftJoin('client_conversations as cc', 'users.id', '=', 'cc.user_id')
-            ->select('users.*')
-            ->where(['users.client_id' => $this->id])
-            ->oldest('cc.updated_at')
-            ->first();
+        /** @var User $user */
+        foreach ($users as $user) {
+            if ($user->can(AddConversationAgent::CHAT_CONVERSATION_ABILITY_NAME, ClientConversation::class)) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array       $permission_names
+     * @param string|null $entity_type
+     *
+     * @return Collection
+     */
+    public function getUsersWithPermissionQuery(array $permission_names, ?string $entity_type = null): Collection
+    {
+        return $this->users->filter(static fn (User $user) => $user->canAny($permission_names, $entity_type));
     }
 
     public function getGatewayProviderBySlug(string $slug): GatewayProvider

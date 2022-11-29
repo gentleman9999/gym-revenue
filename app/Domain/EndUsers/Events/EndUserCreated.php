@@ -2,8 +2,13 @@
 
 namespace App\Domain\EndUsers\Events;
 
+use App\Domain\EndUsers\Projections\EndUser;
 use App\StorableEvents\EntityCreated;
 
-abstract class EndUserCreated extends EntityCreated
+class EndUserCreated extends EntityCreated
 {
+    public function getEntity(): string
+    {
+        return EndUser::class;
+    }
 }

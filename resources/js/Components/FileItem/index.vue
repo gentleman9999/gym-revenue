@@ -22,6 +22,8 @@
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
+            :showTrash="showTrash"
+            :handleRestore="handleRestore"
         />
 
         <file-context-menu
@@ -29,6 +31,8 @@
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handlePermissions="handlePermissions"
+            :showTrash="showTrash"
+            :handleRestore="handleRestore"
         />
     </div>
 </template>
@@ -68,6 +72,9 @@ const props = defineProps({
     handleTrash: {
         type: Function,
     },
+    handleRestore: {
+        type: Function,
+    },
 });
 
 const handleRename = () => {
@@ -84,6 +91,10 @@ const handleTrash = () => {
     subMenu.value.blur();
 };
 
+const handleRestore = () => {
+    props.handleRestore(props.file, "file");
+    subMenu.value.blur();
+};
 const subMenu = ref(null);
 
 const handleClick = (event) => {
@@ -119,4 +130,6 @@ const { emit } = useEventsBus();
 const handleDrag = (e) => {
     emit("selected_item", { type: "file", data: props.file });
 };
+
+const showTrash = props.file.deleted_at ? false : true;
 </script>

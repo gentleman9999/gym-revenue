@@ -106,14 +106,15 @@ class ClientConfigurationProjector extends Projector
         $payload = $event->payload;
         $known_gateways = [];
         $settings = [
-            'mailgunDomain' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
-            'mailgunSecret' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
-            'mailgunFromAddress' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
-            'mailgunFromName' => GatewayProvider::PROVIDER_SLUG_MAILGUN,
-            'twilioSID' => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
-            'twilioToken' => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
-            'twilioNumber' => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
-            'twilioConversationServiceSID' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION,
+            ClientGatewaySetting::NAME_MAILGUN_DOMAIN => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            ClientGatewaySetting::NAME_MAILGUN_SECRET => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            ClientGatewaySetting::NAME_MAILGUN_FROM_ADDRESS => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            ClientGatewaySetting::NAME_MAILGUN_FROM_NAME => GatewayProvider::PROVIDER_SLUG_MAILGUN,
+            ClientGatewaySetting::NAME_TWILIO_SID => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
+            ClientGatewaySetting::NAME_TWILIO_TOKEN => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
+            ClientGatewaySetting::NAME_TWILIO_NUMBER => GatewayProvider::PROVIDER_SLUG_TWILIO_SMS,
+            ClientGatewaySetting::NAME_TWILIO_CONVERSATION_SERVICES_ID => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION,
+            ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION,
         ];
 
         foreach ($settings as $name => $provider) {

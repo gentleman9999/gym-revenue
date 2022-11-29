@@ -57,8 +57,8 @@ class MassCommunicationController extends Controller
     protected function getDashData(DripCampaign | ScheduledCampaign $Model)
     {
         $audience = Audience::all();
-        $lead_types = LeadType::all()->unique('name');
         $member_types = MembershipType::all()->unique('name');
+        $lead_types = LeadType::all()->unique('name');
 
         $email_templates = EmailTemplate::with('creator')
             ->filter(request()->only('search', 'trashed'))

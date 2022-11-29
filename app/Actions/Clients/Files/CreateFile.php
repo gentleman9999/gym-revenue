@@ -3,6 +3,7 @@
 namespace App\Actions\Clients\Files;
 
 use App\Aggregates\Clients\FileAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -34,9 +35,9 @@ class CreateFile
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data, ?User $user = null)
     {
-        FileAggregate::retrieve($data['id'])->create($current_user->id ?? "Auto Generated", $data)->persist();
+        FileAggregate::retrieve($data['id'])->create((string) $user?->id, $data)->persist();
 
         return File::findOrFail($data['id']);
     }

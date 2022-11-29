@@ -1,7 +1,7 @@
 <template>
     <div class="row space-x-2 cursor-pointer">
         <span
-            @click="goRoot()"
+            @click="$emit('rootdir')"
             class="hover:bg-base-content/20 rounded px-2 py-1"
         >
             <font-awesome-icon icon="home" class="text-base-content" />
@@ -32,8 +32,4 @@ const props = defineProps({
         type: String,
     },
 });
-
-const goRoot = () => {
-    Inertia.get(route("files"));
-};
 </script>

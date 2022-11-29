@@ -192,3 +192,21 @@ export const filterCampaigns = (campaigns = [], filter = ALL_CAMPAIGNS) => {
         return campaigns.filter((campaign) => campaign.status === "DRAFT");
     }
 };
+
+/**
+ * formats bytes into higher magnitudes and returns a string
+ * such as: 7.02MB
+ * @param {number} num - number of bytes to calculate
+ */
+export function formatBytes(num) {
+    const units = ["B", "KB", "MB", "GB", "TB"];
+
+    let bytes = num;
+    let uind = 0;
+
+    for (uind = 0; bytes >= 1024 && uind < 4; uind++) {
+        bytes /= 1024;
+    }
+
+    return bytes.toFixed(2) + units[uind];
+}

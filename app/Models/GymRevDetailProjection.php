@@ -42,7 +42,7 @@ abstract class GymRevDetailProjection extends GymRevProjection
 
     public static function createOrUpdateRecord(string $parent_id, string $field, ?string $value, array $misc = null): void
     {
-        $model = self::where(static::fk(), $parent_id)->whereField($field)->first();
+        $model = self::where(static::fk(), $parent_id)->whereField($field)->whereMisc($misc)->first();
         if ($model === null) {
             $model = new static();
             $model->forceFill([ static::fk() => $parent_id ]);

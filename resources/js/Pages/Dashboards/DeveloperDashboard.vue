@@ -190,21 +190,20 @@
                                 "
                             >
                                 <tbody>
-                                    <tr
-                                        v-for="(team, id) in teams"
-                                        class="hover"
-                                    >
-                                        <td class="">
-                                            {{ team["team_name"] }}
+                                    <tr v-for="team in teams" class="hover">
+                                        <td>
+                                            {{ team["name"] }}
                                         </td>
-                                        <td class="">
-                                            ({{ team["client_name"] }})
+                                        <td>
+                                            <template v-if="team?.client?.name">
+                                                ({{ team?.client?.name }})
+                                            </template>
                                         </td>
-                                        <td class="">
+                                        <td>
                                             <button
                                                 type="button"
                                                 class="btn btn-success"
-                                                @click="switchToTeam(id)"
+                                                @click="switchToTeam(team.id)"
                                             >
                                                 Go
                                             </button>
@@ -300,7 +299,7 @@ watch([announcementModal], () => {
 });
 
 const switchToTeam = (teamId) => {
-    Inertia.put(route("current-team.update", team.id), {
+    Inertia.put(route("current-team.update", teamId), {
         preserveState: false,
     });
 };

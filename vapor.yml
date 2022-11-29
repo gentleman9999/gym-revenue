@@ -12,6 +12,9 @@ environments:
         storage: gymrevenue-west
         runtime: docker
         balancer: lb-gymrevenue
+        concurrency:
+          group: ${{ github.workflow }}-${{ github.ref }}
+          cancel-in-progress: true
         queues:
             - grp-production-events
             - grp-production-jobs
@@ -24,13 +27,16 @@ environments:
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
-          - 'php artisan sidecar:activate'
+          - 'php artisan sidecar:activate --pre-warm'
           - 'php artisan migrate:fresh --seed --force'
     staging:
         domain: stage.gymrevenue.com
         memory: 2048
         cli-memory: 512
         network: gymrevenue-vpc-network
+        concurrency:
+          group: ${{ github.workflow }}-${{ github.ref }}
+          cancel-in-progress: true
         database: gr-west-dev
         cache: gr-cache
         cli-timeout: 900
@@ -48,13 +54,16 @@ environments:
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:staging && rm -rf node_modules'
         deploy:
-          - 'php artisan sidecar:activate'
+          - 'php artisan sidecar:activate --pre-warm'
           - 'php artisan migrate:fresh --seed'
     develop:
         domain: dev.gymrevenue.com
         memory: 2048
         cli-memory: 512
         network: gymrevenue-vpc-network
+        concurrency:
+          group: ${{ github.workflow }}-${{ github.ref }}
+          cancel-in-progress: true
         database: gr-west-dev
         cache: gr-cache
         cli-timeout: 900
@@ -72,5 +81,5 @@ environments:
             - 'npm set-script prepare ""'
             - 'npm ci && npm run build:dev && rm -rf node_modules'
         deploy:
-           - 'php artisan sidecar:activate'
-           - 'php artisan migrate:fresh --seed'
+            - 'php artisan sidecar:activate --pre-warm'
+            - 'php artisan migrate:fresh --seed'
