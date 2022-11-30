@@ -70,7 +70,7 @@ class FilesController extends Controller
         }
 
 
-        $folders = Folder::with('files')
+        $folders = Folder::with('files')->filter($request->only('search', 'trashed'))
             ->get();
 
 

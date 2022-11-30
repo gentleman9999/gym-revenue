@@ -4,8 +4,12 @@ namespace App\Domain\EndUsers\Events;
 
 use App\StorableEvents\GymRevCrudEvent;
 
-abstract class EndUserConverted extends GymRevCrudEvent
+class EndUserConverted extends GymRevCrudEvent
 {
+    public function getEntity(): string
+    {
+        return EndUser::class;
+    }
     public string $member;
 
     public function __construct(string $member)

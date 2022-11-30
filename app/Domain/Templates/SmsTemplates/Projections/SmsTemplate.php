@@ -2,6 +2,8 @@
 
 namespace App\Domain\Templates\SmsTemplates\Projections;
 
+use App\Domain\Templates\Services\Interfaces\TemplateParserInterface;
+use App\Domain\Templates\Services\Traits\TemplateParserTrait;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
@@ -10,10 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SmsTemplate extends GymRevProjection
+class SmsTemplate extends GymRevProjection implements TemplateParserInterface
 {
     use SoftDeletes;
     use Sortable;
+    use TemplateParserTrait;
 
     protected $fillable = [ 'name', 'markup', 'active', 'team_id', 'created_by_user_id'];
 
@@ -37,11 +40,6 @@ class SmsTemplate extends GymRevProjection
                 $query->onlyTrashed();
             }
         });
-    }
-
-    public function getMarkupAttribute($value): false|string
-    {
-        return base64_decode($value);
     }
 
     public function setMarkupAttribute($value): void

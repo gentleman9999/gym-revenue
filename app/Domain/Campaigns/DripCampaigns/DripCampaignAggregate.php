@@ -27,11 +27,12 @@ class DripCampaignAggregate extends AggregateRoot
 
     public function __construct()
     {
-        //$this->status = CampaignStatusEnum::DRAFT;
+        $this->status = CampaignStatusEnum::DRAFT;
     }
 
     public function create(array $payload): static
     {
+        $payload['status'] = $this->status;
         $this->recordThat(new DripCampaignCreated($payload));
 
         return $this;

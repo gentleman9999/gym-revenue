@@ -5,7 +5,7 @@ namespace App\Domain\EndUsers\Events;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\StorableEvents\GymRevCrudEvent;
 
-abstract class EndUserWasEmailedByRep extends GymRevCrudEvent
+class EndUserWasEmailedByRep extends GymRevCrudEvent
 {
     public array $payload;
 

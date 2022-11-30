@@ -47,15 +47,15 @@
                                         :key="team.id"
                                         class="hover"
                                     >
-                                        <td class="">
+                                        <td>
                                             {{ team.name }}
                                         </td>
-                                        <td class="">
+                                        <td>
                                             <template v-if="team?.client?.name">
                                                 ({{ team?.client?.name }})
                                             </template>
                                         </td>
-                                        <td class="">
+                                        <td>
                                             <button
                                                 type="button"
                                                 class="btn btn-success"
@@ -113,7 +113,7 @@
                                             v-show="x < 7"
                                             class="hover"
                                         >
-                                            <td class="">* {{ note }}</td>
+                                            <td>* {{ note }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -277,7 +277,7 @@ watch([announcementModal], () => {
     }
 });
 const switchToTeam = (teamId) => {
-    Inertia.put(route("current-team.update", team.id), {
+    Inertia.put(route("current-team.update", teamId), {
         preserveState: false,
     });
 };

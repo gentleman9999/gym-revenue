@@ -35,7 +35,9 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            if (app()->bound('sentry') && (env('VITE_SENTRY_ENVIRONMENT') === 'production')) {
+                app('sentry')->captureException($e);
+            }
         });
     }
 }

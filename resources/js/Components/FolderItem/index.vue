@@ -11,7 +11,7 @@
         @dragover="preventDragDefault($event)"
         @dragenter="preventDragDefault($event)"
         @drop="handleDrop()"
-        @dblclick="browseFolder()"
+        @dblclick="$emit('browse', folder.id)"
     >
         <folder-icon
             :icon-size="iconSize"
@@ -25,15 +25,18 @@
             :folder="folder"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :handleRestore="handleRestore"
             :handlePermissions="handlePermissions"
+            :showTrash="showTrash"
         />
 
         <folder-context-menu
             ref="subMenu"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
+            :handleRestore="handleRestore"
             :handlePermissions="handlePermissions"
-            :handleShare="handleShare"
+            :showTrash="showTrash"
         />
     </div>
 </template>
@@ -83,6 +86,9 @@ const props = defineProps({
     handleShare: {
         type: Function,
     },
+    handleRestore: {
+        type: Function,
+    },
     moveFileToFolder: {
         type: Function,
     },
@@ -106,6 +112,11 @@ const handleTrash = () => {
 const handleShare = () => {
     console.log("handleShare");
     props.handleShare(props.folder);
+    subMenu.value.blur();
+};
+
+const handleRestore = () => {
+    props.handleRestore(props.folder, "folder");
     subMenu.value.blur();
 };
 
@@ -167,4 +178,6 @@ const browseFolder = () => {
     // TODO browse to the folder
     Inertia.get(route("folders.viewFiles", props.folder.id));
 };
+
+const showTrash = props.folder.deleted_at ? false : true;
 </script>

@@ -18,11 +18,12 @@ class CreateLiveReportsByDaysTable extends Migration
             $table->uuid('client_id')->index();
             $table->string('gr_location_id');
             $table->date('date');
+            $table->string('action');
             $table->string('entity');
             $table->float('value')->default(0);
             $table->timestamps();
 
-            $table->unique(['client_id', 'gr_location_id', 'date', 'entity'], 'unique_by_day');
+            //$table->unique(['client_id', 'gr_location_id', 'date', 'action', 'entity'], 'unique_by_day');
         });
     }
 

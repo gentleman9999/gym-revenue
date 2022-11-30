@@ -41,7 +41,7 @@ class CalendarAttendeeReactor extends Reactor implements ShouldQueue
         $mg = Mailgun::create(env('MAILGUN_SECRET'));
         $mg->messages()->send(env('MAILGUN_DOMAIN'), [
             'from' => env('MAIL_FROM_ADDRESS'),
-            'to' => $event->payload['entity_data']['email'],
+            'to' => $event->payload['endUser']['email'],
             'subject' => $event->payload['subject'],
             'html' => $event->payload['body'],
         ]);

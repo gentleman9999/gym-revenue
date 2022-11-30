@@ -3,7 +3,7 @@
         :id="id"
         submit-text="Send"
         :form="form"
-        :disabled="form.processing || !form.isDirty"
+        :allow-submit="isFormValid"
         :end-user-type="endUserType"
         @done="$emit('done')"
     >
@@ -30,6 +30,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useGymRevForm } from "@/utils";
 import BaseCommsAction from "./BaseCommsAction.vue";
 const props = defineProps({
@@ -58,6 +59,11 @@ const form = useGymRevForm({
     subject: props.subject,
     message: null,
 });
+
+const isFormValid = computed(
+    () => form.subject?.length && form.message?.length
+);
+
 const help =
     "Enter a subject and a message in the body and click Create Message to send to your customer.";
 const emit = defineEmits(["done"]);

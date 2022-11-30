@@ -58,6 +58,7 @@ class ScheduledCampaignSeeder extends Seeder
             $sms_template = SmsTemplate::whereClientId($client['id'])->first()->toArray()['id'];
             $call_template = CallScriptTemplate::whereClientId($client['id'])->whereUseOnce(false)->first()->toArray()['id'];
             $users = User::whereClientId($client['id'])->get();
+            $owner_id = null;
             foreach ($users as $user) {
                 $rolesForUser = $user->getRoles();
                 foreach ($rolesForUser as $role) {
@@ -66,33 +67,33 @@ class ScheduledCampaignSeeder extends Seeder
                     }
                 }
             }
-            $locations = Location::whereClientId($client['id'])->get()->toArray();
-            $location_id = $locations[rand(0, count($locations) - 1)]['id'];
-            foreach ($audiences as $audience) {
-                for ($i = 1; $i <= $amountOfEvents; $i++) {
-                    $datebetween = abs(($dateend - $datestart) / $daystep);
-                    $randomday = rand(0, $datebetween);
-                    $hour1 = rand(3, 12);
-                    $hour2 = $hour1 + rand(1, 2);
-                    $title = 'Scheduled Campaign #' . $i . ' for ' . $client->name;
-                    $start = date("Y-m-d", $datestart + ($randomday * $daystep)) . ' ' . $hour1 . ':00:00';
-                    $end = date("Y-m-d", $datestart + ($randomday * $daystep)) . ' ' . $hour2 . ':00:00';
-                    // Create a Scheduled Campaign
-                    $user = new User();
-                    $user->id = $owner_id;
-                    $user->current_location_id = $location_id;
-                    $status = collect(CampaignStatusEnum::cases());
-                    $random = rand(0, 3);
-                    $campaign = CreateScheduledCampaign::run([
-                        'audience_id' => $audience['id'],
-                        'name' => $title,
-                        'email_template_id' => $email_template,
-                        'sms_template_id' => $sms_template,
-                        'call_template_id' => $call_template,
-                        'send_at' => $start,
-                        'status' => $status[$random]->name,
-                        'client_id' => $client['id'],
-                    ], $user);
+            if (! is_null($owner_id)) {
+                $locations = Location::whereClientId($client['id'])->get()->toArray();
+                $location_id = $locations[rand(0, count($locations) - 1)]['id'];
+                foreach ($audiences as $audience) {
+                    for ($i = 1; $i <= $amountOfEvents; $i++) {
+                        $datebetween = abs(($dateend - $datestart) / $daystep);
+                        $randomday = rand(0, $datebetween);
+                        $hour1 = rand(3, 12);
+                        $title = 'Scheduled Campaign #' . $i . ' for ' . $client->name;
+                        $start = date("Y-m-d", $datestart + ($randomday * $daystep)) . ' ' . $hour1 . ':00:00';
+                        // Create a Scheduled Campaign
+                        $user = new User();
+                        $user->id = $owner_id;
+                        $user->current_location_id = $location_id;
+                        $status = collect(CampaignStatusEnum::cases());
+                        $random = rand(0, 3);
+                        $campaign = CreateScheduledCampaign::run([
+                            'audience_id' => $audience['id'],
+                            'name' => $title,
+                            'email_template_id' => $email_template,
+                            'sms_template_id' => $sms_template,
+                            'call_template_id' => $call_template,
+                            'send_at' => $start,
+                            'status' => $status[$random]->name,
+                            'client_id' => $client['id'],
+                        ], $user);
+                    }
                 }
             }
         }

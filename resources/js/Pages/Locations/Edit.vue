@@ -21,6 +21,7 @@
                 :poc_first="poc_first"
                 :poc_last="poc_last"
                 :poc_phone="poc_phone"
+                :location-types="locationTypes"
             />
         </template>
     </ModalableWrapper>
@@ -52,6 +53,6 @@ export default defineComponent({
         ModalableWrapper,
         ModalSlot,
     },
-    props: ["location", "poc_first", "poc_last", "poc_phone"],
+    props: ["location", "poc_first", "poc_last", "poc_phone", "locationTypes"],
 });
 </script>

@@ -53,22 +53,20 @@ class ClientConversationReactor extends Reactor
 
             $twilio_service = $client->getTwilioService();
             $conversation_sid = $event->payload['conversation_id'];
-            $identity = $event->payload['sender'];
 
             if ($found_free_agent) {
                 $payload['user_conversation_id'] = $twilio_service->addParticipantToConversation($conversation_sid, $user)->sid;
-//                $payload['user_conversation_id'] = 'MB64fc29886be8424c9515c8d13bb3b7a8';
             }
 
             // Even when no free agent is found, we still want to create this conversation, and since it has no user
             // attached to it, it can serve as a queue.
             ClientConversation::create($payload + ['id' => $event->aggregateRootUuid()]);
 
-            // create identity for the lead/member that started conversation.
-            // we don't care about identity if we are the one initializing conversation.
-            if ($identity !== null) {
-                $twilio_service->setIdentityForParticipant($identity, $event->payload['participant_id'], $conversation_sid);
-            }
+            $twilio_service->setIdentityForParticipant(
+                $this->getIdentity($event->payload['sender'], $event->payload['source']),
+                $event->payload['participant_id'],
+                $conversation_sid
+            );
         } else {
             $user = $conversation->user;
         }
@@ -134,5 +132,27 @@ class ClientConversationReactor extends Reactor
                 'gateway_provider_id' => $gateway_provider_id,
             ]);
         }
+    }
+
+    /**
+     * Creates an identity for external user, leads or members.
+     *
+     * @param string $number
+     * @param string $source expected values, [MESSENGER, SMS]
+     *
+     * @return string
+     */
+    private function getIdentity(string $number, string $source = 'SMS'): string
+    {
+        // For FB, $number would look something like "messenger:5840321225998405", we might want to query fb
+        // to get a more friendly name e.g:
+        /*if ($source === 'MESSENGER') {
+            return app(FacebookService::class)->getAccountFullNameByMessengerId($number);
+        }*/
+
+        // We can also check if a lead/member with $number exist in our database and pull there name here.
+        //
+
+        return $number;
     }
 }

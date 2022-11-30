@@ -3,6 +3,7 @@
 namespace App\Actions\ShortUrl;
 
 use App\Aggregates\Clients\ShortUrlAggregate;
+use App\Models\ShortUrl;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,11 +27,11 @@ class CreateShortUrl
     public function handle($data, $client_id)
     {
         $data['external_url'] = Str::random(10);
-        ShortUrlAggregate::retrieve($client_id)
+        $short_url = ShortUrlAggregate::retrieve($client_id)
             ->createShortUrl("Auto Generated", $data)
             ->persist();
 
-        return true;
+        return ShortUrl::latest()->first();
     }
 
     public function authorize(ActionRequest $request): bool

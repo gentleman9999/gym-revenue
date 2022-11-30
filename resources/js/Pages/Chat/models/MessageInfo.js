@@ -1,13 +1,17 @@
-let foo = 0;
+import * as InternalMessage from "@/Pages/Chat/models/Message.js";
+import * as InternalParticipant from "@/Pages/Chat/models/Participant.js";
+
 export default class MessageInfo {
     /**
-     * @param {Message} message
+     * @param {Message|InternalMessage} message
      * @param {boolean} isInfo
+     * @param {InternalParticipant[]} participants
      */
-    constructor(message, isInfo = false) {
+    constructor(message, isInfo = false, participants = []) {
         this.date = new Date();
         this.message = message;
         this.isInfo = isInfo;
+        this.participants = participants;
     }
 
     /**
@@ -28,6 +32,10 @@ export default class MessageInfo {
      * @returns {string}
      */
     get author() {
+        if (this.isInfo) {
+            return "";
+        }
+
         return this.message.author;
     }
 

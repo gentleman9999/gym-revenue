@@ -6,6 +6,7 @@ use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\DripCampaigns\DripCampaignAggregate;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Projections\Location;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;
@@ -28,6 +29,10 @@ class CreateDripCampaign
         $id = Uuid::new();
 
         $aggy = DripCampaignAggregate::retrieve($id);
+
+        //NEEDED FOR LIVE REPORTING
+        $location = Location::whereClientId($payload['client_id'])->first();
+        $payload['gymrevenue_id'] = $location->gymrevenue_id;
 
         $aggy->create($payload)->persist();
 
@@ -54,7 +59,7 @@ class CreateDripCampaign
             'end_at' => ['sometimes', 'nullable', 'after:start_at'],
             'completed_at' => ['sometimes', 'nullable', 'after:start_at'],
             'days' => ['array', 'min:1'],
-            'status' => ['required'],
+            //'status' => ['required'],
         ];
     }
 

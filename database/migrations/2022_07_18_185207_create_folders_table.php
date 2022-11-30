@@ -24,6 +24,7 @@ return new class () extends Migration {
             $table->json('user_ids')->nullable();
             $table->json('role_ids')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -2,9 +2,14 @@
 
 namespace App\Domain\EndUsers\Actions;
 
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Lorisleiva\Actions\ActionRequest;
+use Prologue\Alerts\Facades\Alert;
 
-abstract class DeleteEndUser extends BaseEndUserAction
+class DeleteEndUser extends BaseEndUserAction
 {
     /**
      * Get the validation rules that apply to the action.
@@ -18,10 +23,31 @@ abstract class DeleteEndUser extends BaseEndUserAction
         ];
     }
 
-    public function handle(EndUser $lead, $current_user)
+    public function handle(EndUser $endUser)
     {
-        ($this->getAggregate())::retrieve($lead->id)->delete()->persist();
+        EndUserAggregate::retrieve($endUser->id)->delete()->persist();
 
-        return $lead;
+        return $endUser;
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        $current_user = $request->user();
+
+        return $current_user->can('endusers.delete', EndUser::class);
+    }
+
+    public function asController(ActionRequest $request, EndUser $endUser): EndUser
+    {
+        return $this->handle(
+            $endUser,
+        );
+    }
+
+    public function htmlResponse(EndUser $endUser): RedirectResponse
+    {
+        Alert::success("End User '{$endUser->first_name}' was deleted")->flash();
+
+        return Redirect::back();
     }
 }

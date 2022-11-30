@@ -12,7 +12,10 @@
             </div>
         </div>
         <template #modal>
-            <location-form :client-id="$page.props.user.client_id" />
+            <location-form
+                :client-id="$page.props.user.client_id"
+                :location-types="locationTypes"
+            />
         </template>
     </ModalableWrapper>
 </template>
@@ -42,5 +45,6 @@ export default defineComponent({
         ModalableWrapper,
         ModalSlot,
     },
+    props: ["locationTypes"],
 });
 </script>

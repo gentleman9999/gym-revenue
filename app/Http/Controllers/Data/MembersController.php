@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Data;
 
 use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Members\MemberAggregate;
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Domain\Users\Models\User;
+use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -24,7 +28,7 @@ class MembersController extends Controller
     public function index(Request $request)
     {
         $user = request()->user();
-        if ($user->cannot('members.read', Member::class)) {
+        if ($user->cannot('endusers.read', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -83,6 +87,19 @@ class MembersController extends Controller
             $members->setCollection($sortedResult);
         }
 
+        if ($user->current_location_id) {
+            $newMemberCount = LiveReportsByDay::whereEntity('member')
+                ->where('date', '=', date('Y-m-d'))
+                ->whereAction(LiveReportingEnum::ADDED)
+                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+            if ($newMemberCount) {
+                $newMemberCount = $newMemberCount->value;
+            } else {
+                $newMemberCount = 0;
+            }
+        } else {
+            $newMemberCount = 0;
+        }
 
         $available_member_owners = [];
         foreach ($team_users as $team_user) {
@@ -110,7 +127,7 @@ class MembersController extends Controller
                 'lastupdated'
             ),
             'grlocations' => Location::all(),
-
+            'newMemberCount' => $newMemberCount,
         ]);
     }
 
@@ -160,7 +177,7 @@ class MembersController extends Controller
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
 
-        if ($user->cannot('members.create', Member::class)) {
+        if ($user->cannot('endusers.create', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -223,10 +240,10 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function edit(Member $member)
+    public function edit(EndUser $endUser)
     {
         $user = request()->user();
-        if ($user->cannot('members.update', Member::class)) {
+        if ($user->cannot('endusers.update', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
@@ -246,8 +263,6 @@ class MembersController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $member_aggy = MemberAggregate::retrieve($member->id);
-
         $session_team = session()->get('current_team');
         if ($session_team && array_key_exists('id', $session_team)) {
             $current_team = Team::find($session_team['id']);
@@ -255,12 +270,12 @@ class MembersController extends Controller
             $current_team = Team::find($user->default_team_id);
         }
         $team_users = $current_team->team_users()->get();
-        $member->load('notes');
+        $endUser->load('notes');
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $memberData = $member->toArray();
-        $memberData['all_notes'] = $member->notes->toArray();
+        $memberData = $endUser->toArray();
+        $memberData['all_notes'] = $endUser->notes->toArray();
 
         foreach ($memberData['all_notes'] as $key => $value) {
             if (ReadReceipt::whereNoteId($memberData['all_notes'][$key]['id'])->first()) {
@@ -274,22 +289,20 @@ class MembersController extends Controller
             'member' => $memberData,
             'user_id' => $user->id,
             'locations' => $locations,
-            'interactionCount' => $member_aggy->getInteractionCount(),
         ]);
     }
 
-    public function show(Member $member)
+    public function show(EndUser $endUser)
     {
-        $aggy = MemberAggregate::retrieve($member->id);
-        $preview_note = Note::select('note')->whereEntityId($member->id)->get();
+        $aggy = EndUserAggregate::retrieve($endUser->id);
+        $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
 
         return Inertia::render('Members/Show', [
-            'member' => $member->load(['detailsDesc']),
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
-            'hasTwilioConversation' => $member->client->hasTwilioConversationEnabled(),
+            'hasTwilioConversation' => $endUser->client->hasTwilioConversationEnabled(),
         ]);
     }
 
@@ -349,17 +362,17 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function contact(Member $member)
+    public function contact(EndUser $end_user): \Illuminate\Http\RedirectResponse
     {
         $user = request()->user();
-        if ($user->cannot('members.contact', Member::class)) {
+        if ($user->cannot('endusers.contact', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back()->with('selectedMemberDetailIndex', 0);
         }
 
         if (array_key_exists('method', request()->all())) {
-            $aggy = MemberAggregate::retrieve($member->id);
+            $aggy = EndUserAggregate::retrieve($end_user->id);
             $data = request()->all();
 
             $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -369,8 +382,9 @@ class MembersController extends Controller
                     $data['interaction_count']++;
                 }
             }
-
-            switch (request()->get('method')) {
+            // Remove following If statement prior to going live
+            if ($end_user->isCBorGR()) {
+                switch (request()->get('method')) {
                     case 'email':
                         $aggy->email($data)->persist();
                         Alert::success("Email sent to member")->flash();
@@ -392,31 +406,34 @@ class MembersController extends Controller
                     default:
                         Alert::error("Invalid communication method. Select Another.")->flash();
                 }
+            } else {
+                Alert::error("Member does not have a Cape and Bay or Gym Revenue email address.")->flash();
+            }
         }
 
         return Redirect::back()->with('selectedMemberDetailIndex', 0);
     }
 
-    public function view(Member $member)
+    public function view(EndUser $endUser)
     {
         $user = request()->user();
-        if ($user->cannot('members.read', Member::class)) {
+        if ($user->cannot('endusers.read', EndUser::class)) {
             Alert::error("Oops! You dont have permissions to do that.")->flash();
 
             return Redirect::back();
         }
-        $user = request()->user();
-        $member_aggy = MemberAggregate::retrieve($member->id);
-//        $data = Member::whereId($member_id)->with('detailsDesc')->first();
-        $data = Member::whereId($member->id)->first();
+        $data = Member::whereId($endUser->id)->first();
         $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
-        $preview_note = Note::select('note')->whereEntityId($member->id)->get();
+        $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
+        $aggy = EndUserAggregate::retrieve($endUser->id);
+
         $data = [
-            'member' => $member,
+            'member' => $endUser,
             'user_id' => $user->id,
             'club_location' => $locid,
-            'interactionCount' => $member_aggy->getInteractionCount(),
+            'interactionCount' => $aggy->getInteractionCount(),
             'preview_note' => $preview_note,
+
         ];
 
         return $data;
@@ -426,7 +443,7 @@ class MembersController extends Controller
     public function export(Request $request)
     {
         $user = request()->user();
-        if ($user->cannot('members.read', Member::class)) {
+        if ($user->cannot('endusers.read', EndUser::class)) {
             abort(403);
         }
 

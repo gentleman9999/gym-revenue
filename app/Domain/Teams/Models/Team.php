@@ -6,7 +6,9 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Clients\Projections\ClientDetail;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,10 +20,15 @@ use Laravel\Jetstream\Events\TeamUpdated;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Jetstream\Team as JetstreamTeam;
 
+/**
+ *
+ * @method static TeamFactory factory()
+ */
 class Team extends JetstreamTeam
 {
     use HasFactory;
     use Sortable;
+    use HasFactory;
 
     protected $primaryKey = 'id';
 
@@ -76,6 +83,16 @@ class Team extends JetstreamTeam
                 $model->setAppends(['GymRevTeam']);
             }
         });
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return TeamFactory::new();
     }
 
     public function details(): HasMany

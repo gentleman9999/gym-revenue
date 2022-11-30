@@ -21,6 +21,7 @@
                 @onBlockSave="createBlock"
                 @onBlockRemove="deleteBlock"
                 @onBlockEdit="updateBlock"
+                @onOpenFileManager="() => (fileManagerVisible = true)"
                 :class="{ hidden: showSpinner }"
                 style="position: unset"
             />
@@ -56,6 +57,15 @@
             </template>
         </daisy-modal>
     </div>
+    <template v-if="fileManagerVisible">
+        <ModalUnopinionated zindex="9999">
+            <div
+                class="flex flex-col h-full items-center justify-center bg-black bg-opacity-80"
+            >
+                <EmailFileManager @image="handleUserFileChoice" />
+            </div>
+        </ModalUnopinionated>
+    </template>
 </template>
 
 <script setup>
@@ -68,6 +78,8 @@ import theme from "@/theme.js";
 
 import DesktopSupportOnly from "./DesktopSupportOnly.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
+import ModalUnopinionated from "@/Components/ModalUnopinionated.vue";
+import EmailFileManager from "@/Components/EmailFileManager.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
 const tailwindColors = theme.colors;
@@ -91,9 +103,11 @@ const props = defineProps({
 });
 
 const page = usePage();
+const fileManagerVisible = ref(false);
 
 const customOptions = {
     title: props.title,
+    customFileManager: true,
     authorize: {
         apiKey: props.apiKey,
         userId: page.props.value.user.id,
@@ -173,13 +187,13 @@ const customOptions = {
     },
     mergeTags: [
         {
-            name: "Merge tags", // Group name
+            name: "Tags", // Group name
             items: [
                 /*{
                     value: "%%recipient.first_name%%",
                     text: "Last name",
                     label: "Customer's last name",
-                },*/
+                },
 
                 //Nested Merge Tags
                 {
@@ -196,10 +210,10 @@ const customOptions = {
                             label: "Customer's last name 2",
                         },
                     ],
-                },
+                },*/
             ],
         },
-        {
+        /*        {
             name: "Special links", // Group name
             items: [
                 {
@@ -223,7 +237,7 @@ const customOptions = {
                     label: "Call to Action",
                 },
             ],
-        },
+        },*/
     ],
 };
 const ready = ref(false);
@@ -322,12 +336,11 @@ function getBlockIndexById(id) {
     return blocks.value.findIndex((b) => b.id === id);
 }
 
-const handleOnSave = (args) => {
-    console.log("handleOnSave", args);
-};
-const handleOnSaveAndClose = (args) => {
-    console.log("handleOnSaveAndClose", args);
-};
+function handleUserFileChoice(url) {
+    TopolPlugin.chooseFile(url);
+    fileManagerVisible.value = false;
+}
+
 const handleOnInit = (args) => {
     ready.value = true;
     if (!props.json) {

@@ -2,7 +2,8 @@
     <div class="flex items-center relative search-input-wrapper w-fit">
         <input
             :class="{
-                'search-input border-secondary': true,
+                'search-input': true.valueOf,
+                'border-secondary': secondary,
                 'h-6 text-sm': size === 'xs',
                 'h-7 text-base': size === 'sm',
                 'h-8 text-lg': size === 'lg',
@@ -52,6 +53,10 @@ const props = defineProps({
     size: {
         type: String,
         default: "sm",
+    },
+    secondary: {
+        type: Boolean,
+        default: true,
     },
 });
 </script>

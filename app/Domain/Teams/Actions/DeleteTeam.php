@@ -23,7 +23,7 @@ class DeleteTeam implements DeletesTeams
     {
         TeamAggregate::retrieve($team->id)->delete()->persist();
 
-        return $team->refresh();
+        return $team;
     }
 
     public function getControllerMiddleware(): array

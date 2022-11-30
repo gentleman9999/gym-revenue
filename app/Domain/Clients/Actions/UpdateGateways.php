@@ -3,6 +3,7 @@
 namespace App\Domain\Clients\Actions;
 
 use App\Domain\Clients\ClientSettingsAggregate;
+use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Projections\Client;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
@@ -25,15 +26,16 @@ class UpdateGateways
     public function rules(): array
     {
         return [
-            'client_id' => ['required', 'string', 'max:255', 'exists:clients,id'],
-            'mailgunDomain' => ['sometimes', 'string', 'nullable'],
-            'mailgunSecret' => ['sometimes', 'string', 'nullable'],
-            'mailgunFromAddress' => ['sometimes', 'string', 'nullable'],
-            'mailgunFromName' => ['sometimes', 'string', 'nullable'],
-            'twilioSID' => ['sometimes', 'string', 'nullable'],
-            'twilioToken' => ['sometimes', 'string', 'nullable'],
-            'twilioNumber' => ['sometimes', 'string', 'nullable'],
-            'twilioConversationServiceSID' => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_CLIENT_ID => ['required', 'string', 'max:255', 'exists:clients,id'],
+            ClientGatewaySetting::NAME_MAILGUN_DOMAIN => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_MAILGUN_SECRET => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_MAILGUN_FROM_ADDRESS => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_MAILGUN_FROM_NAME => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_TWILIO_SID => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_TWILIO_TOKEN => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_TWILIO_NUMBER => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_TWILIO_CONVERSATION_SERVICES_ID => ['sometimes', 'string', 'nullable'],
+            ClientGatewaySetting::NAME_TWILIO_MESSENGER_ID => ['sometimes', 'string', 'nullable'],
         ];
     }
 

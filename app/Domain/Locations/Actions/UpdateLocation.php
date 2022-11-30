@@ -4,9 +4,12 @@ namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
+use App\Enums\LocationTypeEnum;
+use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
@@ -26,7 +29,7 @@ class UpdateLocation
             'poc_last' => ['sometimes'],
             'name' => ['sometimes', 'required', 'max:50'],
             'city' => ['sometimes', 'required', 'max:30'],
-            'state' => ['sometimes', 'required', 'size:2'],
+            'state' => ['sometimes', 'required', 'size:2', new Enum(StatesEnum::class)],
 //            'client_id' => ['sometimes', 'required', 'exists:clients,id'],
             'address1' => ['sometimes', 'required','max:200'],
             'address2' => [],
@@ -39,6 +42,7 @@ class UpdateLocation
             'location_no' => ['sometimes', 'required', 'max:50', 'exists:locations,location_no'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
+            'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
         ];
     }
 

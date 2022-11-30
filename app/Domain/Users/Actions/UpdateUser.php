@@ -5,10 +5,12 @@ namespace App\Domain\Users\Actions;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
+use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use function bcrypt;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Enum;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
@@ -55,7 +57,7 @@ class UpdateUser implements UpdatesUserProfileInformation
             'address1' => ['sometimes', 'required'],
             'address2' => ['sometimes', 'nullable'],
             'city' => ['sometimes', 'required'],
-            'state' => ['sometimes', 'required'],
+            'state' => ['sometimes', 'required', 'max:2', new Enum(StatesEnum::class)],
             'zip' => ['sometimes', 'required'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
@@ -112,6 +114,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     {
         $this->updatingSelf = true;
         $input['client_id'] = $user->client_id;
+        $input['id'] = $user->id;
         $this->handle($input['id'], $input);
     }
 }

@@ -25,7 +25,7 @@ class DeleteFile
     {
         $current_user = $request->user();
 
-        return $current_user->can('files.trash', File::class);
+        return $current_user->can('files.delete', File::class);
     }
 
     public function asController(ActionRequest $request, $id)

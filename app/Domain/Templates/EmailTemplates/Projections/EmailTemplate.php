@@ -2,7 +2,8 @@
 
 namespace App\Domain\Templates\EmailTemplates\Projections;
 
-use App\Domain\Templates\Actions\TemplateParser;
+use App\Domain\Templates\Services\Interfaces\TemplateParserInterface;
+use App\Domain\Templates\Services\Traits\TemplateParserTrait;
 use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
@@ -15,10 +16,11 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property string $markup
  */
-class EmailTemplate extends GymRevProjection
+class EmailTemplate extends GymRevProjection implements TemplateParserInterface
 {
     use SoftDeletes;
     use Sortable;
+    use TemplateParserTrait;
 
     protected $fillable = [
         'name', 'markup', 'subject', 'thumbnail',
@@ -65,11 +67,6 @@ class EmailTemplate extends GymRevProjection
         });
     }
 
-    public function getMarkupAttribute($value): false|string
-    {
-        return base64_decode($value);
-    }
-
     public function setMarkupAttribute($value): void
     {
         $this->attributes['markup'] = base64_encode($value);
@@ -93,10 +90,5 @@ class EmailTemplate extends GymRevProjection
     public function gateway(): HasOne
     {
         return $this->detail()->whereDetail('email_gateway')->whereActive(1);
-    }
-
-    public function parseContent(array $data = [], string $type = TemplateParser::TYPE_EVAL): string
-    {
-        return TemplateParser::run($this->markup, $data, $type);
     }
 }

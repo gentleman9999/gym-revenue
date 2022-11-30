@@ -4,10 +4,13 @@ namespace App\Domain\Locations\Projections;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
+use App\Enums\LocationTypeEnum;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
+use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Location
  *
  * @mixin Builder
+ * @method static \Database\Factories\LocationFactory factory()
  */
 class Location extends GymRevProjection
 {
@@ -29,11 +33,26 @@ class Location extends GymRevProjection
         'name', 'address1', 'address2', 'city', 'state', 'zip',
         'active', 'location_no', 'gymrevenue_id', 'deleted_at',
         'open_date', 'close_date', 'phone', 'default_team_id',
+        'location_type',
     ];
 
     protected static function booted(): void
     {
         static::addGlobalScope(new ClientScope());
+    }
+
+    protected $casts = [
+        'location_type' => LocationTypeEnum::class,
+    ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return LocationFactory::new();
     }
 
     public function client(): BelongsTo

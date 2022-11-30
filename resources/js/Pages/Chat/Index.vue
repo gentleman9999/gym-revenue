@@ -12,7 +12,9 @@
             :key="refreshKey"
             :conversations="sortedConversation"
             @view-conversation="setActiveConversation"
+            @start-chat="startChat"
         />
+
         <chat-content-box
             :conversation="activeConversation"
             @sendMsg="sendMessage"
@@ -22,8 +24,9 @@
 <style scoped>
 .chat-container {
     @apply flex flex-row;
-    margin-top: -32px;
-    height: calc(100vh - 140px);
+    margin-top: -35px;
+    /* 64px header and 64px footer, please fix this if you know a better way */
+    height: calc(100vh - (64px + 64px));
 }
 .chat-container.has-error {
     margin-top: -10px !important;
@@ -36,11 +39,18 @@ import ChatMessengerList from "./components/chat-messenger-list/index.vue";
 import { Client as ConversationsClient } from "@twilio/conversations";
 import ConversationMsg from "@/Pages/Chat/models/ConversationMsg.js";
 import MessageInfo from "@/Pages/Chat/models/MessageInfo.js";
-
+import Chat from "@/Pages/Chat/models/Chat.js";
+import User from "@/Pages/Chat/models/User.js";
+import { NOTIFICATION_TYPES } from "@/utils/index.js";
+import Message from "@/Pages/Chat/models/Message.js";
 const props = defineProps({
     error: {
         type: String,
         required: false,
+    },
+    user: {
+        type: User,
+        required: true,
     },
 });
 
@@ -63,8 +73,34 @@ onMounted(() => {
     // I'm attaching a refresh event to the chat element, so it can be refreshed out of this components scope.
     // @see resources/js/utils/parseNotificationResponse.buildConversationNotification
     // An alternative to this would be to use "usePage", but somehow it feels hackery to me.
-    chatContainer.value.addEventListener("refresh", fetchConversations);
+    chatContainer.value.addEventListener("refresh", ({ detail }) => {
+        if (detail.type === NOTIFICATION_TYPES.TYPE_NEW_CONVERSATION) {
+            fetchTwilioConversation();
+        } else if (detail.type === NOTIFICATION_TYPES.TYPE_NEW_MESSAGE) {
+            const index = conversations.value.findIndex(
+                (c) => c.conversation.id === detail.chat_id
+            );
+
+            // new chat
+            if (index < 0) {
+                return fetchInternalConversation();
+            }
+
+            /** @type {ConversationMsg} */
+            const conversation = conversations.value[index];
+            conversation.updatedAt = new Date();
+            conversation.messages.push(
+                new MessageInfo(
+                    new Message(detail.message, [], conversation.sid),
+                    false,
+                    conversation.conversation
+                )
+            );
+        }
+    });
 });
+
+fetchInternalConversation();
 
 axios.get(route("twilio.api-token")).then(({ data }) => {
     client = new ConversationsClient(data.token);
@@ -95,7 +131,7 @@ axios.get(route("twilio.api-token")).then(({ data }) => {
 
     client.on("connectionStateChanged", async (state) => {
         if (state === "connected") {
-            fetchConversations();
+            fetchTwilioConversation();
         }
     });
 });
@@ -106,7 +142,7 @@ function setActiveConversation(index) {
     activeConversation.value = conversations.value[index];
 }
 
-function fetchConversations() {
+function fetchTwilioConversation() {
     axios.get(route("twilio.get-conversation")).then((response) => {
         response.data.forEach(
             ({ conversation_id, user_conversation_id, updated_at }) => {
@@ -120,8 +156,79 @@ function fetchConversations() {
     });
 }
 
+/**
+ * Remove any conversation where the $key property matches $match.
+ * @param {string} key
+ * @param {string} match
+ */
+function removeConversation(key, match) {
+    // Currently, when we have a new conversation, we clear existing conversation and reset them.
+    // The issue with this approach is that the rerender is very noticeable, so instead, we want
+    // to take out existing conversation one at a time.
+    const index = conversations.value.findIndex(
+        (m) => m.conversation[key] === match
+    );
+    if (index >= 0) {
+        conversations.value.splice(index, 1);
+    }
+}
+
+function fetchInternalConversation() {
+    axios.get(route("get-internal-chats")).then(({ data }) => {
+        data.data.forEach(createConversationFromChatObject);
+    });
+}
+
 function sendMessage(message) {
     activeConversation.value.conversation.sendMessage(message, { read: true });
+}
+
+function startChat(users) {
+    axios
+        .post(route("start-internal-chats"), {
+            participant_ids: Object.keys(users),
+        })
+        .then(({ data }) => {
+            setActiveConversation(createConversationFromChatObject(data) - 1);
+        });
+}
+
+function createConversationFromChatObject(data) {
+    const chat = new Chat(data, props.user.id);
+    const users = chat.participants
+        .filter(({ user }) => user.id !== props.user.id)
+        .map(({ user }) => user.fullName)
+        .join(", ");
+    let isInfo = false;
+
+    removeConversation("id", chat.id);
+    if (chat.messages.length === 0) {
+        isInfo = true;
+        chat.messages.push(
+            new Message(
+                {
+                    chat_id: chat.id,
+                    message: `Start conversation with ${users} by typing bellow`,
+                },
+                chat.participants,
+                chat.currentUserParticipantId
+            )
+        );
+    }
+
+    return conversations.value.push(
+        new ConversationMsg(
+            chat,
+            users,
+            chat.currentUserParticipantId,
+            chat.messages.map(
+                (message) => new MessageInfo(message, isInfo, chat.participants)
+            ),
+            chat.participants.length > 2,
+            chat.updatedAt,
+            true
+        )
+    );
 }
 
 /**
@@ -159,6 +266,7 @@ async function addConversation(conversationSid, mySid, updatedAt) {
             );
         }
 
+        removeConversation("sid", conversation.sid);
         conversations.value.push(
             new ConversationMsg(
                 conversation,
