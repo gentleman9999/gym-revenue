@@ -1,4 +1,4 @@
-type DashboardProps implements DashboardProp {
+type DashboardProps {
     teamName: String
     accountName: String
     teams: [Team]

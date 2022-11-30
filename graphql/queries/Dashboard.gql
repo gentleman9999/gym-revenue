@@ -1,4 +1,3 @@
 extend type Query {
     dashboardQuery: DashboardProps
 }
-

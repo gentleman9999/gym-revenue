@@ -926,6 +926,28 @@ const DASHBOARD_QUERY = gql`
         }
     }
 `;
+const PROFILE_QUERY = gql`
+    query ProfileQuery {
+        props: profileQuery {
+            user {
+                first_name
+                last_name
+                phone
+                email
+                alternate_email
+                address1
+                address2
+                city
+                state
+                zip
+                contact_preference {
+                    id
+                    value
+                }
+            }
+        }
+    }
+`;
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -993,4 +1015,5 @@ export default {
     events: CALENDAR_EVENTS,
     widgets: WIDGETS,
     dashboardQuery: DASHBOARD_QUERY,
+    profileQuery: PROFILE_QUERY,
 };

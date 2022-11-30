@@ -6,7 +6,10 @@
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <template v-if="$page.props.jetstream.canUpdateProfileInformation">
-                <update-profile-information-form :user="$page.props.user" />
+                <update-profile-information-form
+                    :user="data.user"
+                    v-if="data.user"
+                />
 
                 <jet-section-border />
             </template>
@@ -126,6 +129,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
@@ -136,6 +140,8 @@ import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfile
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import ShowApiTokenForm from "@/Pages/Profile/Partials/ShowAPITokenForm.vue";
 import ApiTokenManager from "@/Pages/Profile/Partials/ApiTokenManager.vue";
+import queries from "@/gql/queries";
+import { useQuery } from "@vue/apollo-composable";
 
 const props = defineProps({
     sessions: {
@@ -146,4 +152,7 @@ const props = defineProps({
         default: {},
     },
 });
+
+const { result } = useQuery(queries["profileQuery"]);
+const data = computed(() => result.value?.props ?? {});
 </script>
