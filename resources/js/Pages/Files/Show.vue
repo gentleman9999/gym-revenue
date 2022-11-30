@@ -35,7 +35,6 @@
             :handleShare="handleShare"
             :handleRestore="handleRestore"
             @browse="changeDirectory"
-
         />
     </div>
 

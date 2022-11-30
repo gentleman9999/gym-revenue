@@ -10,11 +10,13 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
+use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use function bcrypt;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Enum;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
@@ -99,7 +101,7 @@ class CreateUser implements CreatesNewUsers
             'address1' => ['required'],
             'address2' => ['sometimes', 'nullable'],
             'city' => ['required'],
-            'state' => ['required'],
+            'state' => ['required', 'max:2', new Enum(StatesEnum::class)],
             'zip' => ['required'],
             'notes' => ['sometimes'] ,
             'start_date' => ['sometimes'] ,
