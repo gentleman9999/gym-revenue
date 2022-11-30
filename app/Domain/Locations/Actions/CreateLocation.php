@@ -5,6 +5,7 @@ namespace App\Domain\Locations\Actions;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
+use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,7 @@ class CreateLocation
             'poc_last' => ['sometimes'],
             'name' => ['required', 'max:50'],
             'city' => ['required', 'max:30'],
-            'state' => ['required', 'size:2'],
+            'state' => ['required', 'size:2', new Enum(StatesEnum::class)],
             'client_id' => ['required', 'exists:clients,id'],
             'address1' => ['required','max:200'],
             'address2' => [],
