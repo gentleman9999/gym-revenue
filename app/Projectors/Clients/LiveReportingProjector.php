@@ -77,7 +77,7 @@ class LiveReportingProjector extends Projector
     public function onDripCampaignCreated(DripCampaignCreated $event): void
     {
         $record = LiveReportsByDay::whereClientId($event->payload['client_id'])
-            ->whereGrLocationId($event->payload['gymrevenue_id'])
+            ->whereGrLocationId($event->payload['gr_location_id'])
             ->whereAction(LiveReportingEnum::DRIP_CAMPAIGN_STARTED)
             ->whereEntity('mass-comms')
             ->whereDate('date', '=', $event->createdAt())
@@ -87,7 +87,7 @@ class LiveReportingProjector extends Projector
             $record = LiveReportsByDay::create(
                 [
                     'client_id' => $event->payload['client_id'],
-                    'gr_location_id' => $event->payload['gymrevenue_id'],
+                    'gr_location_id' => $event->payload['gr_location_id'],
                     'action' => LiveReportingEnum::DRIP_CAMPAIGN_STARTED,
                     'entity' => 'mass-comms',
                     'date' => $event->createdAt(),
@@ -100,7 +100,7 @@ class LiveReportingProjector extends Projector
     public function onScheduledCampaignCreated(ScheduledCampaignCreated $event): void
     {
         $record = LiveReportsByDay::whereClientId($event->payload['client_id'])
-            ->whereGrLocationId($event->payload['gymrevenue_id'])
+            ->whereGrLocationId($event->payload['gr_location_id'])
             ->whereAction(LiveReportingEnum::SCHEDULED_CAMPAIGN_STARTED)
             ->whereEntity('mass-comms')
             ->whereDate('date', '=', $event->createdAt())
@@ -110,7 +110,7 @@ class LiveReportingProjector extends Projector
             $record = LiveReportsByDay::create(
                 [
                     'client_id' => $event->payload['client_id'],
-                    'gr_location_id' => $event->payload['gymrevenue_id'],
+                    'gr_location_id' => $event->payload['gr_location_id'],
                     'action' => LiveReportingEnum::SCHEDULED_CAMPAIGN_STARTED,
                     'entity' => 'mass-comms',
                     'date' => $event->createdAt(),
