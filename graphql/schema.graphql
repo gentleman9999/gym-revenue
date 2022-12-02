@@ -15,3 +15,14 @@ input Filter {
     state: String
 }
 #import queries/*.gql
+
+type Mutation {
+    "Creates a Location"
+    createLocation(location: CreateLocationInput!): Location!
+    @inject(context: "user.client_id", name: "location.client_id")
+    "Updates a location"
+    updateLocation(id: ID!, name:String!): Location!
+    "Assigns EndUser to Current User"
+    claimEndUser(endUser: ID!): Lead!
+    @inject(context: "user.id", name: "user")
+}

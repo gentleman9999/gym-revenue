@@ -52,6 +52,15 @@ class UpdateLocation
         return $location->refresh();
     }
 
+    /**
+     * @param  null  $_
+     * @param  array{}  $args
+     */
+    public function __invoke($_, array $args): Location
+    {
+        return $this->handle(Location::find($args['id']), $args);
+    }
+
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

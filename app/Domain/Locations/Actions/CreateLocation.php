@@ -8,6 +8,7 @@ use App\Enums\LocationTypeEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
@@ -26,25 +27,36 @@ class CreateLocation
     public function rules(): array
     {
         return [
-            'poc_last' => ['sometimes'],
             'name' => ['required', 'max:50'],
             'city' => ['required', 'max:30'],
             'state' => ['required', 'size:2'],
             'client_id' => ['required', 'exists:clients,id'],
             'address1' => ['required','max:200'],
-            'address2' => [],
+            'address2' => ['sometimes', 'nullable','max:200'],
             'zip' => ['required', 'size:5'],
             'phone' => [],
-            'poc_first' => [],
-            'poc_phone' => [],
+            'poc_first' => ['sometimes', 'nullable', 'string', 'max:50'],
+            'poc_last' => ['sometimes', 'nullable', 'string', 'max:50'],
+            'poc_phone' => ['sometimes', 'nullable', 'string', 'size:10'],
             'open_date' => [],
             'close_date' => [],
-            'location_no' => ['required', 'max:50'],
-            'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
+            'location_no' => ['required', 'max:10'],
+            'gymrevenue_id' => ['sometimes', 'nullable', 'unique:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
             'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
         ];
+    }
+
+    /**
+     * @param  null  $_
+     * @param  array{}  $args
+     */
+    public function __invoke($_, array $args): Location
+    {
+        Log::info(json_encode($args));
+
+        return $this->handle($args['location']);
     }
 
     public function handle(array $data): Location

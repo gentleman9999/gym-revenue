@@ -11,7 +11,8 @@
 <script>
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 export default {
     props: {
@@ -43,19 +44,26 @@ export default {
     },
     setup(props) {
         const page = usePage();
-
+        const claimed = ref(props?.value);
         const assigning = ref(false);
+
+        const { mutate: claimEndUser } = useMutation(gql`
+            mutation claimEndUser($endUser: ID!) {
+                claimEndUser(endUser: $endUser) {
+                    owner_user_id
+                }
+            }
+        `);
 
         const status = computed(() => {
             if (assigning.value === true) {
                 return "Assigning...";
             }
 
-            const claimed = props.value;
-            const yours = props.value === page.props.value.user.id;
+            const yours = claimed.value === page.props.value.user.id;
             if (yours) {
                 return "Yours";
-            } else if (claimed) {
+            } else if (claimed.value) {
                 return "Claimed";
             }
             return "Available";
@@ -78,13 +86,9 @@ export default {
             console.log("handleClick");
             if (status.value === "Available") {
                 assigning.value = true;
-                Inertia.visit(route("data.leads.assign", props.data.id), {
-                    method: "put",
-                    preserveScroll: true,
-                    onFinish: () => {
-                        assigning.value = false;
-                    },
-                });
+                const { data } = await claimEndUser({ endUser: props.data.id });
+                claimed.value = data.claimEndUser.owner_user_id;
+                assigning.value = false;
             }
         };
         return { status, handleClick, badgeClass, assigning };

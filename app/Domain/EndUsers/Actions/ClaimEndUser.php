@@ -2,7 +2,6 @@
 
 namespace App\Domain\EndUsers\Actions;
 
-use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Users\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -10,16 +9,24 @@ use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 
-class AssignEndUserToRep extends BaseEndUserAction
+class ClaimEndUser extends BaseEndUserAction
 {
     public function handle(EndUser $endUser, User $user): EndUser
     {
-        EndUserAggregate::retrieve($endUser->id)->claim($user->id)->persist();
-
-        return $endUser->refresh();
+        return AssignEndUserToRep::run($endUser, $user);
     }
 
-    public function asController(ActionRequest $request, EndUser $endUser)
+    /**
+     * GraphQL Invoke
+     * @param  null  $_
+     * @param  array{}  $args
+     */
+    public function __invoke($_, array $args): EndUser
+    {
+        return $this->handle(EndUser::find($args['endUser']), User::find($args['user']));
+    }
+
+    public function asController(ActionRequest $request, EndUser $endUser): EndUser
     {
         return $this->handle(
             $endUser,
@@ -27,19 +34,9 @@ class AssignEndUserToRep extends BaseEndUserAction
         );
     }
 
-    protected static function getModel(): EndUser
-    {
-        return new EndUser();
-    }
-
-    protected static function getAggregate(): EndUserAggregate
-    {
-        return new EndUserAggregate();
-    }
-
     public function htmlResponse(EndUser $endUser): RedirectResponse
     {
-        Alert::success("Lead '{$endUser->name}' assigned to Rep")->flash();
+        Alert::success("EndUser '{$endUser->name}' claimed")->flash();
 
         return Redirect::back();
     }
