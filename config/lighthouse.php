@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\Support\DiscoverActionNamespaces;
 use App\Actions\Support\DiscoverModelNamespaces;
 
 return [
@@ -182,9 +183,9 @@ return [
     //    'models' => ['App', 'App\\Models'],
         'models' => DiscoverModelNamespaces::run(),
         'queries' => 'App\\GraphQL\\Queries',
-       'mutations' => 'App\\GraphQL\\Mutations',
+    //    'mutations' => 'App\\GraphQL\\Mutations',
 //    TODO: create DiscoverActionNamespaces Action
-        // 'mutations' => ['App\\Domain\\Locations\\Actions', 'App\\Domain\\EndUsers\\Actions'],
+        'mutations' => DiscoverActionNamespaces::run(),
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
         'interfaces' => 'App\\GraphQL\\Interfaces',
         'unions' => 'App\\GraphQL\\Unions',

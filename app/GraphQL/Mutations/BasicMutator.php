@@ -2,7 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
-final class BasicMutator
+class BasicMutator
 {
     /**
      * @param  null  $_
