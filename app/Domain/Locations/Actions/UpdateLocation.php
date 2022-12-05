@@ -27,22 +27,24 @@ class UpdateLocation
     {
         return [
             'poc_last' => ['sometimes'],
-            'name' => ['sometimes', 'required', 'max:50'],
-            'city' => ['sometimes', 'required', 'max:30'],
-            'state' => ['sometimes', 'required', 'size:2', new Enum(StatesEnum::class)],
-//            'client_id' => ['sometimes', 'required', 'exists:clients,id'],
-            'address1' => ['sometimes', 'required','max:200'],
+            'name' => ['sometimes', 'max:50'],
+            'city' => ['sometimes', 'max:30'],
+            'state' => ['sometimes', 'size:2', new Enum(StatesEnum::class)],
+//            'client_id' => ['sometimes', 'exists:clients,id'],
+            'address1' => ['sometimes','max:200'],
             'address2' => [],
-            'zip' => ['sometimes', 'required', 'size:5'],
+            'latitude' => ['sometimes', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
+            'longitude' => ['sometimes', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
+            'zip' => ['sometimes', 'size:5'],
             'phone' => ['sometimes', ],
             'poc_first' => ['sometimes', ],
             'poc_phone' => ['sometimes', ],
             'open_date' => ['sometimes', ],
             'close_date' => ['sometimes', ],
-            'location_no' => ['sometimes', 'required', 'max:50', 'exists:locations,location_no'],
+            'location_no' => ['sometimes', 'max:50', 'exists:locations,location_no'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
-            'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
+            'location_type' => ['sometimes',  new Enum(LocationTypeEnum::class)],
         ];
     }
 

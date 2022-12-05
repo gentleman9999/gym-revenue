@@ -24,6 +24,8 @@ class CreateLocationsTable extends Migration
             $table->string('zip', 5)->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
+            $table->double('latitude', 8, 6)->nullable();
+            $table->double('longitude', 9, 6)->nullable();
             $table->boolean('active')->default(1);
             $table->string('phone')->nullable();
             $table->uuid('default_team_id')->nullable()->index();

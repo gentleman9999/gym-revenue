@@ -34,6 +34,8 @@ class CreateLocation
             'client_id' => ['required', 'exists:clients,id'],
             'address1' => ['required','max:200'],
             'address2' => [],
+            'latitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
+            'longitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'zip' => ['required', 'size:5'],
             'phone' => [],
             'poc_first' => [],
