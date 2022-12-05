@@ -10,10 +10,11 @@ use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Note;
-use Bouncer;
 use Illuminate\Support\Facades\DB;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
+use Symfony\Component\VarDumper\VarDumper;
 
 class UserCrudProjector extends Projector
 {
@@ -101,11 +102,14 @@ class UserCrudProjector extends Projector
             if (array_key_exists('role_id', $data)) {
                 $role = Role::find($data['role_id']);
             }
+
             //if team_id is set, and its  non-client team, make the user's role an admin
             //TODO:change this to look at the current team.
             if (array_key_exists('team_id', $data)) {
-                if (Team::findOrFail($data['team_id'])->client_id === null) {
+                $team = Team::find($data['team_id']);
+                if ($team && $team->client_id == null) {
                     //set role to admin for capeandbay
+                    VarDumper::dump('Setting User to ADMIN.');
                     $role = Role::whereGroup(SecurityGroupEnum::ADMIN)->firstOrFail();
                     $user->is_cape_and_bay_user = true;
                     $user->save();
@@ -191,10 +195,10 @@ class UserCrudProjector extends Projector
                 ]);
             }
 
-            if ($data['role'] ?? false) {
+            if (array_key_exists('role_id', $data)) {
                 $old_role = $user->getRole();
 
-                $role = Role::find($data['role']);
+                $role = Role::find($data['role_id']);
                 //let bouncer know their role has been changed
                 if ($old_role !== $role) {
                     Bouncer::retract($old_role)->from($user);
