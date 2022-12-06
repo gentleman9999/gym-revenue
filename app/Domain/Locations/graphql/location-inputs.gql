@@ -1,0 +1,44 @@
+# Create Input for Location
+input CreateLocationInput {
+    gymrevenue_id: String @rules(apply: ["sometimes", "nullable", "unique:locations,gymrevenue_id"],  attribute: "GymRevenue ID")
+    location_no: String! @rules(apply: ["required", "max:10"],  attribute: "Location Number")
+#    location_type: String! @rules(apply: ["required",  new Enum(LocationTypeEnum::class)])
+    #    TODO: use lighthouse:validator to create custom validation instead of hardcode enum
+    location_type: String! @rules(apply: ["required",  "in:store,office,headquarters"],  attribute: "Location Type")
+#    need custom validator to enforce name unique only for client UNLESS we use postgres with RLS
+    name: String! @rules(apply: ["required", "max:50"],  attribute: "Name")
+    city: String! @rules(apply: ["required", "max:30"],  attribute: "City")
+    state: String! @rules(apply: ["required", "size:2"],  attribute: "State")
+    active: Boolean @rules(apply: ["sometimes"],  attribute: "Active")
+    zip: String @rules(apply: ["sometimes", "nullable", "size:5"], attribute: "Zip Code")
+    phone: String @rules(apply: ["sometimes", "nullable", "size:10"],  attribute: "Phone")
+    address1: String! @rules(apply: ["required", "max:200"],  attribute: "Address")
+    address2: String @rules(apply: ["sometimes", "nullable", "max:200"],  attribute: "Address 2")
+    poc_phone: String @rules(apply: ["sometimes", "nullable", "size:10"],  attribute: "POC Phone")
+    poc_first: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC First")
+    poc_last: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC Last")
+    open_date: DateTime @rules(apply: ["required_if:close_date,1", "nullable","date", "before:close_date"],  attribute: "Open Date")
+    close_date: DateTime  @rules(apply: ["sometimes", "nullable","date", "after:open_date"],  attribute: "Close Date")
+}
+
+input PatchLocationInput {
+    gymrevenue_id: String @rules(apply: ["sometimes", "nullable", "unique:locations,gymrevenue_id"],  attribute: "GymRevenue ID")
+    location_no: String! @rules(apply: ["sometimes", "max:10"],  attribute: "Location Number")
+    #    location_type: String! @rules(apply: ["sometimes",  new Enum(LocationTypeEnum::class)])
+    #    TODO: use lighthouse:validator to create custom validation instead of hardcode enum
+    location_type: String! @rules(apply: ["sometimes",  "in:store,office,headquarters"],  attribute: "Location Type")
+    #    need custom validator to enforce name unique only for client UNLESS we use postgres with RLS
+    name: String! @rules(apply: ["sometimes", "max:50"],  attribute: "Name")
+    city: String! @rules(apply: ["sometimes", "max:30"],  attribute: "City")
+    state: String! @rules(apply: ["sometimes", "size:2"],  attribute: "State")
+    active: Boolean @rules(apply: ["sometimes"],  attribute: "Active")
+    zip: String @rules(apply: ["sometimes", "nullable", "size:5"], attribute: "Zip Code")
+    phone: String @rules(apply: ["sometimes", "nullable", "size:10"],  attribute: "Phone")
+    address1: String! @rules(apply: ["sometimes", "max:200"],  attribute: "Address")
+    address2: String @rules(apply: ["sometimes", "nullable", "max:200"],  attribute: "Address 2")
+    poc_phone: String @rules(apply: ["sometimes", "nullable", "size:10"],  attribute: "POC Phone")
+    poc_first: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC First")
+    poc_last: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC Last")
+    open_date: DateTime @rules(apply: ["sometimes","date", "before:close_date"],  attribute: "Open Date")
+    close_date: DateTime @rules(apply: ["sometimes", "nullable","date", "after:open_date"],  attribute: "Close Date")
+}

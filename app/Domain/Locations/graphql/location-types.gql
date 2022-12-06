@@ -16,3 +16,9 @@ type Location {
     details: [LocationDetails] @hasMany
     client: Client @belongsTo
 }
+
+type LocationDetails{
+    id: ID
+    field: String
+    value: String
+}

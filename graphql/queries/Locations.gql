@@ -1,7 +1,0 @@
-extend type Query {
-    locations(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [Location!]!
-    @paginate(defaultCount: 10)
-}

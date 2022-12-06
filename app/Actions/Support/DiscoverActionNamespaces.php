@@ -16,7 +16,7 @@ class DiscoverActionNamespaces
         $files = (new Finder())->files()->in(app()->path());
 
         return collect($files)
-//            ->reject(fn (SplFileInfo $file) => in_array($file->getPathname(), $this->ignoredFiles))
+            ->reject(fn (SplFileInfo $file) => $file->getExtension() !== 'php')
             ->map(fn (SplFileInfo $file) => $this->fullQualifiedClassNameFromFile($file))
             ->filter(fn (string $class) => $this->checkIsAction($class))
             ->filter(fn (string $class) => (new \ReflectionClass($class))->isInstantiable())
@@ -24,7 +24,7 @@ class DiscoverActionNamespaces
             ->toArray();
     }
 
-    private function checkIsAction($class)
+    private function checkIsAction(string $class)
     {
         $parentClasses = class_parents($class);
         $traits = class_uses($class);

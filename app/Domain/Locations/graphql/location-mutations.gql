@@ -1,0 +1,7 @@
+extend type Mutation {
+    "Creates a Location"
+    createLocation(location: CreateLocationInput!): Location!
+    @inject(context: "user.client_id", name: "location.client_id")
+    "Updates a location"
+    updateLocation(id: ID!, name:String!): Location!
+}

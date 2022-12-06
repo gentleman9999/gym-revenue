@@ -9,6 +9,7 @@
                     class="block w-full mt-1"
                     v-model="form.name"
                     autofocus
+                    required
                 />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
@@ -19,6 +20,7 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.location_no"
+                    required
                 />
                 <jet-input-error
                     :message="form.errors.location_no"
@@ -32,6 +34,7 @@
                     type="text"
                     class="block w-full mt-1"
                     v-model="form.city"
+                    required
                 />
                 <jet-input-error :message="form.errors.city" class="mt-2" />
             </div>
@@ -45,6 +48,7 @@
                     :create-option="true"
                     :options="optionStates"
                     :classes="multiselectClasses"
+                    required
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -54,6 +58,7 @@
                     id="zip"
                     type="text"
                     class="block w-full mt-1"
+                    required
                     v-model="form.zip"
                 />
                 <jet-input-error :message="form.errors.zip" class="mt-2" />
@@ -65,6 +70,7 @@
                     id="address1"
                     type="text"
                     class="block w-full mt-1"
+                    required
                     v-model="form.address1"
                 />
                 <jet-input-error :message="form.errors.address1" class="mt-2" />
@@ -79,11 +85,11 @@
 
             <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="phone" value="Phone" />
-                <input
+                <phone-input
                     id="phone"
-                    type="text"
                     class="block w-full mt-1"
                     v-model="form.phone"
+                    required
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
@@ -146,11 +152,11 @@
             </div>
             <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="poc_phone" value="POC Phone" />
-                <input
+                <phone-input
                     id="poc_phone"
-                    type="text"
                     class="block w-full mt-1"
                     v-model="form.poc_phone"
+                    required
                 />
                 <jet-input-error
                     :message="form.errors.poc_phone"
@@ -205,20 +211,26 @@
 <script>
 import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { useGymRevForm } from "@/utils";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 
 import Button from "@/Components/Button.vue";
+import PhoneInput from "@/Components/PhoneInput.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import { transformDate } from "@/utils/transformDate";
 import * as _ from "lodash";
 import { parseLocationTypeDisplayName } from "@/utils/locationTypeEnum";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+import {
+    getValidationErrorsFromGqlError,
+    transformGqlValidationErrorsToInertiaStyle,
+} from "@/utils";
 
 export default {
     components: {
@@ -228,10 +240,46 @@ export default {
         JetLabel,
         DatePicker,
         multiselect: Multiselect,
+        PhoneInput,
     },
     props: ["location", "locationTypes"],
     setup(props, context) {
         const page = usePage();
+
+        const {
+            mutate: createLocation,
+            loading,
+            error,
+            onError,
+        } = useMutation(gql`
+            mutation createLocation($location: CreateLocationInput!) {
+                createLocation(location: $location) {
+                    id
+                    gymrevenue_id
+                    location_no
+                    location_type
+                    name
+                    city
+                    state
+                    active
+                    zip
+                    address1
+                    address2
+                    phone
+                    open_date
+                    close_date
+                }
+            }
+        `);
+
+        // onError(({ graphQLErrors, clientErrors, networkError }) => {
+        onError((error) => {
+            const validationErrors = transformGqlValidationErrorsToInertiaStyle(
+                getValidationErrorsFromGqlError(error)
+            );
+            console.log("parsed gql validationErrors,", validationErrors);
+            Object.assign(form.errors, validationErrors);
+        });
 
         let location = _.cloneDeep(props.location);
 
@@ -251,7 +299,6 @@ export default {
                 open_date: null,
                 close_date: null,
                 location_no: "",
-                client_id: props.clientId,
                 location_type: "",
             };
             operation = "Create";
@@ -289,8 +336,13 @@ export default {
                 .put(route("locations.update", location.id));
 
         if (operation === "Create") {
-            handleSubmit = () =>
-                form.transform(transformData).post(route("locations.store"));
+            handleSubmit = async () => {
+                form.clearErrors();
+                // form.transform(transformData).post(route("locations.store"));
+                const data = transformData(form.data());
+                const response = await createLocation({ location: data });
+                console.log("LocationFor::create", { reqData: data, response });
+            };
         }
 
         let optionsStates = [];

@@ -1,0 +1,16 @@
+# Queries Locations
+extend type Query {
+    "Queries locations according to optional input filters"
+    locations(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Location!]!
+    @paginate(defaultCount: 10)
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    location(
+        id: ID @eq
+    ): Location @find
+}

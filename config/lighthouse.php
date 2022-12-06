@@ -31,7 +31,7 @@ return [
          * make sure to return spec-compliant responses in case an error is thrown.
          */
         'middleware' => [
-           'web',
+    //           'web',
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Nuwave\Lighthouse\Support\Http\Middleware\AcceptJson::class,
 //            Locks down the entire endpoint for only authenticated users.
@@ -183,8 +183,8 @@ return [
     //    'models' => ['App', 'App\\Models'],
         'models' => DiscoverModelNamespaces::run(),
         'queries' => 'App\\GraphQL\\Queries',
+        'inputs' => 'App\\Domain\\Locations\\graphql',
     //    'mutations' => 'App\\GraphQL\\Mutations',
-//    TODO: create DiscoverActionNamespaces Action
         'mutations' => DiscoverActionNamespaces::run(),
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
         'interfaces' => 'App\\GraphQL\\Interfaces',

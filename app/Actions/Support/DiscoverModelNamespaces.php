@@ -17,6 +17,7 @@ class DiscoverModelNamespaces
         $files = (new Finder())->files()->in(app()->path());
 
         return collect($files)
+            ->reject(fn (SplFileInfo $file) => $file->getExtension() !== 'php')
 //            ->reject(fn (SplFileInfo $file) => in_array($file->getPathname(), $this->ignoredFiles))
             ->map(fn (SplFileInfo $file) => $this->fullQualifiedClassNameFromFile($file))
             ->filter(fn (string $class) => is_subclass_of($class, Model::class))

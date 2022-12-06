@@ -1,9 +1,12 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
+#import queries/*.gql
 #import interfaces/*.gql
 #import types/*.gql
 #import inputs/*.gql
+
+#import ../App/Domain/**/graphql/*
 
 type Query {
     me: User @auth
@@ -14,14 +17,8 @@ input Filter {
     trashed: String
     state: String
 }
-#import queries/*.gql
 
 type Mutation {
-    "Creates a Location"
-    createLocation(location: CreateLocationInput!): Location!
-    @inject(context: "user.client_id", name: "location.client_id")
-    "Updates a location"
-    updateLocation(id: ID!, name:String!): Location!
     "Assigns EndUser to Current User"
     claimEndUser(endUser: ID!): Lead!
     @inject(context: "user.id", name: "user")

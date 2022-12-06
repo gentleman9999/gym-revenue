@@ -11,3 +11,5 @@ export * from "./getFormObjectFromData";
 export * from "./getFormObjectFromData";
 export * from "./getAvatarImg";
 export * from "./eventBus";
+export * from "./getValidationErrorsFromGqlError.js";
+export * from "./transformGqlValidationErrorsToInertiaStyle.js";
