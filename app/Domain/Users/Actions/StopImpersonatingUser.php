@@ -38,7 +38,7 @@ class StopImpersonatingUser
             if ($coward->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
                 $team = Team::withoutGlobalScopes()->find($coward->default_team_id);
             } else {
-                $team = $coward->default_team;
+                $team = $coward->defaultTeam->team;
             }
 
             session()->put('current_team_id', $team->id);

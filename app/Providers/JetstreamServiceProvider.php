@@ -52,7 +52,7 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::deleteUsersUsing(DeleteUser::class);
         Fortify::authenticateUsing(function (Request $request) {
             //Call withoutGlobalScopes so we don't try to apply client_id on login
-            $user = User::withoutGlobalScopes()->with('default_team')->where('email', $request->email)->first();
+            $user = User::withoutGlobalScopes()->with('defaultTeam')->where('email', $request->email)->first();
 
             if ($user &&
                 Hash::check($request->password, $user->password)) {
@@ -61,8 +61,8 @@ class JetstreamServiceProvider extends ServiceProvider
                 //Let's set some info in our cookie session so we
                 // can use it in middleware / global scopes
                 // without having to hit the db
-                $team = $user->default_team ?? false;
-                if ($team) {
+                $team = $user->defaultTeam->team;
+                if ($team !== null) {
                     session()->put('current_team_id', $team->id);
                     session()->put(
                         'current_team',

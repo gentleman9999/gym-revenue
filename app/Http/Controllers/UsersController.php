@@ -74,7 +74,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->defaultTeam->team->name;
             }
         } else {
             //cb team selected
@@ -92,7 +92,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team = $user->default_team;
+                $default_team = $user->defaultTeam->team;
                 $users[$idx]->home_team = $default_team->name;
             }
         }
@@ -277,7 +277,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->defaultTeam->team->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -300,7 +300,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->defaultTeam->team->name;
             }
         }
 

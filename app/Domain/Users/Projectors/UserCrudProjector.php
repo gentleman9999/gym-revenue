@@ -45,52 +45,21 @@ class UserCrudProjector extends Projector
             $user->save();
 
             if (array_key_exists('positions', $data)) {
-                if (count($data) == count($data, COUNT_RECURSIVE)) {
-                    //do nothing
-                } else {
-                    $user->positions()->sync($data['positions']);
-                    //ARRAY IS MULTIDEM
-                }
+                $this->syncUserPositions($user, $data);
             }
 
             if (array_key_exists('departments', $data)) {
-                if (count($data) == count($data, COUNT_RECURSIVE)) {
-                    //do nothing
-                } else {
-                    //ARRAY IS MULTIDEM
-                    $depts = [];
-                    $positions = [];
-                    foreach ($data['departments'] as $dept) {
-                        $depts[] = $dept['department'];
-                        $positions[] = $dept['position'];
-                    }
-                    $user->departments()->sync($depts);
-                    $user->positions()->sync($positions);
-                }
+                $this->syncUserDepartments($user, $data);
             }
 
-            $details = [
-                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
-            ];
-
-            // Go through the details and create them in the user_details via the
-            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
-            foreach ($details as $detail => $value) {
-                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
-            }
+            $this->setUserDetails($user, $data);
 
 //            $client_id = $data['client_id'] ?? null;
 
             //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
             if ($notes) {
-                Note::create([
-                    'entity_id' => $event->aggregateRootUuid(),
-                    'entity_type' => User::class,
-                    'title' => $notes['title'],
-                    'note' => $notes['note'],
-                    'created_by_user_id' => $event->userId(),
-                ]);
+                $this->createUserNotes($event, $user, $notes);
             }
 
             /** Users have:
@@ -120,19 +89,6 @@ class UserCrudProjector extends Projector
                 //let the bouncer know this $user is OG
                 Bouncer::assign($role)->to($user);
             }
-
-            //attach the user to their teams
-            $user_teams = $data['team_ids'] ?? (array_key_exists('team_id', $data) ? [$data['team_id']] : []);
-
-            foreach ($user_teams as $i => $team_id) {
-                if ($i === 0) {
-                    $user->default_team_id = $team_id;
-                    $user->save();
-                }
-
-//                $team = Team::findOrFail($team_id);
-//                $team->users()->attach($user);
-            }
         });
     }
 
@@ -152,47 +108,18 @@ class UserCrudProjector extends Projector
             $user->updateOrFail($data);
 
             if (array_key_exists('positions', $data)) {
-                if (count($data) == count($data, COUNT_RECURSIVE)) {
-                    $user->positions()->sync($data['positions']);
-                } else {
-                    $user->positions()->sync($data['positions'][0]);
-                    //ARRAY IS MULTIDEM
-                }
+                $this->syncUserPositions($user, $data, true);
             }
 
             if (array_key_exists('departments', $data)) {
-                if (count($data) == count($data, COUNT_RECURSIVE)) {
-                    $user->departments()->sync($data['departments']);
-                } else {
-                    //ARRAY IS MULTIDEM
-                    $depts = [];
-                    $positions = [];
-                    foreach ($data['departments'] as $deptPos) {
-                        $depts[] = $deptPos['department'];
-                        $positions[] = $deptPos['position'];
-                    }
-                    $user->departments()->sync($depts);
-                    $user->positions()->sync($positions);
-                }
+                $this->syncUserDepartments($user, $data, true);
             }
 
-            $details = [
-                'contact_preference' => $data['contact_preference'] ?? null,
-            ];
-
-            foreach ($details as $detail => $value) {
-                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
-            }
+            $this->setUserDetails($user, $data);
 
             $notes = $data['notes'] ?? false;
             if ($notes) {
-                Note::create([
-                    'entity_id' => $event->aggregateRootUuid(),
-                    'entity_type' => User::class,
-                    'title' => $notes['title'],
-                    'note' => $notes['note'],
-                    'created_by_user_id' => $event->userId(),
-                ]);
+                $this->createUserNotes($event, $user, $notes);
             }
 
             if (array_key_exists('role_id', $data)) {
@@ -237,5 +164,79 @@ class UserCrudProjector extends Projector
         }
 
         $bad_user->forceDelete();
+    }
+
+    protected function syncUserPositions(User $user, array $data, bool $is_updating = false): void
+    {
+        if (count($data) == count($data, COUNT_RECURSIVE)) {
+            if ($is_updating) {
+                $user->positions()->sync($data['positions']);
+            }
+        } else {
+            //ARRAY IS MULTIDEM
+            if ($is_updating) {
+                $user->positions()->sync($data['positions']);
+            } else {
+                $user->positions()->sync($data['positions'][0]);
+            }
+        }
+    }
+
+    protected function syncUserDepartments(User $user, array $data, bool $is_updating): void
+    {
+        if (count($data) == count($data, COUNT_RECURSIVE)) {
+            if ($is_updating) {
+                $user->departments()->sync($data['departments']);
+            }
+        } else {
+            //ARRAY IS MULTIDEM
+            $depts = [];
+            $positions = [];
+            foreach ($data['departments'] as $dept) {
+                $depts[] = $dept['department'];
+                $positions[] = $dept['position'];
+            }
+            $user->departments()->sync($depts);
+            $user->positions()->sync($positions);
+        }
+    }
+
+    /**
+     *
+     * Create UserDetails based on values passed in $data
+     *
+     * @TODO: Create an array with keys the values of which needs to be stored in UserDetails
+     *
+     */
+    protected function setUserDetails(User $user, array $data, ?string $default_contact_pref = "sms"): void
+    {
+        $default_team = array_key_exists('team_ids', $data) ? $data['team_ids'][0] : $data['team_id'] ?? null;
+        /**
+         * @TODO: Revisit to work on setting user comm prefs
+         */
+
+        $details = [];
+        // $details = [
+        //     'contact_preference' => $data['contact_preference'] ?? $default_contact_pref,
+        // ];
+
+        if ($default_team) {
+            $details['default_team_id'] = $default_team;
+        }
+
+        foreach ($details as $detail => $value) {
+            UserDetails::createOrUpdateRecord($user->id, $detail, $value);
+        }
+    }
+
+    protected function createUserNotes($event, User $user, array $notes): void
+    {
+        Note::create([
+            'entity_id' => $event->aggregateRootUuid(),
+            'entity_type' => User::class,
+            'title' => $notes['title'],
+            'note' => $notes['note'],
+            'created_by_user_id' => $event->userId(),
+        ]);
     }
 }

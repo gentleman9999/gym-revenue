@@ -44,7 +44,7 @@ class ImpersonateUser
             $team = Team::withoutGlobalScopes()->findOrFail($victim->default_team_id);
         } else {
             $victim = User::findOrFail($data['victimId']);
-            $team = $victim->default_team;
+            $team = $victim->defaultTeam->team;
         }
 
         if ($invader->can('users.impersonate', User::class)) {
