@@ -210,9 +210,19 @@ class User extends Authenticatable
         return $teams;
     }
 
-    public function defaultTeam(): HasOne
+    public function defaultTeamDetail(): HasOne
     {
         return $this->detail()->where('field', '=', 'default_team_id');
+    }
+
+    public function defaultTeam(): HasOne
+    {
+        return $this->hasOne(Team::class, 'id', $this->default_team_id);
+    }
+
+    public function getDefaultTeam(): Team
+    {
+        return Team::find($this->default_team_id);
     }
 
     public function api_token(): HasOne
@@ -317,7 +327,7 @@ class User extends Authenticatable
 
     public function getDefaultTeamIdAttribute(): string
     {
-        return $this->defaultTeam->value;
+        return $this->defaultTeamDetail->value;
     }
 
     public function departments(): BelongsToMany
