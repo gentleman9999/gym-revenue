@@ -40,9 +40,13 @@ abstract class GymRevDetailProjection extends GymRevProjection
         return $this->belongsTo($this->getRelatedModel(), $this->fk(), 'id');
     }
 
-    public static function createOrUpdateRecord(string $parent_id, string $field, ?string $value, array $misc = null): void
+    public static function createOrUpdateRecord(string $parent_id, string $field, ?string $value, array $misc = null, bool $update_misc = false): void
     {
-        $model = self::where(static::fk(), $parent_id)->whereField($field)->whereMisc($misc)->first();
+        if ($update_misc) {
+            $model = self::where(static::fk(), $parent_id)->whereField($field)->first();
+        } else {
+            $model = self::where(static::fk(), $parent_id)->whereField($field)->whereMisc($misc)->first();
+        }
         if ($model === null) {
             $model = new static();
             $model->forceFill([ static::fk() => $parent_id ]);

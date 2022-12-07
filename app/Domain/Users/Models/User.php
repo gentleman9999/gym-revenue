@@ -193,6 +193,11 @@ class User extends Authenticatable
         return $this->detail()->where('field', '=', 'contact_preference');
     }
 
+    public function emergencyContact(): HasOne
+    {
+        return $this->detail()->where('field', '=', 'emergency_contact');
+    }
+
     public function notes(): HasMany
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);

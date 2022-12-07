@@ -53,6 +53,21 @@ class UserCrudProjector extends Projector
             }
 
             $this->setUserDetails($user, $data);
+            $details = [
+                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
+            ];
+
+            // Go through the details and create them in the user_details via the
+            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
+            foreach ($details as $detail => $value) {
+                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
+            }
+            $misc_details = [
+                'emergency_contact' => $data['emergency_contact'] ?? ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
+            ];
+            foreach ($misc_details as $misc_detail => $misc) {
+                UserDetails::createOrUpdateRecord($user->id, $misc_detail, '', $misc);
+            }
 
 //            $client_id = $data['client_id'] ?? null;
 
