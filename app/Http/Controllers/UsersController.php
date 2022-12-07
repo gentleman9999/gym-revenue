@@ -75,7 +75,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
                 $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
-                $users[$idx]->home_team = $user->default_team->team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam();
             }
         } else {
             //cb team selected
@@ -93,7 +93,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team = $user->defaultTeam->team;
+                $default_team = $user->getDefaultTeam();
                 $users[$idx]->home_team = $default_team->name;
                 $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
             }
@@ -279,7 +279,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->defaultTeam->team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -302,7 +302,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->defaultTeam->team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
             }
         }
 

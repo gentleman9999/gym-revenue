@@ -63,7 +63,7 @@ class JetstreamServiceProvider extends ServiceProvider
                 // can use it in middleware / global scopes
                 // without having to hit the db
                 $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()->whereUserId($user->id)->whereField('default_team_id')->first()->value);
-                //$team = $user->defaultTeam->team;
+                //$team = $user->getDefaultTeam();
                 if ($team !== null) {
                     session()->put('current_team_id', $team->id);
                     session()->put(
