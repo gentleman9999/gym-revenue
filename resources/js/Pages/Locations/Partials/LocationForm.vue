@@ -83,6 +83,44 @@
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
 
+            <div class="col-span-6 grid grid-cols-6 gap-6">
+                <div class="col-span-6 md:col-span-2 space-y-2">
+                    <jet-label for="latitude" value="Location Latitude" />
+                    <input
+                        id="latitude"
+                        type="number"
+                        step="0.000001"
+                        min="-90.000000"
+                        max="89.999999"
+                        class="block w-full mt-1"
+                        v-model="form.latitude"
+                    />
+                    <jet-input-error
+                        :message="form.errors.latitude"
+                        class="mt-2"
+                    />
+                </div>
+
+                <div class="col-span-6 md:col-span-2 space-y-2">
+                    <jet-label for="longitude" value="Location Longitude" />
+                    <input
+                        id="longitude"
+                        type="number"
+                        step="0.000001"
+                        min="-180.000000"
+                        max="179.999999"
+                        class="block w-full mt-1"
+                        v-model="form.longitude"
+                    />
+                    <jet-input-error
+                        :message="form.errors.longitude"
+                        class="mt-2"
+                    />
+                </div>
+            </div>
+
+            <!-- <div class="col-span-6 md:col-span-2"></div> -->
+
             <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="phone" value="Phone" />
                 <phone-input
@@ -300,9 +338,14 @@ export default {
                 close_date: null,
                 location_no: "",
                 location_type: "",
+                latitude: null,
+                longitude: null,
             };
             operation = "Create";
         } else {
+            //TODO: we can't just pull all location details, as in theory it could
+            // cause a memory issue since there is no limit. we need to add these fields to the
+            // graphql type and append/resolve them
             location.poc_first = location.details.filter(
                 (item) => item.field === "poc_first"
             )[0]?.value;
@@ -312,7 +355,17 @@ export default {
             location.poc_phone = location.details.filter(
                 (item) => item.field === "poc_phone"
             )[0]?.value;
-            location.client_id = location.client.id;
+            // location.poc_first = poc_first;
+            // location.poc_last = poc_last;
+            // location.poc_phone = poc_phone;
+            //TODO: remove these if not needed after test
+            // location.open_date = location.open_date;
+            // location.close_date = location.close_date;
+            // location.address1 = location.address1;
+            // location.address2 = location.address2;
+            // location.latitude = location.latitude;
+            // location.longitude = location.longitude;
+            // location.phone = location.phone;
         }
 
         const transformData = (data) => ({
