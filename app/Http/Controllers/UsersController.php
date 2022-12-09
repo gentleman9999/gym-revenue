@@ -9,7 +9,6 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
 use App\Models\Position;
-use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -37,7 +36,6 @@ class UsersController extends Controller
             $teams = Team::findMany(Client::with('teams')->find($client_id)->teams->pluck('value'));
             $clientName = $client->name;
         }
-
 
         return Inertia::render('Users/Show', [
             'filters' => $request->all($filterKeys),
@@ -103,9 +101,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments', 'emergencyContact');//TODO:get rid of loading all details here.
-
-        if ($me->id == $user->id) {
+        if ($me->id === $user->id) {
             return Redirect::route('profile.show');
         }
 
@@ -115,19 +111,6 @@ class UsersController extends Controller
         if ($user->isClientUser()) {
             $locations = Location::get(['name', 'gymrevenue_id']);
         };
-        //for some reason inertiajs converts "notes" key to empty string.
-        //so we set all_notes
-        $userData = $user->toArray();
-        $userData['all_notes'] = $user->notes->toArray();
-        foreach ($userData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($userData['FUSall_notes'][$key]['id'])->first()) {
-                $userData['all_notes'][$key]['read'] = true;
-            } else {
-                $userData['all_notes'][$key]['read'] = false;
-            }
-        }
-//        dd($userData);
-        $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [
             'roles' => $roles,

@@ -355,17 +355,7 @@ export default {
             location.poc_phone = location.details.filter(
                 (item) => item.field === "poc_phone"
             )[0]?.value;
-            // location.poc_first = poc_first;
-            // location.poc_last = poc_last;
-            // location.poc_phone = poc_phone;
-            //TODO: remove these if not needed after test
-            // location.open_date = location.open_date;
-            // location.close_date = location.close_date;
-            // location.address1 = location.address1;
-            // location.address2 = location.address2;
-            // location.latitude = location.latitude;
-            // location.longitude = location.longitude;
-            // location.phone = location.phone;
+            location.client_id = location.client.id;
         }
 
         const transformData = (data) => ({
