@@ -1,0 +1,19 @@
+type CallScriptTemplate {
+    id: ID!
+    name: String!
+    script: String!
+    thumbnail: String! # update to thumbnail type when fixed
+    active: Boolean
+    client_id: String!
+    team_id: ID
+    created_by_user_id: ID
+    creator: [User] @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    use_once: Boolean
+}
+
+type Thumbnail {
+    key: String!
+    url: String!
+}

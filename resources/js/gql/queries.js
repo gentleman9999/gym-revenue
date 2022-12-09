@@ -973,6 +973,57 @@ export const SMS_TEMPLATES = gql`
     }
 `;
 
+export const EMAIL_TEMPLATES = gql`
+    query EmailTemplatesQuery {
+        emailTemplates {
+            data {
+                id
+                name
+                markup
+                subject
+
+                thumbnail {
+                    key
+                    url
+                }
+                active
+                client_id
+                team_id
+
+                created_by_user_id
+                creator {
+                    id
+                }
+                created_at
+                updated_at
+            }
+        }
+    }
+`;
+
+export const CALL_TEMPLATES = gql`
+    query CallTemplatesQuery {
+        callTemplates {
+            data {
+                id
+                name
+                script
+                thumbnail
+                active
+                client_id
+                team_id
+                created_by_user_id
+                creator {
+                    id
+                }
+                created_at
+                updated_at
+                use_once
+            }
+        }
+    }
+`;
+
 export default {
     user: {
         preview: USER_PREVIEW,
