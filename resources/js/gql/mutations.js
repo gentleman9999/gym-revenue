@@ -85,8 +85,28 @@ const role = {
         }
     `,
 };
+
+const user = {
+    create: gql`
+        mutation createUser($input: UserInput) {
+            createUser(input: $input) {
+                id
+                name
+            }
+        }
+    `,
+    update: gql`
+        mutation updateUser($input: UserInput) {
+            updateUser(input: $input) {
+                id
+                name
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
     role,
+    user,
 };
