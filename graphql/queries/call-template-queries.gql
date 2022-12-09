@@ -1,0 +1,13 @@
+# Queries Call Templates
+extend type Query {
+    "Queries Call Templates according to optional input filters"
+    callTemplates(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [CallScriptTemplate!]! @paginate(defaultCount: 10)
+}
+
+extend type Query {
+    "Find a single Call Template by an identifying attribute."
+    callTemplate(id: ID @eq): CallScriptTemplate @find
+}

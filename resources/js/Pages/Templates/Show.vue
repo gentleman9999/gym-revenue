@@ -5,96 +5,13 @@
         <h1 class="text-2xl pb-8">Templates Dashboard</h1>
 
         <!-- Email Templates -->
-        <TemplateList
-            v-if="permissions.email.read"
-            :permissions="permissions.email"
-            type="email"
-            @create="handleTemplateEditor"
-        >
-            <template #current_templates>
-                <EmailTemplatePreview
-                    v-for="t in email_templates"
-                    :key="t.id"
-                    :template="t"
-                    :trash_template="false"
-                    :permissions="permissions.email"
-                    @edit="handleTemplateEditor"
-                    @trash="handleTrash"
-                />
-            </template>
-            <template #trashed_templates>
-                <EmailTemplatePreview
-                    v-for="t in email_templates"
-                    :key="t.id + '_trash'"
-                    :template="t"
-                    :permissions="permissions.email"
-                    :trash_template="true"
-                    @restore="handleRestore"
-                />
-            </template>
-        </TemplateList>
+        <EmailTemplateList />
 
         <!-- Call Templates -->
-        <TemplateList
-            v-if="permissions.call.read"
-            :permissions="permissions.call"
-            type="call"
-            @create="handleTemplateEditor"
-        >
-            <template #current_templates>
-                <CallTemplatePreview
-                    v-for="t in call_templates"
-                    :key="t.id"
-                    :template="t"
-                    :trash_template="false"
-                    :permissions="permissions.call"
-                    @edit="handleTemplateEditor"
-                    @trash="handleTrash"
-                />
-            </template>
-            <template #trashed_templates>
-                <CallTemplatePreview
-                    v-for="t in call_templates"
-                    :key="t.id + '_trash'"
-                    :template="t"
-                    :trash_template="true"
-                    :permissions="permissions.call"
-                    @restore="handleRestore"
-                />
-            </template>
-        </TemplateList>
+        <CallTemplateList />
 
         <!-- Sms Templates -->
         <SmsTemplateList />
-
-        <!-- <TemplateList
-            v-if="permissions.sms.read"
-            :permissions="permissions.sms"
-            type="sms"
-            @create="handleTemplateEditor"
-        >
-            <template #current_templates>
-                <SmsTemplatePreview
-                    v-for="t in sms_templates"
-                    :key="t.id"
-                    :template="t"
-                    :trash_template="false"
-                    :permissions="permissions.sms"
-                    @edit="handleTemplateEditor"
-                    @trash="handleTrash"
-                />
-            </template>
-            <template #trashed_templates>
-                <SmsTemplatePreview
-                    v-for="t in sms_templates"
-                    :key="t.id + '_trash'"
-                    :template="t"
-                    :trash_template="true"
-                    :permissions="permissions.sms"
-                    @restore="handleRestore"
-                />
-            </template>
-        </TemplateList> -->
     </jet-bar-container>
 
     <ModalUnopinionated v-if="templateCreator !== null">
@@ -141,6 +58,8 @@ import EmailTemplatePreview from "./partials/previewItems/EmailTemplatePreview.v
 import CallTemplatePreview from "./partials/previewItems/CallTemplatePreview.vue";
 // import SmsTemplatePreview from "./partials/previewItems/SmsTemplatePreview.vue";
 import SmsTemplateList from "./partials/SmsTemplateList.vue";
+import EmailTemplateList from "./partials/EmailTemplateList.vue";
+import CallTemplateList from "./partials/CallTemplateList.vue";
 
 // outside components
 import CallScript from "../MassCommunication/components/Creator/CallScript.vue";
