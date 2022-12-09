@@ -1,34 +1,37 @@
 <template>
-    <TemplateList type="sms">
-        <template #current_templates>
-            <SmsTemplatePreview
-                v-for="t in data"
-                :key="t.id"
-                :template="t"
-                :trash_template="false"
-                :permissions="permissions"
-                @edit="handleTemplateEditor"
-                @trash="handleTrash"
-            />
+    <ApolloQuery :query="SMS_TEMPLATES" :variables="param">
+        <template v-slot="{ result: { data, loading, error } }">
+            <TemplateList v-if="!loading && !!data" type="sms">
+                <template #current_templates>
+                    <SmsTemplatePreview
+                        v-for="t in data.smsTemplates.data"
+                        :key="t.id"
+                        :template="t"
+                        :trash_template="false"
+                        :permissions="permissions"
+                        @edit="handleTemplateEditor"
+                        @trash="handleTrash"
+                    />
+                </template>
+                <template #trashed_templates>
+                    <SmsTemplatePreview
+                        v-for="t in data"
+                        :key="t.id + '_trash'"
+                        :template="t"
+                        :trash_template="true"
+                        :permissions="permissions"
+                        @restore="handleRestore"
+                    />
+                </template>
+            </TemplateList>
         </template>
-        <template #trashed_templates>
-            <SmsTemplatePreview
-                v-for="t in data"
-                :key="t.id + '_trash'"
-                :template="t"
-                :trash_template="true"
-                :permissions="permissions"
-                @restore="handleRestore"
-            />
-        </template>
-    </TemplateList>
+    </ApolloQuery>
 </template>
 
 <script setup>
 import TemplateList from "./TemplateList.vue";
 import SmsTemplatePreview from "./previewItems/SmsTemplatePreview.vue";
-
-const data = [{}, {}];
+import { SMS_TEMPLATES } from "@/gql/queries";
 
 const permissions = {
     create: true,

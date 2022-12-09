@@ -948,6 +948,30 @@ const PROFILE_QUERY = gql`
         }
     }
 `;
+export const SMS_TEMPLATES = gql`
+    query SmsTemplatesQuery {
+        smsTemplates {
+            data {
+                id
+                name
+                markup
+                active
+                team_id
+                created_by_user_id
+                creator {
+                    name
+                    id
+                }
+                updated_at
+                created_at
+                details {
+                    sms_template_id
+                }
+            }
+        }
+    }
+`;
+
 export default {
     user: {
         preview: USER_PREVIEW,

@@ -8,6 +8,8 @@ type SmsTemplate {
     created_by_user_id: ID
     creator: [User] @belongsTo
     details: [SmsTemplateDetails] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
 }
 
 type SmsTemplateDetails {
