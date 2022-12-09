@@ -35,6 +35,13 @@ class UpdateDepartment
         return $department->refresh();
     }
 
+    public function __invoke($_, array $args): Department
+    {
+        $department = Department::find($args['id']);
+
+        return $this->handle($department, $args);
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();

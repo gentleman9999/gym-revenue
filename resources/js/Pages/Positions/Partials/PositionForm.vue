@@ -70,6 +70,8 @@ import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import * as _ from "lodash";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 const props = defineProps({
     clientId: {
@@ -100,15 +102,26 @@ if (!position) {
 
 const form = useGymRevForm(position);
 
-let handleSubmit = () => {
+const modal = useModal();
+const { mutate: createPosition } = useMutation(mutations.position.create);
+const { mutate: updatePosition } = useMutation(mutations.position.update);
+let handleSubmit = async () => {
     if (operation === "Create") {
-        form.post(route("positions.store"));
+        await createPosition({
+            name: form.name,
+            departments: form.departments,
+        });
+        handleCancel();
     } else {
-        form.put(route("positions.update", position.id));
+        await updatePosition({
+            id: position.id,
+            name: form.name,
+            departments: form.departments,
+        });
+        handleCancel();
     }
 };
 
-const modal = useModal();
 const handleCancel = () => {
     if (modal?.value?.close) {
         modal.value.close();

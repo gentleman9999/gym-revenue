@@ -96,20 +96,26 @@ if (!department) {
 
 const form = useGymRevForm(department);
 
+const modal = useModal();
 const { mutate: createDepartment } = useMutation(mutations.department.create);
+const { mutate: updateDepartment } = useMutation(mutations.department.update);
 let handleSubmit = async () => {
     if (operation === "Create") {
-        console.log("form.value", { ...form });
         await createDepartment({
             name: form.name,
             positions: form.positions,
         });
+        handleCancel();
     } else {
-        form.put(route("departments.update", department.id));
+        await updateDepartment({
+            id: department.id,
+            name: form.name,
+            positions: form.positions,
+        });
+        handleCancel();
     }
 };
 
-const modal = useModal();
 const handleCancel = () => {
     if (modal?.value?.close) {
         modal.value.close();
