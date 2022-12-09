@@ -2,10 +2,10 @@
 input CreateLocationInput {
     gymrevenue_id: String @rules(apply: ["sometimes", "nullable", "unique:locations,gymrevenue_id"],  attribute: "GymRevenue ID")
     location_no: String! @rules(apply: ["required", "max:10"],  attribute: "Location Number")
-#    location_type: String! @rules(apply: ["required",  new Enum(LocationTypeEnum::class)])
+    #    location_type: String! @rules(apply: ["required",  new Enum(LocationTypeEnum::class)])
     #    TODO: use lighthouse:validator to create custom validation instead of hardcode enum
     location_type: String! @rules(apply: ["required",  "in:store,office,headquarters"],  attribute: "Location Type")
-#    need custom validator to enforce name unique only for client UNLESS we use postgres with RLS
+    #    need custom validator to enforce name unique only for client UNLESS we use postgres with RLS
     name: String! @rules(apply: ["required", "max:50"],  attribute: "Name")
     city: String! @rules(apply: ["required", "max:30"],  attribute: "City")
     state: String! @rules(apply: ["required", "size:2"],  attribute: "State")
@@ -19,6 +19,7 @@ input CreateLocationInput {
     poc_last: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC Last")
     open_date: DateTime @rules(apply: ["required_if:close_date,1", "nullable","date", "before:close_date"],  attribute: "Open Date")
     close_date: DateTime  @rules(apply: ["sometimes", "nullable","date", "after:open_date"],  attribute: "Close Date")
+    latitude: Int  @rules(apply: ["sometimes", "nullable", "int", "after:open_date"],  attribute: "Latitude")
 }
 
 input PatchLocationInput {
@@ -41,4 +42,5 @@ input PatchLocationInput {
     poc_last: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC Last")
     open_date: DateTime @rules(apply: ["sometimes","date", "before:close_date"],  attribute: "Open Date")
     close_date: DateTime @rules(apply: ["sometimes", "nullable","date", "after:open_date"],  attribute: "Close Date")
+    latitude: Int  @rules(apply: ["sometimes", "nullable", "int", "after:open_date"],  attribute: "Latitude")
 }

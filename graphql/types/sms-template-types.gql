@@ -1,0 +1,20 @@
+type SmsTemplate {
+    id: ID!
+    name: String!
+    markup: String!
+    active: Boolean
+    team_id: ID
+    team: [Team] @belongsTo
+    created_by_user_id: ID
+    creator: [User] @belongsTo
+    details: [SmsTemplateDetails] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type SmsTemplateDetails {
+    id: ID
+    sms_template_id: ID
+    field: String
+    value: String
+}

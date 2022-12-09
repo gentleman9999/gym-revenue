@@ -17,10 +17,10 @@
                 </p>
             </div>
 
-            <DateDetails
+            <!-- <DateDetails
                 :template="template"
                 :trash_template="trash_template"
-            />
+            /> -->
 
             <div
                 class="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-80 stroke-base-content fill-base-content"

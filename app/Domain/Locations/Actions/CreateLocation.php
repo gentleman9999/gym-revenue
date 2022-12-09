@@ -5,6 +5,7 @@ namespace App\Domain\Locations\Actions;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
+use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
@@ -29,10 +30,12 @@ class CreateLocation
         return [
             'name' => ['required', 'max:50'],
             'city' => ['required', 'max:30'],
-            'state' => ['required', 'size:2'],
+            'state' => ['required', 'size:2', new Enum(StatesEnum::class)],
             'client_id' => ['required', 'exists:clients,id'],
             'address1' => ['required','max:200'],
             'address2' => ['sometimes', 'nullable','max:200'],
+            'latitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
+            'longitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'zip' => ['required', 'size:5'],
             'phone' => [],
             'poc_first' => ['sometimes', 'nullable', 'string', 'max:50'],

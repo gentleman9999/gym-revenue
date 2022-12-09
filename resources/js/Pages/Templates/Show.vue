@@ -65,7 +65,9 @@
         </TemplateList>
 
         <!-- Sms Templates -->
-        <TemplateList
+        <SmsTemplateList />
+
+        <!-- <TemplateList
             v-if="permissions.sms.read"
             :permissions="permissions.sms"
             type="sms"
@@ -92,7 +94,7 @@
                     @restore="handleRestore"
                 />
             </template>
-        </TemplateList>
+        </TemplateList> -->
     </jet-bar-container>
 
     <ModalUnopinionated v-if="templateCreator !== null">
@@ -137,7 +139,8 @@ import JetBarContainer from "@/Components/JetBarContainer.vue";
 import TemplateList from "./partials/TemplateList.vue";
 import EmailTemplatePreview from "./partials/previewItems/EmailTemplatePreview.vue";
 import CallTemplatePreview from "./partials/previewItems/CallTemplatePreview.vue";
-import SmsTemplatePreview from "./partials/previewItems/SmsTemplatePreview.vue";
+// import SmsTemplatePreview from "./partials/previewItems/SmsTemplatePreview.vue";
+import SmsTemplateList from "./partials/SmsTemplateList.vue";
 
 // outside components
 import CallScript from "../MassCommunication/components/Creator/CallScript.vue";
