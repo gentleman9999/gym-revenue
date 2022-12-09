@@ -123,6 +123,8 @@ import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { useModal } from "@/Components/InertiaModal";
 import * as _ from "lodash";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 export default {
     components: {
@@ -171,11 +173,24 @@ export default {
                 return role.ability_names.map((ability) => ability.name);
             }
         }
+        const { mutate: createRole } = useMutation(mutations.role.create);
+        const { mutate: updateRole } = useMutation(mutations.role.update);
 
-        let handleSubmit = () =>
-            form.dirty().put(route("roles.update", role.id));
+        let handleSubmit = async () => {
+            await updateRole({
+                ...form,
+                group: ~~form.group,
+            });
+            handleClickCancel();
+        };
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("roles.store"));
+            handleSubmit = async () => {
+                await createRole({
+                    ...form,
+                    group: ~~form.group,
+                });
+                handleClickCancel();
+            };
         }
 
         let groupedAvailableAbilities = computed(() => {
@@ -216,7 +231,7 @@ export default {
 
         const handleClickCancel = () => {
             console.log("modal", modal.value);
-            if (modal.value.close) {
+            if (modal?.value?.close) {
                 modal.value.close();
             } else {
                 Inertia.visit(route("roles"));

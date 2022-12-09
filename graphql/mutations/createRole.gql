@@ -1,0 +1,7 @@
+extend type Mutation {
+    createRole(
+        name: String,
+        ability_names: [String],
+        group: Int
+    ): Role!
+}

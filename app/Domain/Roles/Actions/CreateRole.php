@@ -38,6 +38,11 @@ class CreateRole
         return Role::findOrFail($id);
     }
 
+    public function __invoke($_, array $args): Role
+    {
+        return $this->handle($args);
+    }
+
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

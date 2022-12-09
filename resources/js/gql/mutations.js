@@ -37,7 +37,56 @@ const position = {
     `,
 };
 
+const role = {
+    create: gql`
+        mutation createRole(
+            $name: String
+            $ability_names: [String]
+            $group: Int
+        ) {
+            createRole(
+                name: $name
+                ability_names: $ability_names
+                group: $group
+            ) {
+                id
+                name
+                created_at
+                updated_at
+            }
+        }
+    `,
+    update: gql`
+        mutation updateRole(
+            $id: ID
+            $name: String
+            $ability_names: [String]
+            $group: Int
+        ) {
+            updateRole(
+                id: $id
+                name: $name
+                ability_names: $ability_names
+                group: $group
+            ) {
+                id
+                name
+                created_at
+                updated_at
+            }
+        }
+    `,
+    delete: gql`
+        mutation deleteRole($id: ID) {
+            deleteRole(id: $id) {
+                id
+                name
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
+    role,
 };
