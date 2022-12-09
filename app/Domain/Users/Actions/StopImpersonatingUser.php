@@ -5,6 +5,7 @@ namespace App\Domain\Users\Actions;
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\UserDetails;
 use App\Domain\Users\UserAggregate;
 use App\Enums\SecurityGroupEnum;
 use function auth;
@@ -36,9 +37,9 @@ class StopImpersonatingUser
             $liberated = auth()->user();
 
             if ($coward->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
-                $team = Team::withoutGlobalScopes()->find($coward->default_team_id);
+                $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()->whereUserId($coward->id)->whereField('default_team_id')->first()->value);
             } else {
-                $team = $coward->default_team;
+                $team = $coward->getDefaultTeam();
             }
 
             session()->put('current_team_id', $team->id);
