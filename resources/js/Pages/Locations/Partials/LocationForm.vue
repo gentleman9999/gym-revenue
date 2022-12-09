@@ -77,6 +77,44 @@
                 <jet-input-error :message="form.errors.address2" class="mt-2" />
             </div>
 
+            <div class="col-span-6 grid grid-cols-6 gap-6">
+                <div class="col-span-6 md:col-span-2 space-y-2">
+                    <jet-label for="latitude" value="Location Latitude" />
+                    <input
+                        id="latitude"
+                        type="number"
+                        step="0.000001"
+                        min="-90.000000"
+                        max="89.999999"
+                        class="block w-full mt-1"
+                        v-model="form.latitude"
+                    />
+                    <jet-input-error
+                        :message="form.errors.latitude"
+                        class="mt-2"
+                    />
+                </div>
+
+                <div class="col-span-6 md:col-span-2 space-y-2">
+                    <jet-label for="longitude" value="Location Longitude" />
+                    <input
+                        id="longitude"
+                        type="number"
+                        step="0.000001"
+                        min="-180.000000"
+                        max="179.999999"
+                        class="block w-full mt-1"
+                        v-model="form.longitude"
+                    />
+                    <jet-input-error
+                        :message="form.errors.longitude"
+                        class="mt-2"
+                    />
+                </div>
+            </div>
+
+            <!-- <div class="col-span-6 md:col-span-2"></div> -->
+
             <div class="col-span-6 md:col-span-2 space-y-2">
                 <jet-label for="phone" value="Phone" />
                 <input
@@ -253,6 +291,8 @@ export default {
                 location_no: "",
                 client_id: props.clientId,
                 location_type: "",
+                latitude: null,
+                longitude: null,
             };
             operation = "Create";
         } else {
