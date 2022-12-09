@@ -67,7 +67,8 @@ import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import * as _ from "lodash";
-
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 const props = defineProps({
     clientId: {
         type: String,
@@ -95,9 +96,14 @@ if (!department) {
 
 const form = useGymRevForm(department);
 
-let handleSubmit = () => {
+const { mutate: createDepartment } = useMutation(mutations.department.create);
+let handleSubmit = async () => {
     if (operation === "Create") {
-        form.post(route("departments.store"));
+        console.log("form.value", { ...form });
+        await createDepartment({
+            name: form.name,
+            positions: form.positions,
+        });
     } else {
         form.put(route("departments.update", department.id));
     }

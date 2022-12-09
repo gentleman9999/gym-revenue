@@ -1,0 +1,7 @@
+extend type Mutation {
+    createDepartment(
+        name: String,
+        positions: [ID],
+    ): Department!
+    @inject(context: "user.client_id", name: "client_id")
+}

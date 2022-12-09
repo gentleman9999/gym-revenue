@@ -42,6 +42,11 @@ class CreateDepartment
         return Department::findOrFail($id);
     }
 
+    public function __invoke($_, array $args): Department
+    {
+        return $this->handle($args);
+    }
+
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
