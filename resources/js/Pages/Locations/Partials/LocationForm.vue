@@ -216,9 +216,6 @@
                     class="mt-2"
                 />
             </div>
-
-            <input id="client_id" type="hidden" v-model="form.client_id" />
-            <jet-input-error :message="form.errors.client_id" class="mt-2" />
         </template>
 
         <template #actions>
@@ -249,7 +246,12 @@
 <script>
 import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
+import {
+    getDefaultMultiselectTWClasses,
+    getValidationErrorsFromGqlError,
+    transformGqlValidationErrorsToInertiaStyle,
+    useGymRevForm,
+} from "@/utils";
 
 import Button from "@/Components/Button.vue";
 import PhoneInput from "@/Components/PhoneInput.vue";
@@ -265,10 +267,6 @@ import * as _ from "lodash";
 import { parseLocationTypeDisplayName } from "@/utils/locationTypeEnum";
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import {
-    getValidationErrorsFromGqlError,
-    transformGqlValidationErrorsToInertiaStyle,
-} from "@/utils";
 
 export default {
     components: {
@@ -284,12 +282,8 @@ export default {
     setup(props, context) {
         const page = usePage();
 
-        const {
-            mutate: createLocation,
-            loading,
-            error,
-            onError,
-        } = useMutation(gql`
+        //TODO: look into using a fragment to keep location fields DRY
+        const createLocationQuery = gql`
             mutation createLocation($location: CreateLocationInput!) {
                 createLocation(location: $location) {
                     id
@@ -308,7 +302,34 @@ export default {
                     close_date
                 }
             }
-        `);
+        `;
+
+        const updateLocationQuery = gql`
+            mutation updateLocation($location: UpdateLocationInput!) {
+                updateLocation(location: $location) {
+                    id
+                    gymrevenue_id
+                    location_no
+                    location_type
+                    name
+                    city
+                    state
+                    active
+                    zip
+                    address1
+                    address2
+                    phone
+                    open_date
+                    close_date
+                }
+            }
+        `;
+
+        const query = computed(() => {
+            return props.location ? updateLocationQuery : createLocationQuery;
+        });
+
+        const { mutate, loading, error, onError } = useMutation(query.value);
 
         // onError(({ graphQLErrors, clientErrors, networkError }) => {
         onError((error) => {
@@ -342,20 +363,6 @@ export default {
                 longitude: null,
             };
             operation = "Create";
-        } else {
-            //TODO: we can't just pull all location details, as in theory it could
-            // cause a memory issue since there is no limit. we need to add these fields to the
-            // graphql type and append/resolve them
-            location.poc_first = location.details.filter(
-                (item) => item.field === "poc_first"
-            )[0]?.value;
-            location.poc_last = location.details.filter(
-                (item) => item.field === "poc_last"
-            )[0]?.value;
-            location.poc_phone = location.details.filter(
-                (item) => item.field === "poc_phone"
-            )[0]?.value;
-            location.client_id = location.client.id;
         }
 
         const transformData = (data) => ({
@@ -367,23 +374,25 @@ export default {
         const form = useGymRevForm(location);
 
         const isFormValid = computed(
-            () => form.isDirty && form.location_type.trim()?.length
+            () => form.isDirty && form.location_type?.trim()?.length
         );
 
         //
         //    form.put(`/locations/${location.id}`);
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformData)
-                .put(route("locations.update", location.id));
+        let handleSubmit = async () => {
+            form.clearErrors();
+            // form.transform(transformData).post(route("locations.store"));
+            const data = transformData(form.data());
+            const response = await mutate({ location: data });
+            console.log("LocationFor::update", { reqData: data, response });
+        };
 
         if (operation === "Create") {
             handleSubmit = async () => {
                 form.clearErrors();
                 // form.transform(transformData).post(route("locations.store"));
                 const data = transformData(form.data());
-                const response = await createLocation({ location: data });
+                const response = await mutate({ location: data });
                 console.log("LocationFor::create", { reqData: data, response });
             };
         }

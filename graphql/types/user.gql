@@ -16,7 +16,7 @@ type User {
     termination_date: DateTime
     manager: String
     zip: String
-    default_team: Team
+    defaultTeam: Team @hasOne
     role: String
     phone: String
     city: String
@@ -24,7 +24,14 @@ type User {
     home_location: Location @belongsTo
     teams: [Team] @belongsToMany
     contact_preference: ContactPreference @hasOne
+    emergency_contact: EmergencyContact
     departments: [Department] @belongsToMany
     positions: [Position] @belongsToMany
     isClientUser: Boolean @method(name: "isClientUser")
+}
+
+type EmergencyContact {
+    ec_first_name: String
+    ec_last_name: String
+    ec_phone: String
 }

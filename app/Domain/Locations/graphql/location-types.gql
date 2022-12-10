@@ -1,8 +1,8 @@
 type Location {
     id: ID!
-    gymrevenue_id: String
-    location_no: String
-    location_type: String
+    gymrevenue_id: String!
+    location_no: String!
+    location_type: String!
     name: String!
     city: String!
     state: String!
@@ -15,8 +15,10 @@ type Location {
     close_date: DateTime
     latitude: Int
     longitude: Int
+    poc_first: String
+    poc_last: String
+    poc_phone: String
     details: [LocationDetails] @hasMany
-    client: Client! @belongsTo
 }
 
 type LocationDetails{

@@ -182,9 +182,7 @@ return [
     'namespaces' => [
     //    'models' => ['App', 'App\\Models'],
         'models' => DiscoverModelNamespaces::run(),
-        'queries' => 'App\\GraphQL\\Queries',
-        'inputs' => 'App\\Domain\\Locations\\graphql',
-    //    'mutations' => 'App\\GraphQL\\Mutations',
+        'queries' => ['App\\GraphQL\\Queries', 'App\\Domain\\Locations\\Actions'],
         'mutations' => DiscoverActionNamespaces::run(),
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
         'interfaces' => 'App\\GraphQL\\Interfaces',

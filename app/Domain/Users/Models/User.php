@@ -193,9 +193,14 @@ class User extends Authenticatable
         return $this->detail()->where('field', '=', 'contact_preference');
     }
 
-    public function emergencyContact(): HasOne
+    public function emergencyContactDetail(): HasOne
     {
         return $this->detail()->where('field', '=', 'emergency_contact');
+    }
+
+    public function getEmergencyContactAttribute(): ?array
+    {
+        return $this->emergencyContactDetail->misc ?? null;
     }
 
     public function notes(): HasMany
@@ -215,9 +220,9 @@ class User extends Authenticatable
         return $this->detail()->where('field', '=', 'default_team_id');
     }
 
-    public function defaultTeam(): HasOne
+    public function defaultTeam(): BelongsTo
     {
-        return $this->hasOne(Team::class, 'id', $this->default_team_id);
+        return $this->belongsTo(Team::class, 'default_team_id', 'id');
     }
 
     public function getDefaultTeam(): Team

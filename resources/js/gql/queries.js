@@ -48,14 +48,19 @@ const USER_EDIT = gql`
             }
             termination_date
             isClientUser
+            emergency_contact {
+                ec_first_name
+                ec_last_name
+                ec_phone
+            }
         }
-        availableDepartments: departments(filter: { client_id: $id }) {
+        availableDepartments: departments {
             data {
                 id
                 name
             }
         }
-        availablePositions: positions(filter: { client_id: $id }) {
+        availablePositions: positions {
             data {
                 id
                 name
@@ -67,13 +72,13 @@ const USER_EDIT = gql`
 const USER_CREATE = gql`
     query User($id: ID) {
         isClientUser(id: $id)
-        availableDepartments: departments(filter: { client_id: $id }) {
+        availableDepartments: departments {
             data {
                 id
                 name
             }
         }
-        availablePositions: positions(filter: { client_id: $id }) {
+        availablePositions: positions {
             data {
                 id
                 name
@@ -91,7 +96,7 @@ const USERS = gql`
                 email
                 manager
                 role
-                home_team: default_team {
+                home_team: defaultTeam {
                     name
                 }
             }
@@ -209,9 +214,6 @@ const LEAD_EDIT = gql`
             location {
                 id
             }
-            client {
-                id
-            }
             leadSource {
                 id
             }
@@ -305,13 +307,27 @@ const LOCATION_EDIT = gql`
             phone
             open_date
             close_date
+            latitude
+            longitude
+            poc_phone
+            poc_first
+            poc_last
             details {
                 field
                 value
             }
-            client {
-                id
-            }
+        }
+        locationTypes {
+            name
+            value
+        }
+    }
+`;
+const LOCATION_CREATE = gql`
+    query Location($id: ID) {
+        locationTypes {
+            name
+            value
         }
     }
 `;
@@ -470,7 +486,6 @@ const TEAM_EDIT = gql`
             locations {
                 id
             }
-            client_id
         }
         availableLocations: locations {
             data {
@@ -574,7 +589,6 @@ const DEPARTMENT_EDIT = gql`
         department(id: $id) {
             id
             name
-            client_id
             positions {
                 id
                 name
@@ -626,7 +640,6 @@ const POSITION_EDIT = gql`
         position(id: $id) {
             id
             name
-            client_id
             departments {
                 id
                 name
@@ -702,7 +715,6 @@ const CALENDAR_EVENTS = gql`
             description
             full_day_event
             event_type_id
-            client_id
         }
     }
 `;
@@ -744,7 +756,6 @@ const CALENDAR_EVENT_GET = gql`
                 }
             }
             location_id
-            client_id
             call_task
             im_attending
             my_reminder
@@ -784,11 +795,11 @@ const NOTE_EDIT = gql`
     }
 `;
 
-const DEFAULT_CREATE = gql`
-    query DefaultQuery($id: ID) {
-        clientId(id: $id)
-    }
-`;
+// const DEFAULT_CREATE = gql`
+//     query DefaultQuery($id: ID) {
+//         clientId(id: $id)
+//     }
+// `;
 
 const REMINDERS = gql`
     query Reminders($page: Int, $filter: Filter) {
@@ -962,6 +973,7 @@ export default {
     location: {
         preview: LOCATION_PREVIEW,
         edit: LOCATION_EDIT,
+        create: LOCATION_CREATE,
     },
     member: {
         preview: MEMBER_PREVIEW,
@@ -987,7 +999,7 @@ export default {
     },
     eventType: {
         edit: EVENT_TYPES_EDIT,
-        create: DEFAULT_CREATE,
+        // create: DEFAULT_CREATE,
     },
     note: {
         edit: NOTE_EDIT,

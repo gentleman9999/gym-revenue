@@ -14,7 +14,6 @@
         <template #modal>
             <user-form
                 :is-client-user="$page.props.user.current_team?.isClientTeam"
-                :user="selectedUser"
                 :roles="roles"
                 :locations="locations"
                 :available-departments="availableDepartments"

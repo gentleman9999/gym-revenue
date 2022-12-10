@@ -22,7 +22,8 @@ input CreateLocationInput {
     latitude: Int  @rules(apply: ["sometimes", "nullable", "int", "after:open_date"],  attribute: "Latitude")
 }
 
-input PatchLocationInput {
+input UpdateLocationInput {
+    ID: ID! @rules(apply: ["required", "exists:locations,id"],  attribute: "ID")
     gymrevenue_id: String @rules(apply: ["sometimes", "nullable", "unique:locations,gymrevenue_id"],  attribute: "GymRevenue ID")
     location_no: String! @rules(apply: ["sometimes", "max:10"],  attribute: "Location Number")
     #    location_type: String! @rules(apply: ["sometimes",  new Enum(LocationTypeEnum::class)])

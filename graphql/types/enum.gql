@@ -1,0 +1,4 @@
+type Enum{
+    name: String!
+    value: String!
+}

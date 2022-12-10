@@ -584,11 +584,10 @@ export default {
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
             user.notes = { title: "", note: "" };
-            user.ec_first_name =
-                user["emergency_contact"]["misc"]["ec_first_name"];
-            user.ec_last_name =
-                user["emergency_contact"]["misc"]["ec_last_name"];
-            user.ec_phone = user["emergency_contact"]["misc"]["ec_phone"];
+            user.ec_first_name = user["emergency_contact"]["ec_first_name"];
+            user.ec_last_name;
+            user["emergency_contact"]["ec_last_name"];
+            user.ec_phone = user["emergency_contact"]["ec_phone"];
         } else {
             user = {
                 first_name: "",

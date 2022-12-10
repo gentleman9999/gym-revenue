@@ -14,3 +14,8 @@ extend type Query {
         id: ID @eq
     ): Location @find
 }
+
+extend type Query {
+    "Get Location Types"
+    locationTypes: [Enum]
+}

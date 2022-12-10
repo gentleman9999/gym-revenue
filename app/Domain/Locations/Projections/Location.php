@@ -70,6 +70,36 @@ class Location extends GymRevProjection
         return $this->hasOne(LocationDetails::class);
     }
 
+    public function poc_phone_detail(): HasOne
+    {
+        return $this->detail()->whereField('poc_phone');
+    }
+
+    public function pocFirstDetail(): HasOne
+    {
+        return $this->detail()->whereField('poc_first');
+    }
+
+    public function pocLastDetail(): HasOne
+    {
+        return $this->detail()->whereField('poc_last');
+    }
+
+    public function getPocLastAttribute(): string | null
+    {
+        return $this->pocLastDetail->value ?? null;
+    }
+
+    public function getPocFirstAttribute(): string | null
+    {
+        return $this->pocFirstDetail->value ?? null;
+    }
+
+    public function getPocPhoneAttribute(): string | null
+    {
+        return $this->pocPhoneDetail->value ?? null;
+    }
+
     public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

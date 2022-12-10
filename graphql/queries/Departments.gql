@@ -12,5 +12,4 @@ input DepartmentFilter {
     search: String
     trashed: String
     state: String
-    client_id: ID
 }

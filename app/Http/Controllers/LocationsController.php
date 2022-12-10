@@ -69,26 +69,7 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        $locationDetails = LocationDetails::where('location_id', $location->id)->get();
-        $poc_first = $poc_last = $poc_phone = '';
-
-        foreach ($locationDetails as $locationitems) {
-            if ($locationitems->field == 'poc_first') {
-                $poc_first = $locationitems->value;
-            }
-            if ($locationitems->field == 'poc_last') {
-                $poc_last = $locationitems->value;
-            }
-            if ($locationitems->field == 'poc_phone') {
-                $poc_phone = $locationitems->value;
-            }
-        }
-
         return Inertia::render('Locations/Edit', [
-            'location' => $location,
-            'poc_first' => $poc_first,
-            'poc_last' => $poc_last,
-            'poc_phone' => $poc_phone,
             'locationTypes' => LocationTypeEnum::asArray(),
         ]);
     }

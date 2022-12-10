@@ -3,9 +3,7 @@
         <LayoutHeader title="Edit Location">
             <jet-bar-icon type="g0back" fill />
             <h2 class="font-semibold text-xl leading-tight">
-                Edit {{ $page.props.location.name }} ({{
-                    $page.props.location["gymrevenue_id"]
-                }})
+                Edit {{ location.name }} ({{ location["gymrevenue_id"] }})
             </h2>
         </LayoutHeader>
 
