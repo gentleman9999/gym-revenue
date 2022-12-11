@@ -1,4 +1,7 @@
 import gql from "graphql-tag";
+import { EMAIL_TEMPLATES, EMAIL_TEMPLATE_EDIT } from "./templates/email";
+import { SMS_TEMPLATES } from "./templates/sms";
+import { CALL_TEMPLATES } from "./templates/call";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -948,80 +951,6 @@ const PROFILE_QUERY = gql`
         }
     }
 `;
-export const SMS_TEMPLATES = gql`
-    query SmsTemplatesQuery {
-        smsTemplates {
-            data {
-                id
-                name
-                markup
-                active
-                team_id
-                created_by_user_id
-                creator {
-                    name
-                    id
-                }
-                updated_at
-                created_at
-                details {
-                    sms_template_id
-                }
-            }
-        }
-    }
-`;
-
-export const EMAIL_TEMPLATES = gql`
-    query EmailTemplatesQuery {
-        emailTemplates {
-            data {
-                id
-                name
-                markup
-                subject
-
-                thumbnail {
-                    key
-                    url
-                }
-                active
-                client_id
-                team_id
-
-                created_by_user_id
-                creator {
-                    id
-                }
-                created_at
-                updated_at
-            }
-        }
-    }
-`;
-
-export const CALL_TEMPLATES = gql`
-    query CallTemplatesQuery {
-        callTemplates {
-            data {
-                id
-                name
-                script
-                thumbnail
-                active
-                client_id
-                team_id
-                created_by_user_id
-                creator {
-                    id
-                }
-                created_at
-                updated_at
-                use_once
-            }
-        }
-    }
-`;
 
 export default {
     user: {
@@ -1073,6 +1002,12 @@ export default {
     event: {
         get: CALENDAR_EVENT_GET,
     },
+    emailTemplate: {
+        edit: EMAIL_TEMPLATE_EDIT,
+    },
+    emailTemplates: EMAIL_TEMPLATES,
+    smsTemplates: SMS_TEMPLATES,
+    callTemplates: CALL_TEMPLATES,
     users: USERS,
     leads: LEADS,
     locations: LOCATIONS,
