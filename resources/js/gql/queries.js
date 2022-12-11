@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { EMAIL_TEMPLATES, EMAIL_TEMPLATE_EDIT } from "./templates/email";
-import { SMS_TEMPLATES } from "./templates/sms";
-import { CALL_TEMPLATES } from "./templates/call";
+import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
+import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -1005,6 +1005,12 @@ export default {
     },
     emailTemplate: {
         edit: EMAIL_TEMPLATE_EDIT,
+    },
+    smsTemplate: {
+        edit: SMS_TEMPLATE_EDIT,
+    },
+    callTemplate: {
+        edit: CALL_TEMPLATE_EDIT,
     },
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,

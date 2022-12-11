@@ -115,13 +115,7 @@ export default defineComponent({
         };
 
         const getEmailTemplates = (data) => {
-            let dup = _.cloneDeep(data.emailTemplates);
-
-            dup.data.forEach((t) => {
-                t.json = {};
-            });
-
-            return dup;
+            return _.cloneDeep(data.emailTemplates);
         };
 
         const handleCRUDUpdate = (k, v) => {

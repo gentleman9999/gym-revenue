@@ -30,3 +30,24 @@ export const CALL_TEMPLATES = gql`
         }
     }
 `;
+
+export const CALL_TEMPLATE_EDIT = gql`
+    query CallTemplate($id: ID) {
+        callTemplate(id: $id) {
+            id
+            name
+            script
+            thumbnail
+            active
+            client_id
+            team_id
+            created_by_user_id
+            creator {
+                id
+            }
+            created_at
+            updated_at
+            use_once
+        }
+    }
+`;
