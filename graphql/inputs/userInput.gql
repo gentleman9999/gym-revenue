@@ -1,0 +1,29 @@
+input UserInput {
+    id: ID
+    first_name: String
+    last_name: String
+    email: String
+    alternate_email: String
+    address1: String
+    address2: String
+    phone: String
+    city: String
+    state: String
+    zip: Int
+    contact_preference: String
+    start_date: String
+    end_date: String
+    termination_date: String
+    notes: NoteInput
+    client_id: ID
+    team_id: ID
+    role_id: ID
+    home_location_id: ID
+    manager: String
+    departments: [ID]
+    positions: [ID]
+}
+input NoteInput {
+    note: String
+    title: String
+}

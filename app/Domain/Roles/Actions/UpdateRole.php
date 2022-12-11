@@ -36,6 +36,13 @@ class UpdateRole
         return $role->refresh();
     }
 
+    public function __invoke($_, array $args): Role
+    {
+        $role = Role::find($args['id']);
+
+        return $this->handle($role, $args);
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();

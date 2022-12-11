@@ -7,7 +7,10 @@ use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
+
 use function bcrypt;
+
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
@@ -16,6 +19,7 @@ use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+
 use function request;
 
 class UpdateUser implements UpdatesUserProfileInformation
@@ -40,6 +44,27 @@ class UpdateUser implements UpdatesUserProfileInformation
         }
 
         return $user;
+    }
+
+    public function __invoke($_, array $args): User
+    {
+        if ($args['input']['start_date']) {
+            $args['input']['start_date'] = CarbonImmutable::create($args['input']['start_date']);
+        } else {
+            $args['input']['start_date'] = null;
+        }
+        if ($args['input']['end_date']) {
+            $args['input']['end_date'] = CarbonImmutable::create($args['input']['end_date']);
+        } else {
+            $args['input']['end_date'] = null;
+        }
+        if ($args['input']['termination_date']) {
+            $args['input']['termination_date'] = CarbonImmutable::create($args['input']['termination_date']);
+        } else {
+            $args['input']['termination_date'] = null;
+        }
+
+        return $this->handle($args['input']['id'], $args['input']);
     }
 
     /**

@@ -103,7 +103,11 @@ class Role extends \Silber\Bouncer\Database\Role
 
     public function abilities()
     {
-        return Bouncer::role()->find($this->id)->getAbilities()->toArray();
+        if (Bouncer::role()->find($this->id)) {
+            return Bouncer::role()->find($this->id)->getAbilities()->toArray();
+        } else {
+            return null;
+        }
     }
 
     public function availableAbilities()

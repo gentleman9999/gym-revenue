@@ -494,6 +494,9 @@ import PhoneInput from "@/Components/PhoneInput.vue";
 import { useModal } from "@/Components/InertiaModal";
 import * as _ from "lodash";
 
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+
 export default {
     components: {
         Button,
@@ -531,7 +534,6 @@ export default {
         const team_id = page.props.value.user.current_team_id;
 
         let operation = "Update";
-        console.log("gql-props", props);
         if (props.user) {
             if (props.isClientUser) {
                 user.role_id = user["role_id"];
@@ -602,7 +604,6 @@ export default {
                     position,
                 },
             ];
-            console.log("form.departments set to", form.departments);
         };
 
         const selectableDepartments = computed(() =>
@@ -621,37 +622,17 @@ export default {
                     selectableDepartments.value?.length &&
                     !renderableDepartments.value?.length
                 ) {
-                    console.log("renderableDepartments - entered");
                     const department_positions = [];
-                    console.log(
-                        "renderableDepartments-selectableDepartments",
-                        selectableDepartments.value
-                    );
                     selectableDepartments.value.forEach(({ id, positions }) => {
-                        console.log("renderableDepartments-id.pos", {
-                            id,
-                            positions,
-                        });
                         const department = props.user?.departments?.find(
                             (d) => (d.id = id)
                         );
-                        console.log("renderableDepartments-found depts", {
-                            department,
-                            user_positions: props.user?.positions,
-                        });
                         const owned_positions =
                             props.user?.positions?.filter((user_pos) =>
                                 positions?.find((dept_pos) => {
-                                    console.log(
-                                        "renderableDepartments-own po loop",
-                                        { user_pos, dept_pos }
-                                    );
                                     return user_pos.id === dept_pos.id;
                                 })
                             ) || [];
-                        console.log("renderableDepartments-found pos", {
-                            owned_positions,
-                        });
                         owned_positions.forEach((owned_position) => {
                             department_positions.push({
                                 department: department.id,
@@ -669,10 +650,6 @@ export default {
             () => {
                 if (renderableDepartments.value?.length) {
                     form.departments = [...renderableDepartments.value];
-                    console.log("set form.departments to", {
-                        renderableDepartments: renderableDepartments.value,
-                        formDeps: form.departments,
-                    });
                 }
             },
             { immediate: true }
@@ -695,22 +672,82 @@ export default {
         };
 
         const modal = useModal();
+        const { mutate: createUser } = useMutation(mutations.user.create);
+        const { mutate: updateUser } = useMutation(mutations.user.update);
 
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformFormSubmission)
-                .put(route("users.update", user.id), {
-                    onSuccess: () => (form.notes = { title: "", note: "" }),
-                });
+        let handleSubmit = async () => {
+            console.log(user);
+            await updateUser({
+                input: {
+                    id: user.id,
+                    first_name: form.first_name,
+                    last_name: form.last_name,
+                    email: form.email,
+                    alternate_email: form.alternate_email,
+                    address1: form.address1,
+                    address2: form.address2,
+                    phone: form.phone,
+                    city: form.city,
+                    state: form.state,
+                    zip: form.zip,
+                    contact_preference: form.contact_preference,
+                    start_date: form.start_date,
+                    end_date: form.end_date,
+                    termination_date: form.termination_date,
+                    notes: form.notes,
+                    client_id: null,
+                    team_id: form.team_id,
+                    role_id: form.role_id,
+                    home_location_id: null,
+                    manager: null,
+                },
+            });
+            handleClickCancel();
+            // console.log(
+            //     "form",
+            //     form
+            //     .dirty()
+            //     .transform(transformFormSubmission)
+            // )
+
+            // form
+            //     .dirty()
+            //     .transform(transformFormSubmission)
+            //     .put(route("users.update", user.id), {
+            //         onSuccess: () => (form.notes = { title: "", note: "" }),
+            //     });
+        };
         if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform(transformFormSubmission)
-                    .post(route("users.store"), {
-                        headers: { "X-Inertia-Modal-Redirect": true },
-                        onSuccess: () => (form.notes = { title: "", note: "" }),
-                    });
+            handleSubmit = async () => {
+                // form.transform(transformFormSubmission)
+                await createUser({
+                    input: {
+                        first_name: form.first_name,
+                        last_name: form.last_name,
+                        email: form.email,
+                        alternate_email: form.alternate_email,
+                        address1: form.address1,
+                        address2: form.address2,
+                        phone: form.phone,
+                        city: form.city,
+                        state: form.state,
+                        zip: form.zip,
+                        contact_preference: form.contact_preference,
+                        start_date: form.start_date,
+                        end_date: form.end_date,
+                        termination_date: form.termination_date,
+                        notes: form.notes,
+                        client_id: null,
+                        team_id: form.team_id,
+                        role_id: form.role_id,
+                        home_location_id: null,
+                        manager: null,
+                        departments: [],
+                        positions: [],
+                    },
+                });
+                handleClickCancel();
+            };
         }
 
         const handleConfirmDeleteFile = () => {
@@ -723,18 +760,9 @@ export default {
         const fileManagerModal = ref();
         const fileManager = ref();
 
-        // const closeFileManagerModal = computed(()=>{
-        //     console.log({fileManager: fileManager.value})
-        //     const reset = fileManager.value?.reset || fileManager?.reset || false;
-        //     console.log({reset})
-        //     return fileManager.value?.reset;
-        // })
-
         const closeFileManagerModal = () => {
-            console.log({ fileManager: fileManager.value });
             const reset =
                 fileManager.value?.reset || fileManager?.reset || false;
-            console.log({ reset });
             return fileManager.value?.reset;
         };
 
@@ -744,8 +772,7 @@ export default {
         }
 
         const handleClickCancel = () => {
-            if (modal.value.close) {
-                console.log("closing modal");
+            if (modal?.value?.close) {
                 modal.value.close();
             } else {
                 Inertia.visit(route("users"));
@@ -865,7 +892,6 @@ export default {
             all_positions_for_selected_department,
             selectablePositionOptions,
             // closeFileManagerModal: ()=> fileManagerModal.value.close(),
-            // resetFileManager: () => console.log(fileManager.value)
             // resetFileManager: () => fileManager.value?.reset()
         };
     },

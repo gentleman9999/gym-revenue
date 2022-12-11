@@ -41,6 +41,11 @@ class CreatePosition
         return Position::findOrFail($id);
     }
 
+    public function __invoke($_, array $args): Position
+    {
+        return $this->handle($args);
+    }
+
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

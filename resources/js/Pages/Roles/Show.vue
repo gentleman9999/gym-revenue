@@ -46,6 +46,9 @@ import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import queries from "@/gql/queries.js";
 import RoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+
 export default defineComponent({
     components: {
         LayoutHeader,
@@ -63,8 +66,11 @@ export default defineComponent({
             confirmDelete.value = item;
         };
 
-        const handleConfirmDelete = () => {
-            Inertia.delete(route("roles.delete", confirmDelete.value.id));
+        const { mutate: deleteRole } = useMutation(mutations.role.delete);
+        const handleConfirmDelete = async () => {
+            await deleteRole({
+                id: confirmDelete.value.id,
+            });
             confirmDelete.value = null;
         };
 

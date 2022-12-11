@@ -34,6 +34,13 @@ class UpdatePosition
         return $position->refresh();
     }
 
+    public function __invoke($_, array $args): Position
+    {
+        $position = Position::find($args['id']);
+
+        return $this->handle($position, $args);
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();

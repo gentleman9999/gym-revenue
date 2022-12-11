@@ -27,6 +27,7 @@ const USER_EDIT = gql`
     query User($id: ID) {
         isClientUser(id: $id)
         user(id: $id) {
+            id
             first_name
             last_name
             contact_preference {
