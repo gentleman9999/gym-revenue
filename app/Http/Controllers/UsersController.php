@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Models\Position;
-use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -85,8 +82,6 @@ class UsersController extends Controller
             'roles' => $roles,
             'clientName' => $client_name,
             'locations' => $locations,
-            'availablePositions' => Position::with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::with('positions')->select('id', 'name')->get(),
         ]);
     }
 
@@ -102,9 +97,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments');//TODO:get rid of loading all details here.
-
-        if ($me->id == $user->id) {
+        if ($me->id === $user->id) {
             return Redirect::route('profile.show');
         }
 
@@ -114,26 +107,11 @@ class UsersController extends Controller
         if ($user->isClientUser()) {
             $locations = Location::get(['name', 'gymrevenue_id']);
         };
-        //for some reason inertiajs converts "notes" key to empty string.
-        //so we set all_notes
-        $userData = $user->toArray();
-        $userData['all_notes'] = $user->notes->toArray();
-        foreach ($userData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($userData['all_notes'][$key]['id'])->first()) {
-                $userData['all_notes'][$key]['read'] = true;
-            } else {
-                $userData['all_notes'][$key]['read'] = false;
-            }
-        }
-//        dd($userData);
-        $userData['role_id'] = $user->role()->id;
 
         return Inertia::render('Users/Edit', [
-            'selectedUser' => $userData,
+            'id' => $user->id,
             'roles' => $roles,
             'locations' => $locations,
-            'availablePositions' => Position::whereClientId($client_id)->with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::whereClientId($client_id)->with('positions')->select('id', 'name')->get(),
         ]);
     }
 
@@ -205,7 +183,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -228,7 +206,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
             }
         }
 

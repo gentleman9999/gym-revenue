@@ -12,6 +12,7 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamInvitation;
 use App\Domain\Users\Actions\DeleteUser;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
@@ -52,7 +53,7 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::deleteUsersUsing(DeleteUser::class);
         Fortify::authenticateUsing(function (Request $request) {
             //Call withoutGlobalScopes so we don't try to apply client_id on login
-            $user = User::withoutGlobalScopes()->with('default_team')->where('email', $request->email)->first();
+            $user = User::withoutGlobalScopes()->where('email', $request->email)->first();
 
             if ($user &&
                 Hash::check($request->password, $user->password)) {
@@ -61,8 +62,9 @@ class JetstreamServiceProvider extends ServiceProvider
                 //Let's set some info in our cookie session so we
                 // can use it in middleware / global scopes
                 // without having to hit the db
-                $team = $user->default_team ?? false;
-                if ($team) {
+                $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()->whereUserId($user->id)->whereField('default_team_id')->first()->value);
+                //$team = $user->getDefaultTeam();
+                if ($team !== null) {
                     session()->put('current_team_id', $team->id);
                     session()->put(
                         'current_team',

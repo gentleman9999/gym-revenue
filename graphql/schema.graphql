@@ -7,7 +7,8 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 #import inputs/*.gql
 #import mutations/*.gql
 
-#import ../App/Domain/**/graphql/*
+#import ../App/Domain/*/graphql/*
+#import ../App/Domain/*/*/graphql/*
 
 type Query {
     me: User @auth

@@ -1,55 +1,47 @@
 <template>
-    <ModalableWrapper>
-        <LayoutHeader title="Edit Location">
-            <jet-bar-icon type="g0back" fill />
-            <h2 class="font-semibold text-xl leading-tight">
-                Edit {{ $page.props.location.name }} ({{
-                    $page.props.location["gymrevenue_id"]
-                }})
-            </h2>
-        </LayoutHeader>
-
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <ModalSlot />
-            </div>
-        </div>
-        <template #modal>
-            <location-form
-                :client-id="this.$page.props.user.client_id"
-                :location="location"
-                :location-types="locationTypes"
-            />
-        </template>
-    </ModalableWrapper>
+    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+        <ApolloQuery :query="queries.location.edit" :variables="{ id }">
+            <template v-slot="{ result: { data } }">
+                <LayoutHeader title="Edit Location">
+                    <jet-bar-icon type="goback" fill />
+                    <h2
+                        class="font-semibold text-xl leading-tight"
+                        v-if="data?.location"
+                    >
+                        Edit {{ data.location.name }} ({{
+                            data.location["gymrevenue_id"]
+                        }})
+                    </h2>
+                </LayoutHeader>
+                <location-form
+                    v-if="data?.location"
+                    :client-id="this.$page.props.user.client_id"
+                    v-bind="{ ...data }"
+                />
+            </template>
+        </ApolloQuery>
+    </div>
 </template>
 
-<script>
+<script setup>
+import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
+import { edit } from "@/Components/CRUD/helpers/gqlData";
+import { onMounted, ref } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import Button from "@/Components/Button.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
-
-import JetInputError from "@/Jetstream/InputError.vue";
-import JetLabel from "@/Jetstream/Label.vue";
 import JetBarIcon from "@/Components/JetBarIcon.vue";
 
-import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
-import { defineComponent } from "vue";
+import queries from "@/gql/queries";
 
-import { ModalableWrapper, ModalSlot } from "@/Components/InertiaModal";
+const location = ref(null);
 
-export default defineComponent({
-    components: {
-        LayoutHeader,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-        JetBarIcon,
-        LocationForm,
-        ModalableWrapper,
-        ModalSlot,
+const props = defineProps({
+    id: {
+        type: String,
+        required: true,
     },
-    props: ["location", "locationTypes"],
+});
+onMounted(() => {
+    console.log("edit page ", { id: props.id });
+    edit(props.id);
 });
 </script>

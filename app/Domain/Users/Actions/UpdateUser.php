@@ -3,6 +3,7 @@
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\UserDetails;
 use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Enums\StatesEnum;
@@ -10,7 +11,6 @@ use App\Http\Middleware\InjectClientId;
 
 use function bcrypt;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
@@ -33,6 +33,16 @@ class UpdateUser implements UpdatesUserProfileInformation
     {
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
+        }
+        $misc = (new UserDetails())->whereUserId($id)->whereField('emergency_contact')->first()?->misc ?: [];
+        $new_ec = [
+            'ec_first_name' => $payload['ec_first_name'] ?? ($misc['ec_first_name'] ?? null),
+            'ec_last_name' => $payload['ec_last_name'] ?? ($misc['ec_last_name'] ?? null),
+            'ec_phone' => $payload['ec_phone'] ?? ($misc['ec_phone'] ?? null),
+        ];
+
+        if (! empty(array_filter($new_ec))) {
+            UserDetails::createOrUpdateRecord($id, 'emergency_contact', '', $new_ec, true);
         }
 
         UserAggregate::retrieve($id)->update($payload)->persist();
@@ -75,21 +85,21 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function rules(): array
     {
         return [
-            'first_name' => ['sometimes', 'required', 'string', 'max:255'],
-            'last_name' => ['sometimes', 'required', 'string', 'max:255'],
-            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', 'unique:users,email,' . request()->id],
-            'alternate_email' => ['sometimes', 'required', 'email'],
-            'address1' => ['sometimes', 'required'],
+            'first_name' => ['sometimes', 'string', 'max:255'],
+            'last_name' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,' . request()->id],
+            'alternate_email' => ['sometimes', 'email'],
+            'address1' => ['sometimes'],
             'address2' => ['sometimes', 'nullable'],
-            'city' => ['sometimes', 'required'],
-            'state' => ['sometimes', 'required', 'max:2', new Enum(StatesEnum::class)],
-            'zip' => ['sometimes', 'required'],
+            'city' => ['sometimes'],
+            'state' => ['sometimes', 'max:2', new Enum(StatesEnum::class)],
+            'zip' => ['sometimes'],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
             'termination_date' => ['sometimes'],
             'notes' => ['sometimes'],
-            'team_id' => ['sometimes', 'required', 'string', 'exists:teams,id'],
-            'role_id' => ['sometimes', 'required', 'integer'],
+            'team_id' => ['sometimes', 'string', 'exists:teams,id'],
+            'role_id' => ['sometimes', 'integer'],
             'contact_preference' => ['sometimes', 'nullable'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
@@ -97,6 +107,9 @@ class UpdateUser implements UpdatesUserProfileInformation
             'home_location_id' => ['sometimes', 'nullable'], //should be required if client_id provided. how to do?
             'departments' => ['sometimes', 'nullable'],
             'positions' => ['sometimes', 'nullable'],
+            'ec_first_name' => ['sometimes', 'string', 'max:255'],
+            'ec_last_name' => ['sometimes', 'string', 'max:255'],
+            'ec_phone' => ['sometimes', 'digits:10'],
         ];
     }
 
