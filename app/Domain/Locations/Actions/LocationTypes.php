@@ -6,6 +6,8 @@ use App\Enums\LocationTypeEnum;
 use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+//TODO: This should be named GetLocationTypes, but then the graphql field will be "getLocationTypes" instead of "locationTypes".
+//TODO: Look into custom field resolvers, or maybe just create a new directory in Actions called "Queries" and put this in there.
 class LocationTypes
 {
     use AsAction;

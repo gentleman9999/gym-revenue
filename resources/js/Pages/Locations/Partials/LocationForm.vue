@@ -194,7 +194,6 @@
                     id="poc_phone"
                     class="block w-full mt-1"
                     v-model="form.poc_phone"
-                    required
                 />
                 <jet-input-error
                     :message="form.errors.poc_phone"
@@ -289,7 +288,9 @@ export default {
                     id
                     gymrevenue_id
                     location_no
-                    location_type
+                    location_type {
+                        value
+                    }
                     name
                     city
                     state
@@ -365,11 +366,17 @@ export default {
             operation = "Create";
         }
 
-        const transformData = (data) => ({
-            ...data,
-            open_date: transformDate(data.open_date),
-            close_date: transformDate(data.close_date),
-        });
+        const transformData = (data) => {
+            if (data.open_data) {
+                data.open_data = transformDate(data.open_date);
+            }
+
+            if (data.close_date) {
+                data.close_date = transformDate(data.close_date);
+            }
+
+            return data;
+        };
 
         const form = useGymRevForm(location);
 
@@ -381,17 +388,20 @@ export default {
         //    form.put(`/locations/${location.id}`);
         let handleSubmit = async () => {
             form.clearErrors();
-            // form.transform(transformData).post(route("locations.store"));
-            const data = transformData(form.data());
+            const data = transformData(form.dirtyData);
+            data.id = props.location.id;
             const response = await mutate({ location: data });
-            console.log("LocationFor::update", { reqData: data, response });
+            console.log("LocationFor::update", {
+                reqData: data,
+                response,
+                location: props.location,
+            });
         };
 
         if (operation === "Create") {
             handleSubmit = async () => {
                 form.clearErrors();
-                // form.transform(transformData).post(route("locations.store"));
-                const data = transformData(form.data());
+                const data = transformData(form.dirtyData);
                 const response = await mutate({ location: data });
                 console.log("LocationFor::create", { reqData: data, response });
             };

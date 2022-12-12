@@ -65,9 +65,9 @@ export const useGymRevForm = (...args) => {
         }, {})
     );
 
-    watch(dirtyFields, (a) => console.log({ dirtyFields: a }));
-    watch(dirtyData, (a) => console.log({ dirtyData: a }));
-    watch(currentData, (a) => console.log({ currentData: a }));
+    // watch(dirtyFields, (a) => console.log({ dirtyFields: a }));
+    // watch(dirtyData, (a) => console.log({ dirtyData: a }));
+    // watch(currentData, (a) => console.log({ currentData: a }));
 
     /**
      * transform function that removes any properties that aren't dirty.
@@ -94,6 +94,8 @@ export const useGymRevForm = (...args) => {
     };
 
     form.dirty = dirty;
+
+    form.dirtyData = dirtyData;
 
     return form;
 };

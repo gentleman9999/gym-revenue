@@ -24,6 +24,7 @@ const USER_EDIT = gql`
     query User($id: ID) {
         isClientUser(id: $id)
         user(id: $id) {
+            id
             first_name
             last_name
             contact_preference {
@@ -283,6 +284,7 @@ const LOCATIONS = gql`
 const LOCATION_PREVIEW = gql`
     query Location($id: ID) {
         location(id: $id) {
+            id
             name
             location_no
             city
@@ -296,6 +298,7 @@ const LOCATION_PREVIEW = gql`
 const LOCATION_EDIT = gql`
     query Location($id: ID) {
         location(id: $id) {
+            id
             name
             location_no
             gymrevenue_id
@@ -445,6 +448,7 @@ const TEAMS = gql`
 const TEAM_PREVIEW = gql`
     query Team($id: ID) {
         team(id: $id) {
+            id
             name
             users {
                 id
@@ -469,6 +473,7 @@ const TEAM_PREVIEW = gql`
 const TEAM_EDIT = gql`
     query Team($id: ID) {
         team(id: $id) {
+            id
             name
             client {
                 name

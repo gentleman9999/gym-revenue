@@ -61,7 +61,9 @@ class UpdateLocation
      */
     public function __invoke($_, array $args): Location
     {
-        return $this->handle(Location::find($args['id']), $args);
+        $location = $args['location'];
+
+        return $this->handle(Location::find($location['id']), $location);
     }
 
     public function getControllerMiddleware(): array
