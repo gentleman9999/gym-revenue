@@ -7,7 +7,6 @@ use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\StatesEnum;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -61,11 +60,6 @@ class CreateLocation extends GymRevAction
         LocationAggregate::retrieve($id)->create($data)->persist();
 
         return Location::findOrFail($id);
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool
