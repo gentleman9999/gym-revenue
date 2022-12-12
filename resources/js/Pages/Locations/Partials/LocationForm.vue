@@ -280,7 +280,7 @@ export default {
         multiselect: Multiselect,
         PhoneInput,
     },
-    props: ["location"],
+    props: ["location", "locationTypes"],
     setup(props, { emit }) {
         const page = usePage();
 
