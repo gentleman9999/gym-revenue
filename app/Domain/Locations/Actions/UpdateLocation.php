@@ -2,9 +2,9 @@
 
 namespace App\Domain\Locations\Actions;
 
+use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
-use App\Enums\LocationTypeEnum;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
@@ -44,7 +44,7 @@ class UpdateLocation
             'location_no' => ['sometimes', 'max:50', 'exists:locations,location_no'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
-            'location_type' => ['sometimes',  new Enum(LocationTypeEnum::class)],
+            'location_type' => ['sometimes',  new Enum(LocationType::class)],
         ];
     }
 

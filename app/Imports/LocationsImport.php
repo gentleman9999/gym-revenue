@@ -3,7 +3,7 @@
 namespace App\Imports;
 
 use App\Domain\Locations\Actions\CreateLocation;
-use App\Enums\LocationTypeEnum;
+use App\Domain\Locations\Enums\LocationType;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
@@ -28,7 +28,7 @@ class LocationsImport implements ToCollection
                 'zip' => $row[4],
                 'address1' => $row[5],
                 'shouldCreateTeam' => true,
-                'location_type' => LocationTypeEnum::STORE,
+                'location_type' => LocationType::STORE,
             ]);
         }
     }

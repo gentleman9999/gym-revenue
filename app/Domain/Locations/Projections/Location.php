@@ -3,8 +3,8 @@
 namespace App\Domain\Locations\Projections;
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Teams\Models\Team;
-use App\Enums\LocationTypeEnum;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
@@ -42,7 +42,7 @@ class Location extends GymRevProjection
     }
 
     protected $casts = [
-        'location_type' => LocationTypeEnum::class,
+        'location_type' => LocationType::class,
     ];
 
     /**

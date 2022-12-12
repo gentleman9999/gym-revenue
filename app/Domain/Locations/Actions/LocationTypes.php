@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
-use App\Enums\LocationTypeEnum;
+use App\Domain\Locations\Enums\LocationType;
 use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -23,7 +25,7 @@ class LocationTypes
 
     public function handle(): array
     {
-        return LocationTypeEnum::asArray();
+        return LocationType::asOptionsArray();
     }
 
     public function getControllerMiddleware(): array

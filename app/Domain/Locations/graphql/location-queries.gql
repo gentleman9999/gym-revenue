@@ -17,5 +17,5 @@ extend type Query {
 
 extend type Query {
     "Get Location Types"
-    locationTypes: [Enum]
+    locationTypes: [Enum!]!
 }
