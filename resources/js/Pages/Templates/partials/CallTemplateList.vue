@@ -1,5 +1,5 @@
 <template>
-    <ApolloQuery :query="CALL_TEMPLATES" :variables="param">
+    <ApolloQuery :query="(gql) => queries['callTemplates']" :variables="param">
         <template v-slot="{ result: { data, loading, error } }">
             <TemplateList v-if="!loading && !!data" type="call">
                 <template #current_templates>
@@ -31,7 +31,7 @@
 <script setup>
 import TemplateList from "./TemplateList.vue";
 import CallTemplatePreview from "./previewItems/CallTemplatePreview.vue";
-import { CALL_TEMPLATES } from "@/gql/queries";
+import queries from "@/gql/queries";
 
 const permissions = {
     create: true,

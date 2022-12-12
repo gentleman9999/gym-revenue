@@ -79,9 +79,6 @@
         :precampaign="selectedCampaign"
         @done="handleDone"
     />
-
-    {{ JSON.stringify(type) }}
-    {{ JSON.stringify(campaigns) }}
 </template>
 
 <script setup>

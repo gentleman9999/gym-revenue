@@ -20,18 +20,24 @@
             </inertia-link>
         </div>
     </LayoutHeader>
-
-    <gym-revenue-crud
-        base-route="mass-comms.email-templates"
-        model-name="Email Template"
-        model-key="template"
-        :fields="fields"
-        :resource="templates"
-        :actions="actions"
-        :top-actions="{ create: { label: 'New Template' } }"
-        :table-component="false"
-        :card-component="EmailTemplateCard"
-    />
+    <ApolloQuery :query="(gql) => queries['emailTemplates']" :variables="param">
+        <template v-slot="{ result: { data } }">
+            <gym-revenue-crud
+                v-if="data"
+                :resource="getEmailTemplates(data)"
+                base-route="emailTemplates"
+                model-name="EmailTemplate"
+                model-key="emailTemplate"
+                :fields="fields"
+                :actions="actions"
+                :top-actions="{ create: { label: 'New Template' } }"
+                :table-component="false"
+                :cardComponent="EmailTemplateCard"
+                :edit-component="EmailTemplateForm"
+                @update="handleCRUDUpdate"
+            />
+        </template>
+    </ApolloQuery>
 
     <confirm
         title="Really Trash?"
@@ -70,6 +76,8 @@ import { faImage } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestEmail.vue";
 import EmailTemplateCard from "./Partials/EmailTemplateCard.vue";
+import EmailTemplateForm from "./Partials/EmailTemplateForm.vue";
+import queries from "@/gql/queries";
 library.add(faChevronDoubleLeft, faEllipsisH, faImage);
 
 export default defineComponent({
@@ -94,12 +102,38 @@ export default defineComponent({
             confirmTrash.value = null;
         };
 
+        const param = ref({
+            page: 1,
+        });
+
         const confirmSend = ref(null);
         const sendVars = () => {
             return {
                 templateId: "",
                 templateName: "",
             };
+        };
+
+        const getEmailTemplates = (data) => {
+            return _.cloneDeep(data.emailTemplates);
+        };
+
+        const handleCRUDUpdate = (k, v) => {
+            console.log("handle crud update: ", k, v);
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
         };
 
         const handleOpenSendModal = (data) => {
@@ -115,31 +149,44 @@ export default defineComponent({
             //sendModal.value.close();
             confirmSend.value = null;
         };
-        const fields = computed(() => {
-            return [
-                "name",
-                {
-                    name: "active",
-                    label: "status",
-                    props: {
-                        truthy: "Active",
-                        falsy: "Draft",
-                        getProps: ({ data }) =>
-                            !!data.active
-                                ? { text: "Active", class: "badge-success" }
-                                : { text: "Draft", class: "badge-warning" },
-                    },
-                    export: (active) => (active ? "Active" : "Draft"),
-                },
-                { name: "type", transform: () => "Regular" },
-                { name: "updated_at", label: "date updated" },
-                {
-                    name: "creator.name",
-                    label: "updated by",
-                    transform: (creator) => creator || "Auto Generated",
-                },
-            ];
-        });
+
+        // const fields = ["name", "created_at", "updated_at"];
+
+        // const fields = computed(() => {
+        //     return [
+        //         "name",
+        //         {
+        //             name: "active",
+        //             label: "status",
+        //             props: {
+        //                 truthy: "Active",
+        //                 falsy: "Draft",
+        //                 getProps: ({ data }) =>
+        //                     !!data.active
+        //                         ? { text: "Active", class: "badge-success" }
+        //                         : { text: "Draft", class: "badge-warning" },
+        //             },
+        //             export: (active) => (active ? "Active" : "Draft"),
+        //         },
+        //         { name: "type", transform: () => "Regular" },
+        //         { name: "updated_at", label: "date updated" },
+        //         {
+        //             name: "creator.name",
+        //             label: "updated by",
+        //             transform: (creator) => creator || "Auto Generated",
+        //         },
+        //     ];
+        // });
+
+        const fields = [
+            "id",
+            "name",
+            "markup",
+            "subject",
+            "thumbnail",
+            "thumbnail.key",
+            "thumbnail.url",
+        ];
 
         const actions = computed(() => {
             return {
@@ -157,13 +204,18 @@ export default defineComponent({
             fields,
             actions,
             handleClickTrash,
+            getEmailTemplates,
+            handleCRUDUpdate,
             confirmTrash,
             handleConfirmTrash,
             handleOpenSendModal,
             handleCloseTextModal,
             confirmSend,
             sendVars,
+            queries,
+            param,
             EmailTemplateCard,
+            EmailTemplateForm,
         };
     },
 });

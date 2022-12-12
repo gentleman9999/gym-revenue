@@ -1,5 +1,5 @@
 <template>
-    <ApolloQuery :query="EMAIL_TEMPLATES" :variables="param">
+    <ApolloQuery :query="(gql) => queries['emailTemplates']" :variables="param">
         <template v-slot="{ result: { data, loading, error } }">
             <TemplateList v-if="!loading && !!data" type="email">
                 <template #current_templates>
@@ -31,7 +31,7 @@
 <script setup>
 import TemplateList from "./TemplateList.vue";
 import EmailTemplatePreview from "./previewItems/EmailTemplatePreview.vue";
-import { EMAIL_TEMPLATES } from "@/gql/queries";
+import queries from "@/gql/queries";
 
 const permissions = {
     create: true,
