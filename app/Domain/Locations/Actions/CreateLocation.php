@@ -2,6 +2,7 @@
 
 namespace App\Domain\Locations\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
@@ -9,17 +10,13 @@ use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateLocation
+class CreateLocation extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -51,15 +48,9 @@ class CreateLocation
         ];
     }
 
-    /**
-     * @param  null  $_
-     * @param  array{}  $args
-     */
-    public function __invoke($_, array $args): Location
+    public function mapArgsToHandle($args): array
     {
-        Log::info(json_encode($args));
-
-        return $this->handle($args['location']);
+        return [$args['location']];
     }
 
     public function handle(array $data): Location

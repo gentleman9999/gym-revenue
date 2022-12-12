@@ -2,6 +2,7 @@
 
 namespace App\Domain\Teams\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\TeamAggregate;
 use App\Http\Middleware\InjectClientId;
@@ -11,13 +12,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use Laravel\Jetstream\Contracts\CreatesTeams;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateTeam implements CreatesTeams
+class CreateTeam extends GymRevAction implements CreatesTeams
 {
-    use AsAction;
-
     public function handle(array $payload): Team
     {
         $id = Uuid::new();
