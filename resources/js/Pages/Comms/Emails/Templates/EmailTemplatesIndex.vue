@@ -186,6 +186,13 @@ export default defineComponent({
             "thumbnail",
             "thumbnail.key",
             "thumbnail.url",
+            "active",
+            "client_id",
+            "team_id",
+            "created_by_user_id",
+            "creator.id",
+            "created_at",
+            "updated_at",
         ];
 
         const actions = computed(() => {

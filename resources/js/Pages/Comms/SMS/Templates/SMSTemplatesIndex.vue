@@ -31,6 +31,7 @@
                 :fields="fields"
                 :actions="actions"
                 :top-actions="{ create: { label: 'New Template' } }"
+                :edit-component="SmsTemplateForm"
             />
         </template>
     </ApolloQuery>
@@ -63,6 +64,7 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import Confirm from "@/Components/Confirm.vue";
 import ConfirmSendForm from "@/Presenters/MassComm/TestMsgs/SendTestSMS.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
+import SmsTemplateForm from "./Partials/SmsTemplateForm.vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -175,6 +177,7 @@ export default defineComponent({
             queries,
             getSmsTemplates,
             param,
+            SmsTemplateForm,
         };
     },
 });
