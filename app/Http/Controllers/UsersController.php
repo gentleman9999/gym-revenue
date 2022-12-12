@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
-use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -84,8 +82,6 @@ class UsersController extends Controller
             'roles' => $roles,
             'clientName' => $client_name,
             'locations' => $locations,
-            'availablePositions' => Position::with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::with('positions')->select('id', 'name')->get(),
         ]);
     }
 
@@ -113,10 +109,9 @@ class UsersController extends Controller
         };
 
         return Inertia::render('Users/Edit', [
+            'id' => $user->id,
             'roles' => $roles,
             'locations' => $locations,
-            'availablePositions' => Position::whereClientId($client_id)->with('departments')->select('id', 'name')->get(),
-            'availableDepartments' => Department::whereClientId($client_id)->with('positions')->select('id', 'name')->get(),
         ]);
     }
 

@@ -405,6 +405,7 @@ export default {
         return {
             form,
             buttonText: operation,
+            operation,
             handleSubmit,
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),

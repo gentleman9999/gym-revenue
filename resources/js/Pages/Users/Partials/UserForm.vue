@@ -516,7 +516,7 @@
 </template>
 
 <script>
-import { ref, computed, watch, inject } from "vue";
+import { ref, computed, watch, inject, watchEffect } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
 
@@ -575,10 +575,11 @@ export default {
         let user = _.cloneDeep(props.user);
 
         const team_id = page.props.value.user.current_team_id;
+        const isClientUser = page.props.value.user.is_client_user;
 
         let operation = "Update";
         if (user) {
-            if (props.isClientUser) {
+            if (isClientUser) {
                 user.role_id = user["role_id"];
             }
             user.contact_preference = user["contact_preference"]?.value;
@@ -615,7 +616,7 @@ export default {
                 ec_phone: "",
             };
             //only add client specific when applicable to make user validation rules work better
-            if (props.isClientUser) {
+            if (isClientUser) {
                 user.home_location_id = null;
                 user.notes = { title: "", note: "" };
                 user.start_date = null;
@@ -630,7 +631,7 @@ export default {
         }
         const form = useGymRevForm(user);
 
-        let selectedDepartment = ref("");
+        let selectedDepartment = ref(null);
         let selectedPosition = ref(null);
         const _addDepartmentPosition = (department, position) => {
             form.departments = [
@@ -874,6 +875,7 @@ export default {
         // });
 
         return {
+            isClientUser,
             form,
             buttonText: operation,
             operation,

@@ -70,8 +70,7 @@ const USER_EDIT = gql`
 `;
 
 const USER_CREATE = gql`
-    query User($id: ID) {
-        isClientUser(id: $id)
+    query User {
         availableDepartments: departments {
             data {
                 id
@@ -299,6 +298,7 @@ const LOCATION_EDIT = gql`
         location(id: $id) {
             name
             location_no
+            gymrevenue_id
             city
             state
             zip
@@ -312,10 +312,6 @@ const LOCATION_EDIT = gql`
             poc_phone
             poc_first
             poc_last
-            details {
-                field
-                value
-            }
         }
         locationTypes {
             name
@@ -324,7 +320,7 @@ const LOCATION_EDIT = gql`
     }
 `;
 const LOCATION_CREATE = gql`
-    query Location($id: ID) {
+    query Location {
         locationTypes {
             name
             value

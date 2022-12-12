@@ -7,7 +7,6 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Locations\Projections\LocationDetails;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
-use App\Enums\LocationTypeEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -55,9 +54,7 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        return Inertia::render('Locations/Create', [
-            'locationTypes' => LocationTypeEnum::asArray(),
-        ]);
+        return Inertia::render('Locations/Create');
     }
 
     public function edit(Location $location)
@@ -70,7 +67,7 @@ class LocationsController extends Controller
         }
 
         return Inertia::render('Locations/Edit', [
-            'locationTypes' => LocationTypeEnum::asArray(),
+            'id' => $location->id,
         ]);
     }
 
