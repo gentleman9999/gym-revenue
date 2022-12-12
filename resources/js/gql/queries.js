@@ -317,8 +317,9 @@ const LOCATION_EDIT = gql`
             poc_last
         }
         locationTypes {
-            name
+            label
             value
+            description
         }
     }
 `;
