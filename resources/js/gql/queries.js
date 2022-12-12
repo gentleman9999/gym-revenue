@@ -329,8 +329,9 @@ const LOCATION_EDIT = gql`
 const LOCATION_CREATE = gql`
     query Location {
         locationTypes {
-            name
+            label
             value
+            description
         }
     }
 `;
