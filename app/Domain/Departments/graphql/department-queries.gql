@@ -6,6 +6,10 @@ extend type Query {
     ): [Department!]!
     @paginate(defaultCount: 10)
         @can(ability: "departments.read", model: "App\\Domain\\Departments\\Department")
+
+    department(
+        id: ID @eq
+    ): Department @find
 }
 
 input DepartmentFilter {

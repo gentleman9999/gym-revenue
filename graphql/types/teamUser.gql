@@ -1,3 +1,0 @@
-type TeamUser {
-    user:User @belongsTo
-}

@@ -8,3 +8,14 @@ type Role {
     availableAbilities: [Ability]! @method(name: "availableAbilities")
     securityGroups: [SecurityGroups] @method(name: "securityGroups")
 }
+
+type Ability {
+    id: ID!
+    name: String!
+    title: String
+}
+
+type SecurityGroups {
+    value: String
+    name: String
+}

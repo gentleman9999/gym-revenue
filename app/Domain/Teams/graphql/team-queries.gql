@@ -1,9 +1,12 @@
 extend type Query {
     teams(
-        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
         filter: Filter @scope
         orderBy: [OrderByClause!] @orderBy
     ): [Team!]!
     @paginate(defaultCount: 10)
         @can(ability: "teams.read", model: "App\\Domain\\Teams\\Models\\Team")
+
+    team (
+        id: ID @eq
+    ): Team @find
 }

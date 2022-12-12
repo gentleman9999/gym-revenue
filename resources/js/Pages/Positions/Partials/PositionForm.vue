@@ -122,11 +122,9 @@ let handleSubmit = async () => {
     }
 };
 
+const emit = defineEmits(["close"]);
+
 const handleCancel = () => {
-    if (modal?.value?.close) {
-        modal.value.close();
-        return;
-    }
-    Inertia.visit(route("positions"));
+    emit("close");
 };
 </script>

@@ -10,3 +10,7 @@ type Team {
     client: Client @belongsTo
     client_id: ID
 }
+
+type TeamUser {
+    user:User @belongsTo
+}

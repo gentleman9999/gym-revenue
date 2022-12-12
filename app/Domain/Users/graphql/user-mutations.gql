@@ -3,4 +3,9 @@ extend type Mutation {
         input: UserInput
     ): User!
     @inject(context: "user.client_id", name: "client_id")
+
+    createUser(
+        input: UserInput
+    ): User!
+    @inject(context: "user.client_id", name: "client_id")
 }

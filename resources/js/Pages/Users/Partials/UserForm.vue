@@ -772,11 +772,7 @@ export default {
         }
 
         const handleClickCancel = () => {
-            if (modal?.value?.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("users"));
-            }
+            emit("close");
         };
 
         const addDepartmentPosition = () => {

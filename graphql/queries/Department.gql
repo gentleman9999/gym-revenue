@@ -1,5 +1,0 @@
-extend type Query {
-    department(
-        id: ID @eq
-    ): Department @find
-}

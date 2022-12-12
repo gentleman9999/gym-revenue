@@ -57,7 +57,7 @@ export default {
             if (editParam.value) {
                 open();
             } else {
-                close();
+                editModal?.value?.close();
             }
         });
         onUnmounted(() => {

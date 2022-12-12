@@ -126,6 +126,7 @@ export default defineComponent({
                     name: form.name,
                     positions: form.positions,
                 });
+                emit("close");
             };
         }
 

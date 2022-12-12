@@ -6,12 +6,8 @@ extend type Query {
     ): [Position!]!
     @paginate(defaultCount: 10)
         @can(ability: "positions.read", model: "App\\Models\\Position")
-}
 
-
-input PositionFilter {
-    search: String
-    trashed: String
-    state: String
-    client_id: ID
+    position(
+        id: ID @eq
+    ): Position @find
 }

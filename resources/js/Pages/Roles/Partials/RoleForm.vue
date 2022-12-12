@@ -145,7 +145,7 @@ export default {
             type: Array,
         },
     },
-    setup(props, context) {
+    setup(props, { emit }) {
         let role = _.cloneDeep(props.role);
 
         let operation = "Update";
@@ -230,12 +230,7 @@ export default {
         const modal = useModal();
 
         const handleClickCancel = () => {
-            console.log("modal", modal.value);
-            if (modal?.value?.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("roles"));
-            }
+            emit("close");
         };
 
         return {

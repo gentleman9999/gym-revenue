@@ -4,4 +4,11 @@ extend type Mutation {
         ability_names: [String],
         group: Int
     ): Role!
+    
+    updateRole(
+        id: ID,
+        name: String,
+        ability_names: [String],
+        group: Int
+    ): Role!
 }

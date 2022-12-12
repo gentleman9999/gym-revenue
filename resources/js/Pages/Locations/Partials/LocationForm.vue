@@ -281,7 +281,7 @@ export default {
         PhoneInput,
     },
     props: ["location"],
-    setup(props, context) {
+    setup(props, { emit }) {
         const page = usePage();
 
         const {
@@ -391,6 +391,7 @@ export default {
                     longitude: data.longitude,
                 },
             });
+            emit("close");
         };
 
         if (operation === "Create") {
@@ -399,7 +400,7 @@ export default {
                 // form.transform(transformData).post(route("locations.store"));
                 const data = transformData(form.data());
                 const response = await createLocation({ location: data });
-                console.log("LocationFor::create", { reqData: data, response });
+                emit("close");
             };
         }
 

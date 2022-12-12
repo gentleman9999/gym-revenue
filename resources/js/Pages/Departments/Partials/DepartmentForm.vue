@@ -81,6 +81,8 @@ const props = defineProps({
         type: Object,
     },
 });
+
+const emit = defineEmits(["close"]);
 let department = _.cloneDeep(props.department);
 let operation = "Update";
 if (!department) {
@@ -117,10 +119,6 @@ let handleSubmit = async () => {
 };
 
 const handleCancel = () => {
-    if (modal?.value?.close) {
-        modal.value.close();
-        return;
-    }
-    Inertia.visit(route("departments"));
+    emit("close");
 };
 </script>

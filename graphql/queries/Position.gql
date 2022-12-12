@@ -1,5 +1,0 @@
-extend type Query {
-    position(
-        id: ID @eq
-    ): Position @find
-}

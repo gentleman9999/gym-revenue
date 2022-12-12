@@ -12,6 +12,7 @@
                     v-else-if="data"
                     :is="createComponent"
                     v-bind="{ ...data }"
+                    @close="close"
                 />
                 <div v-else>Loading...</div>
             </template>
@@ -62,7 +63,7 @@ export default {
             if (createParam.value) {
                 open();
             } else {
-                close();
+                createModal?.value?.close();
             }
         });
         onUnmounted(() => {

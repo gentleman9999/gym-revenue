@@ -9,7 +9,7 @@ input UserInput {
     phone: String
     city: String
     state: String
-    zip: Int
+    zip: String
     contact_preference: String
     start_date: String
     end_date: String
