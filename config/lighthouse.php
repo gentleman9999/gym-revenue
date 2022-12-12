@@ -182,8 +182,8 @@ return [
     'namespaces' => [
     //    'models' => ['App', 'App\\Models'],
         'models' => DiscoverModelNamespaces::run(),
-        'queries' => ['App\\GraphQL\\Queries', 'App\\Domain\\Locations\\Actions'],
-        'mutations' => DiscoverActionNamespaces::run(),
+        'queries' => ['App\\GraphQL\\Queries', ...DiscoverActionNamespaces::run()],
+        'mutations' => ['App\\GraphQL\\Mutations', ...DiscoverActionNamespaces::run()],
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
         'interfaces' => 'App\\GraphQL\\Interfaces',
         'unions' => 'App\\GraphQL\\Unions',

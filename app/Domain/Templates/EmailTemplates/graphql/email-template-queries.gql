@@ -1,0 +1,4 @@
+extend type Query {
+    "Get the Topol API Key"
+    topolApiKey: String!
+}
