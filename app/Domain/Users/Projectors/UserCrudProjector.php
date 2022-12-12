@@ -93,7 +93,6 @@ class UserCrudProjector extends Projector
                 $team = Team::find($data['team_id']);
                 if ($team && $team->client_id == null) {
                     //set role to admin for capeandbay
-                    VarDumper::dump('Setting User to ADMIN.');
                     $role = Role::whereGroup(SecurityGroupEnum::ADMIN)->firstOrFail();
                     $user->is_cape_and_bay_user = true;
                     $user->save();

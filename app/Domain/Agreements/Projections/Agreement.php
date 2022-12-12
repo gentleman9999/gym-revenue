@@ -4,6 +4,7 @@ namespace App\Domain\Agreements\Projections;
 
 use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Locations\Projections\Location;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
@@ -30,7 +31,12 @@ class Agreement extends GymRevProjection
 
     public function category(): HasOne
     {
-        return $this->hasOne(AgreementCategory::class, 'id', 'client_id');
+        return $this->hasOne(AgreementCategory::class, 'id', 'agreement_category_id');
+    }
+
+    public function endUser(): HasOne
+    {
+        return $this->hasOne(EndUser::class, 'id', 'end_user_id');
     }
 
     public function location(): HasOne
