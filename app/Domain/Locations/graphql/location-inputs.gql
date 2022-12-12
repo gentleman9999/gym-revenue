@@ -4,7 +4,7 @@ input CreateLocationInput {
     location_no: String! @rules(apply: ["required", "max:10"],  attribute: "Location Number")
     #    location_type: String! @rules(apply: ["required",  new Enum(LocationTypeEnum::class)])
     #    TODO: use lighthouse:validator to create custom validation instead of hardcode enum
-    location_type: String! @rules(apply: ["required",  "in:store,office,headquarters"],  attribute: "Location Type")
+    location_type: LocationType! @rules(apply: ["required",  "in:store,office,headquarters"],  attribute: "Location Type")
     #    need custom validator to enforce name unique only for client UNLESS we use postgres with RLS
     name: String! @rules(apply: ["required", "max:50"],  attribute: "Name")
     city: String! @rules(apply: ["required", "max:30"],  attribute: "City")
@@ -29,7 +29,7 @@ input PatchLocationInput {
     location_no: String @rules(apply: ["sometimes", "max:10"],  attribute: "Location Number")
     #    location_type: String! @rules(apply: ["sometimes",  new Enum(LocationTypeEnum::class)])
     #    TODO: use lighthouse:validator to create custom validation instead of hardcode enum
-    location_type: String @rules(apply: ["sometimes",  "in:store,office,headquarters"],  attribute: "Location Type")
+    location_type: LocationType @rules(apply: ["sometimes",  "in:store,office,headquarters"],  attribute: "Location Type")
     #    need custom validator to enforce name unique only for client UNLESS we use postgres with RLS
     name: String @rules(apply: ["sometimes", "max:50"],  attribute: "Name")
     city: String @rules(apply: ["sometimes", "max:30"],  attribute: "City")

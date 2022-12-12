@@ -280,7 +280,7 @@ export default {
         multiselect: Multiselect,
         PhoneInput,
     },
-    props: ["location"],
+    props: ["location", "locationTypes"],
     setup(props, context) {
         const page = usePage();
 
@@ -326,30 +326,6 @@ export default {
                 longitude: null,
             };
             operation = "Create";
-        } else {
-            //TODO: we can't just pull all location details, as in theory it could
-            // cause a memory issue since there is no limit. we need to add these fields to the
-            // graphql type and append/resolve them
-            location.poc_first = location.details.filter(
-                (item) => item.field === "poc_first"
-            )[0]?.value;
-            location.poc_last = location.details.filter(
-                (item) => item.field === "poc_last"
-            )[0]?.value;
-            location.poc_phone = location.details.filter(
-                (item) => item.field === "poc_phone"
-            )[0]?.value;
-            // location.poc_first = poc_first;
-            // location.poc_last = poc_last;
-            // location.poc_phone = poc_phone;
-            //TODO: remove these if not needed after test
-            // location.open_date = location.open_date;
-            // location.close_date = location.close_date;
-            // location.address1 = location.address1;
-            // location.address2 = location.address2;
-            // location.latitude = location.latitude;
-            // location.longitude = location.longitude;
-            // location.phone = location.phone;
         }
 
         const transformData = (data) => ({
@@ -407,20 +383,7 @@ export default {
         for (let x in states) {
             optionsStates.push(states[x].abbreviation);
         }
-        const locationTypes = [
-            {
-                name: "STORE",
-                value: "store",
-            },
-            {
-                name: "OFFICE",
-                value: "office",
-            },
-            {
-                name: "HQ",
-                value: "headquarters",
-            },
-        ];
+
         return {
             form,
             buttonText: operation,
@@ -428,7 +391,9 @@ export default {
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             isFormValid,
-            optionLocationTypes: locationTypes?.map(function (locationType) {
+            optionLocationTypes: props.locationTypes?.map(function (
+                locationType
+            ) {
                 return {
                     value: locationType.value,
                     label: parseLocationTypeDisplayName(locationType),
