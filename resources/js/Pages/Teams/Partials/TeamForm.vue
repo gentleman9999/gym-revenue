@@ -72,6 +72,9 @@ import JetLabel from "@/Jetstream/Label.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import * as _ from "lodash";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+import { clearEditParam } from "@/Components/CRUD/helpers/gqlData";
 
 export default defineComponent({
     components: {
@@ -92,7 +95,7 @@ export default defineComponent({
         },
     },
 
-    setup(props) {
+    setup(props, { emit }) {
         const page = usePage();
         let operation = "Update";
         let team = _.cloneDeep(props.team);
@@ -107,10 +110,24 @@ export default defineComponent({
         }
         const form = useGymRevForm(team);
 
-        let handleSubmit = () =>
-            form.dirty().put(route("team.update", team.id));
+        const { mutate: createTeam } = useMutation(mutations.team.create);
+        const { mutate: updateTeam } = useMutation(mutations.team.update);
+
+        let handleSubmit = async () => {
+            await updateTeam({
+                id: team.id,
+                name: form.name,
+                positions: form.positions,
+            });
+            emit("close");
+        };
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("teams.store"));
+            handleSubmit = async () => {
+                await createTeam({
+                    name: form.name,
+                    positions: form.positions,
+                });
+            };
         }
 
         return {

@@ -23,6 +23,13 @@ class UpdateTeam
         return $team->refresh();
     }
 
+    public function __invoke($_, array $args): Team
+    {
+        $team = Team::find($args['id']);
+
+        return $this->handle($team, $args);
+    }
+
     /**
      * Get the validation rules that apply to the action.
      *

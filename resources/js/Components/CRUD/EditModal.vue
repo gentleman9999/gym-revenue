@@ -1,5 +1,5 @@
 <template>
-    <daisy-modal id="editModal" ref="editModal" @close="close">
+    <daisy-modal id="editModal" ref="editModal" @close="editParam = null">
         <ApolloQuery
             :query="(gql) => queries[modelKey].edit"
             :variables="editParam"
@@ -12,6 +12,7 @@
                     v-else-if="data"
                     :is="editComponent"
                     v-bind="{ ...data }"
+                    @close="close"
                 />
                 <div v-else>No result</div>
             </template>
@@ -49,6 +50,7 @@ export default {
 
         function close() {
             clearEditParam();
+            editModal?.value?.close();
         }
 
         watchEffect(() => {

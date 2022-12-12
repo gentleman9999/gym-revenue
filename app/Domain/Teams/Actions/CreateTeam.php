@@ -27,6 +27,11 @@ class CreateTeam implements CreatesTeams
         return Team::findOrFail($id);
     }
 
+    public function __invoke($_, array $args): Team
+    {
+        return $this->handle($args);
+    }
+
     /**
      * Get the validation rules that apply to the action.
      *

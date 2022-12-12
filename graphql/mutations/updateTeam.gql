@@ -1,0 +1,8 @@
+extend type Mutation {
+    updateTeam(
+        id: ID,
+        name: String,
+        positions: [ID],
+    ): Team!
+    @inject(context: "user.client_id", name: "client_id")
+}

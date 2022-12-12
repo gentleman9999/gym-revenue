@@ -458,6 +458,7 @@ const TEAM_PREVIEW = gql`
 const TEAM_EDIT = gql`
     query Team($id: ID) {
         team(id: $id) {
+            id
             name
             client {
                 name

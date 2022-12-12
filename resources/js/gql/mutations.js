@@ -104,9 +104,29 @@ const user = {
         }
     `,
 };
+
+const team = {
+    create: gql`
+        mutation createTeam($name: String, $positions: [ID]) {
+            createTeam(name: $name, positions: $positions) {
+                id
+                name
+            }
+        }
+    `,
+    update: gql`
+        mutation updateTeam($id: ID, $name: String, $positions: [ID]) {
+            updateTeam(id: $id, name: $name, positions: $positions) {
+                id
+                name
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
     role,
     user,
+    team,
 };
