@@ -2,22 +2,19 @@
 
 namespace App\Domain\Locations\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\StatesEnum;
-use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateLocation
+class UpdateLocation extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -55,20 +52,11 @@ class UpdateLocation
         return $location->refresh();
     }
 
-    /**
-     * @param  null  $_
-     * @param  array{}  $args
-     */
-    public function __invoke($_, array $args): Location
+    public function mapArgsToHandle($args): array
     {
         $location = $args['location'];
 
-        return $this->handle(Location::find($location['id']), $location);
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
+        return [Location::find($location['id']), $location];
     }
 
     public function authorize(ActionRequest $request): bool

@@ -42,7 +42,7 @@ input PatchLocationInput {
     poc_phone: String @rules(apply: ["sometimes", "nullable", "size:10"],  attribute: "POC Phone")
     poc_first: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC First")
     poc_last: String @rules(apply: ["sometimes", "nullable", "max:50"],  attribute: "POC Last")
-    open_date: DateTime @rules(apply: ["sometimes","date", "before:close_date"],  attribute: "Open Date")
+    open_date: DateTime @rules(apply: ["sometimes","nullable", "date", "before:close_date"],  attribute: "Open Date")
     close_date: DateTime @rules(apply: ["sometimes", "nullable","date", "after:open_date"],  attribute: "Close Date")
     latitude: Int  @rules(apply: ["sometimes", "nullable", "int"],  attribute: "Latitude")
     longitude: Int  @rules(apply: ["sometimes", "nullable", "int"],  attribute: "Longitude")
