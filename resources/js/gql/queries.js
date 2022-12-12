@@ -299,6 +299,7 @@ const LOCATION_PREVIEW = gql`
 const LOCATION_EDIT = gql`
     query Location($id: ID) {
         location(id: $id) {
+            id
             name
             location_no
             city

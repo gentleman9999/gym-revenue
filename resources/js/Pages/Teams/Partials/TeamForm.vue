@@ -74,7 +74,6 @@ import { getDefaultMultiselectTWClasses } from "@/utils";
 import * as _ from "lodash";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
-import { clearEditParam } from "@/Components/CRUD/helpers/gqlData";
 
 export default defineComponent({
     components: {

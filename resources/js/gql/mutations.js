@@ -123,10 +123,54 @@ const team = {
         }
     `,
 };
+
+const location = {
+    create: gql`
+        mutation createLocation($location: CreateLocationInput!) {
+            createLocation(location: $location) {
+                id
+                gymrevenue_id
+                location_no
+                location_type
+                name
+                city
+                state
+                active
+                zip
+                address1
+                address2
+                phone
+                open_date
+                close_date
+            }
+        }
+    `,
+    update: gql`
+        mutation updateLocation($location: PatchLocationInput!) {
+            updateLocation(location: $location) {
+                id
+                gymrevenue_id
+                location_no
+                location_type
+                name
+                city
+                state
+                active
+                zip
+                address1
+                address2
+                phone
+                open_date
+                close_date
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
     role,
     user,
     team,
+    location,
 };

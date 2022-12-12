@@ -264,7 +264,7 @@ import { transformDate } from "@/utils/transformDate";
 import * as _ from "lodash";
 import { parseLocationTypeDisplayName } from "@/utils/locationTypeEnum";
 import { useMutation } from "@vue/apollo-composable";
-import gql from "graphql-tag";
+import mutations from "@/gql/mutations";
 import {
     getValidationErrorsFromGqlError,
     transformGqlValidationErrorsToInertiaStyle,
@@ -280,7 +280,7 @@ export default {
         multiselect: Multiselect,
         PhoneInput,
     },
-    props: ["location", "locationTypes"],
+    props: ["location"],
     setup(props, context) {
         const page = usePage();
 
@@ -289,26 +289,10 @@ export default {
             loading,
             error,
             onError,
-        } = useMutation(gql`
-            mutation createLocation($location: CreateLocationInput!) {
-                createLocation(location: $location) {
-                    id
-                    gymrevenue_id
-                    location_no
-                    location_type
-                    name
-                    city
-                    state
-                    active
-                    zip
-                    address1
-                    address2
-                    phone
-                    open_date
-                    close_date
-                }
-            }
-        `);
+        } = useMutation(mutations.location.create);
+        const { mutate: updateLocation } = useMutation(
+            mutations.location.update
+        );
 
         // onError(({ graphQLErrors, clientErrors, networkError }) => {
         onError((error) => {
@@ -377,16 +361,37 @@ export default {
         const form = useGymRevForm(location);
 
         const isFormValid = computed(
-            () => form.isDirty && form.location_type.trim()?.length
+            () => form.isDirty && form.location_type?.trim()?.length
         );
 
         //
         //    form.put(`/locations/${location.id}`);
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformData)
-                .put(route("locations.update", location.id));
+        let handleSubmit = async () => {
+            const data = transformData(form.data());
+            await updateLocation({
+                location: {
+                    id: data.id,
+                    gymrevenue_id: data.gymrevenue_id,
+                    location_no: data.location_no,
+                    location_type: data.location_type,
+                    name: data.name,
+                    city: data.city,
+                    state: data.state,
+                    active: data.active,
+                    zip: data.zip,
+                    phone: data.phone,
+                    address1: data.address1,
+                    address2: data.address2,
+                    poc_phone: data.poc_phone,
+                    poc_first: data.poc_first,
+                    poc_last: data.poc_last,
+                    open_date: data.open_date,
+                    close_date: data.close_date,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                },
+            });
+        };
 
         if (operation === "Create") {
             handleSubmit = async () => {
@@ -402,7 +407,20 @@ export default {
         for (let x in states) {
             optionsStates.push(states[x].abbreviation);
         }
-
+        const locationTypes = [
+            {
+                name: "STORE",
+                value: "store",
+            },
+            {
+                name: "OFFICE",
+                value: "office",
+            },
+            {
+                name: "HQ",
+                value: "headquarters",
+            },
+        ];
         return {
             form,
             buttonText: operation,
@@ -410,9 +428,7 @@ export default {
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             isFormValid,
-            optionLocationTypes: props.locationTypes?.map(function (
-                locationType
-            ) {
+            optionLocationTypes: locationTypes?.map(function (locationType) {
                 return {
                     value: locationType.value,
                     label: parseLocationTypeDisplayName(locationType),
