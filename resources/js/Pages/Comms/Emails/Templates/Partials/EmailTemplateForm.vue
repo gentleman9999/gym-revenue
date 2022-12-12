@@ -74,8 +74,15 @@ export default {
         DaisyModal,
     },
     props: {
-        template: {
+        emailTemplate: {
             type: Object,
+            default: {
+                markup: null,
+                json: null,
+                thumbnail: null,
+                name: null,
+                subject: null,
+            },
         },
         canActivate: {
             type: Boolean,
@@ -95,27 +102,24 @@ export default {
         const page = usePage();
         const nameModal = ref(null);
         const isProcessing = ref(false);
-        let template = props?.template || {
-            markup: null,
-            json: null,
-            thumbnail: null,
-            name: null,
-            subject: null,
-            client_id: page.props.value.user?.client_id,
-        };
-        let operation = "Update";
-        if (!props.template) {
-            operation = "Create";
-        }
 
-        const form = useGymRevForm(template);
+        let operation =
+            typeof props.emailTemplate.name === "string" ? "Update" : "Create";
+
+        const form = useGymRevForm({
+            ...props.emailTemplate,
+            client_id: page.props.value.user?.client_id,
+        });
         const closeAfterSave = ref(false);
 
         let handleSubmit = () => {
             if (!form.processing) {
                 if (props.useInertia) {
                     form.dirty().put(
-                        route("mass-comms.email-templates.update", template.id),
+                        route(
+                            "mass-comms.email-templates.update",
+                            props.emailTemplate.id
+                        ),
                         {
                             headers: { "X-Inertia-Modal-Redirect": true },
                             // headers: { "X-Inertia-Modal-CloseOnSuccess": true },
@@ -130,7 +134,7 @@ export default {
                         .put(
                             route(
                                 "mass-comms.email-templates.update",
-                                template.id
+                                props.emailTemplate.id
                             ),
                             form.dirty().data()
                         )

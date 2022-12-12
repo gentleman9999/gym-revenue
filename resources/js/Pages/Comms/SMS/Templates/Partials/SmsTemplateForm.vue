@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import { onMounted } from "vue";
 import { useGymRevForm } from "@/utils";
 import SmsFormControl from "@/Components/SmsFormControl.vue";
 import Button from "@/Components/Button.vue";
@@ -84,8 +85,13 @@ export default {
         JetInputError,
     },
     props: {
-        template: {
+        smsTemplate: {
             type: Object,
+            default: {
+                markup: null,
+                name: null,
+                active: false,
+            },
         },
         canActivate: {
             type: Boolean,
@@ -97,29 +103,34 @@ export default {
         },
     },
     setup(props, { emit }) {
-        let template = props.template;
-        let operation = "Update";
-        if (!template) {
-            template = {
-                markup: null,
-                name: null,
-                active: false,
-                // client_id: props.clientId
-            };
-            operation = "Create";
-        }
+        onMounted(() => {
+            console.log(
+                "mounted sms template form with data:",
+                props.smsTemplate
+            );
+            console.log("entire sms template form props: ", props);
+        });
 
-        const form = useGymRevForm(template);
+        let operation =
+            typeof props.smsTemplate.name === "string" ? "Update" : "Create";
+
+        const form = useGymRevForm(props.smsTemplate);
 
         let handleSubmit = () => {
             if (props.useInertia) {
                 form.dirty().put(
-                    route("mass-comms.sms-templates.update", template.id)
+                    route(
+                        "mass-comms.sms-templates.update",
+                        props.smsTemplate.id
+                    )
                 );
             } else {
                 axios
                     .put(
-                        route("mass-comms.sms-templates.update", template.id),
+                        route(
+                            "mass-comms.sms-templates.update",
+                            props.smsTemplate.id
+                        ),
                         form.dirty().data()
                     )
                     .then(({ data }) => {
