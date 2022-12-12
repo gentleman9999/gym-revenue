@@ -51,7 +51,6 @@ import DataCard from "./DataCard.vue";
 import CrudActions from "./CrudActions.vue";
 import { getFields } from "./helpers/getFields";
 import RenderField from "./RenderField.vue";
-import { Inertia } from "@inertiajs/inertia";
 import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
 import { getCustomizedFields } from "@/Components/CRUD/helpers/getCustomizedFields";
 
@@ -144,9 +143,7 @@ export default defineComponent({
                 props.onDoubleClick({ data: props.data });
                 return;
             }
-            Inertia.visitInModal(
-                route(`${props.baseRoute}.edit`, props.data.id)
-            );
+            edit(props.data.id);
         };
 
         return { fields: customizedFields, handleClick, handleDoubleClick };

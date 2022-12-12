@@ -2,6 +2,7 @@
 
 namespace App\Domain\Clients\Projections;
 
+use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
@@ -141,6 +142,11 @@ class Client extends GymRevProjection
     public function gatewaySettings(): HasMany
     {
         return $this->hasMany(ClientGatewaySetting::class);
+    }
+
+    public function agreements(): HasMany
+    {
+        return $this->hasMany(Agreement::class);
     }
 
     public function getNamedGatewaySettings(): array

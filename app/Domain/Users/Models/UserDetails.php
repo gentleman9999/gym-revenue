@@ -2,7 +2,9 @@
 
 namespace App\Domain\Users\Models;
 
+use App\Domain\Teams\Models\Team;
 use App\Models\GymRevDetailProjection;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserDetails extends GymRevDetailProjection
@@ -21,6 +23,15 @@ class UserDetails extends GymRevDetailProjection
     public static function getRelatedModel()
     {
         return new User();
+    }
+
+    public function team(): ?BelongsTo
+    {
+        if ($this->attributes['field'] == 'default_team_id') {
+            return $this->belongsTo(Team::class, 'value');
+        } else {
+            return null;
+        }
     }
 
     public static function fk(): string

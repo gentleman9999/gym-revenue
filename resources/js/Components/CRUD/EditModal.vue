@@ -20,52 +20,46 @@
     </daisy-modal>
 </template>
 
-<script>
+<script setup>
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
 import { editParam, clearEditParam } from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
 
-export default {
-    components: { DaisyModal },
-    props: {
-        editComponent: {
-            required: true,
-        },
-        modelName: {
-            type: String,
-            required: true,
-        },
-        modelKey: {
-            type: String,
-            required: true,
-        },
+const props = defineProps({
+    editComponent: {
+        required: true,
     },
-    setup() {
-        const editModal = ref(null);
-
-        function open() {
-            editModal?.value?.open();
-        }
-
-        function close() {
-            clearEditParam();
-            editModal?.value?.close();
-        }
-
-        watchEffect(() => {
-            if (editParam.value) {
-                open();
-            } else {
-                editModal?.value?.close();
-            }
-        });
-        onUnmounted(() => {
-            clearEditParam();
-        });
-        return { close, editModal, editParam, queries };
+    modelName: {
+        type: String,
+        required: true,
     },
-};
+    modelKey: {
+        type: String,
+        required: true,
+    },
+});
+
+const editModal = ref(null);
+
+function open() {
+    editModal?.value?.open();
+}
+
+function close() {
+    clearEditParam();
+}
+
+watchEffect(() => {
+    if (editParam.value) {
+        open();
+    } else {
+        editModal?.value?.close();
+    }
+});
+onUnmounted(() => {
+    clearEditParam();
+});
 </script>
 
 <style scoped></style>

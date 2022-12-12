@@ -193,6 +193,16 @@ class User extends Authenticatable
         return $this->detail()->where('field', '=', 'contact_preference');
     }
 
+    public function emergencyContactDetail(): HasOne
+    {
+        return $this->detail()->where('field', '=', 'emergency_contact');
+    }
+
+    public function getEmergencyContactAttribute(): ?array
+    {
+        return $this->emergencyContactDetail->misc ?? null;
+    }
+
     public function notes(): HasMany
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
@@ -205,9 +215,19 @@ class User extends Authenticatable
         return $teams;
     }
 
-    public function default_team(): BelongsTo
+    public function defaultTeamDetail(): HasOne
+    {
+        return $this->detail()->where('field', '=', 'default_team_id');
+    }
+
+    public function defaultTeam(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'default_team_id', 'id');
+    }
+
+    public function getDefaultTeam(): Team
+    {
+        return Team::find($this->default_team_id);
     }
 
     public function api_token(): HasOne
@@ -313,6 +333,11 @@ class User extends Authenticatable
     public function getIsManagerAttribute()
     {
         return $this->manager !== null && $this->manager !== '';
+    }
+
+    public function getDefaultTeamIdAttribute(): string
+    {
+        return $this->defaultTeamDetail->value;
     }
 
     public function departments(): BelongsToMany

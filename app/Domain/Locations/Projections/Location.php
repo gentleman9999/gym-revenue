@@ -3,8 +3,8 @@
 namespace App\Domain\Locations\Projections;
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Enums\LocationType;
 use App\Domain\Teams\Models\Team;
-use App\Enums\LocationTypeEnum;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
@@ -42,7 +42,7 @@ class Location extends GymRevProjection
     }
 
     protected $casts = [
-        'location_type' => LocationTypeEnum::class,
+        'location_type' => LocationType::class,
     ];
 
     /**
@@ -68,6 +68,36 @@ class Location extends GymRevProjection
     public function detail(): HasOne
     {
         return $this->hasOne(LocationDetails::class);
+    }
+
+    public function poc_phone_detail(): HasOne
+    {
+        return $this->detail()->whereField('poc_phone');
+    }
+
+    public function pocFirstDetail(): HasOne
+    {
+        return $this->detail()->whereField('poc_first');
+    }
+
+    public function pocLastDetail(): HasOne
+    {
+        return $this->detail()->whereField('poc_last');
+    }
+
+    public function getPocLastAttribute(): string | null
+    {
+        return $this->pocLastDetail->value ?? null;
+    }
+
+    public function getPocFirstAttribute(): string | null
+    {
+        return $this->pocFirstDetail->value ?? null;
+    }
+
+    public function getPocPhoneAttribute(): string | null
+    {
+        return $this->pocPhoneDetail->value ?? null;
     }
 
     public function scopeFilter($query, array $filters): void

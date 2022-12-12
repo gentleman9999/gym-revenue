@@ -330,10 +330,8 @@ export default {
     },
     props: ["member", "interactionCount", "locations"],
     setup(props, context) {
-        const clientId = usePage().props.value.user.client_id;
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
-                client_id: clientId,
                 note: note,
             });
         }
@@ -349,7 +347,6 @@ export default {
                 primary_phone: "",
                 alternate_phone: "",
                 club_id: "",
-                client_id: clientId,
                 gr_location_id: null,
                 profile_picture: null,
                 gender: "",
@@ -366,7 +363,6 @@ export default {
                 primary_phone: member.primary_phone,
                 alternate_phone: member.alternate_phone,
                 club_id: member.club_id,
-                client_id: member.client.id,
                 gr_location_id: member.location.id,
                 profile_picture: null,
                 gender: member.gender,
