@@ -966,6 +966,12 @@ const PROFILE_QUERY = gql`
     }
 `;
 
+const TOPOL_API_KEY = gql`
+    query TopolApiKey {
+        topolApiKey
+    }
+`;
+
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -1026,6 +1032,7 @@ export default {
     callTemplate: {
         edit: CALL_TEMPLATE_EDIT,
     },
+    TOPOL_API_KEY,
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,
