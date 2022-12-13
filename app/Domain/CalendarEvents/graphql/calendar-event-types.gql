@@ -22,7 +22,7 @@ type CalendarEvent {
     location_id: ID
     call_task: Int
     im_attending: Boolean
-    my_reminder: String
+    my_reminder: Reminder
 }
 
 type CalendarEventType {

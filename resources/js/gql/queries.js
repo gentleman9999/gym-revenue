@@ -764,7 +764,10 @@ const CALENDAR_EVENT_GET = gql`
             location_id
             call_task
             im_attending
-            my_reminder
+            my_reminder {
+                id
+                remind_time
+            }
         }
     }
 `;
