@@ -25,6 +25,17 @@ type CalendarEvent {
     my_reminder: String
 }
 
+type CalendarEventType {
+    id: ID!
+    name: String!
+    description: String
+    color: String
+    type: String
+    created_at: DateTime
+    updated_at: DateTime
+    client: Client @belongsTo
+}
+
 type EventAttendee {
     id: ID
 }

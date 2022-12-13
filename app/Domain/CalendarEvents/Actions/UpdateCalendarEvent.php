@@ -14,6 +14,7 @@ use App\Domain\Reminders\Reminder;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -192,6 +193,15 @@ class UpdateCalendarEvent
         }
 
         return $calendarEvent->refresh();
+    }
+
+    public function __invoke($_, array $args): CalendarEvent
+    {
+        $event = CalendarEvent::find($args['input']['id']);
+        $args['input']['start'] = CarbonImmutable::create($args['input']['start']);
+        $args['input']['end'] = CarbonImmutable::create($args['input']['end']);
+
+        return $this->handle($event, $args['input']);
     }
 
     public function getControllerMiddleware(): array

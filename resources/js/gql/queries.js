@@ -1026,6 +1026,9 @@ export default {
     callTemplate: {
         edit: CALL_TEMPLATE_EDIT,
     },
+    task: {
+        edit: CALENDAR_EVENT_GET,
+    },
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,

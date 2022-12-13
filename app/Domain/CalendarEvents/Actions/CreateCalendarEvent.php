@@ -43,6 +43,13 @@ class CreateCalendarEvent
         ];
     }
 
+    public function __invoke($_, array $args): CalendarEvent
+    {
+        $user = User::find($args['input']['owner_id']);
+
+        return $this->handle($args['input'], $user);
+    }
+
     public function handle($data, ?User $user = null): CalendarEvent
     {
         $id = Uuid::new();
