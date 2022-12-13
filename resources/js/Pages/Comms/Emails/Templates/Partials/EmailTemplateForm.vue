@@ -1,12 +1,16 @@
 <template>
-    <email-builder
-        @onSave="handleOnSave"
-        @onSaveAndClose="handleOnSave"
-        @onClose="handleOnClose"
-        :json="template?.json || null"
-        :title="template?.name || undefined"
-        :api-key="topolApiKey"
-    />
+    <ApolloQuery :query="(gql) => queries.TOPOL_API_KEY">
+        <template v-slot="{ result: { data } }">
+            <email-builder
+                @onSave="handleOnSave"
+                @onSaveAndClose="handleOnSave"
+                @onClose="handleOnClose"
+                :json="template?.json || null"
+                :title="template?.name || undefined"
+                :api-key="data.topolApiKey"
+            />
+        </template>
+    </ApolloQuery>
     <daisy-modal ref="nameModal">
         <div class="form-control">
             <label for="name" class="label">Name</label>
@@ -64,6 +68,7 @@ import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.v
 import DaisyModal from "@/Components/DaisyModal.vue";
 import usePage from "@/Components/InertiaModal/usePage";
 import { useModal } from "@/Components/InertiaModal";
+import queries from "@/gql/queries";
 
 export default {
     components: {
@@ -94,7 +99,7 @@ export default {
         },
         useInertia: {
             type: Boolean,
-            default: true,
+            default: false,
         },
     },
     setup(props, { emit }) {
@@ -212,6 +217,7 @@ export default {
             handleOnSaveAndClose,
             handleOnClose,
             isProcessing,
+            queries,
         };
     },
 };

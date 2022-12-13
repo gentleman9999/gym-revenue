@@ -31,6 +31,7 @@ export const EMAIL_TEMPLATES = gql`
                 total
             }
         }
+        topolApiKey
     }
 `;
 
@@ -55,5 +56,6 @@ export const EMAIL_TEMPLATE_EDIT = gql`
             created_at
             updated_at
         }
+        topolApiKey
     }
 `;
