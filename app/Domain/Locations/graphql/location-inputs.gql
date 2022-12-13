@@ -23,7 +23,7 @@ input CreateLocationInput {
     longitude: Int  @rules(apply: ["sometimes", "nullable", "int"],  attribute: "Longitude")
 }
 
-input PatchLocationInput {
+input UpdateLocationInput {
     id: ID
     gymrevenue_id: String @rules(apply: ["sometimes", "nullable", "unique:locations,gymrevenue_id"],  attribute: "GymRevenue ID")
     location_no: String @rules(apply: ["sometimes", "max:10"],  attribute: "Location Number")

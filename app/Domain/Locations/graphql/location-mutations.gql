@@ -3,5 +3,5 @@ extend type Mutation {
     createLocation(location: CreateLocationInput!): Location!
     @inject(context: "user.client_id", name: "location.client_id")
     "Updates a location"
-    updateLocation(location: PatchLocationInput!): Location!
+    updateLocation(location: UpdateLocationInput!): Location!
 }
