@@ -1,0 +1,16 @@
+input CreateNoteInput {
+    title: String @rules(apply: ["required"],  attribute: "Note Title")
+    entity_id: String @rules(apply: ["sometimes", "nullable"],  attribute: "Note Entity ID")
+    entity_type: String @rules(apply: ["sometimes", "nullable"],  attribute: "Note Entity Type")
+    note: String @rules(apply: ["sometimes", "nullable"],  attribute: "Note Content")
+    active: Boolean @rules(apply: ["sometimes", "nullable"],  attribute: "Note Content")
+}
+
+input UpdateNoteInput {
+    id: ID
+    title: String @rules(apply: ["required"],  attribute: "Note Title")
+    entity_id: String @rules(apply: ["sometimes", "nullable"],  attribute: "Note Entity ID")
+    entity_type: String @rules(apply: ["sometimes", "nullable"],  attribute: "Note Entity Type")
+    note: String @rules(apply: ["sometimes", "nullable"],  attribute: "Note Content")
+    active: Boolean @rules(apply: ["sometimes", "nullable"],  attribute: "Note Content")
+}

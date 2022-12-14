@@ -62,8 +62,6 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { useGymRevForm } from "@/utils";
-import { useModal } from "@/Components/InertiaModal";
-import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
 import * as _ from "lodash";
@@ -98,7 +96,6 @@ if (!department) {
 
 const form = useGymRevForm(department);
 
-const modal = useModal();
 const { mutate: createDepartment } = useMutation(mutations.department.create);
 const { mutate: updateDepartment } = useMutation(mutations.department.update);
 let handleSubmit = async () => {

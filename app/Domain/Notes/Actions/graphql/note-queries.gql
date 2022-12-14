@@ -4,4 +4,8 @@ extend type Query {
         orderBy: [OrderByClause!] @orderBy
     ): [Note!]!
     @paginate(defaultCount: 10)
+
+    note(
+        id: ID @eq 
+    ): Note @find
 }
