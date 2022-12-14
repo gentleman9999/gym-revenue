@@ -185,6 +185,29 @@ const task = {
         }
     `,
 };
+
+const note = {
+    create: gql`
+        mutation createNote($input: CreateNoteInput!) {
+            createNote(input: $input) {
+                id
+                title
+                note
+                active
+            }
+        }
+    `,
+    update: gql`
+        mutation updateNote($input: UpdateNoteInput!) {
+            updateNote(input: $input) {
+                id
+                title
+                note
+                active
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
@@ -193,4 +216,5 @@ export default {
     team,
     location,
     task,
+    note,
 };

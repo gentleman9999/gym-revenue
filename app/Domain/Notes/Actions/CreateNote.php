@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Notes;
+namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Note;
@@ -36,16 +36,19 @@ class CreateNote
         ];
     }
 
-    public function handle($data, $current_user = null)
+    public function handle($data)
     {
         $id = Uuid::new();
-        $client_id = $current_user->client_id;
-        $data['created_by_user_id'] = $client_id;
         $data['id'] = $id;
 
-        ClientAggregate::retrieve($client_id)->createNote($current_user->id ?? "Auto Generated", $data)->persist();
+        ClientAggregate::retrieve($data['created_by_user_id'])->createNote($current_user->id ?? "Auto Generated", $data)->persist();
 
         return Note::findOrFail($id);
+    }
+
+    public function __invoke($_, array $args): Note
+    {
+        return $this->handle($args);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -59,7 +62,6 @@ class CreateNote
     {
         $note = $this->handle(
             $request->validated(),
-            $request->user(),
         );
 
         Alert::success("Note '.$note->title.' was created")->flash();

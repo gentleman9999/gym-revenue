@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Notes;
+namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Note;
@@ -31,13 +31,16 @@ class UpdateNote
         ];
     }
 
-    public function handle($data, $current_user)
+    public function handle($data)
     {
-        $client_id = $current_user->client_id;
-        $data['created_by_user_id'] = $client_id;
-        ClientAggregate::retrieve($client_id)->updateNote($current_user->id, $data)->persist();
+        ClientAggregate::retrieve($data['created_by_user_id'])->updateNote($data['user_id'], $data)->persist();
 
         return Note::find($data['id']);
+    }
+
+    public function __invoke($_, array $args): Note
+    {
+        return $this->handle($args);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -53,7 +56,6 @@ class UpdateNote
         $data['id'] = $id;
         $note = $this->handle(
             $data,
-            $request->user(),
         );
 
         Alert::success("Note '{$note->title}' was updated")->flash();

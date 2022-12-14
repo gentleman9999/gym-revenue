@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Notes;
+namespace App\Domain\Notes\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Models\Note;

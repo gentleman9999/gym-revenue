@@ -63,8 +63,8 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { Inertia } from "@inertiajs/inertia";
-import { useModal } from "@/Components/InertiaModal";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 export default {
     components: {
@@ -79,7 +79,7 @@ export default {
             type: Object,
         },
     },
-    setup(props, context) {
+    setup(props, { emit }) {
         let note = props.note;
         let operation = "Update";
         if (!note) {
@@ -99,20 +99,35 @@ export default {
             id: note.id,
         });
 
-        const modal = useModal();
+        const { mutate: createNote } = useMutation(mutations.note.create);
+        const { mutate: updateNote } = useMutation(mutations.note.update);
 
-        let handleSubmit = () => form.put(route("notes.update", note.id));
+        let handleSubmit = async () => {
+            await updateNote({
+                input: {
+                    id: note.id,
+                    title: form.title,
+                    note: form.note,
+                    active: form.active,
+                },
+            });
+            handleClickCancel();
+        };
         if (operation === "Create") {
-            handleSubmit = () => form.post(route("notes.store"));
+            handleSubmit = async () => {
+                await createNote({
+                    input: {
+                        title: form.title,
+                        note: form.note,
+                        active: form.active,
+                    },
+                });
+                handleClickCancel();
+            };
         }
 
         const handleClickCancel = () => {
-            console.log("modal", modal.value);
-            if (modal.value.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("notes"));
-            }
+            emit("close");
         };
 
         return {
