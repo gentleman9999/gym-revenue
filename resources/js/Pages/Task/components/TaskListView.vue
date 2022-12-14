@@ -4,12 +4,13 @@
             <gym-revenue-crud
                 v-if="data"
                 base-route="tasks"
-                model-name="Task"
+                :model-name="`Task-${taskType}`"
                 model-key="task"
                 class="border-transparent"
                 :resource="getTasks(data)"
                 :fields="fields"
                 @update="handleCrudUpdate"
+                :edit-component="TaskForm"
                 :actions="{
                     trash: false,
                     restore: false,
@@ -45,6 +46,7 @@ import { computed, ref, watch } from "vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import queries from "@/gql/queries";
 import { useQuery } from "@vue/apollo-composable";
+import TaskForm from "./TaskForm.vue";
 
 const props = defineProps({
     taskType: {

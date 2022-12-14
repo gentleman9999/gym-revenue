@@ -166,6 +166,25 @@ const location = {
         }
     `,
 };
+
+const task = {
+    create: gql`
+        mutation createCalendarEvent($input: CreateCalendarEventInput!) {
+            createCalendarEvent(input: $input) {
+                id
+                title
+            }
+        }
+    `,
+    update: gql`
+        mutation updateCalendarEvent($input: PatchCalendarEventInput!) {
+            updateCalendarEvent(input: $input) {
+                id
+                title
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
@@ -173,4 +192,5 @@ export default {
     user,
     team,
     location,
+    task,
 };

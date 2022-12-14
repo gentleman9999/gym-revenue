@@ -2,12 +2,13 @@ import { Inertia } from "@inertiajs/inertia";
 import { computed } from "vue";
 import { merge } from "lodash";
 import { preview, edit } from "@/Components/CRUD/helpers/gqlData";
+import { faGameConsoleHandheld } from "@fortawesome/pro-duotone-svg-icons";
 
 export const defaults = Object.freeze({
     edit: {
         label: "Edit",
-        handler: async ({ baseRoute, data }) => {
-            edit(data["id"]);
+        handler: async ({ baseRoute, data, modelName = "" }) => {
+            edit(data["id"], modelName);
         },
     },
     trash: {

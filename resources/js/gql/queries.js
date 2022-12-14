@@ -770,7 +770,10 @@ const CALENDAR_EVENT_GET = gql`
             location_id
             call_task
             im_attending
-            my_reminder
+            my_reminder {
+                id
+                remind_time
+            }
         }
     }
 `;
@@ -1037,6 +1040,9 @@ export default {
     },
     callTemplate: {
         edit: CALL_TEMPLATE_EDIT,
+    },
+    task: {
+        edit: CALENDAR_EVENT_GET,
     },
     TOPOL_API_KEY,
     emailTemplates: EMAIL_TEMPLATES,

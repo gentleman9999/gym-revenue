@@ -23,7 +23,11 @@
 <script setup>
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
-import { editParam, clearEditParam } from "@/Components/CRUD/helpers/gqlData";
+import {
+    editParam,
+    clearEditParam,
+    crudName,
+} from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
 
 const props = defineProps({
@@ -51,6 +55,10 @@ function close() {
 }
 
 watchEffect(() => {
+    if (props.modelName !== crudName.value) {
+        return;
+    }
+
     if (editParam.value) {
         open();
     } else {

@@ -435,6 +435,8 @@ import { Inertia } from "@inertiajs/inertia";
 import FileIcon from "@/Components/Icons/File.vue";
 import AddIcon from "@/Components/Icons/Add.vue";
 import { transformDate } from "@/utils/transformDate";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 export default {
     components: {
@@ -529,6 +531,7 @@ export default {
             operation = "Create";
         } else {
             calendarEventForm = {
+                id: calendarEvent.id,
                 title: calendarEvent.title,
                 description: calendarEvent.description,
                 full_day_event: calendarEvent.full_day_event,
@@ -572,38 +575,46 @@ export default {
             { deep: true }
         );
 
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform((data) => ({
-                    ...data,
-                    start: transformDate(data.start),
-                    end: transformDate(data.end),
-                }))
-                .put(route("calendar.event.update", calendarEvent.id), {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        form.reset();
-                        emit("submitted");
-                    },
-                });
+        const { mutate: createTask } = useMutation(mutations.task.create);
+        const { mutate: updateTask } = useMutation(mutations.task.update);
+
+        let handleSubmit = async () => {
+            await updateTask({
+                input: {
+                    id: form.id,
+                    title: form.title,
+                    description: form.description,
+                    event_type_id: form.event_type_id,
+                    user_attendees: form.user_attendees,
+                    lead_attendees: form.lead_attendees,
+                    member_attendees: form.member_attendees,
+                    location_id: form.location_id,
+                    start: transformDate(form.start),
+                    end: transformDate(form.end),
+                    full_day_event: !!form.full_day_event,
+                },
+            });
+            emit("submitted");
+        };
 
         if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform((data) => ({
-                        ...data,
-                        start: transformDate(data.start),
-                        end: transformDate(data.end),
-                        full_day_event: !!data.full_day_event,
-                    }))
-                    .post(route("calendar.event.store"), {
-                        preserveScroll: true,
-                        onSuccess: () => {
-                            form.reset();
-                            emit("submitted");
-                        },
-                    });
+            handleSubmit = async () => {
+                await createTask({
+                    input: {
+                        title: form.title,
+                        description: form.description,
+                        event_type_id: form.event_type_id,
+                        user_attendees: form.user_attendees,
+                        lead_attendees: form.lead_attendees,
+                        member_attendees: form.member_attendees,
+                        location_id: form.location_id,
+                        start: transformDate(form.start),
+                        end: transformDate(form.end),
+                        full_day_event: !!form.full_day_event,
+                    },
+                });
+                emit("submitted");
+            };
         }
 
         const dateFormat = computed(() =>
