@@ -202,7 +202,7 @@
                 />
             </div>
             <div class="col-span-6 md:col-span-2">
-                <jet-label for="location_type" value="Location Types" />
+                <!-- <jet-label for="location_type" value="Location Types" />
                 <multiselect
                     id="location_type"
                     class="mt-1 multiselect"
@@ -210,11 +210,13 @@
                     :searchable="true"
                     :options="optionLocationTypes"
                     :classes="multiselectClasses"
-                />
-                <jet-input-error
+                /> -->
+                <LocationTypesSelect v-model="form.location_type" />
+
+                <!-- <jet-input-error
                     :message="form.errors.location_type"
                     class="mt-2"
-                />
+                /> -->
             </div>
 
             <input id="client_id" type="hidden" v-model="form.client_id" />
@@ -251,6 +253,7 @@ import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 
+import LocationTypesSelect from "./LocationTypesSelect.vue";
 import Button from "@/Components/Button.vue";
 import PhoneInput from "@/Components/PhoneInput.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
@@ -279,6 +282,7 @@ export default {
         DatePicker,
         multiselect: Multiselect,
         PhoneInput,
+        LocationTypesSelect,
     },
     props: ["location", "locationTypes"],
     setup(props, { emit }) {
@@ -400,6 +404,7 @@ export default {
                     label: parseLocationTypeDisplayName(locationType),
                 };
             }),
+            LocationTypesSelect,
         };
     },
 };

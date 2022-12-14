@@ -318,7 +318,12 @@ const LOCATION_EDIT = gql`
             poc_phone
             poc_first
             poc_last
+            location_type
         }
+    }
+`;
+const LOCATION_CREATE = gql`
+    query Location {
         locationTypes {
             label
             value
@@ -326,8 +331,9 @@ const LOCATION_EDIT = gql`
         }
     }
 `;
-const LOCATION_CREATE = gql`
-    query Location {
+
+const LOCATION_TYPES = gql`
+    query LocationTypes {
         locationTypes {
             label
             value
@@ -1039,6 +1045,7 @@ export default {
     users: USERS,
     leads: LEADS,
     locations: LOCATIONS,
+    locationTypes: LOCATION_TYPES,
     members: MEMBERS,
     teams: TEAMS,
     roles: ROLES,
