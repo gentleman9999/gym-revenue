@@ -92,6 +92,7 @@ const props = defineProps({
     },
     json: {
         type: Object,
+        default: {},
     },
     productsUrl: {
         type: String,
@@ -342,6 +343,7 @@ function handleUserFileChoice(url) {
 }
 
 const handleOnInit = (args) => {
+    console.log("email builder init fn called");
     ready.value = true;
     if (!props.json) {
         showSpinner.value = false;
@@ -353,6 +355,7 @@ const handleOnInit = (args) => {
     });
 };
 const handleOnLoaded = (args) => {
+    console.log("email builder loaded fn called");
     showSpinner.value = false;
     emit("onLoaded", args);
 };
@@ -372,13 +375,17 @@ axios.get(route("mass-comms.template.tokens")).then(({ data }) => {
 watch(
     [ready],
     () => {
-        if (ready.value && props.json) {
-            console.log("trying to load topol json", props.json);
+        if (ready.value) {
+            showSpinner.value = false;
+            console.log("trying to load topol json");
             TopolPlugin.load(JSON.stringify(props.json));
         }
     },
     { immediate: true }
 );
 
+onMounted(() => {
+    console.log("email builder mounted");
+});
 onUnmounted(TopolPlugin.destroy);
 </script>

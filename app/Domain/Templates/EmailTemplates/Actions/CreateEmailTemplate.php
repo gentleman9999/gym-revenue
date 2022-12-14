@@ -44,6 +44,11 @@ class CreateEmailTemplate
         return EmailTemplate::findOrFail($id);
     }
 
+    public function __invoke($_, array $args): EmailTemplate
+    {
+        return $this->handle($args);
+    }
+
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];

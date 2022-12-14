@@ -185,6 +185,27 @@ const task = {
         }
     `,
 };
+
+const emailTemplate = {
+    create: gql`
+        mutation createEmailTemplate(
+            name: $name, 
+            subject: $subject, 
+            markup: $markup, 
+            json: $json) {
+            createEmailTemplate(
+                name: $name,
+                subject: $subject,
+                markup: $markup,
+                json: $json
+            ) {
+                id
+                name
+            }
+  }
+    `,
+};
+
 export default {
     department,
     position,
@@ -193,4 +214,5 @@ export default {
     team,
     location,
     task,
+    emailTemplate,
 };

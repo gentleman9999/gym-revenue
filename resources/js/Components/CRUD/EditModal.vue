@@ -5,12 +5,15 @@
             :variables="editParam"
             v-if="editParam"
         >
-            <template v-slot="{ result: { data, loading, error } }">
-                <div v-if="loading">Loading...</div>
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <div v-if="isLoading">
+                    <spinner />
+                </div>
                 <div v-else-if="error">Error</div>
                 <component
                     v-else-if="data"
                     :is="editComponent"
+                    :editParam="editParam"
                     v-bind="{ ...data }"
                     @close="close"
                 />
@@ -22,6 +25,7 @@
 
 <script setup>
 import DaisyModal from "@/Components/DaisyModal.vue";
+import Spinner from "@/Components/Spinner.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
 import {
     editParam,

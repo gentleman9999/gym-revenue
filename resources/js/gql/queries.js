@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
-import { EMAIL_TEMPLATES, EMAIL_TEMPLATE_EDIT } from "./templates/email";
+import {
+    EMAIL_TEMPLATES,
+    EMAIL_TEMPLATE_EDIT,
+    EMAIL_TEMPLATE_CREATE,
+} from "./templates/email";
 import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
 import { LOCATION_TYPES } from "./typeQueries";
@@ -1025,6 +1029,7 @@ export default {
     },
     emailTemplate: {
         edit: EMAIL_TEMPLATE_EDIT,
+        create: EMAIL_TEMPLATE_CREATE,
     },
     smsTemplate: {
         edit: SMS_TEMPLATE_EDIT,

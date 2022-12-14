@@ -5,16 +5,19 @@
             :variables="createParam"
             v-if="createParam && queries[modelKey].create"
         >
-            <template v-slot="{ result: { data, loading, error } }">
-                <div v-if="loading">Loading...</div>
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <div v-if="isLoading">
+                    <spinner />
+                </div>
                 <div v-else-if="error">Error</div>
                 <component
                     v-else-if="data"
                     :is="createComponent"
+                    :createParam="createParam"
                     v-bind="{ ...data }"
                     @close="close"
                 />
-                <div v-else>Loading...</div>
+                <div v-else>No result</div>
             </template>
         </ApolloQuery>
         <component
@@ -24,8 +27,9 @@
     </daisy-modal>
 </template>
 
-<script>
+<script setup>
 import DaisyModal from "@/Components/DaisyModal.vue";
+import Spinner from "@/Components/Spinner.vue";
 import { ref, watchEffect, onUnmounted } from "vue";
 import {
     createParam,
@@ -33,45 +37,40 @@ import {
 } from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
 
-export default {
-    components: { DaisyModal },
-    props: {
-        createComponent: {
-            required: true,
-        },
-        modelName: {
-            type: String,
-            required: true,
-        },
-        modelKey: {
-            type: String,
-            required: true,
-        },
+const props = defineProps({
+    createComponent: {
+        required: true,
     },
-    setup() {
-        const createModal = ref(null);
-
-        function open() {
-            createModal?.value?.open();
-        }
-
-        function close() {
-            clearCreateParam();
-        }
-
-        watchEffect(() => {
-            if (createParam.value) {
-                open();
-            } else {
-                createModal?.value?.close();
-            }
-        });
-        onUnmounted(() => {
-            clearCreateParam();
-        });
-        return { close, createModal, createParam, queries };
+    modelName: {
+        type: String,
+        required: true,
     },
-};
+    modelKey: {
+        type: String,
+        required: true,
+    },
+});
+
+const createModal = ref(null);
+
+function open() {
+    createModal?.value?.open();
+}
+
+function close() {
+    clearCreateParam();
+}
+
+watchEffect(() => {
+    if (createParam.value) {
+        open();
+    } else {
+        createModal?.value?.close();
+    }
+});
+onUnmounted(() => {
+    clearCreateParam();
+});
 </script>
 
 <style scoped></style>
