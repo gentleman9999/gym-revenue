@@ -284,7 +284,7 @@ export default {
         PhoneInput,
         LocationTypesSelect,
     },
-    props: ["location", "locationTypes"],
+    props: ["location"],
     setup(props, { emit }) {
         const page = usePage();
 
@@ -396,14 +396,7 @@ export default {
             optionStates: optionsStates,
             multiselectClasses: getDefaultMultiselectTWClasses(),
             isFormValid,
-            optionLocationTypes: props.locationTypes?.map(function (
-                locationType
-            ) {
-                return {
-                    value: locationType.value,
-                    label: parseLocationTypeDisplayName(locationType),
-                };
-            }),
+
             LocationTypesSelect,
         };
     },

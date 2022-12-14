@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 import { EMAIL_TEMPLATES, EMAIL_TEMPLATE_EDIT } from "./templates/email";
 import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
+import { LOCATION_TYPES } from "./typeQueries";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -324,16 +325,6 @@ const LOCATION_EDIT = gql`
 `;
 const LOCATION_CREATE = gql`
     query Location {
-        locationTypes {
-            label
-            value
-            description
-        }
-    }
-`;
-
-const LOCATION_TYPES = gql`
-    query LocationTypes {
         locationTypes {
             label
             value
