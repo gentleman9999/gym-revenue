@@ -8,6 +8,7 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Actions\DeleteUser;
 use App\Domain\Users\Actions\GrantAccessToken;
 use App\Domain\Users\Actions\ImportUsers;
+use App\Domain\Users\Actions\ObfuscateUser;
 use App\Domain\Users\Actions\ResetUserPassword;
 use App\Domain\Users\Actions\SetCustomUserCrudColumns;
 use App\Domain\Users\Actions\SwitchTeam;
@@ -386,4 +387,27 @@ it('should have UserSetCustomCrudColumns event', function () {
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
     $this->assertContains(UserSetCustomCrudColumns::class, array_column($storedEvents, 'event_class'));
+});
+
+it('should Obfuscate User using ObfuscateUser action', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+
+    $this->assertEquals($user->obfuscated_at, null);
+    $oUser = ObfuscateUser::run($user);
+    $this->assertNotEquals($oUser->obfuscated_at, null);
+});
+
+it('should show Obfuscated global scope working', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+
+    $originalCountOfUsers = User::all()->count();
+
+    ObfuscateUser::run($user);
+    $newCountOfUsers = User::all()->count();
+
+    $this->assertEquals($originalCountOfUsers - 1, $newCountOfUsers);
 });

@@ -13,19 +13,17 @@ use App\Domain\Users\Events\AccessTokenGranted;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserImpersonatedAnother;
+use App\Domain\Users\Events\UserObfuscated;
 use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserReceivedEmail;
 use App\Domain\Users\Events\UserReceivedTextMsg;
-use App\Domain\Users\Events\UserRestored;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UsersImported;
 use App\Domain\Users\Events\UserStoppedBeingImpersonated;
 use App\Domain\Users\Events\UserStoppedImpersonatedAnother;
-use App\Domain\Users\Events\UserTrashed;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Events\UserWasImpersonated;
 use App\Domain\Users\Events\UserWelcomeEmailSent;
-use App\StorableEvents\Users\UserAddedToTeam;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
 class UserAggregate extends AggregateRoot
@@ -222,17 +220,13 @@ class UserAggregate extends AggregateRoot
 
         return $this;
     }
-    //TODO: delete
-//    public function addToTeam(string $team_id, string $team_name): static
-//    {
-//        if (array_key_exists($team_id, $this->teams)) {
-//            // @todo - make an exception to throw here that the user is already a member
-//        }
-//
-//        $this->recordThat(new UserAddedToTeam($this->uuid(), $team_id, $team_name));
-//
-//        return $this;
-//    }
+
+    public function ObfuscateUser(): static
+    {
+        $this->recordThat(new UserObfuscated());
+
+        return $this;
+    }
 
     public function setCustomCrudColumns(string $table, array $field_ids): static
     {
