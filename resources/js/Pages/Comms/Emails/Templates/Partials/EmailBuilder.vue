@@ -343,11 +343,8 @@ function handleUserFileChoice(url) {
 }
 
 const handleOnInit = (args) => {
-    console.log("email builder init fn called");
     ready.value = true;
-    if (!props.json) {
-        showSpinner.value = false;
-    }
+    showSpinner.value = false;
     emit("onInit", args);
 
     axios.get(route("comms.email-templates.get-blocks")).then(({ data }) => {
@@ -355,7 +352,6 @@ const handleOnInit = (args) => {
     });
 };
 const handleOnLoaded = (args) => {
-    console.log("email builder loaded fn called");
     showSpinner.value = false;
     emit("onLoaded", args);
 };
@@ -387,5 +383,8 @@ watch(
 onMounted(() => {
     console.log("email builder mounted");
 });
-onUnmounted(TopolPlugin.destroy);
+onUnmounted(() => {
+    TopolPlugin.destroy;
+    console.log("unmounting email builder");
+});
 </script>
