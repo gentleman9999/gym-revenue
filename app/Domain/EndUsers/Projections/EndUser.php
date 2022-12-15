@@ -5,6 +5,7 @@ namespace App\Domain\EndUsers\Projections;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Customers\Projections\Customer;
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Locations\Projections\Location;
@@ -76,9 +77,7 @@ class EndUser extends GymRevProjection
 
     public function details(): HasMany
     {
-        $fk = $this->getModelName()->lower()."_id";
-
-        return $this->hasMany($this->getDetailsModel(), $fk, 'id');
+        return $this->hasMany(EndUserDetails::class, "end_user_id", 'id');
     }
 
     public function detailsDesc(): HasMany
@@ -93,9 +92,7 @@ class EndUser extends GymRevProjection
 
     public function detail(): HasOne
     {
-        $fk = $this->getModelName()->lower() . "_id";
-
-        return $this->hasOne($this->getDetailsModel(), $fk, 'id');
+        return $this->hasOne(EndUserDetails::class, "end_user_id", 'id');
     }
 
     public function client(): HasOne
@@ -277,6 +274,7 @@ class EndUser extends GymRevProjection
     {
         $type = Lead::class;
         $agreements = Agreement::whereEndUserId($this->id)->get();
+//        TODO: this in incorrect. an has 1 active of type membership, then member. if active and no membership, customer
         foreach ($agreements as $agreement) {
             if ($agreement->active) {
                 $type = Member::class;
@@ -292,5 +290,13 @@ class EndUser extends GymRevProjection
     public function isCBorGR(): bool
     {
         return (str_ends_with($this->email, '@capeandbay.com') || str_ends_with($this->email, '@gymrevenue.com'));
+    }
+
+    //    TODO: store as projection somewhere, this is expensive
+    public function getInteractionCount()
+    {
+        $aggy = EndUserAggregate::retrieve($this->id);
+
+        return $aggy->getInteractionCount();
     }
 }
