@@ -1,0 +1,36 @@
+input CalendarEventInput {
+    search: String
+    start: String
+    end: String
+    viewUser: ID
+}
+
+# Create Input for Calendar Event
+input CreateCalendarEventInput {
+    title: String @rules(apply: ["required", "max:50"],  attribute: "Title")
+    description: String @rules(apply: ["sometimes", "nullable"],  attribute: "Description")
+    full_day_event: Boolean @rules(apply: ["required"],  attribute: "Full Day Event")
+    start: DateTime @rules(apply: ["required"],  attribute: "Start Of The Event")
+    end: DateTime @rules(apply: ["required"],  attribute: "End Of The Event")
+    event_type_id: ID @rules(apply: ["required", "exists:calendar_event_types,id"],  attribute: "Event Type Id")
+    user_attendees: [ID] @rules(apply: ["sometimes"],  attribute: "User Attendees")
+    lead_attendees: [ID] @rules(apply: ["sometimes"],  attribute: "Lead Attendees")
+    member_attendees: [ID] @rules(apply: ["sometimes"],  attribute: "Member Attendees")
+    location_id: String @rules(apply: ["required"],  attribute: "Owner Id")
+}
+
+
+# Update Input for Calendar Event
+input PatchCalendarEventInput {
+    id: ID!
+    title: String @rules(apply: ["required", "max:50"],  attribute: "Title")
+    description: String @rules(apply: ["sometimes", "nullable"],  attribute: "Description")
+    full_day_event: Boolean @rules(apply: ["required"],  attribute: "Full Day Event")
+    start: String @rules(apply: ["required"],  attribute: "Start Of The Event")
+    end: String @rules(apply: ["required"],  attribute: "End Of The Event")
+    event_type_id: ID @rules(apply: ["required", "exists:calendar_event_types,id"],  attribute: "Event Type Id")
+    user_attendees: [ID] @rules(apply: ["sometimes"],  attribute: "User Attendees")
+    lead_attendees: [ID] @rules(apply: ["sometimes"],  attribute: "Lead Attendees")
+    member_attendees: [ID] @rules(apply: ["sometimes"],  attribute: "Member Attendees")
+    location_id: String @rules(apply: ["required"],  attribute: "Owner Id")
+}

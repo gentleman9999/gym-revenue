@@ -16,9 +16,6 @@ export const EMAIL_TEMPLATES = gql`
                 client_id
                 team_id
                 created_by_user_id
-                creator {
-                    id
-                }
                 created_at
                 updated_at
             }
@@ -31,6 +28,7 @@ export const EMAIL_TEMPLATES = gql`
                 total
             }
         }
+        topolApiKey
     }
 `;
 
@@ -55,5 +53,12 @@ export const EMAIL_TEMPLATE_EDIT = gql`
             created_at
             updated_at
         }
+        topolApiKey
+    }
+`;
+
+export const EMAIL_TEMPLATE_CREATE = gql`
+    query EmailTemplate {
+        topolApiKey
     }
 `;

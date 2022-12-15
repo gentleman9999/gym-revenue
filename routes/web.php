@@ -128,10 +128,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('reminders')->group(func
 Route::middleware(['auth:sanctum', 'verified'])->prefix('notes')->group(function () {
     Route::get('/', \App\Http\Controllers\NotesController::class . '@index')->name('notes');
     Route::get('/create', \App\Http\Controllers\NotesController::class . '@create')->name('notes.create');
-    Route::post('/', \App\Actions\Clients\Notes\CreateNote::class)->name('notes.store');
+    Route::post('/', \App\Domain\Notes\Actions\CreateNote::class)->name('notes.store');
     Route::get('/edit/{id}', \App\Http\Controllers\NotesController::class . '@edit')->name('notes.edit');
-    Route::put('/{id}', \App\Actions\Clients\Notes\UpdateNote::class)->name('notes.update');
-    Route::delete('/{id}/force', \App\Actions\Clients\Notes\DeleteNote::class)->name('notes.delete');
+    Route::put('/{id}', \App\Domain\Notes\Actions\UpdateNote::class)->name('notes.update');
+    Route::delete('/{id}/force', \App\Domain\Notes\Actions\DeleteNote::class)->name('notes.delete');
     Route::get('/export', \App\Http\Controllers\NotesController::class . '@export')->name('notes.export');
 });
 

@@ -1,0 +1,8 @@
+extend type Mutation {
+    createEmailTemplate(
+        name: String
+        subject: String
+        markup: String
+        json: String
+    ): EmailTemplate!
+}

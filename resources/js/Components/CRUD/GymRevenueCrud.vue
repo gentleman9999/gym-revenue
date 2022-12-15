@@ -334,7 +334,7 @@ export default defineComponent({
             create: {
                 label: `Create ${props.modelName}`,
                 handler: () => {
-                    create(page.props.value.user.id);
+                    create(page.props.value.user.id, props.modelName);
                 },
                 class: ["btn-primary"],
             },
@@ -375,7 +375,6 @@ export default defineComponent({
         const openCustomizationModal = () => customizationModal.value.open();
 
         const actions = getActions(props);
-        console.log({ actions });
         const modelKey = props.modelKey || props.modelName;
         return {
             form,

@@ -202,15 +202,7 @@
                 />
             </div>
             <div class="col-span-6 md:col-span-2">
-                <jet-label for="location_type" value="Location Types" />
-                <multiselect
-                    id="location_type"
-                    class="mt-1 multiselect"
-                    v-model="form.location_type"
-                    :searchable="true"
-                    :options="optionLocationTypes"
-                    :classes="multiselectClasses"
-                />
+                <LocationTypesSelect v-model="form.location_type" />
                 <jet-input-error
                     :message="form.errors.location_type"
                     class="mt-2"
@@ -249,8 +241,9 @@
 <script>
 import { computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
+import { useGymRevForm } from "@/utils";
 
+import LocationTypesSelect from "./LocationTypesSelect.vue";
 import Button from "@/Components/Button.vue";
 import PhoneInput from "@/Components/PhoneInput.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
@@ -258,7 +251,6 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import Multiselect from "@vueform/multiselect";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import { transformDate } from "@/utils/transformDate";
 import * as _ from "lodash";
@@ -277,10 +269,10 @@ export default {
         JetInputError,
         JetLabel,
         DatePicker,
-        multiselect: Multiselect,
         PhoneInput,
+        LocationTypesSelect,
     },
-    props: ["location", "locationTypes"],
+    props: ["location"],
     setup(props, { emit }) {
         const page = usePage();
 
@@ -390,16 +382,8 @@ export default {
             buttonText: operation,
             handleSubmit,
             optionStates: optionsStates,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
             isFormValid,
-            optionLocationTypes: props.locationTypes?.map(function (
-                locationType
-            ) {
-                return {
-                    value: locationType.value,
-                    label: parseLocationTypeDisplayName(locationType),
-                };
-            }),
+            LocationTypesSelect,
         };
     },
 };

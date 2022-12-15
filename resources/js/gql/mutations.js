@@ -166,6 +166,69 @@ const location = {
         }
     `,
 };
+
+const task = {
+    create: gql`
+        mutation createCalendarEvent($input: CreateCalendarEventInput!) {
+            createCalendarEvent(input: $input) {
+                id
+                title
+            }
+        }
+    `,
+    update: gql`
+        mutation updateCalendarEvent($input: PatchCalendarEventInput!) {
+            updateCalendarEvent(input: $input) {
+                id
+                title
+            }
+        }
+    `,
+};
+
+const emailTemplate = {
+    create: gql`
+        mutation createEmailTemplate(
+            $name: name
+            $subject: subject
+            $markup: markup
+            $json: json
+        ) {
+            createEmailTemplate(
+                name: $name
+                subject: $subject
+                markup: $markup
+                json: $json
+            ) {
+                id
+                name
+            }
+        }
+    `,
+};
+
+const note = {
+    create: gql`
+        mutation createNote($input: CreateNoteInput!) {
+            createNote(input: $input) {
+                id
+                title
+                note
+                active
+            }
+        }
+    `,
+    update: gql`
+        mutation updateNote($input: UpdateNoteInput!) {
+            updateNote(input: $input) {
+                id
+                title
+                note
+                active
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
@@ -173,4 +236,7 @@ export default {
     user,
     team,
     location,
+    task,
+    emailTemplate,
+    note,
 };

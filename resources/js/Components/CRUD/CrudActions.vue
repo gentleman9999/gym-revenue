@@ -14,7 +14,7 @@
                 <li v-for="[key, action] in Object.entries(actions)" :key="key">
                     <a
                         @click.prevent.stop="
-                            () => action.handler({ data, baseRoute })
+                            () => action.handler({ data, baseRoute, modelName })
                         "
                         href="#"
                     >

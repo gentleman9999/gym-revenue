@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
-import { EMAIL_TEMPLATES, EMAIL_TEMPLATE_EDIT } from "./templates/email";
+import {
+    EMAIL_TEMPLATES,
+    EMAIL_TEMPLATE_EDIT,
+    EMAIL_TEMPLATE_CREATE,
+} from "./templates/email";
 import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
 
@@ -318,7 +322,12 @@ const LOCATION_EDIT = gql`
             poc_phone
             poc_first
             poc_last
+            location_type
         }
+    }
+`;
+const LOCATION_CREATE = gql`
+    query Location {
         locationTypes {
             label
             value
@@ -326,8 +335,9 @@ const LOCATION_EDIT = gql`
         }
     }
 `;
-const LOCATION_CREATE = gql`
-    query Location {
+
+const LOCATION_TYPES = gql`
+    query LocationTypes {
         locationTypes {
             label
             value
@@ -590,6 +600,17 @@ const DEPARTMENTS = gql`
     }
 `;
 
+const DEPARTMENT_LIST = gql`
+    query DepartmentList {
+        departments {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const DEPARTMENT_EDIT = gql`
     query Department($id: ID) {
         department(id: $id) {
@@ -764,7 +785,10 @@ const CALENDAR_EVENT_GET = gql`
             location_id
             call_task
             im_attending
-            my_reminder
+            my_reminder {
+                id
+                remind_time
+            }
         }
     }
 `;
@@ -966,6 +990,12 @@ const PROFILE_QUERY = gql`
     }
 `;
 
+const TOPOL_API_KEY = gql`
+    query TopolApiKey {
+        topolApiKey
+    }
+`;
+
 export default {
     user: {
         preview: USER_PREVIEW,
@@ -1019,6 +1049,7 @@ export default {
     },
     emailTemplate: {
         edit: EMAIL_TEMPLATE_EDIT,
+        create: EMAIL_TEMPLATE_CREATE,
     },
     smsTemplate: {
         edit: SMS_TEMPLATE_EDIT,
@@ -1026,16 +1057,22 @@ export default {
     callTemplate: {
         edit: CALL_TEMPLATE_EDIT,
     },
+    task: {
+        edit: CALENDAR_EVENT_GET,
+    },
+    TOPOL_API_KEY,
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,
     users: USERS,
     leads: LEADS,
     locations: LOCATIONS,
+    locationTypes: LOCATION_TYPES,
     members: MEMBERS,
     teams: TEAMS,
     roles: ROLES,
     departments: DEPARTMENTS,
+    departmentList: DEPARTMENT_LIST,
     positions: POSITIONS,
     eventTypes: EVENT_TYPES,
     notes: NOTES,
