@@ -2,22 +2,21 @@
 
 namespace App\Domain\Folders\Actions;
 
+use App\Actions\GymRevAction;
+
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateFolderSharing
+class UpdateFolderSharing extends GymRevAction
 {
-    use AsAction;
-
-    public function handle(string $id, array $payload): Folder
+    public function handle(array $payload): Folder
     {
-        $payload['id'] = $id;
+        $id = $payload['id'];
         FolderAggregate::retrieve($id)->updateSharing($payload)->persist();
 
         return Folder::findOrFail($id);
@@ -41,6 +40,11 @@ class UpdateFolderSharing
         ];
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        return [$args];
+    }
+
     public function getControllerMiddleware(): array
     {
         return [InjectClientId::class];
@@ -55,10 +59,10 @@ class UpdateFolderSharing
 
     public function asController($id, ActionRequest $request): Folder
     {
-        return $this->handle(
-            $id,
-            $request->validated()
-        );
+        $payload = $request->validated();
+        $payload['id'] = $id;
+
+        return $this->handle($payload);
     }
 
     public function htmlResponse(Folder $folder): RedirectResponse

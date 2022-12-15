@@ -5,3 +5,9 @@ type Folder {
     created_at: DateTime
     files_count: Int
 }
+
+type FolderContent {
+    name: String
+    files: [File]
+    folders: [Folder]
+}

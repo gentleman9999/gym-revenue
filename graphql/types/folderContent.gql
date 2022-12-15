@@ -1,5 +1,0 @@
-type FolderContent {
-    name: String
-    files: [File]
-    folders: [Folder]
-}

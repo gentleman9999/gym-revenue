@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Files;
+namespace App\Domain\Files\Actions;
 
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
@@ -9,22 +9,23 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class RestoreFile
+class DeleteFile
 {
     use AsAction;
 
     public function handle($id, $current_user = null)
     {
-        FileAggregate::retrieve($id)->restore($current_user->id ?? "Auto Generated")->persist();
+        $deleted = File::withTrashed()->findOrFail($id);
+        FileAggregate::retrieve($id)->delete($current_user->id ?? "Auto Generated", $deleted)->persist();
 
-        return File::findOrFail($id);
+        return $deleted;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
 
-        return $current_user->can('files.trash', File::class);
+        return $current_user->can('files.delete', File::class);
     }
 
     public function asController(ActionRequest $request, $id)
@@ -34,7 +35,7 @@ class RestoreFile
             $request->user(),
         );
 
-        Alert::success("File '{$file->filename}' was restored")->flash();
+        Alert::success("File '{$file->filename}' was deleted")->flash();
 
 //        return Redirect::route('files');
         return Redirect::back();

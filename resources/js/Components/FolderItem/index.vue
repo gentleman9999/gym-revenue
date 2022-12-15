@@ -24,6 +24,7 @@
             v-if="props.mode === 'list'"
             :folder="folder"
             :handleRename="handleRename"
+            :handleShare="handleShare"
             :handleTrash="handleTrash"
             :handleRestore="handleRestore"
             :handlePermissions="handlePermissions"
@@ -32,6 +33,7 @@
 
         <folder-context-menu
             ref="subMenu"
+            :handleShare="handleShare"
             :handleRename="handleRename"
             :handleTrash="handleTrash"
             :handleRestore="handleRestore"

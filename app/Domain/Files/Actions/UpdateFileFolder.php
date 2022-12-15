@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Files;
+namespace App\Domain\Files\Actions;
 
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
@@ -9,7 +9,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateFilePermissions
+class UpdateFileFolder
 {
     use AsAction;
 
@@ -23,13 +23,13 @@ class UpdateFilePermissions
         return [
             //TODO: why doesn't the line below this work? says permissions must be an array (which it is)
 //            'permissions' => 'required|array:admin,account_owner,regional_admin,location_manager,employee',
-            'permissions' => 'present',
+            'folder' => 'present',
         ];
     }
 
     public function handle($id, $data, $current_user = null)
     {
-        FileAggregate::retrieve($id)->updatePermissions($current_user->id ?? "Auto Generated", $data)->persist();
+        FileAggregate::retrieve($id)->updateFolder($current_user->id ?? "Auto Generated", $data)->persist();
 
         return File::findOrFail($id);
     }
@@ -49,7 +49,7 @@ class UpdateFilePermissions
             $request->user(),
         );
 
-        Alert::success("File permissions for '{$file->filename}' updated.")->flash();
+        Alert::success("File added to folder.")->flash();
 
         return Redirect::back();
     }

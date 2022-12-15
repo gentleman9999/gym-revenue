@@ -60,6 +60,8 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { computed } from "@vue/runtime-core";
 import { Inertia } from "@inertiajs/inertia";
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
 
 export default {
     components: {
@@ -80,16 +82,18 @@ export default {
         const type = computed(() => (item.filename ? "File" : "Folder"));
         const field = computed(() => (item.filename ? "filename" : "name"));
 
+        const { mutate: updateFolder } = useMutation(mutations.folder.update);
+
         let handleSubmit = async () => {
             if (type.value == "File") {
                 await form.dirty().put(route("files.rename", item.id));
                 emit("success");
             } else {
-                await Inertia.put(route("folders.update", item.id), {
-                    id: item.id,
+                let result = await updateFolder({
                     name: form.name,
+                    id: item.id,
                 });
-                emit("success");
+                if (result.data) emit("success");
             }
         };
 

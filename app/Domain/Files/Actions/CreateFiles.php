@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Files;
+namespace App\Domain\Files\Actions;
 
 use App\Http\Middleware\InjectClientId;
 use App\Models\File;

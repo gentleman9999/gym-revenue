@@ -1,6 +1,0 @@
-extend type Query {
-    folders(
-        filter: Filter @scope
-        orderBy: [OrderByClause!] @orderBy
-    ): [Folder!]! @all
-}

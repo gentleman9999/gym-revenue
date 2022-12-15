@@ -93,14 +93,14 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('files')->group(function () {
     Route::get('/', \App\Http\Controllers\FilesController::class . '@index')->name('files');
     Route::get('/upload', \App\Http\Controllers\FilesController::class . '@upload')->name('files.upload');
-    Route::post('/', \App\Actions\Clients\Files\CreateFiles::class)->name('files.store');
+    Route::post('/', \App\Domain\Files\Actions\CreateFiles::class)->name('files.store');
     Route::get('/edit/{id}', \App\Http\Controllers\FilesController::class . '@edit')->name('files.edit');
-    Route::put('/{id}/rename', \App\Actions\Clients\Files\RenameFile::class)->name('files.rename');
-    Route::put('/{id}', \App\Actions\Clients\Files\UpdateFilePermissions::class)->name('files.update');
-    Route::put('/folder/{id}', \App\Actions\Clients\Files\UpdateFileFolder::class)->name('files.update.folder');
-    Route::delete('/{id}', \App\Actions\Clients\Files\TrashFile::class)->name('files.trash');
-    Route::delete('/{id}/force', \App\Actions\Clients\Files\DeleteFile::class)->name('files.delete');
-    Route::post('/{id}/restore', \App\Actions\Clients\Files\RestoreFile::class)->name('files.restore');
+    Route::put('/{id}/rename', \App\Domain\Files\Actions\RenameFile::class)->name('files.rename');
+    Route::put('/{id}', \App\Domain\Files\Actions\UpdateFilePermissions::class)->name('files.update');
+    Route::put('/folder/{id}', \App\Domain\Files\Actions\UpdateFileFolder::class)->name('files.update.folder');
+    Route::delete('/{id}', \App\Domain\Files\Actions\TrashFile::class)->name('files.trash');
+    Route::delete('/{id}/force', \App\Domain\Files\Actions\DeleteFile::class)->name('files.delete');
+    Route::post('/{id}/restore', \App\Domain\Files\Actions\RestoreFile::class)->name('files.restore');
     Route::get('/export', \App\Http\Controllers\FilesController::class . '@export')->name('files.export');
 });
 

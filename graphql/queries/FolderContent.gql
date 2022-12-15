@@ -1,6 +1,0 @@
-extend type Query {
-    folderContent(
-        id: ID,
-        filter: Filter
-    ): FolderContent
-}
