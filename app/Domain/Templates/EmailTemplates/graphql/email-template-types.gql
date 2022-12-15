@@ -3,7 +3,7 @@ type EmailTemplate {
     name: String!
     markup: String!
     subject: String!
-    json: String! # needs to be transformed into a string, then parsed back into json on client
+    json: String! @rename(attribute: "jsonString")# needs to be transformed into a string, then parsed back into json on client
     thumbnail: Thumbnail
     active: Boolean
     client_id: String!
