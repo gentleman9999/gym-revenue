@@ -30,11 +30,14 @@ class CreateEmailTemplate extends GymRevAction
         ];
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        return [$args['emailTemplate']];
+    }
+
     public function handle(array $data): EmailTemplate
     {
         $id = Uuid::new();
-
-        dd($data);
 
         EmailTemplateAggregate::retrieve($id)
             ->create($data)

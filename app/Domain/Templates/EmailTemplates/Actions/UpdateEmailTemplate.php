@@ -32,7 +32,9 @@ class UpdateEmailTemplate extends GymRevAction
 
     public function mapArgsToHandle($args): array
     {
-        return [$args['email-template']];
+        $emailTemplate = $args['emailTemplate'];
+
+        return [EmailTemplate::find($emailTemplate['id']), $emailTemplate];
     }
 
     public function handle(EmailTemplate $template, array $data): EmailTemplate
