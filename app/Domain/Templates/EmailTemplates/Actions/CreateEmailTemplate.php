@@ -2,20 +2,17 @@
 
 namespace App\Domain\Templates\EmailTemplates\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Templates\EmailTemplates\EmailTemplateAggregate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
-use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateEmailTemplate
+class CreateEmailTemplate extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -25,9 +22,9 @@ class CreateEmailTemplate
     {
         return [
             'client_id' => ['required', 'exists:clients,id'],
-            'name' => ['string', 'required'],
-            'subject' => ['string', 'required'],
-            'markup' => ['string', 'required'],
+            'name' => [ 'required', 'string'],
+            'subject' => ['required', 'string'],
+            'markup' => ['required', 'string'],
             'json' => ['required'],
 //            'thumbnail' => ['string', 'required']
         ];
@@ -37,21 +34,13 @@ class CreateEmailTemplate
     {
         $id = Uuid::new();
 
+        dd($data);
+
         EmailTemplateAggregate::retrieve($id)
             ->create($data)
             ->persist();
 
         return EmailTemplate::findOrFail($id);
-    }
-
-    public function __invoke($_, array $args): EmailTemplate
-    {
-        return $this->handle($args);
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

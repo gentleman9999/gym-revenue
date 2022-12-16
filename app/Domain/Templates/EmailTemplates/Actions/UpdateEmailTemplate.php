@@ -2,19 +2,18 @@
 
 namespace App\Domain\Templates\EmailTemplates\Actions;
 
+use App\Actions\GymRevAction;
 use App\Domain\Templates\EmailTemplates\EmailTemplateAggregate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
-use App\Http\Middleware\InjectClientId;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
+
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateEmailTemplate
+class UpdateEmailTemplate extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -31,6 +30,11 @@ class UpdateEmailTemplate
         ];
     }
 
+    public function mapArgsToHandle($args): array
+    {
+        return [$args['email-template']];
+    }
+
     public function handle(EmailTemplate $template, array $data): EmailTemplate
     {
         EmailTemplateAggregate::retrieve($template->id)
@@ -38,11 +42,6 @@ class UpdateEmailTemplate
             ->persist();
 
         return $template->refresh();
-    }
-
-    public function getControllerMiddleware(): array
-    {
-        return [InjectClientId::class];
     }
 
     public function authorize(ActionRequest $request): bool

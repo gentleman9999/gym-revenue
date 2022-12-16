@@ -5,6 +5,7 @@ export const EMAIL_TEMPLATES = gql`
         emailTemplates(page: $page, filter: $filter) {
             data {
                 id
+                json
                 name
                 markup
                 subject
@@ -38,6 +39,7 @@ export const EMAIL_TEMPLATE_EDIT = gql`
             id
             name
             markup
+            json
             subject
             thumbnail {
                 key
