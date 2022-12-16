@@ -186,6 +186,27 @@ const task = {
     `,
 };
 
+const emailTemplate = {
+    create: gql`
+        mutation createEmailTemplate(
+            $name: name
+            $subject: subject
+            $markup: markup
+            $json: json
+        ) {
+            createEmailTemplate(
+                name: $name
+                subject: $subject
+                markup: $markup
+                json: $json
+            ) {
+                id
+                name
+            }
+        }
+    `,
+};
+
 const note = {
     create: gql`
         mutation createNote($input: CreateNoteInput!) {
@@ -279,6 +300,7 @@ export default {
     team,
     location,
     task,
+    emailTemplate,
     note,
     folder,
     file,

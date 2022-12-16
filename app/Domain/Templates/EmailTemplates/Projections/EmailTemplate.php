@@ -91,4 +91,13 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
     {
         return $this->detail()->whereDetail('email_gateway')->whereActive(1);
     }
+
+    /**
+     * attribute to retrieve the json field as a string (for graphql
+     * @return string
+     */
+    public function getJsonStringAttribute(): string
+    {
+        return json_encode($this->json);
+    }
 }

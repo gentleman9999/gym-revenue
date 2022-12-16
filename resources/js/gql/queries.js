@@ -1,8 +1,11 @@
 import gql from "graphql-tag";
-import { EMAIL_TEMPLATES, EMAIL_TEMPLATE_EDIT } from "./templates/email";
+import {
+    EMAIL_TEMPLATES,
+    EMAIL_TEMPLATE_EDIT,
+    EMAIL_TEMPLATE_CREATE,
+} from "./templates/email";
 import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
-import { LOCATION_TYPES } from "./typeQueries";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -333,6 +336,16 @@ const LOCATION_CREATE = gql`
     }
 `;
 
+const LOCATION_TYPES = gql`
+    query LocationTypes {
+        locationTypes {
+            label
+            value
+            description
+        }
+    }
+`;
+
 const MEMBERS = gql`
     query Members($page: Int, $filter: Filter) {
         members(page: $page, filter: $filter) {
@@ -582,6 +595,17 @@ const DEPARTMENTS = gql`
                 lastItem
                 perPage
                 total
+            }
+        }
+    }
+`;
+
+const DEPARTMENT_LIST = gql`
+    query DepartmentList {
+        departments {
+            data {
+                id
+                name
             }
         }
     }
@@ -1025,6 +1049,7 @@ export default {
     },
     emailTemplate: {
         edit: EMAIL_TEMPLATE_EDIT,
+        create: EMAIL_TEMPLATE_CREATE,
     },
     smsTemplate: {
         edit: SMS_TEMPLATE_EDIT,
@@ -1047,6 +1072,7 @@ export default {
     teams: TEAMS,
     roles: ROLES,
     departments: DEPARTMENTS,
+    departmentList: DEPARTMENT_LIST,
     positions: POSITIONS,
     eventTypes: EVENT_TYPES,
     notes: NOTES,

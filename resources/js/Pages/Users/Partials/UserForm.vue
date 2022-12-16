@@ -243,7 +243,7 @@
                 class="form-control col-span-6 md:col-span-2"
                 v-if="isClientUser"
             >
-                <jet-label for="role_id" value="Select Departments" />
+                <!-- <jet-label for="role_id" value="Select Departments" />
                 <select
                     v-model="selectedDepartment"
                     class="mt-1 w-full form-select"
@@ -256,7 +256,8 @@
                     >
                         {{ department.name }}
                     </option>
-                </select>
+                </select> -->
+                <DepartmentSelect v-model="selectedDepartment" />
                 <jet-input-error
                     :message="form.errors.departments"
                     class="mt-2"
@@ -526,6 +527,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
+import DepartmentSelect from "@/Pages/Departments/Partials/DepartmentSelect.vue";
 
 import "@vuepic/vue-datepicker/dist/main.css";
 import Multiselect from "@vueform/multiselect";
@@ -555,6 +557,7 @@ export default {
         DaisyModal,
         FileManager,
         PhoneInput,
+        DepartmentSelect,
     },
     props: [
         "user",
@@ -924,6 +927,7 @@ export default {
             selectableDepartments,
             selectablePositions,
             renderableDepartments,
+            DepartmentSelect,
             // positions_for_selected_department_without_already_assigned_positions,
             // positions_for_selected_department_excluding_currently_selected,
             all_positions_for_selected_department,
