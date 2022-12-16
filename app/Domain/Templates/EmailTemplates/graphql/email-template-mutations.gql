@@ -1,13 +1,7 @@
 extend type Mutation {
-    createEmailTemplate(
-        name: String!
-            @rules(apply: ["required", "string", "max:50"], attribute: "Name")
-        subject: String!
-            @rules(apply: ["required", "string"], attribute: "Subject")
-        markup: String!
-            @rules(apply: ["required", "string"], attribute: "Markup")
-        json: String! @rules(apply: ["required", "string"], attribute: "Json")
-    ): EmailTemplate!
+    "Creates a EmailTemplate"
+    createEmailTemplate(emailTemplate: CreateEmailTemplateInput!): EmailTemplate!
+    @inject(context: "user.client_id", name: "location.client_id")
 }
 
 extend type Mutation {
