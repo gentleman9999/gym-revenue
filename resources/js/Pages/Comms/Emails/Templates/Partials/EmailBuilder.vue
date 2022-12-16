@@ -89,7 +89,7 @@ const props = defineProps({
         default: "Email Template Builder",
     },
     json: {
-        type: Object,
+        type: [Object, String],
         default: {},
     },
     productsUrl: {
@@ -251,7 +251,7 @@ watch(
     () => {
         if (ready.value) {
             showSpinner.value = false;
-            TopolPlugin.load(JSON.stringify(props.json));
+            TopolPlugin.load(props.json);
         }
     },
     { immediate: true }

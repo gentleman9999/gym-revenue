@@ -67,6 +67,8 @@ import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.v
 import DaisyModal from "@/Components/DaisyModal.vue";
 import usePage from "@/Components/InertiaModal/usePage";
 import queries from "@/gql/queries";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
 
 const emit = defineEmits(["cancel", "close"]);
 
@@ -99,7 +101,29 @@ const props = defineProps({
     },
 });
 
-const operation = ref("Create");
+/** gives us the mutation type that will be ran as a string */
+const usingCrudAction = computed(() => {
+    if (props.editParam) return "update";
+    if (props.createParam) return "create";
+    return "unknown";
+});
+
+const { mutate: createEmailTemplate } = useMutation(
+    mutations.emailTemplate.create
+);
+const { mutate: updateEmailTemplate } = useMutation(
+    mutations.emailTemplate.update
+);
+
+const validInputFields = {
+    create: ["name", "subject", "markup", "json"],
+    update: ["id", "name", "subject", "markup", "json"],
+    unknown: [],
+};
+
+/** reference to gql query that will be ran on save */
+const operation = ref(null);
+
 const page = usePage();
 const nameModal = ref(null);
 const isProcessing = ref(false);
@@ -108,32 +132,49 @@ const form = useGymRevForm({
     client_id: page.props.value.user?.client_id,
 });
 
+/* since component is resource heavy and requires an api key, only load into memory if necessary */
 const shouldMount = computed(() => {
     return Boolean(props.editParam || props.createParam);
 });
 
-onMounted(() => {
-    if (typeof props.emailTemplate.name === "string") {
-        operation.value = "Update";
+/**
+ * looks at which fields are valid inputs for the current operation  and returns an object with that shape & data supplied */
+const getInputData = () => {
+    let unprFormData = form.dirty().data();
+    let fields = validInputFields[usingCrudAction.value];
+
+    let inputFields = {};
+
+    for (let i = 0; i < fields.length; i++) {
+        inputFields[fields[i]] = unprFormData[fields[i]];
     }
+
+    return inputFields;
+};
+
+onMounted(() => {
+    operation.value =
+        typeof props.emailTemplate.name === "string"
+            ? updateEmailTemplate
+            : createEmailTemplate;
 });
 
 const transformJson = (data) => JSON.parse(data);
 
-const onOperationDone = (data) => {
-    isProcessing.value = false;
-    emit("close", data);
-};
-
-const handleOperation = () => {
-    let endpoint = operation.value === "Create" ? "store" : "update";
-    let routeName = `mass-comms.email-templates.${endpoint}`;
+/** initiates call to the current operation with the right fields and input data in the right format */
+const handleOperation = async () => {
     isProcessing.value = true;
+    let rawData = getInputData();
 
-    axios[endpoint === "store" ? "post" : "put"](
-        route(routeName, props.emailTemplate.id),
-        form.dirty().data()
-    ).then(({ data }) => onOperationDone(data));
+    const { data } = await operation.value({
+        input: { ...rawData, json: JSON.stringify(rawData.json) },
+    });
+
+    let savedTemplate =
+        data["createEmailTemplate"] ?? data["updateEmailTemplate"];
+
+    isProcessing.value = false;
+    emit("close", savedTemplate);
 };
 
 const handleOnSave = ({ html, json }) => {
@@ -150,7 +191,6 @@ const handleOnSave = ({ html, json }) => {
 };
 
 const handleOnClose = (template) => {
-    console.log("emitting cancel");
     emit("cancel", template);
 };
 </script>

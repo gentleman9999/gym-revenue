@@ -32,7 +32,7 @@ class CreateEmailTemplate extends GymRevAction
 
     public function mapArgsToHandle($args): array
     {
-        return [$args['emailTemplate']];
+        return [$args['input']];
     }
 
     public function handle(array $data): EmailTemplate
