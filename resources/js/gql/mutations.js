@@ -244,6 +244,33 @@ const folder = {
         }
     `,
 };
+
+const file = {
+    create: gql`
+        mutation createFile($file: CreateFileInput) {
+            createFile(file: $file) {
+                id
+                filename
+            }
+        }
+    `,
+    rename: gql`
+        mutation renameFile($id: ID!, $filename: String!) {
+            renameFile(id: $id, filename: $filename) {
+                id
+                filename
+            }
+        }
+    `,
+    trash: gql`
+        mutation trashFile($id: ID!) {
+            trashFile(id: $id) {
+                id
+                filename
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
@@ -254,4 +281,5 @@ export default {
     task,
     note,
     folder,
+    file,
 };

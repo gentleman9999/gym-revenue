@@ -174,10 +174,17 @@ const handleTrash = (data, type) => {
 };
 
 const { mutate: trashFolder } = useMutation(mutations.folder.trash);
+const { mutate: trashFile } = useMutation(mutations.file.trash);
 const confirmTrash = async () => {
     let id = item2Remove.value.id;
     if (item2Remove.value.type === "file") {
-        // Inertia.delete(route("files.trash", id));
+        let result = await trashFile({ id });
+        if (result.data) {
+            confirmModal.value.close();
+            toastSuccess(
+                `File ${item2Remove.value.name} was successfully removed`
+            );
+        }
     } else {
         let result = await trashFolder({ id });
         if (result.data) {

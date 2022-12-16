@@ -1,0 +1,10 @@
+input CreateFileInput {
+    id: ID
+    filename: String @rules(apply: ["required", "max:255"],  attribute: "File Name")
+    original_filename: String @rules(apply: ["required", "max:255"],  attribute: "File Original Name")
+    extension: String @rules(apply: ["required", "max:4", "min: 3"],  attribute: "File Extension")
+    bucket: String @rules(apply: ["required", "max:255"],  attribute: "AWS Bucket")
+    key: String @rules(apply: ["required", "max:255"],  attribute: "AWS Key")
+    size: Int @rules(apply: ["required", "min:255"],  attribute: "File Size")
+    visibility: Boolean @rules(apply: ["sometimes"],  attribute: "File Visibility")
+}
