@@ -1,0 +1,18 @@
+extend type Mutation {
+    createFile(
+        file: CreateFileInput @spread
+    ): File!
+    @inject(context: "user.client_id", name: "client_id")
+    @inject(context: "user.id", name: "user_id")
+
+    renameFile(
+        id: ID!,
+        filename: String,
+    ): File!
+    @inject(context: "user.id", name: "user_id")
+
+    trashFile(
+        id: ID!,
+    ): File!
+    @inject(context: "user.id", name: "user_id")
+}

@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Actions\Clients\Files;
+namespace App\Domain\Files\Actions;
+
+use App\Actions\GymRevAction;
 
 use App\Aggregates\Clients\FileAggregate;
-use App\Domain\Users\Models\User;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateFile
+class CreateFile extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -35,11 +33,16 @@ class CreateFile
         ];
     }
 
-    public function handle($data, ?User $user = null)
+    public function handle($data)
     {
-        FileAggregate::retrieve($data['id'])->create((string) $user?->id, $data)->persist();
+        FileAggregate::retrieve($data['id'])->create((string) $data['user_id'], $data)->persist();
 
         return File::findOrFail($data['id']);
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        return [$args];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -53,7 +56,6 @@ class CreateFile
     {
         $file = $this->handle(
             $request->validated(),
-            $request->user(),
         );
 
         Alert::success("File '{$file->filename}' was created")->flash();

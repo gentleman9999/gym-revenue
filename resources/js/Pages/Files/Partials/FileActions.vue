@@ -14,30 +14,25 @@
 </template>
 <script setup>
 import Button from "@/Components/Button.vue";
-import { Inertia } from "@inertiajs/inertia";
 import { usePage } from "@inertiajs/inertia-vue3";
-const page = usePage();
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
+import { toastSuccess } from "@/utils/createToast";
 
+const page = usePage();
 const props = defineProps({
     folderName: {
         type: String,
     },
 });
 
-const client_id = page.props.value.user.contact_preference.id;
-const addFolder = () => {
-    Inertia.post(
-        route("folders.store"),
-        {
-            name: "New Folder",
-            client_id,
-        },
-        {
-            onSuccess: (response) => {
-                console.log("new folder");
-                console.log(response);
-            },
-        }
-    );
+const { mutate: createFolder } = useMutation(mutations.folder.create);
+const addFolder = async () => {
+    let result = await createFolder({
+        name: "New Folder",
+    });
+    if (result && result.data) {
+        toastSuccess("Folder Created");
+    }
 };
 </script>

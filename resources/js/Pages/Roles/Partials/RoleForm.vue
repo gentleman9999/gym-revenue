@@ -120,7 +120,6 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { Inertia } from "@inertiajs/inertia";
 import { useModal } from "@/Components/InertiaModal";
 import * as _ from "lodash";
 import { useMutation } from "@vue/apollo-composable";

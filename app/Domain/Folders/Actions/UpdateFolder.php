@@ -2,19 +2,18 @@
 
 namespace App\Domain\Folders\Actions;
 
+use App\Actions\GymRevAction;
+
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateFolder
+class UpdateFolder extends GymRevAction
 {
-    use AsAction;
-
     public function handle(array $payload): Folder
     {
         FolderAggregate::retrieve($payload['id'])->update($payload)->persist();
@@ -34,6 +33,11 @@ class UpdateFolder
             'name' => ['required', 'max:50'],
             'id' => ['string', 'required'],
         ];
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        return [$args];
     }
 
     public function getControllerMiddleware(): array

@@ -112,7 +112,9 @@ import FileContents from "./Partials/FileContents.vue";
 import FileSearch from "./Partials/FileSearch.vue";
 import FileNav from "./Partials/FileNav.vue";
 import ConfirmModal from "./Partials/ConfirmModal.vue";
-
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
+import { toastSuccess } from "@/utils/createToast";
 import queries from "@/gql/queries";
 
 const props = defineProps({
@@ -171,12 +173,26 @@ const handleTrash = (data, type) => {
     };
 };
 
-const confirmTrash = () => {
+const { mutate: trashFolder } = useMutation(mutations.folder.trash);
+const { mutate: trashFile } = useMutation(mutations.file.trash);
+const confirmTrash = async () => {
     let id = item2Remove.value.id;
     if (item2Remove.value.type === "file") {
-        Inertia.delete(route("files.trash", id));
+        let result = await trashFile({ id });
+        if (result.data) {
+            confirmModal.value.close();
+            toastSuccess(
+                `File ${item2Remove.value.name} was successfully removed`
+            );
+        }
     } else {
-        Inertia.delete(route("folders.trash", data.id));
+        let result = await trashFolder({ id });
+        if (result.data) {
+            confirmModal.value.close();
+            toastSuccess(
+                `Folder ${item2Remove.value.name} was successfully removed`
+            );
+        }
     }
 };
 

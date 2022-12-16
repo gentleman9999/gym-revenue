@@ -87,6 +87,10 @@ import { faTimes } from "@fortawesome/pro-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
+import { toastSuccess } from "@/utils/createToast";
+
 library.add(faTimes);
 
 const props = defineProps({
@@ -115,13 +119,13 @@ const form = useGymRevForm({
 });
 
 const removeFile = (file) => {
-    console.log({ files: form.files, file });
     form.files = form.files.filter((f) => {
         return f !== file;
     });
 };
 
-// const handleSubmit = () => form.post(`/files`);
+const { mutate: createFile } = useMutation(mutations.file.create);
+
 const handleSubmit = async () => {
     try {
         uploadProgress.value = 0;

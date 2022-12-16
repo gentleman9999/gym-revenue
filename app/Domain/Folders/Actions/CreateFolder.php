@@ -2,6 +2,8 @@
 
 namespace App\Domain\Folders\Actions;
 
+use App\Actions\GymRevAction;
+
 use App\Domain\Folders\FolderAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Models\Folder;
@@ -9,13 +11,10 @@ use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class CreateFolder
+class CreateFolder extends GymRevAction
 {
-    use AsAction;
-
     public function handle(array $payload): Folder
     {
         $id = Uuid::new();
@@ -36,6 +35,11 @@ class CreateFolder
             'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
             'name' => ['required', 'max:50'],
         ];
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        return [$args];
     }
 
     public function getControllerMiddleware(): array

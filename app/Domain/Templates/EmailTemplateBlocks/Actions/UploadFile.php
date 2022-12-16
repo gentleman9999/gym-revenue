@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Templates\EmailTemplateBlocks\Actions;
 
-use App\Actions\Clients\Files\CreateFile;
+use App\Domain\Files\Actions\CreateFile;
 use App\Models\File;
 use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;

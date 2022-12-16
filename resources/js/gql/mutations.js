@@ -146,7 +146,7 @@ const location = {
         }
     `,
     update: gql`
-        mutation updateLocation($location: PatchLocationInput!) {
+        mutation updateLocation($location: UpdateLocationInput!) {
             updateLocation(location: $location) {
                 id
                 gymrevenue_id
@@ -229,6 +229,69 @@ const note = {
         }
     `,
 };
+
+const folder = {
+    create: gql`
+        mutation createFolder($name: String!) {
+            createFolder(name: $name) {
+                id
+                name
+                created_at
+            }
+        }
+    `,
+    update: gql`
+        mutation updateFolder($id: ID!, $name: String!) {
+            updateFolder(id: $id, name: $name) {
+                id
+                name
+            }
+        }
+    `,
+    trash: gql`
+        mutation trashFolder($id: ID!) {
+            trashFolder(id: $id) {
+                id
+                name
+            }
+        }
+    `,
+    share: gql`
+        mutation updateFolderSharing($input: FolderSharingInput!) {
+            updateFolderSharing(input: $input) {
+                id
+                name
+            }
+        }
+    `,
+};
+
+const file = {
+    create: gql`
+        mutation createFile($file: CreateFileInput) {
+            createFile(file: $file) {
+                id
+                filename
+            }
+        }
+    `,
+    rename: gql`
+        mutation renameFile($id: ID!, $filename: String!) {
+            renameFile(id: $id, filename: $filename) {
+                id
+                filename
+            }
+        }
+    `,
+    trash: gql`
+        mutation trashFile($id: ID!) {
+            trashFile(id: $id) {
+                id
+                filename
+            }
+        }
+    `,
+};
 export default {
     department,
     position,
@@ -239,4 +302,6 @@ export default {
     task,
     emailTemplate,
     note,
+    folder,
+    file,
 };

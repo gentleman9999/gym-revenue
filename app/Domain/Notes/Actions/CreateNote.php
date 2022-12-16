@@ -36,7 +36,7 @@ class CreateNote
         ];
     }
 
-    public function handle($data)
+    public function handle($data): Note
     {
         $id = Uuid::new();
         $data['id'] = $id;

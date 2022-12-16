@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Clients\Files;
+namespace App\Domain\Files\Actions;
 
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
@@ -9,15 +9,15 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class TrashFile
+class RestoreFile
 {
     use AsAction;
 
     public function handle($id, $current_user = null)
     {
-        FileAggregate::retrieve($id)->trash($current_user->id ?? "Auto Generated")->persist();
+        FileAggregate::retrieve($id)->restore($current_user->id ?? "Auto Generated")->persist();
 
-        return File::withTrashed()->findOrFail($id);
+        return File::findOrFail($id);
     }
 
     public function authorize(ActionRequest $request): bool
@@ -34,7 +34,7 @@ class TrashFile
             $request->user(),
         );
 
-        Alert::success("File '{$file->filename}' was sent to the trash")->flash();
+        Alert::success("File '{$file->filename}' was restored")->flash();
 
 //        return Redirect::route('files');
         return Redirect::back();
