@@ -38,6 +38,9 @@ class CreateAgreement
             return throw new \Exception("Agreement Category, Gym Revenue Location or Billing Schedule Type is not valid for this contract");
         }
 
+        unset($data['contract_id']); // Removing from payload b'cus, contract id is dummy and contract_id is set with foregin constrant in agreement table'
+        unset($data['billing_schedule_id']); // Don't have column in agreement table
+
         $id = Uuid::new();
         AgreementAggregate::retrieve($id)->create($data)->persist();
 

@@ -131,6 +131,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Agreement Templates Data Seeder');
         $this->call(AgreementTemplatesSeeder::class);
 
+        VarDumper::dump('Running Billing Schedule Data Seeder');
+        $this->call(BillingScheduleSeeder::class);
+
 //        VarDumper::dump('Running Agreements Category Seeder');
 //        $this->call(AgreementCategoriesSeeder::class);
 
@@ -139,9 +142,6 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Contract PDF Data Seeder');
         $this->call(ClientContractSeeder::class);
-
-        VarDumper::dump('Running Billing Schedule Data Seeder');
-        $this->call(BillingScheduleSeeder::class);
 
         VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
         $this->call(AgreementTemplateBillingScheduleSeeder::class);
