@@ -2,10 +2,10 @@
 
 namespace App\Domain\Locations\Events;
 
-use App\Domain\Locations\Projections\Location;
-use App\StorableEvents\EntityRestored;
+use App\Models\Location;
+use App\StorableEvents\EntityTrashed;
 
-class LocationRestored extends EntityRestored
+class LocationClosed extends EntityTrashed
 {
     public function getEntity(): string
     {

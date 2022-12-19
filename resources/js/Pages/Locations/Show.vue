@@ -8,12 +8,7 @@
         model-key="location"
         :fields="fields"
         :resource="locations"
-        :actions="{
-            trash: {
-                label: 'Close Club',
-                handler: ({ data }) => handleClickTrash(data.id),
-            },
-        }"
+        :actions="actions"
         :top-actions="topActions"
         :preview-component="LocationPreview"
     >
@@ -31,7 +26,7 @@
                             Closed Clubs:
                         </div>
                         <select
-                            v-model="form.trashed"
+                            v-model="form.closed"
                             class="mt-1 w-full form-select"
                         >
                             <option :value="null" />
@@ -59,11 +54,19 @@
     </gym-revenue-crud>
     <confirm
         title="Really Close This Club?"
-        v-if="confirmTrash"
-        @confirm="handleConfirmTrash"
-        @cancel="confirmTrash = null"
+        v-if="confirmClose"
+        @confirm="handleConfirmClose"
+        @cancel="confirmClose = null"
     >
         Are you sure you want to Close this Club?
+    </confirm>
+    <confirm
+        title="Really Reopen This Club?"
+        v-if="confirmReopen"
+        @confirm="handleConfirmReopen"
+        @cancel="confirmReopen = null"
+    >
+        Are you sure you want to Reopen this Club?
     </confirm>
 
     <daisy-modal
@@ -121,14 +124,14 @@ export default defineComponent({
             }
         );
 
-        const confirmTrash = ref(null);
-        const handleClickTrash = (id) => {
-            confirmTrash.value = id;
+        const confirmClose = ref(null);
+        const handleClickClose = (id) => {
+            confirmClose.value = id;
         };
 
-        const handleConfirmTrash = () => {
-            Inertia.delete(route("locations.trash", confirmTrash.value));
-            confirmTrash.value = null;
+        const handleConfirmClose = () => {
+            Inertia.delete(route("locations.close", confirmClose.value));
+            confirmClose.value = null;
         };
 
         const importLocation = ref();
@@ -148,10 +151,38 @@ export default defineComponent({
             },
         };
 
+        const confirmReopen = ref(null);
+        const handleClickReopen = (id) => {
+            confirmReopen.value = id;
+        };
+
+        const handleConfirmReopen = () => {
+            Inertia.post(route("locations.reopen", confirmReopen.value));
+            confirmReopen.value = null;
+        };
+
+        const actions = {
+            trash: false,
+            restore: false,
+            close: {
+                label: "Close Club",
+                handler: ({ data }) => handleClickClose(data.id),
+                shouldRender: ({ data }) => !data.closed_at,
+            },
+            reopen: {
+                label: "Reopen Club",
+                handler: ({ data }) => handleClickReopen(data.id),
+                shouldRender: ({ data }) => data.closed_at,
+            },
+        };
+
         return {
-            handleClickTrash,
-            confirmTrash,
-            handleConfirmTrash,
+            handleClickClose,
+            confirmClose,
+            handleConfirmClose,
+            handleClickReopen,
+            confirmReopen,
+            handleConfirmReopen,
             Inertia,
             form,
             reset,
@@ -162,6 +193,7 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
+            actions,
         };
     },
     computed: {

@@ -39,13 +39,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('locations')->group(func
     Route::get('/', \App\Http\Controllers\LocationsController::class . '@index')->name('locations');
     Route::get('/create', \App\Http\Controllers\LocationsController::class . '@create')->name('locations.create');
     Route::get('/export', \App\Http\Controllers\LocationsController::class . '@export')->name('locations.export');
-    Route::get('/{location}', \App\Http\Controllers\LocationsController::class . '@edit')->name('locations.edit');
-    Route::get('/view/{location}', \App\Http\Controllers\LocationsController::class . '@view')->name('locations.view');
+    Route::get('/{location}', \App\Http\Controllers\LocationsController::class . '@edit')->withTrashed()->name('locations.edit');
+    Route::get('/view/{location}', \App\Http\Controllers\LocationsController::class . '@view')->withTrashed()->name('locations.view');
     Route::post('/', \App\Domain\Locations\Actions\CreateLocation::class)->name('locations.store');
     Route::post('/import', \App\Domain\Locations\Actions\ImportLocations::class)->name('locations.import');
-    Route::put('/{location}', \App\Domain\Locations\Actions\UpdateLocation::class)->name('locations.update')->where(['id' => '[0-9]+']);
-    Route::delete('/{location}', \App\Domain\Locations\Actions\TrashLocation::class)->name('locations.trash')->where(['id' => '[0-9]+']);
-    Route::post('/{location}/restore', \App\Domain\Locations\Actions\RestoreLocation::class)->name('locations.restore')->where(['id' => '[0-9]+']);
+    Route::put('/{location}', \App\Domain\Locations\Actions\UpdateLocation::class)->name('locations.update');
+    Route::delete('/{location}', \App\Domain\Locations\Actions\CloseLocation::class)->name('locations.close');
+    Route::post('/{location}/reopen', \App\Domain\Locations\Actions\ReopenLocation::class)->withTrashed()->name('locations.reopen');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('user')->group(function () {

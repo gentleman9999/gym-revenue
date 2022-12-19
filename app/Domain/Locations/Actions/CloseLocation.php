@@ -6,19 +6,18 @@ use App\Domain\Locations\LocationAggregate;
 use App\Domain\Locations\Projections\Location;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class TrashLocation
+class CloseLocation
 {
     use AsAction;
 
     public function handle(Location $location): Location
     {
-        LocationAggregate::retrieve($location->id)->trash()->persist();
+        LocationAggregate::retrieve($location->id)->close()->persist();
 
         return $location->refresh();
     }
@@ -35,7 +34,7 @@ class TrashLocation
         return $current_user->can('locations.trash', Location::class);
     }
 
-    public function asController(Request $request, Location $location): Location
+    public function asController(Location $location): Location
     {
         return $this->handle(
             $location,
@@ -44,7 +43,7 @@ class TrashLocation
 
     public function htmlResponse(Location $location): RedirectResponse
     {
-        Alert::success("Location '{$location->name}' sent to trash")->flash();
+        Alert::success("Location '{$location->name}' is closed")->flash();
 
         return Redirect::back();
     }

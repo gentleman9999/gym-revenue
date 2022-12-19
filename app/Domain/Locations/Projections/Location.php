@@ -31,8 +31,8 @@ class Location extends GymRevProjection
 
     protected $fillable = [
         'name', 'address1', 'address2', 'city', 'state', 'zip',
-        'active', 'location_no', 'gymrevenue_id', 'deleted_at',
-        'open_date', 'close_date', 'phone', 'default_team_id',
+        'active', 'location_no', 'gymrevenue_id',
+        'opened_at', 'closed_at', 'phone', 'default_team_id',
         'location_type', 'latitude', 'longitude',
     ];
 
@@ -44,6 +44,8 @@ class Location extends GymRevProjection
     protected $casts = [
         'location_type' => LocationTypeEnum::class,
     ];
+
+    protected const DELETED_AT = 'closed_at';
 
     /**
      * Create a new factory instance for the model.
@@ -81,10 +83,10 @@ class Location extends GymRevProjection
                         $query->where('name', 'like', '%'.$search.'%');
                     });
             });
-        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
-            if ($trashed === 'with') {
+        })->when($filters['closed'] ?? null, function ($query, $closed) {
+            if ($closed === 'with') {
                 $query->withTrashed();
-            } elseif ($trashed === 'only') {
+            } elseif ($closed === 'only') {
                 $query->onlyTrashed();
             }
         })->when($filters['state'] ?? null, function ($query, $state) {
