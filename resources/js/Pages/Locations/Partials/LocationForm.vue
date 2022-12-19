@@ -255,7 +255,6 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import { transformDate } from "@/utils/transformDate";
 import * as _ from "lodash";
-import { parseLocationTypeDisplayName } from "@/utils/locationTypeEnum";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 import {
@@ -365,8 +364,8 @@ export default {
                     poc_phone: data.poc_phone,
                     poc_first: data.poc_first,
                     poc_last: data.poc_last,
-                    open_date: data.open_date,
-                    close_date: data.close_date,
+                    opened_at: data.opened_at,
+                    closed_at: data.closed_at,
                     latitude: data.latitude,
                     longitude: data.longitude,
                 },

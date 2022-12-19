@@ -48,7 +48,7 @@ input CreateLocationInput {
             apply: ["sometimes", "nullable", "max:50"]
             attribute: "POC Last"
         )
-    open_date: DateTime
+    opened_at: DateTime
         @rules(
             apply: [
                 "required_if:close_date,1"
@@ -58,7 +58,7 @@ input CreateLocationInput {
             ]
             attribute: "Open Date"
         )
-    close_date: DateTime
+    closed_at: DateTime
         @rules(
             apply: ["sometimes", "nullable", "date", "after:open_date"]
             attribute: "Close Date"
@@ -119,12 +119,12 @@ input UpdateLocationInput {
             apply: ["sometimes", "nullable", "max:50"]
             attribute: "POC Last"
         )
-    open_date: DateTime
+    opened_at: DateTime
         @rules(
             apply: ["sometimes", "nullable", "date", "before:close_date"]
             attribute: "Open Date"
         )
-    close_date: DateTime
+    closed_at: DateTime
         @rules(
             apply: ["sometimes", "nullable", "date", "after:open_date"]
             attribute: "Close Date"

@@ -37,7 +37,6 @@ class CreateLocation extends GymRevAction
             'poc_first' => ['sometimes', 'nullable', 'string', 'max:50'],
             'poc_last' => ['sometimes', 'nullable', 'string', 'max:50'],
             'poc_phone' => ['sometimes', 'nullable', 'string', 'size:10'],
-            'open_date' => [],
             'close_date' => [],
             'location_no' => ['required', 'max:10'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'unique:locations,gymrevenue_id'],

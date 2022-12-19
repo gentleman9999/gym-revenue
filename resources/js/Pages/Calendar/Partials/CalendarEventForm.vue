@@ -462,6 +462,7 @@ export default {
         "duration",
         "start_date",
         "locations",
+        "calendar_event_types",
     ],
     setup: function (props, { emit }) {
         const page = usePage();
@@ -490,6 +491,7 @@ export default {
 
         let calendarEvent = props.calendar_event;
         const calendarEventTypes = page.props.value.calendar_event_types;
+        console.log("page.props.value", page.props.value);
 
         const showAttendeesModal = ref();
         const attendeesModal = ref(null);
@@ -517,10 +519,9 @@ export default {
                 end: props.duration.end
                     ? props.duration.end
                     : props.duration.start,
-                event_type_id:
-                    calendarEventTypes.length <= 1
-                        ? calendarEventTypes[0].id
-                        : "",
+                event_type_id: calendarEventTypes.length
+                    ? calendarEventTypes[0].id
+                    : "",
                 location_id: null,
                 client_id: page.props.value.user?.client_id,
                 user_attendees: [],
@@ -537,10 +538,9 @@ export default {
                 full_day_event: calendarEvent.full_day_event,
                 start: calendarEvent.start + " UTC",
                 end: calendarEvent.end + " UTC",
-                event_type_id:
-                    calendarEventTypes?.length <= 1
-                        ? calendarEventTypes[0].id
-                        : calendarEvent.event_type_id,
+                event_type_id: calendarEventTypes?.length
+                    ? calendarEventTypes[0].id
+                    : calendarEvent.event_type_id,
                 location_id: calendarEvent.location_id,
                 client_id: page.props.value.user?.client_id,
                 user_attendees:
