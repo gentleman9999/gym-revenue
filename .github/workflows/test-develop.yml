@@ -16,6 +16,7 @@ jobs:
       CACHE_DRIVER: redis
       QUEUE_CONNECTION: redis
       SESSION_DRIVER: redis
+      REDIS_HOST: redis
 
     # Docs: https://docs.github.com/en/actions/using-containerized-services
     services:
