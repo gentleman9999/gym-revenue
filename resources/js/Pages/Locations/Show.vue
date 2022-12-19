@@ -254,15 +254,11 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
-<<<<<<< HEAD
             param,
             getLocations,
             handleCrudUpdate,
             queries,
             LocationForm,
-=======
-            actions,
->>>>>>> develop
         };
     },
     computed: {

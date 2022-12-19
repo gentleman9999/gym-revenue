@@ -25,8 +25,8 @@
                 'filter-drawer-open': visible,
                 'filter-in-use': !visible && filtersOn,
             }"
-            @mouseenter="isHovered = true"
-            @mouseleave="isHovered = false"
+            @mouseenter="setHoverOn"
+            @mouseleave="setHoverOff"
             class="filter-drawer"
         >
             <button
@@ -178,4 +178,7 @@ const filtersOn = computed(() => {
 const toggleFilterDrawer = () => {
     visible.value = !visible.value;
 };
+
+const setHoverOn = () => (isHovered.value = true);
+const setHoverOff = () => (isHovered.value = false);
 </script>

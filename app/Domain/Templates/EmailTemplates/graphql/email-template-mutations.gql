@@ -1,11 +1,9 @@
 extend type Mutation {
     "Creates a EmailTemplate"
     createEmailTemplate(input: CreateEmailTemplateInput): EmailTemplate!
-        @inject(context: "user.client_id", name: "client_id")
-}
-
-extend type Mutation {
+    @inject(context: "user.client_id", name: "client_id")
     "Updates a EmailTemplate"
     updateEmailTemplate(input: UpdateEmailTemplateInput): EmailTemplate!
-        @inject(context: "user.client_id", name: "client_id")
+    @inject(context: "user.client_id", name: "client_id")
 }
+

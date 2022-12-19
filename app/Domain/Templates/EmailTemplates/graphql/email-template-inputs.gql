@@ -10,8 +10,7 @@ input CreateEmailTemplateInput {
 # Update Input for EmailTemplates
 input UpdateEmailTemplateInput {
     id: ID!
-    name: String
-        @rules(apply: ["sometimes", "string", "max:50"], attribute: "Name")
+    name: String @rules(apply: ["sometimes", "string", "max:50"], attribute: "Name")
     subject: String @rules(apply: ["sometimes", "string"], attribute: "Subject")
     markup: String @rules(apply: ["sometimes", "string"], attribute: "Markup")
     json: String @rules(apply: ["sometimes", "string"], attribute: "Json")

@@ -10,11 +10,6 @@ export const SMS_TEMPLATES = gql`
                 active
                 team_id
                 created_by_user_id
-                # creator is returning null for some reason
-                # creator {
-                #     name
-                #     id
-                # }
                 updated_at
                 created_at
                 details {
@@ -42,11 +37,6 @@ export const SMS_TEMPLATE_EDIT = gql`
             active
             team_id
             created_by_user_id
-            # creator is returning null for some reason
-            # creator {
-            #     name
-            #     id
-            # }
             updated_at
             created_at
             details {
