@@ -1,28 +1,25 @@
 <template>
     <LayoutHeader title="Security Roles" />
     <page-toolbar-nav title="Security Roles" :links="navLinks" />
-    <ApolloQuery :query="(gql) => queries['roles']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                base-route="roles"
-                model-name="Role"
-                model-key="role"
-                :fields="fields"
-                :resource="getRoles(data)"
-                @update="handleCrudUpdate"
-                :edit-component="RoleForm"
-                :actions="{
-                    trash: false,
-                    restore: false,
-                    delete: {
-                        label: 'Delete',
-                        handler: ({ data }) => handleClickDelete(data),
-                    },
-                }"
-            />
-        </template>
-    </ApolloQuery>
+    <gym-revenue-crud
+        v-if="roles"
+        base-route="roles"
+        model-name="Role"
+        model-key="role"
+        :fields="fields"
+        :resource="roles"
+        @update="handleCrudUpdate"
+        @refresh="handleRefresh"
+        :edit-component="RoleForm"
+        :actions="{
+            trash: false,
+            restore: false,
+            delete: {
+                label: 'Delete',
+                handler: ({ data }) => handleClickDelete(data),
+            },
+        }"
+    />
     <confirm
         title="Really Trash Security Role?"
         v-if="confirmDelete"
@@ -35,7 +32,7 @@
     </confirm>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import { Inertia } from "@inertiajs/inertia";
@@ -46,7 +43,7 @@ import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import queries from "@/gql/queries.js";
 import RoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
-import { useMutation } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 
 export default defineComponent({
@@ -60,7 +57,7 @@ export default defineComponent({
         RoleForm,
     },
     props: ["filters"],
-    setup(props) {
+    setup(props, context) {
         const confirmDelete = ref(null);
         const handleClickDelete = (item) => {
             confirmDelete.value = item;
@@ -107,6 +104,24 @@ export default defineComponent({
             page: 1,
         });
 
+        const { result, refetch } = useQuery(queries["roles"], param);
+
+        const roles = computed(() => {
+            console.log("result", result);
+            if (result.value?.roles) {
+                return _.cloneDeep(result.value.roles);
+            } else {
+                return null;
+            }
+        });
+
+        const handleRefresh = () => {
+            param.value = {
+                ...param.value,
+            };
+            refetch();
+        };
+
         const getRoles = (data) => {
             return _.cloneDeep(data.roles);
         };
@@ -135,9 +150,11 @@ export default defineComponent({
             navLinks,
             param,
             queries,
+            roles,
             getRoles,
             handleCrudUpdate,
             RoleForm,
+            handleRefresh,
         };
     },
 });

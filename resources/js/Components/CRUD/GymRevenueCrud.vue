@@ -115,6 +115,7 @@
         :model-key="modelKey"
     />
     <edit-modal
+        @refresh="$emit('refresh')"
         :edit-component="editComponent"
         :model-name="modelName"
         :model-key="modelKey"

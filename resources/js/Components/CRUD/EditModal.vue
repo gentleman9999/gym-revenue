@@ -54,7 +54,9 @@ function open() {
     editModal?.value?.open();
 }
 
+const emit = defineEmits(["refresh"]);
 function close() {
+    emit("refresh");
     clearEditParam();
 }
 

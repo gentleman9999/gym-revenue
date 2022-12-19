@@ -124,6 +124,7 @@ import { useModal } from "@/Components/InertiaModal";
 import * as _ from "lodash";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
+import { toastSuccess } from "@/utils/createToast";
 
 export default {
     components: {
