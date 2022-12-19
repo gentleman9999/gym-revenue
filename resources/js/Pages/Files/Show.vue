@@ -196,11 +196,22 @@ const confirmTrash = async () => {
     }
 };
 
-const handleRestore = (data, type) => {
+const { mutate: restoreFile } = useMutation(mutations.file.restore);
+const { mutate: restoreFolder } = useMutation(mutations.folder.restore);
+
+const handleRestore = async (data, type) => {
     if (type === "file") {
-        Inertia.post(route("files.restore", data.id));
+        let result = await restoreFile({ id: data.id });
+        if (result.data) {
+            confirmModal.value.close();
+            toastSuccess(`File ${result.data.filename} was restored`);
+        }
     } else {
-        Inertia.post(route("folders.restore", data.id));
+        let result = await restoreFolder({ id: data.id });
+        if (result.data) {
+            confirmModal.value.close();
+            toastSuccess(`Folder ${result.data.name} was restored`);
+        }
     }
     confirmModal.value.close();
 };

@@ -2,23 +2,28 @@
 
 namespace App\Domain\Files\Actions;
 
+use App\Actions\GymRevAction;
+
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class DeleteFile
+class DeleteFile extends GymRevAction
 {
-    use AsAction;
-
-    public function handle($id, $current_user = null)
+    public function handle($data)
     {
+        $id = $data['id'];
         $deleted = File::withTrashed()->findOrFail($id);
-        FileAggregate::retrieve($id)->delete($current_user->id ?? "Auto Generated", $deleted)->persist();
+        FileAggregate::retrieve($id)->delete($data['user_id'] ?? "Auto Generated", $deleted)->persist();
 
         return $deleted;
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        return [$args];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -30,10 +35,14 @@ class DeleteFile
 
     public function asController(ActionRequest $request, $id)
     {
-        $file = $this->handle(
-            $id,
-            $request->user(),
-        );
+        $user = $request->user();
+        $user_id = $user->id ?? null;
+        $data = [
+            'id' => $id,
+            'user_id' => $user_id,
+        ];
+
+        $file = $this->handle($data);
 
         Alert::success("File '{$file->filename}' was deleted")->flash();
 

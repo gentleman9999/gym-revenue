@@ -256,6 +256,14 @@ const folder = {
             }
         }
     `,
+    restore: gql`
+        mutation restoreFolder($id: ID!) {
+            restoreFolder(id: $id) {
+                id
+                name
+            }
+        }
+    `,
     share: gql`
         mutation updateFolderSharing($input: FolderSharingInput!) {
             updateFolderSharing(input: $input) {
@@ -283,9 +291,41 @@ const file = {
             }
         }
     `,
+    restore: gql`
+        mutation restoreFile($id: ID!) {
+            restoreFile(id: $id) {
+                id
+                filename
+            }
+        }
+    `,
+    delete: gql`
+        mutation deleteFile($id: ID!) {
+            deleteFile(id: $id) {
+                id
+                filename
+            }
+        }
+    `,
     trash: gql`
         mutation trashFile($id: ID!) {
             trashFile(id: $id) {
+                id
+                filename
+            }
+        }
+    `,
+    updateFileFolder: gql`
+        mutation updateFileFolder($id: ID!, $folder: String) {
+            updateFileFolder(id: $id, folder: $folder) {
+                id
+                filename
+            }
+        }
+    `,
+    updatePermissions: gql`
+        mutation updateFilePermissions($id: ID!, $permissions: String) {
+            updateFilePermissions(id: $id, permissions: $permissions) {
                 id
                 filename
             }

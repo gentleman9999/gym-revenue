@@ -2,17 +2,16 @@
 
 namespace App\Domain\Files\Actions;
 
+use App\Actions\GymRevAction;
+
 use App\Aggregates\Clients\FileAggregate;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UpdateFilePermissions
+class UpdateFilePermissions extends GymRevAction
 {
-    use AsAction;
-
     /**
      * Get the validation rules that apply to the action.
      *
@@ -27,11 +26,17 @@ class UpdateFilePermissions
         ];
     }
 
-    public function handle($id, $data, $current_user = null)
+    public function handle($data)
     {
-        FileAggregate::retrieve($id)->updatePermissions($current_user->id ?? "Auto Generated", $data)->persist();
+        $id = $data['id'];
+        FileAggregate::retrieve($id)->updatePermissions($data['user_id'] ?? "Auto Generated", $data)->persist();
 
         return File::findOrFail($id);
+    }
+
+    public function mapArgsToHandle($args): array
+    {
+        return [$args];
     }
 
     public function authorize(ActionRequest $request): bool
@@ -43,11 +48,13 @@ class UpdateFilePermissions
 
     public function asController(ActionRequest $request, $id)
     {
-        $file = $this->handle(
-            $id,
-            $request->validated(),
-            $request->user(),
-        );
+        $user = $request->user();
+        $user_id = $user->id ?? null;
+        $data = $request->validated();
+        $data['id'] = $id;
+        $data['user_id'] = $user_id;
+
+        $file = $this->handle($data);
 
         Alert::success("File permissions for '{$file->filename}' updated.")->flash();
 
