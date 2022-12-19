@@ -11,6 +11,7 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -54,6 +55,16 @@ class User extends Authenticatable
     use Sortable;
 
     /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ObfuscatedScope());
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var string[]
@@ -62,7 +73,7 @@ class User extends Authenticatable
         'email', 'alternate_email', 'first_name', 'last_name',
         'address1', 'address2', 'city', 'state', 'zip', 'phone',
         'manager', 'home_location_id', 'start_date', 'end_date',
-        'termination_date',
+        'termination_date','obfuscated_at',
     ];
 
     /**
@@ -193,6 +204,11 @@ class User extends Authenticatable
         return $this->detail()->where('field', '=', 'contact_preference');
     }
 
+    public function emergencyContact(): HasOne
+    {
+        return $this->detail()->where('field', '=', 'emergency_contact');
+    }
+
     public function notes(): HasMany
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
@@ -205,9 +221,19 @@ class User extends Authenticatable
         return $teams;
     }
 
-    public function default_team(): BelongsTo
+    public function defaultTeamDetail(): HasOne
     {
-        return $this->belongsTo(Team::class, 'default_team_id', 'id');
+        return $this->detail()->where('field', '=', 'default_team_id');
+    }
+
+    public function defaultTeam(): HasOne
+    {
+        return $this->hasOne(Team::class, 'id', $this->default_team_id);
+    }
+
+    public function getDefaultTeam(): Team
+    {
+        return Team::find($this->default_team_id);
     }
 
     public function api_token(): HasOne
@@ -308,6 +334,11 @@ class User extends Authenticatable
     public function getIsManagerAttribute()
     {
         return $this->manager !== null && $this->manager !== '';
+    }
+
+    public function getDefaultTeamIdAttribute(): string
+    {
+        return $this->defaultTeamDetail->value;
     }
 
     public function departments(): BelongsToMany

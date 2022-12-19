@@ -8,6 +8,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\UserDetails;
 use App\Models\Position;
 use App\Models\ReadReceipt;
 use Illuminate\Http\Request;
@@ -73,8 +74,8 @@ class UsersController extends Controller
                 if ($user->getRole()) {
                     $users[$idx]->role = $user->getRole();
                 }
-
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
+                $users[$idx]->home_team = $user->getDefaultTeam();
             }
         } else {
             //cb team selected
@@ -92,8 +93,9 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team = $user->default_team;
+                $default_team = $user->getDefaultTeam();
                 $users[$idx]->home_team = $default_team->name;
+                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
             }
         }
 
@@ -174,7 +176,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments');//TODO:get rid of loading all details here.
+        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments', 'emergencyContact');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -277,7 +279,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -300,7 +302,7 @@ class UsersController extends Controller
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
             }
         }
 

@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Locations\Actions\CloseLocation;
 use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\DeleteLocation;
-use App\Domain\Locations\Actions\RestoreLocation;
-use App\Domain\Locations\Actions\TrashLocation;
+use App\Domain\Locations\Actions\ReopenLocation;
 use App\Domain\Locations\Actions\UpdateLocation;
 use App\Domain\Locations\Events\LocationCreated;
 use App\Domain\Locations\Events\LocationUpdated;
@@ -67,28 +67,28 @@ it('should delete a location on DeleteLocation action', function () {
 });
 
 
-it('should Trash teams by the TrashLocation action', function () {
+it('should Trash teams by the CloseLocation action', function () {
     $location = createLocation();
 
-    $this->assertEquals(null, $location->deleted_at);
+    $this->assertEquals(null, $location->closed_at);
 
-    TrashLocation::run($location);
+    CloseLocation::run($location);
     $location->refresh();
 
-    $this->assertNotEquals(null, $location->deleted_at);
+    $this->assertNotEquals(null, $location->closed_at);
 });
 
-it('should restore Location on RestoreLocation action', function () {
+it('should restore Location on ReopenLocation action', function () {
     $location = createLocation();
 
-    $this->assertEquals(null, $location->deleted_at);
+    $this->assertEquals(null, $location->closed_at);
 
-    TrashLocation::run($location);
+    CloseLocation::run($location);
     $location->refresh();
 
-    $this->assertNotEquals(null, $location->deleted_at);
+    $this->assertNotEquals(null, $location->closed_at);
 
-    RestoreLocation::run($location);
+    ReopenLocation::run($location);
 
-    $this->assertEquals(null, $location->deleted_at);
+    $this->assertEquals(null, $location->closed_at);
 });

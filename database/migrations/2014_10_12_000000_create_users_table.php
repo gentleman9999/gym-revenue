@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('alternate_email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('obfuscated_at')->nullable();
             $table->string('phone')->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
@@ -36,12 +37,10 @@ class CreateUsersTable extends Migration
             $table->string('manager')->nullable();
             $table->boolean('is_cape_and_bay_user')->default(false);
             $table->rememberToken();
-            $table->foreignUuid('default_team_id')->nullable()->index();
             $table->foreignUuid('current_location_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->unique(['client_id', 'email']);
             $table->index(['client_id', 'home_location_id']);
-            $table->index(['client_id', 'default_team_id']);
             $table->timestamps();
         });
     }

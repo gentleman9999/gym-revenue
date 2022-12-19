@@ -12,7 +12,9 @@ use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
+
 use function bcrypt;
+
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -116,6 +118,9 @@ class CreateUser implements CreatesNewUsers
             'manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager'],
             'departments' => ['sometimes', 'nullable'],
             'positions' => ['sometimes', 'nullable'],
+            'ec_first_name' => ['sometimes', 'string', 'max:255'],
+            'ec_last_name' => ['sometimes', 'string', 'max:255'],
+            'ec_phone' => ['sometimes', 'digits:10'],
         ];
     }
 
