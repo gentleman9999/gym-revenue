@@ -70,11 +70,11 @@
 
 <script setup>
 import { onMounted, onUnmounted, reactive, ref, toRaw, watch } from "vue";
+import { topolOptions } from "./topolOptions";
 import Button from "@/Components/Button.vue";
 import { TopolEditor, TopolPlugin } from "@topol.io/editor-vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import Spinner from "@/Components/Spinner.vue";
-import theme from "@/theme.js";
 
 import DesktopSupportOnly from "./DesktopSupportOnly.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
@@ -82,8 +82,6 @@ import ModalUnopinionated from "@/Components/ModalUnopinionated.vue";
 import EmailFileManager from "@/Components/EmailFileManager.vue";
 
 const emit = defineEmits(["close", "onInit", "onLoaded"]);
-const tailwindColors = theme.colors;
-const daisyuiColors = theme.daisyui.themes[0].dark;
 
 const props = defineProps({
     title: {
@@ -91,7 +89,7 @@ const props = defineProps({
         default: "Email Template Builder",
     },
     json: {
-        type: Object,
+        type: [Object, String],
         default: {},
     },
     productsUrl: {
@@ -107,140 +105,18 @@ const page = usePage();
 const fileManagerVisible = ref(false);
 
 const customOptions = {
+    ...topolOptions,
     title: props.title,
-    customFileManager: true,
     authorize: {
         apiKey: props.apiKey,
         userId: page.props.value.user.id,
     },
-    disableAlerts: true,
-    windowBar: ["fullscreen", "close"],
-    topBarOptions: [
-        "undoRedo",
-        "changePreview",
-        "previewSize",
-        // "previewTestMail",
-        "save",
-        // "saveAndClose",
-    ],
-    theme: {
-        preset: "dark",
-        borderRadius: {
-            small: "4px",
-            large: "8px",
-        },
-        colors: {
-            900: tailwindColors.neutral[900],
-            800: tailwindColors.neutral[850],
-            700: tailwindColors.neutral[800],
-            600: tailwindColors.neutral[750],
-            500: tailwindColors.neutral[700],
-            400: tailwindColors.neutral[600],
-            350: tailwindColors.neutral[500],
-            300: tailwindColors.neutral[450],
-            200: tailwindColors.neutral[300],
-            // white: tailwindColors.white,
-            primary: daisyuiColors.primary,
-            "primary-light": daisyuiColors["primary-focus"],
-            "primary-dark": daisyuiColors["primary-content"],
-            secondary: daisyuiColors.secondary,
-            "secondary-light": daisyuiColors["secondary-focus"],
-            error: daisyuiColors.error,
-            "error-light": daisyuiColors.warning,
-            success: daisyuiColors.success,
-            "success-light": daisyuiColors["secondary-content"],
-            active: daisyuiColors.secondary,
-            "active-light": daisyuiColors["secondary-focus"],
-        },
-    },
-    // callbacks: {
-    //     // onClose: ()=>emit("close"),
-    //     onClose: () => {
-    //         console.log("onClose");
-    //         emit("close");
-    //     },
-    // },
-    //this could be cool to add in a clients plans. we just need to hide it until we know how to
-    //tap into the API to pull in the plans
-    contentBlocks: {
-        // product: {
-        //     hidden: true,
-        // },
-    },
-    savedBlocks: [],
     api: {
-        // Your own endpoint for uploading images
-        IMAGE_UPLOAD: "/images/upload",
-        // Your own endpoint for getting contents of folders
-        FOLDERS: "/images/folder-contents",
-        // Your own endpoint to retrieve base64 image edited by Image Editor
-        IMAGE_EDITOR_UPLOAD: "/images/image-editor-upload",
-        // Create Autosave
-        // AUTOSAVE: "/autosave",
-        // Retreive all autosaves
-        // AUTOSAVES: "/autosaves",
-        // Retreive an autosave
-        // GET_AUTOSAVE: "/autosave/",
-        // Retrieve feeds of products
-        FEEDS: props.productsUrl,
-        // Retrieve products from feed
-        PRODUCTS: "/products",
+        ...topolOptions["api"], // default options from config file
+        FEEDS: props.productsUrl, // Retrieve feeds of products
     },
-    mergeTags: [
-        {
-            name: "Tags", // Group name
-            items: [
-                /*{
-                    value: "%%recipient.first_name%%",
-                    text: "Last name",
-                    label: "Customer's last name",
-                },
-
-                //Nested Merge Tags
-                {
-                    name: "Some Group",
-                    items: [
-                        {
-                            value: "*|FIRST_NAME_NESTED|*",
-                            text: "First name 2",
-                            label: "Customer's first name 2",
-                        },
-                        {
-                            value: "*|LAST_NAME_NESTED|*",
-                            text: "Last name 2",
-                            label: "Customer's last name 2",
-                        },
-                    ],
-                },*/
-            ],
-        },
-        /*        {
-            name: "Special links", // Group name
-            items: [
-                {
-                    value: '<a href="*|UNSUBSCRIBE_LINK|*">Unsubscribe</a>',
-                    text: "Unsubscribe",
-                    label: "Unsubscribe link",
-                },
-                {
-                    value: '<a href="*|WEB_VERSION_LINK|*">Web version</a>',
-                    text: "Web version",
-                    label: "Web version link",
-                },
-            ],
-        },
-        {
-            name: "Special content", // Group name
-            items: [
-                {
-                    value: 'For more details, please visit our <a href="https://www.shop.shop">website</a>!',
-                    text: "Visit our site",
-                    label: "Call to Action",
-                },
-            ],
-        },*/
-    ],
 };
+
 const ready = ref(false);
 const showSpinner = ref(true);
 const blocks = ref([]);
@@ -267,6 +143,7 @@ function createBlock({ definition }) {
 }
 
 function updateBlock(id) {
+    console.log("update block:", id);
     const block = blocks.value[getBlockIndexById(id)];
     blockForm.set(id, block.name);
     // I couldn't find a documentation or a better way to do this. Feel free to update
@@ -306,6 +183,7 @@ function deleteBlock(id) {
 }
 
 function saveBlock(isNew = false) {
+    console.log("saving block");
     const definition = toRaw(blockForm.definition);
     if (blockForm.id !== null && !isNew) {
         axios
@@ -373,18 +251,11 @@ watch(
     () => {
         if (ready.value) {
             showSpinner.value = false;
-            console.log("trying to load topol json");
-            TopolPlugin.load(JSON.stringify(props.json));
+            TopolPlugin.load(props.json);
         }
     },
     { immediate: true }
 );
 
-onMounted(() => {
-    console.log("email builder mounted");
-});
-onUnmounted(() => {
-    TopolPlugin.destroy;
-    console.log("unmounting email builder");
-});
+onUnmounted(TopolPlugin.destroy);
 </script>

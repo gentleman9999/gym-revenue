@@ -188,20 +188,24 @@ const task = {
 
 const emailTemplate = {
     create: gql`
-        mutation createEmailTemplate(
-            $name: name
-            $subject: subject
-            $markup: markup
-            $json: json
-        ) {
-            createEmailTemplate(
-                name: $name
-                subject: $subject
-                markup: $markup
-                json: $json
-            ) {
+        mutation createEmailTemplate($input: CreateEmailTemplateInput!) {
+            createEmailTemplate(input: $input) {
                 id
                 name
+                subject
+                markup
+                json
+            }
+        }
+    `,
+    update: gql`
+        mutation updateEmailTemplate($input: UpdateEmailTemplateInput) {
+            updateEmailTemplate(input: $input) {
+                id
+                name
+                subject
+                markup
+                json
             }
         }
     `,

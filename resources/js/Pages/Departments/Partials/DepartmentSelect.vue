@@ -50,7 +50,6 @@ const emit = defineEmits(["update:modelValue"]);
  * Format department data type for multiselect component consumption
  */
 const formatDepartmentForSelect = (data) => {
-    console.log("got DEPARTMENTS:", data);
     if (!data instanceof Array || !data) return [];
     return data.map((dpt) => {
         return {
