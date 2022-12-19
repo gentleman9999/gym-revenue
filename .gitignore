@@ -3,6 +3,7 @@
 /public/hot
 /public/storage
 /storage/*.key
+storage/debugbar
 /vendor
 .env
 .env.backup
@@ -21,10 +22,7 @@ yarn-error.log
 docker-compose.yml
 /_ide_helper.php
 /_ide_helper_models.php
-<<<<<<< HEAD
 schema-directives.graphql
 programmatic-types.graphql
 _lighthouse_ide_helper.php
-=======
 /docker/
->>>>>>> develop
