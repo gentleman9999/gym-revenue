@@ -6,36 +6,36 @@ extend type Mutation {
     @inject(context: "user.id", name: "user_id")
 
     renameFile(
-        id: ID!,
-        filename: String,
+        id: ID!
+        filename: String
     ): File!
     @inject(context: "user.id", name: "user_id")
 
     restoreFile(
         id: ID!
-    )
+    ): File!
     @inject(context: "user.id", name: "user_id")
 
 
     deleteFile(
-        id: ID!,
+        id: ID!
     ): File!
     @inject(context: "user.id", name: "user_id")
 
     trashFile(
-        id: ID!,
+        id: ID!
     ): File!
     @inject(context: "user.id", name: "user_id")
 
     updateFileFolder(
         id: ID!
         folder: ID
-    )
+    ): File!
     @inject(context: "user.id", name: "user_id")
 
      updateFilePermissions(
         id: ID!
         permissions: String
-    )
+    ): File!
     @inject(context: "user.id", name: "user_id")
 }
