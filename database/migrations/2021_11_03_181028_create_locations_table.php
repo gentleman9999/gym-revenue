@@ -30,13 +30,12 @@ class CreateLocationsTable extends Migration
             $table->string('phone')->nullable();
             $table->uuid('default_team_id')->nullable()->index();
             $table->string('location_type');
-            $table->dateTime('open_date')->nullable();
-            $table->dateTime('close_date')->nullable();
+            $table->timestamp('opened_at')->nullable();
             $table->index(['client_id', 'gymrevenue_id']);
             $table->index(['client_id', 'location_no']);
             $table->unique(['client_id', 'name']);
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes('closed_at');
         });
     }
 

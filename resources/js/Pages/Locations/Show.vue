@@ -84,11 +84,19 @@
 
     <confirm
         title="Really Close This Club?"
-        v-if="confirmTrash"
-        @confirm="handleConfirmTrash"
-        @cancel="confirmTrash = null"
+        v-if="confirmClose"
+        @confirm="handleConfirmClose"
+        @cancel="confirmClose = null"
     >
         Are you sure you want to Close this Club?
+    </confirm>
+    <confirm
+        title="Really Reopen This Club?"
+        v-if="confirmReopen"
+        @confirm="handleConfirmReopen"
+        @cancel="confirmReopen = null"
+    >
+        Are you sure you want to Reopen this Club?
     </confirm>
 
     <daisy-modal
@@ -176,9 +184,9 @@ export default defineComponent({
             confirmTrash.value = id;
         };
 
-        const handleConfirmTrash = () => {
-            Inertia.delete(route("locations.trash", confirmTrash.value));
-            confirmTrash.value = null;
+        const handleConfirmClose = () => {
+            Inertia.delete(route("locations.close", confirmClose.value));
+            confirmClose.value = null;
         };
 
         const importLocation = ref();
@@ -205,10 +213,38 @@ export default defineComponent({
             return _.cloneDeep(data.locations);
         };
 
+        const confirmReopen = ref(null);
+        const handleClickReopen = (id) => {
+            confirmReopen.value = id;
+        };
+
+        const handleConfirmReopen = () => {
+            Inertia.post(route("locations.reopen", confirmReopen.value));
+            confirmReopen.value = null;
+        };
+
+        const actions = {
+            trash: false,
+            restore: false,
+            close: {
+                label: "Close Club",
+                handler: ({ data }) => handleClickClose(data.id),
+                shouldRender: ({ data }) => !data.closed_at,
+            },
+            reopen: {
+                label: "Reopen Club",
+                handler: ({ data }) => handleClickReopen(data.id),
+                shouldRender: ({ data }) => data.closed_at,
+            },
+        };
+
         return {
-            handleClickTrash,
-            confirmTrash,
-            handleConfirmTrash,
+            handleClickClose,
+            confirmClose,
+            handleConfirmClose,
+            handleClickReopen,
+            confirmReopen,
+            handleConfirmReopen,
             Inertia,
             form,
             clearFilters,
@@ -218,11 +254,15 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
+<<<<<<< HEAD
             param,
             getLocations,
             handleCrudUpdate,
             queries,
             LocationForm,
+=======
+            actions,
+>>>>>>> develop
         };
     },
     computed: {

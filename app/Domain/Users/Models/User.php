@@ -11,6 +11,7 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -54,6 +55,16 @@ class User extends Authenticatable
     use Sortable;
 
     /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ObfuscatedScope());
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var string[]
@@ -62,7 +73,7 @@ class User extends Authenticatable
         'email', 'alternate_email', 'first_name', 'last_name',
         'address1', 'address2', 'city', 'state', 'zip', 'phone',
         'manager', 'home_location_id', 'start_date', 'end_date',
-        'termination_date',
+        'termination_date','obfuscated_at',
     ];
 
     /**

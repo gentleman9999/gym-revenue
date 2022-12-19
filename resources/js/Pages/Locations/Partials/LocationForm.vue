@@ -133,10 +133,10 @@
             </div>
 
             <div class="col-span-3 md:col-span-2 space-y-2">
-                <jet-label for="open_date" value="Open Date" />
+                <jet-label for="opened_at" value="Open Date" />
                 <DatePicker
-                    id="open_date"
-                    v-model="form.open_date"
+                    id="opened_at"
+                    v-model="form.opened_at"
                     dark
                     :month-change-on-scroll="false"
                     :auto-apply="true"
@@ -144,23 +144,24 @@
                 />
 
                 <jet-input-error
-                    :message="form.errors.open_date"
+                    :message="form.errors.opened_at"
                     class="mt-2"
                 />
             </div>
             <div class="col-span-3 md:col-span-2 space-y-2">
-                <jet-label for="close_date" value="Close Date" />
+                <jet-label for="closed_at" value="Close Date" />
                 <DatePicker
-                    id="close_date"
-                    v-model="form.close_date"
+                    id="closed_at"
+                    v-model="form.closed_at"
                     dark
                     :month-change-on-scroll="false"
                     :auto-apply="true"
                     :close-on-scroll="true"
+                    :disabled="true"
                 />
 
                 <jet-input-error
-                    :message="form.errors.close_date"
+                    :message="form.errors.closed_at"
                     class="mt-2"
                 />
             </div>
@@ -310,20 +311,31 @@ export default {
                 poc_first: "",
                 poc_last: "",
                 poc_phone: "",
-                open_date: null,
-                close_date: null,
+                opened_at: null,
+                closed_at: null,
                 location_no: "",
                 location_type: "",
                 latitude: null,
                 longitude: null,
             };
             operation = "Create";
+        } else {
+            location.phone = location.phone;
+            location.poc_first = location.poc_first;
+            location.poc_last = location.poc_last;
+            location.poc_phone = location.poc_phone;
+            location.opened_at = location.opened_at;
+            location.closed_at = location.closed_at;
+            location.address1 = location.address1;
+            location.address2 = location.address2;
+            location.latitude = location.latitude;
+            location.longitude = location.longitude;
         }
 
         const transformData = (data) => ({
             ...data,
-            open_date: transformDate(data.open_date),
-            close_date: transformDate(data.close_date),
+            opened_at: transformDate(data.opened_at),
+            closed_at: transformDate(data.closed_at),
         });
 
         const form = useGymRevForm(location);

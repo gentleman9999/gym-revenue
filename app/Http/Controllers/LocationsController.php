@@ -30,6 +30,14 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
+        if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
+            $locations = $locations
+                ->filter($request->only('search', 'closed'))
+                ->sort()
+                ->paginate($page_count)
+                ->appends(request()->except('page'));
+        }
+
         if ((! is_null($client_id))) {
             $client = Client::find($client_id);
             $title = "{$client->name} Locations";
@@ -40,7 +48,7 @@ class LocationsController extends Controller
         return Inertia::render('Locations/Show', [
             'title' => $title,
             'isClientUser' => $is_client_user,
-            'filters' => $request->all('search', 'trashed'),
+            'filters' => $request->all('search', 'closed'),
             'clientId' => $client_id,
         ]);
     }
@@ -164,7 +172,7 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        $locationDetails = LocationDetails::where('location_id', $id)->get();
+        $locationDetails = LocationDetails::where('location_id', $location->id)->get();
         $poc_first = $poc_last = $poc_phone = '';
 
         foreach ($locationDetails as $locationitems) {
@@ -204,7 +212,7 @@ class LocationsController extends Controller
 
         if (! empty($locations = $this->setUpLocationsObject($is_client_user, $client_id))) {
             $locations = $locations
-                ->filter($request->only('search', 'trashed'))
+                ->filter($request->only('search', 'closed'))
                 ->get();
         }
 

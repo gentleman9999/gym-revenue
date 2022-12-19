@@ -41,6 +41,7 @@ class CreateLocation extends GymRevAction
             'close_date' => [],
             'location_no' => ['required', 'max:10'],
             'gymrevenue_id' => ['sometimes', 'nullable', 'unique:locations,gymrevenue_id'],
+            'opened_at' => [],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
             'location_type' => ['required',  new Enum(LocationType::class)],

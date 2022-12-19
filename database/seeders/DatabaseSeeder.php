@@ -21,6 +21,7 @@ use Database\Seeders\Data\AgreementTemplatesSeeder;
 use Database\Seeders\Data\BillingScheduleSeeder;
 use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
+use Database\Seeders\Data\ContractGatesSeeder;
 use Database\Seeders\Data\EndUserSeeder;
 use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
@@ -130,6 +131,9 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Agreement Templates Data Seeder');
         $this->call(AgreementTemplatesSeeder::class);
 
+        VarDumper::dump('Running Billing Schedule Data Seeder');
+        $this->call(BillingScheduleSeeder::class);
+
 //        VarDumper::dump('Running Agreements Category Seeder');
 //        $this->call(AgreementCategoriesSeeder::class);
 
@@ -138,9 +142,6 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Contract PDF Data Seeder');
         $this->call(ClientContractSeeder::class);
-
-        VarDumper::dump('Running Billing Schedule Data Seeder');
-        $this->call(BillingScheduleSeeder::class);
 
         VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
         $this->call(AgreementTemplateBillingScheduleSeeder::class);
@@ -152,6 +153,10 @@ class DatabaseSeeder extends Seeder
 //        // This seeder generates dummy members for each client
 //        VarDumper::dump('Running Members Dummy Data Seeder');
 //        $this->call(MemberSeeder::class);
+
+        // This seeder generates dummy members for each client
+        VarDumper::dump('Running Contract Gate Dummy Data Seeder');
+        $this->call(ContractGatesSeeder::class);
 
         // Baby's First Email Templates are Seeded for each client
         VarDumper::dump('Running Email Template  Seeder');

@@ -2,10 +2,10 @@
 
 namespace App\Domain\Locations;
 
+use App\Domain\Locations\Events\LocationClosed;
 use App\Domain\Locations\Events\LocationCreated;
 use App\Domain\Locations\Events\LocationDeleted;
-use App\Domain\Locations\Events\LocationRestored;
-use App\Domain\Locations\Events\LocationTrashed;
+use App\Domain\Locations\Events\LocationReopened;
 use App\Domain\Locations\Events\LocationUpdated;
 use Spatie\EventSourcing\AggregateRoots\AggregateRoot;
 
@@ -18,16 +18,16 @@ class LocationAggregate extends AggregateRoot
         return $this;
     }
 
-    public function trash(): static
+    public function close(): static
     {
-        $this->recordThat(new LocationTrashed());
+        $this->recordThat(new LocationClosed());
 
         return $this;
     }
 
-    public function restore(): static
+    public function reopen(): static
     {
-        $this->recordThat(new LocationRestored());
+        $this->recordThat(new LocationReopened());
 
         return $this;
     }
