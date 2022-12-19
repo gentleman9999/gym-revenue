@@ -19,6 +19,7 @@ class LocationsController extends Controller
         $user = request()->user();
         $client_id = $user->client_id;
         $is_client_user = $user->isClientUser();
+        $page_count = 10;
 
         if (is_null($client_id)) {
             return Redirect::route('dashboard');

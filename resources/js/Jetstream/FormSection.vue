@@ -47,7 +47,7 @@
                     class="flex items-center justify-center px-4 py-3 bg-base-200 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md gap-4"
                     v-if="hasActions"
                 >
-                    <slot name="actions"></slot>
+                    <slot name="actions" @close="$emit('close')"></slot>
                 </div>
             </form>
         </div>

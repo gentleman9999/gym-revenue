@@ -80,7 +80,14 @@ final class TasksQuery
         } else {
             return [
                 'data' => [],
-                'paginatorInfo' => [],
+                'paginatorInfo' => [
+                    'currentPage' => 0,
+                    'lastPage' => 0,
+                    'firstItem' => 0,
+                    'lastItem' => 0,
+                    'perPage' => 10,
+                    'total' => 0,
+                ],
             ];
         }
     }

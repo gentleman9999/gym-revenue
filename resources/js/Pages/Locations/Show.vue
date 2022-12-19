@@ -184,6 +184,7 @@ export default defineComponent({
             confirmTrash.value = id;
         };
 
+        const confirmClose = ref(null);
         const handleConfirmClose = () => {
             Inertia.delete(route("locations.close", confirmClose.value));
             confirmClose.value = null;
@@ -228,7 +229,7 @@ export default defineComponent({
             restore: false,
             close: {
                 label: "Close Club",
-                handler: ({ data }) => handleClickClose(data.id),
+                handler: ({ data }) => emit("close"),
                 shouldRender: ({ data }) => !data.closed_at,
             },
             reopen: {
@@ -239,7 +240,6 @@ export default defineComponent({
         };
 
         return {
-            handleClickClose,
             confirmClose,
             handleConfirmClose,
             handleClickReopen,
@@ -254,15 +254,12 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
-<<<<<<< HEAD
             param,
             getLocations,
             handleCrudUpdate,
             queries,
             LocationForm,
-=======
             actions,
->>>>>>> develop
         };
     },
     computed: {
