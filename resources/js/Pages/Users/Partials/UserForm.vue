@@ -719,7 +719,6 @@ export default {
         const { mutate: updateUser } = useMutation(mutations.user.update);
 
         let handleSubmit = async () => {
-            console.log(user);
             await updateUser({
                 input: {
                     id: user.id,
@@ -732,7 +731,7 @@ export default {
                     phone: form.phone,
                     city: form.city,
                     state: form.state,
-                    zip: form.zip,
+                    zip: form.zip + "",
                     contact_preference: form.contact_preference,
                     start_date: form.start_date,
                     end_date: form.end_date,
@@ -774,7 +773,7 @@ export default {
                         phone: form.phone,
                         city: form.city,
                         state: form.state,
-                        zip: form.zip,
+                        zip: form.zip + "",
                         contact_preference: form.contact_preference,
                         start_date: form.start_date,
                         end_date: form.end_date,

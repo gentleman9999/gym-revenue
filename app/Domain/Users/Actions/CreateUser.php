@@ -15,6 +15,7 @@ use App\Http\Middleware\InjectClientId;
 
 use function bcrypt;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
