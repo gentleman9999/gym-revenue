@@ -69,10 +69,9 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Prepare the application
-          run: |
-            php -r "file_exists('.env') || copy('.env.example', '.env');"
-            php artisan key:generate
-
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          php artisan key:generate
 
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
