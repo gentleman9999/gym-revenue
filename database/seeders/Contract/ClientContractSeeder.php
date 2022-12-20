@@ -50,7 +50,7 @@ class ClientContractSeeder extends Seeder
 
                     $result = json_decode($adobe_service->generatePDF($client_info));
                     if (! $result->status) {
-                        VarDumper::dump("PDF for ".$client->name.' was not created');
+                        VarDumper::dump("PDF for ".$client->name.' was not created due to error: '.$result->message);
                     } else {
                         VarDumper::dump("PDF for ".$client->name.' is created successfully');
                     }
