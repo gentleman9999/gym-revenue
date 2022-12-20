@@ -1,4 +1,4 @@
-name: Test Develop
+name: "Build, Test, and Seed PR"
 
 on:
   pull_request:
@@ -89,3 +89,9 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+
+      - name: Verify Seeders still work
+        run: php artisan migrate:fresh --seed
+        env:
+          QUICK_SEED: true
+          SUPER_QUICK_SEED: true
