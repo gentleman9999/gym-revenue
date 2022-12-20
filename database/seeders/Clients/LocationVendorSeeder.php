@@ -3,8 +3,9 @@
 namespace Database\Seeders\Clients;
 
 use App\Domain\Locations\Projections\Location;
-use App\Domain\LocationVendorCategories\Projections\LocationVendorCategory;
+
 use App\Domain\LocationVendors\Actions\CreateLocationVendor;
+use App\Support\Uuid;
 use Faker\Generator;
 use Illuminate\Container\Container;
 use Illuminate\Database\Seeder;
@@ -44,10 +45,10 @@ class LocationVendorSeeder extends Seeder
         $locations = Location::all();
 
         foreach ($locations as $idx => $location) {
-            $vendor_categories = LocationVendorCategory::get()->toArray();
+            //$vendor_categories = LocationVendorCategory::all()->toArray();
             $location_vendor['name'] = $this->faker->name;
             $location_vendor['client_id'] = $location->client_id;
-            $location_vendor['vendor_category_id'] = $vendor_categories[array_rand($vendor_categories, 1)]['id'];
+            $location_vendor['vendor_category_id'] = Uuid::new(); //$vendor_categories[array_rand($vendor_categories, 1)]['id'];
             $location_vendor['location_id'] = $location->id;
             $location_vendor['poc_name'] = $location->name.'Vendor';
             $location_vendor['poc_email'] = $this->faker->email;
