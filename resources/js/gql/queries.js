@@ -694,7 +694,7 @@ const POSITION_CREATE = gql`
 
 const EVENT_TYPES = gql`
     query CalendarEventTypes($page: Int, $filter: Filter) {
-        calendar_event_types(page: $page, filter: $filter) {
+        eventTypes: calendar_event_types(page: $page, filter: $filter) {
             data {
                 id
                 name

@@ -223,7 +223,6 @@ export default defineComponent({
         };
 
         const handleOnEdit = (data) => {
-            console.log("handeOnEdit", data);
             openEventForm(data);
         };
         return {

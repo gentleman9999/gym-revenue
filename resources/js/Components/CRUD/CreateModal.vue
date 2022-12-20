@@ -16,6 +16,7 @@
                     :createParam="createParam"
                     v-bind="{ ...data }"
                     @close="close"
+                    @refresh="refresh"
                 />
                 <div v-else>No result</div>
             </template>
@@ -57,7 +58,13 @@ function open() {
     createModal?.value?.open();
 }
 
+const emit = defineEmits(["refresh"]);
 function close() {
+    clearCreateParam();
+}
+
+function refresh() {
+    emit("refresh");
     clearCreateParam();
 }
 

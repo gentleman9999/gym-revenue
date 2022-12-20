@@ -2,85 +2,76 @@
     <LayoutHeader title="Locations">
         <h2 class="font-semibold text-xl leading-tight">Locations</h2>
     </LayoutHeader>
-    <ApolloQuery :query="(gql) => queries['locations']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                :resource="getLocations(data)"
-                @update="handleCrudUpdate"
-                base-route="locations"
-                model-name="Location"
-                model-key="location"
-                :fields="fields"
-                :edit-component="LocationForm"
-                :actions="{
-                    trash: {
-                        label: 'Close Club',
-                        handler: ({ data }) => handleClickTrash(data.id),
-                    },
-                }"
-                :top-actions="topActions"
-                :preview-component="LocationPreview"
+    <gym-revenue-crud
+        ref="locationsCrud"
+        base-route="locations"
+        model-name="Location"
+        model-key="location"
+        :fields="fields"
+        :edit-component="LocationForm"
+        :actions="{
+            trash: {
+                label: 'Close Club',
+                handler: ({ data }) => handleClickTrash(data.id),
+            },
+        }"
+        :top-actions="topActions"
+        :preview-component="LocationPreview"
+    >
+        <template #filter>
+            <simple-search-filter
+                v-model:modelValue="form.search"
+                @update:modelValue="
+                    handleCrudUpdate('filter', {
+                        search: form.search,
+                    })
+                "
+                class="w-full max-w-md mr-4"
+                @clear-filters="clearFilters"
+                @clear-search="clearSearch"
             >
-                <template #filter>
-                    <simple-search-filter
-                        v-model:modelValue="form.search"
-                        @update:modelValue="
-                            handleCrudUpdate('filter', {
-                                search: form.search,
-                            })
-                        "
-                        class="w-full max-w-md mr-4"
-                        @clear-filters="clearFilters"
-                        @clear-search="clearSearch"
-                    >
-                        <template #content>
-                            <div class="py-2 text-xs w-60">
-                                <div class="block py-2 text-xs text-white">
-                                    Closed Clubs:
-                                </div>
-                                <select
-                                    v-model="form.trashed"
-                                    class="mt-1 w-full form-select"
-                                    @update:modelValue="
-                                        handleCrudUpdate('filter', {
-                                            trashed: form.trashed,
-                                        })
-                                    "
-                                >
-                                    <option :value="null" />
-                                    <option value="with">With Closed</option>
-                                    <option value="only">Only Closed</option>
-                                </select>
-                                <div class="block py-2 text-xs text-white">
-                                    State:
-                                </div>
-                                <select
-                                    v-model="form.state"
-                                    class="mt-1 w-full form-select"
-                                    @update:modelValue="
-                                        handleCrudUpdate('state', {
-                                            state: form.state,
-                                        })
-                                    "
-                                >
-                                    <option :value="null" />
-                                    <option
-                                        v-for="state in this.$page.props
-                                            .eachstate"
-                                        :value="state.state"
-                                        :key="state.state"
-                                    >
-                                        {{ state.state }}
-                                    </option>
-                                </select>
-                            </div>
-                        </template>
-                    </simple-search-filter>
+                <template #content>
+                    <div class="py-2 text-xs w-60">
+                        <div class="block py-2 text-xs text-white">
+                            Closed Clubs:
+                        </div>
+                        <select
+                            v-model="form.trashed"
+                            class="mt-1 w-full form-select"
+                            @update:modelValue="
+                                handleCrudUpdate('filter', {
+                                    trashed: form.trashed,
+                                })
+                            "
+                        >
+                            <option :value="null" />
+                            <option value="with">With Closed</option>
+                            <option value="only">Only Closed</option>
+                        </select>
+                        <div class="block py-2 text-xs text-white">State:</div>
+                        <select
+                            v-model="form.state"
+                            class="mt-1 w-full form-select"
+                            @update:modelValue="
+                                handleCrudUpdate('state', {
+                                    state: form.state,
+                                })
+                            "
+                        >
+                            <option :value="null" />
+                            <option
+                                v-for="state in this.$page.props.eachstate"
+                                :value="state.state"
+                                :key="state.state"
+                            >
+                                {{ state.state }}
+                            </option>
+                        </select>
+                    </div>
                 </template>
-            </gym-revenue-crud>
+            </simple-search-filter>
         </template>
-    </ApolloQuery>
+    </gym-revenue-crud>
 
     <confirm
         title="Really Close This Club?"
@@ -122,7 +113,6 @@ import JetBarContainer from "@/Components/JetBarContainer.vue";
 import LocationPreview from "@/Pages/Locations/Partials/LocationPreview.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
-import queries from "@/gql/queries.js";
 import LocationForm from "@/Pages/Locations/Partials/LocationForm.vue";
 export default defineComponent({
     components: {
@@ -151,21 +141,10 @@ export default defineComponent({
             trashed: "",
         });
 
+        const locationsCrud = ref(null);
+
         const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
+            locationsCrud.value.handleCrudUpdate(key, value);
         };
         const clearSearch = () => {
             form.value.search = "";
@@ -206,14 +185,6 @@ export default defineComponent({
                 class: "btn-primary",
             },
         };
-        const param = ref({
-            page: 1,
-        });
-
-        const getLocations = (data) => {
-            return _.cloneDeep(data.locations);
-        };
-
         const confirmReopen = ref(null);
         const handleClickReopen = (id) => {
             confirmReopen.value = id;
@@ -254,12 +225,10 @@ export default defineComponent({
             handleClickImport,
             importLocation,
             topActions,
-            param,
-            getLocations,
-            handleCrudUpdate,
-            queries,
             LocationForm,
             actions,
+            handleCrudUpdate,
+            locationsCrud,
         };
     },
     computed: {

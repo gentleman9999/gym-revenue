@@ -1,29 +1,22 @@
 <template>
     <LayoutHeader title="Reminders" />
     <page-toolbar-nav title="Reminders" :links="navLinks" />
-    <ApolloQuery :query="(gql) => queries['reminders']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                base-route="reminders"
-                model-name="Reminder"
-                model-key="reminder"
-                :fields="fields"
-                :resource="getReminders(data)"
-                @update="handleCrudUpdate"
-                :actions="{
-                    trash: false,
-                    restore: false,
-                    delete: {
-                        label: 'Delete',
-                        handler: ({ data }) => handleClickDelete(data),
-                    },
-                }"
-                :top-actions="false"
-                :edit-component="ReminderForm"
-            />
-        </template>
-    </ApolloQuery>
+    <gym-revenue-crud
+        base-route="reminders"
+        model-name="Reminder"
+        model-key="reminder"
+        :fields="fields"
+        :actions="{
+            trash: false,
+            restore: false,
+            delete: {
+                label: 'Delete',
+                handler: ({ data }) => handleClickDelete(data),
+            },
+        }"
+        :top-actions="false"
+        :edit-component="ReminderForm"
+    />
     <confirm
         title="Really Trash Reminder?"
         v-if="confirmDelete"
@@ -44,7 +37,6 @@ import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
-import queries from "@/gql/queries";
 
 export default defineComponent({
     components: {
@@ -107,29 +99,7 @@ export default defineComponent({
                 active: false,
             },
         ];
-        const param = ref({
-            page: 1,
-        });
 
-        const getReminders = (data) => {
-            return _.cloneDeep(data.reminders);
-        };
-        const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
-        };
         return {
             fields,
             confirmDelete,
@@ -137,10 +107,6 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
-            param,
-            getReminders,
-            handleCrudUpdate,
-            queries,
             ReminderForm,
         };
     },

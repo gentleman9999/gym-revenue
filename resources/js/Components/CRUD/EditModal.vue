@@ -16,6 +16,7 @@
                     :editParam="editParam"
                     v-bind="{ ...data }"
                     @close="close"
+                    @refresh="refresh"
                 />
                 <div v-else>No result</div>
             </template>
@@ -56,6 +57,10 @@ function open() {
 
 const emit = defineEmits(["refresh"]);
 function close() {
+    clearEditParam();
+}
+
+function refresh() {
     emit("refresh");
     clearEditParam();
 }

@@ -1,39 +1,34 @@
 <template>
-    <ApolloQuery :query="(gql) => queries['tasks']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                base-route="tasks"
-                :model-name="`Task-${taskType}`"
-                model-key="task"
-                class="border-transparent"
-                :resource="getTasks(data)"
-                :fields="fields"
-                @update="handleCrudUpdate"
-                :edit-component="TaskForm"
-                :actions="{
-                    trash: false,
-                    restore: false,
+    <gym-revenue-crud
+        ref="tasksCrud"
+        base-route="tasks"
+        :model-name="`Task-${taskType}`"
+        model-key="task"
+        class="border-transparent"
+        :fields="fields"
+        :param="param"
+        :edit-component="TaskForm"
+        :handleCrudUpdate="handleCrudUpdate"
+        :actions="{
+            trash: false,
+            restore: false,
+        }"
+    >
+        <template #top-actions><div></div></template>
+        <template #filter><div></div></template>
+        <template #title>
+            <div
+                class="task-list-header"
+                :class="{
+                    'bg-secondary': props.taskType === 'incomplete_tasks',
+                    'bg-error': props.taskType === 'overdue_tasks',
+                    'bg-neutral': props.taskType === 'completed_tasks',
                 }"
             >
-                <template #top-actions><div></div></template>
-                <template #filter><div></div></template>
-                <template #title>
-                    <div
-                        class="task-list-header"
-                        :class="{
-                            'bg-secondary':
-                                props.taskType === 'incomplete_tasks',
-                            'bg-error': props.taskType === 'overdue_tasks',
-                            'bg-neutral': props.taskType === 'completed_tasks',
-                        }"
-                    >
-                        {{ headers[props.taskType] }}
-                    </div>
-                </template>
-            </gym-revenue-crud>
+                {{ headers[props.taskType] }}
+            </div>
         </template>
-    </ApolloQuery>
+    </gym-revenue-crud>
 </template>
 <style scoped>
 .task-list-header {
@@ -76,6 +71,7 @@ const fields = [
     },
 ];
 
+const tasksCrud = ref(null);
 const param = ref({
     param: {
         type: props.taskType,
@@ -88,7 +84,6 @@ const param = ref({
 watch(
     () => props.start,
     (newValue) => {
-        console.log("newValue", newValue);
         param.value = {
             ...param.value,
             param: {
@@ -96,6 +91,7 @@ watch(
                 start: newValue,
             },
         };
+        tasksCrud.value.refetch(param.value);
     }
 );
 
@@ -107,6 +103,7 @@ watch(props.start, () => {
             start: props.start,
         },
     };
+    tasksCrud.value.refetch(param.value);
 });
 
 const handleCrudUpdate = (key, value) => {
@@ -118,6 +115,7 @@ const handleCrudUpdate = (key, value) => {
             },
         };
     }
+    tasksCrud.value.refetch(param.value);
 };
 const emit = defineEmits(["edit"]);
 

@@ -2,82 +2,65 @@
     <LayoutHeader title="Teams">
         <h2 class="font-semibold text-xl leading-tight">Team Management</h2>
     </LayoutHeader>
-    <ApolloQuery :query="(gql) => queries['teams']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                base-route="teams"
-                model-name="Team"
-                model-key="team"
-                :fields="fields"
-                :resource="getTeams(data)"
-                :actions="actions"
-                :preview-component="TeamPreview"
-                :edit-component="TeamForm"
-                @update="handleCrudUpdate"
+    <gym-revenue-crud
+        base-route="teams"
+        model-name="Team"
+        model-key="team"
+        :fields="fields"
+        :actions="actions"
+        :preview-component="TeamPreview"
+        :edit-component="TeamForm"
+        ref="teamsCrud"
+    >
+        <template #filter>
+            <beefy-search-filter
+                v-model:modelValue="form.search"
+                @update:modelValue="
+                    handleCrudUpdate('filter', {
+                        search: form.search,
+                    })
+                "
+                class="w-full max-w-md mr-4"
             >
-                <template #filter>
-                    <beefy-search-filter
-                        v-model:modelValue="form.search"
-                        @update:modelValue="
-                            handleCrudUpdate('filter', {
-                                search: form.search,
-                            })
+                <div class="form-control">
+                    <label for="users" class="label label-text py-1 text-xs">
+                        Users:
+                    </label>
+                    <multiselect
+                        v-model="form.users"
+                        class="py-2"
+                        id="users"
+                        mode="tags"
+                        :close-on-select="false"
+                        :create-option="true"
+                        :options="
+                            this.$page.props.potentialUsers.map((user) => ({
+                                label: user.name,
+                                value: user.id,
+                            }))
                         "
-                        class="w-full max-w-md mr-4"
-                    >
-                        <div class="form-control">
-                            <label
-                                for="users"
-                                class="label label-text py-1 text-xs"
-                            >
-                                Users:
-                            </label>
-                            <multiselect
-                                v-model="form.users"
-                                class="py-2"
-                                id="users"
-                                mode="tags"
-                                :close-on-select="false"
-                                :create-option="true"
-                                :options="
-                                    this.$page.props.potentialUsers.map(
-                                        (user) => ({
-                                            label: user.name,
-                                            value: user.id,
-                                        })
-                                    )
-                                "
-                                :classes="multiselectClasses"
-                            />
-                        </div>
+                        :classes="multiselectClasses"
+                    />
+                </div>
 
-                        <div class="form-control" v-if="clubs?.length">
-                            <label
-                                for="club"
-                                class="label label-text py-1 text-xs"
-                            >
-                                Club
-                            </label>
-                            <select
-                                class="mt-1 w-full form-select"
-                                v-model="form.club"
-                            >
-                                <option></option>
-                                <option
-                                    v-for="club in clubs"
-                                    :key="club.gymrevenue_id"
-                                    :value="club.gymrevenue_id"
-                                >
-                                    {{ club.name }}
-                                </option>
-                            </select>
-                        </div>
-                    </beefy-search-filter>
-                </template>
-            </gym-revenue-crud>
+                <div class="form-control" v-if="clubs?.length">
+                    <label for="club" class="label label-text py-1 text-xs">
+                        Club
+                    </label>
+                    <select class="mt-1 w-full form-select" v-model="form.club">
+                        <option></option>
+                        <option
+                            v-for="club in clubs"
+                            :key="club.gymrevenue_id"
+                            :value="club.gymrevenue_id"
+                        >
+                            {{ club.name }}
+                        </option>
+                    </select>
+                </div>
+            </beefy-search-filter>
         </template>
-    </ApolloQuery>
+    </gym-revenue-crud>
     <confirm
         title="Really Delete?"
         v-if="confirmDelete"
@@ -101,7 +84,6 @@ import { usePage } from "@inertiajs/inertia-vue3";
 import BeefySearchFilter from "@/Components/CRUD/BeefySearchFilter.vue";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
-import queries from "@/gql/queries";
 import TeamForm from "@/Pages/Teams/Partials/TeamForm.vue";
 
 export default defineComponent({
@@ -121,21 +103,9 @@ export default defineComponent({
         const form = ref({
             search: "",
         });
+        const teamsCrud = ref(null);
         const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
+            teamsCrud.value.handleCrudUpdate(key, value);
         };
         const confirmDelete = ref(null);
         const handleClickDelete = (user) => {
@@ -168,32 +138,19 @@ export default defineComponent({
                 preview(baseRoute, props.preview);
             }
         });
-        const param = ref({
-            page: 1,
-            filter: {
-                search: "",
-            },
-        });
-
-        const getTeams = (data) => {
-            return _.cloneDeep(data.teams);
-        };
-
         return {
             confirmDelete,
             fields,
             actions,
             Inertia,
             handleConfirmDelete,
-            form,
             TeamPreview,
             baseRoute,
             multiselectClasses: getDefaultMultiselectTWClasses(),
-            param,
-            queries,
-            getTeams,
-            handleCrudUpdate,
             TeamForm,
+            teamsCrud,
+            form,
+            handleCrudUpdate,
         };
     },
 });

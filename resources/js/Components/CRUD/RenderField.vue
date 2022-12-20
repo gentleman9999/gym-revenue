@@ -50,7 +50,9 @@ export default defineComponent({
         VueJsonPretty,
     },
     setup(props) {
-        const value = props.field.transform(props.data[props.field.name]);
+        const value = computed(() =>
+            props.field.transform(props.data[props.field.name])
+        );
         return { isObject, value };
     },
 });

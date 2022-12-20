@@ -1,25 +1,18 @@
 <template>
     <LayoutHeader title="Event Types" />
     <page-toolbar-nav title="Event Types" :links="navLinks" />
-    <ApolloQuery :query="(gql) => queries['eventTypes']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                :resource="getEventTypes(data)"
-                @update="handleCrudUpdate"
-                base-route="calendar.event_types"
-                model-name="Event Type"
-                model-key="eventType"
-                :edit-component="CalendarEventTypeForm"
-                :fields="fields"
-                :actions="{
-                    trash: {
-                        handler: ({ data }) => handleClickTrash(data),
-                    },
-                }"
-            />
-        </template>
-    </ApolloQuery>
+    <gym-revenue-crud
+        base-route="calendar.event_types"
+        model-name="Event Type"
+        model-key="eventType"
+        :edit-component="CalendarEventTypeForm"
+        :fields="fields"
+        :actions="{
+            trash: {
+                handler: ({ data }) => handleClickTrash(data),
+            },
+        }"
+    />
     <confirm
         title="Really Trash Event Type?"
         v-if="confirmTrash"
@@ -40,7 +33,6 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import queries from "@/gql/queries";
 import CalendarEventTypeForm from "@/Pages/Calendar/EventTypes/Partials/CalendarEventTypeForm.vue";
 
 export default defineComponent({
@@ -112,29 +104,7 @@ export default defineComponent({
                 active: false,
             },
         ];
-        const param = ref({
-            page: 1,
-        });
 
-        const getEventTypes = (data) => {
-            return _.cloneDeep(data.calendar_event_types);
-        };
-        const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
-        };
         return {
             fields,
             confirmTrash,
@@ -142,10 +112,6 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
-            param,
-            queries,
-            getEventTypes,
-            handleCrudUpdate,
             CalendarEventTypeForm,
         };
     },

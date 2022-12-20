@@ -1,105 +1,89 @@
 <template>
     <LayoutHeader title="Users" />
     <page-toolbar-nav :title="clientName + ' Users'" :links="navLinks" />
-    <ApolloQuery :query="(gql) => queries['users']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                base-route="users"
-                model-name="User"
-                model-key="user"
-                :fields="fields"
-                :resource="getUsers(data)"
-                :actions="actions"
-                :top-actions="topActions"
-                :preview-component="UserPreview"
-                :edit-component="UserForm"
-                @update="handleCrudUpdate"
+    <gym-revenue-crud
+        ref="usersCrud"
+        base-route="users"
+        model-name="User"
+        model-key="user"
+        :fields="fields"
+        :actions="actions"
+        :top-actions="topActions"
+        :preview-component="UserPreview"
+        :edit-component="UserForm"
+    >
+        <template #filter>
+            <beefy-search-filter
+                v-model:modelValue="form.search"
+                @update:modelValue="
+                    handleCrudUpdate('filter', {
+                        search: form.search,
+                    })
+                "
+                :filtersActive="filtersActive"
+                class="w-full max-w-md mr-4"
             >
-                <template #filter>
-                    <beefy-search-filter
-                        v-model:modelValue="form.search"
-                        @update:modelValue="
-                            handleCrudUpdate('filter', {
-                                search: form.search,
-                            })
-                        "
-                        :filtersActive="filtersActive"
-                        class="w-full max-w-md mr-4"
+                <div class="form-control" v-if="clubs?.length">
+                    <label for="club" class="label label-text py-1 text-xs">
+                        Club
+                    </label>
+                    <select
+                        id="club"
+                        class="mt-1 w-full form-select"
+                        v-model="form.club"
                     >
-                        <div class="form-control" v-if="clubs?.length">
-                            <label
-                                for="club"
-                                class="label label-text py-1 text-xs"
-                            >
-                                Club
-                            </label>
-                            <select
-                                id="club"
-                                class="mt-1 w-full form-select"
-                                v-model="form.club"
-                            >
-                                <option></option>
-                                <option
-                                    v-for="club in clubs"
-                                    :key="club.gymrevenue_id"
-                                    :value="club.gymrevenue_id"
-                                >
-                                    {{ club.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-control" v-if="teams?.length">
-                            <label
-                                for="team"
-                                class="label label-text py-1 text-xs"
-                            >
-                                Team
-                            </label>
-                            <select
-                                id="team"
-                                class="mt-1 w-full form-select"
-                                v-model="form.team"
-                            >
-                                <option></option>
-                                <option
-                                    v-for="team in teams"
-                                    :value="team.id"
-                                    :key="team.id"
-                                >
-                                    {{ team.name }}
-                                </option>
-                            </select>
-                        </div>
+                        <option></option>
+                        <option
+                            v-for="club in clubs"
+                            :key="club.gymrevenue_id"
+                            :value="club.gymrevenue_id"
+                        >
+                            {{ club.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-control" v-if="teams?.length">
+                    <label for="team" class="label label-text py-1 text-xs">
+                        Team
+                    </label>
+                    <select
+                        id="team"
+                        class="mt-1 w-full form-select"
+                        v-model="form.team"
+                    >
+                        <option></option>
+                        <option
+                            v-for="team in teams"
+                            :value="team.id"
+                            :key="team.id"
+                        >
+                            {{ team.name }}
+                        </option>
+                    </select>
+                </div>
 
-                        <div class="form-control">
-                            <label
-                                for="roles"
-                                class="label label-text py-1 text-xs"
-                            >
-                                Security Role:
-                            </label>
-                            <select
-                                id="roles"
-                                class="mt-1 w-full form-select"
-                                v-model="form.roles"
-                            >
-                                <option></option>
-                                <option
-                                    v-for="role in potentialRoles"
-                                    :value="role.id"
-                                    :key="role.id"
-                                >
-                                    {{ role.title }}
-                                </option>
-                            </select>
-                        </div>
-                    </beefy-search-filter>
-                </template>
-            </gym-revenue-crud>
+                <div class="form-control">
+                    <label for="roles" class="label label-text py-1 text-xs">
+                        Security Role:
+                    </label>
+                    <select
+                        id="roles"
+                        class="mt-1 w-full form-select"
+                        v-model="form.roles"
+                    >
+                        <option></option>
+                        <option
+                            v-for="role in potentialRoles"
+                            :value="role.id"
+                            :key="role.id"
+                        >
+                            {{ role.title }}
+                        </option>
+                    </select>
+                </div>
+            </beefy-search-filter>
         </template>
-    </ApolloQuery>
-
+    </gym-revenue-crud>
     <confirm
         title="Really Delete?"
         v-if="confirmDelete"
@@ -136,8 +120,6 @@ import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import FileManager from "./Partials/FileManager.vue";
-
-import queries from "@/gql/queries.js";
 export default defineComponent({
     components: {
         BeefySearchFilter,
@@ -154,17 +136,6 @@ export default defineComponent({
     },
     props: ["filters", "clubs", "teams", "clientName", "potentialRoles"],
     setup(props) {
-        const param = ref({
-            page: 1,
-            filter: {
-                search: "",
-            },
-        });
-
-        const getUsers = (data) => {
-            return _.cloneDeep(data.users);
-        };
-
         const page = usePage();
         const abilities = computed(() => page.props.value.user?.abilities);
         const teamId = computed(() => page.props.value.user?.current_team_id);
@@ -287,22 +258,9 @@ export default defineComponent({
                 class: "btn-primary",
             },
         };
-
+        const usersCrud = ref(null);
         const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
+            usersCrud.value.handleCrudUpdate(key, value);
         };
         return {
             confirmDelete,
@@ -310,7 +268,6 @@ export default defineComponent({
             actions,
             Inertia,
             handleConfirmDelete,
-            form,
             navLinks,
             UserPreview,
             UserForm,
@@ -319,10 +276,9 @@ export default defineComponent({
             handleClickImport,
             importUser,
             closeModals,
-            queries,
-            param,
-            getUsers,
+            form,
             handleCrudUpdate,
+            usersCrud,
         };
     },
 });

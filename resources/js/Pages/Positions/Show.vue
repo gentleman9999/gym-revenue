@@ -1,25 +1,18 @@
 <template>
     <LayoutHeader title="Positions" />
     <page-toolbar-nav title="Positions" :links="navLinks" />
-    <ApolloQuery :query="(gql) => queries['positions']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                base-route="positions"
-                model-name="Position"
-                model-key="position"
-                :fields="fields"
-                :resource="getPositions(data)"
-                @update="handleCrudUpdate"
-                :edit-component="PositionForm"
-                :actions="{
-                    trash: {
-                        handler: ({ data }) => handleClickTrash(data),
-                    },
-                }"
-            />
-        </template>
-    </ApolloQuery>
+    <gym-revenue-crud
+        base-route="positions"
+        model-name="Position"
+        model-key="position"
+        :fields="fields"
+        :edit-component="PositionForm"
+        :actions="{
+            trash: {
+                handler: ({ data }) => handleClickTrash(data),
+            },
+        }"
+    />
 
     <confirm
         title="Really Trash Position?"
@@ -42,7 +35,6 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import queries from "@/gql/queries";
 import PositionForm from "@/Pages/Positions/Partials/PositionForm.vue";
 
 export default defineComponent({
@@ -95,28 +87,6 @@ export default defineComponent({
                 active: true,
             },
         ];
-        const param = ref({
-            page: 1,
-        });
-        const getPositions = (data) => {
-            return _.cloneDeep(data.positions);
-        };
-        const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
-        };
         return {
             fields,
             confirmTrash,
@@ -124,10 +94,6 @@ export default defineComponent({
             handleClickTrash,
             Inertia,
             navLinks,
-            param,
-            queries,
-            getPositions,
-            handleCrudUpdate,
             PositionForm,
         };
     },

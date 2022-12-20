@@ -2,14 +2,10 @@
     <LayoutHeader title="Security Roles" />
     <page-toolbar-nav title="Security Roles" :links="navLinks" />
     <gym-revenue-crud
-        v-if="roles"
         base-route="roles"
         model-name="Role"
         model-key="role"
         :fields="fields"
-        :resource="roles"
-        @update="handleCrudUpdate"
-        @refresh="handleRefresh"
         :edit-component="RoleForm"
         :actions="{
             trash: false,
@@ -41,9 +37,8 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import queries from "@/gql/queries.js";
 import RoleForm from "@/Pages/Roles/Partials/RoleForm.vue";
-import { useMutation, useQuery } from "@vue/apollo-composable";
+import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 
 export default defineComponent({
@@ -100,47 +95,6 @@ export default defineComponent({
             },
         ];
 
-        const param = ref({
-            page: 1,
-        });
-
-        const { result, refetch } = useQuery(queries["roles"], param);
-
-        const roles = computed(() => {
-            console.log("result", result);
-            if (result.value?.roles) {
-                return _.cloneDeep(result.value.roles);
-            } else {
-                return null;
-            }
-        });
-
-        const handleRefresh = () => {
-            param.value = {
-                ...param.value,
-            };
-            refetch();
-        };
-
-        const getRoles = (data) => {
-            return _.cloneDeep(data.roles);
-        };
-        const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
-        };
         return {
             fields,
             confirmDelete,
@@ -148,13 +102,7 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
-            param,
-            queries,
-            roles,
-            getRoles,
-            handleCrudUpdate,
             RoleForm,
-            handleRefresh,
         };
     },
 });

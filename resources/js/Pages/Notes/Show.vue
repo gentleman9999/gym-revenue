@@ -1,28 +1,21 @@
 <template>
     <LayoutHeader title="Notes" />
     <page-toolbar-nav title="Notes" :links="navLinks" />
-    <ApolloQuery :query="(gql) => queries['notes']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                :resource="getNotes(data)"
-                @update="handleCrudUpdate"
-                base-route="notes"
-                model-name="Note"
-                model-key="note"
-                :edit-component="NoteForm"
-                :fields="fields"
-                :actions="{
-                    trash: false,
-                    restore: false,
-                    delete: {
-                        label: 'Delete',
-                        handler: ({ data }) => handleClickDelete(data),
-                    },
-                }"
-            />
-        </template>
-    </ApolloQuery>
+    <gym-revenue-crud
+        base-route="notes"
+        model-name="Note"
+        model-key="note"
+        :edit-component="NoteForm"
+        :fields="fields"
+        :actions="{
+            trash: false,
+            restore: false,
+            delete: {
+                label: 'Delete',
+                handler: ({ data }) => handleClickDelete(data),
+            },
+        }"
+    />
     <confirm
         title="Really Trash Note?"
         v-if="confirmDelete"
@@ -41,7 +34,6 @@ import Confirm from "@/Components/Confirm.vue";
 import Button from "@/Components/Button.vue";
 import JetBarContainer from "@/Components/JetBarContainer.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
-import queries from "@/gql/queries";
 import NoteForm from "@/Pages/Notes/Partials/NoteForm.vue";
 
 export default defineComponent({
@@ -81,31 +73,6 @@ export default defineComponent({
                 active: true,
             },
         ];
-        const param = ref({
-            page: 1,
-        });
-
-        const getNotes = (data) => {
-            return _.cloneDeep(data.notes);
-        };
-
-        const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
-        };
-
         return {
             fields,
             confirmDelete,
@@ -113,10 +80,6 @@ export default defineComponent({
             handleClickDelete,
             Inertia,
             navLinks,
-            param,
-            queries,
-            getNotes,
-            handleCrudUpdate,
             NoteForm,
         };
     },

@@ -42,7 +42,7 @@
                     <select
                         v-model="form.trashed"
                         @update:modelValue="
-                            $emit('update', 'filter', {
+                            handleCrudUpdate('filter', {
                                 trashed: form.trashed,
                             })
                         "
@@ -59,13 +59,15 @@
         <template v-if="tableComponent && cardsComponent">
             <div class="hidden lg:block">
                 <component
+                    v-if="!isLoading"
                     :is="tableComponent"
                     v-bind="$props"
+                    :resource="resource"
                     :form="form"
                     @open-customizer="openCustomizationModal"
                     :actions="actions"
                     @update="
-                        $emit('update', 'orderBy', [
+                        handleCrudUpdate('orderBy', [
                             { column: form.sort, order: form.dir },
                         ])
                     "
@@ -74,10 +76,13 @@
                         <slot name="title"></slot>
                     </template>
                 </component>
+                <spinner v-else />
             </div>
             <div class="lg:hidden">
                 <component
+                    v-if="!isLoading"
                     :is="cardsComponent"
+                    :resource="resource"
                     v-bind="$props"
                     :form="form"
                     @open-customizer="openCustomizationModal"
@@ -87,6 +92,7 @@
                         <slot name="title"></slot>
                     </template>
                 </component>
+                <spinner v-else />
             </div>
         </template>
         <template v-else>
@@ -104,7 +110,7 @@
                 v-if="resource"
                 class="mt-4"
                 :paginatorInfo="resource.paginatorInfo"
-                @update-page="(value) => $emit('update', 'page', value)"
+                @update-page="(value) => handleCrudUpdate('page', value)"
             />
         </slot>
     </jet-bar-container>
@@ -115,12 +121,13 @@
         :model-key="modelKey"
     />
     <edit-modal
-        @refresh="$emit('refresh')"
+        @refresh="refetch"
         :edit-component="editComponent"
         :model-name="modelName"
         :model-key="modelKey"
     />
     <create-modal
+        @refresh="refetch"
         :create-component="editComponent"
         :model-name="modelName"
         :model-key="modelKey"
@@ -135,7 +142,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { merge } from "lodash";
 import Pagination from "@/Components/Pagination.vue";
@@ -156,10 +163,14 @@ import { getFields } from "@/Components/CRUD/helpers/getFields";
 import { getActions } from "@/Components/CRUD/helpers/actions";
 import { create } from "@/Components/CRUD/helpers/gqlData";
 import { usePage } from "@inertiajs/inertia-vue3";
+import queries from "@/gql/queries.js";
+import { useQuery } from "@vue/apollo-composable";
+import Spinner from "@/Components/Spinner.vue";
 
 export default defineComponent({
     components: {
         CrudColumnCustomizationModal,
+        Spinner,
         GymRevenueDataCards,
         GymRevenueDataTable,
         Pagination,
@@ -174,8 +185,11 @@ export default defineComponent({
         fields: {
             type: Array,
         },
-        resource: {
+        param: {
             type: Object,
+        },
+        handleCrudUpdate: {
+            type: Function,
         },
         baseRoute: {
             type: String,
@@ -231,7 +245,7 @@ export default defineComponent({
         },
     },
 
-    setup(props, { emit }) {
+    setup(props, { expose }) {
         const page = usePage();
 
         const form = ref({
@@ -242,19 +256,19 @@ export default defineComponent({
         const handleSearch = (value) => {
             form.value.search = value;
             console.log(form.value);
-            emit("update", "filter", {
+            handleCrudUpdate("filter", {
                 search: value,
             });
         };
         const clearSearch = () => {
             form.value.search = "";
-            emit("update", "filter", {
+            handleCrudUpdate("filter", {
                 search: "",
             });
         };
         const clearFilters = () => {
             form.value.trashed = "";
-            emit("update", "filter", {
+            handleCrudUpdate("filter", {
                 trashed: "",
             });
         };
@@ -331,6 +345,48 @@ export default defineComponent({
             link.click();
         };
 
+        const modelKey = props.modelKey || props.modelName;
+
+        const param = ref({
+            page: 1,
+        });
+        const { result, refetch } = useQuery(
+            queries[modelKey + "s"],
+            props.param ? props.param : param,
+            {
+                throttle: 500,
+            }
+        );
+
+        const isLoading = computed(() => result.isLoading);
+        const resource = computed(() => {
+            if (result.value && result.value[modelKey + "s"]) {
+                return _.cloneDeep(result.value[modelKey + "s"]);
+            } else {
+                return null;
+            }
+        });
+
+        const handleCrudUpdate = (key, value) => {
+            if (props.handleCrudUpdate) {
+                props.handleCrudUpdate(key, value);
+                return;
+            }
+            if (typeof value === "object") {
+                param.value = {
+                    ...param.value,
+                    [key]: {
+                        ...param.value[key],
+                        ...value,
+                    },
+                };
+            } else {
+                param.value = {
+                    ...param.value,
+                    [key]: value,
+                };
+            }
+        };
         const defaultTopActions = {
             create: {
                 label: `Create ${props.modelName}`,
@@ -341,8 +397,8 @@ export default defineComponent({
             },
             export: {
                 label: "Export",
-                handler: () => exportToCsv(props.resource.data),
-                shouldRender: () => !!props.resource?.paginatorInfo.total,
+                handler: () => exportToCsv(resource.value.data),
+                shouldRender: () => !!resource.value?.paginatorInfo.total,
                 class: ["btn-secondary"],
             },
             exportAll: {
@@ -359,7 +415,7 @@ export default defineComponent({
                     exportToCsv(data);
                 },
                 class: ["btn-secondary"],
-                shouldRender: () => !!props.resource?.paginatorInfo.total,
+                shouldRender: () => !!resource.value?.paginatorInfo.total,
             },
         };
         let topActions = [];
@@ -376,7 +432,10 @@ export default defineComponent({
         const openCustomizationModal = () => customizationModal.value.open();
 
         const actions = getActions(props);
-        const modelKey = props.modelKey || props.modelName;
+        expose({
+            handleCrudUpdate,
+            refetch,
+        });
         return {
             form,
             topActions,
@@ -387,6 +446,10 @@ export default defineComponent({
             openCustomizationModal,
             actions,
             modelKey,
+            resource,
+            refetch,
+            handleCrudUpdate,
+            isLoading,
         };
     },
 });

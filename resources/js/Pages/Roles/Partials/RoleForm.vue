@@ -181,6 +181,7 @@ export default {
                 ...form,
                 group: ~~form.group,
             });
+            emit("refresh");
             handleClickCancel();
         };
         if (operation === "Create") {
@@ -189,6 +190,7 @@ export default {
                     ...form,
                     group: ~~form.group,
                 });
+                emit("refresh");
                 handleClickCancel();
             };
         }
