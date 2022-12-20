@@ -424,8 +424,7 @@ class LocationSeeder extends Seeder
 //            }
         }
 
-
-        if (! App::environment(['production', 'staging'])) {
+        if (! App::environment(['production', 'staging']) && !env('RAPID_SEED', false)) {
             ///now do trufit csv import
             VarDumper::dump("Adding TruFit Locations from CSV");
             $key = 'tmp_data/trufit-clubs';
