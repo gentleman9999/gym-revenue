@@ -39,6 +39,7 @@ class LocationFactory extends Factory
             'zip' => substr($this->faker->postcode, 0, 5),
             'phone' => $phone,
             'location_type' => LocationTypeEnum::STORE,
+            'capacity' => rand(100, 500),
         ];
     }
 }

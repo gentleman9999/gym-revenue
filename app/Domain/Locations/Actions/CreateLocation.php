@@ -46,6 +46,7 @@ class CreateLocation
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
             'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
+            'capacity' => ['required','integer'],
         ];
     }
 

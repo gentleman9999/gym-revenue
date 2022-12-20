@@ -17,6 +17,7 @@
                 <li>State (Abbreviation)</li>
                 <li>Zip Code (5 digits)</li>
                 <li>Address 1</li>
+                <li>Capacity</li>
             </ul>
         </template>
         <template #title> Import Locations </template>
