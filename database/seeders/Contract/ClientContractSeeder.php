@@ -35,24 +35,27 @@ class ClientContractSeeder extends Seeder
                         'name' => "{$client_name}-{$agreement->endUser->first_name}{$agreement->endUser->last_name}-Agreement-".time(),
                         'client_id' => $client->id, ];
                     $contract = CreateContract::run($contract_data);
-                    $adobe_service = new AdobeAPIService();
 
-                    $json_key = [
-                        'client_name',
-                        'agreement_template_type',
-                    ];
+                    if(!env('RAPID_SEED', false)) {
+                        $adobe_service = new AdobeAPIService();
 
-                    VarDumper::dump("Creating contract PDF for ".$client->name);
-                    $client_info = new ClientData('Contract', $client->name, $client->id, 'SeederAgreementTemplate.docx');
-                    $client_info->setEndUserId($agreement->end_user_id);
-                    $client_info->setEntityId($contract->id);
-                    $client_info->setJsonData($json_key);
+                        $json_key = [
+                            'client_name',
+                            'agreement_template_type',
+                        ];
 
-                    $result = json_decode($adobe_service->generatePDF($client_info));
-                    if (! $result->status) {
-                        VarDumper::dump("PDF for ".$client->name.' was not created due to error: '.$result->message);
-                    } else {
-                        VarDumper::dump("PDF for ".$client->name.' is created successfully');
+                        VarDumper::dump("Creating contract PDF for ".$client->name);
+                        $client_info = new ClientData('Contract', $client->name, $client->id, 'SeederAgreementTemplate.docx');
+                        $client_info->setEndUserId($agreement->end_user_id);
+                        $client_info->setEntityId($contract->id);
+                        $client_info->setJsonData($json_key);
+
+                        $result = json_decode($adobe_service->generatePDF($client_info));
+                        if (!$result->status) {
+                            VarDumper::dump("PDF for " . $client->name . ' was not created due to error: ' . $result->message);
+                        } else {
+                            VarDumper::dump("PDF for " . $client->name . ' is created successfully');
+                        }
                     }
                 }
             }
