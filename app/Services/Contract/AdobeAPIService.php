@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Contract;
 
+use App\Domain\Contracts\Projections\Contract;
 use App\Models\File;
 use App\Support\Uuid;
 use Firebase\JWT\JWT;
@@ -105,7 +106,7 @@ class AdobeAPIService
             $response = json_decode($response->body());
             $this->asset_id = $response->assetID;
             $upload_uri = $response->uploadUri;
-
+//TODO: why does getAssetId have a side effect of uploading a file?
             return $this->uploadWordFile($upload_uri, $media_type);
         } else {
             throw new \ErrorException('PDF not created successfully');
@@ -205,7 +206,7 @@ class AdobeAPIService
                 $file_table_data['key'] = $file_key;
                 $file_table_data['size'] = $response->header('Content-Length');
                 $file_table_data['bucket'] = 's3';
-                $file_table_data['entity_type'] = $this->client_data['agreement_template_type'];
+                $file_table_data['entity_type'] = Contract::class;
                 $file_table_data['entity_id'] = $this->client_data['entity_id'];
                 $file_table_data['hidden'] = false;
                 $file_table_data['type'] = 'pdf';

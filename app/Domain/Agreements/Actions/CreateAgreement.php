@@ -20,7 +20,9 @@ class CreateAgreement
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'billing_schedule_id' => ['required', 'exists:billing_schedules,id'],
             'created_by' => 'required',
-            'agreement_json' => 'required',
+            'end_user_id' => ['required','exists:end_users,id'],
+            'agreement_template_id' => ['required', 'exists:agreement_templates,id'],
+            'agreement_json' => ['sometimes', 'json'],
             'contract_id' => ['required', 'exists:contracts,id'],
         ];
     }

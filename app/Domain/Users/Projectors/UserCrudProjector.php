@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
-use Symfony\Component\VarDumper\VarDumper;
 
 class UserCrudProjector extends Projector
 {
