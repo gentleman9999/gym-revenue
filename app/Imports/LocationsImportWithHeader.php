@@ -29,14 +29,14 @@ class LocationsImportWithHeader implements ToCollection, WithHeadingRow
                 'zip' => $row['zip'],
                 'address1' => $row['address1'],
                 'phone' => $row['phone'],
-                'opened_at' => $row['open_date'] ?? null,
-                'closed_at' => $row['close_date'] ?? null,
+                'open_date' => $row['open_date'] ?? null,
+                'close_date' => $row['close_date'] ?? null,
                 'poc_first' => $row['poc_first'] ?? null,
                 'poc_last' => $row['poc_last'] ?? null,
                 'poc_phone' => $row['poc_phone'] ?? null,
                 'shouldCreateTeam' => true,
                 'location_type' => LocationTypeEnum::STORE,
-                'capacity' => $row[6],
+                'capacity' => $row['capacity'],
             ]);
         }
     }
