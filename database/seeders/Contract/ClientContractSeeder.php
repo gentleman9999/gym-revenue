@@ -6,6 +6,7 @@ namespace Database\Seeders\Contract;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Contracts\Actions\CreateContract;
+use App\Domain\EndUsers\Projections\EndUser;
 use App\Services\Contract\AdobeAPIService;
 use App\Services\Contract\ClientData;
 use Illuminate\Database\Seeder;
@@ -20,43 +21,36 @@ class ClientContractSeeder extends Seeder
      */
     public function run()
     {
-        $clients = Client::with(['agreements','agreements.category','agreements.endUser'])->get();
+        $clients = Client::all();
 
         foreach ($clients as $client) {
-            $amount_of_agreement = count($client->agreements);
-            if ($amount_of_agreement > 0) {
-                $amount_of_pdf = 2;
-                foreach ($client->agreements as $key => $agreement) {
-                    if ($key >= $amount_of_pdf) {
-                        break;
-                    }
-                    $client_name = str_replace(' ', '', $client->name);
-                    $contract_data = [
-                        'name' => "{$client_name}-{$agreement->endUser->first_name}{$agreement->endUser->last_name}-Agreement-".time(),
-                        'client_id' => $client->id, ];
-                    $contract = CreateContract::run($contract_data);
+            $end_user = EndUser::whereClientId($client->id)->first();
+            $client_name = str_replace(' ', '', $client->name);
+            $contract_data = [
+                'name' => "{$client_name}-{$end_user->name}-Agreement-".time(),
+                'client_id' => $client->id, ];
+            $contract = CreateContract::run($contract_data);
 
-                    if(!env('RAPID_SEED', false)) {
-                        $adobe_service = new AdobeAPIService();
+            if(!env('RAPID_SEED', false)) {
 
-                        $json_key = [
-                            'client_name',
-                            'agreement_template_type',
-                        ];
+                $adobe_service = new AdobeAPIService();
 
-                        VarDumper::dump("Creating contract PDF for ".$client->name);
-                        $client_info = new ClientData('Contract', $client->name, $client->id, 'SeederAgreementTemplate.docx');
-                        $client_info->setEndUserId($agreement->end_user_id);
-                        $client_info->setEntityId($contract->id);
-                        $client_info->setJsonData($json_key);
+                $json_key = [
+                    'client_name',
+                    'agreement_template_type',
+                ];
 
-                        $result = json_decode($adobe_service->generatePDF($client_info));
-                        if (!$result->status) {
-                            VarDumper::dump("PDF for " . $client->name . ' was not created due to error: ' . $result->message);
-                        } else {
-                            VarDumper::dump("PDF for " . $client->name . ' is created successfully');
-                        }
-                    }
+                VarDumper::dump("Creating contract PDF for " . $client->name);
+                $client_info = new ClientData('Contract', $client->name, $client->id, 'SeederAgreementTemplate.docx');
+                $client_info->setEndUserId($end_user->id);
+                $client_info->setEntityId($contract->id);
+                $client_info->setJsonData($json_key);
+
+                $result = json_decode($adobe_service->generatePDF($client_info));
+                if (!$result->status) {
+                    VarDumper::dump("PDF for " . $client->name . ' was not created due to error: ' . $result->message);
+                } else {
+                    VarDumper::dump("PDF for " . $client->name . ' is created successfully');
                 }
             }
         }
