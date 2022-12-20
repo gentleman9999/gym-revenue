@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.1']
+        php-versions: ['8.2']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -94,4 +94,6 @@ jobs:
         run: php artisan migrate:fresh --seed
         env:
           QUICK_SEED: true
-          SUPER_QUICK_SEED: true
+          RAPID_SEED: true
+          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
