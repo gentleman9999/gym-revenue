@@ -7,6 +7,7 @@ use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\LocationSeeder;
+use Database\Seeders\Clients\LocationVendorSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\CallScriptTemplateSeeder;
@@ -90,6 +91,10 @@ class DatabaseSeeder extends Seeder
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
+
+        // New vendors for different location are created here
+        VarDumper::dump('Running Location Vendor Seeder');
+        $this->call(LocationVendorSeeder::class);
 
         // Secondary Teams linked to each client's account owner are defined here.
         // There is a team for each location, along with various sales teams
