@@ -15,11 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @property string                       $client_id
- * @property int                          $created_by
- * @property string                       $id
- * @property Collection<ChatParticipants> $participants
- * @property array                        $read_by
+ * @property string                      $client_id
+ * @property int                         $created_by
+ * @property string                      $id
+ * @property Collection<ChatParticipant> $participants
+ * @property array                       $read_by
+ * @property int                         $admin_id
  */
 class Chat extends GymRevProjection
 {
@@ -37,7 +38,7 @@ class Chat extends GymRevProjection
 
     public function participants(): HasMany
     {
-        return $this->hasMany(ChatParticipants::class);
+        return $this->hasMany(ChatParticipant::class);
     }
 
     public function messages(): HasMany
@@ -55,7 +56,7 @@ class Chat extends GymRevProjection
     public static function findChatForUsers(array $user_ids): ?string
     {
         /** @var Builder $sub_query */
-        $sub_query = ChatParticipants::select(
+        $sub_query = ChatParticipant::select(
             'chat_id',
             DB::raw('GROUP_CONCAT(user_id ORDER BY user_id ASC) users')
         )->groupBy('chat_id');

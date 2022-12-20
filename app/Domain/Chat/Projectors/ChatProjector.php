@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Chat\Projectors;
 
+use App\Domain\Chat\Actions\CreateParticipant;
 use App\Domain\Chat\Events\ChatCreated;
 use App\Domain\Chat\Events\ChatDeleted;
 use App\Domain\Chat\Events\ChatRestored;
 use App\Domain\Chat\Events\ChatUpdated;
 use App\Domain\Chat\Models\Chat;
-use App\Domain\Chat\Models\ChatParticipants;
+use App\Domain\Users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -22,14 +23,12 @@ class ChatProjector extends Projector
             $chat->id = $event->aggregateRootUuid();
             $chat->client_id = $event->payload['client_id'];
             $chat->created_by = $event->payload['user_id'];
+            $chat->admin_id = $event->payload['user_id'];
             $chat->writeable()->save();
 
             $chat = $chat->refresh();
             foreach (array_unique($event->payload['participant_ids']) as $user_id) {
-                (new ChatParticipants())->fill([
-                    'chat_id' => $chat->id,
-                    'user_id' => $user_id,
-                ])->writeable()->save();
+                CreateParticipant::run($chat, User::find($user_id));
             }
         });
     }

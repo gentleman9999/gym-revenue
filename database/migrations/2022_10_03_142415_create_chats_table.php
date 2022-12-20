@@ -16,6 +16,7 @@ return new class () extends Migration {
             $table->uuid('id')->unique()->primary();
             $table->uuid('client_id');
             $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('admin_id');
             $table->timestamps();
             $table->softDeletes();
 
@@ -25,6 +26,11 @@ return new class () extends Migration {
                 ->cascadeOnDelete();
 
             $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
+
+            $table->foreign('admin_id')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();

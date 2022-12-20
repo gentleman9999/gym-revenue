@@ -14,16 +14,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $chat_id
  * @property int    $user_id
  * @property User   $user
+ * @property string $id
+ * @property Chat   $chat
  */
-class ChatParticipants extends GymRevUuidProjection
+class ChatParticipant extends GymRevUuidProjection
 {
     use SoftDeletes;
     use Sortable;
-    protected $hidden = ['client_id'];
 
     protected $fillable = ['chat_id', 'user_id'];
 
-    public function chats(): BelongsTo
+    public function chat(): BelongsTo
     {
         return $this->belongsTo(Chat::class);
     }

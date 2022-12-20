@@ -37,7 +37,6 @@ use Twilio\Exceptions\ConfigurationException;
  * @property Collection       $gatewaySettings
  * @property string           $id
  * @property Collection<User> $users
- *
  * @method static ClientFactory factory()
  */
 class Client extends GymRevProjection

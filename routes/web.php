@@ -407,8 +407,11 @@ Route::middleware('auth:sanctum')->prefix('chat')->group(function () {
         Route::post('create', \App\Domain\Chat\Actions\CreateChat::class)->name('start-internal-chats');
         Route::get('get', \App\Domain\Chat\Actions\GetChat::class)->name('get-internal-chats');
         Route::get('interlocutors', \App\Domain\Chat\Actions\GetInterlocutor::class)->name('get-internal-chats-interlocutors');
-        Route::PUT('mark-as-read/{uuid}', \App\Domain\Chat\Actions\UpdateMessage::class)->name('mark-internal-chats-as-read');
+        Route::put('message/{chat_message}', \App\Domain\Chat\Actions\UpdateMessage::class)->name('edit-internal-chat');
+        Route::delete('message/{chat_message}', \App\Domain\Chat\Actions\DeleteMessage::class)->name('delete-internal-chat');
         Route::post('message', \App\Domain\Chat\Actions\CreateMessage::class)->name('message-internal-chats');
+        Route::post('participant/{chat}', \App\Domain\Chat\Actions\CreateParticipant::class)->name('add-chat-participant');
+        Route::delete('participant/{chat_participant}', \App\Domain\Chat\Actions\DeleteChatParticipant::class)->name('delete-chat-participant');
     });
 
     Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
