@@ -7,9 +7,9 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\BillingSchedules\Projections\BillingSchedule;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Contracts\Projections\Contract;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Users\Models\User;
-use App\Support\Uuid;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -44,7 +44,7 @@ class AgreementsSeeder extends Seeder
                             $agreement_data['end_user_id'] = $enduser['id'];
                             $agreement_data['agreement_template_id'] = AgreementTemplate::whereClientId($client->id)->first()->id;
                             $agreement_data['billing_schedule_id'] = BillingSchedule::whereClientId($client->id)->first()->id;
-                            $agreement_data['contract_id'] = Uuid::new();
+                            $agreement_data['contract_id'] = Contract::whereClientId($client->id)->first()->id;
                             $agreement_data['active'] = true;
                             CreateAgreement::run($agreement_data);
                         }

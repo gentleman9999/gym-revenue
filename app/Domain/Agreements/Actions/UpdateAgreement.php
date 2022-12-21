@@ -63,9 +63,7 @@ class UpdateAgreement
             }
         }
 
-        if (isset($data['billing_schedule_id'])) {
-            unset($data['billing_schedule_id']); // Don't have column in agreement table
-        }
+        unset($data['billing_schedule_id']); // Don't have column in agreement table
 
         return $this->handle(
             $agreement,
