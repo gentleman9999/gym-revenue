@@ -33,7 +33,7 @@ class CreateLocationsTable extends Migration
             $table->uuid('default_team_id')->nullable()->index();
             $table->string('location_type');
             $table->timestamp('opened_at')->nullable();
-            $table->timestamp("presale_started_at");
+            $table->timestamp("presale_started_at")->nullable();
             $table->integer('capacity')->unsigned();
             $table->index(['client_id', 'gymrevenue_id']);
             $table->index(['client_id', 'location_no']);

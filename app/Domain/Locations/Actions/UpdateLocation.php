@@ -47,7 +47,7 @@ class UpdateLocation
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'location_type' => ['sometimes',  new Enum(LocationTypeEnum::class)],
-            'presale_started_at' => ['required'],
+            'presale_started_at' => ['sometimes'],
             'capacity' => ['sometimes','integer'],
         ];
     }
