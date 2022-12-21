@@ -24,6 +24,9 @@ const props = defineProps({
     folderName: {
         type: String,
     },
+    refetch: {
+        type: Function,
+    },
 });
 
 const { mutate: createFolder } = useMutation(mutations.folder.create);
@@ -32,6 +35,7 @@ const addFolder = async () => {
         name: "New Folder",
     });
     if (result && result.data) {
+        props.refetch();
         toastSuccess("Folder Created");
     }
 };

@@ -2,46 +2,42 @@
     <LayoutHeader title="File Management">
         <h2 class="font-semibold text-xl leading-tight">File Manager</h2>
     </LayoutHeader>
-    <ApolloQuery :query="(gql) => queries['files']" :variables="form">
-        <template v-slot="{ result: { data, loading, error } }">
-            <div v-if="loading">Loading...</div>
-            <div v-else-if="error">Error</div>
-            <div class="files-container" v-else-if="data">
-                <div class="row">
-                    <file-actions :folderName="data.folderContent.name" />
-                    <file-display-mode
-                        :display-mode="displayMode"
-                        :handleChange="updateDisplayMode"
-                    />
-                </div>
-                <div class="row">
-                    <file-nav
-                        :folderName="data.folderContent.name"
-                        class="file-nav"
-                        @rootdir="rootDirectory"
-                    />
-                    <file-search
-                        :form="form"
-                        @search="handleFilter('search', $event)"
-                        @trashed="handleFilter('trashed', $event)"
-                        class="file-search"
-                    />
-                </div>
-                <file-contents
-                    v-bind="{ ...data.folderContent }"
-                    :displayMode="displayMode"
-                    :handleRename="handleRename"
-                    :handlePermissions="handlePermissions"
-                    :handleTrash="handleTrash"
-                    :handleShare="handleShare"
-                    :handleRestore="handleRestore"
-                    @browse="changeDirectory"
-                    @trashed="handleFilter('trashed', 'only')"
-                />
-            </div>
-            <div v-else>Loading...</div>
-        </template>
-    </ApolloQuery>
+    <div class="files-container" v-if="data">
+        <div class="row">
+            <file-actions
+                :folderName="data.folderContent.name"
+                :refetch="refetch"
+            />
+            <file-display-mode
+                :display-mode="displayMode"
+                :handleChange="updateDisplayMode"
+            />
+        </div>
+        <div class="row">
+            <file-nav
+                :folderName="data.folderContent.name"
+                class="file-nav"
+                @rootdir="rootDirectory"
+            />
+            <file-search
+                :form="form"
+                @search="handleFilter('search', $event)"
+                @trashed="handleFilter('trashed', $event)"
+                class="file-search"
+            />
+        </div>
+        <file-contents
+            v-bind="{ ...data.folderContent }"
+            :displayMode="displayMode"
+            :handleRename="handleRename"
+            :handlePermissions="handlePermissions"
+            :handleTrash="handleTrash"
+            :handleShare="handleShare"
+            :handleRestore="handleRestore"
+            @browse="changeDirectory"
+            @trashed="handleFilter('trashed', 'only')"
+        />
+    </div>
 
     <!-- Section for Modals -->
     <daisy-modal id="confirmModal" ref="confirmModal">
@@ -55,7 +51,7 @@
         <rename-form
             :item="selectedItem"
             v-if="selectedItem"
-            @success="renameModal.close"
+            @success="confirmRename"
         />
     </daisy-modal>
 
@@ -98,7 +94,7 @@
 </style>
 
 <script setup>
-import { watchEffect, ref, onMounted, watch } from "vue";
+import { watchEffect, ref, computed } from "vue";
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import RenameForm from "./Partials/RenameForm.vue";
 import PermissionsForm from "./Partials/PermissionsForm.vue";
@@ -113,7 +109,7 @@ import FileSearch from "./Partials/FileSearch.vue";
 import FileNav from "./Partials/FileNav.vue";
 import ConfirmModal from "./Partials/ConfirmModal.vue";
 import mutations from "@/gql/mutations";
-import { useMutation } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import { toastSuccess } from "@/utils/createToast";
 import queries from "@/gql/queries";
 
@@ -151,8 +147,32 @@ const permissionsModal = ref(null);
 const shareModal = ref(null);
 const confirmModal = ref(null);
 
+const form = ref({
+    id: null,
+    filter: {
+        search: "",
+    },
+});
+
+const { result, refetch } = useQuery(queries["files"], form, {
+    throttle: 500,
+});
+
+const data = computed(() => {
+    if (result.value) {
+        return _.cloneDeep(result.value);
+    } else {
+        return null;
+    }
+});
+
 const handleRename = (data, type) => {
     selectedItem.value = data;
+};
+
+const confirmRename = (data, type) => {
+    renameModal.value.close();
+    refetch();
 };
 
 const handlePermissions = (data) => {
@@ -184,6 +204,7 @@ const confirmTrash = async () => {
             toastSuccess(
                 `File ${item2Remove.value.name} was successfully removed`
             );
+            refetch();
         }
     } else {
         let result = await trashFolder({ id });
@@ -192,6 +213,7 @@ const confirmTrash = async () => {
             toastSuccess(
                 `Folder ${item2Remove.value.name} was successfully removed`
             );
+            refetch();
         }
     }
 };
@@ -205,12 +227,14 @@ const handleRestore = async (data, type) => {
         if (result.data) {
             confirmModal.value.close();
             toastSuccess(`File ${result.data.filename} was restored`);
+            refetch();
         }
     } else {
         let result = await restoreFolder({ id: data.id });
         if (result.data) {
             confirmModal.value.close();
             toastSuccess(`Folder ${result.data.name} was restored`);
+            refetch();
         }
     }
     confirmModal.value.close();
@@ -231,13 +255,6 @@ watchEffect(() => {
 const updateDisplayMode = (value) => {
     displayMode.value = value;
 };
-
-const form = ref({
-    id: null,
-    filter: {
-        search: "",
-    },
-});
 
 const rootDirectory = () => {
     form.value = {
