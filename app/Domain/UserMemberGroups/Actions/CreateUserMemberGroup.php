@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\UserMemberGroups\Actions;
 
-use App\Domain\UserMemberGroups\UserMemberGroupAggregate;
 use App\Domain\UserMemberGroups\Projections\UserMemberGroup;
+use App\Domain\UserMemberGroups\UserMemberGroupAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;
@@ -27,7 +27,7 @@ class CreateUserMemberGroup
         return [
             'client_id' => ['string', 'required'],
             'member_group_id' => ['string', 'required'],
-            'user_id' => ['int', 'required']
+            'user_id' => ['int', 'required'],
         ];
     }
 

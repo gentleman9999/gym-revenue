@@ -51,8 +51,6 @@ class ContractReactor extends Reactor
 //            } else {
 //                VarDumper::dump("PDF for " . $client->name . ' is created successfully');
 //            }
-
-
     }
 
 //    public function onContractUpdated(ContractUpdated $event): void

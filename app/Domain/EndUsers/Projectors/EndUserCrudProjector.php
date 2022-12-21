@@ -22,7 +22,6 @@ class EndUserCrudProjector extends Projector
     public function onEndUserCreated(EndUserCreated $event): void
     {
         DB::transaction(function () use ($event) {
-
             unset($event->payload['id']);//breaks during seeding
             unset($event->payload['agreement_number']);//breaks during seeding
             unset($event->payload['name']);//breaks during seeding

@@ -7,7 +7,6 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\EndUsers\Actions\CreateEndUser;
 use App\Domain\EndUsers\Members\Projections\Member;
-use App\Domain\Users\Models\User;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

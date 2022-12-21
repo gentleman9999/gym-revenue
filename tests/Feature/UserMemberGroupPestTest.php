@@ -28,7 +28,7 @@ function CreateUserMemberGroup(array $attributes = []): UserMemberGroup
         'client_id' => $client_id,
         'member_group_id' => $member_group_id,
         'user_id' => $user_id,
-        'is_primary' => 0
+        'is_primary' => 0,
     ]);
 }
 
@@ -45,7 +45,7 @@ it('should update UserMemberGroup name on UpdateUserMemberGroup action', functio
     $old_is_primary = 0;
 
     $user_member_group = CreateUserMemberGroup();
-    
+
     $this->assertEquals($user_member_group->is_primary, $old_is_primary);
     UpdateUserMemberGroup::run($user_member_group, ['is_primary' => $new_is_primary]);
     $user_member_group->refresh();

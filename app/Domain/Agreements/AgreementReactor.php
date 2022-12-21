@@ -46,11 +46,10 @@ class AgreementReactor extends Reactor implements ShouldQueue
         $client_info->setLocation($locations);
         $client_info->setJsonData($json_key);
 
-        if(!Cache::get('is_seeding', false)) {
+        if (! Cache::get('is_seeding', false)) {
             $adobe_service = new AdobeAPIService();
             $adobe_service->generatePDF($client_info);
-        }else{
-
+        } else {
         }
     }
 }

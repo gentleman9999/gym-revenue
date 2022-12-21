@@ -32,7 +32,7 @@ class ClientSeeder extends Seeder
         }
 
 
-        if (! App::environment(['production', 'staging']) && !env('RAPID_SEED', false)) {
+        if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', false)) {
             $clients['TruFit Athletic Clubs'] = 1;
         }
 

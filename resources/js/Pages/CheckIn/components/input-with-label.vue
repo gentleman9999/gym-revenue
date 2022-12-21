@@ -4,7 +4,7 @@
             {{ label }}
         </div>
         <input
-            v-model="value"
+            v-bind="props"
             :class="{
                 'bg-neutral': !value && !secondary,
                 'bg-secondary': value || secondary,
@@ -32,4 +32,6 @@ const props = defineProps({
     value: String,
     secondary: Boolean,
 });
+
+const value = ref(null);
 </script>

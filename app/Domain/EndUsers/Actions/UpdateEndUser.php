@@ -4,9 +4,7 @@ namespace App\Domain\EndUsers\Actions;
 
 use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
-use App\Enums\GenderEnum;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 

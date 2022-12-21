@@ -6,13 +6,13 @@ namespace App\Domain\MemberGroups\Actions;
 
 use App\Domain\MemberGroups\MemberGroupAggregate;
 use App\Domain\MemberGroups\Projections\MemberGroup;
+use App\Enums\MemberGroupTypeEnum;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
-use App\Enums\MemberGroupTypeEnum;
 
 class UpdateMemberGroup
 {
@@ -30,7 +30,7 @@ class UpdateMemberGroup
             'type' => ['required',  new Enum(MemberGroupTypeEnum::class)],
             'poc_name' => ['sometimes', 'string'],
             'poc_phone' => ['sometimes', 'string'],
-            'poc_email' => ['sometimes', 'string']
+            'poc_email' => ['sometimes', 'string'],
         ];
     }
 

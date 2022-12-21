@@ -88,6 +88,7 @@ class AdobeAPIService
             return $this->getAssetId();
         } else {
             dd($response->body());
+
             throw new \ErrorException('PDF not created successfully');
         }
     }
@@ -154,6 +155,7 @@ class AdobeAPIService
             return $this->checkFileStatus();
         } else {
             dd($response->body());
+
             throw new \ErrorException('PDF not created successfully');
         }
     }

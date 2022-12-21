@@ -57,7 +57,7 @@ class CreateEndUser extends BaseEndUserAction
             } else {
                 $memberAttendees = [$id];
             }
-//TODO: why are we doing this here instead of in a reactor?
+            //TODO: why are we doing this here instead of in a reactor?
             $drips = DripCampaign::whereStatus('ACTIVE')->get();
             if ($drips) {
                 $client_id = $data['client_id'];

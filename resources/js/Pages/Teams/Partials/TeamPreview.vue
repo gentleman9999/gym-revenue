@@ -1,13 +1,13 @@
 <template>
-    <div className="grid grid-cols-6 gap-6">
-        <div className="field col-span-6 md:col-span-3">
+    <div class="grid grid-cols-6 gap-6">
+        <div class="field col-span-6 md:col-span-3">
             <label>Team Name:</label>
             <div class="data">
                 {{ team.team.name }}
             </div>
         </div>
 
-        <div className="field col-span-6 md:col-span-3" v-if="team.client">
+        <div class="field col-span-6 md:col-span-3" v-if="team.client">
             <label>Client Name:</label>
             <div class="data" v-if="team.client">
                 {{ team.client.name }}
@@ -15,8 +15,8 @@
         </div>
     </div>
 
-    <div className="grid grid-cols-6 gap-6 mt-4">
-        <div className="form-control col-span-6 lg:col-span-4">
+    <div class="grid grid-cols-6 gap-6 mt-4">
+        <div class="form-control col-span-6 lg:col-span-4">
             <h1>Users</h1>
             <div class="w-full overflow-x-scroll">
                 <table class="table table-compact" v-if="team.users?.length">
@@ -63,10 +63,7 @@
             </div>
         </div>
 
-        <div
-            className="form-control col-span-6 lg:col-span-2"
-            v-if="team.clubs"
-        >
+        <div class="form-control col-span-6 lg:col-span-2" v-if="team.clubs">
             <h1>Locations</h1>
             <table class="table table-compact w-full">
                 <!-- head -->

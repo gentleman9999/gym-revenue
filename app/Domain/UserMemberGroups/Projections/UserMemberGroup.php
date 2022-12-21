@@ -7,10 +7,10 @@ namespace App\Domain\UserMemberGroups\Projections;
 use App\Domain\Clients\Projections\Client;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
+use Database\Factories\UserMemberGroupFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Database\Factories\UserMemberGroupFactory;
 
 class UserMemberGroup extends GymRevProjection
 {

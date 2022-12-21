@@ -9,11 +9,11 @@ use App\Domain\Locations\Actions\CreateLocation;
 use App\Domain\Locations\Actions\ImportLocations;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
-use Carbon\Carbon;
 
 class LocationSeeder extends Seeder
 {
@@ -425,13 +425,13 @@ class LocationSeeder extends Seeder
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
-            
+
             $min = Carbon::now()->subDays(365)->timestamp;
             $max = Carbon::now()->timestamp;
             $val = rand($min, $max);
-            $presale_started_at =  date('Y-m-d H:i:s', $val);
+            $presale_started_at = date('Y-m-d H:i:s', $val);
             $location['presale_started_at'] = $presale_started_at;
-            
+
             unset($location['client']);
 //            $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
 //            $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
@@ -450,7 +450,7 @@ class LocationSeeder extends Seeder
 //            }
         }
 
-        if (! App::environment(['production', 'staging']) && !env('RAPID_SEED', false)) {
+        if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', false)) {
             ///now do trufit csv import
             VarDumper::dump("Adding TruFit Locations from CSV");
             $key = 'tmp_data/trufit-clubs';

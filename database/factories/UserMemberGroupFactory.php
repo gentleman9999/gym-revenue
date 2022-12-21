@@ -2,15 +2,14 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Domain\UserMemberGroups\Projections\UserMemberGroup;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
 class UserMemberGroupFactory extends Factory
 {
-
     /**
      * The name of the factory's corresponding model.
      *
@@ -26,7 +25,7 @@ class UserMemberGroupFactory extends Factory
     public function definition()
     {
         return [
-            'is_primary' => 0
+            'is_primary' => 0,
         ];
     }
 }

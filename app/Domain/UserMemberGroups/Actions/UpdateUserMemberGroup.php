@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\UserMemberGroups\Actions;
 
-use App\Domain\UserMemberGroups\UserMemberGroupAggregate;
 use App\Domain\UserMemberGroups\Projections\UserMemberGroup;
+use App\Domain\UserMemberGroups\UserMemberGroupAggregate;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

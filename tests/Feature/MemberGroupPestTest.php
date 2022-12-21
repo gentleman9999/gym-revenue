@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\MemberGroups\Actions\CreateMemberGroup;
-use App\Domain\MemberGroups\Actions\UpdateMemberGroup;
 use App\Domain\MemberGroups\Actions\DeleteMemberGroup;
 use App\Domain\MemberGroups\Actions\RestoreMemberGroup;
 use App\Domain\MemberGroups\Actions\TrashMemberGroup;
-use App\Domain\MemberGroups\Projections\MemberGroup;
+use App\Domain\MemberGroups\Actions\UpdateMemberGroup;
 use App\Domain\MemberGroups\Events\MemberGroupCreated;
 use App\Domain\MemberGroups\Events\MemberGroupUpdated;
-use App\Domain\MemberGroups\Events\MemberGroupDeleted;
-use App\Domain\MemberGroups\Events\MemberGroupRestored;
-use App\Domain\MemberGroups\Events\MemberGroupTrashed;
+use App\Domain\MemberGroups\Projections\MemberGroup;
 
 beforeEach(function () {
     //
@@ -82,7 +79,7 @@ it('should restore member group on RestoreMemberGroup action', function () {
     $member_group = CreateMemberGroup();
 
     $this->assertEquals(null, $member_group->deleted_at);
- 
+
     TrashMemberGroup::run($member_group->id);
     $member_group->refresh();
 

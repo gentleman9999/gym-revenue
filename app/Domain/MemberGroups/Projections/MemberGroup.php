@@ -7,11 +7,11 @@ namespace App\Domain\MemberGroups\Projections;
 use App\Domain\Clients\Projections\Client;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
+use Database\Factories\MemberGroupFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Database\Factories\MemberGroupFactory;
 
 class MemberGroup extends GymRevProjection
 {
