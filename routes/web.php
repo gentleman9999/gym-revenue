@@ -448,3 +448,18 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('contracts')->group(func
     Route::delete('/{contract_id}/force', \App\Domain\Contracts\Actions\DeleteContract::class)->name('contract.delete');
     Route::post('/{contract_id}/restore', \App\Domain\Contracts\Actions\RestoreContract::class)->withTrashed()->name('contract.restore');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('member-group')->group(function () {
+    Route::post('/', \App\Domain\MemberGroups\Actions\CreateMemberGroup::class)->name('member-group-store');
+    Route::put('/{id}', \App\Domain\MemberGroups\Actions\UpdateMemberGroup::class)->name('member-group.update');
+    Route::delete('/{id}', \App\Domain\MemberGroups\Actions\TrashMemberGroup::class)->name('member-group.trash');
+    Route::delete('/{id}/force', \App\Domain\MemberGroups\Actions\DeleteMemberGroup::class)->name('member-group.delete');
+    Route::get('/{id}/restore', \App\Domain\MemberGroups\Actions\RestoreMemberGroup::class)->withTrashed()->name('member-group.restore');
+});
+
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('user-member-group')->group(function () {
+    Route::post('/', \App\Domain\UserMemberGroups\Actions\CreateUserMemberGroup::class)->name('user-member-group.store');
+    Route::put('/{id}', \App\Domain\UserMemberGroups\Actions\UpdateUserMemberGroup::class)->name('user-member-group.update');
+    Route::delete('/{id}/force', \App\Domain\UserMemberGroups\Actions\DeleteUserMemberGroup::class)->name('user-member-group.delete');
+});
