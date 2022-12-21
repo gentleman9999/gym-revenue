@@ -78,7 +78,7 @@
                         >
                             <div class="tabledata">
                                 No
-                                {{ __modelNamePlural || "Records" }}
+                                {{ modelNamePlural || "Records" }}
                                 found.
                             </div>
                         </td>

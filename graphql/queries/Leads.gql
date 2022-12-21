@@ -4,5 +4,4 @@ extend type Query {
         orderBy: [OrderByClause!] @orderBy
     ): [Lead!]!
     @paginate(defaultCount: 10)
-        @can(ability: "leads.read", model: "App\\Domain\\EndUsers\\Leads\\Projections\\Lead")
 }

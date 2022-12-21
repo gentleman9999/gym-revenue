@@ -16,51 +16,57 @@
         >
             X
         </button>
-    </div>
-    <teleport to="main">
-        <div
-            :class="{
-                'filter-closed-container': !visible,
-                'filter-drawer-hovered': !visible && isHovered,
-                'filter-drawer-open': visible,
-                'filter-in-use': !visible && filtersOn,
-            }"
-            @mouseenter="setHoverOn"
-            @mouseleave="setHoverOff"
-            class="filter-drawer"
-        >
-            <button
-                v-if="visible"
-                class="filter-open"
-                @click="toggleFilterDrawer"
-            >
-                <font-awesome-icon :icon="['fas', 'chevron-right']" size="lg" />
-            </button>
+        <teleport to="main">
             <div
-                id="filters-open"
-                v-if="visible"
-                :class="{ 'filters-open': visible }"
+                :class="{
+                    'filter-closed-container': !visible,
+                    'filter-drawer-hovered': !visible && isHovered,
+                    'filter-drawer-open': visible,
+                    'filter-in-use': !visible && filtersOn,
+                }"
+                @mouseenter="setHoverOn"
+                @mouseleave="setHoverOff"
+                class="filter-drawer"
             >
-                <slot />
-
                 <button
-                    class="btn btn-sm btn-outline self-end mt-4"
-                    type="button"
-                    @click="$emit('clear-filters')"
+                    v-if="visible"
+                    class="filter-open"
+                    @click="toggleFilterDrawer"
                 >
-                    Clear Filters
+                    <font-awesome-icon
+                        :icon="['fas', 'chevron-right']"
+                        size="lg"
+                    />
+                </button>
+                <div
+                    id="filters-open"
+                    v-if="visible"
+                    :class="{ 'filters-open': visible }"
+                >
+                    <slot />
+
+                    <button
+                        class="btn btn-sm btn-outline self-end mt-4"
+                        type="button"
+                        @click="$emit('clear-filters')"
+                    >
+                        Clear Filters
+                    </button>
+                </div>
+                <button
+                    :disabled="visible"
+                    class="toggle-filters"
+                    @click="toggleFilterDrawer"
+                >
+                    <font-awesome-icon
+                        :icon="['fas', 'chevron-right']"
+                        size="lg"
+                    />
+                    <span class="hover-text">Filters</span>
                 </button>
             </div>
-            <button
-                :disabled="visible"
-                class="toggle-filters"
-                @click="toggleFilterDrawer"
-            >
-                <font-awesome-icon :icon="['fas', 'chevron-right']" size="lg" />
-                <span class="hover-text">Filters</span>
-            </button>
-        </div>
-    </teleport>
+        </teleport>
+    </div>
 </template>
 
 <style>

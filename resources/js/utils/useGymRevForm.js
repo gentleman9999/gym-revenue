@@ -33,10 +33,8 @@ export const useGymRevForm = (...args) => {
     const currentData = computed(() => form.data());
 
     const dirtyFields = computed(() => {
-        console.log({ initialData: initialData.value });
         let fields = [];
         for (let key in initialData.value) {
-            // console.log({key, initial: initialData.value[key], current: currentData.value[key] })
             const initialValue = initialData.value[key];
             const currentValue = currentData.value[key];
             if (typeof initialValue === "Object") {
@@ -44,12 +42,10 @@ export const useGymRevForm = (...args) => {
                     JSON.stringify(initialValue) !==
                     JSON.stringify(currentValue)
                 ) {
-                    console.log("found diff", key);
                     fields.push(key);
                     break;
                 }
             } else if (initialValue !== currentValue) {
-                console.log("found diff", key);
                 fields.push(key);
             }
         }

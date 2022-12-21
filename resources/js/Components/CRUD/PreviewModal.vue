@@ -5,8 +5,10 @@
             :variables="previewParam"
             v-if="previewParam"
         >
-            <template v-slot="{ result: { data, loading, error } }">
-                <div v-if="loading">Loading...</div>
+            <template v-slot="{ result: { data, loading, error }, isLoading }">
+                <div v-if="isLoading">
+                    <spinner />
+                </div>
                 <div v-else-if="error">Error</div>
                 <component
                     v-else-if="data"
@@ -27,9 +29,10 @@ import {
     clearPreviewParam,
 } from "@/Components/CRUD/helpers/gqlData";
 import queries from "@/gql/queries";
+import Spinner from "@/Components/Spinner.vue";
 
 export default {
-    components: { DaisyModal },
+    components: { DaisyModal, Spinner },
     props: {
         previewComponent: {
             required: true,

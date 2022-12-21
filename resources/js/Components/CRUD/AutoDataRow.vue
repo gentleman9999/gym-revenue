@@ -10,7 +10,8 @@
                     :field="field"
                     :data="data"
                     :base-route="modelName"
-                    v-bind="$props"
+                    :modelName="modelName"
+                    :modelKey="modelKey"
                 />
             </div>
         </td>

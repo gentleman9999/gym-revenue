@@ -491,7 +491,10 @@ export default {
 
         let calendarEvent = props.calendar_event;
         const calendarEventTypes = page.props.value.calendar_event_types;
-        console.log("page.props.value", page.props.value);
+        console.log(
+            "==============================================page.props.value==============================================",
+            page.props.value
+        );
 
         const showAttendeesModal = ref();
         const attendeesModal = ref(null);

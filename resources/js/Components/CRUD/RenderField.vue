@@ -31,7 +31,6 @@ export default defineComponent({
         },
         baseRoute: {
             type: String,
-            // required: true,
         },
         data: {
             type: Object,

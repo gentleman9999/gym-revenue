@@ -116,14 +116,13 @@ class TaskController extends Controller
                 ->get();
         }
 
-
         return Inertia::render('Task/Show', [
             'client_id' => $client_id,
             'client_users' => $users,
             'lead_users' => Lead::select('id', 'first_name', 'last_name')->get(),
             'member_users' => Member::select('id', 'first_name', 'last_name')->get(),
             'locations' => Location::select('id', 'name')->get(),
-            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->whereType('Task')->get(),
+            'calendar_event_types' => CalendarEventType::whereClientId($client_id)->whereName('Task')->get(),
             'filters' => $request->all('search', 'trashed', 'state'),
             'incomplete_tasks' => $incomplete_tasks,
             'overdue_tasks' => $overdue_tasks,

@@ -255,7 +255,6 @@ export default defineComponent({
         });
         const handleSearch = (value) => {
             form.value.search = value;
-            console.log(form.value);
             handleCrudUpdate("filter", {
                 search: value,
             });
@@ -357,8 +356,9 @@ export default defineComponent({
                 throttle: 500,
             }
         );
-
-        const isLoading = computed(() => result.isLoading);
+        const isLoading = computed(() => {
+            return result.isLoading;
+        });
         const resource = computed(() => {
             if (result.value && result.value[modelKey + "s"]) {
                 return _.cloneDeep(result.value[modelKey + "s"]);

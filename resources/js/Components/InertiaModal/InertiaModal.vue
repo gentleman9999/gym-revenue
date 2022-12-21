@@ -406,7 +406,6 @@ watch(
     () => props.modalKey,
     (key, oldKey) => {
         if (key !== oldKey && !Inertia[`visitInModal${key}`]) {
-            console.log("setting up VisitInModal", { key, oldKey });
             const fn = `visitInModal${key}`;
             Inertia[fn] = visitInModal;
         }

@@ -4,7 +4,6 @@ const modal = ref(null);
 
 // export default () => modal;
 export default () => {
-    console.log("calling use modal");
     return modal;
 };
 
