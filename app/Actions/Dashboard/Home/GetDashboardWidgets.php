@@ -8,6 +8,7 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Support\CurrentInfoRetriever;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetDashboardWidgets
@@ -18,12 +19,7 @@ class GetDashboardWidgets
     {
         $results = [];
 
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $team = Team::find($session_team['id']);
-        } else {
-            $team = Team::find(auth()->user()->default_team_id);
-        }
+        $team = CurrentInfoRetriever::getCurrentTeam();
         if (! is_null($team->client)) {
             $num_locs = 0;
             $num_scheduled_campaigns = ScheduledCampaign::whereIn('status', ['PENDING', 'ACTIVE'])->count();

@@ -144,13 +144,6 @@ class User extends Authenticatable
         return Location::get();
     }
 
-    public function switchLocation($location): bool
-    {
-        $this->current_location_id = $location->id;
-
-        return $this->save();
-    }
-
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);

@@ -5,6 +5,7 @@ namespace App\Actions\Sms;
 use App\Aggregates\Users\UserAggregate;
 use App\Domain\Clients\Projections\ClientDetail;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
+use App\Support\CurrentInfoRetriever;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SendATestText
@@ -39,12 +40,7 @@ class SendATestText
             $sms_template_record = SmsTemplate::find($data['templateId']);
 
             if (! is_null($sms_template_record)) {
-                $session_team = session()->get('current_team');
-                if ($session_team && array_key_exists('id', $session_team)) {
-                    $current_team_id = $session_team['id'];
-                } else {
-                    $current_team_id = $user->default_team_id;
-                }
+                $current_team_id = CurrentInfoRetriever::getCurrentTeamID();
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {

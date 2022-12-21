@@ -11,6 +11,7 @@ use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Position;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -126,7 +127,7 @@ class FilesController extends Controller
             }
 
             if ($folder->location_ids) {
-                if (in_array($user->current_location_id, $folder->location_ids)) {
+                if (in_array(CurrentInfoRetriever::getCurrentLocationID(), $folder->location_ids)) {
                     $shouldForgetFolder = false;
                 }
                 $hasPermissionsSet = true;

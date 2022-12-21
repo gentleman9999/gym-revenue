@@ -13,6 +13,7 @@ use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
+use App\Support\CurrentInfoRetriever;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -98,12 +99,7 @@ class CalendarController extends Controller
         }
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::whereId($client_id)->first();
 
             $is_default_team = $client->home_team_id === $current_team->id;
@@ -193,12 +189,7 @@ class CalendarController extends Controller
         }
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::whereId($client_id)->first();
 
             $is_default_team = $client->home_team_id === $current_team->id;

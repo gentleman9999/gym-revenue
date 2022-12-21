@@ -86,7 +86,6 @@ class ScheduledCampaignSeeder extends Seeder
                         // Create a Scheduled Campaign
                         $user = new User();
                         $user->id = $owner_id;
-                        $user->current_location_id = $location_id;
                         $status = collect(CampaignStatusEnum::cases());
                         $random = rand(0, 3);
                         $campaign = CreateScheduledCampaign::run([

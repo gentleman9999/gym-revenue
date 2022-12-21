@@ -65,6 +65,12 @@ class JetstreamServiceProvider extends ServiceProvider
                 $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()->whereUserId($user->id)->whereField('default_team_id')->first()->value);
                 //$team = $user->getDefaultTeam();
                 if ($team !== null) {
+                    /**
+                     * Set current_locaiton_id as null
+                     * @TODO: Need to update it as default_team location
+                     * After relationship between team and location has been set
+                     */
+                    session()->put('current_location_id', null);
                     session()->put('current_team_id', $team->id);
                     session()->put(
                         'current_team',

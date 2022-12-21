@@ -11,6 +11,7 @@ use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Models\Position;
 use App\Models\ReadReceipt;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -35,12 +36,7 @@ class UsersController extends Controller
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find($request->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             $is_default_team = $client->default_team_id == $current_team->id;
@@ -75,17 +71,11 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
                 $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
-                $users[$idx]->home_team = $user->getDefaultTeam();
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
             }
         } else {
             //cb team selected
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $team = Team::find($session_team['id']);
-            } else {
-                $team = Team::find($request->user()->default_team_id);
-            }
-
+            $team = CurrentInfoRetriever::getCurrentTeam();
             $users = User::with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))->sort()
@@ -126,12 +116,7 @@ class UsersController extends Controller
         // Get the logged-in user making the request
         $user = request()->user();
         // Get the user's currently accessed team for scoping
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         // CnB Client-based data is not present in the DB and thus the details could be empty.
         $client = $current_team->client;
@@ -246,13 +231,7 @@ class UsersController extends Controller
 
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
-
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             $is_default_team = $client->home_team_id === $current_team->id;
@@ -288,13 +267,7 @@ class UsersController extends Controller
             }
         } else {
             //cb team selected
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $team = Team::find($session_team['id']);
-            } else {
-                $team = Team::find(auth()->user()->default_team_id);
-            }
-
+            $team = CurrentInfoRetriever::getCurrentTeam();
             $users = User::whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))
