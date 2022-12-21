@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -30,8 +32,8 @@ class CreateLocationsTable extends Migration
             $table->string('phone')->nullable();
             $table->uuid('default_team_id')->nullable()->index();
             $table->string('location_type');
-            $table->dateTime('open_date')->nullable();
-            $table->dateTime('close_date')->nullable();
+            $table->timestamp('opened_at')->nullable();
+            $table->timestamp("presale_started_at");
             $table->integer('capacity')->unsigned();
             $table->index(['client_id', 'gymrevenue_id']);
             $table->index(['client_id', 'location_no']);

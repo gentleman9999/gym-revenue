@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Projections;
 
 use App\Domain\Clients\Projections\Client;
@@ -33,7 +35,7 @@ class Location extends GymRevProjection
         'name', 'address1', 'address2', 'city', 'state', 'zip',
         'active', 'location_no', 'gymrevenue_id',
         'opened_at', 'closed_at', 'phone', 'default_team_id',
-        'location_type', 'latitude', 'longitude','capacity',
+        'location_type', 'latitude', 'longitude','capacity', 'presale_started_at',
     ];
 
     protected static function booted(): void

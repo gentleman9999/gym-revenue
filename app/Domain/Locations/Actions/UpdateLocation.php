@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
@@ -44,6 +46,7 @@ class UpdateLocation
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'location_type' => ['sometimes',  new Enum(LocationTypeEnum::class)],
+            'presale_started_at' => ['required'],
             'capacity' => ['sometimes','integer'],
         ];
     }

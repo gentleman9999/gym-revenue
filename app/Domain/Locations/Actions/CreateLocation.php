@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
@@ -46,13 +48,14 @@ class CreateLocation
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
             'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
+            'presale_started_at' => ['required'],
             'capacity' => ['required','integer'],
         ];
     }
 
     public function handle(array $data): Location
     {
-        $id = Uuid::new();//we should use uuid here
+        $id = Uuid::get();//we should use uuid here
         $gymrevenue_id = GenerateGymRevenueId::run($data['client_id']);
         $data['gymrevenue_id'] = $gymrevenue_id;
         LocationAggregate::retrieve($id)->create($data)->persist();

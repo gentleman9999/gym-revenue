@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Clients;
 
 use App\Domain\Clients\Projections\Client;
@@ -11,6 +13,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\VarDumper\VarDumper;
+use Carbon\Carbon;
 
 class LocationSeeder extends Seeder
 {
@@ -422,6 +425,13 @@ class LocationSeeder extends Seeder
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
+            
+            $min = Carbon::now()->subDays(365)->timestamp;
+            $max = Carbon::now()->timestamp;
+            $val = rand($min, $max);
+            $presale_started_at =  date('Y-m-d H:i:s', $val);
+            $location['presale_started_at'] = $presale_started_at;
+            
             unset($location['client']);
 //            $location['gymrevenue_id'] = GenerateGymRevenueId::run($client->id);
 //            $loc_record = Location::whereGymrevenueId($location['gymrevenue_id'])->first();
