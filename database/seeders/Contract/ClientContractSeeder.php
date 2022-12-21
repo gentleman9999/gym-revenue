@@ -5,15 +5,9 @@ declare(strict_types=1);
 namespace Database\Seeders\Contract;
 
 use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
-use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Contracts\Actions\CreateContract;
-use App\Domain\Contracts\Actions\UpdateContract;
-use App\Domain\Users\Models\User;
-use App\Services\Contract\AdobeAPIService;
-use App\Services\Contract\ClientData;
 use Illuminate\Database\Seeder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class ClientContractSeeder extends Seeder
 {
@@ -28,7 +22,7 @@ class ClientContractSeeder extends Seeder
 
         foreach ($clients as $client) {
             $agreement_categories = AgreementCategory::whereClientId($client->id)->get();//TODO:should iterate over AgreementTemplateCategory
-            $agreement_categories->each(function(AgreementCategory $agreementCategory) use ($client) {
+            $agreement_categories->each(function (AgreementCategory $agreementCategory) use ($client) {
                 $agreement_category_name = str($agreementCategory->name)->replace(' ', '_');
                 $contract_data = [
                     'name' => "Basic-{$agreement_category_name}",
@@ -39,7 +33,6 @@ class ClientContractSeeder extends Seeder
 
                 CreateContract::run($contract_data);
             });
-
         }
     }
 }

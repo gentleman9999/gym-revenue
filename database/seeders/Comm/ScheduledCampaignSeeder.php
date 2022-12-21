@@ -68,8 +68,14 @@ class ScheduledCampaignSeeder extends Seeder
                 }
             }
             if (! is_null($owner_id)) {
-                $locations = Location::whereClientId($client['id'])->get()->toArray();
-                $location_id = $locations[rand(0, count($locations) - 1)]['id'];
+                if (env('RAPID_SEED') == true) {
+                    $location = Location::whereClientId($client['id'])->first()->toArray();
+                    $location_id = $location['id'];
+                } else {
+                    $locations = Location::whereClientId($client['id'])->get()->toArray();
+                    $location_id = $locations[rand(0, count($locations) - 1)]['id'];
+                }
+
                 foreach ($audiences as $audience) {
                     for ($i = 1; $i <= $amountOfEvents; $i++) {
                         $datebetween = abs(($dateend - $datestart) / $daystep);
