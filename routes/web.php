@@ -467,3 +467,19 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('user-member-group')->gr
     Route::put('/{id}', \App\Domain\UserMemberGroups\Actions\UpdateUserMemberGroup::class)->name('user-member-group.update');
     Route::delete('/{id}/force', \App\Domain\UserMemberGroups\Actions\DeleteUserMemberGroup::class)->name('user-member-group.delete');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-documents')->group(function () {
+    Route::post('/', \App\Domain\StructuredDocuments\Actions\CreateStructuredDocument::class)->name('structured-document.store');
+    Route::put('/{structuredDocument}', \App\Domain\StructuredDocuments\Actions\UpdateStructuredDocument::class)->name('structured-document.update');
+    Route::delete('/{structured_document_id}', \App\Domain\StructuredDocuments\Actions\TrashStructuredDocument::class)->name('structured-document.trash');
+    Route::delete('/{structured_document_id}/force', \App\Domain\StructuredDocuments\Actions\DeleteStructuredDocument::class)->name('structured-document.delete');
+    Route::post('/{structuredDocument}/restore', \App\Domain\StructuredDocuments\Actions\RestoreStructuredDocument::class)->withTrashed()->name('structured-document.restore');
+
+    Route::prefix('files')->group(function () {
+        Route::post('/', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\CreateStructuredDocumentFile::class)->name('structured-documents.files.store');
+        Route::put('/{structuredDocumentFile}', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\UpdateStructuredDocumentFile::class)->name('structured-documents.files.update');
+        Route::delete('/{structured_document_file_id}', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\TrashStructuredDocumentFile::class)->name('structured-documents.files.trash');
+        Route::delete('/{structured_document_file_id}/force', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\DeleteStructuredDocumentFile::class)->name('structured-documents.files.delete');
+        Route::post('/{structuredDocumentFile}/restore', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\RestoreStructuredDocumentFile::class)->withTrashed()->name('structured-documents.files.restore');
+    });
+});
