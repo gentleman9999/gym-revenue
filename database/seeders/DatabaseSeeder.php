@@ -7,6 +7,7 @@ use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\LocationSeeder;
+use Database\Seeders\Clients\LocationVendorCategorySeeder;
 use Database\Seeders\Clients\LocationVendorSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
@@ -93,6 +94,10 @@ class DatabaseSeeder extends Seeder
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
+
+        // Create Location Vendor categories
+        VarDumper::dump('Running Location Vendor Category Seeder');
+        $this->call(LocationVendorCategorySeeder::class);
 
         // New vendors for different location are created here
         VarDumper::dump('Running Location Vendor Seeder');
