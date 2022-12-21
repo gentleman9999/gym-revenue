@@ -9,7 +9,7 @@ abstract class EntityCreated extends GymRevCrudEvent
     //the data/payload associated with the creation event
     public array $payload;
 
-    public function __construct(array $payload, public mixed $uuid = null)
+    public function __construct(array $payload)
     {
         parent::__construct();
         $this->payload = $payload;

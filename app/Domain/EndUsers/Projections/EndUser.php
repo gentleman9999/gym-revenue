@@ -9,6 +9,7 @@ use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Users\Models\User;
+use App\Enums\GenderEnum;
 use App\Models\Endusers\MembershipType;
 use App\Models\GymRevProjection;
 use App\Models\Note;
@@ -49,6 +50,7 @@ class EndUser extends GymRevProjection
     protected $casts = [
         'profile_picture' => 'array',
         'misc' => 'array',
+        'gender' => GenderEnum::class,
     ];
 
     protected $hidden = ['client_id'];

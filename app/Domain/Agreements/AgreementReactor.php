@@ -10,6 +10,7 @@ use App\Services\Contract\AdobeAPIService;
 use App\Services\Contract\ClientData;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Cache;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class AgreementReactor extends Reactor implements ShouldQueue
@@ -45,7 +46,11 @@ class AgreementReactor extends Reactor implements ShouldQueue
         $client_info->setLocation($locations);
         $client_info->setJsonData($json_key);
 
-        $adobe_service = new AdobeAPIService();
-        $adobe_service->generatePDF($client_info);
+        if(!Cache::get('is_seeding', false)) {
+            $adobe_service = new AdobeAPIService();
+            $adobe_service->generatePDF($client_info);
+        }else{
+
+        }
     }
 }

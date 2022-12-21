@@ -35,6 +35,7 @@ use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
 use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\VarDumper\VarDumper;
 
 class DatabaseSeeder extends Seeder
@@ -46,6 +47,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Cache::put('is_seeding', true);
         // This is where App State Records like Simulation Mode and Deployment Announcements Go
         VarDumper::dump('Setting the initial app state');
         $this->call(AppStateSeeder::class);
@@ -194,5 +196,6 @@ class DatabaseSeeder extends Seeder
             VarDumper::dump('Running Drip Campaign Seeder');
             $this->call(DripCampaignSeeder::class);
         }
+        Cache::put('is_seeding', false);
     }
 }

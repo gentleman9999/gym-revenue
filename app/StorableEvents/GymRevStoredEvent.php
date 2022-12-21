@@ -6,6 +6,7 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Clients\Projections\ClientActivity;
 use App\Domain\Users\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\EventSourcing\Enums\MetaData;
 use Spatie\EventSourcing\Facades\Projectionist;
 use Spatie\EventSourcing\StoredEvents\Models\EloquentStoredEvent;
@@ -147,14 +148,9 @@ class GymRevStoredEvent extends EloquentStoredEvent
 
     //we could potentially use attributes instead of function for clientId, and then in turn
     //setup a relation with Client using that attribute.
-    public function client(): ?Client
+    public function client(): HasOne
     {
-        $clientId = $this->clientId();
-        if (! $clientId) {
-            return null;
-        }
-
-        return Client::find($clientId);
+        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 
     public function user(): ?User

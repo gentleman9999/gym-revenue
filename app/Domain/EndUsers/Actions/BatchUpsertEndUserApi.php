@@ -2,7 +2,9 @@
 
 namespace App\Domain\EndUsers\Actions;
 
+use App\Enums\GenderEnum;
 use App\Http\Middleware\InjectClientId;
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 
 abstract class BatchUpsertEndUserApi extends BaseEndUserAction
@@ -30,7 +32,7 @@ abstract class BatchUpsertEndUserApi extends BaseEndUserAction
             '*.profile_picture.key' => 'sometimes|required',
             '*.profile_picture.extension' => 'sometimes|required',
             '*.profile_picture.bucket' => 'sometimes|required',
-            '*.gender' => 'sometimes|required',
+            '*.gender' => ['sometimes', 'required', new Enum(GenderEnum::class)],
             '*.date_of_birth' => 'sometimes|required',
             '*.opportunity' => 'sometimes|required',
             '*.owner' => 'sometimes|required|exists:users,id',

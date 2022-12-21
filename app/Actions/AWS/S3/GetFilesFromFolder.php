@@ -75,7 +75,7 @@ class GetFilesFromFolder
         }
 
         $file_stack = collect($file_stack)->sortByDesc('LastModified');
-        dd($file_stack->toArray());
+
 
         return $file_stack->toArray();
     }

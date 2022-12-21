@@ -22,14 +22,20 @@ class EndUserCrudProjector extends Projector
     public function onEndUserCreated(EndUserCreated $event): void
     {
         DB::transaction(function () use ($event) {
-            $end_user = $this->createEndUserEntity($event, (string) EndUser::class);
+
+            unset($event->payload['id']);//breaks during seeding
+            unset($event->payload['agreement_number']);//breaks during seeding
+            unset($event->payload['name']);//breaks during seeding
+            //TODO: use fillable intersect like other seeders.
+
+            $end_user = $this->createEndUserEntity($event, EndUser::class);
 
             $this->setEndUserEntity($event, $end_user);
 
             $this->createOrUpdateEndUserNotes($event, $end_user);
 
             //ON END USER CREATION, END USER IS AUTOMATICALLY A LEAD NO MATTER WHAT
-            $end_user = $this->createEndUserEntity($event, (string) Lead::class);
+            $end_user = $this->createEndUserEntity($event, Lead::class);
 
             $this->setEndUserEntity($event, $end_user);
         });

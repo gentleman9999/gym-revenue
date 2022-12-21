@@ -10,6 +10,7 @@ use App\Support\Uuid;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdobeAPIService
@@ -41,6 +42,7 @@ class AdobeAPIService
     public function generatePDF(object $client_info): string
     {
         try {
+            Log::info('generatePDF Called.');
             $this->client_info = $client_info;
 
             return $this->createJwtToken();
@@ -85,6 +87,7 @@ class AdobeAPIService
 
             return $this->getAssetId();
         } else {
+            dd($response->body());
             throw new \ErrorException('PDF not created successfully');
         }
     }
@@ -106,14 +109,14 @@ class AdobeAPIService
             $response = json_decode($response->body());
             $this->asset_id = $response->assetID;
             $upload_uri = $response->uploadUri;
-//TODO: why does getAssetId have a side effect of uploading a file?
+
             return $this->uploadWordFile($upload_uri, $media_type);
         } else {
             throw new \ErrorException('PDF not created successfully');
         }
     }
 
-    public function uploadWordFile(string $upload_uri, string $media_type)
+    public function uploadWordFile(string $upload_uri, string $media_type): string
     {
         $client = new Client();
         $response = $client->request('PUT', $upload_uri, [
@@ -150,6 +153,7 @@ class AdobeAPIService
 
             return $this->checkFileStatus();
         } else {
+            dd($response->body());
             throw new \ErrorException('PDF not created successfully');
         }
     }

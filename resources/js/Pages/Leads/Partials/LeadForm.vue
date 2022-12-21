@@ -103,6 +103,7 @@
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
+                    <option value="other">Other</option>
                 </select>
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>

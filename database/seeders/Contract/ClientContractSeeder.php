@@ -37,31 +37,7 @@ class ClientContractSeeder extends Seeder
 //                    'agreement_category_name' => $agreementCategory->name,
                     ];
 
-                $contract = CreateContract::run($contract_data);
-
-                if(!env('RAPID_SEED', false)) {
-
-                    $adobe_service = new AdobeAPIService();
-
-                    $json_key = [
-                        'client_name',
-                        'agreement_template_type',
-                    ];
-
-                    VarDumper::dump("Creating contract PDF for " . $client->name);
-                    $client_info = new ClientData('Contract', $client->name, $client->id, 'SeederAgreementTemplate.docx');
-                    $client_info->setEntityId($contract->id);
-                    $client_info->setJsonData($json_key);
-
-                    $result = json_decode($adobe_service->generatePDF($client_info));
-                    if (!$result->status) {
-                        VarDumper::dump("PDF for " . $client->name . ' was not created due to error: ' . $result->message);
-                    } else {
-                        VarDumper::dump("PDF for " . $client->name . ' is created successfully');
-                    }
-                    UpdateContract::run($contract, ['pdf_file' => $result]);
-                    //TODO: Why aren't we storing the PDF file in the database?
-                }
+                CreateContract::run($contract_data);
             });
 
         }

@@ -89,11 +89,19 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+          ADOBE_CLIENT_ID: ${{ secrets.ADOBE_CLIENT_ID }}
+          ADOBE_CLIENT_SECRET: ${{ secrets.ADOBE_CLIENT_SECRET }}
+          ADOBE_ORGANISATION_ID: ${{ secrets.ADOBE_ORGANISATION_ID }}
+          ADOBE_TECHNICAL_ACCOUNT_ID: ${{ secrets.ADOBE_TECHNICAL_ACCOUNT_ID }}
 
       - name: Verify Seeders still work
         run: php artisan migrate:fresh --seed
         env:
+          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
           QUICK_SEED: true
           RAPID_SEED: true
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+          ADOBE_CLIENT_ID: ${{ secrets.ADOBE_CLIENT_ID }}
+          ADOBE_CLIENT_SECRET: ${{ secrets.ADOBE_CLIENT_SECRET }}
+          ADOBE_ORGANISATION_ID: ${{ secrets.ADOBE_ORGANISATION_ID }}
+          ADOBE_TECHNICAL_ACCOUNT_ID: ${{ secrets.ADOBE_TECHNICAL_ACCOUNT_ID }}
