@@ -23,7 +23,7 @@ class CreateLocationsTable extends Migration
             $table->string('location_no')->nullable();
             $table->string('city')->nullable();
             $table->char('state', 2)->nullable();
-            $table->string('zip', 5)->nullable();
+            $table->char('zip', 5)->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
             $table->double('latitude', 8, 6)->nullable();

@@ -9,6 +9,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
+use App\Rules\Zip;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -38,7 +39,7 @@ class CreateLocation
             'address2' => [],
             'latitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'longitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
-            'zip' => ['required', 'size:5'],
+            'zip' => ['required', 'size:5', new Zip()],
             'phone' => [],
             'poc_first' => [],
             'poc_phone' => [],

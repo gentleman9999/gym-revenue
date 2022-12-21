@@ -4,7 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+
     "content-hash": "ba3aee25f2218889212ed253f375ebbd",
+
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2808,6 +2810,67 @@
                 }
             ],
             "time": "2020-06-13T08:05:20+00:00"
+        },
+        {
+            "name": "johnpaulmedina/laravel-usps",
+            "version": "v9.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/johnpaulmedina/laravel-usps.git",
+                "reference": "64412d2d7f98c60de684de5e2d3d2062534bc9a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/johnpaulmedina/laravel-usps/zipball/64412d2d7f98c60de684de5e2d3d2062534bc9a7",
+                "reference": "64412d2d7f98c60de684de5e2d3d2062534bc9a7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^9.0",
+                "php": "^8.0.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Johnpaulmedina\\Usps\\UspsServiceProvider"
+                    ],
+                    "aliases": {
+                        "Usps": "Johnpaulmedina\\Usps\\Facades\\Usps"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Johnpaulmedina\\Usps\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "John Paul Medina",
+                    "email": "jp@leadtrust.io"
+                },
+                {
+                    "name": "Vincent Gabriel"
+                }
+            ],
+            "description": "USPS API for Laravel 9",
+            "homepage": "https://github.com/johnpaulmedina/laravel-usps/",
+            "keywords": [
+                "laravel",
+                "laravel usps",
+                "laravel9",
+                "usps"
+            ],
+            "support": {
+                "issues": "https://github.com/johnpaulmedina/laravel-usps/issues",
+                "source": "https://github.com/johnpaulmedina/laravel-usps/tree/v9.0.1"
+            },
+            "time": "2022-05-14T07:38:12+00:00"
         },
         {
             "name": "lab404/laravel-impersonate",

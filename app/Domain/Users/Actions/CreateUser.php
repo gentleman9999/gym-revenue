@@ -12,9 +12,8 @@ use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
-
+use App\Rules\Zip;
 use function bcrypt;
-
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -104,7 +103,7 @@ class CreateUser implements CreatesNewUsers
             'address2' => ['sometimes', 'nullable'],
             'city' => ['required'],
             'state' => ['required', 'max:2', new Enum(StatesEnum::class)],
-            'zip' => ['required'],
+            'zip' => ['required', new Zip()],
             'notes' => ['sometimes'] ,
             'start_date' => ['sometimes'] ,
             'end_date' => ['sometimes'] ,
