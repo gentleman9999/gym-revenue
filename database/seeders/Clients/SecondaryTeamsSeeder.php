@@ -58,7 +58,7 @@ class SecondaryTeamsSeeder extends Seeder
             }
         }
 
-        if (env('RAPID_SEED') == true) {
+        if (env('RAPID_SEED') === true) {
             $kalamazoo_owner = User::whereEmail('giraffe@kalamazoo.com')->first();
             $clients = Client::all()->keyBy('name');
             $client_teams = [

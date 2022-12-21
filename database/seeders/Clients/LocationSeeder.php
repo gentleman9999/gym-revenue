@@ -21,7 +21,7 @@ class LocationSeeder extends Seeder
      */
     public function run()
     {
-        if (env('RAPID_SEED') == true) {
+        if (env('RAPID_SEED') === true) {
             $locations = [
                 // The Kalamazoo
                 [
@@ -394,7 +394,7 @@ class LocationSeeder extends Seeder
             ];
         }
 
-        if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', true)) {
+        if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', false)) {
             $locations[] = [
                 'client' => 'TruFit Athletic Clubs',
                 'name' => 'TruFit 1',
@@ -440,7 +440,7 @@ class LocationSeeder extends Seeder
 //            }
         }
 
-        if (! App::environment(['production', 'staging']) && env('RAPID_SEED', false)) {
+        if (! App::environment(['production', 'staging']) && !env('RAPID_SEED', false)) {
             ///now do trufit csv import
             VarDumper::dump("Adding TruFit Locations from CSV");
             $key = 'tmp_data/trufit-clubs';

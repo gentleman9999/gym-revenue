@@ -22,7 +22,7 @@ class EndUserSeeder extends Seeder
             $amountOfLeads = 2;
         }
 
-        if (env('RAPID_SEED') == true) {
+        if (env('RAPID_SEED') === true) {
             $amountOfLeads = 1;
         }
         VarDumper::dump('Getting Clients');

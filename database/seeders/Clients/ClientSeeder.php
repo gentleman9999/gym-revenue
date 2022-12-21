@@ -16,7 +16,7 @@ class ClientSeeder extends Seeder
      */
     public function run()
     {
-        if (env('RAPID_SEED') == true) {
+        if (env('RAPID_SEED') === true) {
             $clients = [
                 'The Kalamazoo' => 1,
                 ];
@@ -32,7 +32,7 @@ class ClientSeeder extends Seeder
         }
 
 
-        if (! App::environment(['production', 'staging'])) {
+        if (! App::environment(['production', 'staging']) && !env('RAPID_SEED', false)) {
             $clients['TruFit Athletic Clubs'] = 1;
         }
 

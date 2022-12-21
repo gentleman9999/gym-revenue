@@ -17,7 +17,7 @@ class TeamLocationsSeeder extends Seeder
      */
     public function run()
     {
-        if (env('RAPID_SEED') == true) {
+        if (env('RAPID_SEED') === true) {
             $client_teams = [
                 // The Kalamazoo
                 [

@@ -68,7 +68,7 @@ class ScheduledCampaignSeeder extends Seeder
                 }
             }
             if (! is_null($owner_id)) {
-                if (env('RAPID_SEED') == true) {
+                if (env('RAPID_SEED') === true) {
                     $location = Location::whereClientId($client['id'])->first()->toArray();
                     $location_id = $location['id'];
                 } else {
