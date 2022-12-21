@@ -37,14 +37,14 @@ class EndUser extends GymRevProjection
         'first_name', 'middle_name', 'last_name', 'gender',
         'primary_phone', 'alternate_phone', 'gr_location_id',
         'ip_address', 'membership_type_id', 'date_of_birth',
-        'opportunity', 'misc', 'owner_user_id', 'profile_picture',
+        'opportunity', 'misc', 'owner_user_id', 'profile_picture_file_id',
     ];
 
     protected $fillable = [
         'first_name', 'middle_name', 'last_name', 'gender',
         'primary_phone', 'alternate_phone', 'gr_location_id',
         'ip_address', 'membership_type_id', 'date_of_birth',
-        'opportunity', 'misc', 'owner_user_id', 'profile_picture',
+        'opportunity', 'misc', 'owner_user_id', 'profile_picture_file_id',
     ];
 
     protected $casts = [
@@ -212,5 +212,10 @@ class EndUser extends GymRevProjection
     public function isCBorGR(): bool
     {
         return (str_ends_with($this->email, '@capeandbay.com') || str_ends_with($this->email, '@gymrevenue.com'));
+    }
+
+    public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany('App\Models\File', 'fileable');
     }
 }

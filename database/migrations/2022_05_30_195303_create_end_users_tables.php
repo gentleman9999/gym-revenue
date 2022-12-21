@@ -56,7 +56,7 @@ class CreateEndUsersTables extends Migration
         $table->string('opportunity')->nullable();
         $table->integer('owner_user_id')->nullable();
         $table->integer('membership_type_id')->nullable();
-        $table->longText('profile_picture')->nullable();
+        $table->longText('profile_picture_file_id')->nullable();
         $table->string('external_id')->nullable();
         $table->jsonb('misc')->nullable();
         $table->unique(['client_id', 'email']);

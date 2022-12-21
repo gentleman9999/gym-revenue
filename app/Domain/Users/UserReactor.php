@@ -2,6 +2,8 @@
 
 namespace App\Domain\Users;
 
+use App\Actions\Clients\Files\CreateFile;
+use App\Domain\Users\Events\FileUploaded;
 use App\Domain\Users\Events\UsersImported;
 use App\Domain\Users\Models\User;
 use App\Imports\UsersImport;
@@ -28,5 +30,13 @@ class UserReactor extends Reactor implements ShouldQueue
         } else {
             Excel::import(new UsersImport($event->clientId()), $event->key, 's3', \Maatwebsite\Excel\Excel::CSV);
         }
+    }
+
+    public function onFileUploaded(FileUploaded $event): void
+    {
+        $data = $event->payload;
+        $model = User::find($data['user_id']);
+
+        CreateFile::run($data, $model, User::find($event->userId()));
     }
 }

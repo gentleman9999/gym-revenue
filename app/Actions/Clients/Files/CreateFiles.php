@@ -2,6 +2,8 @@
 
 namespace App\Actions\Clients\Files;
 
+use App\Domain\Clients\Projections\Client;
+use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
@@ -30,6 +32,7 @@ class CreateFiles
 //            '*.is_public' =>'boolean|required',
             '*.size' => 'integer|min:1|required',//TODO: add max size
             '*.client_id' => 'exists:clients,id|required',
+            '*.entity_id' => 'sometimes',
             '*.user_id' => 'nullable|exists:users,id',
             '*.visibility' => 'sometimes',
         ];
@@ -38,8 +41,15 @@ class CreateFiles
     public function handle($data, $current_user = null)
     {
         $files = [];
+
         foreach ($data as $file) {
-            $files[] = CreateFile::run($file);
+            if (array_key_exists('user_id', $file)) {
+                $model = User::find($file['user_id']);
+            } else {
+                // No User ID means they should be coming from File Manager and will be Client scoped
+                $model = Client::find($file['client_id']);
+            }
+            $files[] = CreateFile::run($file, $model, $current_user);
         }
 
         return $files;
@@ -61,7 +71,7 @@ class CreateFiles
     {
         $files = $this->handle(
             $request->validated(),
-            $request->user(),
+            (! is_null($request->user()) ? $request->user() : request()->user()),
         );
 
         $fileCount = count($files);

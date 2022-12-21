@@ -36,9 +36,9 @@ class FilesController extends Controller
         if ($isSearching) {
             $files = File::with('client')
                     ->whereClientId($client_id)
-                    ->whereUserId(null)
-                    ->whereHidden(false)
-                    ->whereEntityType(null)
+                    //->whereUserId(null)
+                    ->whereIsHidden(false)
+                    ->whereFileableId($client_id)
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
                     ->paginate($page_count)
@@ -47,10 +47,10 @@ class FilesController extends Controller
             if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
                 $files = File::with('client')
                     ->whereClientId($client_id)
-                    ->whereUserId(null)
-                    ->whereHidden(false)
+                    //->whereUserId(null)
+                    ->whereIsHidden(false)
                     ->whereFolder(null)
-                    ->whereEntityType(null)
+                    ->whereFileableId($client_id)
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
                     ->paginate($page_count)
@@ -58,10 +58,10 @@ class FilesController extends Controller
             } else {
                 $files = File::with('client')
                     ->whereClientId($client_id)
-                    ->whereUserId(null)
-                    ->whereHidden(false)
+                    //->whereUserId(null)
+                    ->whereIsHidden(false)
                     ->whereFolder(null)
-                    ->whereEntityType(null)
+                    ->whereFileableId($client_id)
                     ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
@@ -147,6 +147,7 @@ class FilesController extends Controller
             'locations' => Location::all(),
             'users' => User::all(),
             'teams' => Team::all(),
+            'uploadFileRoute' => 'files.store',
         ]);
     }
 

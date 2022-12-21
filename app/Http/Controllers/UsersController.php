@@ -193,6 +193,7 @@ class UsersController extends Controller
             'locations' => $locations,
             'availablePositions' => Position::whereClientId($client_id)->with('departments')->select('id', 'name')->get(),
             'availableDepartments' => Department::whereClientId($client_id)->with('positions')->select('id', 'name')->get(),
+            'uploadFileRoute' => 'users.files.store',
         ]);
     }
 

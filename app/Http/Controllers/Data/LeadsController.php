@@ -17,6 +17,7 @@ use App\Domain\Teams\Models\TeamDetail;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\File;
 use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
@@ -342,19 +343,23 @@ class LeadsController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $endUser->toArray();
-        $leadData['all_notes'] = $endUser->notes->toArray();
+        $lead_data = $endUser->toArray();
+        $lead_data['all_notes'] = $endUser->notes->toArray();
 
-        foreach ($leadData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($leadData['all_notes'][$key]['id'])->first()) {
-                $leadData['all_notes'][$key]['read'] = true;
+        if ($lead_data['profile_picture_file_id']) {
+            $lead_data['profile_picture'] = File::whereId($lead_data['profile_picture_file_id'])->first();
+        }
+
+        foreach ($lead_data['all_notes'] as $key => $value) {
+            if (ReadReceipt::whereNoteId($lead_data['all_notes'][$key]['id'])->first()) {
+                $lead_data['all_notes'][$key]['read'] = true;
             } else {
-                $leadData['all_notes'][$key]['read'] = false;
+                $lead_data['all_notes'][$key]['read'] = false;
             }
         }
 
         return Inertia::render('Leads/Edit', [
-            'lead' => $leadData,
+            'lead' => $lead_data,
             'user_id' => $user->id,
             'locations' => $locations,
             'lead_owners' => $available_lead_owners,

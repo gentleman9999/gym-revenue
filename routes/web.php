@@ -72,6 +72,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.leads.restore');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
+        Route::post('/upload', \App\Domain\EndUsers\Actions\CreateFiles::class)->name('data.leads.upload');
+        Route::post('/upload', \App\Domain\EndUsers\Actions\CreateProfilePicture::class)->name('data.leads.upload.profile.picture');
     });
 
     Route::prefix('members')->group(function () {
@@ -86,6 +88,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.members.restore');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
+        Route::post('/upload', \App\Domain\EndUsers\Actions\CreateProfilePicture::class)->name('data.members.upload.profile.picture');
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
@@ -171,6 +174,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('users.store');
+    Route::post('/', \App\Domain\Users\Actions\CreateFiles::class)->name('users.files.store');
     Route::post('/import', \App\Domain\Users\Actions\ImportUsers::class)->name('users.import');
     Route::get('/edit/{user}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
     Route::get('/view/{user}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');

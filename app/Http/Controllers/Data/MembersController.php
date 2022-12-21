@@ -14,6 +14,7 @@ use App\Domain\Users\Models\User;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\File;
 use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
@@ -260,19 +261,23 @@ class MembersController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $memberData = $endUser->toArray();
-        $memberData['all_notes'] = $endUser->notes->toArray();
+        $member_data = $endUser->toArray();
+        $member_data['all_notes'] = $endUser->notes->toArray();
 
-        foreach ($memberData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($memberData['all_notes'][$key]['id'])->first()) {
-                $memberData['all_notes'][$key]['read'] = true;
+        if ($member_data['profile_picture_file_id']) {
+            $member_data['profile_picture'] = File::whereId($member_data['profile_picture_file_id'])->first();
+        }
+
+        foreach ($member_data['all_notes'] as $key => $value) {
+            if (ReadReceipt::whereNoteId($member_data['all_notes'][$key]['id'])->first()) {
+                $member_data['all_notes'][$key]['read'] = true;
             } else {
-                $memberData['all_notes'][$key]['read'] = false;
+                $member_data['all_notes'][$key]['read'] = false;
             }
         }
 
         return Inertia::render('Members/Edit', [
-            'member' => $memberData,
+            'member' => $member_data,
             'user_id' => $user->id,
             'locations' => $locations,
         ]);

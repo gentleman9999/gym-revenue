@@ -4,15 +4,17 @@ namespace App\Domain\EndUsers\Reactors;
 
 use App\Actions\Mail\MailgunSend;
 use App\Actions\Sms\Twilio\FireTwilioMsg;
+use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Events\EndUserCreated;
 use App\Domain\EndUsers\Events\EndUserProfilePictureMoved;
 use App\Domain\EndUsers\Events\EndUserUpdated;
 use App\Domain\EndUsers\Events\EndUserWasEmailedByRep;
 use App\Domain\EndUsers\Events\EndUserWasTextMessagedByRep;
 use App\Domain\EndUsers\Events\OldEndUserProfilePictureDeleted;
+use App\Domain\EndUsers\Projections\EndUser;
 use Illuminate\Support\Facades\Storage;
 
-abstract class EndUserCrudReactor extends BaseEndUserReactor
+class EndUserCrudReactor extends BaseEndUserReactor
 {
     public function onEndUserUpdated(EndUserUpdated $event): void
     {
@@ -90,5 +92,15 @@ abstract class EndUserCrudReactor extends BaseEndUserReactor
         $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
         $misc = $event->payload;
         MailgunSend::run([$end_user->email], $misc['subject'], $misc['message']);
+    }
+
+    public static function getModel(): EndUser
+    {
+        return new EndUser();
+    }
+
+    public static function getAggregate(): EndUserAggregate
+    {
+        return new EndUserAggregate();
     }
 }

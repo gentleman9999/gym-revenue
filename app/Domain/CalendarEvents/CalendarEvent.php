@@ -9,7 +9,6 @@ use App\Domain\Notifications\Validations\NotifiableInterface;
 use App\Domain\Notifications\Validations\NotificationValidationException;
 use App\Domain\Users\Models\User;
 use App\Models\Calendar\Carbon;
-use App\Models\File;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -59,9 +58,9 @@ class CalendarEvent extends GymRevProjection implements NotifiableInterface
         return $this->hasMany(CalendarAttendee::class, 'calendar_event_id', 'id');
     }
 
-    public function files(): HasMany
+    public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->hasMany(File::class, 'entity_id', 'id')->where('entity_type', CalendarEvent::class);
+        return $this->morphMany('App\Models\File', 'fileable');
     }
 
     public function fixDate($data): array

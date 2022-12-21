@@ -2,15 +2,15 @@
 
 namespace App\Domain\CalendarEvents\Actions;
 
-use App\Actions\Clients\Files\CreateFile;
 use App\Domain\CalendarEvents\CalendarEvent;
+use App\Domain\CalendarEvents\CalendarEventAggregate;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UploadFileToCalendarEvent
+class UploadFileToCalendarEvent extends \App\Actions\Clients\Files\CreateFiles
 {
     use AsAction;
 
@@ -30,12 +30,12 @@ class UploadFileToCalendarEvent
         ];
     }
 
-    public function handle(array $data): array
+    public function handle($data, $current_user = null): array
     {
         $files = [];
-        foreach ($data as $file) {
-            $file['entity_type'] = CalendarEvent::class;
-            $files[] = CreateFile::run($file);
+
+        foreach ($data as $key => $file) {
+            $files[] = CalendarEventAggregate::retrieve($file['entity_id'])->upload($file)->persist();
         }
 
         return $files;
@@ -51,13 +51,6 @@ class UploadFileToCalendarEvent
         $current_user = $request->user();
 
         return $current_user->can('calendar.update', CalendarEvent::class);
-    }
-
-    public function asController(ActionRequest $request): array
-    {
-        return $this->handle(
-            $request->validated(),
-        );
     }
 
     public function htmlRepsonse(array $files)

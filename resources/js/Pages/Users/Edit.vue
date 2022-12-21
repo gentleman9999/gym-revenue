@@ -19,6 +19,7 @@
                 :locations="locations"
                 :available-departments="availableDepartments"
                 :available-positions="availablePositions"
+                :upload-file-route="uploadFileRoute"
             />
         </template>
     </ModalableWrapper>
@@ -67,6 +68,10 @@ export default defineComponent({
         },
         roles: {
             type: Array,
+            required: true,
+        },
+        uploadFileRoute: {
+            type: Object,
             required: true,
         },
     },

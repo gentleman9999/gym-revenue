@@ -6,6 +6,7 @@ use App\Domain\EndUsers\Events\EndUserClaimedByRep;
 use App\Domain\EndUsers\Events\EndUserConverted;
 use App\Domain\EndUsers\Events\EndUserCreated;
 use App\Domain\EndUsers\Events\EndUserDeleted;
+use App\Domain\EndUsers\Events\EndUserFileUploaded;
 use App\Domain\EndUsers\Events\EndUserProfilePictureMoved;
 use App\Domain\EndUsers\Events\EndUserRestored;
 use App\Domain\EndUsers\Events\EndUserTrashed;
@@ -160,6 +161,13 @@ class EndUserAggregate extends AggregateRoot
     public function deleteOldProfilePicture(array $oldFile): static
     {
         $this->recordThat(new OldEndUserProfilePictureDeleted($oldFile));
+
+        return $this;
+    }
+
+    public function uploadFile(array $payload): static
+    {
+        $this->recordThat(new EndUserFileUploaded($payload));
 
         return $this;
     }

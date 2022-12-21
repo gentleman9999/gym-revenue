@@ -355,6 +355,8 @@ import VueJsonPretty from "vue-json-pretty";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
+import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 library.add(faUserCircle);
 
@@ -402,6 +404,7 @@ export default {
         },
     },
     setup(props, context) {
+        const page = usePage();
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
                 note: note,
@@ -444,7 +447,7 @@ export default {
                 gr_location_id: lead.gr_location_id,
                 lead_type_id: lead.lead_type_id,
                 lead_source_id: lead.lead_source_id,
-                profile_picture: null,
+                profile_picture: lead.profile_picture,
                 gender: lead.gender,
                 agreement_number: lead.agreement_number,
                 date_of_birth: lead.date_of_birth,
@@ -514,6 +517,23 @@ export default {
                     extension: response.extension,
                     bucket: response.bucket,
                 };
+                let pfpResponse = await axios.post(
+                    route("data.leads.upload.profile.picture"),
+                    [
+                        {
+                            id: response.uuid,
+                            key: response.key,
+                            filename: fileForm.file.name,
+                            original_filename: fileForm.file.name,
+                            extension: response.extension,
+                            bucket: response.bucket,
+                            size: fileForm.file.size,
+                            entity_id: lead.id,
+                            /*client_id: page.props.value.user.client_id,*/
+                            user_id: page.props.value.user.id,
+                        },
+                    ]
+                );
             } catch (e) {
                 console.error(e);
                 // uploadProgress.value = -1;
