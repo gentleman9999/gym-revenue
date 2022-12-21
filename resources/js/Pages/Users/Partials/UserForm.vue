@@ -165,7 +165,7 @@
                     v-model="form.role_id"
                 >
                     <option
-                        v-for="role_id in roles"
+                        v-for="role_id in roles?.data"
                         :value="role_id.id"
                         :key="role_id.id"
                     >
@@ -186,7 +186,7 @@
                     v-model="form.home_location_id"
                 >
                     <option
-                        v-for="{ gymrevenue_id, name } in locations"
+                        v-for="{ gymrevenue_id, name } in locations?.data"
                         :value="gymrevenue_id"
                         :key="gymrevenue_id"
                     >

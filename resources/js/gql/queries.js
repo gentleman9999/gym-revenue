@@ -62,10 +62,27 @@ const USER_EDIT = gql`
                 ec_phone
             }
         }
+        roles(first: 0) {
+            data {
+                id
+                title
+            }
+        }
+        locations(first: 0) {
+            data {
+                id
+                name
+                gymrevenue_id
+            }
+        }
         availableDepartments: departments {
             data {
                 id
                 name
+                positions {
+                    id
+                    name
+                }
             }
         }
         availablePositions: positions {
@@ -79,10 +96,27 @@ const USER_EDIT = gql`
 
 const USER_CREATE = gql`
     query User {
+        roles(first: 0) {
+            data {
+                id
+                title
+            }
+        }
+        locations(first: 0) {
+            data {
+                id
+                name
+                gymrevenue_id
+            }
+        }
         availableDepartments: departments {
             data {
                 id
                 name
+                positions {
+                    id
+                    name
+                }
             }
         }
         availablePositions: positions {
