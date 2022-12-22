@@ -102,6 +102,7 @@
                 @open-customizer="openCustomizationModal"
                 :form="form"
                 :actions="actions"
+                :resource="resource"
             />
         </template>
 

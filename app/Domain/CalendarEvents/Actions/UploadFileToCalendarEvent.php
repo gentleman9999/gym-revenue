@@ -4,13 +4,14 @@ namespace App\Domain\CalendarEvents\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEvents\CalendarEventAggregate;
+use App\Domain\Files\Actions\CreateFiles;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-class UploadFileToCalendarEvent extends \App\Actions\Clients\Files\CreateFiles
+class UploadFileToCalendarEvent extends CreateFiles
 {
     use AsAction;
 

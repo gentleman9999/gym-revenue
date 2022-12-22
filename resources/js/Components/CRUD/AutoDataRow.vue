@@ -144,7 +144,7 @@ export default defineComponent({
                 props.onDoubleClick({ data: props.data });
                 return;
             }
-            edit(props.data.id);
+            edit(props.data.id, props.modelName);
         };
 
         return { fields: customizedFields, handleClick, handleDoubleClick };

@@ -84,8 +84,8 @@ class File extends Model
 
         $query->whereClientId($client_id)
         // ->whereUserId(null)
-        ->whereHidden(false)
-        ->whereEntityType(null)
+        ->whereIsHidden(false)
+        ->whereFileableType(null)
         ->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->where('filename', 'like', '%' . $search . '%');

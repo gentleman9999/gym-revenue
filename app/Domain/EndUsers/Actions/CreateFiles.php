@@ -8,7 +8,7 @@ use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class CreateFiles extends \App\Actions\Clients\Files\CreateFiles
+class CreateFiles extends \App\Domain\Files\Actions\CreateFiles
 {
     use AsAction;
 

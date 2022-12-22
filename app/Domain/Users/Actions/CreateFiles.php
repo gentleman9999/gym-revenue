@@ -5,9 +5,9 @@ namespace App\Domain\Users\Actions;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
 
-class CreateFiles extends \App\Actions\Clients\Files\CreateFiles
+class CreateFiles extends \App\Domain\Files\Actions\CreateFiles
 {
-    public function handle($data, $current_user = null)
+    public function handle($data, $current_user = null): array
     {
         $files = [];
 
