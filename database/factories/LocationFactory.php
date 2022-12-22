@@ -39,6 +39,8 @@ class LocationFactory extends Factory
             'zip' => substr($this->faker->postcode, 0, 5),
             'phone' => $phone,
             'location_type' => LocationType::STORE,
+            'presale_started_at' => $this->faker->dateTimeBetween('-365 days', now()),
+            'capacity' => rand(100, 500),
         ];
     }
 }

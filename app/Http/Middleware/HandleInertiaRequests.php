@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
 use App\Models\Utility\AppState;
+use App\Support\CurrentInfoRetriever;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -49,12 +50,7 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team_id = $session_team['id'];
-            } else {
-                $current_team_id = $user->default_team_id;
-            }
+            $current_team_id = CurrentInfoRetriever::getCurrentTeamID();
             $abilities = $user->getAbilities()->filter(function ($ability) use ($user, $current_team_id) {
                 if (! is_null($ability->entity_id)) {
                     $r = $ability->entity_id === $current_team_id;

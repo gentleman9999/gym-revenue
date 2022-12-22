@@ -491,6 +491,7 @@
                     :form-submit-options="{ preserveScroll: true }"
                     @submitted="closeFileManagerModal"
                     :handleCancel="closeFileManagerModal"
+                    :upload-file-route="uploadFileRoute"
                 />
             </daisy-modal>
             <confirm
@@ -566,6 +567,7 @@ export default {
         "locations",
         "availablePositions",
         "availableDepartments",
+        "uploadFileRoute",
     ],
     emits: ["success"],
     setup(props, { emit }) {

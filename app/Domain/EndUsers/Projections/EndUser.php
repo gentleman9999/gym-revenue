@@ -12,6 +12,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Models\User;
+use App\Enums\GenderEnum;
 use App\Models\Endusers\MembershipType;
 use App\Models\GymRevProjection;
 use App\Models\Note;
@@ -39,19 +40,20 @@ class EndUser extends GymRevProjection
         'first_name', 'middle_name', 'last_name', 'gender',
         'primary_phone', 'alternate_phone', 'gr_location_id',
         'ip_address', 'membership_type_id', 'date_of_birth',
-        'opportunity', 'misc', 'owner_user_id', 'profile_picture',
+        'opportunity', 'misc', 'owner_user_id', 'profile_picture_file_id',
     ];
 
     protected $fillable = [
         'first_name', 'middle_name', 'last_name', 'gender',
         'primary_phone', 'alternate_phone', 'gr_location_id',
         'ip_address', 'membership_type_id', 'date_of_birth',
-        'opportunity', 'misc', 'owner_user_id', 'profile_picture',
+        'opportunity', 'misc', 'owner_user_id', 'profile_picture_file_id',
     ];
 
     protected $casts = [
         'profile_picture' => 'array',
         'misc' => 'array',
+        'gender' => GenderEnum::class,
     ];
 
     protected $hidden = ['client_id'];
@@ -298,5 +300,10 @@ class EndUser extends GymRevProjection
         $aggy = EndUserAggregate::retrieve($this->id);
 
         return $aggy->getInteractionCount();
+    }
+
+    public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany('App\Models\File', 'fileable');
     }
 }

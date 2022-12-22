@@ -13,9 +13,12 @@ use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Models\User;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\File;
 use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -39,12 +42,7 @@ class MembersController extends Controller
         $members = [];
         $members_model = $this->setUpMembersObject($is_client_user, $client_id);
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find(auth()->user()->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
         $locations = [];
         foreach ($locations_records as $location) {
@@ -86,11 +84,11 @@ class MembersController extends Controller
             $members->setCollection($sortedResult);
         }
 
-        if ($user->current_location_id) {
+        if (CurrentInfoRetriever::getCurrentLocationID()) {
             $newMemberCount = LiveReportsByDay::whereEntity('member')
                 ->where('date', '=', date('Y-m-d'))
                 ->whereAction(LiveReportingEnum::ADDED)
-                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+                ->whereGrLocationId(Location::find(CurrentInfoRetriever::getCurrentLocationID())->gymrevenue_id)->first();
             if ($newMemberCount) {
                 $newMemberCount = $newMemberCount->value;
             } else {
@@ -139,8 +137,6 @@ class MembersController extends Controller
         $prospects = [];
 
         $locations = Location::all();
-
-        //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
 
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
@@ -206,12 +202,7 @@ class MembersController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
 
@@ -262,30 +253,29 @@ class MembersController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
         $endUser->load('notes');
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $memberData = $endUser->toArray();
-        $memberData['all_notes'] = $endUser->notes->toArray();
+        $member_data = $endUser->toArray();
+        $member_data['all_notes'] = $endUser->notes->toArray();
 
-        foreach ($memberData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($memberData['all_notes'][$key]['id'])->first()) {
-                $memberData['all_notes'][$key]['read'] = true;
+        if ($member_data['profile_picture_file_id']) {
+            $member_data['profile_picture'] = File::whereId($member_data['profile_picture_file_id'])->first();
+        }
+
+        foreach ($member_data['all_notes'] as $key => $value) {
+            if (ReadReceipt::whereNoteId($member_data['all_notes'][$key]['id'])->first()) {
+                $member_data['all_notes'][$key]['read'] = true;
             } else {
-                $memberData['all_notes'][$key]['read'] = false;
+                $member_data['all_notes'][$key]['read'] = false;
             }
         }
 
         return Inertia::render('Members/Edit', [
-            'member' => $memberData,
+            'member' => $member_data,
             'user_id' => $user->id,
             'locations' => $locations,
         ]);
@@ -324,12 +314,7 @@ class MembersController extends Controller
          */
 
         if ((! is_null($client_id))) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)

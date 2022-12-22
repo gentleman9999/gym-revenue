@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
@@ -144,13 +145,6 @@ class User extends Authenticatable
         return Location::get();
     }
 
-    public function switchLocation($location): bool
-    {
-        $this->current_location_id = $location->id;
-
-        return $this->save();
-    }
-
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
@@ -187,11 +181,6 @@ class User extends Authenticatable
     public function detail(): HasOne
     {
         return $this->hasOne('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
-    }
-
-    public function files(): HasMany
-    {
-        return $this->hasMany(File::class, 'user_id', 'id');
     }
 
     public function twilioClientConversation(): HasMany
@@ -373,5 +362,10 @@ class User extends Authenticatable
     public function allTeams(): Collection
     {
         return $this->teams->sortBy('name');
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }

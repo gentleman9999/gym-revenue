@@ -27,6 +27,9 @@ class UpdateAgreement
     {
         return [
             'agreement_category_id' => ['required', 'exists:agreement_categories,id'],
+            'created_by' => 'sometimes',
+            'end_user_id' => ['sometimes','exists:end_users,id'],
+            'agreement_template_id' => ['sometimes', 'exists:agreement_templates,id'],
             'gr_location_id' => ['sometimes', 'string', 'exists:locations,gymrevenue_id'],
             'agreement_json' => ['sometimes', 'json'],
             'billing_schedule_id' => ['sometimes', 'exists:billing_schedules,id'],
@@ -60,9 +63,7 @@ class UpdateAgreement
             }
         }
 
-        if (isset($data['billing_schedule_id'])) {
-            unset($data['billing_schedule_id']); // Don't have column in agreement table
-        }
+        unset($data['billing_schedule_id']); // Don't have column in agreement table
 
         return $this->handle(
             $agreement,

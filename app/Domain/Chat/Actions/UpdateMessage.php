@@ -5,6 +5,9 @@ namespace App\Domain\Chat\Actions;
 use App\Domain\Chat\Aggregates\ChatMessageAggregate;
 use App\Domain\Chat\Models\Chat;
 use App\Domain\Chat\Models\ChatMessage;
+use App\Domain\Chat\Models\ChatParticipant;
+use App\Domain\Notifications\Actions\CreateNotification;
+use App\Domain\Notifications\Notification;
 use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Console\Command;
@@ -32,13 +35,23 @@ class UpdateMessage
         ];
     }
 
-    public function handle(array $data, string $uuid)
+    public function handle(array $data, ChatMessage $chat_message): ChatMessage
     {
-        $aggy = ChatMessageAggregate::retrieve($uuid);
+        ChatMessageAggregate::retrieve($chat_message->id)->update($data)->persist();
+        $chat_message->refresh();
 
-        $aggy->update($data)->persist();
+        $data = [
+            'chat_id' => $chat_message->chat_id,
+            'message' => $chat_message,
+            'type' => Notification::TYPE_UPDATED_CHAT_MESSAGE,
+        ];
 
-        return ChatMessage::find($uuid);
+        $chat_message->chat->participants->each(
+            static fn (ChatParticipant $p) => CreateNotification::run($data, $p->user)
+        );
+
+
+        return $chat_message;
     }
 
     public function getControllerMiddleware(): array
@@ -53,9 +66,9 @@ class UpdateMessage
         return $current_user->can('chat.update', Chat::class);
     }
 
-    public function asController(ActionRequest $request, string $uuid): ChatMessage
+    public function asController(ActionRequest $request, ChatMessage $chat_message): ChatMessage
     {
-        return $this->handle($request->validated(), $uuid);
+        return $this->handle($request->validated(), $chat_message);
     }
 
     public function asCommand(Command $command): void

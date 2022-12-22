@@ -17,9 +17,11 @@ use App\Domain\Teams\Models\TeamDetail;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\File;
 use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -86,12 +88,7 @@ class LeadsController extends Controller
             $prospects->setCollection($sortedResult);
         }
 
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find(auth()->user()->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
         $available_lead_owners = [];
         foreach ($team_users as $team_user) {
@@ -101,11 +98,11 @@ class LeadsController extends Controller
             ];
         }
 
-        if ($user->current_location_id) {
+        if (CurrentInfoRetriever::getCurrentLocationID()) {
             $newLeadCount = LiveReportsByDay::whereEntity('lead')
                 ->where('date', '=', date('Y-m-d'))
                 ->whereAction(LiveReportingEnum::ADDED)
-                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+                ->whereGrLocationId(Location::find(CurrentInfoRetriever::getCurrentLocationID())->gymrevenue_id)->first();
 
             if ($newLeadCount) {
                 $newLeadCount = $newLeadCount->value;
@@ -194,12 +191,7 @@ class LeadsController extends Controller
         $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
 
 
@@ -251,12 +243,7 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
 
@@ -295,12 +282,7 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
             $team_locations = [];
 
@@ -347,12 +329,7 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
         /**
          * STEPS for team users
@@ -366,19 +343,23 @@ class LeadsController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $endUser->toArray();
-        $leadData['all_notes'] = $endUser->notes->toArray();
+        $lead_data = $endUser->toArray();
+        $lead_data['all_notes'] = $endUser->notes->toArray();
 
-        foreach ($leadData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($leadData['all_notes'][$key]['id'])->first()) {
-                $leadData['all_notes'][$key]['read'] = true;
+        if ($lead_data['profile_picture_file_id']) {
+            $lead_data['profile_picture'] = File::whereId($lead_data['profile_picture_file_id'])->first();
+        }
+
+        foreach ($lead_data['all_notes'] as $key => $value) {
+            if (ReadReceipt::whereNoteId($lead_data['all_notes'][$key]['id'])->first()) {
+                $lead_data['all_notes'][$key]['read'] = true;
             } else {
-                $leadData['all_notes'][$key]['read'] = false;
+                $lead_data['all_notes'][$key]['read'] = false;
             }
         }
 
         return Inertia::render('Leads/Edit', [
-            'lead' => $leadData,
+            'lead' => $lead_data,
             'user_id' => $user->id,
             'locations' => $locations,
             'lead_owners' => $available_lead_owners,
@@ -424,12 +405,7 @@ class LeadsController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)

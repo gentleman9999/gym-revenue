@@ -1,25 +1,25 @@
 <template>
     <div class="date-range-container">
         <div>Date Range</div>
-        <div className="date-range-radio-group">
+        <div class="date-range-radio-group">
             <label
-                className="date-range-radio-container"
+                class="date-range-radio-container"
                 v-for="item in items"
                 :key="item.value"
             >
                 <input
                     type="radio"
                     name="date_range"
-                    className="date-range-radio"
+                    class="date-range-radio"
                     :value="item.value"
-                    v-model="value"
+                    v-bind="props"
                 />
-                <span className="label-text">{{ item.label }}</span>
+                <span class="label-text">{{ item.label }}</span>
             </label>
         </div>
     </div>
 </template>
-<style setup>
+<style scoped>
 .date-range-radio {
     @apply radio checked:bg-secondary;
 }

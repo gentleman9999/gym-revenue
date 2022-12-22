@@ -72,6 +72,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.leads.restore');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
+        Route::post('/upload', \App\Domain\EndUsers\Actions\CreateFiles::class)->name('data.leads.upload');
+        Route::post('/upload', \App\Domain\EndUsers\Actions\CreateProfilePicture::class)->name('data.leads.upload.profile.picture');
     });
 
     Route::prefix('members')->group(function () {
@@ -86,6 +88,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.members.restore');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
+        Route::post('/upload', \App\Domain\EndUsers\Actions\CreateProfilePicture::class)->name('data.members.upload.profile.picture');
     });
 
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
@@ -171,6 +174,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
     Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('users.store');
+    Route::post('/', \App\Domain\Users\Actions\CreateFiles::class)->name('users.files.store');
     Route::post('/import', \App\Domain\Users\Actions\ImportUsers::class)->name('users.import');
     Route::get('/edit/{user}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
     Route::get('/view/{user}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');
@@ -407,8 +411,11 @@ Route::middleware('auth:sanctum')->prefix('chat')->group(function () {
         Route::post('create', \App\Domain\Chat\Actions\CreateChat::class)->name('start-internal-chats');
         Route::get('get', \App\Domain\Chat\Actions\GetChat::class)->name('get-internal-chats');
         Route::get('interlocutors', \App\Domain\Chat\Actions\GetInterlocutor::class)->name('get-internal-chats-interlocutors');
-        Route::PUT('mark-as-read/{uuid}', \App\Domain\Chat\Actions\UpdateMessage::class)->name('mark-internal-chats-as-read');
+        Route::put('message/{chat_message}', \App\Domain\Chat\Actions\UpdateMessage::class)->name('edit-internal-chat');
+        Route::delete('message/{chat_message}', \App\Domain\Chat\Actions\DeleteMessage::class)->name('delete-internal-chat');
         Route::post('message', \App\Domain\Chat\Actions\CreateMessage::class)->name('message-internal-chats');
+        Route::post('participant/{chat}', \App\Domain\Chat\Actions\CreateParticipant::class)->name('add-chat-participant');
+        Route::delete('participant/{chat_participant}', \App\Domain\Chat\Actions\DeleteChatParticipant::class)->name('delete-chat-participant');
     });
 
     Route::get('/', \App\Http\Controllers\ChatController::class . '@index')->name('chat');
@@ -444,4 +451,35 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('contracts')->group(func
     Route::delete('/{contract_id}', \App\Domain\Contracts\Actions\TrashContract::class)->name('contract.trash');
     Route::delete('/{contract_id}/force', \App\Domain\Contracts\Actions\DeleteContract::class)->name('contract.delete');
     Route::post('/{contract_id}/restore', \App\Domain\Contracts\Actions\RestoreContract::class)->withTrashed()->name('contract.restore');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('member-group')->group(function () {
+    Route::post('/', \App\Domain\MemberGroups\Actions\CreateMemberGroup::class)->name('member-group-store');
+    Route::put('/{id}', \App\Domain\MemberGroups\Actions\UpdateMemberGroup::class)->name('member-group.update');
+    Route::delete('/{id}', \App\Domain\MemberGroups\Actions\TrashMemberGroup::class)->name('member-group.trash');
+    Route::delete('/{id}/force', \App\Domain\MemberGroups\Actions\DeleteMemberGroup::class)->name('member-group.delete');
+    Route::get('/{id}/restore', \App\Domain\MemberGroups\Actions\RestoreMemberGroup::class)->withTrashed()->name('member-group.restore');
+});
+
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('user-member-group')->group(function () {
+    Route::post('/', \App\Domain\UserMemberGroups\Actions\CreateUserMemberGroup::class)->name('user-member-group.store');
+    Route::put('/{id}', \App\Domain\UserMemberGroups\Actions\UpdateUserMemberGroup::class)->name('user-member-group.update');
+    Route::delete('/{id}/force', \App\Domain\UserMemberGroups\Actions\DeleteUserMemberGroup::class)->name('user-member-group.delete');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-documents')->group(function () {
+    Route::post('/', \App\Domain\StructuredDocuments\Actions\CreateStructuredDocument::class)->name('structured-document.store');
+    Route::put('/{structuredDocument}', \App\Domain\StructuredDocuments\Actions\UpdateStructuredDocument::class)->name('structured-document.update');
+    Route::delete('/{structured_document_id}', \App\Domain\StructuredDocuments\Actions\TrashStructuredDocument::class)->name('structured-document.trash');
+    Route::delete('/{structured_document_id}/force', \App\Domain\StructuredDocuments\Actions\DeleteStructuredDocument::class)->name('structured-document.delete');
+    Route::post('/{structuredDocument}/restore', \App\Domain\StructuredDocuments\Actions\RestoreStructuredDocument::class)->withTrashed()->name('structured-document.restore');
+
+    Route::prefix('files')->group(function () {
+        Route::post('/', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\CreateStructuredDocumentFile::class)->name('structured-documents.files.store');
+        Route::put('/{structuredDocumentFile}', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\UpdateStructuredDocumentFile::class)->name('structured-documents.files.update');
+        Route::delete('/{structured_document_file_id}', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\TrashStructuredDocumentFile::class)->name('structured-documents.files.trash');
+        Route::delete('/{structured_document_file_id}/force', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\DeleteStructuredDocumentFile::class)->name('structured-documents.files.delete');
+        Route::post('/{structuredDocumentFile}/restore', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\RestoreStructuredDocumentFile::class)->withTrashed()->name('structured-documents.files.restore');
+    });
 });

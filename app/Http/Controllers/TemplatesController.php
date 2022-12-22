@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 //use App\Domain\Campaigns\ScheduledCampaigns\Actions\CreateScheduledCampaign;
 //use App\Domain\Campaigns\ScheduledCampaigns\Actions\UpdateScheduledCampaign;
-use App\Domain\Teams\Models\Team;
 use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Models\Endusers\MembershipType;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -22,14 +22,7 @@ class TemplatesController extends Controller
         }
 
         $user = auth()->user();
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $team = Team::find($session_team['id']);
-        } else {
-            $team = Team::find($user->default_team_id);
-        }
-
-
+        $team = CurrentInfoRetriever::getCurrentTeam();
         $data = $this->getDashData();
         $data['teamName'] = $team->name;
 

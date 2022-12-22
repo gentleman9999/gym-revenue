@@ -23,6 +23,8 @@ class CreateAgreementTemplate
     {
         return [
             'billing_schedule' => ['required, exists:agreement_template_billing_schedule'],
+            'agreement_json' => ['required','json'],
+            'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
         ];
     }
 

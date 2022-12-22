@@ -60,13 +60,21 @@ export default class Message {
         };
     }
 
-    updateAttributes(type) {
-        if (type.read === true) {
-            this.readBy.push(this.currentUserParticipantId);
-            axios.put(route("mark-internal-chats-as-read", this.id), {
-                read_by: [...new Set(this.readBy)],
-            });
+    updateAttributes(attribute) {
+        if (!this.id) {
+            return;
         }
-        console.log("attribute:", type);
+
+        if (attribute.read === true) {
+            this.readBy.push(this.currentUserParticipantId);
+            attribute.read_by = [...new Set(this.readBy)];
+        }
+
+        axios.put(route("edit-internal-chat", this.id), attribute);
+        console.log("attribute:", attribute);
+    }
+
+    remove() {
+        axios.delete(route("delete-internal-chat", this.id));
     }
 }

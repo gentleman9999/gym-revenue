@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Data;
 
+use App\Domain\Agreements\Actions\SignAgreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Members\Actions\CreateMember;
 use App\Domain\EndUsers\Members\Projections\Member;
@@ -42,7 +43,12 @@ class MemberSeeder extends Seeder
                             $member_data = $member->toArray();
                             $member_data['gr_location_id'] = $location->gymrevenue_id;
                             $member_data['client_id'] = $client->id;
-                            CreateMember::run($member_data);
+                            $agreement = CreateMember::run($member_data);
+
+                            if ($agreement != null) {
+                                //This action is created in next issue's (i.e. issue208) PR.
+                                SignAgreement::run($agreement);
+                            }
                             //UpsertMemberApi::run($member_data);
                         }
                     }

@@ -102,6 +102,7 @@
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
+                    <option value="other">Other</option>
                 </select>
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
@@ -330,6 +331,7 @@ export default {
     },
     props: ["member", "interactionCount", "locations"],
     setup(props, context) {
+        const page = usePage();
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
                 note: note,
@@ -449,6 +451,23 @@ export default {
                     extension: response.extension,
                     bucket: response.bucket,
                 };
+                let pfpResponse = await axios.post(
+                    route("data.members.upload.profile.picture"),
+                    [
+                        {
+                            id: response.uuid,
+                            key: response.key,
+                            filename: fileForm.file.name,
+                            original_filename: fileForm.file.name,
+                            extension: response.extension,
+                            bucket: response.bucket,
+                            size: fileForm.file.size,
+                            entity_id: member.id,
+                            /*client_id: page.props.value.user.client_id,*/
+                            user_id: page.props.value.user.id,
+                        },
+                    ]
+                );
             } catch (e) {
                 console.error(e);
                 // uploadProgress.value = -1;

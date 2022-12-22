@@ -114,7 +114,7 @@ import LayoutHeader from "@/Layouts/LayoutHeader.vue";
 import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
 import { Inertia } from "@inertiajs/inertia";
-import "@fullcalendar/core/vdom"; // solves problem with Vite
+import "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";

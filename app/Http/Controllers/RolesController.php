@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Domain\Roles\Role;
 use App\Enums\SecurityGroupEnum;
-use Bouncer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Prologue\Alerts\Facades\Alert;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class RolesController extends Controller
 {

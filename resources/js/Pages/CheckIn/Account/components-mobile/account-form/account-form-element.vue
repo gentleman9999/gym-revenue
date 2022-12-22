@@ -5,14 +5,14 @@
             <span v-if="required" class="text-secondary pl-2">*</span>
         </div>
         <input
-            v-model="value"
             class="checkin-acc-form-input"
             :class="{
                 'bg-neutral': !value && !readonly,
                 'bg-secondary': value && !readonly,
                 'bg-transparent text-base-content/60': readonly,
             }"
-            :readonly="readonly"
+            v-bind="props"
+            readonly="readonly"
         />
     </div>
 </template>

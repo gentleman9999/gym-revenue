@@ -99,10 +99,12 @@
 
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="gender" value="Gender" />
+                <!--                TODO: create gender dropdown from dynamic data provided by gql  -->
                 <select class="" v-model="form['gender']" required id="gender">
                     <option value="">Select a Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
+                    <option value="other">Other</option>
                 </select>
                 <jet-input-error :message="form.errors.gender" class="mt-2" />
             </div>
@@ -161,12 +163,12 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="club_id" value="Club" />
+                <jet-label for="gr_location_id" value="Club" />
                 <select
                     class=""
-                    v-model="form['club_id']"
+                    v-model="form['gr_location_id']"
                     required
-                    id="club_id"
+                    id="gr_location_id"
                 >
                     <option value="">Select a Club</option>
                     <option
@@ -403,7 +405,6 @@ export default {
     },
     setup(props, context) {
         const page = usePage();
-        console.log("page", page);
         function notesExpanded(note) {
             axios.post(route("note.seen"), {
                 note: note,
@@ -422,7 +423,6 @@ export default {
                 email: "",
                 primary_phone: "",
                 alternate_phone: "",
-                club_id: "",
                 gr_location_id: "",
                 profile_picture: "",
                 gender: "",
@@ -441,9 +441,10 @@ export default {
                 email: lead.email,
                 primary_phone: lead.primary_phone,
                 alternate_phone: lead.alternate_phone,
-                club_id: lead.location.id,
                 gr_location_id: lead.gr_location_id,
-                profile_picture: null,
+                lead_type_id: lead.lead_type_id,
+                lead_source_id: lead.lead_source_id,
+                profile_picture: lead.profile_picture,
                 gender: lead.gender,
                 agreement_number: lead.agreement_number,
                 date_of_birth: lead.date_of_birth,
@@ -513,6 +514,23 @@ export default {
                     extension: response.extension,
                     bucket: response.bucket,
                 };
+                let pfpResponse = await axios.post(
+                    route("data.leads.upload.profile.picture"),
+                    [
+                        {
+                            id: response.uuid,
+                            key: response.key,
+                            filename: fileForm.file.name,
+                            original_filename: fileForm.file.name,
+                            extension: response.extension,
+                            bucket: response.bucket,
+                            size: fileForm.file.size,
+                            entity_id: lead.id,
+                            /*client_id: page.props.value.user.client_id,*/
+                            user_id: page.props.value.user.id,
+                        },
+                    ]
+                );
             } catch (e) {
                 console.error(e);
                 // uploadProgress.value = -1;

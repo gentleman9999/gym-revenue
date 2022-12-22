@@ -2,7 +2,9 @@
 
 namespace App\Domain\EndUsers\Actions;
 
+use App\Enums\GenderEnum;
 use App\Support\Uuid;
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 
 abstract class UpsertEndUserApi extends BaseEndUserAction
@@ -24,14 +26,14 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
             'gr_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'],
             'client_id' => 'sometimes',
             'profile_picture' => 'sometimes',
-            'profile_picture.uuid' => 'sometimes|required',
-            'profile_picture.key' => 'sometimes|required',
-            'profile_picture.extension' => 'sometimes|required',
-            'profile_picture.bucket' => 'sometimes|required',
-            'gender' => 'sometimes|required',
-            'date_of_birth' => 'sometimes|required',
-            'opportunity' => 'sometimes|required',
-            'owner' => 'sometimes|required|exists:users,id',
+            'profile_picture.uuid' => 'sometimes',
+            'profile_picture.key' => 'sometimes',
+            'profile_picture.extension' => 'sometimes',
+            'profile_picture.bucket' => 'sometimes',
+            'gender' => ['sometimes', 'required', new Enum(GenderEnum::class)],
+            'date_of_birth' => 'sometimes',
+            'opportunity' => 'sometimes',
+            'owner' => 'sometimes|exists:users,id',
             'notes' => 'nullable|array',
             'external_id' => ['sometimes', 'nullable'],
         ];

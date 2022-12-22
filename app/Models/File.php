@@ -4,9 +4,13 @@ namespace App\Models;
 
 use App\Domain\Clients\Projections\Client;
 use App\Models\Traits\Sortable;
+use Database\Factories\FileFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,12 +29,17 @@ class File extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'folder', 'entity_type', 'entity_id', 'visibility', 'hidden', 'type']; //'deleted_at'
+    protected $fillable = ['id', 'client_id', 'user_id', 'filename', 'original_filename', 'extension', 'bucket', 'url', 'key', 'size', 'permissions', 'folder', 'is_hidden', 'visibility', 'type']; //'deleted_at'
 
     protected $casts = [
         'permissions' => 'array',
         'visibility' => 'boolean',
     ];
+
+    protected static function newFactory(): Factory
+    {
+        return FileFactory::new();
+    }
 
     public function client()
     {
@@ -44,6 +53,16 @@ class File extends Model
         } else {
             return $this->original['url'];
         }
+    }
+
+    public function fileable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 
 

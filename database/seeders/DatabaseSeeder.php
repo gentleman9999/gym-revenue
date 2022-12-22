@@ -7,6 +7,8 @@ use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\LocationSeeder;
+use Database\Seeders\Clients\LocationVendorCategorySeeder;
+use Database\Seeders\Clients\LocationVendorSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\CallScriptTemplateSeeder;
@@ -34,6 +36,7 @@ use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
 use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\VarDumper\VarDumper;
 
 class DatabaseSeeder extends Seeder
@@ -45,6 +48,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Cache::put('is_seeding', true);
         // This is where App State Records like Simulation Mode and Deployment Announcements Go
         VarDumper::dump('Setting the initial app state');
         $this->call(AppStateSeeder::class);
@@ -90,6 +94,14 @@ class DatabaseSeeder extends Seeder
         // New clubs for clients are generated here
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
+
+        // Create Location Vendor categories
+        VarDumper::dump('Running Location Vendor Category Seeder');
+        $this->call(LocationVendorCategorySeeder::class);
+
+        // New vendors for different location are created here
+        VarDumper::dump('Running Location Vendor Seeder');
+        $this->call(LocationVendorSeeder::class);
 
         // Secondary Teams linked to each client's account owner are defined here.
         // There is a team for each location, along with various sales teams
@@ -137,11 +149,11 @@ class DatabaseSeeder extends Seeder
 //        VarDumper::dump('Running Agreements Category Seeder');
 //        $this->call(AgreementCategoriesSeeder::class);
 
-        VarDumper::dump('Running Agreements Data Seeder');
-        $this->call(AgreementsSeeder::class);
-
         VarDumper::dump('Running Client Contract PDF Data Seeder');
         $this->call(ClientContractSeeder::class);
+
+        VarDumper::dump('Running Agreements Data Seeder');
+        $this->call(AgreementsSeeder::class);
 
         VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
         $this->call(AgreementTemplateBillingScheduleSeeder::class);
@@ -189,5 +201,6 @@ class DatabaseSeeder extends Seeder
             VarDumper::dump('Running Drip Campaign Seeder');
             $this->call(DripCampaignSeeder::class);
         }
+        Cache::put('is_seeding', false);
     }
 }

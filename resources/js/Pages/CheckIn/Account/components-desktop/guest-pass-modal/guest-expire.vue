@@ -4,7 +4,6 @@
         <date-picker
             required
             id="start"
-            v-model="value"
             :enable-time-picker="false"
             format="MM-dd-yyyy"
             :month-change-on-scroll="false"
@@ -12,6 +11,7 @@
             :close-on-scroll="true"
             class="bg-neutral text-base-content"
             dark
+            v-bind="props"
         />
     </div>
 </template>

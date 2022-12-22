@@ -100,4 +100,9 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
     {
         return json_encode($this->json);
     }
+
+    public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany('App\Models\File', 'fileable');
+    }
 }

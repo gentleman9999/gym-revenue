@@ -17,6 +17,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "hammerstone/sidecar": "^0.3.12",
         "inertiajs/inertia-laravel": "^0.6.2",
+        "johnpaulmedina/laravel-usps": "^9.0",
         "lab404/laravel-impersonate": "^1.7.3",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.4",

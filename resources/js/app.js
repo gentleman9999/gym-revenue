@@ -20,6 +20,7 @@ import VueApolloComponents from "@vue/apollo-components";
 import { createApolloProvider } from "@vue/apollo-option";
 import * as Sentry from "@sentry/browser";
 import { BrowserTracing } from "@sentry/tracing";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -88,6 +89,7 @@ createInertiaApp({
             .use(Toast)
             .use(vClickOutside)
             .component("inertia-link", Link)
+            .component("font-awesome-icon", FontAwesomeIcon)
             .mixin({ methods: { route } })
             .mount(el);
     },

@@ -5,6 +5,7 @@ namespace App\Domain\Files\Actions;
 use App\Actions\GymRevAction;
 
 use App\Aggregates\Clients\FileAggregate;
+use App\Domain\Users\Models\User;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -30,12 +31,14 @@ class CreateFile extends GymRevAction
             'size' => 'integer|min:1|required',//TODO: add max size
             'user_id' => 'sometimes|nullable|exists:users,id',
             'visibility' => 'sometimes',
+            'client_id' => 'required',
+            'is_public' => 'boolean',
         ];
     }
 
-    public function handle($data)
+    public function handle($data, $model, ?User $user = null): File
     {
-        FileAggregate::retrieve($data['id'])->create((string) $data['user_id'], $data)->persist();
+        FileAggregate::retrieve($data['id'])->create((string) $user?->id, $data, $model)->persist();
 
         return File::findOrFail($data['id']);
     }

@@ -3,7 +3,7 @@
     <div class="hidden lg:flex">
         <div
             v-if="showSpinner"
-            className="w-full h-full flex items-center justify-center"
+            class="w-full h-full flex items-center justify-center"
         >
             <spinner />
         </div>

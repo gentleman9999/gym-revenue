@@ -10,6 +10,7 @@ use App\Domain\Reminders\Events\ReminderDeleted;
 use App\Domain\Reminders\Events\ReminderTriggered;
 use App\Domain\Reminders\Events\ReminderUpdated;
 use App\Domain\Users\Events\AccessTokenGranted;
+use App\Domain\Users\Events\FileUploaded;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserImpersonatedAnother;
@@ -346,6 +347,13 @@ class UserAggregate extends AggregateRoot
     public function triggerReminder(string $id): static
     {
         $this->recordThat(new ReminderTriggered($id));
+
+        return $this;
+    }
+
+    public function uploadFile(array $payload): static
+    {
+        $this->recordThat(new FileUploaded($payload));
 
         return $this;
     }

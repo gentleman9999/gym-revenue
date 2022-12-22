@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Agreements\Projections;
 
 use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
+use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Locations\Projections\Location;
@@ -17,7 +20,7 @@ class Agreement extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_json'];
+    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id','end_user_id','agreement_template_id','active'];
 
     protected static function booted(): void
     {
@@ -42,5 +45,10 @@ class Agreement extends GymRevProjection
     public function location(): HasOne
     {
         return $this->hasOne(Location::class, 'gymrevenue_id', 'gr_location_id');
+    }
+
+    public function template(): HasOne
+    {
+        return $this->hasOne(AgreementTemplate::class, 'id', 'agreement_template_id');
     }
 }

@@ -21,6 +21,10 @@ class EndUserSeeder extends Seeder
         if (env('QUICK_SEED')) {
             $amountOfLeads = 2;
         }
+
+        if (env('RAPID_SEED') === true) {
+            $amountOfLeads = 1;
+        }
         VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)

@@ -58,8 +58,16 @@ export default class MessageInfo {
      */
     markAsRead() {
         if (!this.attributes.read) {
-            this.message.updateAttributes({ read: true });
+            this.updateAttributes({ read: true });
         }
+    }
+
+    updateAttributes(attribute) {
+        this.message.updateAttributes(attribute);
+    }
+
+    remove() {
+        this.message.remove();
     }
 
     dateFormatted() {

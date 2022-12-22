@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use RuntimeException;
@@ -37,7 +38,6 @@ use Twilio\Exceptions\ConfigurationException;
  * @property Collection       $gatewaySettings
  * @property string           $id
  * @property Collection<User> $users
- *
  * @method static ClientFactory factory()
  */
 class Client extends GymRevProjection
@@ -220,5 +220,10 @@ class Client extends GymRevProjection
     public function hasTwilioConversationEnabled(): bool
     {
         return $this->gatewayIntegration()->where(['slug' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION])->exists();
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }

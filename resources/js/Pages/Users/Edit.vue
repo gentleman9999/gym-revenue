@@ -11,7 +11,11 @@
                         Edit {{ data.user.name }}
                     </h2>
                 </LayoutHeader>
-                <user-form v-if="data?.user" v-bind="{ ...data }" />
+                <user-form
+                    v-if="data?.user"
+                    v-bind="{ ...data }"
+                    :upload-file-route="uploadFileRoute"
+                />
             </template>
         </ApolloQuery>
     </div>
@@ -34,40 +38,9 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    uploadFileRoute: {
+        type: Object,
+        required: true,
+    },
 });
-//
-// export default defineComponent({
-//     components: {
-//         LayoutHeader,
-//         Button,
-//         JetFormSection,
-//         JetInputError,
-//         JetLabel,
-//         UserForm,
-//         ModalableWrapper,
-//         ModalSlot,
-//     },
-//     props: {
-//         selectedUser: {
-//             type: Object,
-//             required: true,
-//         },
-//         locations: {
-//             type: Array,
-//             required: true,
-//         },
-//         availablePositions: {
-//             type: Array,
-//             required: true,
-//         },
-//         availableDepartments: {
-//             type: Array,
-//             required: true,
-//         },
-//         roles: {
-//             type: Array,
-//             required: true,
-//         },
-//     },
-// });
 </script>

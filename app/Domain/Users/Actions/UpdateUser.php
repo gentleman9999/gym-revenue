@@ -8,6 +8,7 @@ use App\Domain\Users\PasswordValidationRules;
 use App\Domain\Users\UserAggregate;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
+use App\Rules\Zip;
 
 use function bcrypt;
 
@@ -94,7 +95,7 @@ class UpdateUser implements UpdatesUserProfileInformation
             'address2' => ['sometimes', 'nullable'],
             'city' => ['sometimes'],
             'state' => ['sometimes', 'max:2', new Enum(StatesEnum::class)],
-            'zip' => ['sometimes'],
+            'zip' => ['required', 'max:5', new Zip()],
             'start_date' => ['sometimes'],
             'end_date' => ['sometimes'],
             'termination_date' => ['sometimes'],
@@ -155,5 +156,18 @@ class UpdateUser implements UpdatesUserProfileInformation
         $input['client_id'] = $user->client_id;
         $input['id'] = $user->id;
         $this->handle($input['id'], $input);
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'zip.required' => 'A Zip code is required',
+            'zip.error' => 'Invalid Zip Code',
+        ];
     }
 }

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services\Contract;
 
+use App\Domain\Contracts\Projections\Contract;
 use App\Models\File;
 use App\Support\Uuid;
 use Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdobeAPIService
@@ -40,6 +42,7 @@ class AdobeAPIService
     public function generatePDF(object $client_info): string
     {
         try {
+            Log::info('generatePDF Called.');
             $this->client_info = $client_info;
 
             return $this->createJwtToken();
@@ -84,6 +87,8 @@ class AdobeAPIService
 
             return $this->getAssetId();
         } else {
+            dd($response->body());
+
             throw new \ErrorException('PDF not created successfully');
         }
     }
@@ -112,7 +117,7 @@ class AdobeAPIService
         }
     }
 
-    public function uploadWordFile(string $upload_uri, string $media_type)
+    public function uploadWordFile(string $upload_uri, string $media_type): string
     {
         $client = new Client();
         $response = $client->request('PUT', $upload_uri, [
@@ -149,6 +154,8 @@ class AdobeAPIService
 
             return $this->checkFileStatus();
         } else {
+            dd($response->body());
+
             throw new \ErrorException('PDF not created successfully');
         }
     }
@@ -205,7 +212,7 @@ class AdobeAPIService
                 $file_table_data['key'] = $file_key;
                 $file_table_data['size'] = $response->header('Content-Length');
                 $file_table_data['bucket'] = 's3';
-                $file_table_data['entity_type'] = $this->client_data['agreement_template_type'];
+                $file_table_data['entity_type'] = Contract::class;
                 $file_table_data['entity_id'] = $this->client_data['entity_id'];
                 $file_table_data['hidden'] = false;
                 $file_table_data['type'] = 'pdf';

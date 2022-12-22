@@ -29,6 +29,7 @@ class LocationsImport implements ToCollection
                 'address1' => $row[5],
                 'shouldCreateTeam' => true,
                 'location_type' => LocationType::STORE,
+                'capacity' => $row[6],
             ]);
         }
     }

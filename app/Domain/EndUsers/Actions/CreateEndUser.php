@@ -9,10 +9,12 @@ use App\Domain\Campaigns\DripCampaigns\DripCampaignDay;
 use App\Domain\EndUsers\EndUserAggregate;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Users\Models\User;
+use App\Enums\GenderEnum;
 use App\Support\Uuid;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Prologue\Alerts\Facades\Alert;
 
@@ -30,14 +32,14 @@ class CreateEndUser extends BaseEndUserAction
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'client_id' => 'required',
             'profile_picture' => 'sometimes',
-            'profile_picture.uuid' => 'sometimes|required',
-            'profile_picture.key' => 'sometimes|required',
-            'profile_picture.extension' => 'sometimes|required',
-            'profile_picture.bucket' => 'sometimes|required',
-            'gender' => 'sometimes|required',
-            'date_of_birth' => 'sometimes|required',
-            'opportunity' => 'sometimes|required',
-            'owner_user_id' => 'sometimes|required|exists:users,id',
+            'profile_picture.uuid' => 'sometimes',
+            'profile_picture.key' => 'sometimes',
+            'profile_picture.extension' => 'sometimes',
+            'profile_picture.bucket' => 'sometimes',
+            'gender' => ['sometimes', new Enum(GenderEnum::class)],
+            'date_of_birth' => 'sometimes',
+            'opportunity' => 'sometimes',
+            'owner_user_id' => 'sometimes|exists:users,id',
             'notes' => 'nullable|array',
         ];
     }
@@ -46,8 +48,7 @@ class CreateEndUser extends BaseEndUserAction
     {
         $id = Uuid::new();
         EndUserAggregate::retrieve($id)->create($data)->persist();
-
-        //TODO move this to reactor
+        //what is this even doing, and why is it being done here?
         if (array_key_exists('lead_type_id', $data) || array_key_exists('agreement_number', $data)) {
             $leadAttendees = null;
             $memberAttendees = null;
@@ -56,7 +57,7 @@ class CreateEndUser extends BaseEndUserAction
             } else {
                 $memberAttendees = [$id];
             }
-
+            //TODO: why are we doing this here instead of in a reactor?
             $drips = DripCampaign::whereStatus('ACTIVE')->get();
             if ($drips) {
                 $client_id = $data['client_id'];

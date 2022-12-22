@@ -129,6 +129,10 @@ const props = defineProps({
     user: { type: Object },
     formSubmitOptions: { type: Object },
     handleCancel: { type: Function },
+    uploadFileRoute: {
+        type: Object,
+        required: true,
+    },
 });
 
 const defaultHandleCancel = () => {

@@ -6,6 +6,7 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Services\Dashboard\HomeDashboardService;
+use App\Support\CurrentInfoRetriever;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -22,12 +23,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $team = Team::find($session_team['id']);
-        } else {
-            $team = Team::find($user->default_team_id);
-        }
+        $team = CurrentInfoRetriever::getCurrentTeam();
         $client = $team->client;
         $announcements = [];
         $team_name = $team->name;

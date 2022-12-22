@@ -5,7 +5,9 @@ namespace App\StorableEvents;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Clients\Projections\ClientActivity;
 use App\Domain\Users\Models\User;
+use App\Support\CurrentInfoRetriever;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\EventSourcing\Enums\MetaData;
 use Spatie\EventSourcing\Facades\Projectionist;
 use Spatie\EventSourcing\StoredEvents\Models\EloquentStoredEvent;
@@ -22,12 +24,7 @@ class GymRevStoredEvent extends EloquentStoredEvent
                 if (session('user_id')) {
                     $user_id = auth()->user()->id;
                 }
-                $client_id = null;
-                if (session('client_id')) {
-                    $client_id = session('client_id');
-                } elseif (session('client_id')) {
-                    $client_id = session('client_id');
-                }
+                $client_id = CurrentInfoRetriever::getCurrentClientID();
                 $access_token = request()->bearerToken() ?? null;
                 $ip = request()->ip() ?? null;
                 $api_user = $access_token !== null ? User::whereAccessToken($access_token)->first() : null;
@@ -147,14 +144,9 @@ class GymRevStoredEvent extends EloquentStoredEvent
 
     //we could potentially use attributes instead of function for clientId, and then in turn
     //setup a relation with Client using that attribute.
-    public function client(): ?Client
+    public function client(): HasOne
     {
-        $clientId = $this->clientId();
-        if (! $clientId) {
-            return null;
-        }
-
-        return Client::find($clientId);
+        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 
     public function user(): ?User

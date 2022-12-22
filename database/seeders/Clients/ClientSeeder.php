@@ -16,16 +16,23 @@ class ClientSeeder extends Seeder
      */
     public function run()
     {
-        $clients = [
-            'The Kalamazoo' => 1,
-            'iFit' => 1,
-            'Stencils' => 1,
-            'The Z' => 1,
-            'Sci-Fi Purple Gyms' => 1,
-            'FitnessTruth' => 1,
-        ];
+        if (env('RAPID_SEED') === true) {
+            $clients = [
+                'The Kalamazoo' => 1,
+                ];
+        } else {
+            $clients = [
+                'The Kalamazoo' => 1,
+                'iFit' => 1,
+                'Stencils' => 1,
+                'The Z' => 1,
+                'Sci-Fi Purple Gyms' => 1,
+                'FitnessTruth' => 1,
+            ];
+        }
 
-        if (! App::environment(['production', 'staging'])) {
+
+        if (! App::environment(['production', 'staging']) && ! env('RAPID_SEED', false)) {
             $clients['TruFit Athletic Clubs'] = 1;
         }
 

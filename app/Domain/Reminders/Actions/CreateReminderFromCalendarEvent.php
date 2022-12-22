@@ -36,6 +36,7 @@ class CreateReminderFromCalendarEvent
         $data['entity_type'] = CalendarEvent::class;
         $data['name'] = 'User Generated Reminder';
         $data['remind_time'] = 30;
+
         UserAggregate::retrieve($data['user_id'])->createReminder($data)->persist();
 
         return Reminder::findOrFail($id);
@@ -52,11 +53,10 @@ class CreateReminderFromCalendarEvent
         return true;
     }
 
-    public function asController(ActionRequest $request, $id): RedirectResponse
+    public function asController(ActionRequest $request, Reminder $reminder): RedirectResponse
     {
-        var_dump($request->id);
         $data = $request->validated();
-        $data['entity_id'] = $id;
+        $data['entity_id'] = $reminder->id;
         $data['user_id'] = $request->user()->id;
         $reminder = $this->handle(
             $data,
