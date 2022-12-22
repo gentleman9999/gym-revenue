@@ -13,7 +13,9 @@ use App\Domain\Users\UserAggregate;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Rules\Zip;
+
 use function bcrypt;
+
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

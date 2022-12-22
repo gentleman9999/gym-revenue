@@ -6,8 +6,8 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Roles\Role;
 use App\Domain\Users\Models\User;
-use Bouncer;
 use Illuminate\Database\Seeder;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Symfony\Component\VarDumper\VarDumper;
 
 class BouncerAbilitiesSeeder extends Seeder

@@ -138,8 +138,6 @@ class MembersController extends Controller
 
         $locations = Location::all();
 
-        //    $claimed =LeadDetails::whereClientId($client_id)->whereField('claimed')->get();
-
         if (! empty($prospects_model)) {
             $prospects = $prospects_model
                 ->with('location')

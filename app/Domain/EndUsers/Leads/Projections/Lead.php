@@ -29,7 +29,7 @@ class Lead extends EndUser
 
     public static function getDetailsModel(): EndUserDetails
     {
-        return new LeadDetails();
+        return new EndUserDetails();
     }
 
     public function scopeFilter($query, array $filters): void

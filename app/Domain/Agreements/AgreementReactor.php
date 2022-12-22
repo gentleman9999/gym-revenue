@@ -49,7 +49,6 @@ class AgreementReactor extends Reactor implements ShouldQueue
         if (! Cache::get('is_seeding', false)) {
             $adobe_service = new AdobeAPIService();
             $adobe_service->generatePDF($client_info);
-        } else {
         }
     }
 }

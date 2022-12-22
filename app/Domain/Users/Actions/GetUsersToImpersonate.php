@@ -6,9 +6,12 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use App\Support\CurrentInfoRetriever;
+
 use function auth;
+
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
 use function request;
 use function response;
 

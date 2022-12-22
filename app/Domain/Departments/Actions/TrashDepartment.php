@@ -5,7 +5,6 @@ namespace App\Domain\Departments\Actions;
 use App\Domain\Departments\Department;
 use App\Domain\Departments\DepartmentAggregate;
 use App\Http\Middleware\InjectClientId;
-use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -27,7 +26,7 @@ class TrashDepartment
     {
         $current_user = $request->user();
 
-        return $current_user->can('departments.trash', Position::class);
+        return $current_user->can('departments.trash', Department::class);
     }
 
     public function getControllerMiddleware(): array

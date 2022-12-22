@@ -6,9 +6,8 @@ use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Leads\Projections\LeadDetails;
 use App\Domain\EndUsers\Members\Projections\Member;
-use App\Domain\EndUsers\Members\Projections\MemberDetails;
+use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
@@ -157,8 +156,8 @@ class TaskController extends Controller
                         $lead_attendees[]['id'] = $attendee->entity_id;
 
                         try {
-                            $call_outcome = LeadDetails::whereField('call_outcome')
-                                ->whereLeadId($attendee->entity_id)
+                            $call_outcome = EndUserDetails::whereField('call_outcome')
+                                ->whereEndUserID($attendee->entity_id)
                                 ->whereEntityId($event->id)
                                 ->orderBy('created_at', 'desc')
                                 ->first();
@@ -169,8 +168,8 @@ class TaskController extends Controller
                         $member_attendees[]['id'] = $attendee->entity_id;
 
                         try {
-                            $call_outcome = MemberDetails::whereField('call_outcome')
-                                ->whereMemberId($attendee->entity_id)
+                            $call_outcome = EndUserDetails::whereField('call_outcome')
+                                ->whereEndUserID($attendee->entity_id)
                                 ->whereEntityId($event->id)
                                 ->orderBy('created_at', 'desc')
                                 ->first()
