@@ -173,7 +173,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('calendar')->group(funct
 Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function () {
     Route::get('/', \App\Http\Controllers\UsersController::class . '@index')->name('users');
     Route::get('/create', \App\Http\Controllers\UsersController::class . '@create')->name('users.create');
-    Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('users.store');
+    Route::post('/store', \App\Domain\Users\Actions\CreateUser::class)->name('users.store');
     Route::post('/', \App\Domain\Users\Actions\CreateFiles::class)->name('users.files.store');
     Route::post('/import', \App\Domain\Users\Actions\ImportUsers::class)->name('users.import');
     Route::get('/edit/{user}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
