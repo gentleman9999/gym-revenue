@@ -496,3 +496,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-documents')-
         Route::post('/{structuredDocumentFile}/restore', \App\Domain\StructuredDocuments\StructuredDocumentFiles\Actions\RestoreStructuredDocumentFile::class)->withTrashed()->name('structured-documents.files.restore');
     });
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-document-requests')->group(function () {
+    Route::post('/', \App\Domain\StructuredDocumentRequests\Actions\CreateStructuredDocumentRequest::class)->name('structured-document-request.store');
+    Route::put('/{structured_document_request}', \App\Domain\StructuredDocumentRequests\Actions\UpdateStructuredDocumentRequest::class)->name('structured-document-request.update');
+    Route::delete('/{structured_document_request_id}', \App\Domain\StructuredDocumentRequests\Actions\TrashStructuredDocumentRequest::class)->name('structured-document-request.trash');
+    Route::delete('/{structured_document_request_id}/force', \App\Domain\StructuredDocumentRequests\Actions\DeleteStructuredDocumentRequest::class)->name('structured-document-request.delete');
+    Route::post('/{structured_document_request}/restore', \App\Domain\StructuredDocumentRequests\Actions\RestoreStructuredDocumentRequest::class)->withTrashed()->name('structured-document-request.restore');
+});
