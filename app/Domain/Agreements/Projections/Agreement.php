@@ -7,11 +7,12 @@ namespace App\Domain\Agreements\Projections;
 use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Locations\Projections\Location;
+use App\Domain\Users\Models\EndUser;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,9 +38,9 @@ class Agreement extends GymRevProjection
         return $this->hasOne(AgreementCategory::class, 'id', 'agreement_category_id');
     }
 
-    public function endUser(): HasOne
+    public function endUser(): BelongsTo
     {
-        return $this->hasOne(EndUser::class, 'id', 'end_user_id');
+        return $this->belongsTo(EndUser::class, 'end_user_id', 'id');
     }
 
     public function categoryById(): HasOne

@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use App\Domain\Clients\Actions\CreateClient;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Roles\Role as Roles;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Actions\CreateUser;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Enums\ClientServiceEnum;
 use App\Enums\SecurityGroupEnum;

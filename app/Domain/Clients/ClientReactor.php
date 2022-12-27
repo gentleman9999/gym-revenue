@@ -7,9 +7,9 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
 use App\Domain\Teams\Actions\CreateTeam;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientReactor extends Reactor

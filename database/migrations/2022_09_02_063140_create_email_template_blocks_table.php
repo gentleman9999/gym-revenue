@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->char('id', 36);
             $table->string('name');
             $table->text('definition');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('user_id');
             $table->string('client_id');
             $table->timestamps();
 

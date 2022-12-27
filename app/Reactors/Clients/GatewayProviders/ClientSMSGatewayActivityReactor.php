@@ -3,7 +3,7 @@
 namespace App\Reactors\Clients\GatewayProviders;
 
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
-use App\Domain\Users\UserAggregate;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Services\GatewayProviders\SMS\SMSGatewayProviderService;
 use App\StorableEvents\Clients\Activity\GatewayProviders\SMS\UserSentATestSMS;
 use Illuminate\Contracts\Queue\ShouldQueue;

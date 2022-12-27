@@ -4,9 +4,9 @@ namespace App\Domain\Users\Actions;
 
 use App\Aggregates\Clients\ClientAggregate;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
-use App\Domain\Users\UserAggregate;
 use App\Enums\SecurityGroupEnum;
 use function auth;
 use function config;

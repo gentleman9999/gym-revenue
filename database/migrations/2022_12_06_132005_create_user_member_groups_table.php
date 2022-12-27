@@ -18,7 +18,7 @@ return new class () extends Migration {
                     $table->uuid('id')->primary()->unique();
                     $table->uuid('client_id')->index();
                     $table->uuid('member_group_id');
-                    $table->unsignedBigInteger('user_id');
+                    $table->uuid('user_id');
                     $table->boolean('is_primary')->default(false);
                     $table->timestamps();
 

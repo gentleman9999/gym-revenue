@@ -2,8 +2,8 @@
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\UserAggregate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;

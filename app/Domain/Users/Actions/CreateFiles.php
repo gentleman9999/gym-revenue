@@ -4,9 +4,14 @@ namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Models\User;
 use App\Domain\Users\UserAggregate;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateFiles extends \App\Actions\Clients\Files\CreateFiles
 {
+    use AsAction;
+    public string $commandSignature = 'endUser:uploadProfilePicture';
+    public string $commandDescription = 'Upload Profile Picture';
+
     public function handle($data, $current_user = null)
     {
         $files = [];

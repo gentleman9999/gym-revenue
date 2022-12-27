@@ -7,7 +7,7 @@ use App\Domain\CalendarAttendees\CalendarAttendee;
 use App\Domain\CalendarAttendees\CalendarAttendeeAggregate;
 use App\Domain\CalendarAttendees\Events\CalendarAttendeeAdded;
 use App\Domain\CalendarEvents\CalendarEvent;
-use App\Domain\EndUsers\Projections\EndUser;
+use App\Domain\Users\Models\EndUser;
 use App\Models\ShortUrl;
 use Lorisleiva\Actions\Concerns\AsAction;
 

@@ -3,9 +3,9 @@
 namespace App\Domain\Users\Actions;
 
 use function __;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
-use App\Domain\Users\UserAggregate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;

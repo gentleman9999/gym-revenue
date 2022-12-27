@@ -14,7 +14,7 @@ return new class () extends Migration {
     {
         Schema::create('client_conversations', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->uuid('user_id')->nullable();
             $table->uuid('gateway_provider_id');
             $table->uuid('user_conversation_id')->nullable();
             $table->string('conversation_id')->comment('Twilio Conversation SID');

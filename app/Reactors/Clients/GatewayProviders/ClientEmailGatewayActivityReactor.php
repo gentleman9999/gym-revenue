@@ -3,7 +3,7 @@
 namespace App\Reactors\Clients\GatewayProviders;
 
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
-use App\Domain\Users\UserAggregate;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Services\GatewayProviders\Email\EmailGatewayProviderService;
 use App\StorableEvents\Clients\Activity\GatewayProviders\Email\UserSentATestEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;

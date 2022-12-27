@@ -11,10 +11,11 @@ use App\Domain\Agreements\Events\AgreementRestored;
 use App\Domain\Agreements\Events\AgreementTrashed;
 use App\Domain\Agreements\Events\AgreementUpdated;
 use App\Domain\Agreements\Projections\Agreement;
-use App\Domain\EndUsers\Customers\Projections\Customer;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
-use App\Domain\EndUsers\Projections\EndUser;
+use App\Domain\Users\Actions\UpdateUser;
+use App\Domain\Users\Models\Customer;
+use App\Domain\Users\Models\EndUser;
+use App\Domain\Users\Models\Member;
+use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\DB;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -33,28 +34,13 @@ class AgreementProjector extends Projector
             $agreement->id = $event->aggregateRootUuid();
             $agreement->save();
 
-            $end_user_id = $event->payload['end_user_id'];
+            /** Find Current EndUser information */
+            $end_user = EndUser::find($event->payload['end_user_id']);
 
-            $end_user = EndUser::find($end_user_id); //Find Current EndUser information
+            /** Fetching all agreement with category of end user */
+            $agreements = Agreement::with('categoryById')->whereEndUserId($event->payload['end_user_id'])->get();
 
-            $potential_lead = Lead::withTrashed()->find($end_user_id); //check to see if in leads table
-            $potential_customer = Customer::withTrashed()->find($end_user_id); //check to see if in customers table
-            $potential_member = Member::withTrashed()->find($end_user_id); //check to see if in members table
-
-            if ($potential_lead) {
-                $potential_lead->writeable()->forceDelete();
-            }
-            if ($potential_customer) {
-                $potential_customer->writeable()->forceDelete();
-            }
-            if ($potential_member) {
-                $potential_member->writeable()->forceDelete();
-            }
-
-            //Fetching all agreement with category of end user
-            $agreements = Agreement::with('categoryById')->whereEndUserId($end_user_id)->get();
-
-            //Checking if any agreement is of membership category
+            /** Checking if any agreement is of membership category */
             $is_membership_agreement = false;
             foreach ($agreements as $agreement) {
                 if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
@@ -64,14 +50,15 @@ class AgreementProjector extends Projector
 
             $active = $event->payload['active'];
 
-            if ($active && ! $is_membership_agreement) { //Turn lead into customer
-                $customer = (new Customer())->writeable();
-                $this->fill($end_user, $customer);
-            }
-
-            if ($active && $is_membership_agreement) { //Turn lead into member
-                $member = (new Member())->writeable();
-                $this->fill($end_user, $member);
+            /** Convert user type to customer/member */
+            if ($active) {
+                UpdateUser::run(
+                    $event->payload['end_user_id'],
+                    [
+                        'user_type' => $is_membership_agreement ?
+                            UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER,
+                    ]
+                );
             }
         });
     }

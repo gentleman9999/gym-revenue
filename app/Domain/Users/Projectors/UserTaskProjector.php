@@ -2,18 +2,28 @@
 
 namespace App\Domain\Users\Projectors;
 
+use App\Domain\Users\Models\User;
+use App\Enums\UserTypesEnum;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class UserTaskProjector extends Projector
 {
     public function onTaskCreated(TaskCreated $event): void
     {
-        Tasks::create($event->data);
+        $user = User::find($event['user_id']);
+
+        if ($user->user_type == UserTypesEnum::EMPLOYEE) {
+            Tasks::create($event->data);
+        }
     }
 
     public function onTaskUpdated(TaskUpdated $event): void
     {
-        Tasks::findOrFail($event->data['id'])->update($event->data);
+        $user = User::find($event['user_id']);
+
+        if ($user->user_type == UserTypesEnum::EMPLOYEE) {
+            Tasks::findOrFail($event->data['id'])->update($event->data);
+        }
     }
 
     public function onTaskDeleted(TaskDeleted $event): void

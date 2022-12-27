@@ -76,14 +76,8 @@
             </div>
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="primary_phone" value="Primary Phone" />
-                <phone-input
-                    id="primary_phone"
-                    v-model="form['primary_phone']"
-                />
-                <jet-input-error
-                    :message="form.errors.primary_phone"
-                    class="mt-2"
-                />
+                <phone-input id="primary_phone" v-model="form['phone']" />
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
@@ -347,7 +341,7 @@ export default {
                 middle_name: "",
                 last_name: "",
                 email: "",
-                primary_phone: "",
+                phone: "",
                 alternate_phone: "",
                 club_id: "",
                 client_id: props.clientId,
@@ -364,7 +358,7 @@ export default {
                 middle_name: member.middle_name,
                 last_name: member.last_name,
                 email: member.email,
-                primary_phone: member.primary_phone,
+                phone: member.phone,
                 alternate_phone: member.alternate_phone,
                 club_id: member.club_id,
                 client_id: props.clientId,
@@ -378,15 +372,15 @@ export default {
         const borderStyle = computed(() => {
             let color = "transparent";
             switch (form["opportunity"]) {
-                case "High":
+                case 3:
                     color = "green";
                     break;
 
-                case "Medium":
+                case 2:
                     color = "yellow";
                     break;
 
-                case "Low":
+                case 1:
                     color = "red";
                     break;
             }

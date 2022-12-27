@@ -4,6 +4,8 @@ namespace App\Domain\Campaigns;
 
 use App\Domain\Audiences\Audience;
 use App\Domain\Clients\Projections\Client;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -2,7 +2,7 @@
 
 namespace App\Domain\DynamicReports\Actions;
 
-use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Users\Models\Member;
 use Illuminate\Database\Eloquent\Collection;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;

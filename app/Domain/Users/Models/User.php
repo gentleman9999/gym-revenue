@@ -8,6 +8,7 @@ use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
@@ -54,16 +56,15 @@ class User extends Authenticatable
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
     use Sortable;
+    use SoftDeletes;
 
     /**
-     * The "booted" method of the model.
+     * Define the table name so that all
+     * children model uses this table
      *
-     * @return void
+     * @var string
      */
-    protected static function booted()
-    {
-        static::addGlobalScope(new ObfuscatedScope());
-    }
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -71,10 +72,10 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'email', 'alternate_email', 'first_name', 'last_name',
-        'address1', 'address2', 'city', 'state', 'zip', 'phone',
-        'manager', 'home_location_id', 'start_date', 'end_date',
-        'termination_date','obfuscated_at',
+        'first_name', 'middle_name', 'last_name', 'phone', 'alternate_phone',
+        'date_of_birth', 'gender', 'occupation', 'employer', 'address1', 'address2',
+        'zip', 'city', 'state', 'drivers_license_number', 'unsubscribed_email',
+        'unsubscribed_sms', 'obfuscated_at',
     ];
 
     /**
@@ -97,8 +98,22 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'id' => 'string',
         'is_cape_and_bay_user' => 'boolean',
+        'unsubscribed_email' => 'boolean',
+        'unsubscribed_sms' => 'boolean',
+        'is_previous' => 'boolean',
+
+        'alternate_emails' => 'array',
+        'entry_source' => 'array',
+        'misc' => 'array',
+
+        'email_verified_at' => 'datetime',
+        'date_of_birth' => 'datetime',
+        'terminated_at' => 'datetime',
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
+        'user_type' => UserTypesEnum::class,
     ];
 
     /**
@@ -109,6 +124,21 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url', 'name',
     ];
+
+    /**
+     * Override soft detele column name
+     */
+    public const DELETED_AT = 'terminated_at';
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ObfuscatedScope());
+    }
 
     /**
      * Create a new factory instance for the model.
@@ -205,9 +235,7 @@ class User extends Authenticatable
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
-
-        return $teams;
+        return $this->belongsToMany(Team::class, 'team_user', 'user_id', 'team_id');
     }
 
     public function defaultTeamDetail(): HasOne
@@ -325,9 +353,13 @@ class User extends Authenticatable
         return $this->manager !== null && $this->manager !== '';
     }
 
-    public function getDefaultTeamIdAttribute(): string
+    public function getDefaultTeamIdAttribute(): ?string
     {
-        return $this->defaultTeamDetail->value;
+        if ($this->defaultTeamDetail) {
+            return $this->defaultTeamDetail->value;
+        }
+
+        return null;
     }
 
     public function departments(): BelongsToMany
@@ -341,17 +373,26 @@ class User extends Authenticatable
     }
 
     /**
-
      * Get all of the teams the user owns or belongs to.
-
      *
-
      * @return \Illuminate\Support\Collection
-
      */
     public function allTeams(): Collection
     {
         return $this->teams->sortBy('name');
+    }
+
+    /**
+     * Checks if instance is of an enduser
+     *
+     * @return bool
+     */
+    public function isEndUser(): bool
+    {
+        return in_array(
+            $this->attributes['user_type'],
+            [UserTypesEnum::LEAD, UserTypesEnum::CUSTOMER, UserTypesEnum::MEMBER]
+        );
     }
 
     public function files(): MorphMany

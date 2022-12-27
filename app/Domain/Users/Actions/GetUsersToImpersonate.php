@@ -5,6 +5,7 @@ namespace App\Domain\Users\Actions;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Support\CurrentInfoRetriever;
 
 use function auth;
@@ -86,7 +87,9 @@ class GetUsersToImpersonate
                 if (! is_null($imp_user->user)) {
                     $users[] = $imp_user->user;
                 } else {
-                    $users[] = User::withoutGlobalScopes()->findOrFail($imp_user->user_id);
+                    $users[] = User::withoutGlobalScopes()
+                        ->whereUserType(UserTypesEnum::EMPLOYEE)
+                        ->findOrFail($imp_user->user_id);
                 }
             }
 

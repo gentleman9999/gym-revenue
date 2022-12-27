@@ -4,8 +4,6 @@ namespace App\Console;
 
 use App\Domain\CalendarEvents\Actions\CheckOverdueTasks;
 use App\Domain\Campaigns\ScheduledCampaigns\Actions\CheckScheduledCampaigns;
-use App\Domain\EndUsers\Leads\Actions\GenerateRandomLeads;
-use App\Domain\EndUsers\Members\Actions\GenerateRandomMembers;
 use App\Domain\Reminders\Actions\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -34,10 +32,6 @@ class Kernel extends ConsoleKernel
         $schedule->job(new CheckScheduledCampaigns())->everyMinute()->withoutOverlapping();
         $schedule->job(new CheckReminders())->everyMinute()->withoutOverlapping();
         $schedule->job(new CheckOverdueTasks())->everyMinute()->withoutOverlapping();
-        if (App::environment(['local', 'develop', 'staging'])) {
-            $schedule->job(new GenerateRandomLeads())->everyFiveMinutes()->withoutOverlapping();
-            $schedule->job(new GenerateRandomMembers())->everyTenMinutes()->withoutOverlapping();
-        }
     }
 
     /**

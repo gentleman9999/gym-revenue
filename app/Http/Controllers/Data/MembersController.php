@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Data;
 
 use App\Actions\Endusers\Members\UpdateMemberCommunicationPreferences;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\EndUserAggregate;
-use App\Domain\EndUsers\Members\Projections\Member;
-use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Domain\Users\Aggregates\UserAggregate;
+use App\Domain\Users\Models\EndUser;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
@@ -23,11 +23,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Prologue\Alerts\Facades\Alert;
 
 class MembersController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {
@@ -219,7 +220,7 @@ class MembersController extends Controller
                         $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Member::whereIn('gr_location_id', $team_locations);
+                    $results = Member::whereIn('home_location_id', $team_locations);
                 }
             } else {
                 $results = new Member();
@@ -230,7 +231,7 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function edit(EndUser $endUser)
+    public function edit(Member $endUser): InertiaResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.update', EndUser::class)) {
@@ -281,13 +282,14 @@ class MembersController extends Controller
         ]);
     }
 
-    public function show(EndUser $endUser)
+    public function show(Member $endUser): InertiaResponse
     {
-        $aggy = EndUserAggregate::retrieve($endUser->id);
+        $aggy = UserAggregate::retrieve($endUser->id);
         $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
 
         return Inertia::render('Members/Show', [
+            'member' => $endUser,
             'preview_note' => $preview_note,
             'interactionCount' => $aggy->getInteractionCount(),
             'trialMembershipTypes' => TrialMembershipType::whereClientId(request()->user()->client_id)->get(),
@@ -346,7 +348,7 @@ class MembersController extends Controller
         return $results;
     }
 
-    public function contact(EndUser $end_user): \Illuminate\Http\RedirectResponse
+    public function contact(Member $end_user): \Illuminate\Http\RedirectResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.contact', EndUser::class)) {
@@ -356,7 +358,7 @@ class MembersController extends Controller
         }
 
         if (array_key_exists('method', request()->all())) {
-            $aggy = EndUserAggregate::retrieve($end_user->id);
+            $aggy = UserAggregate::retrieve($end_user->id);
             $data = request()->all();
 
             $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -398,7 +400,7 @@ class MembersController extends Controller
         return Redirect::back()->with('selectedMemberDetailIndex', 0);
     }
 
-    public function view(EndUser $endUser)
+    public function view(Member $endUser): InertiaResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {
@@ -407,9 +409,9 @@ class MembersController extends Controller
             return Redirect::back();
         }
         $data = Member::whereId($endUser->id)->first();
-        $locid = Location::where('gymrevenue_id', $data->gr_location_id)->first();
+        $locid = Location::where('gymrevenue_id', $data->home_location_id)->first();
         $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
-        $aggy = EndUserAggregate::retrieve($endUser->id);
+        $aggy = UserAggregate::retrieve($endUser->id);
 
         $data = [
             'member' => $endUser,

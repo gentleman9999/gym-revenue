@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +23,7 @@ class TeamController extends Controller
         $current_user = $request->user();
         $client_id = $current_user->client_id;
         //   $users = $current_team->team_users()->get();
-        $users = User::with(['teams', 'home_location'])->get();
+        $users = Employee::with(['teams', 'home_location'])->get();
 
         $teams = Team::filter($request->only('search', 'club', 'team', 'users'))->sort()->paginate(10)->appends(request()->except('page'));
         $locations = Location::all();
@@ -71,12 +72,12 @@ class TeamController extends Controller
         $availableLocations = [];
         $users = $team->users;
 
-        $availableUsers = User::get();
+        $availableUsers = Employee::get();
 
         if ($client_id) {
             if ($current_user->is_cape_and_bay_user) {
                 //if cape and bay user, add all the non client associated capeandbay users
-                $availableUsers = $availableUsers->merge(User::whereClientId(null)->get());
+                $availableUsers = $availableUsers->merge(Employee::whereClientId(null)->get());
             }
             $availableLocations = $team->home_team ? [] : Location::all();
         } elseif ($current_user->is_cape_and_bay_user) {
@@ -120,7 +121,7 @@ class TeamController extends Controller
         }
 
         if (count($non_admin_users) > 0) {
-            $first_user = User::find($non_admin_users[0]->user_id);
+            $first_user = Employee::find($non_admin_users[0]->user_id);
             $data['clubs'] = Location::all();
             $data['client'] = Client::find($first_user->client->id);
         }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\Utility\AppState;
 use App\Support\CurrentInfoRetriever;
 use Closure;
@@ -67,7 +68,7 @@ class HandleInertiaRequests extends Middleware
             $shared = [
                 'user.id' => $user->id,
                 'user.contact_preference' => $user->contact_preference,
-                'user.all_locations' => $user->allLocations(),
+                'user.all_locations' => $user->user_type === UserTypesEnum::EMPLOYEE ? $user->allLocations() : null,
                 'user.current_team.isClientTeam' => $user->client_id !== null,
                 'user.is_client_user' => $user->client_id !== null,
                 'user.is_gr_admin' => $user->inSecurityGroup(SecurityGroupEnum::ADMIN),
@@ -118,7 +119,10 @@ class HandleInertiaRequests extends Middleware
                 }
 
                 return array_merge($request->user()->toArray(), array_filter([
-                    'all_teams' => Jetstream::hasTeamFeatures() ? $request->user()->allTeams()->values() : null,
+                    'all_teams' => Jetstream::hasTeamFeatures() ? (
+                        $request->user()->user_type === UserTypesEnum::EMPLOYEE ?
+                        $request->user()->allTeams()->values() : null
+                    ) : null,
                 ]), [
                     'two_factor_enabled' => ! is_null($request->user()->two_factor_secret),
                 ]);

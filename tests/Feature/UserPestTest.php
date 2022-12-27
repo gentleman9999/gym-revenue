@@ -173,10 +173,11 @@ it('should return 200 on route users', function () {
 it('should return 200 on users/view/{user}', function () {
     $role = UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
+    $viewable_user = UserUtility::createUserWithTeam();
     Bouncer::allow($role->name)->everything();
     $this->actingAs($user);
 
-    $response = $this->get('users/view/1', []);
+    $response = $this->get("users/view/{$viewable_user->id}", []);
 
     $this->assertEquals(200, $response->status());
 });

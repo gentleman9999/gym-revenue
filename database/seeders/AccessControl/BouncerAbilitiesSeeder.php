@@ -3,8 +3,8 @@
 namespace Database\Seeders\AccessControl;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\Roles\Role;
+use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\BouncerFacade as Bouncer;

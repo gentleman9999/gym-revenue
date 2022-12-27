@@ -6,6 +6,7 @@ use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
@@ -76,7 +77,7 @@ class FilesController extends Controller
 
 
 
-        $user = User::whereId($request->user()->id)->with('teams', 'positions', 'departments')->first();
+        $user = Employee::whereId($request->user()->id)->with('teams', 'positions', 'departments')->first();
 
         /**
         * Folder permissions to determine if you can see the folder
@@ -145,7 +146,7 @@ class FilesController extends Controller
             'positions' => Position::all(),
             'roles' => Role::all(),
             'locations' => Location::all(),
-            'users' => User::all(),
+            'users' => Employee::all(),
             'teams' => Team::all(),
             'uploadFileRoute' => 'files.store',
         ]);
