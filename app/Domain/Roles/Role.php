@@ -9,6 +9,7 @@ use App\Domain\Chat\Models\Chat;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
+use App\Domain\EndUsers\Customers\Projections\Customer;
 use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
@@ -79,6 +80,7 @@ class Role extends \Silber\Bouncer\Database\Role
             'dynamic-reports' => DynamicReport::class,
             'chat' => Chat::class,
             'conversation' => ClientConversation::class,
+            'customers' => Customer::class,
             default => null,
         };
     }

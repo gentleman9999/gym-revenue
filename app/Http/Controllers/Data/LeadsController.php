@@ -140,6 +140,7 @@ class LeadsController extends Controller
             'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
             'newLeadCount' => $newLeadCount,
+            'lead_types' => LeadType::all(),
         ]);
     }
 

@@ -20,7 +20,7 @@ class Agreement extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id','end_user_id','agreement_template_id','active'];
+    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'end_user_id', 'agreement_template_id', 'active'];
 
     protected static function booted(): void
     {
@@ -40,6 +40,11 @@ class Agreement extends GymRevProjection
     public function endUser(): HasOne
     {
         return $this->hasOne(EndUser::class, 'id', 'end_user_id');
+    }
+
+    public function categoryById(): HasOne
+    {
+        return $this->HasOne(AgreementCategory::class, 'id', 'agreement_category_id');
     }
 
     public function location(): HasOne

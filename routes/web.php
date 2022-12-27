@@ -91,6 +91,19 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/upload', \App\Domain\EndUsers\Actions\CreateProfilePicture::class)->name('data.members.upload.profile.picture');
     });
 
+    Route::prefix('customers')->group(function () {
+        Route::get('/', \App\Domain\EndUsers\Customers\Actions\GetCustomers::class)->name('data.customers');
+        Route::get('/create', \App\Domain\EndUsers\Customers\Actions\GetCreateCustomer::class)->name('data.customers.create');
+        Route::post('/', \App\Domain\EndUsers\Customers\Actions\CreateCustomer::class)->name('data.customers.store');
+        Route::get('/show/{end_user}', \App\Domain\EndUsers\Customers\Actions\ShowCustomer::class)->name('data.customers.show');
+        Route::get('/edit/{end_user}', \App\Domain\EndUsers\Customers\Actions\EditCustomer::class)->name('data.customers.edit');
+        Route::put('/{endUser}', \App\Domain\EndUsers\Actions\UpdateEndUser::class)->name('data.customers.update');
+        Route::delete('/delete/{endUser}', \App\Domain\EndUsers\Actions\TrashEndUser::class)->name('data.customers.trash');
+        Route::post('/delete/{endUser}/restore', \App\Domain\EndUsers\Actions\RestoreEndUser::class)->withTrashed()->name('data.customers.restore');
+        Route::get('/view/{end_user}', \App\Domain\EndUsers\Customers\Actions\ViewCustomer::class)->name('data.customers.view');
+        Route::get('/export', \App\Domain\EndUsers\Customers\Actions\ExportCustomer::class)->name('data.customers.export');
+    });
+
     Route::get('/conversions', \App\Http\Controllers\DashboardController::class . '@index')->name('data.conversions');
 });
 

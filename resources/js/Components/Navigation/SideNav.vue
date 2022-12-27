@@ -88,6 +88,7 @@ import {
     SettingIcon,
     LeadsIcon,
     MembersIcon,
+    CustomersIcon,
     BurgerIcon,
 } from "@/Components/Icons";
 import { usePage } from "@inertiajs/inertia-vue3";
@@ -111,6 +112,7 @@ export default defineComponent({
         ReminderIcon,
         LocationIcon,
         SettingIcon,
+        CustomersIcon,
         BurgerIcon,
         FontAwesomeIcon,
     },
@@ -216,6 +218,17 @@ export default defineComponent({
                         isClientUser &&
                         (user.abilities?.includes("members.read") ||
                             client_services?.includes("MEMBERS") ||
+                            isAdmin),
+                },
+                {
+                    key: "nav-customers",
+                    icon: CustomersIcon,
+                    route: "data.customers",
+                    label: "Customers",
+                    permission:
+                        isClientUser &&
+                        (user.abilities?.includes("customers.read") ||
+                            client_services?.includes("CUSTOMERS") ||
                             isAdmin),
                 },
                 {

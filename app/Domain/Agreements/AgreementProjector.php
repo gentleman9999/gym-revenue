@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Agreements;
 
+use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Events\AgreementCreated;
 use App\Domain\Agreements\Events\AgreementDeleted;
 use App\Domain\Agreements\Events\AgreementRestored;
@@ -28,32 +31,47 @@ class AgreementProjector extends Projector
             $agreement = (new Agreement())->writeable();
             $agreement->fill($event->payload);
             $agreement->id = $event->aggregateRootUuid();
-            $agreement->client_id = $event->payload['client_id'];
             $agreement->save();
 
-            $endUser = EndUser::find($event->payload['end_user_id']); //Find Current EndUser information
-            $potentialLead = Lead::withTrashed()->find($event->payload['end_user_id']); //check to see if in leads table
-            $potentialCustomer = Customer::withTrashed()->find($event->payload['end_user_id']); //check to see if in customers table
-            $potentialMember = Member::withTrashed()->find($event->payload['end_user_id']); //check to see if in members table
+            $end_user_id = $event->payload['end_user_id'];
 
-            if ($potentialLead) {
-                Lead::withTrashed()->findOrFail($event->payload['end_user_id'])->writeable()->forceDelete();
+            $end_user = EndUser::find($end_user_id); //Find Current EndUser information
+
+            $potential_lead = Lead::withTrashed()->find($end_user_id); //check to see if in leads table
+            $potential_customer = Customer::withTrashed()->find($end_user_id); //check to see if in customers table
+            $potential_member = Member::withTrashed()->find($end_user_id); //check to see if in members table
+
+            if ($potential_lead) {
+                $potential_lead->writeable()->forceDelete();
             }
-            if ($potentialCustomer) {
-                Customer::withTrashed()->findOrFail($event->payload['end_user_id'])->writeable()->forceDelete();
+            if ($potential_customer) {
+                $potential_customer->writeable()->forceDelete();
             }
-            if ($potentialMember) {
-                Member::withTrashed()->findOrFail($event->payload['end_user_id'])->writeable()->forceDelete();
+            if ($potential_member) {
+                $potential_member->writeable()->forceDelete();
             }
 
-            if (! $event->payload['active']) { //Turn lead into customer
+            //Fetching all agreement with category of end user
+            $agreements = Agreement::with('categoryById')->whereEndUserId($end_user_id)->get();
+
+            //Checking if any agreement is of membership category
+            $is_membership_agreement = false;
+            foreach ($agreements as $agreement) {
+                if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
+                    $is_membership_agreement = true;
+                }
+            }
+
+            $active = $event->payload['active'];
+
+            if ($active && ! $is_membership_agreement) { //Turn lead into customer
                 $customer = (new Customer())->writeable();
-                $this->fill($endUser, $customer);
+                $this->fill($end_user, $customer);
             }
 
-            if ($event->payload['active']) { //Turn lead into member
+            if ($active && $is_membership_agreement) { //Turn lead into member
                 $member = (new Member())->writeable();
-                $this->fill($endUser, $member);
+                $this->fill($end_user, $member);
             }
         });
     }
@@ -79,18 +97,19 @@ class AgreementProjector extends Projector
     }
 
     /**
-     * @param $endUser
+     * @param $end_user
      * @param $type
      * @return void
      */
-    public function fill($endUser, $type): void
+    public function fill(EndUser $end_user, Customer|Member $type): void
     {
-        $fillable_data = array_filter($endUser->toArray(), function ($key) use ($endUser) {
-            return in_array($key, $endUser->getFillable());
+        $fillables = $end_user->getFillable();
+        $fillable_data = array_filter($end_user->toArray(), function ($key) use ($fillables) {
+            return in_array($key, $fillables);
         }, ARRAY_FILTER_USE_KEY);
-        $type->id = $endUser->id;
-        $type->client_id = $endUser->client_id;
-        $type->email = $endUser->email;
+        $type->id = $end_user->id;
+        $type->client_id = $end_user->client_id;
+        $type->email = $end_user->email;
         $type->fill($fillable_data);
         $type->save();
     }

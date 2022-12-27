@@ -10,6 +10,7 @@ use App\Domain\EndUsers\Events\EndUserWasEmailedByRep;
 use App\Domain\EndUsers\Events\EndUserWasTextMessagedByRep;
 use App\Domain\EndUsers\Leads\Projections\Lead;
 use App\Domain\EndUsers\Projections\EndUser;
+use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\Users\Models\User;
 use App\Models\Note;
 use Illuminate\Support\Facades\DB;
@@ -43,7 +44,7 @@ class EndUserActivityProjector extends Projector
 
         //$mailgunResponse = MailgunSend::run([$end_user->email], $misc['subject'], $misc['message']);
 
-        $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'emailed_by_rep', $event->modifiedBy(), $misc);
+        $emailed = EndUserDetails::createOrUpdateRecord($end_user->id, 'emailed_by_rep', $event->modifiedBy(), $misc);
     }
 
     public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
@@ -55,7 +56,7 @@ class EndUserActivityProjector extends Projector
 
         $misc = $event->payload;
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'sms_by_rep', $event->modifiedBy(), $misc);
+        EndUserDetails::createOrUpdateRecord($end_user->id, 'sms_by_rep', $event->modifiedBy(), $misc);
     }
 
     public function onEndUserWasCalledByRep(EndUserWasCalledByRep $event): void
@@ -69,14 +70,14 @@ class EndUserActivityProjector extends Projector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'called_by_rep', $event->modifiedBy(), $misc);
+        EndUserDetails::createOrUpdateRecord($end_user->id, 'called_by_rep', $event->modifiedBy(), $misc);
 
         $notes = $misc['notes'] ?? false;
         if ($notes) {
             // TODO: use action
             Note::create([
                 'entity_id' => $end_user->id,
-                'entity_type' => ($end_user::getDetailsModel())::class,
+                'entity_type' => EndUserDetails::class,
                 'note' => $notes,
                 'title' => 'Call Notes',
                 'created_by_user_id' => $event->modifiedBy(),
@@ -87,20 +88,20 @@ class EndUserActivityProjector extends Projector
     protected function createOrUpdateEndUserDetailsAndNotes($event, EndUser $end_user): void
     {
         foreach ($this->getModel()->getDetailFields() as $field) {
-            ($end_user::getDetailsModel())::createOrUpdateRecord($event->aggregateRootUuid(), $field, $event->payload[$field] ?? null);
+            EndUserDetails::createOrUpdateRecord($event->aggregateRootUuid(), $field, $event->payload[$field] ?? null);
         }
 
         $notes = $event->payload['notes'] ?? false;
         if ($notes && $notes['title'] ?? false) {
             Note::create([
                 'entity_id' => $end_user->id,
-                'entity_type' => ($end_user::getDetailsModel())::class,
+                'entity_type' => EndUserDetails::class,
                 'title' => $notes['title'],
                 'note' => $notes['note'],
                 'created_by_user_id' => $event->modifiedBy(),
             ]);
 
-            $noted_created = ($end_user::getDetailsModel())->createOrUpdateRecord($end_user->id, 'note_created',  $notes['note']);
+            $noted_created = EndUserDetails::createOrUpdateRecord($end_user->id, 'note_created',  $notes['note']);
         }
     }
 

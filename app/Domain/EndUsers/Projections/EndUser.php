@@ -76,9 +76,7 @@ class EndUser extends GymRevProjection
 
     public function details(): HasMany
     {
-        $fk = $this->getModelName()->lower()."_id";
-
-        return $this->hasMany($this->getDetailsModel(), $fk, 'id');
+        return $this->hasMany(EndUserDetails::class, 'end_user_id', 'id');
     }
 
     public function detailsDesc(): HasMany
@@ -93,9 +91,7 @@ class EndUser extends GymRevProjection
 
     public function detail(): HasOne
     {
-        $fk = $this->getModelName()->lower() . "_id";
-
-        return $this->hasOne($this->getDetailsModel(), $fk, 'id');
+        return $this->hasOne(EndUserDetails::class, 'end_user_id', 'id');
     }
 
     public function client(): HasOne
@@ -136,56 +132,78 @@ class EndUser extends GymRevProjection
 
     public function scopeFilter($query, array $filters): void
     {
-        $query->when($filters['search'] ?? null, function ($query, $search) {
+        if (isset($filters['search'])) {
+            $search = '%' . $filters['search'] . '%';
             $query->where(function ($query) use ($search) {
-                $query->where('primary_phone', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('first_name', 'like', '%' . $search . '%')
-                    ->orWhere('last_name', 'like', '%' . $search . '%')
-                    ->orWhere('gr_location_id', 'like', '%' . $search . '%')
-                    ->orWhere('ip_address', 'like', '%' . $search . '%')
-                    ->orWhere('agreement_number', 'like', '%' . $search . '%')
+                $query->where('primary_phone', 'like', $search)
+                    ->orWhere('email', 'like', $search)
+                    ->orWhere('first_name', 'like', $search)
+                    ->orWhere('last_name', 'like', $search)
+                    ->orWhere('gr_location_id', 'like', $search)
+                    ->orWhere('opportunity', 'like', $search)
+                    ->orWhere('ip_address', 'like', $search)
+                    // ->orWhere('agreement_number', 'like', $search)
                     ->orWhereHas('location', function ($query) use ($search) {
-                        $query->where('name', 'like', '%' . $search . '%');
+                        $query->where('name', 'like', $search);
                     })
                     ->orWhereHas('client', function ($query) use ($search) {
-                        $query->where('name', 'like', '%' . $search . '%');
+                        $query->where('name', 'like', $search);
                     });
             });
-        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
-            if ($trashed === 'with') {
+        }
+
+        if (isset($filters['trashed'])) {
+            if ($filters['trashed'] === 'with') {
                 $query->withTrashed();
-            } elseif ($trashed === 'only') {
+            } elseif ($filters['trashed'] === 'only') {
                 $query->onlyTrashed();
             }
-            /* created date will need a calendar date picker and the endusers need different created_at dates */
-        })->when($filters['createdat'] ?? null, function ($query, $createdat) {
-            $query->where('created_at', 'like', $createdat . '%');
+        }
 
-            /* filters for typeof lenduser the data schema changed so lets get back to this */
-        })->when($filters['grlocation'] ?? null, function ($query, $grlocation) {
-            $query->whereIn('gr_location_id',  $grlocation);
+        /* created date will need a calendar date picker and the endusers need different created_at dates */
+        if (isset($filters['createdat'])) {
+            $query->where('created_at', 'like', $filters['createdat'] . '%');
+        }
 
-            /* Filter for EndUser Sources */
-        })->when($filters['opportunity'] ?? null, function ($query, $opportunity) {
-            $query->whereIn('opportunity',  $opportunity);
-        })->when($filters['claimed'] ?? null, function ($query, $owner_user_id) {
-            $query->whereOwnerUserId($owner_user_id);
-        })->when($filters['date_of_birth'] ?? null, function ($query, $dob) {
-            $query->whereBetween('date_of_birth', $dob);
-        })->when($filters['lastupdated'] ?? null, function ($query, $search) {
-            $query->orderBy('updated_at', $search);
-            /** Everything below already is redundant bc of the main search - but if it's in the ticket we do it. */
-        })->when($filters['nameSearch'] ?? null, function ($query, $search) {
-            $query->where('first_name', 'like', '%' . $search . '%')
-                ->orWhere('last_name', 'like', '%' . $search . '%');
-        })->when($filters['phoneSearch'] ?? null, function ($query, $search) {
-            $query->where('primary_phone', 'like', '%' . $search . '%');
-        })->when($filters['emailSearch'] ?? null, function ($query, $search) {
-            $query->where('email', 'like', '%' . $search . '%');
-        })->when($filters['agreementSearch'] ?? null, function ($query, $search) {
-            $query->orWhere('agreement_number', 'like', '%' . $search . '%');
-        });
+        /* filters for typeof enduser the data schema changed so lets get back to this */
+        if (isset($filters['grlocation'])) {
+            $query->whereIn('gr_location_id', $filters['grlocation']);
+        }
+        /* Filter for EndUser Sources */
+        if (isset($filters['opportunity'])) {
+            $query->whereIn('opportunity', $filters['opportunity']);
+        }
+
+
+        if (isset($filters['claimed'])) {
+            $query->whereOwnerUserId($filters['claimed']);
+        }
+
+        if (isset($filters['date_of_birth'])) {
+            $query->whereBetween('date_of_birth', $filters['date_of_birth']);
+        }
+
+        if (isset($filters['lastupdated'])) {
+            $query->orderBy('updated_at', $filters['lastupdated']);
+        }
+
+        /** Everything below already is redundant bc of the main search - but if it's in the ticket we do it. */
+        if (isset($filters['nameSearch'])) {
+            $search = '%' . $filters['nameSearch'] . '%';
+            $query->where('first_name', 'like', $search)->orWhere('last_name', 'like', $search);
+        }
+
+        if (isset($filters['phoneSearch'])) {
+            $query->where('primary_phone', 'like', '%' . $filters['phoneSearch'] . '%');
+        }
+
+        if (isset($filters['emailSearch'])) {
+            $query->where('email', 'like', '%' . $filters['emailSearch'] . '%');
+        }
+
+        // if(isset($filters['agreementSearch'])) {
+        //     $query->orWhere('agreement_number', 'like', '%' . $filters['agreementSearch'] . '%');
+        // }
     }
 
     public function getNameAttribute(): string

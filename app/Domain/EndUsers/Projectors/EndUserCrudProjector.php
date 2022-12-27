@@ -108,7 +108,7 @@ class EndUserCrudProjector extends Projector
         if ($notes && $notes['title'] ?? false) {
             Note::create([
                 'entity_id' => $end_user->id,
-                'entity_type' => ($end_user::getDetailsModel())::class,
+                'entity_type' => EndUser::class,
                 'title' => $notes['title'],
                 'note' => $notes['note'],
                 'created_by_user_id' => $event->modifiedBy(),
