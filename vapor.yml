@@ -73,4 +73,4 @@ environments:
             - 'npm ci && npm run build:dev && rm -rf node_modules'
         deploy:
             - 'php artisan sidecar:activate --pre-warm'
-#            - 'php artisan migrate:fresh --seed'
+            - 'php artisan migrate:fresh --seed'
