@@ -80,12 +80,6 @@ class SecondaryTeamsSeeder extends Seeder
             $clients = Client::all()->keyBy('name');
 
             $client_teams = [
-                // The Kalamazoo
-                [
-                    'name' => 'Zoo Sales Team',
-                    'home_team' => 0,
-                    'client_id' => $clients['The Kalamazoo']->id,
-                ],
                 // Fitness Truth
                 [
                     'name' => 'FitnessTruth Texas South',
@@ -159,17 +153,6 @@ class SecondaryTeamsSeeder extends Seeder
                     'client_id' => $clients['Sci-Fi Purple Gyms']->id,
                 ],
 
-                //iFit
-                [
-                    'name' => 'iFit Florida',
-                    'home_team' => 0,
-                    'client_id' => $clients['iFit']->id,
-                ],
-                [
-                    'name' => 'iFit Georgia',
-                    'home_team' => 0,
-                    'client_id' => $clients['iFit']->id,
-                ],
             ];
         }
 

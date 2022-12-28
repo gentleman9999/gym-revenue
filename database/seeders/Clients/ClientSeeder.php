@@ -22,8 +22,6 @@ class ClientSeeder extends Seeder
                 ];
         } else {
             $clients = [
-                'The Kalamazoo' => 1,
-                'iFit' => 1,
                 'Stencils' => 1,
                 'The Z' => 1,
                 'Sci-Fi Purple Gyms' => 1,

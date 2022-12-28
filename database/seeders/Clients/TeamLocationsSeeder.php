@@ -33,17 +33,6 @@ class TeamLocationsSeeder extends Seeder
                 ];
         } else {
             $client_teams = [
-                // The Kalamazoo
-                [
-                    'team_id' => Team::fetchTeamIDFromName('Zoo Sales Team'),
-                    'name' => 'team-location',
-                    'value' => 'TKH001',
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('The Kalamazoo 1 HQ'),
-                    'name' => 'team-location',
-                    'value' => 'TKH001',
-                ],
                 // The Z
                 [
                     'team_id' => Team::fetchTeamIDFromName('Big Island Team'),
@@ -82,47 +71,7 @@ class TeamLocationsSeeder extends Seeder
                     'name' => 'team-location',
                     'value' => Location::whereLocationNo('PF01')->first()->gymrevenue_id,
                 ],
-                // iFit
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Florida'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I01')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Florida'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I02')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Florida'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I03')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Florida'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I04')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Florida'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I05')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Georgia'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I06')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Georgia'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I13')->first()->gymrevenue_id,
-                ],
-                [
-                    'team_id' => Team::fetchTeamIDFromName('iFit Georgia'),
-                    'name' => 'team-location',
-                    'value' => Location::whereLocationNo('I12')->first()->gymrevenue_id,
-                ],
+
             ];
         }
         foreach ($client_teams as $client_team) {
