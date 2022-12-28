@@ -62,7 +62,7 @@ class UpdateUser implements UpdatesUserProfileInformation
      */
     public function rules(): array
     {
-        return ValidationRules::getValidationRules(request()->user_type, false);
+        return ValidationRules::getValidationRules(request()->user_type->value, false);
     }
 
     public function getControllerMiddleware(): array
@@ -131,7 +131,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function htmlResponse(User $user): RedirectResponse
     {
         $type = $user->user_type == UserTypesEnum::EMPLOYEE ? 'User' : ucwords($user->user_type);
-        Alert::success("{$type} '{$user->name}' was created")->flash();
+        Alert::success("{$type} '{$user->name}' was updated.")->flash();
 
         return $user->user_type == UserTypesEnum::EMPLOYEE ?
             Redirect::route('users.edit', $user->id) :

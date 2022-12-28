@@ -104,7 +104,7 @@ class CreateUser implements CreatesNewUsers
             $user_type = UserTypesEnum::CUSTOMER;
         }
 
-        return ValidationRules::getValidationRules($user_type, true);
+        return ValidationRules::getValidationRules($user_type->value, true);
     }
 
     public function getControllerMiddleware(): array
@@ -171,7 +171,7 @@ class CreateUser implements CreatesNewUsers
 
     public function htmlResponse(User $user): RedirectResponse
     {
-        $type = $user->user_type == UserTypesEnum::EMPLOYEE ? 'User' : ucwords($user->user_type);
+        $type = $user->user_type == UserTypesEnum::EMPLOYEE->value ? 'User' : ucwords($user->user_type->value);
         Alert::success("{$type} '{$user->name}' was created")->flash();
 
         return $user->user_type == UserTypesEnum::EMPLOYEE ?
@@ -186,7 +186,7 @@ class CreateUser implements CreatesNewUsers
         $role = $payload['rold_id'] ?? 'enduser';
         $user_type = $this->getUserTypeFromPayload(null, $payload)->value;
 
-        $this->command->warn("Creating new {$role} {$payload['first_name']} 
+        $this->command->warn("Creating new {$role} {$payload['first_name']}
             @{$payload['email']} for client_id {$payload['client_id']} as {$user_type}");
         $this->handle($payload);
     }
