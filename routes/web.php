@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/test', function () {
-    $users = App\Domain\Users\Models\User::withoutGlobalScopes()->whereUserType(App\Enums\UserTypesEnum::EMPLOYEE)->get();
-    dd($users);
-});
 Route::get('/', function () {
     return redirect('login');
     /*
@@ -66,7 +62,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.leads.update');
-        Route::put('/assign/{endUser}', \App\Domain\Users\Actions\AssignEndUserToRep::class)->name('data.leads.assign');
+        Route::put('/assign/{end_user}', \App\Domain\Users\Actions\AssignEndUserToRep::class)->name('data.leads.assign');
         Route::post('/contact/{end_user}', \App\Http\Controllers\Data\LeadsController::class . '@contact')->name('data.leads.contact');
         Route::get('/sources', \App\Http\Controllers\Data\LeadsController::class . '@sources')->name('data.leads.sources');
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
@@ -101,7 +97,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.customers.store');
         Route::get('/show/{end_user}', \App\Domain\Users\Actions\ShowCustomer::class)->name('data.customers.show');
         Route::get('/edit/{end_user}', \App\Domain\Users\Actions\EditCustomer::class)->name('data.customers.edit');
-        Route::put('/{endUser}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.customers.update');
+        Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.customers.update');
         Route::delete('/delete/{endUser}', \App\Domain\Users\Actions\DeleteUser::class)->name('data.customers.trash');
         Route::post('/delete/{endUser}/restore', \App\Domain\Users\Actions\RestoreUser::class)->withTrashed()->name('data.customers.restore');
         Route::get('/view/{end_user}', \App\Domain\Users\Actions\ViewCustomer::class)->name('data.customers.view');

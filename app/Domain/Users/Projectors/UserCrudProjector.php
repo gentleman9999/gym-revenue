@@ -71,9 +71,7 @@ class UserCrudProjector extends Projector
         }
         //setup a transaction so we if we have errors, we don't get a half-baked user
         DB::transaction(function () use ($data, $event) {
-            //get only the keys we care about (the ones marked as fillable)
             $user = new User();
-
             $user->id = $event->aggregateRootUuid();
             foreach ($this->non_fillable_fields as $key => $field) {
                 if (array_key_exists($field, $data)) {
@@ -95,8 +93,6 @@ class UserCrudProjector extends Projector
             if (array_key_exists('departments', $data)) {
                 $this->syncUserDepartments($user, $data);
             }
-
-            // $client_id = $data['client_id'] ?? null;
 
             //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
@@ -155,11 +151,6 @@ class UserCrudProjector extends Projector
                     $user[$field] = $data[$field];
                 }
             }
-            foreach ($this->non_fillable_fields as $key => $field) {
-                if (array_key_exists($field, $data)) {
-                    $user[$field] = $data[$field];
-                }
-            }
 
             $user->save();
             $user->updateOrFail($data);
@@ -208,9 +199,7 @@ class UserCrudProjector extends Projector
     public function onEndUserRestored(UserRestored $event)
     {
         $user = User::withTrashed()->findOrFail($event->id);
-        if ($user->isEndUser()) {
-            $user->restore();
-        }
+        $user->reinstate();
     }
 
     public function onUserDeleted(UserDeleted $event): void
@@ -225,7 +214,7 @@ class UserCrudProjector extends Projector
             $team->removeUser($bad_user);
         }
 
-        $bad_user->forceDelete();
+        $bad_user->terminate();
     }
 
     protected function syncUserPositions(User $user, array $data, bool $is_updating = false): void
@@ -303,13 +292,17 @@ class UserCrudProjector extends Projector
 
     protected function createUserNotes($event, User $user, array $notes): void
     {
-        Note::create([
-            'entity_id' => $event->aggregateRootUuid(),
-            'entity_type' => User::class,
-            'title' => $notes['title'],
-            'note' => $notes['note'],
-            'created_by_user_id' => $event->userId(),
-        ]);
+        foreach ($notes as $note) {
+            if ($notes['title'] != null) {
+                Note::create([
+                    'entity_id' => $event->aggregateRootUuid(),
+                    'entity_type' => User::class,
+                    'title' => $notes['title'],
+                    'note' => $notes['note'],
+                    'created_by_user_id' => $event->userId(),
+                ]);
+            }
+        }
     }
 
     protected function getUserType(User $user, array $data): UserTypesEnum

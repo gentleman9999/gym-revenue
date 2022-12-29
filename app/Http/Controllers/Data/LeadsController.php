@@ -342,9 +342,9 @@ class LeadsController extends Controller
         $lead_data = $endUser->toArray();
         $lead_data['all_notes'] = $endUser->notes->toArray();
 
-        if ($lead_data['profile_picture_file_id']) {
-            $lead_data['profile_picture'] = File::whereId($lead_data['profile_picture_file_id'])->first();
-        }
+        // if ($lead_data['profile_picture_file_id']) {
+        //     $lead_data['profile_picture'] = File::whereId($lead_data['profile_picture_file_id'])->first();
+        // }
 
         foreach ($lead_data['all_notes'] as $key => $value) {
             if (ReadReceipt::whereNoteId($lead_data['all_notes'][$key]['id'])->first()) {
@@ -504,7 +504,7 @@ class LeadsController extends Controller
         ]);
     }
 
-    public function view(Lead $endUser): InertiaResponse
+    public function view(Lead $endUser): array
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {
@@ -520,8 +520,7 @@ class LeadsController extends Controller
             'lead' => $endUser,
             'user_id' => $user->id,
             'club_location' => $locid,
-            // 'interactionCount' => $lead_aggy->getInteractionCount(),
-            'interactionCount' => 0,
+            'interactionCount' => $lead_aggy->getInteractionCount(),
             'preview_note' => $preview_note,
         ];
     }

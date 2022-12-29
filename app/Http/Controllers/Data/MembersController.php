@@ -263,9 +263,9 @@ class MembersController extends Controller
         $member_data = $endUser->toArray();
         $member_data['all_notes'] = $endUser->notes->toArray();
 
-        if ($member_data['profile_picture_file_id']) {
-            $member_data['profile_picture'] = File::whereId($member_data['profile_picture_file_id'])->first();
-        }
+        // if ($member_data['profile_picture_file_id']) {
+        //     $member_data['profile_picture'] = File::whereId($member_data['profile_picture_file_id'])->first();
+        // }
 
         foreach ($member_data['all_notes'] as $key => $value) {
             if (ReadReceipt::whereNoteId($member_data['all_notes'][$key]['id'])->first()) {
@@ -400,7 +400,7 @@ class MembersController extends Controller
         return Redirect::back()->with('selectedMemberDetailIndex', 0);
     }
 
-    public function view(Member $endUser): InertiaResponse
+    public function view(Member $endUser): array
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {

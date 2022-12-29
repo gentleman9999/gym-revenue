@@ -14,6 +14,7 @@ use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -390,7 +391,7 @@ class User extends Authenticatable
     public function isEndUser(): bool
     {
         return in_array(
-            $this->attributes['user_type'],
+            $this->user_type,
             [UserTypesEnum::LEAD, UserTypesEnum::CUSTOMER, UserTypesEnum::MEMBER]
         );
     }
@@ -398,5 +399,35 @@ class User extends Authenticatable
     public function files(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable');
+    }
+
+    public static function withTerminated(): Builder
+    {
+        return self::withTrashed();
+    }
+
+    public static function onlyTerminated(): Builder
+    {
+        return self::onlyTrashed();
+    }
+
+    public static function withoutTerminated(): Builder
+    {
+        return self::withoutTrashed();
+    }
+
+    public function terminate(): void
+    {
+        $this->delete();
+    }
+
+    public function reinstate(): void
+    {
+        $this->restore();
+    }
+
+    public function getDeletedAtColumn(): string
+    {
+        return 'terminated_at';
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rules\Enum;
 
 class ValidationRules
 {
-    public static function getValidationRules(string $user_type, bool $is_create_mode): array
+    public static function getValidationRules(UserTypesEnum $user_type, bool $is_create_mode): array
     {
         $validation_req = $is_create_mode ? 'required' : 'sometimes';
 
@@ -48,6 +48,8 @@ class ValidationRules
             'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'],
             'address2' => [],
             'alternate_phone' => ['nullable', 'string', 'min:10'],
+            'notes' => [],
+            'role_id' => [],
         ];
     }
 
@@ -66,6 +68,8 @@ class ValidationRules
         $rules['zip'] = [$validation_req, 'size:5'];
         $rules['city'] = [$validation_req, 'max:30'];
         $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
+        $rules['team_id'] = [];
+        $rules['team_ids'] = [];
 
         return $rules;
     }

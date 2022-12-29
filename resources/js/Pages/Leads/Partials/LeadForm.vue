@@ -525,6 +525,7 @@ export default {
                             entity_id: lead.id,
                             /*client_id: page.props.value.user.client_id,*/
                             user_id: page.props.value.user.id,
+                            url: `https://${response.bucket}.s3.amazonaws.com/${response.key}`,
                         },
                     ]
                 );

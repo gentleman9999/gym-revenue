@@ -7,9 +7,9 @@ use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
-use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
+use App\Enums\UserTypesEnum;
 use App\Models\Position;
 use App\Models\ReadReceipt;
 use App\Support\CurrentInfoRetriever;
@@ -33,7 +33,7 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
-        $team_users = Employee::with(['teams', 'home_location', 'roles'])->get();
+        $team_users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
@@ -48,14 +48,14 @@ class UsersController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = Employee::with(['teams', 'home_location'])
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
             } else {
                 // else - get the members of that team
                 $user_ids = TeamUser::whereTeamId($current_team->id)->get()->pluck('user_id')->toArray();
-                $users = Employee::whereIn('users.id', $user_ids)
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
                     ->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))
                     ->sort()
@@ -73,7 +73,7 @@ class UsersController extends Controller
         } else {
             //cb team selected
             $team = CurrentInfoRetriever::getCurrentTeam();
-            $users = Employee::with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
+            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))->sort()
                 ->paginate(10)->appends(request()->except('page'));
@@ -235,7 +235,7 @@ class UsersController extends Controller
             $is_default_team = $client->home_team_id === $current_team->id;
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = Employee::with(['teams'])
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
             } else {
@@ -245,7 +245,7 @@ class UsersController extends Controller
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = Employee::whereIn('users.id', $user_ids)
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
                     ->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
@@ -266,7 +266,7 @@ class UsersController extends Controller
         } else {
             //cb team selected
             $team = CurrentInfoRetriever::getCurrentTeam();
-            $users = Employee::whereHas('teams', function ($query) use ($request) {
+            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))
                 ->get();

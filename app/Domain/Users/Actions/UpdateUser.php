@@ -30,6 +30,7 @@ class UpdateUser implements UpdatesUserProfileInformation
 
     public function handle(string $id, array $payload): User
     {
+        $previous_type = $this->getPreviousUserType($id);
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
         }
@@ -52,6 +53,8 @@ class UpdateUser implements UpdatesUserProfileInformation
             $user = User::findOrFail($id);
         }
 
+        ReflectUserData::run($user, $previous_type);
+
         return $user;
     }
 
@@ -62,7 +65,7 @@ class UpdateUser implements UpdatesUserProfileInformation
      */
     public function rules(): array
     {
-        return ValidationRules::getValidationRules(request()->user_type->value, false);
+        return ValidationRules::getValidationRules(request()->user_type, false);
     }
 
     public function getControllerMiddleware(): array
@@ -130,7 +133,7 @@ class UpdateUser implements UpdatesUserProfileInformation
 
     public function htmlResponse(User $user): RedirectResponse
     {
-        $type = $user->user_type == UserTypesEnum::EMPLOYEE ? 'User' : ucwords($user->user_type);
+        $type = $user->user_type == UserTypesEnum::EMPLOYEE ? 'User' : ucwords($user->user_type->value);
         Alert::success("{$type} '{$user->name}' was updated.")->flash();
 
         return $user->user_type == UserTypesEnum::EMPLOYEE ?
@@ -164,5 +167,16 @@ class UpdateUser implements UpdatesUserProfileInformation
             'zip.required' => 'A Zip code is required',
             'zip.error' => 'Invalid Zip Code',
         ];
+    }
+
+    protected function getPreviousUserType(string $id): UserTypesEnum
+    {
+        if ($this->updatingSelf) {
+            $user = User::withoutGlobalScopes()->findOrFail($id);
+        } else {
+            $user = User::findOrFail($id);
+        }
+
+        return $user->user_type;
     }
 }

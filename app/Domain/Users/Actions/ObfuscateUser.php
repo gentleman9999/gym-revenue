@@ -37,6 +37,7 @@ class ObfuscateUser
     public function handle(User $user): User
     {
         UserAggregate::retrieve(strval($user->id))->ObfuscateUser()->persist();
+        ReflectUserData::run($user);
 
         return $user->refresh();
     }

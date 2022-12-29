@@ -82,6 +82,8 @@ class CreateUser implements CreatesNewUsers
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
 
+        ReflectUserData::run($created_user);
+
         return $created_user;
     }
 
@@ -104,7 +106,7 @@ class CreateUser implements CreatesNewUsers
             $user_type = UserTypesEnum::CUSTOMER;
         }
 
-        return ValidationRules::getValidationRules($user_type->value, true);
+        return ValidationRules::getValidationRules($user_type, true);
     }
 
     public function getControllerMiddleware(): array
@@ -126,6 +128,12 @@ class CreateUser implements CreatesNewUsers
             /** @TODO: Need to update with what entry_source data should be */
             $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
         }
+
+        $request->mergeIfMissing([
+            'started_at' => $request->start_date,
+            'ended_at' => $request->end_date,
+            'terminated_at' => $request->termination_date,
+        ]);
     }
 
     /**

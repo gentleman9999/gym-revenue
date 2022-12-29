@@ -4,6 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
+use App\Enums\UserTypesEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Jetstream\Contracts\DeletesUsers;
@@ -24,6 +25,7 @@ class DeleteUser implements DeletesUsers
         }
 
         UserAggregate::retrieve($user_id)->delete()->persist();
+        ReflectUserData::run($user);
 
         return $user;
     }
@@ -31,6 +33,9 @@ class DeleteUser implements DeletesUsers
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
+        if ($current_user->isClientUser() && $request->user->user_type != UserTypesEnum::EMPLOYEE) {
+            return false;
+        }
 
         return $current_user->can('users.delete', User::class);
     }

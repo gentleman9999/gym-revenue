@@ -33,7 +33,7 @@ class Helper
                         $team_locations[] = $team_locations_record->value;
                     }
 
-                    $results = Customer::whereIn('gr_location_id', $team_locations);
+                    $results = Customer::whereIn('home_location_id', $team_locations);
                 }
             } else {
                 $results = new Customer();

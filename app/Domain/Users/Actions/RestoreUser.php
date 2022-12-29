@@ -19,6 +19,7 @@ class RestoreUser
     public function handle(int $user): User
     {
         UserAggregate::retrieve($user)->restore()->persist();
+        ReflectUserData::run($user);
 
         return $user;
     }

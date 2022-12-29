@@ -37,6 +37,7 @@ class UpdateUserPassword implements UpdatesUserPasswords
         ])->save();
 
         UserAggregate::retrieve($user->id)->updatePassword(bcrypt($data['password']))->persist();
+        ReflectUserData::run($user);
     }
 
     public function authorize(ActionRequest $request): bool

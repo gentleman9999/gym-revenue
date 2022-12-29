@@ -75,15 +75,9 @@
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="primary_phone" value="Primary Phone" />
-                <phone-input
-                    id="primary_phone"
-                    v-model="form['primary_phone']"
-                />
-                <jet-input-error
-                    :message="form.errors.primary_phone"
-                    class="mt-2"
-                />
+                <jet-label for="phone" value="Primary Phone" />
+                <phone-input id="phone" v-model="form['phone']" />
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
@@ -119,6 +113,59 @@
                     class="mt-2"
                 />
             </div>
+            <div class="form-divider" />
+            <div class="col-span-3 md:col-span-2">
+                <jet-label for="city" value="City" />
+                <input
+                    id="city"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.city"
+                />
+                <jet-input-error :message="form.errors.city" class="mt-2" />
+            </div>
+            <div class="col-span-3 md:col-span-2">
+                <jet-label for="state" value="State" />
+                <multiselect
+                    id="state"
+                    class="mt-1 multiselect"
+                    v-model="form.state"
+                    :searchable="true"
+                    :create-option="true"
+                    :options="optionStates"
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error :message="form.errors.state" class="mt-2" />
+            </div>
+            <div class="col-span-3 md:col-span-2">
+                <jet-label for="zip" value="ZIP Code" />
+                <input
+                    id="zip"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.zip"
+                />
+                <jet-input-error :message="form.errors.zip" class="mt-2" />
+            </div>
+
+            <div class="col-span-6 space-y-2">
+                <jet-label for="address1" value="Address" />
+                <input
+                    id="address1"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.address1"
+                />
+                <jet-input-error :message="form.errors.address1" class="mt-2" />
+                <input
+                    id="address2"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.address2"
+                />
+                <jet-input-error :message="form.errors.address2" class="mt-2" />
+            </div>
+
             <div
                 class="form-control md:col-span-2 col-span-6"
                 v-if="customer?.agreement_number"
@@ -163,7 +210,7 @@
                 <jet-label for="club_id" value="Club" />
                 <select
                     class=""
-                    v-model="form['gr_location_id']"
+                    v-model="form['home_location_id']"
                     required
                     id="club_id"
                 >
@@ -177,7 +224,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors['gr_location_id']"
+                    :message="form.errors['home_location_id']"
                     class="mt-2"
                 />
             </div>
@@ -342,6 +389,9 @@ import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
+import states from "@/Pages/Comms/States/statesOfUnited";
+import Multiselect from "@vueform/multiselect";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 library.add(faUserCircle);
 
@@ -354,6 +404,7 @@ export default {
         JetLabel,
         DatePicker,
         PhoneInput,
+        Multiselect,
     },
     props: [
         "userId",
@@ -380,16 +431,21 @@ export default {
                 middle_name: "",
                 last_name: "",
                 email: "",
-                primary_phone: "",
+                phone: "",
                 alternate_phone: "",
                 club_id: "",
                 client_id: props.clientId,
-                gr_location_id: null,
+                home_location_id: null,
                 profile_picture: null,
                 gender: "",
                 date_of_birth: null,
                 notes: { title: "", note: "" },
                 agreement_category_id: "",
+                address1: "",
+                address2: "",
+                zip: "",
+                state: "",
+                city: "",
             };
             operation = "Create";
         } else {
@@ -398,15 +454,20 @@ export default {
                 middle_name: customer.middle_name,
                 last_name: customer.last_name,
                 email: customer.email,
-                primary_phone: customer.primary_phone,
+                phone: customer.phone,
                 alternate_phone: customer.alternate_phone,
                 club_id: customer.club_id,
                 client_id: props.clientId,
-                gr_location_id: customer.gr_location_id,
+                home_location_id: customer.home_location_id,
                 profile_picture: null,
                 gender: customer.gender,
                 notes: { title: "", note: "" },
                 date_of_birth: customer.date_of_birth,
+                address1: customer.address1,
+                address2: customer.address2,
+                zip: customer.zip,
+                state: customer.state,
+                city: customer.city,
             };
         }
         const borderStyle = computed(() => {
@@ -492,16 +553,24 @@ export default {
                 // uploadProgress.value = -1;
             }
         });
+
+        let optionsStates = [];
+        for (let x in states) {
+            optionsStates.push(states[x].abbreviation);
+        }
+
         return {
             form,
             fileForm,
             buttonText: operation,
+            optionStates: optionsStates,
             handleSubmit,
             goBack,
             lastUpdated,
             operation,
             notesExpanded,
             borderStyle,
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 };

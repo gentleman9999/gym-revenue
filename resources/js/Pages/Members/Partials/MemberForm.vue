@@ -114,6 +114,97 @@
                     class="mt-2"
                 />
             </div>
+            <div class="form-divider" />
+            <div class="col-span-3 md:col-span-2">
+                <jet-label for="city" value="City" />
+                <input
+                    id="city"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.city"
+                />
+                <jet-input-error :message="form.errors.city" class="mt-2" />
+            </div>
+            <div class="col-span-3 md:col-span-2">
+                <jet-label for="state" value="State" />
+                <multiselect
+                    id="state"
+                    class="mt-1 multiselect"
+                    v-model="form.state"
+                    :searchable="true"
+                    :create-option="true"
+                    :options="optionStates"
+                    :classes="multiselectClasses"
+                />
+                <jet-input-error :message="form.errors.state" class="mt-2" />
+            </div>
+            <div class="col-span-3 md:col-span-2">
+                <jet-label for="zip" value="ZIP Code" />
+                <input
+                    id="zip"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.zip"
+                />
+                <jet-input-error :message="form.errors.zip" class="mt-2" />
+            </div>
+
+            <div class="col-span-6 space-y-2">
+                <jet-label for="address1" value="Address" />
+                <input
+                    id="address1"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.address1"
+                />
+                <jet-input-error :message="form.errors.address1" class="mt-2" />
+                <input
+                    id="address2"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.address2"
+                />
+                <jet-input-error :message="form.errors.address2" class="mt-2" />
+            </div>
+
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="customer?.agreement_number"
+            >
+                <jet-label for="agreement_number" value="Agreement Number" />
+                <input
+                    disabled
+                    type="text"
+                    v-model="customer.agreement_number"
+                    class="opacity-70"
+                    id="agreement_number"
+                />
+            </div>
+
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="customer?.external_id"
+            >
+                <jet-label for="external_id" value="External ID" />
+                <input
+                    disabled
+                    type="text"
+                    v-model="customer.external_id"
+                    class="opacity-70"
+                    id="external_id"
+                />
+            </div>
+            <div
+                class="form-control md:col-span-2 col-span-6"
+                v-if="customer?.misc"
+            >
+                <jet-label for="json_viewer" value="Additional Data" />
+                <vue-json-pretty
+                    :data="customer.misc"
+                    id="json_viewer"
+                    class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
+                />
+            </div>
             <div
                 class="form-control md:col-span-2 col-span-6"
                 v-if="member?.agreement_number"
@@ -158,7 +249,7 @@
                 <jet-label for="club_id" value="Club" />
                 <select
                     class=""
-                    v-model="form['gr_location_id']"
+                    v-model="form['home_location_id']"
                     required
                     id="club_id"
                 >
@@ -172,7 +263,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors['gr_location_id']"
+                    :message="form.errors['home_location_id']"
                     class="mt-2"
                 />
             </div>
@@ -309,6 +400,9 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import states from "@/Pages/Comms/States/statesOfUnited";
+import Multiselect from "@vueform/multiselect";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 
 library.add(faUserCircle);
 
@@ -321,6 +415,7 @@ export default {
         JetLabel,
         DatePicker,
         PhoneInput,
+        Multiselect,
     },
     props: ["userId", "clientId", "member", "locations", "interactionCount"],
     setup(props, context) {
@@ -345,11 +440,16 @@ export default {
                 alternate_phone: "",
                 club_id: "",
                 client_id: props.clientId,
-                gr_location_id: null,
+                home_location_id: null,
                 profile_picture: null,
                 gender: "",
                 date_of_birth: null,
                 notes: { title: "", note: "" },
+                address1: "",
+                address2: "",
+                zip: "",
+                state: "",
+                city: "",
             };
             operation = "Create";
         } else {
@@ -362,11 +462,16 @@ export default {
                 alternate_phone: member.alternate_phone,
                 club_id: member.club_id,
                 client_id: props.clientId,
-                gr_location_id: member.gr_location_id,
+                home_location_id: member.home_location_id,
                 profile_picture: null,
                 gender: member.gender,
                 notes: { title: "", note: "" },
                 date_of_birth: member.date_of_birth,
+                address1: member.address1,
+                address2: member.address2,
+                zip: member.zip,
+                state: member.state,
+                city: member.city,
             };
         }
         const borderStyle = computed(() => {
@@ -469,16 +574,24 @@ export default {
                 // uploadProgress.value = -1;
             }
         });
+
+        let optionsStates = [];
+        for (let x in states) {
+            optionsStates.push(states[x].abbreviation);
+        }
+
         return {
             form,
             fileForm,
             buttonText: operation,
+            optionStates: optionsStates,
             handleSubmit,
             goBack,
             lastUpdated,
             operation,
             notesExpanded,
             borderStyle,
+            multiselectClasses: getDefaultMultiselectTWClasses(),
         };
     },
 };
