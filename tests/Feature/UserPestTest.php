@@ -18,6 +18,7 @@ use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UserUpdated;
+use App\Domain\Users\Models\ObfuscatedUser;
 use App\Domain\Users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -394,7 +395,8 @@ it('should Obfuscate User using ObfuscateUser action', function () {
     //Given a new team and new user
     UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
-
+    $client = Client::factory()->create();
+    $user->client_id = $client->id;
     $this->assertEquals($user->obfuscated_at, null);
     $oUser = ObfuscateUser::run($user);
     $this->assertNotEquals($oUser->obfuscated_at, null);
@@ -411,4 +413,46 @@ it('should show Obfuscated global scope working', function () {
     $newCountOfUsers = User::all()->count();
 
     $this->assertEquals($originalCountOfUsers - 1, $newCountOfUsers);
+});
+
+it('should have correct hashing for obfuscated user', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+    $client = Client::factory()->create();
+    $user->client_id = $client->id;
+    $user->save();
+
+    $oUser = ObfuscateUser::run($user);
+
+    //The actual mode of Obfuscated User
+    $oum = ObfuscatedUser::first()->data;
+//
+    $this->assertTrue(Hash::check($user->address1, $oum['address1']));
+    $this->assertTrue(Hash::check($user->address2, $oum['address2']));
+    $this->assertTrue(Hash::check($user->phone,  $oum['phone']));
+    $this->assertTrue(Hash::check($user->first_name,  $oum['first_name']));
+    $this->assertTrue(Hash::check($user->last_name,  $oum['last_name']));
+});
+
+it('should have incorrect hashing for obfuscated user', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+    $client = Client::factory()->create();
+    $user->client_id = $client->id;
+    $user->save();
+
+    ObfuscateUser::run($user);
+
+    //The actual mode of Obfuscated User
+    $oum = ObfuscatedUser::first()->data;
+
+    $aRandomUser = User::factory()->raw();
+
+    $this->assertNotTrue(Hash::check($aRandomUser['address1'], $oum['address1']));
+    $this->assertNotTrue(Hash::check($aRandomUser['address2'], $oum['address2']));
+    $this->assertNotTrue(Hash::check($aRandomUser['phone'], $oum['phone']));
+    $this->assertNotTrue(Hash::check($aRandomUser['first_name'], $oum['first_name']));
+    $this->assertNotTrue(Hash::check($aRandomUser['last_name'], $oum['last_name']));
 });

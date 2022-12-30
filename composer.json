@@ -31,6 +31,7 @@
         "predis/predis": "^1.1",
         "prologue/alerts": "^1.0.0",
         "protonemedia/laravel-cross-eloquent-search": "^3.0",
+        "psr/simple-cache": "^2.0",
         "pusher/pusher-php-server": "^7.0",
         "sendgrid/sendgrid": "^8.0",
         "sentry/sentry-laravel": "^3.0",

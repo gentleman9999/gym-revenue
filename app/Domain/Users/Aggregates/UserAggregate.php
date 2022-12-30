@@ -225,6 +225,7 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
+    //TODO we need to obfuscate data in the aggregate a well (even before the point in time it was obfuscated)
     public function ObfuscateUser(): static
     {
         $this->recordThat(new UserObfuscated());
