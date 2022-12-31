@@ -37,7 +37,6 @@ import { getDefaultMultiselectTWClasses } from "@/utils";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 
-
 const props = defineProps({
     modelValue: {
         type: String,
@@ -49,12 +48,12 @@ const localValue = ref(props.modelValue);
 const emit = defineEmits(["update:modelValue"]);
 
 const formatPosition = (data) => {
-  if (!data instanceof Array) return []
-  return data.map((p) => {
-    label: p.name,
-    value: p.id
-  })
-}
+    if (!data instanceof Array) return [];
+    return data.map((p) => ({
+        label: p.name,
+        value: p.id,
+    }));
+};
 
 watch(localValue, (nv, ov) => emit("update:modelValue", nv));
 </script>

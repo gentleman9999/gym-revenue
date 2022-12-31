@@ -162,13 +162,13 @@ const LEADS = gql`
                 first_name
                 last_name
                 opportunity
-                lead_type: leadType {
-                    id
-                    name
-                }
-                location {
-                    name
-                }
+                #                lead_type: leadType {
+                #                    id
+                #                    name
+                #                }
+                #                home_location {
+                #                    name
+                #                }
                 owner_user_id
             }
             paginatorInfo {
@@ -199,8 +199,10 @@ const LEAD_PREVIEW = gql`
                 emailedCount
                 smsCount
             }
-            preview_note
-            club_location {
+            notes {
+                note
+            }
+            home_location {
                 name
             }
         }
@@ -219,15 +221,15 @@ const LEAD_CREATE = gql`
             id
             name
         }
-        lead_statuses {
-            id
-            status
-        }
-        lead_sources {
-            id
-            name
-        }
-        locations {
+        #        lead_statuses {
+        #            id
+        #            status
+        #        }
+        #        lead_sources {
+        #            id
+        #            name
+        #        }
+        locations(first: 100) {
             data {
                 id
                 name
@@ -252,19 +254,19 @@ const LEAD_EDIT = gql`
             misc
             external_id
             gr_location_id
-            location {
+            home_location {
                 id
             }
-            leadSource {
-                id
-            }
-            leadType {
-                id
-            }
+            #            leadSource {
+            #                id
+            #            }
+            #            leadType {
+            #                id
+            #            }
             owner_user_id
-            lead_status {
-                id
-            }
+            #            lead_status {
+            #                id
+            #            }
             opportunity
             notes {
                 title
@@ -284,7 +286,7 @@ const LEAD_EDIT = gql`
                 name
             }
         }
-        locations {
+        locations(first: 100) {
             data {
                 id
                 name
@@ -389,7 +391,7 @@ const MEMBERS = gql`
                 last_name
                 created_at
                 updated_at
-                location {
+                home_location {
                     name
                 }
             }
@@ -421,8 +423,10 @@ const MEMBER_PREVIEW = gql`
                 emailedCount
                 smsCount
             }
-            preview_note
-            club_location {
+            notes {
+                note
+            }
+            home_location {
                 name
             }
         }
@@ -447,7 +451,7 @@ const MEMBER_EDIT = gql`
             client {
                 id
             }
-            location {
+            home_location {
                 id
             }
             notes {
@@ -456,20 +460,122 @@ const MEMBER_EDIT = gql`
                 note
                 read
             }
-            all_notes
         }
-        locations: memberLocations {
-            id
-            name
+        locations(first: 100) {
+            data {
+                id
+                name
+            }
         }
     }
 `;
 
 const MEMBER_CREATE = gql`
     query Member {
-        locations: memberLocations {
+        locations(first: 100) {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
+const CUSTOMERS = gql`
+    query Customers($page: Int, $filter: Filter) {
+        customers(page: $page, filter: $filter) {
+            data {
+                id
+                first_name
+                last_name
+                created_at
+                updated_at
+                home_location {
+                    name
+                }
+            }
+            paginatorInfo {
+                currentPage
+                lastPage
+                firstItem
+                lastItem
+                perPage
+                total
+            }
+        }
+    }
+`;
+
+const CUSTOMER_PREVIEW = gql`
+    query Customer($id: ID) {
+        customer(id: $id) {
             id
-            name
+            first_name
+            last_name
+            email
+            primary_phone
+            alternate_phone
+            gender
+            date_of_birth
+            interaction_count {
+                calledCount
+                emailedCount
+                smsCount
+            }
+            notes {
+                note
+            }
+            home_location {
+                name
+            }
+        }
+    }
+`;
+
+const CUSTOMER_EDIT = gql`
+    query Customer($id: ID) {
+        customer(id: $id) {
+            id
+            first_name
+            middle_name
+            last_name
+            email
+            primary_phone
+            alternate_phone
+            gender
+            date_of_birth
+            agreement_number
+            external_id
+            misc
+            client {
+                id
+            }
+            home_location {
+                id
+            }
+            notes {
+                id
+                title
+                note
+                read
+            }
+        }
+        locations(first: 100) {
+            data {
+                id
+                name
+            }
+        }
+    }
+`;
+
+const CUSTOMER_CREATE = gql`
+    query Customer {
+        locations(first: 100) {
+            data {
+                id
+                name
+            }
         }
     }
 `;
@@ -509,7 +615,7 @@ const TEAM_PREVIEW = gql`
                 name
             }
         }
-        clubs: locations {
+        clubs: locations(first: 100) {
             data {
                 id
                 name
@@ -537,7 +643,7 @@ const TEAM_EDIT = gql`
                 id
             }
         }
-        availableLocations: locations {
+        availableLocations: locations(first: 100) {
             data {
                 id
                 name
@@ -548,7 +654,7 @@ const TEAM_EDIT = gql`
 `;
 const TEAM_CREATE = gql`
     query AvailableLocations {
-        availableLocations: locations {
+        availableLocations: locations(first: 100) {
             data {
                 id
                 name
@@ -1051,6 +1157,11 @@ export default {
         edit: MEMBER_EDIT,
         create: MEMBER_CREATE,
     },
+    customer: {
+        preview: CUSTOMER_PREVIEW,
+        edit: CUSTOMER_EDIT,
+        create: CUSTOMER_CREATE,
+    },
     team: {
         preview: TEAM_PREVIEW,
         edit: TEAM_EDIT,
@@ -1098,6 +1209,7 @@ export default {
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,
+    customers: CUSTOMERS,
     users: USERS,
     leads: LEADS,
     locations: LOCATIONS,

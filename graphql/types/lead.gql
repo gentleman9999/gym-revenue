@@ -8,19 +8,19 @@ type Lead {
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
-    leadSource: LeadSource
-    location: Location
-    leadType: LeadType
-    lead_status: LeadStatus
+#    leadSource: LeadSource @belongsTo
+#    leadType: LeadType @belongsTo
+#    lead_status: LeadStatus
+#    TODO: replace with relationship
     lead_owners: [TeamUser] @method(name: "getTeamUsers")
     owner_user_id: String
     primary_phone: String
     alternate_phone: String
     gender: Boolean
-    date_of_birth: DateTime!
+    date_of_birth: DateTime
     interaction_count: InteractionCount! @method(name: "getInteractionCount")
-    preview_note: [String]! @method(name: "getPreviewNote")
-    club_location: Location @method(name: "getClubLocation")
+    home_location: Location! @belongsTo
+    locations: [Location] @belongsToMany
     opportunity: String
     client: Client @hasOne
     agreement_number: String
@@ -30,5 +30,4 @@ type Lead {
     owner_user_id: String
     notes: [Note] @hasMany
     gr_location_id: ID
-    locations: [Location] @method(name: "getLocations")
 }

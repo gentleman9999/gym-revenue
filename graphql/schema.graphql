@@ -20,8 +20,9 @@ input Filter {
     state: String
 }
 
+#TODO: this should be colocated in domain, not here
 type Mutation {
     "Assigns EndUser to Current User"
-    claimEndUser(endUser: ID!): Lead!
+    assignEndUserToRep(endUser: ID!): EndUser!
     @inject(context: "user.id", name: "user")
 }

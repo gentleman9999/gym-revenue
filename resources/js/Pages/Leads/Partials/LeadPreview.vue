@@ -43,17 +43,13 @@
                 Text: {{ lead.interaction_count.smsCount }} <br />
             </div>
         </div>
-        <div
-            class="collapse col-span-6"
-            tabindex="0"
-            v-if="lead.preview_note?.length"
-        >
+        <div class="collapse col-span-6" tabindex="0" v-if="lead.notes?.length">
             <div class="collapse-title text-sm font-medium">
                 > Existing Notes
             </div>
             <div class="flex flex-col gap-2 collapse-content">
                 <div
-                    v-for="(note, ndx) in lead.preview_note"
+                    v-for="(note, ndx) in lead.notes"
                     :key="ndx"
                     class="text-sm text-base-content text-opacity-80 bg-base-100 rounded-lg p-2"
                 >
@@ -64,7 +60,7 @@
         <div
             class="flex lg:flex-row flex-col justify-between col-span-6 lg:col-span-6 text-secondary"
         >
-            <label>Club/ Location: {{ lead.club_location.name }}</label>
+            <label>Club/ Location: {{ lead.home_location.name }}</label>
             <Button size="xs" primary v-if="assigning" disabled
                 >Assigning...</Button
             >

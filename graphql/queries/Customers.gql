@@ -1,8 +1,8 @@
 extend type Query {
-    members(
+    customers(
         filter: Filter @scope
         orderBy: [OrderByClause!] @orderBy
-    ): [Member!]!
+    ): [Customer!]!
     @paginate(defaultCount: 10)
-    @can(ability: "members.read")
+    @can(ability: "customers.read")
 }

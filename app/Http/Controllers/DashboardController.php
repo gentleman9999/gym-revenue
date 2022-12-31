@@ -51,7 +51,7 @@ class DashboardController extends Controller
         $announcements = [];
         $team_name = $team->name;
         $vue = 'Dashboard';
-
+        $widgets = $this->service->getDashboardWidgets();
         if ($client !== null) {
             $clients = collect([$client]);
             $account = $client->name;

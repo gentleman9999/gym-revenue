@@ -127,8 +127,7 @@ const props = defineProps({
 
 /** Component State */
 const entityTab = ref(
-    props?.audience?.entity ===
-        "App\\Domain\\EndUsers\\Members\\Projections\\Member"
+    props?.audience?.entity === "App\\Domain\\Users\\Models\\Member"
         ? "members"
         : "leads"
 );
@@ -185,7 +184,7 @@ const handleSave = async () => {
         let entity = "App\\Domain\\EndUsers\\Leads\\Projections\\Lead";
         if (entityTab.value === "members") {
             filters = { membership_type_id: selectedIds.value };
-            entity = "App\\Domain\\EndUsers\\Members\\Projections\\Member";
+            entity = "App\\Domain\\Users\\Models\\Member";
         }
         const moddedAudience = {
             id: props.audience.id,

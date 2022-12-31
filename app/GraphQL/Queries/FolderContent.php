@@ -16,8 +16,8 @@ final class FolderContent
 
         $files = File::with('client')
             ->whereClientId($client_id)
-            ->whereHidden(false)
-            ->whereEntityType(null);
+            ->whereIsHidden(false)
+            ->whereFileableType(null);
         if ($folder || ! $args['filter']['search']) {
             $files = $files->whereFolder($folder_id);
         }

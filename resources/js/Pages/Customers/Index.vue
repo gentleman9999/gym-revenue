@@ -32,8 +32,9 @@
         <calendar-schedule-table :data="schedule" />
     </div>
     <gym-revenue-crud
-        :resource="customers"
         model-key="customer"
+        base-route="customers"
+        model-name="Customer"
         :fields="fields"
         :base-route="baseRoute"
         :top-actions="{
@@ -41,11 +42,27 @@
         }"
         :actions="actions"
         :preview-component="CustomerPreview"
+        :edit-component="CustomerForm"
     >
         <template #filter>
             <customer-filters :base-route="baseRoute" />
         </template>
     </gym-revenue-crud>
+    <!--            <gym-revenue-crud-->
+    <!--                model-key="customer"-->
+    <!--                :fields="fields"-->
+    <!--                :base-route="baseRoute"-->
+    <!--                :top-actions="{-->
+    <!--                    create: { label: 'Add Customer' },-->
+    <!--                }"-->
+    <!--                :actions="actions"-->
+    <!--                :preview-component="CustomerPreview"-->
+    <!--                :edit-component="CustomerForm"-->
+    <!--            >-->
+    <!--                <template #filter>-->
+    <!--                    <customer-filters />-->
+    <!--                </template>-->
+    <!--            </gym-revenue-crud>-->
     <confirm
         title="Really Trash?"
         v-if="confirmTrash"
@@ -85,11 +102,13 @@ import GymRevenueCrud from "@/Components/CRUD/GymRevenueCrud.vue";
 import CrudBadge from "@/Components/CRUD/Fields/CrudBadge.vue";
 import PageToolbarNav from "@/Components/PageToolbarNav.vue";
 import CustomerFilters from "@/Pages/Customers/Partials/CustomerFilters.vue";
+import CustomerForm from "@/Pages/Customers/Partials/CustomerForm.vue";
 import CustomerPreview from "@/Pages/Customers/Partials/CustomerPreview.vue";
 
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
 import usePage from "@/Components/InertiaModal/usePage";
+import queries from "@/gql/queries";
 
 export default defineComponent({
     components: {
@@ -103,6 +122,7 @@ export default defineComponent({
         CustomerPreview,
         CalendarGrid,
         CalendarSummaryCard,
+        CustomerForm,
     },
     props: [
         "customers",
@@ -118,7 +138,7 @@ export default defineComponent({
         const fields = [
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
-            { name: "location.name", label: "Location" },
+            { name: "home_location.name", label: "Location" },
             { name: "created_at", label: "Joined" },
             { name: "updated_at", label: "Updated" },
         ];
@@ -209,6 +229,8 @@ export default defineComponent({
             baseRoute,
             CustomerPreview,
             trashReason,
+            queries,
+            CustomerForm,
         };
     },
 });

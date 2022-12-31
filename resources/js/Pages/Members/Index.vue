@@ -31,28 +31,21 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-    <ApolloQuery :query="(gql) => queries['members']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                :resource="getMembers(data)"
-                @update="handleCrudUpdate"
-                model-key="member"
-                :fields="fields"
-                :base-route="baseRoute"
-                :top-actions="{
-                    create: { label: 'Add Member' },
-                }"
-                :actions="actions"
-                :preview-component="MemberPreview"
-                :edit-component="MemberForm"
-            >
-                <template #filter>
-                    <member-filters :handleCrudUpdate="handleCrudUpdate" />
-                </template>
-            </gym-revenue-crud>
+    <gym-revenue-crud
+        model-key="member"
+        :fields="fields"
+        :base-route="baseRoute"
+        :top-actions="{
+            create: { label: 'Add Member' },
+        }"
+        :actions="actions"
+        :preview-component="MemberPreview"
+        :edit-component="MemberForm"
+    >
+        <template #filter>
+            <member-filters :handleCrudUpdate="handleCrudUpdate" />
         </template>
-    </ApolloQuery>
+    </gym-revenue-crud>
     <confirm
         title="Really Trash?"
         v-if="confirmTrash"
@@ -127,7 +120,7 @@ export default defineComponent({
         const fields = [
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
-            { name: "location.name", label: "Location" },
+            { name: "home_location.name", label: "Location" },
             { name: "created_at", label: "Joined" },
             { name: "updated_at", label: "Updated" },
         ];

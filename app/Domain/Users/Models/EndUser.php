@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Users\Models;
 
 use App\Domain\Locations\Projections\Location;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Models\Endusers\MembershipType;
 use App\Scopes\ClientScope;
 use App\Scopes\EndUserScope;
@@ -146,5 +147,13 @@ class EndUser extends User
     public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         return $this->morphMany('App\Models\File', 'fileable');
+    }
+
+    //    TODO: store as projection somewhere, this is expensive
+    public function getInteractionCount()
+    {
+        $aggy = UserAggregate::retrieve($this->id);
+
+        return $aggy->getInteractionCount();
     }
 }

@@ -43,7 +43,7 @@ class Helper
         return $results;
     }
 
-    public static function setUpLocationsObject(string $current_team_id, bool $is_client_user, string $client_id = null): Builder
+    public static function setUpLocationsObject(string $current_team_id, bool $is_client_user, string $client_id = null): Builder | Location
     {
         $results = [];
         /**

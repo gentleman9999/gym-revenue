@@ -30,28 +30,22 @@
         </div>
         <calendar-schedule-table :data="schedule" />
     </div>
-    <ApolloQuery :query="(gql) => queries['leads']" :variables="param">
-        <template v-slot="{ result: { data } }">
-            <gym-revenue-crud
-                v-if="data"
-                :resource="getLeads(data)"
-                @update="handleCrudUpdate"
-                model-key="lead"
-                :fields="fields"
-                :base-route="baseRoute"
-                :top-actions="{
-                    create: { label: 'Add Lead' },
-                }"
-                :actions="actions"
-                :preview-component="LeadPreview"
-                :edit-component="LeadForm"
-            >
-                <template #filter>
-                    <leads-filters :handleCrudUpdate="handleCrudUpdate" />
-                </template>
-            </gym-revenue-crud>
+    <gym-revenue-crud
+        @update="handleCrudUpdate"
+        model-key="lead"
+        :fields="fields"
+        :base-route="baseRoute"
+        :top-actions="{
+            create: { label: 'Add Lead' },
+        }"
+        :actions="actions"
+        :preview-component="LeadPreview"
+        :edit-component="LeadForm"
+    >
+        <template #filter>
+            <leads-filters :handleCrudUpdate="handleCrudUpdate" />
         </template>
-    </ApolloQuery>
+    </gym-revenue-crud>
 
     <confirm
         title="Really Trash?"
@@ -201,7 +195,7 @@ export default defineComponent({
             },
             { name: "first_name", label: "First Name" },
             { name: "last_name", label: "Last Name" },
-            { name: "location.name", label: "Location" },
+            { name: "home_location.name", label: "Location" },
             {
                 name: "owner_user_id",
                 label: "Status",

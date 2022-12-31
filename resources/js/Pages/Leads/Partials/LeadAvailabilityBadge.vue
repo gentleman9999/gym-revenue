@@ -47,9 +47,9 @@ export default {
         const claimed = ref(props?.value);
         const assigning = ref(false);
 
-        const { mutate: claimEndUser } = useMutation(gql`
-            mutation claimEndUser($endUser: ID!) {
-                claimEndUser(endUser: $endUser) {
+        const { mutate: assignEndUserToRep } = useMutation(gql`
+            mutation assignEndUserToRep($endUser: ID!) {
+                assignEndUserToRep(endUser: $endUser) {
                     owner_user_id
                 }
             }
@@ -86,8 +86,10 @@ export default {
             console.log("handleClick");
             if (status.value === "Available") {
                 assigning.value = true;
-                const { data } = await claimEndUser({ endUser: props.data.id });
-                claimed.value = data.claimEndUser.owner_user_id;
+                const { data } = await assignEndUserToRep({
+                    endUser: props.data.id,
+                });
+                claimed.value = data.assignEndUserToRep.owner_user_id;
                 assigning.value = false;
             }
         };

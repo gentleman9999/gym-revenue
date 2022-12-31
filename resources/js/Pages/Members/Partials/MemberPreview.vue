@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="field col-span-6 md:col-span-3 text-secondary">
-            <label>Club/ Location: {{ member.club_location.name }}</label>
+            <label>Club/ Location: {{ member.home_location.name }}</label>
         </div>
         <div class="field col-span-6 lg:col-span-6"></div>
     </div>

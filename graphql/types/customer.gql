@@ -1,4 +1,4 @@
-type Member {
+type Customer {
     id: ID!
     first_name: String
     last_name: String
