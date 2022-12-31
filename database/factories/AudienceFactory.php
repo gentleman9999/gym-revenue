@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Domain\Audiences\Audience;
-use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\Users\Models\Lead;
 use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

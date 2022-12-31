@@ -40,17 +40,6 @@ class LocationSeeder extends Seeder
             ];
         } else {
             $locations = [
-                // The Kalamazoo
-                [
-                    'client' => 'The Kalamazoo',
-                    'name' => 'The Kalamazoo 1 HQ',
-                    'state' => 'LA',
-                    'city' => 'Shreveport',
-                    'zip' => '71101',
-                    'location_no' => '001',
-                    'location_type' => LocationType::HQ,
-                    //'gymrevenue_id' => 'TK12'
-                ],
                 // FitnessTruth
                 [
                     'client' => 'FitnessTruth',
@@ -302,97 +291,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'PF04',
                     'location_type' => LocationType::STORE,
                     //'gymrevenue_id' => 'PF29'
-                ],
-                // iFit
-                [
-                    'client' => 'iFit',
-                    'state' => 'FL',
-                    'city' => 'Tampa',
-                    'zip' => '33605',
-                    'location_no' => 'I01',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF30'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'FL',
-                    'city' => 'Lake City',
-                    'zip' => '32025',
-                    'location_no' => 'I02',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF31'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'FL',
-                    'city' => 'Hilliard',
-                    'zip' => '32046',
-                    'location_no' => 'I03',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF32'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'FL',
-                    'city' => 'Orange Park',
-                    'zip' => '32065',
-                    'location_no' => 'I04',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF33'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'FL',
-                    'city' => 'Tampa',
-                    'zip' => '33601',
-                    'location_no' => 'I05',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF34'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'GA',
-                    'city' => 'Atlanta',
-                    'zip' => '30301',
-                    'location_no' => 'I06',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF35'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'GA',
-                    'city' => 'Atlanta',
-                    'zip' => '30302',
-                    'location_no' => 'I13',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF36'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'GA',
-                    'city' => 'Atlanta',
-                    'zip' => '30303',
-                    'location_no' => 'I12',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF37'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'VA',
-                    'city' => 'Virginia Beach',
-                    'zip' => '23450',
-                    'location_no' => 'I11',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF38'
-                ],
-                [
-                    'client' => 'iFit',
-                    'state' => 'VA',
-                    'city' => 'Virginia Beach',
-                    'zip' => '23451',
-                    'location_no' => 'I10',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'IF39'
                 ],
             ];
         }

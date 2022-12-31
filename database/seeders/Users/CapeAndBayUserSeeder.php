@@ -4,6 +4,7 @@ namespace Database\Seeders\Users;
 
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Actions\CreateUser;
+use App\Enums\UserTypesEnum;
 
 class CapeAndBayUserSeeder extends UserSeeder
 {
@@ -154,6 +155,7 @@ class CapeAndBayUserSeeder extends UserSeeder
             'role_id' => 1,
 //            'home_location_id' => $home_location_id,
             'manager' => 'Senior Manager',
+            'user_type' => UserTypesEnum::EMPLOYEE,
         ]);
     }
 }

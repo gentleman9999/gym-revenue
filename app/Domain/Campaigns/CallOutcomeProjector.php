@@ -4,7 +4,7 @@ namespace App\Domain\Campaigns;
 
 use App\Domain\Campaigns\Events\CallOutcomeCreated;
 use App\Domain\Campaigns\Events\CallOutcomeUpdated;
-use App\Domain\EndUsers\Projections\EndUserDetails;
+use App\Domain\Users\Models\UserDetails;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class CallOutcomeProjector extends Projector
@@ -13,24 +13,24 @@ class CallOutcomeProjector extends Projector
     {
         $client_id = $event->payload['client_id'];
         if (count($event->payload['lead_attendees']) > 0) {
-            $call_outcome = (new EndUserDetails())->writeable();
-            $call_outcome->forceFill([
+            $call_outcome = (new UserDetails())->writeable();
+            $call_outcome->fill([
                 'client_id' => $client_id,
-                'end_user_id' => $event->payload['lead_attendees'][0],
+                'user_id' => $event->payload['lead_attendees'][0],
                 'field' => 'call_outcome',
                 'value' => $event->payload['outcome'],
-                'entity_id' => $event->payload['id'],
+                'misc' => ['entity_id' => $event->payload['id']],
             ]);
         }
 
         if (count($event->payload['member_attendees']) > 0) {
-            $call_outcome = (new EndUserDetails())->writeable();
-            $call_outcome->forceFill([
+            $call_outcome = (new UserDetails())->writeable();
+            $call_outcome->fill([
                 'client_id' => $client_id,
-                'end_user_id' => $event->payload['member_attendees'][0],
+                'user_id' => $event->payload['member_attendees'][0],
                 'field' => 'call_outcome',
                 'value' => $event->payload['outcome'],
-                'entity_id' => $event->payload['id'],
+                'misc' => ['entity_id' => $event->payload['id']],
             ]);
         }
 
@@ -42,7 +42,7 @@ class CallOutcomeProjector extends Projector
     public function onCallOutcomeUpdated(CallOutcomeUpdated $event): void
     {
         if (count($event->payload['lead_attendees']) > 0) {
-            $details = EndUserDetails::findOrFail($event->payload['outcomeId'])->writeable();
+            $details = UserDetails::findOrFail($event->payload['outcomeId'])->writeable();
             $details->lead_id = $event->payload['lead_attendees'][0];
             $details->field = 'call_outcome';
             $details->value = $event->payload['outcome'];
@@ -50,7 +50,7 @@ class CallOutcomeProjector extends Projector
         }
 
         if (count($event->payload['member_attendees']) > 0) {
-            $details = EndUserDetails::findOrFail($event->payload['outcomeId'])->writeable();
+            $details = UserDetails::findOrFail($event->payload['outcomeId'])->writeable();
             $details->member_id = $event->payload['member_attendees'][0];
             $details->field = 'call_outcome';
             $details->value = $event->payload['outcome'];

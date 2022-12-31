@@ -84,7 +84,7 @@ class GymRevStoredEvent extends EloquentStoredEvent
         return $this->meta_data['auto-generated'] ?? false;
     }
 
-    public function userId(): ?int
+    public function userId(): ?string
     {
         return $this->meta_data['user_id'] ?? null;
     }
@@ -123,7 +123,7 @@ class GymRevStoredEvent extends EloquentStoredEvent
         return $this->meta_data['client_id'];
     }
 
-    public function impersonatorUserId(): ?int
+    public function impersonatorUserId(): ?string
     {
         return $this->meta_data['impersonator_user_id'] ?? null;
     }

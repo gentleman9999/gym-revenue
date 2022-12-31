@@ -21,7 +21,7 @@ return new class () extends Migration {
                         ->on('agreement_categories')
                         ->cascadeOnDelete();
             $table->string('gr_location_id')->nullable();
-            $table->unsignedBigInteger('created_by');
+            $table->uuid('created_by');
             $table->uuid('end_user_id');
             $table->uuid('agreement_template_id');
             $table->uuid('contract_id')->nullable();

@@ -24,7 +24,7 @@ class CreateCalendarEventsTable extends Migration
             $table->string('color')->nullable();
             $table->json('options')->nullable();
             $table->foreignUuid('event_type_id');
-            $table->integer('owner_id')->nullable()->index();
+            $table->foreignUuid('owner_id')->nullable()->index();
             $table->dateTime('event_completion')->nullable();
             $table->uuid('location_id')->nullable();
             $table->boolean('overdue_reminder_sent')->default(false);

@@ -175,13 +175,13 @@ export default defineComponent({
                 "badge-error",
                 "badge-warning",
             ];
-            if (opportunity === "High") {
+            if (opportunity === 3) {
                 return badges[4]; //success
             }
-            if (opportunity === "Medium") {
+            if (opportunity === 2) {
                 return badges[8]; // info
             }
-            if (opportunity === "Low") {
+            if (opportunity === 1) {
                 return badges[7]; //warning
             }
         };
@@ -195,7 +195,7 @@ export default defineComponent({
                 props: {
                     getProps: ({ data: { opportunity } }) => ({
                         class: badgeClassesOpportunity(opportunity),
-                        text: opportunity,
+                        text: ["", "Low", "Medium", "High"][opportunity],
                     }),
                 },
             },

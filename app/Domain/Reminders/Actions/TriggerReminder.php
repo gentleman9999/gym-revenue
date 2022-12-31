@@ -3,7 +3,7 @@
 namespace App\Domain\Reminders\Actions;
 
 use App\Domain\Reminders\Reminder;
-use App\Domain\Users\UserAggregate;
+use App\Domain\Users\Aggregates\UserAggregate;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 

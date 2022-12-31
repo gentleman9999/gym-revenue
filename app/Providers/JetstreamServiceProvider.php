@@ -13,6 +13,7 @@ use App\Domain\Teams\Models\TeamInvitation;
 use App\Domain\Users\Actions\DeleteUser;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
+use App\Enums\UserTypesEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
@@ -52,35 +53,48 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::deleteTeamsUsing(DeleteTeam::class);
         Jetstream::deleteUsersUsing(DeleteUser::class);
         Fortify::authenticateUsing(function (Request $request) {
-            //Call withoutGlobalScopes so we don't try to apply client_id on login
-            $user = User::withoutGlobalScopes()->where('email', $request->email)->first();
+            /** Call withoutGlobalScopes so we don't try to apply client_id on login */
+            $users = User::withoutGlobalScopes()->where('email', $request->email)->get();
+            $user = null;
+            foreach ($users as $maybe_user) {
+                if (Hash::check($request->password, $maybe_user->password)) {
+                    $user = $maybe_user;
+
+                    break;
+                }
+            }
 
             if ($user &&
                 Hash::check($request->password, $user->password)) {
-                // dd($user->toArray());
-                //Successfull CRM Auth -
-                //Let's set some info in our cookie session so we
-                // can use it in middleware / global scopes
-                // without having to hit the db
-                $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()->whereUserId($user->id)->whereField('default_team_id')->first()->value);
-                //$team = $user->getDefaultTeam();
-                if ($team !== null) {
-                    /**
-                     * Set current_locaiton_id as null
-                     * @TODO: Need to update it as default_team location
-                     * After relationship between team and location has been set
-                     */
-                    session()->put('current_location_id', null);
-                    session()->put('current_team_id', $team->id);
-                    session()->put(
-                        'current_team',
-                        [
-                            'id' => $team->id,
-                            'name' => $team->name,
-                            'client_id' => $team->client_id,
-                        ]
-                    );
+                /**
+                 * Successfull CRM Auth -
+                 * Let's set some info in our cookie session so we
+                 * can use it in middleware / global scopes
+                 * without having to hit the db
+                 */
+
+                if ($user->user_type == UserTypesEnum::EMPLOYEE) {
+                    $team = Team::withoutGlobalScopes()->findOrFail(UserDetails::withoutGlobalScopes()
+                        ->whereUserId($user->id)->whereField('default_team_id')->first()->value);
+                    if ($team !== null) {
+                        /**
+                         * Set current_locaiton_id as null
+                         * @TODO: Need to update it as default_team location
+                         * After relationship between team and location has been set
+                         */
+                        session()->put('current_location_id', null);
+                        session()->put('current_team_id', $team->id);
+                        session()->put(
+                            'current_team',
+                            [
+                                'id' => $team->id,
+                                'name' => $team->name,
+                                'client_id' => $team->client_id,
+                            ]
+                        );
+                    }
                 }
+
                 session()->put('client_id', $user->client_id);
                 session()->put('user_id',  $user->id);
 

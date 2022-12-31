@@ -4,7 +4,7 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Reminders\Reminder;
-use App\Domain\Users\UserAggregate;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;

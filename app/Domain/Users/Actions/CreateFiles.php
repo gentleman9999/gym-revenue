@@ -7,6 +7,9 @@ use App\Domain\Users\UserAggregate;
 
 class CreateFiles extends \App\Domain\Files\Actions\CreateFiles
 {
+    public string $commandSignature = 'user:uploadFile';
+    public string $commandDescription = 'Upload File for User';
+
     public function handle($data, $current_user = null): array
     {
         $files = [];

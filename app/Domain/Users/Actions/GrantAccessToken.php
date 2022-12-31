@@ -3,8 +3,8 @@
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Locations\Projections\Location;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\UserAggregate;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;

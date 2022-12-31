@@ -8,8 +8,6 @@ use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\BillingSchedules\Projections\BillingSchedule;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Contracts\Projections\Contract;
-use App\Domain\EndUsers\Projections\EndUser;
-use App\Domain\Users\Models\User;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -28,25 +26,30 @@ class AgreementsSeeder extends Seeder
         if (count($clients) > 0) {
             foreach ($clients as $client) {
                 VarDumper::dump($client->name);
-                $users = User::whereClientId($client->id)->get()->toArray();
-                $endusers = EndUser::whereClientId($client->id)->get()->toArray();
+                $users = $client->employees->toArray();
                 $categories = AgreementCategory::whereClientId($client->id)->get()->toArray();
-                // For each client, get all the locations
-                if (count($client->locations) > 0) {
-                    foreach ($client->locations as $idx => $location) {
-                        VarDumper::dump('Generating Agreements for ' . $client->name . '!');
-                        for ($x = 0; $x <= $amountOfAgreements; $x++) {
-                            $enduser = $endusers[array_rand($endusers, 1)];
-                            $agreement_data['client_id'] = $client->id;
-                            $agreement_data['agreement_category_id'] = $categories[array_rand($categories, 1)]['id'];
-                            $agreement_data['gr_location_id'] = $location->gymrevenue_id;
-                            $agreement_data['created_by'] = $users[array_rand($users, 1)]['id'];
-                            $agreement_data['end_user_id'] = $enduser['id'];
-                            $agreement_data['agreement_template_id'] = AgreementTemplate::whereClientId($client->id)->first()->id;
-                            $agreement_data['billing_schedule_id'] = BillingSchedule::whereClientId($client->id)->first()->id;
-                            $agreement_data['contract_id'] = Contract::whereClientId($client->id)->first()->id;
-                            $agreement_data['active'] = true;
-                            CreateAgreement::run($agreement_data);
+
+
+                foreach ([$client->members->pluck('id')->toArray(), $client->customers->pluck('id')->toArray()] as $i => $endusers) {
+                    $contract_name = $i == 0 ? 'Basic-Membership' : 'Basic-Personal_Training';
+                    $contract_id = Contract::whereClientId($client->id)->whereName($contract_name)->first()->id;
+                    // For each client, get all the locations
+                    if (count($client->locations) > 0) {
+                        foreach ($client->locations as $idx => $location) {
+                            VarDumper::dump('Generating Agreements for ' . $client->name . '!');
+                            for ($x = 0; $x <= $amountOfAgreements; $x++) {
+                                $enduser_id = $endusers[array_rand($endusers, 1)];
+                                $agreement_data['client_id'] = $client->id;
+                                $agreement_data['agreement_category_id'] = $categories[array_rand($categories, 1)]['id'];
+                                $agreement_data['gr_location_id'] = $location->gymrevenue_id;
+                                $agreement_data['created_by'] = $users[array_rand($users, 1)]['id'];
+                                $agreement_data['end_user_id'] = $enduser_id;
+                                $agreement_data['agreement_template_id'] = AgreementTemplate::whereClientId($client->id)->first()->id;
+                                $agreement_data['active'] = $i == 0;
+                                $agreement_data['billing_schedule_id'] = BillingSchedule::first()->id;
+                                $agreement_data['contract_id'] = $contract_id;
+                                CreateAgreement::run($agreement_data);
+                            }
                         }
                     }
                 }

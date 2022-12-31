@@ -14,7 +14,7 @@ return new class () extends Migration {
     {
         Schema::create('user_position', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->uuid('user_id');
             $table->foreignUuid('position_id');
             $table->timestamps();
         });

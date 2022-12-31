@@ -3,8 +3,8 @@
 namespace App\Actions\Clients\Tasks;
 
 use App\Domain\CalendarEvents\CalendarEvent;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\UserAggregate;
 use App\StorableEvents\Clients\Tasks\TaskCreated;
 use App\Support\Uuid;
 use Illuminate\Support\Facades\Redirect;

@@ -10,7 +10,7 @@
             :last-name="member.last_name"
             :opportunity="member.opportunity"
             :email="member.email"
-            :phone="member.primary_phone"
+            :phone="member.phone"
             :details="member.details_desc"
             ref="memberInteractionRef"
             :selectedLeadDetailIndex="selectedLeadDetailIndex"

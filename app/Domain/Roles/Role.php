@@ -9,7 +9,6 @@ use App\Domain\Chat\Models\Chat;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Departments\Department;
-use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\Locations\Projections\Location;
@@ -18,6 +17,8 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
+use App\Domain\Users\Models\Customer;
+use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use App\Models\DynamicReport;
@@ -81,6 +82,7 @@ class Role extends \Silber\Bouncer\Database\Role
             'dynamic-reports' => DynamicReport::class,
             'chat' => Chat::class,
             'conversation' => ClientConversation::class,
+            'customers' => Customer::class,
             default => null,
         };
     }

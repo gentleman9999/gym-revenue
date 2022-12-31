@@ -15,8 +15,8 @@ return new class () extends Migration {
         Schema::create('chats', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
             $table->uuid('client_id');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('admin_id');
+            $table->uuid('created_by');
+            $table->uuid('admin_id');
             $table->timestamps();
             $table->softDeletes();
 

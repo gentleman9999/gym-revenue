@@ -25,11 +25,9 @@ use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
 use Database\Seeders\Data\ContractGatesSeeder;
 use Database\Seeders\Data\EndUserSeeder;
-use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
-use Database\Seeders\Data\MemberSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
@@ -157,14 +155,6 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
         $this->call(AgreementTemplateBillingScheduleSeeder::class);
-
-        // This seeder generates dummy leads for each client
-//        VarDumper::dump('Running Leads Dummy Data Seeder');
-//        $this->call(LeadProspectSeeder::class);
-//
-//        // This seeder generates dummy members for each client
-//        VarDumper::dump('Running Members Dummy Data Seeder');
-//        $this->call(MemberSeeder::class);
 
         // This seeder generates dummy members for each client
         VarDumper::dump('Running Contract Gate Dummy Data Seeder');

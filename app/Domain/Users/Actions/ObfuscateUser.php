@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -37,6 +37,7 @@ class ObfuscateUser
     public function handle(User $user): User
     {
         UserAggregate::retrieve(strval($user->id))->ObfuscateUser()->persist();
+        ReflectUserData::run($user);
 
         return $user->refresh();
     }

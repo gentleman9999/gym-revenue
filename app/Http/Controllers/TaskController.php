@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
-use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
-use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\Employee;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
+use App\Domain\Users\Models\UserDetails;
 use App\Support\CurrentInfoRetriever;
 use DateTime;
 use Illuminate\Http\Request;
@@ -100,7 +100,7 @@ class TaskController extends Controller
 
         // If the active team is a client's-default team get all members
         if ($is_home_team) {
-            $users = User::whereClientId($client_id)->get();
+            $users = Employee::whereClientId($client_id)->get();
         } else {
             // else - get the members of that team
             $team_users = TeamUser::whereTeamId($current_team->id)->get();
@@ -108,7 +108,7 @@ class TaskController extends Controller
             foreach ($team_users as $team_user) {
                 $user_ids[] = $team_user->user_id;
             }
-            $users = User::whereIn('id', $user_ids)
+            $users = Employee::whereIn('id', $user_ids)
                 ->get();
         }
 
@@ -134,7 +134,7 @@ class TaskController extends Controller
             $member_attendees = [];
             if ($event->attendees) {
                 foreach ($event->attendees as $attendee) {
-                    if ($attendee->entity_type == User::class) {
+                    if ($attendee->entity_type == Employee::class) {
                         if (request()->user()->id == $attendee->entity_id) {
                             $array[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
                                 ->whereEntityId($event['id'])
@@ -155,9 +155,9 @@ class TaskController extends Controller
                         $lead_attendees[]['id'] = $attendee->entity_id;
 
                         try {
-                            $call_outcome = EndUserDetails::whereField('call_outcome')
-                                ->whereEndUserID($attendee->entity_id)
-                                ->whereEntityId($event->id)
+                            $call_outcome = UserDetails::whereField('call_outcome')
+                                ->whereUserId($attendee->entity_id)
+                                ->where('misc->entity_id', $event->id)
                                 ->orderBy('created_at', 'desc')
                                 ->first();
                         } catch (\Exception $e) {
@@ -167,9 +167,9 @@ class TaskController extends Controller
                         $member_attendees[]['id'] = $attendee->entity_id;
 
                         try {
-                            $call_outcome = EndUserDetails::whereField('call_outcome')
-                                ->whereEndUserID($attendee->entity_id)
-                                ->whereEntityId($event->id)
+                            $call_outcome = UserDetails::whereField('call_outcome')
+                                ->whereUserId($attendee->entity_id)
+                                ->where('misc->entity_id', $event->id)
                                 ->orderBy('created_at', 'desc')
                                 ->first()
                             ;

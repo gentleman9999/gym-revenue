@@ -5,6 +5,7 @@ namespace Database\Seeders\Users;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
+use App\Enums\UserTypesEnum;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\Database\Role;
 use Symfony\Component\VarDumper\VarDumper;
@@ -84,6 +85,7 @@ class ClientUserSeeder extends Seeder
                             'team_ids' => $team_ids,
                             'home_location_id' => $home_location_id,
                             'manager' => $manager,
+                            'user_type' => UserTypesEnum::EMPLOYEE,
                         ]);
                         \App\Domain\Users\Actions\CreateUser::run($final_data);
                     }

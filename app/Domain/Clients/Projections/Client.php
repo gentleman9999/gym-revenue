@@ -13,8 +13,13 @@ use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\Customer;
+use App\Domain\Users\Models\Employee;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\MembershipType;
 use App\Models\File;
@@ -110,9 +115,34 @@ class Client extends GymRevProjection
         return $this->hasMany(Team::class);
     }
 
-    public function users(): HasMany
+    public function allUsers(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function users(): HasMany
+    {
+        return $this->allUsers()->whereUserType(UserTypesEnum::EMPLOYEE);
+    }
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    public function members(): HasMany
+    {
+        return $this->hasMany(Member::class);
+    }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
     }
 
     public function socialMedia(): HasMany

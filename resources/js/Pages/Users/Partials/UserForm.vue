@@ -70,6 +70,21 @@
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
+            <!-- Gender # -->
+            <div class="form-control col-span-6 md:col-span-2">
+                <jet-label for="gender" value="Gender" />
+                <select
+                    id="gender"
+                    class="block w-full mt-1"
+                    v-model="form.gender"
+                    required
+                >
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
+            </div>
 
             <!-- Address 1 -->
             <div class="form-control col-span-6">
@@ -590,6 +605,7 @@ export default {
             if (isClientUser) {
                 user.role_id = user["role_id"];
             }
+            user.gender = user["gender"];
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
             user.notes = { title: "", note: "" };
@@ -601,6 +617,7 @@ export default {
             user = {
                 first_name: "",
                 last_name: "",
+                gender: "",
                 email: "",
                 alternate_email: "",
                 role_id: 0,

@@ -62,7 +62,7 @@ class Audience extends GymRevProjection
 
     public function getCallable(): Collection
     {
-        return $this->getEntityBaseQuery()->whereNotNull('primary_phone')->get();
+        return $this->getEntityBaseQuery()->whereNotNull('phone')->get();
     }
 
     protected function getEntityBaseQuery(): Builder

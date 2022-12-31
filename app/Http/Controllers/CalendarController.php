@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\CalendarEventTypes\CalendarEventType;
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
-use App\Domain\EndUsers\Projections\EndUserDetails;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Reminders\Reminder;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
+use App\Domain\Users\Models\Employee;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\UserDetails;
 use App\Support\CurrentInfoRetriever;
 use DateTime;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class CalendarController extends Controller
             $member_attendees = [];
             if ($event->attendees) {
                 foreach ($event->attendees as $attendee) {
-                    if ($attendee->entity_type == User::class) {
+                    if ($attendee->entity_type == Employee::class) {
                         if (request()->user()->id == $attendee->entity_id) {
                             $eventsForTeam[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
                                 ->whereEntityId($event['id'])
@@ -73,16 +74,16 @@ class CalendarController extends Controller
                     if ($attendee->entity_type == Lead::class) {
                         $lead_attendees[]['id'] = $attendee->entity_id;
 
-                        $call_outcome = EndUserDetails::whereField('call_outcome')
-                            ->whereEndUserId($attendee->entity_id)
-                            ->whereEntityId($event->id)->first();
+                        $call_outcome = UserDetails::whereField('call_outcome')
+                            ->whereUserId($attendee->entity_id)
+                            ->where('misc->entity_id', $event->id)->first();
                     }
                     if ($attendee->entity_type == Member::class) {
                         $member_attendees[]['id'] = $attendee->entity_id;
 
-                        $call_outcome = EndUserDetails::whereField('call_outcome')
-                            ->whereEndUserId($attendee->entity_id)
-                            ->whereEntityId($event->id)->first();
+                        $call_outcome = UserDetails::whereField('call_outcome')
+                            ->whereUserId($attendee->entity_id)
+                            ->where('misc->entity_id', $event->id)->first();
                     }
                     if ($event->call_task == 1) {
                         if (isset($call_outcome)) {
@@ -106,7 +107,7 @@ class CalendarController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::whereClientId($client_id)->get();
+                $users = Employee::whereClientId($client_id)->get();
             } else {
                 // else - get the members of that team
                 $team_users = TeamUser::whereTeamId($current_team->id)->get();
@@ -114,7 +115,7 @@ class CalendarController extends Controller
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = User::whereIn('id', $user_ids)
+                $users = Employee::whereIn('id', $user_ids)
                     ->get();
             }
         }
@@ -158,7 +159,7 @@ class CalendarController extends Controller
             $member_attendees = [];
             if ($event->attendees) {
                 foreach ($event->attendees as $attendee) {
-                    if ($attendee->entity_type == User::class) {
+                    if ($attendee->entity_type == Employee::class) {
                         if (request()->user()->id == $attendee->entity_id) {
                             $eventsForTeam[$key]['my_reminder'] = Reminder::whereEntityType(CalendarEvent::class)
                                 ->whereEntityId($event['id'])
@@ -196,7 +197,7 @@ class CalendarController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::whereClientId($client_id)->get();
+                $users = Employee::whereClientId($client_id)->get();
             } else {
                 // else - get the members of that team
                 $team_users = TeamUser::whereTeamId($current_team->id)->get();
@@ -204,7 +205,7 @@ class CalendarController extends Controller
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = User::whereIn('id', $user_ids)
+                $users = Employee::whereIn('id', $user_ids)
                     ->get();
             }
         }

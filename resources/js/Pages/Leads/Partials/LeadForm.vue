@@ -75,15 +75,9 @@
                 <jet-input-error :message="form.errors.email" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="primary_phone" value="Primary Phone" />
-                <phone-input
-                    id="primary_phone"
-                    v-model="form['primary_phone']"
-                />
-                <jet-input-error
-                    :message="form.errors.primary_phone"
-                    class="mt-2"
-                />
+                <jet-label for="phone" value="Primary Phone" />
+                <phone-input id="phone" v-model="form['phone']" />
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
             <div class="form-control md:col-span-2 col-span-6">
                 <jet-label for="alternate_phone" value="Alternate Phone" />
@@ -163,12 +157,12 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <jet-label for="gr_location_id" value="Club" />
+                <jet-label for="club_id" value="Club" />
                 <select
                     class=""
-                    v-model="form['gr_location_id']"
+                    v-model="form['home_location_id']"
                     required
-                    id="gr_location_id"
+                    id="club_id"
                 >
                     <option value="">Select a Club</option>
                     <option
@@ -180,7 +174,7 @@
                     </option>
                 </select>
                 <jet-input-error
-                    :message="form.errors['gr_location_id']"
+                    :message="form.errors['home_location_id']"
                     class="mt-2"
                 />
             </div>
@@ -216,9 +210,9 @@
                     id="opportunity"
                 >
                     <option value="">Select Opportunity</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
+                    <option value="1">Low</option>
+                    <option value="2">Medium</option>
+                    <option value="3">High</option>
                 </select>
                 <jet-input-error
                     :message="form.errors.opportunity"
@@ -421,9 +415,12 @@ export default {
                 middle_name: "",
                 last_name: "",
                 email: "",
-                primary_phone: "",
+                phone: "",
                 alternate_phone: "",
-                gr_location_id: "",
+                club_id: "",
+                home_location_id: "",
+                lead_type_id: "",
+                lead_source_id: "",
                 profile_picture: "",
                 gender: "",
                 date_of_birth: null,
@@ -439,9 +436,10 @@ export default {
                 middle_name: lead.middle_name,
                 last_name: lead.last_name,
                 email: lead.email,
-                primary_phone: lead.primary_phone,
+                phone: lead.phone,
                 alternate_phone: lead.alternate_phone,
-                gr_location_id: lead.gr_location_id,
+                club_id: lead.club_id,
+                home_location_id: lead.home_location_id,
                 lead_type_id: lead.lead_type_id,
                 lead_source_id: lead.lead_source_id,
                 profile_picture: lead.profile_picture,
@@ -528,6 +526,7 @@ export default {
                             entity_id: lead.id,
                             /*client_id: page.props.value.user.client_id,*/
                             user_id: page.props.value.user.id,
+                            url: `https://${response.bucket}.s3.amazonaws.com/${response.key}`,
                         },
                     ]
                 );

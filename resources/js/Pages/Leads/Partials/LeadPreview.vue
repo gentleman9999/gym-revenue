@@ -13,7 +13,7 @@
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
             label="Phone 1"
-            :value="lead.primary_phone"
+            :value="lead.phone"
         />
         <lead-preview-item
             class="field col-span-6 md:col-span-3"
