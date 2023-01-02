@@ -324,6 +324,18 @@ class LocationSeeder extends Seeder
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
 
+            $min_opened_at = Carbon::now()->subDays(3650)->timestamp;
+            $max_opened_at = Carbon::now()->subDays(365)->timestamp;
+            $val_opened_at = rand($min_opened_at, $max_opened_at);
+            $opened_at =  date('Y-m-d H:i:s', $val_opened_at);
+            $location['opened_at'] = $opened_at;
+
+            $date_opened_at = \DateTime::createFromFormat("Y-m-d H:i:s", $opened_at);
+            $min_presale_opened_at = Carbon::create($date_opened_at->format("Y"), $date_opened_at->format("m"), $date_opened_at->format("d"))->timestamp;
+            $val_presale_opened_at = rand($min_presale_opened_at, $max_opened_at);
+            $presale_opened_at =  date('Y-m-d H:i:s', $val_presale_opened_at);
+            $location['presale_opened_at'] = $presale_opened_at;
+
             $min = Carbon::now()->subDays(365)->timestamp;
             $max = Carbon::now()->timestamp;
             $val = rand($min, $max);

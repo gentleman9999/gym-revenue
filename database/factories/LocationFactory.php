@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
 
 class LocationFactory extends Factory
 {
@@ -41,6 +42,7 @@ class LocationFactory extends Factory
             'location_type' => LocationTypeEnum::STORE,
             'presale_started_at' => $this->faker->dateTimeBetween('-365 days', now()),
             'capacity' => rand(100, 500),
+            'presale_opened_at' => $this->faker->dateTimeBetween('-365 days', now()),
         ];
     }
 }

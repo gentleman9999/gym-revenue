@@ -35,7 +35,7 @@ class Location extends GymRevProjection
         'name', 'address1', 'address2', 'city', 'state', 'zip',
         'active', 'location_no', 'gymrevenue_id',
         'opened_at', 'closed_at', 'phone', 'default_team_id',
-        'location_type', 'latitude', 'longitude','capacity', 'presale_started_at',
+        'location_type', 'latitude', 'longitude','capacity', 'presale_started_at', 'presale_opened_at'
     ];
 
     protected static function booted(): void
