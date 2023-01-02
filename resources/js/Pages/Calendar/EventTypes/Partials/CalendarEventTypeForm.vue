@@ -87,60 +87,48 @@
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from "vue";
 import { useGymRevForm } from "@/utils";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
+const props = defineProps({
+    clientId: {
+        type: String,
+        required: true,
     },
-    props: {
-        clientId: {
-            type: String,
-            required: true,
+    calendarEventType: {
+        type: Object,
+        default: {
+            id: null,
+            name: "",
+            description: "",
+            type: "",
+            color: "",
         },
-        eventType: {
-            type: Object,
-        },
     },
+});
 
-    setup(props) {
-        let eventType = props.eventType;
-        let operation = "Update";
-        if (!eventType) {
-            eventType = {
-                id: null,
-                name: "",
-                description: "",
-                type: "",
-                color: "",
-                client_id: props.clientId,
-            };
-            operation = "Create";
-        }
+let eventType = ref(props.calendarEventType);
 
-        const form = useGymRevForm(eventType);
+let operation = computed(() => {
+    return eventType.value.id === null ? "Create" : "Update";
+});
 
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .put(route("calendar.event_types.update", eventType.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("calendar.event_types.store"));
-        }
+const form = useGymRevForm(eventType.value);
 
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-        };
-    },
+let handleSubmit = () => {
+    form.dirty().put(
+        route(
+            "calendar.event_types." + operation.value.toLowerCase(),
+            eventType.id
+        )
+    );
+    if (operation === "Create") {
+        handleSubmit = () => form.post(route("calendar.event_types.store"));
+    }
 };
 </script>

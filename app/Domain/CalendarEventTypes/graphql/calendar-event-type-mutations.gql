@@ -1,0 +1,11 @@
+extend type Mutation {
+    "Creates a calandar event type"
+    createCalandarEventType(
+        input: CreateCalendarEventTypeInput!
+    ): CalendarEventType! @create
+
+    "Updates a calendar event type"
+    updateCalendarEventType(
+        input: UpdateCalendarEventTypeInput!
+    ): CalendarEventType!
+}

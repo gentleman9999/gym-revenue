@@ -13,6 +13,6 @@ extend type Query {
 }
 
 extend type Query {
-    "Find a single SMS Template by an identifying attribute."
+    "Find a single Email Template by an identifying attribute."
     emailTemplate(id: ID @eq): EmailTemplate @find
 }
