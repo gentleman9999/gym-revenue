@@ -66,8 +66,7 @@
     </jet-form-section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { usePage } from "@inertiajs/inertia-vue3";
 import { computed, ref } from "vue";
 import { useGymRevForm } from "@/utils";
@@ -78,66 +77,35 @@ import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
-import { useModal } from "@/Components/InertiaModal";
 
-export default {
-    components: {
-        Button,
-        defineComponent,
-        JetFormSection,
-        JetActionMessage,
-        JetInputError,
-        JetLabel,
-        usePage,
-    },
-    props: {
-        reminder: {
-            type: Object,
+const props = defineProps({
+    reminder: {
+        type: Object,
+        default: {
+            name: "",
+            id: "",
+            description: "",
+            remind_time: 0,
         },
     },
-    setup(props, context) {
-        let reminder = props.reminder;
-        let operation = "Update";
-        if (!reminder) {
-            reminder = {
-                name: "",
-                id: "",
-                description: "",
-                remind_time: 0,
-            };
-            operation = "Create";
-        }
+});
 
-        const form = useGymRevForm({
-            name: reminder.name,
-            id: reminder.id,
-            description: reminder.description,
-            remind_time: reminder.remind_time,
-        });
+const reminderState = ref(props.reminder);
+const operation = computed(() => {
+    return props.reminder.id === "" ? "Create" : "Update";
+});
 
-        let handleSubmit = () =>
-            form.dirty().put(route("reminders.update", reminder.id));
-        if (operation === "Create") {
-            handleSubmit = () => form.post(route("reminders.store"));
-        }
+const form = useGymRevForm(props.reminder);
 
-        const modal = useModal();
+const handleSubmit = () => {
+    let endpoint =
+        operation.value === "Create" ? "reminders.store" : "reminders.update";
+    let fn = operation.value === "Create" ? form.dirty()["put"] : form["post"];
 
-        const handleClickCancel = () => {
-            console.log("modal", modal.value);
-            if (modal.value.close) {
-                modal.value.close();
-            } else {
-                Inertia.visit(route("reminders"));
-            }
-        };
+    fn(endpoint);
+};
 
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            handleClickCancel,
-        };
-    },
+const handleClickCancel = () => {
+    Inertia.visit(route("reminders"));
 };
 </script>

@@ -111,139 +111,116 @@
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
+import * as _ from "lodash";
+import mutations from "@/gql/mutations";
 import { computed, ref } from "vue";
+import { useMutation } from "@vue/apollo-composable";
 import { useGymRevForm } from "@/utils";
+import { toastSuccess } from "@/utils/createToast";
 
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
-
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { useModal } from "@/Components/InertiaModal";
-import * as _ from "lodash";
-import { useMutation } from "@vue/apollo-composable";
-import mutations from "@/gql/mutations";
-import { toastSuccess } from "@/utils/createToast";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-
-        JetInputError,
-        JetLabel,
-    },
-    props: {
-        role: {
-            type: Object,
-        },
-        availableAbilities: {
-            type: Array,
-        },
-        securityGroups: {
-            type: Array,
+const props = defineProps({
+    role: {
+        type: Object,
+        default: {
+            name: "",
+            id: "",
+            ability_names: [],
+            group: null,
         },
     },
-    setup(props, { emit }) {
-        let role = _.cloneDeep(props.role);
+    availableAbilities: {
+        type: Array,
+    },
+    securityGroups: {
+        type: Array,
+    },
+});
 
-        let operation = "Update";
-        if (!role) {
-            role = {
-                name: "",
-                id: "",
-                ability_names: [],
-                group: null,
-            };
-            operation = "Create";
-        }
+const emit = defineEmits(["refresh", "close"]);
 
-        const form = useGymRevForm({
-            name: role.name,
-            id: role.id,
-            ability_names: getAbilities(),
-            group: role.group,
+let role = _.cloneDeep(props.role);
+
+const operation = computed(() => {
+    return props.role.id === "" ? "Create" : "Update";
+});
+
+const form = useGymRevForm({
+    name: role.name,
+    id: role.id,
+    ability_names: getAbilities(),
+    group: role.group,
+});
+
+function getAbilities() {
+    if (role.abilities) {
+        return role.abilities.map((ability) => ability.name);
+    } else {
+        return role.ability_names.map((ability) => ability.name);
+    }
+}
+const { mutate: createRole } = useMutation(mutations.role.create);
+const { mutate: updateRole } = useMutation(mutations.role.update);
+
+let handleSubmit = async () => {
+    await updateRole({
+        ...form,
+        group: ~~form.group,
+    });
+    emit("refresh");
+    handleClickCancel();
+};
+if (operation.value === "Create") {
+    handleSubmit = async () => {
+        await createRole({
+            ...form,
+            group: ~~form.group,
         });
+        emit("refresh");
+        handleClickCancel();
+    };
+}
 
-        function getAbilities() {
-            if (role.abilities) {
-                return role.abilities.map((ability) => ability.name);
-            } else {
-                return role.ability_names.map((ability) => ability.name);
-            }
+let groupedAvailableAbilities = computed(() => {
+    let grouped = {};
+    props.availableAbilities.forEach((availableAbility) => {
+        let group = availableAbility.name.split(".")[0];
+        if (group === "*") {
+            return;
         }
-        const { mutate: createRole } = useMutation(mutations.role.create);
-        const { mutate: updateRole } = useMutation(mutations.role.update);
-
-        let handleSubmit = async () => {
-            await updateRole({
-                ...form,
-                group: ~~form.group,
-            });
-            emit("refresh");
-            handleClickCancel();
-        };
-        if (operation === "Create") {
-            handleSubmit = async () => {
-                await createRole({
-                    ...form,
-                    group: ~~form.group,
-                });
-                emit("refresh");
-                handleClickCancel();
-            };
+        if (grouped[group]) {
+            grouped[group] = [...grouped[group], availableAbility];
+        } else {
+            grouped[group] = [availableAbility];
         }
+    });
+    return grouped;
+});
 
-        let groupedAvailableAbilities = computed(() => {
-            let grouped = {};
-            props.availableAbilities.forEach((availableAbility) => {
-                let group = availableAbility.name.split(".")[0];
-                if (group === "*") {
-                    return;
-                }
-                if (grouped[group]) {
-                    grouped[group] = [...grouped[group], availableAbility];
-                } else {
-                    grouped[group] = [availableAbility];
-                }
-            });
-            return grouped;
-        });
+const selectAll = (group) => {
+    const groupAbilities = groupedAvailableAbilities.value[group].map(
+        (group) => group.name
+    );
+    const merged = new Set([...form.ability_names, ...groupAbilities]);
+    form.ability_names = [...merged];
+};
 
-        const selectAll = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.name
-            );
-            const merged = new Set([...form.ability_names, ...groupAbilities]);
-            form.ability_names = [...merged];
-        };
+const clear = (group) => {
+    const groupAbilities = groupedAvailableAbilities.value[group].map(
+        (group) => group.name
+    );
+    const merged = form.ability_names.filter(
+        (abilityId) => !groupAbilities.includes(abilityId)
+    );
+    form.ability_names = [...merged];
+};
 
-        const clear = (group) => {
-            const groupAbilities = groupedAvailableAbilities.value[group].map(
-                (group) => group.name
-            );
-            const merged = form.ability_names.filter(
-                (abilityId) => !groupAbilities.includes(abilityId)
-            );
-            form.ability_names = [...merged];
-        };
-
-        const modal = useModal();
-
-        const handleClickCancel = () => {
-            emit("close");
-        };
-
-        return {
-            form,
-            buttonText: operation,
-            handleSubmit,
-            groupedAvailableAbilities,
-            selectAll,
-            clear,
-            handleClickCancel,
-        };
-    },
+const handleClickCancel = () => {
+    emit("close");
 };
 </script>

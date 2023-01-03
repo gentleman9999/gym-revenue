@@ -532,7 +532,7 @@
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, watch, inject, watchEffect } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { useGymRevForm } from "@/utils";
@@ -555,406 +555,332 @@ import states from "@/Pages/Comms/States/statesOfUnited";
 import FileManager from "@/Pages/Files/Partials/FileManager.vue";
 import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import { useModal } from "@/Components/InertiaModal";
+
 import * as _ from "lodash";
 
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-        DatePicker,
-        Multiselect,
-        Confirm,
-        DaisyModal,
-        FileManager,
-        PhoneInput,
-        DepartmentSelect,
+const props = defineProps({
+    user: {
+        type: Object,
     },
-    props: [
-        "user",
-        "clientName",
-        "roles",
-        "locations",
-        "availablePositions",
-        "availableDepartments",
-        "uploadFileRoute",
-    ],
-    emits: ["success"],
-    setup(props, { emit }) {
-        function notesExpanded(note) {
-            console.error(props.user.all_notes);
-            axios.post(route("note.seen"), {
-                note: note,
-            });
-        }
+    clientName: {
+        type: String,
+    },
+    roles: {
+        type: [Array, Object],
+    },
+    locations: {
+        type: [Array, Object],
+    },
+    availablePositions: {
+        type: [Array, Object],
+    },
+    availableDepartments: {
+        type: [Array, Object],
+    },
+    uploadFileRoute: {
+        type: String,
+    },
+});
 
-        const wantsToDeleteFile = ref(null);
-        const page = usePage();
-        let user = _.cloneDeep(props.user);
+const emit = defineEmits(["success"]);
 
-        const team_id = page.props.value.user.current_team_id;
-        const isClientUser = page.props.value.user.is_client_user;
+function notesExpanded(note) {
+    console.error(props.user.all_notes);
+    axios.post(route("note.seen"), {
+        note: note,
+    });
+}
 
-        let operation = "Update";
-        if (user) {
-            if (isClientUser) {
-                user.role_id = user["role_id"];
-            }
-            user.gender = user["gender"];
-            user.contact_preference = user["contact_preference"]?.value;
-            user.team_id = team_id;
-            user.notes = { title: "", note: "" };
-            user.ec_first_name = user["emergency_contact"]["ec_first_name"];
-            user.ec_last_name;
-            user["emergency_contact"]["ec_last_name"];
-            user.ec_phone = user["emergency_contact"]["ec_phone"];
-        } else {
-            user = {
-                first_name: "",
-                last_name: "",
-                gender: "",
-                email: "",
-                alternate_email: "",
-                role_id: 0,
-                contact_preference: null,
-                phone: "",
-                address1: "",
-                address2: "",
-                city: "",
-                team_id,
-                notes: { title: "", note: "" },
-                start_date: "",
-                end_date: "",
-                termination_date: "",
-                state: "",
-                zip: "",
-                job_title: "",
-                positions: [],
-                departments: [],
-                ec_first_name: "",
-                ec_last_name: "",
-                ec_phone: "",
-            };
-            //only add client specific when applicable to make user validation rules work better
-            if (isClientUser) {
-                user.home_location_id = null;
-                user.notes = { title: "", note: "" };
-                user.start_date = null;
-                user.end_date = null;
-                user.termination_date = null;
-                user.role_id = null;
-                // user.departments = {
-                //
-                // }
-            }
-            operation = "Create";
-        }
-        const form = useGymRevForm(user);
+const wantsToDeleteFile = ref(null);
+const page = usePage();
+let user = _.cloneDeep(props.user);
 
-        let selectedDepartment = ref(null);
-        let selectedPosition = ref(null);
-        const _addDepartmentPosition = (department, position) => {
-            form.departments = [
-                ...form.departments,
-                {
-                    department,
-                    position,
-                },
-            ];
-        };
+const team_id = page.props.value.user.current_team_id;
+const isClientUser = page.props.value.user.is_client_user;
 
-        const selectableDepartments = computed(() =>
-            props.availableDepartments.data.filter(
-                ({ id, positions }) =>
-                    positions?.filter((p) => !selectedPosition.value !== p.id)
-                        .length
-            )
-        );
-        const renderableDepartments = ref([]);
-
-        watch(
-            [selectableDepartments],
-            () => {
-                if (
-                    selectableDepartments.value?.length &&
-                    !renderableDepartments.value?.length
-                ) {
-                    const department_positions = [];
-                    selectableDepartments.value.forEach(({ id, positions }) => {
-                        const department = props.user?.departments?.find(
-                            (d) => (d.id = id)
-                        );
-                        const owned_positions =
-                            props.user?.positions?.filter((user_pos) =>
-                                positions?.find((dept_pos) => {
-                                    return user_pos.id === dept_pos.id;
-                                })
-                            ) || [];
-                        owned_positions.forEach((owned_position) => {
-                            department_positions.push({
-                                department: department.id,
-                                position: owned_position.id,
-                            });
-                        });
-                    });
-                    renderableDepartments.value = department_positions;
-                }
-            },
-            { immediate: true }
-        );
-        watch(
-            renderableDepartments,
-            () => {
-                if (renderableDepartments.value?.length) {
-                    form.departments = [...renderableDepartments.value];
-                }
-            },
-            { immediate: true }
-        );
-
-        let upperCaseF = (text) => {
-            form.state = text.toUpperCase();
-        };
-
-        const transformFormSubmission = (data) => {
-            if (!data.notes?.title) {
-                delete data.notes;
-            }
-            if (data?.start_date) {
-                data.start_date = transformDate(data.start_date);
-                data.end_date = transformDate(data.end_date);
-                data.termination_date = transformDate(data.termination_date);
-            }
-            return data;
-        };
-
-        const modal = useModal();
-        const { mutate: createUser } = useMutation(mutations.user.create);
-        const { mutate: updateUser } = useMutation(mutations.user.update);
-
-        let handleSubmit = async () => {
-            await updateUser({
-                input: {
-                    id: user.id,
-                    first_name: form.first_name,
-                    last_name: form.last_name,
-                    email: form.email,
-                    alternate_email: form.alternate_email,
-                    address1: form.address1,
-                    address2: form.address2,
-                    phone: form.phone,
-                    city: form.city,
-                    state: form.state,
-                    zip: form.zip + "",
-                    contact_preference: form.contact_preference,
-                    start_date: form.start_date,
-                    end_date: form.end_date,
-                    termination_date: form.termination_date,
-                    notes: form.notes,
-                    client_id: null,
-                    team_id: form.team_id,
-                    role_id: form.role_id,
-                    home_location_id: null,
-                    manager: null,
-                },
-            });
-            handleClickCancel();
-            // console.log(
-            //     "form",
-            //     form
-            //     .dirty()
-            //     .transform(transformFormSubmission)
-            // )
-
-            // form
-            //     .dirty()
-            //     .transform(transformFormSubmission)
-            //     .put(route("users.update", user.id), {
-            //         onSuccess: () => (form.notes = { title: "", note: "" }),
-            //     });
-        };
-        if (operation === "Create") {
-            handleSubmit = async () => {
-                // form.transform(transformFormSubmission)
-                await createUser({
-                    input: {
-                        first_name: form.first_name,
-                        last_name: form.last_name,
-                        email: form.email,
-                        alternate_email: form.alternate_email,
-                        address1: form.address1,
-                        address2: form.address2,
-                        phone: form.phone,
-                        city: form.city,
-                        state: form.state,
-                        zip: form.zip + "",
-                        contact_preference: form.contact_preference,
-                        start_date: form.start_date,
-                        end_date: form.end_date,
-                        termination_date: form.termination_date,
-                        notes: form.notes,
-                        client_id: null,
-                        team_id: form.team_id,
-                        role_id: form.role_id,
-                        home_location_id: null,
-                        manager: null,
-                        departments: [],
-                        positions: [],
-                    },
-                });
-                handleClickCancel();
-            };
-        }
-
-        const handleConfirmDeleteFile = () => {
-            Inertia.delete(route("files.trash", wantsToDeleteFile.value), {
-                preserveScroll: true,
-            });
-            wantsToDeleteFile.value = null;
-        };
-
-        const fileManagerModal = ref();
-        const fileManager = ref();
-
-        const closeFileManagerModal = () => {
-            const reset =
-                fileManager.value?.reset || fileManager?.reset || false;
-            return fileManager.value?.reset;
-        };
-
-        let optionsStates = [];
-        for (let x in states) {
-            optionsStates.push(states[x].abbreviation);
-        }
-
-        const handleClickCancel = () => {
-            emit("close");
-        };
-
-        const addDepartmentPosition = () => {
-            _addDepartmentPosition(
-                selectedDepartment.value,
-                selectedPosition.value
-            );
-            selectedDepartment.value = null;
-            selectedPosition.value = null;
-        };
-        watch(selectedDepartment, () => {
-            selectedPosition.value = null;
-        });
-        const removeDepartment = (ndx) => {
-            form.departments.splice(ndx, 1);
-        };
-        const getDepartment = (id) => {
-            return props.availableDepartments.data.find(
-                (item) => item.id === id
-            );
-        };
-        const getPosition = (id) => {
-            return props.availablePositions.data.find((item) => item.id === id);
-        };
-
-        const getPositions = (id_arr) => {
-            const positions = [];
-            id_arr.map((id) => {
-                const position = getPosition(id);
-                if (position) {
-                    positions.push(position);
-                }
-            });
-            return positions;
-        };
-
-        const all_positions_for_selected_department = computed(() => {
-            const selected_department = getDepartment(selectedDepartment.value);
-            return selected_department?.positions?.length
-                ? selected_department?.positions
-                : [];
-        });
-        // const selectablePositions = computed(()=>{
-        //     const filtered =  all_positions_for_selected_department.value.filter( department_position =>
-        //         //selected Positions does not yet have this department_position
-        //         !selectedPositions.value?.includes(department_position.id)
-        //     );
-        //     return filtered?.length ? filtered : [];
-        // })
-
-        const selectablePositions = computed(() => {
-            const filtered = all_positions_for_selected_department.value.filter(
-                (department_position) =>
-                    //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
-                    !form.departments?.find(
-                        ({ department, position }) =>
-                            department === selectedDepartment.value &&
-                            position === department_position.id
-                    )
-            );
-            return filtered?.length ? filtered : [];
-        });
-
-        const selectablePositionOptions = computed(() => {
-            if (selectablePositions.value?.length) {
-                return selectablePositions.value?.map((position) => ({
-                    label: position.name,
-                    value: position.id,
-                }));
-            } else {
-                return [];
-            }
-        });
+let operation = "Update";
+if (user) {
+    if (isClientUser) {
+        user.role_id = user["role_id"];
+    }
+    user.gender = user["gender"];
+    user.contact_preference = user["contact_preference"]?.value;
+    user.team_id = team_id;
+    user.notes = { title: "", note: "" };
+    user.ec_first_name = user["emergency_contact"]["ec_first_name"];
+    user.ec_last_name;
+    user["emergency_contact"]["ec_last_name"];
+    user.ec_phone = user["emergency_contact"]["ec_phone"];
+} else {
+    user = {
+        first_name: "",
+        last_name: "",
+        gender: "",
+        email: "",
+        alternate_email: "",
+        role_id: 0,
+        contact_preference: null,
+        phone: "",
+        address1: "",
+        address2: "",
+        city: "",
+        team_id,
+        notes: { title: "", note: "" },
+        start_date: "",
+        end_date: "",
+        termination_date: "",
+        state: "",
+        zip: "",
+        job_title: "",
+        positions: [],
+        departments: [],
+        ec_first_name: "",
+        ec_last_name: "",
+        ec_phone: "",
+    };
+    //only add client specific when applicable to make user validation rules work better
+    if (isClientUser) {
+        user.home_location_id = null;
+        user.notes = { title: "", note: "" };
+        user.start_date = null;
+        user.end_date = null;
+        user.termination_date = null;
+        user.role_id = null;
+        // user.departments = {
         //
-        // const selectablePositions = computed(() => {
-        //     const selected_department = getDepartment(selectedDepartment.value);
-        //     const all_departments_positions = selected_department?.positions || [];
-        //     const filtered =  all_departments_positions.filter( department_position =>
-        //         //selected Positions does not yet have this department_position
-        //          !selectedPositions.value?.includes(department_position.id)
-        //             //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
-        //             && form.departments?.filter(({department, position})=> department === selected_department.id &&  position === department_position.id));
-        //     return  filtered?.length ? filtered : [];
-        // });
+        // }
+    }
+    operation = "Create";
+}
+const form = useGymRevForm(user);
 
-        return {
-            isClientUser,
-            form,
-            buttonText: operation,
-            operation,
-            handleSubmit,
-            upperCaseF,
-            optionStates: optionsStates,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-            wantsToDeleteFile,
-            handleConfirmDeleteFile,
-            fileManagerModal,
-            fileManager,
-            closeFileManagerModal,
-            notesExpanded,
-            handleClickCancel,
-            selectedDepartment,
-            selectedPosition,
-            addDepartmentPosition,
-            getDepartment,
-            getPosition,
-            getPositions,
-            removeDepartment,
-            selectableDepartments,
-            selectablePositions,
-            renderableDepartments,
-            DepartmentSelect,
-            // positions_for_selected_department_without_already_assigned_positions,
-            // positions_for_selected_department_excluding_currently_selected,
-            all_positions_for_selected_department,
-            selectablePositionOptions,
-            // closeFileManagerModal: ()=> fileManagerModal.value.close(),
-            // resetFileManager: () => fileManager.value?.reset()
-        };
-    },
+let selectedDepartment = ref(null);
+let selectedPosition = ref(null);
+const _addDepartmentPosition = (department, position) => {
+    form.departments = [
+        ...form.departments,
+        {
+            department,
+            position,
+        },
+    ];
 };
+
+const selectableDepartments = computed(() =>
+    props.availableDepartments.data.filter(
+        ({ id, positions }) =>
+            positions?.filter((p) => !selectedPosition.value !== p.id).length
+    )
+);
+const renderableDepartments = ref([]);
+
+watch(
+    [selectableDepartments],
+    () => {
+        if (
+            selectableDepartments.value?.length &&
+            !renderableDepartments.value?.length
+        ) {
+            const department_positions = [];
+            selectableDepartments.value.forEach(({ id, positions }) => {
+                const department = props.user?.departments?.find(
+                    (d) => (d.id = id)
+                );
+                const owned_positions =
+                    props.user?.positions?.filter((user_pos) =>
+                        positions?.find((dept_pos) => {
+                            return user_pos.id === dept_pos.id;
+                        })
+                    ) || [];
+                owned_positions.forEach((owned_position) => {
+                    department_positions.push({
+                        department: department.id,
+                        position: owned_position.id,
+                    });
+                });
+            });
+            renderableDepartments.value = department_positions;
+        }
+    },
+    { immediate: true }
+);
+watch(
+    renderableDepartments,
+    () => {
+        if (renderableDepartments.value?.length) {
+            form.departments = [...renderableDepartments.value];
+        }
+    },
+    { immediate: true }
+);
+
+let upperCaseF = (text) => {
+    form.state = text.toUpperCase();
+};
+
+const transformFormSubmission = (data) => {
+    if (!data.notes?.title) {
+        delete data.notes;
+    }
+    if (data?.start_date) {
+        data.start_date = transformDate(data.start_date);
+        data.end_date = transformDate(data.end_date);
+        data.termination_date = transformDate(data.termination_date);
+    }
+    return data;
+};
+
+const { mutate: createUser } = useMutation(mutations.user.create);
+const { mutate: updateUser } = useMutation(mutations.user.update);
+
+let handleSubmit = async () => {
+    await updateUser({
+        input: {
+            id: user.id,
+            first_name: form.first_name,
+            last_name: form.last_name,
+            email: form.email,
+            alternate_email: form.alternate_email,
+            address1: form.address1,
+            address2: form.address2,
+            phone: form.phone,
+            city: form.city,
+            state: form.state,
+            zip: form.zip + "",
+            contact_preference: form.contact_preference,
+            start_date: form.start_date,
+            end_date: form.end_date,
+            termination_date: form.termination_date,
+            notes: form.notes,
+            client_id: null,
+            team_id: form.team_id,
+            role_id: form.role_id,
+            home_location_id: null,
+            manager: null,
+        },
+    });
+    handleClickCancel();
+};
+
+if (operation === "Create") {
+    handleSubmit = async () => {
+        // form.transform(transformFormSubmission)
+        await createUser({
+            input: {
+                first_name: form.first_name,
+                last_name: form.last_name,
+                email: form.email,
+                alternate_email: form.alternate_email,
+                address1: form.address1,
+                address2: form.address2,
+                phone: form.phone,
+                city: form.city,
+                state: form.state,
+                zip: form.zip + "",
+                contact_preference: form.contact_preference,
+                start_date: form.start_date,
+                end_date: form.end_date,
+                termination_date: form.termination_date,
+                notes: form.notes,
+                client_id: null,
+                team_id: form.team_id,
+                role_id: form.role_id,
+                home_location_id: null,
+                manager: null,
+                departments: [],
+                positions: [],
+            },
+        });
+        handleClickCancel();
+    };
+}
+
+const handleConfirmDeleteFile = () => {
+    Inertia.delete(route("files.trash", wantsToDeleteFile.value), {
+        preserveScroll: true,
+    });
+    wantsToDeleteFile.value = null;
+};
+
+const fileManagerModal = ref();
+const fileManager = ref();
+
+const closeFileManagerModal = () => {
+    const reset = fileManager.value?.reset || fileManager?.reset || false;
+    return fileManager.value?.reset;
+};
+
+let optionsStates = [];
+for (let x in states) {
+    optionsStates.push(states[x].abbreviation);
+}
+
+const handleClickCancel = () => {
+    emit("close");
+};
+
+const addDepartmentPosition = () => {
+    _addDepartmentPosition(selectedDepartment.value, selectedPosition.value);
+    selectedDepartment.value = null;
+    selectedPosition.value = null;
+};
+watch(selectedDepartment, () => {
+    selectedPosition.value = null;
+});
+const removeDepartment = (ndx) => {
+    form.departments.splice(ndx, 1);
+};
+const getDepartment = (id) => {
+    return props.availableDepartments.data.find((item) => item.id === id);
+};
+const getPosition = (id) => {
+    return props.availablePositions.data.find((item) => item.id === id);
+};
+
+const getPositions = (id_arr) => {
+    const positions = [];
+    id_arr.map((id) => {
+        const position = getPosition(id);
+        if (position) {
+            positions.push(position);
+        }
+    });
+    return positions;
+};
+
+const all_positions_for_selected_department = computed(() => {
+    const selected_department = getDepartment(selectedDepartment.value);
+    return selected_department?.positions?.length
+        ? selected_department?.positions
+        : [];
+});
+
+const selectablePositions = computed(() => {
+    const filtered = all_positions_for_selected_department.value.filter(
+        (department_position) =>
+            //form.departments ({departmentid, positionid{) does not yet have this dept/pos combo
+            !form.departments?.find(
+                ({ department, position }) =>
+                    department === selectedDepartment.value &&
+                    position === department_position.id
+            )
+    );
+    return filtered?.length ? filtered : [];
+});
+
+const selectablePositionOptions = computed(() => {
+    if (selectablePositions.value?.length) {
+        return selectablePositions.value?.map((position) => ({
+            label: position.name,
+            value: position.id,
+        }));
+    } else {
+        return [];
+    }
+});
 </script>
 
 <style scoped>

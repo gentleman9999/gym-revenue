@@ -65,7 +65,7 @@ import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { useGymRevForm } from "@/utils";
-import { useModal } from "@/Components/InertiaModal";
+
 import { Inertia } from "@inertiajs/inertia";
 import Multiselect from "@vueform/multiselect";
 import { getDefaultMultiselectTWClasses } from "@/utils";
@@ -102,7 +102,6 @@ if (!position) {
 
 const form = useGymRevForm(position);
 
-const modal = useModal();
 const { mutate: createPosition } = useMutation(mutations.position.create);
 const { mutate: updatePosition } = useMutation(mutations.position.update);
 let handleSubmit = async () => {

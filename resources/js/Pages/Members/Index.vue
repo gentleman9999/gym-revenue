@@ -72,7 +72,7 @@
     </confirm>
 </template>
 
-<script>
+<script setup>
 import { computed, defineComponent, ref } from "vue";
 import { comingSoon } from "@/utils/comingSoon.js";
 import { Inertia } from "@inertiajs/inertia";
@@ -90,157 +90,136 @@ import MemberForm from "@/Pages/Members/Partials/MemberForm.vue";
 
 import CalendarGrid from "@/Pages/components/CalendarGrid.vue";
 import CalendarSummaryCard from "@/Pages//components/CalendarSummaryCard.vue";
-import usePage from "@/Components/InertiaModal/usePage";
+
 import gql from "graphql-tag";
 import queries from "@/gql/queries";
-export default defineComponent({
-    components: {
-        MemberFilters,
-        PageToolbarNav,
-        GymRevenueCrud,
-        LayoutHeader,
-        Confirm,
-        Button,
-        JetBarContainer,
-        MemberPreview,
-        CalendarGrid,
-        CalendarSummaryCard,
+
+const props = defineProps({
+    members: {
+        type: [Array, Object],
     },
-    props: [
-        "members",
-        "routeName",
-        "title",
-        "filters",
-        "grlocations",
-        "user",
-        "nameSearch",
-        "newMemberCount",
-    ],
-    setup(props) {
-        const fields = [
-            { name: "first_name", label: "First Name" },
-            { name: "last_name", label: "Last Name" },
-            { name: "home_location.name", label: "Location" },
-            { name: "created_at", label: "Joined" },
-            { name: "updated_at", label: "Updated" },
-        ];
-
-        const page = usePage();
-        const actions = {
-            trash: {
-                handler: ({ data }) => handleClickTrash(data.id),
-            },
-            contact: {
-                label: "Contact Member",
-                shouldRender: (data) => {
-                    return (
-                        (data?.owner_user_id === page.props.value.user.id &&
-                            !data?.unsubscribed_comms) ||
-                        page.props.value.user.roles.find((role) =>
-                            ["Account Owner"].includes(role.name)
-                        )
-                    );
-                },
-                handler: ({ data }) => {
-                    Inertia.visit(route("data.members.show", data.id));
-                },
-            },
-        };
-        const trashReason = ref(null);
-
-        const confirmTrash = ref(null);
-        const handleClickTrash = (id) => {
-            confirmTrash.value = id;
-        };
-        handleClickTrash();
-        const handleConfirmTrash = () => {
-            Inertia.delete(route("data.members.trash", confirmTrash.value), {
-                data: { reason: trashReason.value },
-            });
-            confirmTrash.value = null;
-        };
-        const baseRoute = "data.members";
-        const navLinks = [
-            {
-                label: "Dashboard",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "CalendarEvent",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "Members",
-                href: "#",
-                onClick: comingSoon,
-                active: true,
-            },
-            {
-                label: "Tasks",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "Contacts",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-            {
-                label: "Consultants",
-                href: "#",
-                onClick: comingSoon,
-                active: false,
-            },
-        ];
-        const param = ref({
-            page: 1,
-        });
-
-        const getMembers = (data) => {
-            return _.cloneDeep(data.members);
-        };
-        const handleCrudUpdate = (key, value) => {
-            if (typeof value === "object") {
-                param.value = {
-                    ...param.value,
-                    [key]: {
-                        ...param.value[key],
-                        ...value,
-                    },
-                };
-            } else {
-                param.value = {
-                    ...param.value,
-                    [key]: value,
-                };
-            }
-        };
-        return {
-            handleClickTrash,
-            confirmTrash,
-            handleConfirmTrash,
-            fields,
-            actions,
-            Inertia,
-            comingSoon,
-            navLinks,
-            baseRoute,
-            MemberPreview,
-            MemberForm,
-            trashReason,
-            param,
-            queries,
-            getMembers,
-            handleCrudUpdate,
-        };
+    routeName: {
+        type: String,
+    },
+    title: {
+        type: String,
+    },
+    filters: {
+        type: [Array, Object],
+    },
+    grlocations: {
+        type: [Array, String, Object],
+    },
+    user: {
+        type: Object,
+    },
+    nameSearch: {
+        type: [String, Object, Array],
+    },
+    newMemberCount: {
+        type: [String, Number],
     },
 });
+
+const fields = [
+    { name: "first_name", label: "First Name" },
+    { name: "last_name", label: "Last Name" },
+    { name: "home_location.name", label: "Location" },
+    { name: "created_at", label: "Joined" },
+    { name: "updated_at", label: "Updated" },
+];
+
+const actions = {
+    trash: {
+        handler: ({ data }) => handleClickTrash(data.id),
+    },
+    contact: {
+        label: "Contact Member",
+        shouldRender: (data) => {
+            return true;
+        },
+        handler: ({ data }) => {
+            Inertia.visit(route("data.members.show", data.id));
+        },
+    },
+};
+const trashReason = ref(null);
+
+const confirmTrash = ref(null);
+const handleClickTrash = (id) => {
+    confirmTrash.value = id;
+};
+handleClickTrash();
+const handleConfirmTrash = () => {
+    Inertia.delete(route("data.members.trash", confirmTrash.value), {
+        data: { reason: trashReason.value },
+    });
+    confirmTrash.value = null;
+};
+const baseRoute = "data.members";
+
+const navLinks = [
+    {
+        label: "Dashboard",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "CalendarEvent",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "Members",
+        href: "#",
+        onClick: comingSoon,
+        active: true,
+    },
+    {
+        label: "Tasks",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "Contacts",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+    {
+        label: "Consultants",
+        href: "#",
+        onClick: comingSoon,
+        active: false,
+    },
+];
+
+const param = ref({
+    page: 1,
+});
+
+const getMembers = (data) => {
+    return _.cloneDeep(data.members);
+};
+const handleCrudUpdate = (key, value) => {
+    if (typeof value === "object") {
+        param.value = {
+            ...param.value,
+            [key]: {
+                ...param.value[key],
+                ...value,
+            },
+        };
+    } else {
+        param.value = {
+            ...param.value,
+            [key]: value,
+        };
+    }
+};
 </script>
 
 <style scoped></style>
