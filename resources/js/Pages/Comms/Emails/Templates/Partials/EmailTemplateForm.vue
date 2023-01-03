@@ -65,7 +65,6 @@ import Spinner from "@/Components/Spinner.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import EmailBuilder from "@/Pages/Comms/Emails/Templates/Partials/EmailBuilder.vue";
 import DaisyModal from "@/Components/DaisyModal.vue";
-import usePage from "@/Components/InertiaModal/usePage";
 import queries from "@/gql/queries";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
@@ -121,15 +120,11 @@ const validInputFields = {
     unknown: [],
 };
 
-/** reference to gql query that will be ran on save */
-const operation = ref(null);
-
-const page = usePage();
-const nameModal = ref(null);
+const operation = ref(null); // reference to gql query that will be ran on save
+const nameModal = ref(null); // DOM reference for template name and subject
 const isProcessing = ref(false);
 const form = useGymRevForm({
     ...props.emailTemplate,
-    client_id: page.props.value.user?.client_id,
 });
 
 /* since component is resource heavy and requires an api key, only load into memory if necessary */
@@ -151,13 +146,6 @@ const getInputData = () => {
 
     return inputFields;
 };
-
-onMounted(() => {
-    operation.value =
-        typeof props.emailTemplate.name === "string"
-            ? updateEmailTemplate
-            : createEmailTemplate;
-});
 
 const transformJson = (data) => JSON.parse(data);
 
@@ -193,4 +181,11 @@ const handleOnSave = ({ html, json }) => {
 const handleOnClose = (template) => {
     emit("cancel", template);
 };
+
+onMounted(() => {
+    operation.value =
+        typeof props.emailTemplate.name === "string"
+            ? updateEmailTemplate
+            : createEmailTemplate;
+});
 </script>

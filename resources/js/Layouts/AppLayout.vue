@@ -18,54 +18,35 @@
                 <jet-banner />
 
                 <div class="page-body">
-                    <!-- Sidebar -->
                     <side-nav
                         @toggle="showingSidebar = !showingSidebar"
                         ref="sideNav"
                     />
-                    <!-- End Sidebar -->
 
                     <div class="w-full relative">
                         <div id="premaincontent"></div>
-                        <!-- Content Container -->
                         <main
                             class="flex-1 relative z-0 pt-6 focus:outline-none"
                             tabindex="0"
                         >
                             <div id="layout-header"></div>
-                            <!-- Replace with your content -->
-                            <div>
-                                <!-- Content -->
-                                <transition name="page">
-                                    <div
-                                        v-if="animate"
-                                        class="min-h-full lg:min-h-96 px-4 sm:px-0"
-                                    >
-                                        <slot></slot>
-                                    </div>
-                                </transition>
-                                <!-- End Content -->
-                            </div>
-                            <!-- /End replace -->
+
+                            <!-- Content -->
+                            <transition name="page">
+                                <div
+                                    v-if="animate"
+                                    class="min-h-full lg:min-h-96 px-4 sm:px-0"
+                                >
+                                    <slot></slot>
+                                </div>
+                            </transition>
                         </main>
-                        <!-- Content Container -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <twilio-ui></twilio-ui>
-    <InertiaModal>
-        <template #default="{ close, props }">
-            <DaisyModal
-                v-bind="props /* props contains the modalProps option */"
-                :open="true"
-                @close="close"
-            >
-                <ModalSlot />
-            </DaisyModal>
-        </template>
-    </InertiaModal>
 </template>
 
 <style>
@@ -89,15 +70,15 @@
 
 <script setup>
 import { defineComponent, ref, onMounted } from "vue";
+import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
+
+import { Link } from "@inertiajs/inertia-vue3";
+import { Head } from "@inertiajs/inertia-vue3";
+
 import JetBanner from "@/Jetstream/Banner.vue";
 import TopNav from "@/Components/Navigation/TopNav.vue";
 import SideNav from "@/Components/Navigation/SideNav.vue";
-import { Link } from "@inertiajs/inertia-vue3";
-import { useFlashAlertEmitter, useNotificationAlertEmitter } from "@/utils";
 import DaisyModal from "@/Components/DaisyModal.vue";
-import { InertiaModal, ModalSlot } from "@/Components/InertiaModal";
-import { Head } from "@inertiajs/inertia-vue3";
-
 import TwilioUi from "@/Components/TwilioUi/index.vue";
 
 const props = defineProps({
@@ -105,11 +86,11 @@ const props = defineProps({
         type: String,
     },
 });
+
 useFlashAlertEmitter();
 useNotificationAlertEmitter();
 
 const animate = ref(false);
-onMounted(() => (animate.value = true));
 const showingSidebar = ref(true);
 const showingNavigationDropdown = ref(false);
 const showingNotificationDropdown = ref(false);
@@ -133,4 +114,6 @@ const enter = (el, done) => {
 const afterEnter = (el) => {
     console.log("after entered");
 };
+
+onMounted(() => (animate.value = true));
 </script>
