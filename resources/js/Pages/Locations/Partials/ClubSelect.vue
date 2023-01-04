@@ -10,18 +10,23 @@
             </template>
 
             <template v-if="data">
-                <jet-label for="location" value="Locations" />
-                <Multiselect
+                <jet-label for="club_id" value="Club" />
+                <select
                     v-bind="$attrs"
-                    id="location"
-                    class="mt-1 multiselect"
-                    mode="tags"
+                    class="w-full"
+                    id="club_id"
+                    :required="required"
                     v-model="localValue"
-                    :close-on-select="false"
-                    :create-option="true"
-                    :options="formatLocationSelect(data.locations.data)"
-                    :classes="getDefaultMultiselectTWClasses()"
-                />
+                >
+                    <option value="">Select a Club</option>
+                    <option
+                        v-for="location in data.locations.data"
+                        :key="location.id"
+                        :value="location.id"
+                    >
+                        {{ location.name }}
+                    </option>
+                </select>
             </template>
         </template>
     </ApolloQuery>
@@ -30,27 +35,19 @@
 <script setup>
 import { ref, defineEmits, watch } from "vue";
 import queries from "@/gql/queries";
-import { getDefaultMultiselectTWClasses } from "@/utils";
 import JetLabel from "@/Jetstream/Label.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
-import Multiselect from "@vueform/multiselect";
 
 const props = defineProps({
     modelValue: {
         type: String,
         default: "",
     },
+    required: {
+        type: Boolean,
+        default: false,
+    },
 });
-
-const formatLocationSelect = (data) => {
-    if (!data instanceof Array) return [];
-    return data.map((location) => {
-        return {
-            value: location.id,
-            label: location.name,
-        };
-    });
-};
 
 const localValue = ref(props.modelValue);
 const emit = defineEmits(["update:modelValue"]);
