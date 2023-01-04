@@ -95,43 +95,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'FT18',
                     'location_type' => LocationTypeEnum::STORE,
                 ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 7',
-                    'state' => 'TX',
-                    'city' => 'Abbott',
-                    'zip' => '76621',
-                    'location_no' => 'FT19',
-                    'location_type' => LocationTypeEnum::STORE,
-                ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 8',
-                    'state' => 'TX',
-                    'city' => 'Abernathy',
-                    'zip' => '79311',
-                    'location_no' => 'TR40',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'FT20'
-                ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 9',
-                    'state' => 'TX',
-                    'city' => 'Abbott',
-                    'zip' => '76621',
-                    'location_no' => 'FT21',
-                    'location_type' => LocationTypeEnum::STORE,
-                ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 10',
-                    'state' => 'TN',
-                    'city' => 'Adams',
-                    'zip' => '37010',
-                    'location_no' => 'FT22',
-                    'location_type' => LocationTypeEnum::STORE,
-                ],
                 // The Z
                 [
                     'client' => 'The Z',
@@ -227,31 +190,11 @@ class LocationSeeder extends Seeder
                 ],
                 [
                     'client' => 'Stencils',
-                    'name' => 'Stencils 4',
-                    'state' => 'OR',
-                    'city' => 'Portland',
-                    'zip' => '97035',
-                    'location_no' => 'ST05',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'ST10'
-                ],
-                [
-                    'client' => 'Stencils',
                     'name' => 'Stencils @ Microsoft',
                     'state' => 'Wa',
                     'city' => 'Redmond',
                     'zip' => '98052',
                     'location_no' => 'STMS',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'ST11'
-                ],
-                [
-                    'client' => 'Stencils',
-                    'name' => 'Stencils 5',
-                    'state' => 'OR',
-                    'city' => 'Portland',
-                    'zip' => '97035',
-                    'location_no' => 'ST05',
                     'location_type' => LocationTypeEnum::STORE,
                     //'gymrevenue_id' => 'ST11'
                 ],
