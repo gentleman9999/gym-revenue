@@ -7,7 +7,6 @@ namespace Database\Factories;
 use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Carbon\Carbon;
 
 class LocationFactory extends Factory
 {

@@ -46,9 +46,4 @@ class ContractReactor extends Reactor
         //TODO: we need to save a copy of the generated PDF in s3, and store a ref in the contract table
         //TODO: error handling
     }
-
-//    public function onContractUpdated(ContractUpdated $event): void
-//    {
-//        Contract::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->fill($event->payload)->save();
-//    }
 }
