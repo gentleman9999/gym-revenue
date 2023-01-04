@@ -28,6 +28,7 @@ use Database\Seeders\Data\EndUserSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
+use Database\Seeders\Data\NicknameSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
@@ -191,6 +192,11 @@ class DatabaseSeeder extends Seeder
             VarDumper::dump('Running Drip Campaign Seeder');
             $this->call(DripCampaignSeeder::class);
         }
+
+        // Nickname Seeder
+        VarDumper::dump('Nickname Seeder');
+        $this->call(NicknameSeeder::class);
+
         Cache::put('is_seeding', false);
     }
 }
