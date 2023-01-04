@@ -55,16 +55,26 @@ const getDayOfWeek = (date) => {
 };
 
 export const NOTIFICATION_TYPES = Object.freeze({
-    /** @see App\Domain\Notifications::TYPE_CALENDAR_EVENT_REMINDER */
+    /** @see App\Domain\Notifications\Notification::TYPE_CALENDAR_EVENT_REMINDER */
     TYPE_CALENDAR_EVENT_REMINDER: "CALENDAR_EVENT_REMINDER",
-    /** @see App\Domain\Notifications::TYPE_NEW_CONVERSATION */
+    /** @see App\Domain\Notifications\Notification::TYPE_NEW_CONVERSATION */
     TYPE_NEW_CONVERSATION: "NEW_CONVERSATION",
-    /** @see App\Domain\Notifications::TYPE_DEFAULT */
+    /** @see App\Domain\Notifications\Notification::TYPE_DEFAULT */
     TYPE_DEFAULT: "DEFAULT_NOTIFICATION",
-    /** @see App\Domain\Notifications::TYPE_NEW_MESSAGE */
+    /** @see App\Domain\Notifications\Notification::TYPE_TASK_OVERDUE */
     TYPE_TASK_OVERDUE: "TASK_OVERDUE",
-    /** @see App\Domain\Notifications::TYPE_TASK_OVERDUE */
-    TYPE_NEW_MESSAGE: "NEW_MESSAGE",
+    /** @see App\Domain\Notifications\Notification::TYPE_NEW_CHAT_MESSAGE */
+    TYPE_NEW_CHAT_MESSAGE: "NEW_CHAT_MESSAGE",
+    /** @see App\Domain\Notifications\Notification::TYPE_UPDATED_CHAT_MESSAGE */
+    TYPE_UPDATED_CHAT_MESSAGE: "UPDATED_CHAT_MESSAGE",
+    /** @see App\Domain\Notifications\Notification::TYPE_DELETED_CHAT_MESSAGE */
+    TYPE_DELETED_CHAT_MESSAGE: "DELETED_CHAT_MESSAGE",
+    /** @see App\Domain\Notifications\Notification::TYPE_NEW_CHAT_PARTICIPANT */
+    TYPE_NEW_CHAT_PARTICIPANT: "NEW_CHAT_PARTICIPANT",
+    /** @see App\Domain\Notifications\Notification::TYPE_DELETED_CHAT_PARTICIPANT */
+    TYPE_DELETED_CHAT_PARTICIPANT: "DELETED_CHAT_PARTICIPANT",
+    /** @see App\Domain\Notifications\Notification::TYPE_DELETED_CHAT */
+    TYPE_DELETED_CHAT: "DELETED_CHAT",
 });
 
 /**
@@ -173,7 +183,12 @@ export const parseNotificationResponse = (notification) => {
         case NOTIFICATION_TYPES.TYPE_CALENDAR_EVENT_REMINDER:
             return buildCalenderNotification(notification);
         case NOTIFICATION_TYPES.TYPE_NEW_CONVERSATION:
-        case NOTIFICATION_TYPES.TYPE_NEW_MESSAGE:
+        case NOTIFICATION_TYPES.TYPE_NEW_CHAT_MESSAGE:
+        case NOTIFICATION_TYPES.TYPE_UPDATED_CHAT_MESSAGE:
+        case NOTIFICATION_TYPES.TYPE_DELETED_CHAT_MESSAGE:
+        case NOTIFICATION_TYPES.TYPE_DELETED_CHAT_PARTICIPANT:
+        case NOTIFICATION_TYPES.TYPE_NEW_CHAT_PARTICIPANT:
+        case NOTIFICATION_TYPES.TYPE_DELETED_CHAT:
             return buildConversationNotification(notification);
         case NOTIFICATION_TYPES.TYPE_TASK_OVERDUE:
             return resolveOverdueTask(notification);

@@ -2,7 +2,7 @@
 
 namespace App\Domain\DynamicReports\Export;
 
-use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\Users\Models\Lead;
 use App\Exports\ReportsExport;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

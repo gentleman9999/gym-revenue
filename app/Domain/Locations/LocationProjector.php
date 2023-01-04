@@ -2,10 +2,10 @@
 
 namespace App\Domain\Locations;
 
+use App\Domain\Locations\Events\LocationClosed;
 use App\Domain\Locations\Events\LocationCreated;
 use App\Domain\Locations\Events\LocationDeleted;
-use App\Domain\Locations\Events\LocationRestored;
-use App\Domain\Locations\Events\LocationTrashed;
+use App\Domain\Locations\Events\LocationReopened;
 use App\Domain\Locations\Events\LocationUpdated;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Locations\Projections\LocationDetails;
@@ -61,12 +61,12 @@ class LocationProjector extends Projector
         }
     }
 
-    public function onLocationTrashed(LocationTrashed $event): void
+    public function onLocationClosed(LocationClosed $event): void
     {
         Location::findOrFail($event->aggregateRootUuid())->writeable()->delete();
     }
 
-    public function onLocationRestored(LocationRestored $event): void
+    public function onLocationReopened(LocationReopened $event): void
     {
         Location::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->restore();
     }

@@ -4,6 +4,7 @@ namespace Database\Seeders\Users;
 
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Users\Actions\CreateUser;
+use App\Enums\UserTypesEnum;
 
 class CapeAndBayUserSeeder extends UserSeeder
 {
@@ -134,6 +135,21 @@ class CapeAndBayUserSeeder extends UserSeeder
                 'last_name' => 'Saha',
                 'email' => 'ssaha@gymrevenue.com',
             ],
+            [
+                'first_name' => 'Chandni',
+                'last_name' => 'Soni',
+                'email' => 'chandni.soni@bacancy.com',
+            ],
+            [
+                'first_name' => 'Jayushi',
+                'last_name' => 'Jain',
+                'email' => 'jayushi.jain@bacancy.com',
+            ],
+            [
+                'first_name' => 'Sarah',
+                'last_name' => 'Khan',
+                'email' => 'skhan@gymrevenue.com',
+            ],
         ];
     }
 
@@ -149,6 +165,7 @@ class CapeAndBayUserSeeder extends UserSeeder
             'role_id' => 1,
 //            'home_location_id' => $home_location_id,
             'manager' => 'Senior Manager',
+            'user_type' => UserTypesEnum::EMPLOYEE,
         ]);
     }
 }

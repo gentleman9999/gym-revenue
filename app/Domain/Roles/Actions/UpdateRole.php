@@ -22,10 +22,9 @@ class UpdateRole
     public function rules(): array
     {
         return [
-            //'name' => ['sometimes', 'string', 'required'],
-            'name' => ['required', 'string','min:2'],
-            'ability_names' => ['sometimes', 'array', 'sometimes'],
-            'group' => ['sometimes', 'required', 'integer','min:1', 'max:6'],
+            'name' => ['sometimes', 'string','min:2'],
+            'ability_names' => ['sometimes', 'array'],
+            'group' => ['sometimes', 'integer', 'min:1', 'max:6'],
         ];
     }
 

@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use App\Domain\Clients\Projections\Client;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\Utility\AppState;
+use App\Support\CurrentInfoRetriever;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -49,12 +51,7 @@ class HandleInertiaRequests extends Middleware
         $shared = [];
         $user = $request->user();
         if ($request->user()) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team_id = $session_team['id'];
-            } else {
-                $current_team_id = $user->default_team_id;
-            }
+            $current_team_id = CurrentInfoRetriever::getCurrentTeamID();
             $abilities = $user->getAbilities()->filter(function ($ability) use ($user, $current_team_id) {
                 if (! is_null($ability->entity_id)) {
                     $r = $ability->entity_id === $current_team_id;
@@ -71,7 +68,7 @@ class HandleInertiaRequests extends Middleware
             $shared = [
                 'user.id' => $user->id,
                 'user.contact_preference' => $user->contact_preference,
-                'user.all_locations' => $user->allLocations(),
+                'user.all_locations' => $user->user_type === UserTypesEnum::EMPLOYEE ? $user->allLocations() : null,
                 'user.current_team.isClientTeam' => $user->client_id !== null,
                 'user.is_client_user' => $user->client_id !== null,
                 'user.is_gr_admin' => $user->inSecurityGroup(SecurityGroupEnum::ADMIN),
@@ -122,7 +119,10 @@ class HandleInertiaRequests extends Middleware
                 }
 
                 return array_merge($request->user()->toArray(), array_filter([
-                    'all_teams' => Jetstream::hasTeamFeatures() ? $request->user()->allTeams()->values() : null,
+                    'all_teams' => Jetstream::hasTeamFeatures() ? (
+                        $request->user()->user_type === UserTypesEnum::EMPLOYEE ?
+                        $request->user()->allTeams()->values() : null
+                    ) : null,
                 ]), [
                     'two_factor_enabled' => ! is_null($request->user()->two_factor_secret),
                 ]);

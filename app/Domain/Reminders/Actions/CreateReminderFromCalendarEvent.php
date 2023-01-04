@@ -4,7 +4,7 @@ namespace App\Domain\Reminders\Actions;
 
 use App\Domain\CalendarEvents\CalendarEvent;
 use App\Domain\Reminders\Reminder;
-use App\Domain\Users\UserAggregate;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +37,7 @@ class CreateReminderFromCalendarEvent
         $data['name'] = 'User Generated Reminder';
         $data['remind_time'] = 30;
 
-        UserAggregate::retrieve($data['user_id'])->createReminder($current_user->id, $data)->persist();
+        UserAggregate::retrieve($data['user_id'])->createReminder($data)->persist();
 
         return Reminder::findOrFail($id);
     }
@@ -56,7 +56,7 @@ class CreateReminderFromCalendarEvent
     public function asController(ActionRequest $request, Reminder $reminder): RedirectResponse
     {
         $data = $request->validated();
-        $data['entity_id'] = $reminder->id;
+        $data['entity_id'] = request()->id;
         $data['user_id'] = $request->user()->id;
         $reminder = $this->handle(
             $data,

@@ -18,7 +18,7 @@ return new class () extends Migration {
             $table->string('entity');
             $table->string('entity_id');
             $table->string('operation');
-            $table->integer('user_id')->nullable();
+            $table->uuid('user_id')->nullable();
             $table->integer('api_user_id')->nullable();
             $table->string('access_token')->nullable();
             $table->timestamp('created_at');

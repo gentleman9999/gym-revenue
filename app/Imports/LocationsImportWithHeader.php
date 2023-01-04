@@ -36,6 +36,7 @@ class LocationsImportWithHeader implements ToCollection, WithHeadingRow
                 'poc_phone' => $row['poc_phone'] ?? null,
                 'shouldCreateTeam' => true,
                 'location_type' => LocationTypeEnum::STORE,
+                'capacity' => $row['capacity'],
             ]);
         }
     }

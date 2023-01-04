@@ -2,6 +2,7 @@
 
 namespace App\Domain\Clients\Projections;
 
+use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
@@ -12,8 +13,13 @@ use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\Customer;
+use App\Domain\Users\Models\Employee;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
 use App\Models\Endusers\MembershipType;
 use App\Models\File;
@@ -27,6 +33,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use RuntimeException;
@@ -36,7 +43,6 @@ use Twilio\Exceptions\ConfigurationException;
  * @property Collection       $gatewaySettings
  * @property string           $id
  * @property Collection<User> $users
- *
  * @method static ClientFactory factory()
  */
 class Client extends GymRevProjection
@@ -109,9 +115,34 @@ class Client extends GymRevProjection
         return $this->hasMany(Team::class);
     }
 
-    public function users(): HasMany
+    public function allUsers(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function users(): HasMany
+    {
+        return $this->allUsers()->whereUserType(UserTypesEnum::EMPLOYEE);
+    }
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    public function members(): HasMany
+    {
+        return $this->hasMany(Member::class);
+    }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
     }
 
     public function socialMedia(): HasMany
@@ -141,6 +172,11 @@ class Client extends GymRevProjection
     public function gatewaySettings(): HasMany
     {
         return $this->hasMany(ClientGatewaySetting::class);
+    }
+
+    public function agreements(): HasMany
+    {
+        return $this->hasMany(Agreement::class);
     }
 
     public function getNamedGatewaySettings(): array
@@ -214,5 +250,10 @@ class Client extends GymRevProjection
     public function hasTwilioConversationEnabled(): bool
     {
         return $this->gatewayIntegration()->where(['slug' => GatewayProvider::PROVIDER_SLUG_TWILIO_CONVERSION])->exists();
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }

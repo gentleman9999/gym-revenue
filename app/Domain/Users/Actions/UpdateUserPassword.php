@@ -3,9 +3,10 @@
 namespace App\Domain\Users\Actions;
 
 use function __;
+
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;
-use App\Domain\Users\UserAggregate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -37,6 +38,7 @@ class UpdateUserPassword implements UpdatesUserPasswords
         ])->save();
 
         UserAggregate::retrieve($user->id)->updatePassword(bcrypt($data['password']))->persist();
+        ReflectUserData::run($user);
     }
 
     public function authorize(ActionRequest $request): bool

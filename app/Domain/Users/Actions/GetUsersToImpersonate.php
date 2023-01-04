@@ -5,9 +5,14 @@ namespace App\Domain\Users\Actions;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
+use App\Support\CurrentInfoRetriever;
+
 use function auth;
+
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
 use function request;
 use function response;
 
@@ -38,12 +43,7 @@ class GetUsersToImpersonate
             $user_role = $user->getRole();
 
             // Get the User's currently active team
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $team = Team::find($session_team['id']);
-            } else {
-                $team = Team::find($user->default_team_id);
-            }
+            $team = CurrentInfoRetriever::getCurrentTeam();
 
             if (array_key_exists('team', $data)) {
                 if ($user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
@@ -87,7 +87,9 @@ class GetUsersToImpersonate
                 if (! is_null($imp_user->user)) {
                     $users[] = $imp_user->user;
                 } else {
-                    $users[] = User::withoutGlobalScopes()->findOrFail($imp_user->user_id);
+                    $users[] = User::withoutGlobalScopes()
+                        ->whereUserType(UserTypesEnum::EMPLOYEE)
+                        ->findOrFail($imp_user->user_id);
                 }
             }
 

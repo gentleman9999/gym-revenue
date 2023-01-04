@@ -70,6 +70,21 @@
                 />
                 <jet-input-error :message="form.errors.phone" class="mt-2" />
             </div>
+            <!-- Gender # -->
+            <div class="form-control col-span-6 md:col-span-2">
+                <jet-label for="gender" value="Gender" />
+                <select
+                    id="gender"
+                    class="block w-full mt-1"
+                    v-model="form.gender"
+                    required
+                >
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+                <jet-input-error :message="form.errors.phone" class="mt-2" />
+            </div>
 
             <!-- Address 1 -->
             <div class="form-control col-span-6">
@@ -375,6 +390,54 @@
                     </div>
                 </div>
             </template>
+            <div class="form-divider" />
+            <!-- Emergency Contact -->
+            <jet-label for="emergency_contact" value="Emergency Contact" />
+            <div class="grid grid-cols-6 col-span-6 items-center">
+                <!-- First Name -->
+                <div class="form-control grid-cols-2 col-span-2 m-1">
+                    <jet-label for="ec_first_name" value="First Name" />
+                    <input
+                        id="ec_first_name"
+                        type="text"
+                        class="block w-full mt-1"
+                        v-model="form.ec_first_name"
+                        autofocus
+                    />
+                    <jet-input-error
+                        :message="form.errors.ec_first_name"
+                        class="mt-2"
+                    />
+                </div>
+                <!-- Last Name -->
+                <div class="form-control grid-cols-2 col-span-2 m-1">
+                    <jet-label for="ec_last_name" value="Last Name" />
+                    <input
+                        id="ec_last_name"
+                        type="text"
+                        class="block w-full mt-1"
+                        v-model="form.ec_last_name"
+                    />
+                    <jet-input-error
+                        :message="form.errors.ec_last_name"
+                        class="mt-2"
+                    />
+                </div>
+
+                <!-- Contact Phone # -->
+                <div class="form-control grid-cols-2 col-span-2 m-1">
+                    <jet-label for="ec_phone" value="Contact Phone" />
+                    <phone-input
+                        id="ec_phone"
+                        class="block w-full mt-1"
+                        v-model="form.ec_phone"
+                    />
+                    <jet-input-error
+                        :message="form.errors.ec_phone"
+                        class="mt-2"
+                    />
+                </div>
+            </div>
         </template>
 
         <template #actions>
@@ -425,9 +488,7 @@
                                 type="button"
                                 class="p-2"
                                 @click="wantsToDeleteFile = file"
-                            >
-                                x
-                            </button>
+                            ></button>
                         </div>
                     </template>
                     <div v-else class="opacity-50">No documents found.</div>
@@ -444,6 +505,7 @@
                     :form-submit-options="{ preserveScroll: true }"
                     @submitted="closeFileManagerModal"
                     :handleCancel="closeFileManagerModal"
+                    :upload-file-route="uploadFileRoute"
                 />
             </daisy-modal>
             <confirm
@@ -514,6 +576,7 @@ export default {
         "locations",
         "availablePositions",
         "availableDepartments",
+        "uploadFileRoute",
     ],
     emits: ["success"],
     setup(props, { emit }) {
@@ -532,30 +595,24 @@ export default {
 
         let operation = "Update";
         if (user) {
+            console.log("user", user);
             if (props.isClientUser) {
                 user.role_id = user["role_id"];
             }
+            user.gender = user["gender"];
             user.contact_preference = user["contact_preference"]?.value;
             user.team_id = team_id;
-            user.first_name = user["first_name"];
-            user.last_name = user["last_name"];
-            user.alternate_email = user["alternate_email"];
-            user.address1 = user["address1"];
-            user.address2 = user["address2"];
-            user.city = user["city"];
-            user.state = user["state"];
-            user.zip = user["zip"];
-            user.phone = user["phone"];
-            user.start_date = user["start_date"];
-            user.end_date = user["end_date"];
-            user.positions = user["positions"];
-            user.departments = user["departments"];
-            user.termination_date = user["termination_date"];
             user.notes = { title: "", note: "" };
+            user.ec_first_name =
+                user["emergency_contact"]["misc"]["ec_first_name"];
+            user.ec_last_name =
+                user["emergency_contact"]["misc"]["ec_last_name"];
+            user.ec_phone = user["emergency_contact"]["misc"]["ec_phone"];
         } else {
             user = {
                 first_name: "",
                 last_name: "",
+                gender: "",
                 email: "",
                 alternate_email: "",
                 role_id: 0,
@@ -574,6 +631,9 @@ export default {
                 job_title: "",
                 positions: [],
                 departments: [],
+                ec_first_name: "",
+                ec_last_name: "",
+                ec_phone: "",
             };
             //only add client specific when applicable to make user validation rules work better
             if (props.isClientUser) {

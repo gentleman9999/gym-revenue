@@ -6,7 +6,6 @@ use App\Domain\Departments\Department;
 use App\Domain\Departments\DepartmentAggregate;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -54,7 +53,7 @@ class CreateDepartment
         return $current_user->can('departments.create', Department::class);
     }
 
-    public function asController(ActionRequest $request): Collection
+    public function asController(ActionRequest $request): Department
     {
         return $this->handle(
             $request->validated()

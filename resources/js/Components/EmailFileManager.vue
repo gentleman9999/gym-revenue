@@ -107,9 +107,10 @@ import {
 import Vapor from "laravel-vapor";
 import EmailImageItem from "./EmailImageItem.vue";
 import Spinner from "@/Components/Spinner.vue";
+import { useModalPage } from "@/Components/InertiaModal/index.js";
 
 const emit = defineEmits(["image"]);
-
+const modalPage = useModalPage();
 const inputRef = ref();
 const fileList = ref(null);
 const currentlyUploadingFiles = ref([]);
@@ -183,7 +184,9 @@ async function handleFileChange(event) {
                         fileData.name;
                     response.size = fileData.size;
                     response.id = response.uuid;
-
+                    response.is_public = "1";
+                    response.email_template_id =
+                        modalPage.props.value.template.id;
                     axios
                         .post(
                             route("mass-comms.email-templates.store-files"),

@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Domain\Conversations\Twilio\Actions\StartConversation;
 use App\Domain\Conversations\Twilio\Exceptions\ConversationException;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Members\Projections\Member;
+use App\Domain\Users\Models\Lead;
+use App\Domain\Users\Models\Member;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

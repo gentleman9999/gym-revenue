@@ -3,8 +3,9 @@
 namespace Database\Seeders\Data;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\Actions\CreateEndUser;
-use App\Domain\EndUsers\Projections\EndUser;
+use App\Domain\Users\Actions\CreateUser;
+use App\Domain\Users\Models\User;
+use App\Enums\UserTypesEnum;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -17,14 +18,17 @@ class EndUserSeeder extends Seeder
      */
     public function run()
     {
-        $amountOfLeads = 20;
+        $amount_of_leads = 20;
         if (env('QUICK_SEED')) {
-            $amountOfLeads = 2;
+            $amount_of_leads = 3;
+        }
+
+        if (env('RAPID_SEED') === true) {
+            $amount_of_leads = 1;
         }
         VarDumper::dump('Getting Clients');
         // Get all the Clients
-        $clients = Client::whereActive(1)
-            ->get();
+        $clients = Client::whereActive(1)->get();
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -33,19 +37,30 @@ class EndUserSeeder extends Seeder
                 if (count($client->locations) > 0) {
                     foreach ($client->locations as $idx => $location) {
                         // For each location, MAKE 25 users, don't create
-                        $prospects = EndUser::factory()->count($amountOfLeads)
-                            // over ride the client id and gr id from the factory
-                            ->client_id($client->id)
-                            ->gr_location_id($location->gymrevenue_id ?? '')
-                            ->make();
+                        foreach ([
+                                UserTypesEnum::LEAD,
+                                UserTypesEnum::CUSTOMER,
+                                UserTypesEnum::MEMBER,
+                            ] as $user_type
+                        ) {
+                            $end_users = User::factory()->count($amount_of_leads)->make();
 
-                        VarDumper::dump('Generating End Users for '.$client->name.'!');
-                        foreach ($prospects as $prospect) {
-                            $prospect_data = $prospect->toArray();
-                            $prospect_data['client_id'] = $prospect['client_id'];
-                            $prospect_data['gr_location_id'] = $location->gymrevenue_id;
+                            VarDumper::dump('Generating End Users for '.$client->name.'!');
+                            foreach ($end_users as $end_user) {
+                                $end_user_data = $end_user->toArray();
+                                $end_user_data['client_id'] = $client->id;
+                                $end_user_data['home_location_id'] = $location->gymrevenue_id;
+                                $end_user_data['user_type'] = $user_type;
+                                $end_user_data['password'] = 'Hello123!';
 
-                            CreateEndUser::run($prospect_data);
+                                if ($user_type == 'lead') {
+                                    $end_user_data['opportunity'] = rand(0, 3);
+                                    $end_user_data['opportunity'] = $end_user_data['opportunity'] == 0 ?
+                                        null : $end_user_data['opportunity'];
+                                }
+
+                                CreateUser::run($end_user_data);
+                            }
                         }
                     }
                 }

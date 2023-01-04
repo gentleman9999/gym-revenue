@@ -4,16 +4,16 @@ namespace App\Projectors\Clients;
 
 use App\Domain\Campaigns\DripCampaigns\Events\DripCampaignCreated;
 use App\Domain\Campaigns\ScheduledCampaigns\Events\ScheduledCampaignCreated;
-use App\Domain\EndUsers\Leads\Events\LeadConverted;
-use App\Domain\EndUsers\Leads\Events\LeadCreated;
-use App\Domain\EndUsers\Members\Events\MemberCreated;
+use App\Domain\Users\Events\EndUserConverted;
+use App\Domain\Users\Events\UserCreated;
 use App\Enums\LiveReportingEnum;
 use App\Models\LiveReportsByDay;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class LiveReportingProjector extends Projector
 {
-    public function onLeadCreated(LeadCreated $event)
+    /** @TODO: When Implementing, check if the created user is of lead type */
+    public function onLeadCreated(UserCreated $event)
     {
 //        $record = LiveReportsByDay::whereClientId($event->payload['client_id'])
 //            ->whereGrLocationId($event->payload['gr_location_id'])
@@ -37,7 +37,8 @@ class LiveReportingProjector extends Projector
 //        $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 
-    public function onMemberCreated(MemberCreated $event)
+    /** @TODO: When Implementing, check if the created user is of member type */
+    public function onMemberCreated(UserCreated $event)
     {
 //        $record = LiveReportsByDay::whereClientId($event->payload['client_id'])
 //            ->whereGrLocationId($event->payload['gr_location_id'])
@@ -60,7 +61,7 @@ class LiveReportingProjector extends Projector
 //        $record->updateOrFail(['value' => (float)$record->value + 1]);
     }
 
-    public function onLeadConverted(LeadConverted $event)
+    public function onLeadConverted(EndUserConverted $event)
     {
 //        $record = LiveReportsByDay::firstOrCreate(
 //            [

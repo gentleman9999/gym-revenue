@@ -10,15 +10,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property string $id
- * @property string $chat_id
- * @property string $chat_participant_id
- * @property string $message
+ * @property string          $id
+ * @property string          $chat_id
+ * @property string          $chat_participant_id
+ * @property string          $message
+ * @property ChatParticipant $participant
+ * @property Chat            $chat
  */
 class ChatMessage extends GymRevUuidProjection
 {
     use SoftDeletes;
     use Sortable;
+
     protected $hidden = ['client_id'];
 
     protected $fillable = ['id', 'chat_id', 'chat_participant_id', 'message', 'read_by'];
@@ -29,6 +32,11 @@ class ChatMessage extends GymRevUuidProjection
 
     public function participant(): BelongsTo
     {
-        return $this->belongsTo(ChatParticipants::class, 'chat_participant_id', 'id');
+        return $this->belongsTo(ChatParticipant::class, 'chat_participant_id', 'id');
+    }
+
+    public function chat(): BelongsTo
+    {
+        return $this->belongsTo(Chat::class, 'chat_id', 'id');
     }
 }

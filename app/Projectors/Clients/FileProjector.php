@@ -23,18 +23,14 @@ class FileProjector extends Projector
             return in_array($key, (new File())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
 
-        $file = new File();
-
-        if ($event->user !== null) {
+        if (! is_null($event->user) && $event->user <> "") {
             $user = User::find($event->user);
-            $file->user_id = $user->id;
-            $file->client_id = $user->client_id;
+            $file_table_data['user_id'] = $user->id;
+            $file_table_data['client_id'] = $user->client_id;
         }
 
-        $file->fill($file_table_data);
-        //TODO: consider moving this to reactor?
-        $file->url = Storage::disk('s3')->url($file->key);
-        $file->save();
+        $file_table_data['url'] = Storage::disk('s3')->url($file_table_data['key']);
+        $event->model->files()->create($file_table_data);
     }
 
     public function onFileRenamed(FileRenamed $event)

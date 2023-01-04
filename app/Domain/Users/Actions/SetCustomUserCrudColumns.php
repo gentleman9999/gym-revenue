@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\UserAggregate;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -30,7 +32,7 @@ class SetCustomUserCrudColumns
 
     public function handle(array $data, User $user): User
     {
-        UserAggregate::retrieve($user->id)->setCustomCrudColumns($data['table'], $data['columns'])->persist();
+        UserAggregate::retrieve((string) $user->id)->setCustomCrudColumns($data['table'], $data['columns'])->persist();
 
         return $user->refresh();
     }

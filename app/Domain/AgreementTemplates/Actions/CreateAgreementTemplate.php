@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\AgreementTemplates\Actions;
 
 use App\Domain\AgreementTemplates\AgreementTemplateAggregate;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
+use App\Enums\AgreementAvailabilityEnum;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
-
+use Illuminate\Validation\Rules\Enum;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -23,6 +26,10 @@ class CreateAgreementTemplate
     {
         return [
             'billing_schedule' => ['required, exists:agreement_template_billing_schedule'],
+            'agreement_json' => ['required','json'],
+            'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
+            'is_not_billable' => ['sometimes', 'boolean'],
+            'availability' => ['required', 'string', new Enum(AgreementAvailabilityEnum::class)],
         ];
     }
 
@@ -33,7 +40,7 @@ class CreateAgreementTemplate
 
     public function handle(array $data): AgreementTemplate
     {
-        $id = Uuid::new();
+        $id = Uuid::get();
         AgreementTemplateAggregate::retrieve($id)->create($data)->persist();
 
         return AgreementTemplate::findOrFail($id);
@@ -41,8 +48,6 @@ class CreateAgreementTemplate
 
     public function asController(ActionRequest $request): AgreementTemplate
     {
-        $data = $request->validated();
-
-        return ($this->handle($data));
+        return ($this->handle($request->validated()));
     }
 }

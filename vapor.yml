@@ -4,7 +4,7 @@ environments:
     production:
         domain: app.gymrevenue.com
         memory: 2048
-        cli-memory: 512
+        cli-memory: 1024
         network: gymrevenue-vpc-network
         database: gymrevenue-west
         cache: gr-cache
@@ -29,7 +29,7 @@ environments:
     staging:
         domain: stage.gymrevenue.com
         memory: 2048
-        cli-memory: 512
+        cli-memory: 1024
         network: gymrevenue-vpc-network
         database: gr-west-dev
         cache: gr-cache
@@ -53,7 +53,7 @@ environments:
     develop:
         domain: dev.gymrevenue.com
         memory: 2048
-        cli-memory: 512
+        cli-memory: 1024
         network: gymrevenue-vpc-network
         database: gr-west-dev
         cache: gr-cache

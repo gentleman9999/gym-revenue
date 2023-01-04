@@ -4,6 +4,7 @@ namespace App\Domain\Agreements\Actions;
 
 use App\Domain\Agreements\AgreementAggregate;
 use App\Domain\Agreements\Projections\Agreement;
+use App\Domain\Contracts\ContractGates\Projections\ContractGate;
 use App\Http\Middleware\InjectClientId;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -26,8 +27,13 @@ class UpdateAgreement
     {
         return [
             'agreement_category_id' => ['required', 'exists:agreement_categories,id'],
-            'gr_location_id' => ['sometimes', 'string'],
+            'created_by' => 'sometimes',
+            'end_user_id' => ['sometimes','exists:end_users,id'],
+            'agreement_template_id' => ['sometimes', 'exists:agreement_templates,id'],
+            'gr_location_id' => ['sometimes', 'string', 'exists:locations,gymrevenue_id'],
             'agreement_json' => ['sometimes', 'json'],
+            'billing_schedule_id' => ['sometimes', 'exists:billing_schedules,id'],
+            'contract_id' => ['sometimes', 'exists:contracts,id'],
         ];
     }
 
@@ -39,6 +45,25 @@ class UpdateAgreement
     public function asController(ActionRequest $request, Agreement $agreement): Agreement
     {
         $data = $request->validated();
+
+        if (isset($data['contract_id'])) {
+            //Validating agreement through contract gate
+            $entityIds = [$data['agreement_category_id']];
+
+            if (isset($data['gr_location_id'])) {
+                $entityIds[] = $data['gr_location_id'];
+            }
+
+            if (isset($data['billing_schedule_id'])) {
+                $entityIds[] = $data['billing_schedule_id'];
+            }
+
+            if (! ContractGate::validateContract($data['contract_id'], $entityIds)) {
+                return throw new \Exception("Agreement Category, Gym Revenue Location or Billing Schedule Type is not valid for this contract");
+            }
+        }
+
+        unset($data['billing_schedule_id']); // Don't have column in agreement table
 
         return $this->handle(
             $agreement,

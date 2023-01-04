@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Data;
 
 use App\Domain\AgreementTemplates\Actions\CreateAgreementTemplate;
 use App\Domain\Clients\Projections\Client;
+use App\Enums\AgreementAvailabilityEnum;
 use Illuminate\Database\Seeder;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -17,6 +20,7 @@ class AgreementTemplatesSeeder extends Seeder
         }
         VarDumper::dump('Getting Clients');
         // Get all the Clients
+        $agreement_availability_random = AgreementAvailabilityEnum::asArray();
         $clients = Client::whereActive(1)
             ->get();
         if (count($clients) > 0) {
@@ -31,6 +35,8 @@ class AgreementTemplatesSeeder extends Seeder
                             $agreement_data['gr_location_id'] = $location->gymrevenue_id;
                             $agreement_data['agreement_name'] = 'test contract for '.$client->name;
                             $agreement_data['agreement_json'] = json_encode($client);
+                            $agreement_data['is_not_billable'] = rand(0, 1);
+                            $agreement_data['availability'] = $agreement_availability_random[array_rand($agreement_availability_random)];
                             CreateAgreementTemplate::run($agreement_data);
                         }
                     }

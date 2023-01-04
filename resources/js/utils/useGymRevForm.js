@@ -24,7 +24,7 @@ export const useGymRevForm = (...args) => {
         }
     );
 
-    const initialData = ref(args[0]);
+    const initialData = ref(JSON.parse(JSON.stringify(args[0]))); //deep cloning args to prevent reference issue.
     watch(form, () => {
         if (form.recentlySuccessful) {
             initialData.value = form.data();

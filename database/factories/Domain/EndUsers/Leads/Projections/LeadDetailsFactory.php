@@ -13,7 +13,7 @@ class LeadDetailsFactory extends Factory
      *
      * @var string
      */
-    protected $model = \App\Domain\EndUsers\Leads\Projections\LeadDetails::class;
+    protected $model = \App\Domain\Users\Models\UserDetails::class;
 
     /**
      * Define the model's default state.

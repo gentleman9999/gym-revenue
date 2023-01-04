@@ -1,7 +1,7 @@
 <template>
     <div class="guest-input-container">
         <div class="text-lg">{{ label }}</div>
-        <input class="guest-input" v-model="value" />
+        <input class="guest-input" v-bind="props" />
     </div>
 </template>
 <style scoped>

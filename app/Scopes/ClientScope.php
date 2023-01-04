@@ -2,6 +2,7 @@
 
 namespace App\Scopes;
 
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -20,7 +21,7 @@ class ClientScope implements Scope
     {
         //first just try checking the session if they are typical CRM Client User
         if (array_key_exists('client_id', session()->all())) {
-            $builder->whereClientId(session('client_id'));
+            $builder->whereClientId(CurrentInfoRetriever::getCurrentClientID());
 
             return;
         }

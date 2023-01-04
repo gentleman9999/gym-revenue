@@ -8,6 +8,7 @@ use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Actions\DeleteUser;
 use App\Domain\Users\Actions\GrantAccessToken;
 use App\Domain\Users\Actions\ImportUsers;
+use App\Domain\Users\Actions\ObfuscateUser;
 use App\Domain\Users\Actions\ResetUserPassword;
 use App\Domain\Users\Actions\SetCustomUserCrudColumns;
 use App\Domain\Users\Actions\SwitchTeam;
@@ -17,6 +18,7 @@ use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UserUpdated;
+use App\Domain\Users\Models\ObfuscatedUser;
 use App\Domain\Users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -172,10 +174,11 @@ it('should return 200 on route users', function () {
 it('should return 200 on users/view/{user}', function () {
     $role = UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
+    $viewable_user = UserUtility::createUserWithTeam();
     Bouncer::allow($role->name)->everything();
     $this->actingAs($user);
 
-    $response = $this->get('users/view/1', []);
+    $response = $this->get("users/view/{$viewable_user->id}", []);
 
     $this->assertEquals(200, $response->status());
 });
@@ -386,4 +389,70 @@ it('should have UserSetCustomCrudColumns event', function () {
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
     $this->assertContains(UserSetCustomCrudColumns::class, array_column($storedEvents, 'event_class'));
+});
+
+it('should Obfuscate User using ObfuscateUser action', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+    $client = Client::factory()->create();
+    $user->client_id = $client->id;
+    $this->assertEquals($user->obfuscated_at, null);
+    $oUser = ObfuscateUser::run($user);
+    $this->assertNotEquals($oUser->obfuscated_at, null);
+});
+
+it('should show Obfuscated global scope working', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+
+    $originalCountOfUsers = User::all()->count();
+
+    ObfuscateUser::run($user);
+    $newCountOfUsers = User::all()->count();
+
+    $this->assertEquals($originalCountOfUsers - 1, $newCountOfUsers);
+});
+
+it('should have correct hashing for obfuscated user', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+    $client = Client::factory()->create();
+    $user->client_id = $client->id;
+    $user->save();
+
+    $oUser = ObfuscateUser::run($user);
+
+    //The actual mode of Obfuscated User
+    $oum = ObfuscatedUser::first()->data;
+//
+    $this->assertTrue(Hash::check($user->address1, $oum['address1']));
+    $this->assertTrue(Hash::check($user->address2, $oum['address2']));
+    $this->assertTrue(Hash::check($user->phone,  $oum['phone']));
+    $this->assertTrue(Hash::check($user->first_name,  $oum['first_name']));
+    $this->assertTrue(Hash::check($user->last_name,  $oum['last_name']));
+});
+
+it('should have incorrect hashing for obfuscated user', function () {
+    //Given a new team and new user
+    UserUtility::createRole(['name' => 'Admin']);
+    $user = UserUtility::createUserWithTeam();
+    $client = Client::factory()->create();
+    $user->client_id = $client->id;
+    $user->save();
+
+    ObfuscateUser::run($user);
+
+    //The actual mode of Obfuscated User
+    $oum = ObfuscatedUser::first()->data;
+
+    $aRandomUser = User::factory()->raw();
+
+    $this->assertNotTrue(Hash::check($aRandomUser['address1'], $oum['address1']));
+    $this->assertNotTrue(Hash::check($aRandomUser['address2'], $oum['address2']));
+    $this->assertNotTrue(Hash::check($aRandomUser['phone'], $oum['phone']));
+    $this->assertNotTrue(Hash::check($aRandomUser['first_name'], $oum['first_name']));
+    $this->assertNotTrue(Hash::check($aRandomUser['last_name'], $oum['last_name']));
 });

@@ -22,6 +22,7 @@ class FileReactor extends Reactor implements ShouldQueue
             Storage::disk('s3')->move($event->data['key'], $destKey);
             $file->key = $destKey;
             $file->url = Storage::disk('s3')->url($destKey);
+            $file->is_public = (array_key_exists('is_public', $event->data) ? $event->data['is_public'] : false);
             $file->save();
         }
     }

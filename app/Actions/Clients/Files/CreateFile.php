@@ -4,6 +4,7 @@ namespace App\Actions\Clients\Files;
 
 use App\Aggregates\Clients\FileAggregate;
 use App\Domain\Users\Models\User;
+use App\Http\Middleware\InjectClientId;
 use App\Models\File;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,12 +33,19 @@ class CreateFile
             'size' => 'integer|min:1|required',//TODO: add max size
             'user_id' => 'sometimes|nullable|exists:users,id',
             'visibility' => 'sometimes',
+            'client_id' => 'required',
+            'is_public' => 'boolean',
         ];
     }
 
-    public function handle($data, ?User $user = null)
+    public function getControllerMiddleware(): array
     {
-        FileAggregate::retrieve($data['id'])->create((string) $user?->id, $data)->persist();
+        return [InjectClientId::class];
+    }
+
+    public function handle($data, $model, ?User $user = null): File
+    {
+        FileAggregate::retrieve($data['id'])->create((string) $user?->id, $data, $model)->persist();
 
         return File::findOrFail($data['id']);
     }

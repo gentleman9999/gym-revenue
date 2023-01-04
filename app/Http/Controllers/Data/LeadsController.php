@@ -3,32 +3,34 @@
 namespace App\Http\Controllers\Data;
 
 use App\Domain\Clients\Projections\Client;
-use App\Domain\EndUsers\EndUserAggregate;
-//use App\Domain\EndUsers\Leads\Actions\UpdateLeadCommunicationPreferences;
-//use App\Domain\EndUsers\Leads\LeadAggregate;
-use App\Domain\EndUsers\Leads\Projections\Lead;
-use App\Domain\EndUsers\Projections\EndUser;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadStatuses\LeadStatus;
 use App\Domain\LeadTypes\LeadType;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
+use App\Domain\Users\Aggregates\UserAggregate;
+use App\Domain\Users\Models\Employee;
+use App\Domain\Users\Models\EndUser;
+use App\Domain\Users\Models\Lead;
 use App\Enums\LiveReportingEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Clients\Features\Memberships\TrialMembershipType;
+use App\Models\File;
 use App\Models\LiveReportsByDay;
 use App\Models\Note;
 use App\Models\ReadReceipt;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Prologue\Alerts\Facades\Alert;
 
 class LeadsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {
@@ -67,7 +69,6 @@ class LeadsController extends Controller
                     'agreementSearch',
                     'lastupdated'
                 ))
-                ->whereNull('converted_at')
                 ->orderBy('created_at', 'desc')
                 ->sort()
                 ->paginate($page_count)
@@ -86,13 +87,9 @@ class LeadsController extends Controller
             $prospects->setCollection($sortedResult);
         }
 
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find(auth()->user()->default_team_id);
-        }
-        $team_users = $current_team->team_users()->get();
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
+        $x = ['name' => null, 'id' => null];
+        $team_users = Employee::whereIn('id', $current_team->team_users()->get()->pluck('user_id')->toArray());
         $available_lead_owners = [];
         foreach ($team_users as $team_user) {
             $available_lead_owners[] = [
@@ -101,11 +98,11 @@ class LeadsController extends Controller
             ];
         }
 
-        if ($user->current_location_id) {
+        if (CurrentInfoRetriever::getCurrentLocationID()) {
             $newLeadCount = LiveReportsByDay::whereEntity('lead')
                 ->where('date', '=', date('Y-m-d'))
                 ->whereAction(LiveReportingEnum::ADDED)
-                ->whereGrLocationId(Location::find($user->current_location_id)->gymrevenue_id)->first();
+                ->whereGrLocationId(Location::find(CurrentInfoRetriever::getCurrentLocationID())->gymrevenue_id)->first();
 
             if ($newLeadCount) {
                 $newLeadCount = $newLeadCount->value;
@@ -143,6 +140,7 @@ class LeadsController extends Controller
             'leadsources' => LeadSource::all(),
             'opportunities' => array_values($opportunities->toArray()),
             'newLeadCount' => $newLeadCount,
+            'lead_types' => LeadType::all(),
         ]);
     }
 
@@ -194,12 +192,7 @@ class LeadsController extends Controller
         $client_id = request()->user()->client_id;
         $is_client_user = request()->user()->isClientUser();
         $locations_records = $this->setUpLocationsObject($is_client_user, $client_id)->get();
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
 
 
@@ -251,29 +244,19 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
 
             $team_locations = [];
 
             if ($current_team->id != $client->home_team_id) {
-                $team_locations_records = TeamDetail::whereTeamId($current_team->id)
-                    ->where('field', '=', 'team-location')->get();
-                if (count($team_locations_records) > 0) {
-                    foreach ($team_locations_records as $team_locations_record) {
-                        // @todo - we will probably need to do some user-level scoping
-                        // example - if there is scoping and this club is not there, don't include it
-                        $team_locations[] = $team_locations_record->value;
-                    }
+                $team_locations = TeamDetail::whereTeamId($current_team->id)
+                    ->where('field', '=', 'team-location')->get()->pluck('value')->toArray();
+                // @todo - we will probably need to do some user-level scoping
+                // example - if there is scoping and this club is not there, don't include it
 
-                    $results = Lead::whereIn('gr_location_id', $team_locations);
-                }
+                $results = Lead::whereIn('home_location_id', $team_locations);
             } else {
                 $results = new Lead();
             }
@@ -295,12 +278,7 @@ class LeadsController extends Controller
              * 3. Else, get the team_locations for the active_team
              * 4. Query for client id and locations in
              */
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
             $team_locations = [];
 
@@ -314,7 +292,7 @@ class LeadsController extends Controller
                         // example - if there is scoping and this club is not there, don't include it
                         $team_locations[] = $team_locations_record->value;
                     }
-                    $results = Lead::whereIn('gr_location_id', $team_locations)->whereHas('claimed');
+                    $results = Lead::whereIn('home_location_id', $team_locations)->whereHas('claimed');
                 }
             } else {
                 $results = Lead::whereHas('claimed');
@@ -324,7 +302,7 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function edit(EndUser $endUser)
+    public function edit(Lead $endUser): InertiaResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.update', EndUser::class)) {
@@ -347,12 +325,7 @@ class LeadsController extends Controller
             $locations[$location->gymrevenue_id] = $location->name;
         }
 
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         $team_users = $current_team->team_users()->get();
         /**
          * STEPS for team users
@@ -366,28 +339,32 @@ class LeadsController extends Controller
 
         //for some reason inertiajs converts "notes" key to empty string.
         //so we set all_notes
-        $leadData = $endUser->toArray();
-        $leadData['all_notes'] = $endUser->notes->toArray();
+        $lead_data = $endUser->toArray();
+        $lead_data['all_notes'] = $endUser->notes->toArray();
 
-        foreach ($leadData['all_notes'] as $key => $value) {
-            if (ReadReceipt::whereNoteId($leadData['all_notes'][$key]['id'])->first()) {
-                $leadData['all_notes'][$key]['read'] = true;
+        // if ($lead_data['profile_picture_file_id']) {
+        //     $lead_data['profile_picture'] = File::whereId($lead_data['profile_picture_file_id'])->first();
+        // }
+
+        foreach ($lead_data['all_notes'] as $key => $value) {
+            if (ReadReceipt::whereNoteId($lead_data['all_notes'][$key]['id'])->first()) {
+                $lead_data['all_notes'][$key]['read'] = true;
             } else {
-                $leadData['all_notes'][$key]['read'] = false;
+                $lead_data['all_notes'][$key]['read'] = false;
             }
         }
 
         return Inertia::render('Leads/Edit', [
-            'lead' => $leadData,
+            'lead' => $lead_data,
             'user_id' => $user->id,
             'locations' => $locations,
             'lead_owners' => $available_lead_owners,
         ]);
     }
 
-    public function show(EndUser $endUser)
+    public function show(Lead $endUser): InertiaResponse
     {
-        $aggy = EndUserAggregate::retrieve($endUser->id);
+        $aggy = UserAggregate::retrieve($endUser->id);
         $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
 
@@ -424,12 +401,7 @@ class LeadsController extends Controller
         */
 
         if ((! is_null($client_id))) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             // The active_team is the current client's default_team (gets all the client's locations)
@@ -461,7 +433,7 @@ class LeadsController extends Controller
         return $results;
     }
 
-    public function contact(EndUser $end_user): \Illuminate\Http\RedirectResponse
+    public function contact(Lead $end_user): \Illuminate\Http\RedirectResponse
     {
         $user = request()->user();
         if ($user->cannot('endusers.contact', EndUser::class)) {
@@ -472,7 +444,7 @@ class LeadsController extends Controller
 
 
         if (array_key_exists('method', request()->all())) {
-            $aggy = EndUserAggregate::retrieve($end_user->id);
+            $aggy = UserAggregate::retrieve($end_user->id);
             $data = request()->all();
 
             $data['interaction_count'] = 1; // start at one because this action won't be found in stored_events as it hasn't happened yet.
@@ -532,7 +504,7 @@ class LeadsController extends Controller
         ]);
     }
 
-    public function view(EndUser $endUser)
+    public function view(Lead $endUser): array
     {
         $user = request()->user();
         if ($user->cannot('endusers.read', EndUser::class)) {
@@ -540,16 +512,12 @@ class LeadsController extends Controller
 
             return Redirect::back();
         }
-        $lead_aggy = EndUserAggregate::retrieve($endUser->id);
-        $locid = Location::where('gymrevenue_id', $endUser->gr_location_id)->first();
+        $lead_aggy = UserAggregate::retrieve($endUser->id);
+        $locid = Location::where('gymrevenue_id', $endUser->home_location_id)->first();
         $preview_note = Note::select('note')->whereEntityId($endUser->id)->get();
 
         return [
-            'lead' => $endUser->load(
-                [
-                    'owner',
-                ]
-            ),
+            'lead' => $endUser,
             'user_id' => $user->id,
             'club_location' => $locid,
             'interactionCount' => $lead_aggy->getInteractionCount(),

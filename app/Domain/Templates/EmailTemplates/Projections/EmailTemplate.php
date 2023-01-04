@@ -91,4 +91,9 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
     {
         return $this->detail()->whereDetail('email_gateway')->whereActive(1);
     }
+
+    public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany('App\Models\File', 'fileable');
+    }
 }

@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Domain\Teams\Models\Team;
 use App\Domain\Users\Models\User;
+use App\Enums\UserTypesEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -45,16 +46,17 @@ class UserFactory extends Factory
             'alternate_email' => $this->faker->email,
             'email' => "{$first_name}.{$last_name}@{$this->faker->freeEmailDomain}",
             'phone' => $phone,
-            'role_id' => 1,
+            'user_type' => UserTypesEnum::EMPLOYEE,
         ];
     }
 
-    public function configure(): Factory
-    {
-        return $this->afterMaking(function (User $user) {
-            $user->team_id ??= Team::factory()->create()->id;
-
-            return $user;
-        });
-    }
+    //REMOVING THIS CODE FOR NOW - Creating teams without client_ids will result in everyone becoming an Admin.
+//    public function configure(): Factory
+//    {
+//        return $this->afterMaking(function (User $user) {
+//            $user->team_id ??= Team::factory()->create()->id;
+//
+//            return $user;
+//        });
+//    }
 }

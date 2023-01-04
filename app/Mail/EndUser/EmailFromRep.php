@@ -2,7 +2,7 @@
 
 namespace App\Mail\EndUser;
 
-use App\Domain\EndUsers\Leads\Projections\Lead;
+use App\Domain\Users\Models\Lead;
 use App\Domain\Users\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

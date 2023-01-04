@@ -6,11 +6,11 @@ use App\Domain\Audiences\Audience;
 use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Campaigns\ScheduledCampaigns\ScheduledCampaign;
 use App\Domain\LeadTypes\LeadType;
-use App\Domain\Teams\Models\Team;
 use App\Domain\Templates\CallScriptTemplates\Projections\CallScriptTemplate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
 use App\Models\Endusers\MembershipType;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -27,12 +27,7 @@ class MassCommunicationController extends Controller
         }
 
         $user = auth()->user();
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $team = Team::find($session_team['id']);
-        } else {
-            $team = Team::find($user->default_team_id);
-        }
+        $team = CurrentInfoRetriever::getCurrentTeam();
         $campaignType = null;
         if ($type === 'scheduled') {
             $campaignType = new ScheduledCampaign();

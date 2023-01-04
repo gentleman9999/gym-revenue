@@ -9,7 +9,6 @@ use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Templates\SmsTemplates\Projections\SmsTemplate;
-use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
 use Carbon\CarbonImmutable;
@@ -27,16 +26,13 @@ class CreateScheduledCampaign
     public string $commandSignature = 'scheduled-campaign:create';
     public string $commandDescription = 'Creates a ScheduledCampaign with the given name.';
 
-    public function handle(array $payload, User $user): ScheduledCampaign
+    public function handle(array $payload): ScheduledCampaign
     {
         $id = Uuid::new();
 
         //NEEDED FOR LIVE REPORTING
         $location = Location::whereClientId($payload['client_id'])->first();
         $payload['gymrevenue_id'] = $location->gymrevenue_id;
-
-        $owner_id = $user->id;
-        $location_id = $user->current_location_id;
 
         ScheduledCampaignAggregate::retrieve($id)->create($payload)->persist();
 
@@ -102,11 +98,8 @@ class CreateScheduledCampaign
         $send_at = CarbonImmutable::now();
 
         $payload = compact('name', 'client_id', 'audience_id', 'template_type', 'template_id', 'send_at');
-        $user = new User();
-        $user->id = $payload['owner_id'];
-        $user->current_location_id = $payload['location_id'];
 
-        $scheduledCampaign = $this->handle($payload, $user);
+        $scheduledCampaign = $this->handle($payload);
 
         $command->info('Created ScheduledCampaign ' . $scheduledCampaign->name);
     }

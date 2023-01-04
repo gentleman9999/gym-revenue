@@ -8,10 +8,13 @@ use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\File;
 use App\Models\Position;
 use App\Models\Traits\Sortable;
+use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
@@ -52,6 +57,15 @@ class User extends Authenticatable
     use HasRolesAndAbilities;
     use TwoFactorAuthenticatable;
     use Sortable;
+    use SoftDeletes;
+
+    /**
+     * Define the table name so that all
+     * children model uses this table
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -59,10 +73,10 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'email', 'alternate_email', 'first_name', 'last_name',
-        'address1', 'address2', 'city', 'state', 'zip', 'phone',
-        'manager', 'home_location_id', 'start_date', 'end_date',
-        'termination_date',
+        'first_name', 'middle_name', 'last_name', 'phone', 'alternate_phone',
+        'date_of_birth', 'gender', 'occupation', 'employer', 'address1', 'address2',
+        'zip', 'city', 'state', 'drivers_license_number', 'unsubscribed_email',
+        'unsubscribed_sms', 'obfuscated_at',
     ];
 
     /**
@@ -85,8 +99,22 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'id' => 'string',
         'is_cape_and_bay_user' => 'boolean',
+        'unsubscribed_email' => 'boolean',
+        'unsubscribed_sms' => 'boolean',
+        'is_previous' => 'boolean',
+
+        'alternate_emails' => 'array',
+        'entry_source' => 'array',
+        'misc' => 'array',
+
+        'email_verified_at' => 'datetime',
+        'date_of_birth' => 'datetime',
+        'terminated_at' => 'datetime',
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
+        'user_type' => UserTypesEnum::class,
     ];
 
     /**
@@ -97,6 +125,21 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url', 'name',
     ];
+
+    /**
+     * Override soft detele column name
+     */
+    public const DELETED_AT = 'terminated_at';
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ObfuscatedScope());
+    }
 
     /**
      * Create a new factory instance for the model.
@@ -131,13 +174,6 @@ class User extends Authenticatable
     public function allLocations(): Collection
     {
         return Location::get();
-    }
-
-    public function switchLocation($location): bool
-    {
-        $this->current_location_id = $location->id;
-
-        return $this->save();
     }
 
     public function client(): BelongsTo
@@ -178,11 +214,6 @@ class User extends Authenticatable
         return $this->hasOne('App\Domain\Users\Models\UserDetails', 'user_id', 'id');
     }
 
-    public function files(): HasMany
-    {
-        return $this->hasMany(File::class, 'user_id', 'id');
-    }
-
     public function twilioClientConversation(): HasMany
     {
         return $this->hasMany(ClientConversation::class, 'user_id', 'id');
@@ -193,6 +224,11 @@ class User extends Authenticatable
         return $this->detail()->where('field', '=', 'contact_preference');
     }
 
+    public function emergencyContact(): HasOne
+    {
+        return $this->detail()->where('field', '=', 'emergency_contact');
+    }
+
     public function notes(): HasMany
     {
         return $this->hasMany('App\Models\Note', 'entity_id')->whereEntityType(self::class);
@@ -200,14 +236,22 @@ class User extends Authenticatable
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany('App\Domain\Teams\Models\Team', 'team_user', 'user_id', 'team_id');
-
-        return $teams;
+        return $this->belongsToMany(Team::class, 'team_user', 'user_id', 'team_id');
     }
 
-    public function default_team(): BelongsTo
+    public function defaultTeamDetail(): HasOne
     {
-        return $this->belongsTo(Team::class, 'default_team_id', 'id');
+        return $this->detail()->where('field', '=', 'default_team_id');
+    }
+
+    public function defaultTeam(): HasOne
+    {
+        return $this->hasOne(Team::class, 'id', $this->default_team_id);
+    }
+
+    public function getDefaultTeam(): Team
+    {
+        return Team::find($this->default_team_id);
     }
 
     public function api_token(): HasOne
@@ -310,6 +354,15 @@ class User extends Authenticatable
         return $this->manager !== null && $this->manager !== '';
     }
 
+    public function getDefaultTeamIdAttribute(): ?string
+    {
+        if ($this->defaultTeamDetail) {
+            return $this->defaultTeamDetail->value;
+        }
+
+        return null;
+    }
+
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'user_department', 'user_id', 'department_id');
@@ -321,16 +374,60 @@ class User extends Authenticatable
     }
 
     /**
-
      * Get all of the teams the user owns or belongs to.
-
      *
-
      * @return \Illuminate\Support\Collection
-
      */
     public function allTeams(): Collection
     {
         return $this->teams->sortBy('name');
+    }
+
+    /**
+     * Checks if instance is of an enduser
+     *
+     * @return bool
+     */
+    public function isEndUser(): bool
+    {
+        return in_array(
+            $this->user_type,
+            [UserTypesEnum::LEAD, UserTypesEnum::CUSTOMER, UserTypesEnum::MEMBER]
+        );
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
+    public static function withTerminated(): Builder
+    {
+        return self::withTrashed();
+    }
+
+    public static function onlyTerminated(): Builder
+    {
+        return self::onlyTrashed();
+    }
+
+    public static function withoutTerminated(): Builder
+    {
+        return self::withoutTrashed();
+    }
+
+    public function terminate(): void
+    {
+        $this->delete();
+    }
+
+    public function reinstate(): void
+    {
+        $this->restore();
+    }
+
+    public function getDeletedAtColumn(): string
+    {
+        return 'terminated_at';
     }
 }

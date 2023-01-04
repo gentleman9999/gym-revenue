@@ -57,16 +57,6 @@ class ClientConfigurationProjector extends Projector
             Storage::disk('s3')->delete($logoToDelete->key);
             $logoToDelete->forceDelete();
         }
-
-        $file_table_data = array_filter($data, function ($key) {
-            return in_array($key, (new File())->getFillable());
-        }, ARRAY_FILTER_USE_KEY);
-        $file_table_data['hidden'] = true;
-        $file_table_data['type'] = 'logo';
-        $file = File::create($file_table_data);
-        //TODO: consider moving this to reactor?
-        $file->url = Storage::disk('s3')->url($file->key);
-        $file->save();
     }
 
     public function onLogoDeleted(ClientLogoDeleted $event): void

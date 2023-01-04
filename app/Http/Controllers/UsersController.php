@@ -8,8 +8,11 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamUser;
 use App\Domain\Users\Models\User;
+use App\Domain\Users\Models\UserDetails;
+use App\Enums\UserTypesEnum;
 use App\Models\Position;
 use App\Models\ReadReceipt;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -30,16 +33,11 @@ class UsersController extends Controller
         $filterKeys = ['search', 'club', 'team', 'roles',];
 
         //Populating Role Filter
-        $team_users = User::with(['teams', 'home_location', 'roles'])->get();
+        $team_users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location', 'roles'])->get();
         $roles = Role::whereScope($client_id)->get();
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find($request->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             $is_default_team = $client->default_team_id == $current_team->id;
@@ -50,18 +48,14 @@ class UsersController extends Controller
 
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams', 'home_location'])
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))->sort()
                     ->paginate(10)
                     ->appends(request()->except('page'));
             } else {
                 // else - get the members of that team
-                $team_users = TeamUser::whereTeamId($current_team->id)->get();
-                $user_ids = [];
-                foreach ($team_users as $team_user) {
-                    $user_ids[] = $team_user->user_id;
-                }
-                $users = User::whereIn('users.id', $user_ids)
+                $user_ids = TeamUser::whereTeamId($current_team->id)->get()->pluck('user_id')->toArray();
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
                     ->with(['teams', 'home_location'])
                     ->filter($request->only($filterKeys))
                     ->sort()
@@ -73,27 +67,22 @@ class UsersController extends Controller
                 if ($user->getRole()) {
                     $users[$idx]->role = $user->getRole();
                 }
-
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
             }
         } else {
             //cb team selected
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $team = Team::find($session_team['id']);
-            } else {
-                $team = Team::find($request->user()->default_team_id);
-            }
-
-            $users = User::with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
+            $team = CurrentInfoRetriever::getCurrentTeam();
+            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))->sort()
                 ->paginate(10)->appends(request()->except('page'));
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $default_team = $user->default_team;
+                $default_team = $user->getDefaultTeam();
                 $users[$idx]->home_team = $default_team->name;
+                $users[$idx]['emergency_contact'] = UserDetails::whereUserId($user->id)->whereField('emergency_contact')->get()->toArray();
             }
         }
 
@@ -124,12 +113,7 @@ class UsersController extends Controller
         // Get the logged-in user making the request
         $user = request()->user();
         // Get the user's currently accessed team for scoping
-        $session_team = session()->get('current_team');
-        if ($session_team && array_key_exists('id', $session_team)) {
-            $current_team = Team::find($session_team['id']);
-        } else {
-            $current_team = Team::find($user->default_team_id);
-        }
+        $current_team = CurrentInfoRetriever::getCurrentTeam();
         // Get the first record linked to the client in client_details, this is how we get what client we're assoc'd with
         // CnB Client-based data is not present in the DB and thus the details could be empty.
         $client = $current_team->client;
@@ -174,7 +158,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments');//TODO:get rid of loading all details here.
+        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments', 'emergencyContact');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');
@@ -198,7 +182,7 @@ class UsersController extends Controller
             }
         }
 //        dd($userData);
-        $userData['role_id'] = $user->role()->id;
+        $userData['role_id'] = $user->role() ? $user->role()->id : null;
 
         return Inertia::render('Users/Edit', [
             'selectedUser' => $userData,
@@ -206,6 +190,7 @@ class UsersController extends Controller
             'locations' => $locations,
             'availablePositions' => Position::whereClientId($client_id)->with('departments')->select('id', 'name')->get(),
             'availableDepartments' => Department::whereClientId($client_id)->with('positions')->select('id', 'name')->get(),
+            'uploadFileRoute' => 'users.files.store',
         ]);
     }
 
@@ -244,19 +229,13 @@ class UsersController extends Controller
 
 
         if ($client_id) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
-
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
             $is_default_team = $client->home_team_id === $current_team->id;
             // If the active team is a client's-default team get all members
             if ($is_default_team) {
-                $users = User::with(['teams'])
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
             } else {
@@ -266,7 +245,7 @@ class UsersController extends Controller
                 foreach ($team_users as $team_user) {
                     $user_ids[] = $team_user->user_id;
                 }
-                $users = User::whereIn('users.id', $user_ids)
+                $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
                     ->with(['teams'])
                     ->filter($request->only($filterKeys))
                     ->get();
@@ -277,7 +256,7 @@ class UsersController extends Controller
                     $users[$idx]->role = $user->getRole();
                 }
 
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
 
                 //This is phil's fault
                 if (! is_null($users[$idx]->home_location_id)) {
@@ -286,21 +265,15 @@ class UsersController extends Controller
             }
         } else {
             //cb team selected
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $team = Team::find($session_team['id']);
-            } else {
-                $team = Team::find(auth()->user()->default_team_id);
-            }
-
-            $users = User::whereHas('teams', function ($query) use ($request) {
+            $team = CurrentInfoRetriever::getCurrentTeam();
+            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereHas('teams', function ($query) use ($request) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))
                 ->get();
 
             foreach ($users as $idx => $user) {
                 $users[$idx]->role = $user->getRole();
-                $users[$idx]->home_team = $user->default_team->name;
+                $users[$idx]->home_team = $user->getDefaultTeam()->name;
             }
         }
 

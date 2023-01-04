@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Notifications\Actions;
 
-use App\Domain\Users\UserAggregate;
+use App\Domain\Users\Aggregates\UserAggregate;
 use Illuminate\Console\Command;
 use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\ActionRequest;
