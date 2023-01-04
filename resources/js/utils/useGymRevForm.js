@@ -2,7 +2,6 @@ import { useForm } from "@inertiajs/inertia-vue3";
 import { computed, watch, ref } from "vue";
 import cloneDeep from "lodash.clonedeep"; //TODO:figure out why using lodash/clonedeep breaks on dev
 import omitBy from "lodash/omitBy";
-import { useModalPage } from "@/Components/InertiaModal";
 
 /**
  * Creates an enhanced version of inertia-vue3's useForm helper.
@@ -12,17 +11,6 @@ import { useModalPage } from "@/Components/InertiaModal";
  */
 export const useGymRevForm = (...args) => {
     const form = useForm(...args);
-    const page = useModalPage();
-    watch(
-        () => page.props.value.errors,
-        (newErrors) => {
-            console.log(
-                "detected errors on modal version of the form. setting here.",
-                newErrors
-            );
-            form.errors = newErrors;
-        }
-    );
 
     const initialData = ref(JSON.parse(JSON.stringify(args[0]))); //deep cloning args to prevent reference issue.
     watch(form, () => {
