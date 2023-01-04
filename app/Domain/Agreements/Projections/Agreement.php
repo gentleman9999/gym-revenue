@@ -8,7 +8,7 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\AgreementTemplates\Projections\AgreementTemplate;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Users\Models\EndUser;
+use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +21,7 @@ class Agreement extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'end_user_id', 'agreement_template_id', 'active'];
+    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'user_id', 'agreement_template_id', 'active'];
 
     protected static function booted(): void
     {
@@ -38,9 +38,9 @@ class Agreement extends GymRevProjection
         return $this->hasOne(AgreementCategory::class, 'id', 'agreement_category_id');
     }
 
-    public function endUser(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(EndUser::class, 'end_user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function categoryById(): HasOne

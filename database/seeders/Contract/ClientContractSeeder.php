@@ -22,6 +22,7 @@ class ClientContractSeeder extends Seeder
         $clients = Client::all();
 
         foreach ($clients as $client) {
+            VarDumper::dump('Creating Contracts for client '.$client->name);
             $agreement_categories = AgreementCategory::whereClientId($client->id)->get();//TODO:should iterate over AgreementTemplateCategory
             $agreement_categories->each(function (AgreementCategory $agreementCategory) use ($client) {
                 $agreement_category_name = str($agreementCategory->name)->replace(' ', '_');
@@ -31,7 +32,6 @@ class ClientContractSeeder extends Seeder
 //                    'agreement_category_id' => $agreementCategory->id,
 //                    'agreement_category_name' => $agreementCategory->name,
                     ];
-                VarDumper::dump('Creating Contract for client'.$client->name);
                 CreateContract::run($contract_data);
             });
         }

@@ -201,7 +201,7 @@ class AdobeAPIService
                 //Store file data in File table.
                 $file_table_data['id'] = Uuid::get();
                 $file_table_data['client_id'] = $this->client_data['client_id'];
-                $file_table_data['user_id'] = $this->client_data['end_user_id'];
+                $file_table_data['user_id'] = $this->client_data['user_id'];
                 $file_table_data['filename'] = $file_name;
                 $file_table_data['original_filename'] = $file_name;
                 $file_table_data['extension'] = 'pdf';

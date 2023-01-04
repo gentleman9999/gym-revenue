@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Agreements;
 
-use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Events\AgreementCreated;
 use App\Domain\Agreements\Events\AgreementDeleted;
 use App\Domain\Agreements\Events\AgreementRestored;
@@ -12,12 +11,10 @@ use App\Domain\Agreements\Events\AgreementSigned;
 use App\Domain\Agreements\Events\AgreementTrashed;
 use App\Domain\Agreements\Events\AgreementUpdated;
 use App\Domain\Agreements\Projections\Agreement;
-use App\Domain\Users\Actions\UpdateUser;
 use App\Domain\Users\Models\Customer;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
-use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\DB;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
@@ -65,35 +62,6 @@ class AgreementProjector extends Projector
         $agreement = Agreement::findOrFail($event->aggregateRootUuid());
         $agreement->signed_at = $event->createdAt();
         $agreement->writeable()->save();
-
-        /** Find Current EndUser information */
-        $end_user = EndUser::find($event->payload['end_user_id']);
-
-        /** Fetching all agreement with category of end user */
-        $agreements = Agreement::with('categoryById')->whereEndUserId($event->payload['end_user_id'])->get();
-
-        /** Checking if any agreement is of membership category */
-        $is_membership_agreement = false;
-        foreach ($agreements as $agreement) {
-            if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
-                $is_membership_agreement = true;
-            }
-        }
-
-        $active = $event->payload['active'];
-
-        /** Convert user type to customer/member */
-        if ($active) {
-            $user = User::find($event->payload['end_user_id']);
-
-            UpdateUser::run(
-                $user,
-                [
-                    'user_type' => $is_membership_agreement ?
-                        UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER,
-                ]
-            );
-        }
     }
 
     /**

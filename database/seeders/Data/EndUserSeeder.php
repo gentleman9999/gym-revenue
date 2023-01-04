@@ -26,7 +26,6 @@ class EndUserSeeder extends Seeder
         if (env('RAPID_SEED') === true) {
             $amount_of_leads = 1;
         }
-        VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)->get();
 
@@ -35,6 +34,7 @@ class EndUserSeeder extends Seeder
                 VarDumper::dump($client->name);
                 // For each client, get all the locations
                 if (count($client->locations) > 0) {
+                    VarDumper::dump('Generating End Users for '.$client->name.'!');
                     foreach ($client->locations as $idx => $location) {
                         // For each location, MAKE 25 users, don't create
                         foreach ([
@@ -45,7 +45,6 @@ class EndUserSeeder extends Seeder
                         ) {
                             $end_users = User::factory()->count($amount_of_leads)->make();
 
-                            VarDumper::dump('Generating End Users for '.$client->name.'!');
                             foreach ($end_users as $end_user) {
                                 $end_user_data = $end_user->toArray();
                                 $end_user_data['client_id'] = $client->id;

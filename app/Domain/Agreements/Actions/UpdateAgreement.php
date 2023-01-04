@@ -28,7 +28,7 @@ class UpdateAgreement
         return [
             'agreement_category_id' => ['required', 'exists:agreement_categories,id'],
             'created_by' => 'sometimes',
-            'end_user_id' => ['sometimes','exists:end_users,id'],
+            'user_id' => ['sometimes','exists:users,id'],
             'agreement_template_id' => ['sometimes', 'exists:agreement_templates,id'],
             'gr_location_id' => ['sometimes', 'string', 'exists:locations,gymrevenue_id'],
             'agreement_json' => ['sometimes', 'json'],

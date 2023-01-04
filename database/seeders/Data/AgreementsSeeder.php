@@ -20,13 +20,12 @@ class AgreementsSeeder extends Seeder
         if (env('QUICK_SEED')) {
             $amount_of_agreements = 2;
         }
-        VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)
             ->get();
         if (count($clients) > 0) {
             foreach ($clients as $client) {
-                VarDumper::dump($client->name);
+                VarDumper::dump('Generating Agreements for ' . $client->name . '!');
                 $users = $client->employees->toArray();
                 $categories = AgreementCategory::whereClientId($client->id)->get()->toArray();
                 $amount_of_user = count($users);
@@ -44,7 +43,6 @@ class AgreementsSeeder extends Seeder
                     // For each client, get all the locations
                     if (count($client->locations) > 0) {
                         foreach ($client->locations as $idx => $location) {
-                            VarDumper::dump('Generating Agreements for ' . $client->name . '!');
                             for ($x = 0; $x <= $amount_of_agreements; $x++) {
                                 $enduser_id = $endusers[array_rand($endusers, 1)];
                                 $agreement_data['client_id'] = $client->id;
@@ -52,7 +50,7 @@ class AgreementsSeeder extends Seeder
                                 $agreement_data['agreement_category_id'] = $category_id;
                                 $agreement_data['gr_location_id'] = $location->gymrevenue_id;
                                 $agreement_data['created_by'] = $users[array_rand($users, 1)]['id'];
-                                $agreement_data['end_user_id'] = $enduser_id;
+                                $agreement_data['user_id'] = $enduser_id;
                                 $agreement_data['agreement_template_id'] = AgreementTemplate::whereClientId($client->id)->first()->id;
                                 $agreement_data['active'] = $i == 0;
                                 $agreement_data['billing_schedule_id'] = BillingSchedule::first()->id;
@@ -60,7 +58,7 @@ class AgreementsSeeder extends Seeder
                                 $agreement = CreateAgreement::run($agreement_data);
 
                                 $sign_agreement_data['id'] = $agreement->id;
-                                $sign_agreement_data['end_user_id'] = $enduser_id;
+                                $sign_agreement_data['user_id'] = $enduser_id;
                                 $sign_agreement_data['active'] = true;
                                 SignAgreement::run($sign_agreement_data);
                             }

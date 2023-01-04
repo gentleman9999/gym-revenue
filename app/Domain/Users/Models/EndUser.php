@@ -66,22 +66,6 @@ class EndUser extends User
             ->orderBy('created_at', 'DESC');
     }
 
-    public function determineEndUserType(): string
-    {
-        $type = Lead::class;
-        $agreements = Agreement::whereEndUserId($this->id)->get();
-        foreach ($agreements as $agreement) {
-            if ($agreement->active) {
-                $type = Member::class;
-            }
-            if ($type != Member::class) {
-                $type = Customer::class;
-            }
-        }
-
-        return $type;
-    }
-
     public function scopeFilter($query, array $filters): void
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

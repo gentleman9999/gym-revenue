@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Models;
 
+use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
+use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\Locations\Projections\Location;
@@ -36,13 +38,13 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Silber\Bouncer\Database\Role;
 
 /**
- * @property string                         $phone
- * @property string                         $client_id
- * @property int                            $id
- * @property string                         $last_name
- * @property string                         $first_name
- * @property string                         $name       Full name
- * @property Client                         $client
+ * @property string $phone
+ * @property string $client_id
+ * @property int $id
+ * @property string $last_name
+ * @property string $first_name
+ * @property string $name       Full name
+ * @property Client $client
  * @property Collection<ClientConversation> $twilioClientConversation
  *
  * @method static UserFactory factory()
@@ -155,7 +157,7 @@ class User extends Authenticatable implements PhoneInterface
     /**
      * Determine if the user belongs to the given team.
      *
-     * @param  mixed  $team
+     * @param mixed $team
      * @return bool
      */
     public function belongsToTeam($team): bool
@@ -306,7 +308,7 @@ class User extends Authenticatable implements PhoneInterface
         return $this->roles[0] ?? null;
     }
 
-    public function getRole(): Role | string | null
+    public function getRole(): Role|string|null
     {
         return $this->getRoles()[0] ?? null;
 //        if(!$roles || !count($roles)){
@@ -430,5 +432,31 @@ class User extends Authenticatable implements PhoneInterface
     public function getDeletedAtColumn(): string
     {
         return 'terminated_at';
+    }
+
+    public static function determineUserType(string $user_id): UserTypesEnum
+    {
+        /** Checking if any agreement is of membership category */
+        $has_active_agreements = false;
+        $is_membership_agreement = false;
+
+        $agreements = Agreement::with('categoryById')->whereActive(1)->whereUserId($user_id)->get();
+
+        if (count($agreements)) {
+            $has_active_agreements = true;
+        }
+
+        foreach ($agreements as $agreement) {
+            if ($agreement->categoryById && $agreement->categoryById['name'] === AgreementCategory::NAME_MEMBERSHIP) {
+                $is_membership_agreement = true;
+            }
+        }
+
+        if (! $has_active_agreements) {
+            return UserTypesEnum::LEAD;
+        }
+
+        return $is_membership_agreement ?
+            UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER;
     }
 }

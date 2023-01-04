@@ -23,7 +23,6 @@ class CalendarEventSeeder extends Seeder
             $amountOfEvents = 2;
         }
         // Get all the Clients
-        VarDumper::dump('Getting Clients');
         $clients = Client::whereActive(1)->get();
 
         /** Modify the below date range to change when the calendar events will populate for testing since time doesn't stand still. */

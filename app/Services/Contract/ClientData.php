@@ -9,12 +9,12 @@ class ClientData
     public const KEY_CLIENT_NAME = 'client_name';
     public const KEY_CLIENT_ID = 'client_id';
     public const KEY_CONTRACT_ID = 'contract_id';
-    public const KEY_END_USER_ID = 'end_user_id';
+    public const KEY_USER_ID = 'user_id';
     public const KEY_TEMPLATE_TYPE = 'template_type';
     public const KEY_ENTITY_ID = 'entity_id';
     public const KEY_TEMPLATE_CATEGORY = 'template_category';
     public const KEY_DATE_CREATED = 'date_created';
-    public const KEY_END_USER_NAME = 'end_user_name';
+    public const KEY_USER_NAME = 'user_name';
     public const KEY_LOCATIONS = 'locations';
     public string $template_name = '';
     private array $json_data = [];
@@ -22,11 +22,11 @@ class ClientData
         self::KEY_CLIENT_NAME => '',
         self::KEY_TEMPLATE_TYPE => '',
         self::KEY_CLIENT_ID => '',
-        self::KEY_END_USER_ID => '',
+        self::KEY_USER_ID => '',
         self::KEY_ENTITY_ID => '',
         self::KEY_TEMPLATE_CATEGORY => '',
         self::KEY_DATE_CREATED => '',
-        self::KEY_END_USER_NAME => '',
+        self::KEY_USER_NAME => '',
         self::KEY_LOCATIONS => '',
     ];
 
@@ -38,9 +38,9 @@ class ClientData
         $this->template_name = $template_name;
     }
 
-    public function setEndUserId(string $end_user_id): static
+    public function setUserId(string $user_id): static
     {
-        $this->data[self::KEY_END_USER_ID] = $end_user_id;
+        $this->data[self::KEY_USER_ID] = $user_id;
 
         return $this;
     }
@@ -66,9 +66,9 @@ class ClientData
         return $this;
     }
 
-    public function setEndUserName(string $end_user_name): static
+    public function setUserName(string $user_name): static
     {
-        $this->data[self::KEY_END_USER_NAME] = $end_user_name;
+        $this->data[self::KEY_USER_NAME] = $user_name;
 
         return $this;
     }

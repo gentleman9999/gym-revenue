@@ -13,13 +13,12 @@ class AgreementCategoriesSeeder extends Seeder
     {
         $amountOfAgreementCategories = ['Membership', 'Personal Training'];
 
-        VarDumper::dump('Getting Clients');
+        VarDumper::dump('Generating Agreement Categories for ' . $client->name . '!');
         // Get all the Clients
         $clients = Client::whereActive(1)
             ->get();
         if (count($clients) > 0) {
             foreach ($clients as $client) {
-                VarDumper::dump('Generating Agreement Categories for ' . $client->name . '!');
                 foreach ($amountOfAgreementCategories as $category) {
                     $agreement_category_data['client_id'] = $client->id;
                     $agreement_category_data['name'] = $category;

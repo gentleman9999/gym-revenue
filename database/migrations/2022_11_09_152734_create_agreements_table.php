@@ -22,7 +22,7 @@ return new class () extends Migration {
                         ->cascadeOnDelete();
             $table->string('gr_location_id')->nullable();
             $table->uuid('created_by');
-            $table->uuid('end_user_id');
+            $table->uuid('user_id');
             $table->uuid('agreement_template_id');
             $table->uuid('contract_id')->nullable();
             $table->foreign('contract_id')
