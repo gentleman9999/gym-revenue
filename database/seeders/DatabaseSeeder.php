@@ -7,6 +7,8 @@ use Database\Seeders\AccessControl\CapeAndBayBouncerRolesSeeder;
 use Database\Seeders\AccessControl\ClientBouncerRolesSeeder;
 use Database\Seeders\Clients\ClientSeeder;
 use Database\Seeders\Clients\LocationSeeder;
+use Database\Seeders\Clients\LocationVendorCategorySeeder;
+use Database\Seeders\Clients\LocationVendorSeeder;
 use Database\Seeders\Clients\SecondaryTeamsSeeder;
 use Database\Seeders\Clients\TeamLocationsSeeder;
 use Database\Seeders\Comm\CallScriptTemplateSeeder;
@@ -23,17 +25,16 @@ use Database\Seeders\Data\CalendarEventSeeder;
 use Database\Seeders\Data\CalendarEventTypeSeeder;
 use Database\Seeders\Data\ContractGatesSeeder;
 use Database\Seeders\Data\EndUserSeeder;
-use Database\Seeders\Data\LeadProspectSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
-use Database\Seeders\Data\MemberSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
 use Database\Seeders\Users\CapeAndBayUserSeeder;
 use Database\Seeders\Users\ClientUserSeeder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\VarDumper\VarDumper;
 
 class DatabaseSeeder extends Seeder
@@ -45,6 +46,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Cache::put('is_seeding', true);
         // This is where App State Records like Simulation Mode and Deployment Announcements Go
         VarDumper::dump('Setting the initial app state');
         $this->call(AppStateSeeder::class);
@@ -91,6 +93,14 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Location Seeder');
         $this->call(LocationSeeder::class);
 
+        // Create Location Vendor categories
+        VarDumper::dump('Running Location Vendor Category Seeder');
+        $this->call(LocationVendorCategorySeeder::class);
+
+        // New vendors for different location are created here
+        VarDumper::dump('Running Location Vendor Seeder');
+        $this->call(LocationVendorSeeder::class);
+
         // Secondary Teams linked to each client's account owner are defined here.
         // There is a team for each location, along with various sales teams
         VarDumper::dump('Running Client Secondary Teams Seeder');
@@ -124,10 +134,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Users Seeder');
         $this->call(ClientUserSeeder::class);
 
-        // This seeder generates dummy End Users for each client
-        VarDumper::dump('Running End Users Dummy Data Seeder');
-        $this->call(EndUserSeeder::class);
-
         VarDumper::dump('Running Agreement Templates Data Seeder');
         $this->call(AgreementTemplatesSeeder::class);
 
@@ -137,22 +143,18 @@ class DatabaseSeeder extends Seeder
 //        VarDumper::dump('Running Agreements Category Seeder');
 //        $this->call(AgreementCategoriesSeeder::class);
 
-        VarDumper::dump('Running Agreements Data Seeder');
-        $this->call(AgreementsSeeder::class);
-
         VarDumper::dump('Running Client Contract PDF Data Seeder');
         $this->call(ClientContractSeeder::class);
 
+        // This seeder generates dummy End Users for each client
+        VarDumper::dump('Running End Users Dummy Data Seeder');
+        $this->call(EndUserSeeder::class);
+
+        VarDumper::dump('Running Agreements Data Seeder');
+        $this->call(AgreementsSeeder::class);
+
         VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
         $this->call(AgreementTemplateBillingScheduleSeeder::class);
-
-        // This seeder generates dummy leads for each client
-//        VarDumper::dump('Running Leads Dummy Data Seeder');
-//        $this->call(LeadProspectSeeder::class);
-//
-//        // This seeder generates dummy members for each client
-//        VarDumper::dump('Running Members Dummy Data Seeder');
-//        $this->call(MemberSeeder::class);
 
         // This seeder generates dummy members for each client
         VarDumper::dump('Running Contract Gate Dummy Data Seeder');
@@ -189,5 +191,6 @@ class DatabaseSeeder extends Seeder
             VarDumper::dump('Running Drip Campaign Seeder');
             $this->call(DripCampaignSeeder::class);
         }
+        Cache::put('is_seeding', false);
     }
 }

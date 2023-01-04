@@ -13,7 +13,7 @@ abstract class GymRevShouldBeStored extends ShouldBeStored
         return $this->metaData['auto-generated'] ?? false;
     }
 
-    public function userId(): ?int
+    public function userId(): ?string
     {
         return $this->metaData['user_id'] ?? null;
     }
@@ -23,7 +23,7 @@ abstract class GymRevShouldBeStored extends ShouldBeStored
         return $this->metaData['access_token'] ?? null;
     }
 
-    public function impersonatorUserId(): ?int
+    public function impersonatorUserId(): ?string
     {
         return $this->metaData['impersonator_user_id'] ?? null;
     }

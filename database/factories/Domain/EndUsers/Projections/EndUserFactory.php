@@ -12,7 +12,7 @@ class EndUserFactory extends Factory
      *
      * @var string
      */
-    protected $model = \App\Domain\EndUsers\Projections\EndUser::class;
+    protected $model = \App\Domain\Users\Models\EndUser::class;
 
     /**
      * Define the model's default state.

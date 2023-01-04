@@ -8,6 +8,7 @@ use App\Domain\Locations\Projections\LocationDetails;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Enums\LocationTypeEnum;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -112,9 +113,12 @@ class LocationsController extends Controller
     public function switch(Request $request)
     {
         $location = Location::findOrFail($request->location_id);
-        if (! $request->user()->switchLocation($location)) {
-            abort(403);
-        }
+
+        /**
+         * Need to add logic to check if user belongs to the team of this location
+         */
+
+        session()->put('current_location_id', $location->id);
 
         return redirect(config('fortify.home'), 303);
     }
@@ -149,12 +153,7 @@ class LocationsController extends Controller
 
 
         if ((! is_null($client_id))) {
-            $session_team = session()->get('current_team');
-            if ($session_team && array_key_exists('id', $session_team)) {
-                $current_team = Team::find($session_team['id']);
-            } else {
-                $current_team = Team::find(auth()->user()->default_team_id);
-            }
+            $current_team = CurrentInfoRetriever::getCurrentTeam();
             $client = Client::find($client_id);
 
 

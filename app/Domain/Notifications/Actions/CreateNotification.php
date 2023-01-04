@@ -6,8 +6,8 @@ namespace App\Domain\Notifications\Actions;
 
 use App\Domain\Notifications\Notification;
 use App\Domain\Notifications\Validations\NotifiableInterface;
+use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\UserAggregate;
 use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;

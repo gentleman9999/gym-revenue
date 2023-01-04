@@ -15,7 +15,7 @@ return new class () extends Migration {
         Schema::create('client_voice_call_logs', function (Blueprint $table) {
             $table->id();
             $table->string('gateway_id');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('user_id');
             $table->string('to');
             $table->string('conversation_id')->comment('The SID of twilio voice');
             $table->string('status');

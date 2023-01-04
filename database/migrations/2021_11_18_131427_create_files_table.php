@@ -25,10 +25,12 @@ class CreateFilesTable extends Migration
             $table->string('key');
             $table->integer('size');
             $table->string('permissions')->default('[]');
-            $table->string('entity_type')->nullable();
-            $table->string('entity_id')->nullable();
+            $table->boolean('is_public')->default(false);
+            $table->string('fileable_type')->nullable(); //polymorphic fields
+            $table->string('fileable_id')->nullable(); //polymorphic fields
+//            $table->nullableMorphs('fileable');
             $table->boolean('visibility')->default(false);
-            $table->boolean('hidden')->default(false);
+            $table->boolean('is_hidden')->default(false);
             $table->string('type')->nullable();
             $table->foreignUuid('folder')->nullable();
             $table->index(['client_id', 'user_id']);

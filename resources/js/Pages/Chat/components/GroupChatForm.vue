@@ -3,7 +3,7 @@
         <div class="group-chat-form-title font-bold">Select Users To Chat</div>
         <div class="group-chat-form-item-container h-64 overflow-y-auto my-4">
             <div
-                v-for="user in users"
+                v-for="user in filteredUsers"
                 :key="user.id"
                 class="group-chat-form-item mb-1 rounded cursor-pointer p-2"
                 :class="{ active: selectedUsers[user.id] !== undefined }"
@@ -13,7 +13,9 @@
             </div>
         </div>
         <div class="flex justify-end">
-            <Button secondary size="sm" @click="startChat">Start</Button>
+            <Button secondary size="sm" @click="startChat">{{
+                btnLabel
+            }}</Button>
         </div>
     </div>
 </template>
@@ -21,22 +23,37 @@
 .group-chat-form-item:nth-child(odd) {
     background-color: #242424;
 }
+
 .group-chat-form-item.active {
     @apply bg-info border border-secondary;
 }
 </style>
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "@/Components/Button.vue";
 
 const emit = defineEmits(["start-chat"]);
+const props = defineProps({
+    btnLabel: {
+        default: "Start",
+        type: String,
+    },
+    ignore: {
+        default: [],
+        type: Array,
+    },
+});
 /** @type {Ref<int[]>} */
 const selectedUsers = ref({});
 /** @type {Ref<Object>} */
 const users = ref(null);
+const ignoreable = computed(() => props.ignore.map((u) => u.id));
+const filteredUsers = computed(() =>
+    users.value?.filter((u) => !ignoreable.value.includes(u.id))
+);
 
 axios.get(route("get-internal-chats-interlocutors")).then(({ data }) => {
-    users.value = data;
+    users.value = Object.values(data);
 });
 
 function toggleUser(user) {

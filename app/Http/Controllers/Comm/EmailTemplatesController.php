@@ -69,8 +69,7 @@ class EmailTemplatesController extends Controller
 
     public function getFiles(): Collection
     {
-        $files = File::where('extension', '=', 'jpg')
-            ->orWhere('extension', '=', 'png')
+        $files = File::whereFileableType(EmailTemplate::class)
             ->get();
 
         return $files;

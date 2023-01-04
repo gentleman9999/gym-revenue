@@ -18,6 +18,8 @@ return new class () extends Migration {
             $table->string('gr_location_id')->nullable();
             $table->string('agreement_name');
             $table->json('agreement_json')->nullable();
+            $table->boolean('is_not_billable')->default(0)->index();
+            $table->string('availability', 20);
             $table->softDeletes();
             $table->timestamps();
         });

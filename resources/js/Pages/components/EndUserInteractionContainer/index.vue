@@ -136,15 +136,15 @@ const borderStyle = computed({
         let color = "transparent";
 
         switch (props.opportunity) {
-            case "High":
+            case 3:
                 color = "green";
                 break;
 
-            case "Medium":
+            case 2:
                 color = "yellow";
                 break;
 
-            case "Low":
+            case 1:
                 color = "red";
                 break;
         }

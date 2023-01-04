@@ -18,10 +18,16 @@ class Notification extends GymRevProjection
 {
     use HasFactory;
     use SoftDeletes;
+
     /** @see resources/js/utils/parseNotificationResponse::NOTIFICATION_TYPES */
     public const TYPE_CALENDAR_EVENT_REMINDER = 'CALENDAR_EVENT_REMINDER';
     public const TYPE_NEW_CONVERSATION = 'NEW_CONVERSATION';
-    public const TYPE_NEW_MESSAGE = 'NEW_MESSAGE';
+    public const TYPE_NEW_CHAT_MESSAGE = 'NEW_CHAT_MESSAGE';
+    public const TYPE_UPDATED_CHAT_MESSAGE = 'UPDATED_CHAT_MESSAGE';
+    public const TYPE_DELETED_CHAT_MESSAGE = 'DELETED_CHAT_MESSAGE';
+    public const TYPE_NEW_CHAT_PARTICIPANT = 'NEW_CHAT_PARTICIPANT';
+    public const TYPE_DELETED_CHAT_PARTICIPANT = 'DELETED_CHAT_PARTICIPANT';
+    public const TYPE_DELETED_CHAT = 'DELETED_CHAT';
     public const TYPE_DEFAULT = 'DEFAULT_NOTIFICATION';
     public const TYPE_TASK_OVERDUE = 'TASK_OVERDUE';
 

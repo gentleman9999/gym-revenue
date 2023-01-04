@@ -3,21 +3,60 @@
 namespace App\Domain\Users\Projectors;
 
 use App\Domain\Teams\Models\Team;
+use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Events\UserCreated;
 use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
+use App\Enums\UserTypesEnum;
 use App\Models\Note;
 use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Silber\Bouncer\Database\Role;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
-use Symfony\Component\VarDumper\VarDumper;
 
 class UserCrudProjector extends Projector
 {
+    /**
+     * Array used to identify what values we want to store in UserDetails
+     * for different user_types. The key is the field value and the value
+     * is the default value for the specified key
+     */
+    private $user_details_storable = [
+        'employee' => [
+            'contact_preference' => 'sms',
+            'emergency_contact' => ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
+            'default_team_id' => null,
+        ],
+        'lead' => [
+            'contact_preference' => 'sms',
+            'emergency_contact' => ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
+            'claimed' => null,
+            'owner_user_id' => '',
+            'converted_at' => '',
+            'membership_type_id' => '',
+        ],
+        'customer' => [
+            'contact_preference' => 'sms',
+            'emergency_contact' => ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
+            'membership_type_id' => '',
+        ],
+        'member' => [
+            'contact_preference' => 'sms',
+            'emergency_contact' => ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
+            'membership_type_id' => '',
+        ],
+    ];
+    private $non_fillable_fields = [
+        'email', 'barcode', 'home_location_id', 'external_id', 'misc', 'client_id',
+        'profile_photo_path', 'alternate_emails', 'user_type', 'password',
+        'two_factor_secret', 'two_factor_recovery_codes', 'ip_address',
+        'entry_source', 'opportunity', 'started_at', 'ended_at',
+        'terminated_at', 'agreement_id', 'is_previous',
+    ];
+
     public function onStartingEventReplay()
     {
         User::truncate();
@@ -27,15 +66,17 @@ class UserCrudProjector extends Projector
     public function onUserCreated(UserCreated $event): void
     {
         $data = $event->payload;
+        if (array_key_exists('phone', $data)) {
+            $data['phone'] = "{$data['phone']}";
+        }
         //setup a transaction so we if we have errors, we don't get a half-baked user
         DB::transaction(function () use ($data, $event) {
-            //get only the keys we care about (the ones marked as fillable)
             $user = new User();
-
             $user->id = $event->aggregateRootUuid();
-            $user->client_id = $event->payload['client_id'];
-            if (array_key_exists('password', $event->payload)) {
-                $user->password = $event->payload['password'];
+            foreach ($this->non_fillable_fields as $key => $field) {
+                if (array_key_exists($field, $data)) {
+                    $user[$field] = $data[$field];
+                }
             }
             $user_table_data = array_filter($data, function ($key) {
                 return in_array($key, (new User())->getFillable());
@@ -43,6 +84,7 @@ class UserCrudProjector extends Projector
             $user->fill($user_table_data);
 
             $user->save();
+            $user = User::findOrFail($event->aggregateRootUuid());
 
             if (array_key_exists('positions', $data)) {
                 $this->syncUserPositions($user, $data);
@@ -52,33 +94,14 @@ class UserCrudProjector extends Projector
                 $this->syncUserDepartments($user, $data);
             }
 
-            $this->setUserDetails($user, $data);
-            $details = [
-                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
-            ];
-
-            // Go through the details and create them in the user_details via the
-            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
-            foreach ($details as $detail => $value) {
-                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
-            }
-            $misc_details = [
-                'emergency_contact' => $data['emergency_contact'] ?? ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
-            ];
-            foreach ($misc_details as $misc_detail => $misc) {
-                UserDetails::createOrUpdateRecord($user->id, $misc_detail, '', $misc);
-            }
-
-//            $client_id = $data['client_id'] ?? null;
-
             //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
             if ($notes) {
                 $this->createUserNotes($event, $user, $notes);
             }
 
-            /** Users have:
-             * A Role that contain abilities
+            /**
+             * Users have a Role that contain abilities
              * A classification which is a fancy word for title (employee position)
              * These two declarations should never EVER be chained together.
              */
@@ -103,33 +126,44 @@ class UserCrudProjector extends Projector
                 //let the bouncer know this $user is OG
                 Bouncer::assign($role)->to($user);
             }
+
+            $this->setUserDetails($user, $data);
         });
     }
 
     public function onUserUpdated(UserUpdated $event): void
     {
         $data = $event->payload;
+        if (array_key_exists('phone', $data)) {
+            $data['phone'] = "{$data['phone']}";
+        }
 
         //setup a transaction so we if we have errors, we don't get a half-updated user
         DB::transaction(function () use ($data, $event) {
+            $user_query = User::query();
+            /** updating our own userprofile, remove client scope */
             if ($event->userId() == $event->aggregateRootUuid()) {
-                //updating our own userprofile, remove client scope
-                $user = User::withoutGlobalScopes()->with(['teams'])->findOrFail($event->aggregateRootUuid());
-            } else {
-                $user = User::with(['teams'])->findOrFail($event->aggregateRootUuid());
+                $user_query = User::withoutGlobalScopes();
+            }
+            $user = $user_query->findOrFail($event->aggregateRootUuid());
+            foreach ($this->non_fillable_fields as $key => $field) {
+                if (array_key_exists($field, $data)) {
+                    $user[$field] = $data[$field];
+                }
             }
 
+            $user->save();
             $user->updateOrFail($data);
 
-            if (array_key_exists('positions', $data)) {
+            if (array_key_exists('positions', $data) && $user->user_type === UserTypesEnum::EMPLOYEE) {
                 $this->syncUserPositions($user, $data, true);
             }
 
-            if (array_key_exists('departments', $data)) {
+            if (array_key_exists('departments', $data) && $user->user_type === UserTypesEnum::EMPLOYEE) {
                 $this->syncUserDepartments($user, $data, true);
             }
 
-            $this->setUserDetails($user, $data);
+            $this->setUserDetails($user, $data, true);
 
             $notes = $data['notes'] ?? false;
             if ($notes) {
@@ -150,7 +184,9 @@ class UserCrudProjector extends Projector
                 $team_roles_to_sync = [];
 
                 //syncWithoutDetaching so CB user team associations dont get removed
-                $user->teams()->syncWithoutDetaching($team_roles_to_sync);
+                if ($user->user_type === UserTypesEnum::EMPLOYEE) {
+                    $user->teams()->syncWithoutDetaching($team_roles_to_sync);
+                }
             }
         });
     }
@@ -160,10 +196,11 @@ class UserCrudProjector extends Projector
 //        User::findOrFail($event->id)->delete();
 //    }
 //
-//    public function onUserRestored(UserRestored $event)
-//    {
-//        User::withTrashed()->findOrFail($event->id)->restore();
-//    }
+    public function onEndUserRestored(UserRestored $event)
+    {
+        $user = User::withTrashed()->findOrFail($event->id);
+        $user->reinstate();
+    }
 
     public function onUserDeleted(UserDeleted $event): void
     {
@@ -177,7 +214,7 @@ class UserCrudProjector extends Projector
             $team->removeUser($bad_user);
         }
 
-        $bad_user->forceDelete();
+        $bad_user->terminate();
     }
 
     protected function syncUserPositions(User $user, array $data, bool $is_updating = false): void
@@ -216,41 +253,80 @@ class UserCrudProjector extends Projector
     }
 
     /**
-     *
      * Create UserDetails based on values passed in $data
      *
-     * @TODO: Create an array with keys the values of which needs to be stored in UserDetails
-     *
+     * @param User $user
+     * @param array $data
+     * @param bool $is_updating
      */
-    protected function setUserDetails(User $user, array $data, ?string $default_contact_pref = "sms"): void
+    protected function setUserDetails(User $user, array $data, bool $is_updating = false): void
     {
-        $default_team = array_key_exists('team_ids', $data) ? $data['team_ids'][0] : $data['team_id'] ?? null;
-        /**
-         * @TODO: Revisit to work on setting user comm prefs
-         */
-
         $details = [];
-        // $details = [
-        //     'contact_preference' => $data['contact_preference'] ?? $default_contact_pref,
-        // ];
+        $user_type = $this->getUserType($user, $data);
+        if ($this->getUserType($user, $data) == UserTypesEnum::EMPLOYEE) {
+            $default_team = $this->getDefaultTeamId($user, $data, $is_updating);
+            if ($default_team) {
+                $data['default_team_id'] = $default_team;
+            }
+        }
 
-        if ($default_team) {
-            $details['default_team_id'] = $default_team;
+        foreach ($this->user_details_storable[$this->getUserType($user, $data)->value] as $field_value => $default_value) {
+            $value = $data[$field_value] ?? null;
+            if (! $is_updating) {
+                $value = $value ?? $default_value;
+            }
+
+            if ($value || ! $is_updating) {
+                $details[$field_value] = $value;
+            }
         }
 
         foreach ($details as $detail => $value) {
-            UserDetails::createOrUpdateRecord($user->id, $detail, $value);
+            if (! is_array($value)) {
+                UserDetails::createOrUpdateRecord($user->id, $detail, $value);
+            } else {
+                UserDetails::createOrUpdateRecord($user->id, $detail, '', $value);
+            }
         }
     }
 
     protected function createUserNotes($event, User $user, array $notes): void
     {
-        Note::create([
-            'entity_id' => $event->aggregateRootUuid(),
-            'entity_type' => User::class,
-            'title' => $notes['title'],
-            'note' => $notes['note'],
-            'created_by_user_id' => $event->userId(),
-        ]);
+        foreach ($notes as $note) {
+            if ($notes['title'] != null) {
+                Note::create([
+                    'entity_id' => $event->aggregateRootUuid(),
+                    'entity_type' => User::class,
+                    'title' => $notes['title'],
+                    'note' => $notes['note'],
+                    'created_by_user_id' => $event->userId(),
+                ]);
+            }
+        }
+    }
+
+    protected function getUserType(User $user, array $data): UserTypesEnum
+    {
+        $user_type = array_key_exists('user_type', $data) ? $data['user_type'] : $user->user_type;
+        $user_type = in_array($user_type, UserTypesEnum::cases()) ?
+            $user_type : UserTypesEnum::LEAD;
+
+        return $user_type;
+    }
+
+    protected function getDefaultTeamId(User $user, array $data, bool $is_updating): ?string
+    {
+        $default_team = array_key_exists('team_ids', $data) ? $data['team_ids'][0] : $data['team_id'] ?? null;
+
+        if (! $is_updating && $default_team == null && ! $user->is_cape_and_bay_user) {
+            $team_ids = TeamDetail::where('field', 'team-location')
+                ->where('value', $user->home_location_id)->get()->pluck('team_id')->toArray();
+            if (sizeof($team_ids) > 0) {
+                $teams = Team::whereIn('id', $team_ids)->get()->pluck('id')->toArray();
+                $default_team = $teams[array_rand($teams)];
+            }
+        }
+
+        return $default_team;
     }
 }

@@ -19,10 +19,10 @@ Route::middleware('auth:sanctum')->group(static function () {
 });
 
 Route::middleware('bearer')->prefix('endUsers')->group(function () {
-    Route::get('/', \App\Domain\EndUsers\Actions\ReadEndUsers::class);
-    Route::post('/create', \App\Domain\EndUsers\Actions\CreateEndUserApi::class);
-    Route::post('/upsert', \App\Domain\EndUsers\Actions\UpsertEndUserApi::class);
-    Route::post('/batchupsert', \App\Domain\EndUsers\Actions\BatchUpsertEndUserApi::class);
+    Route::get('/', \App\Domain\Users\Actions\ReadEndUsers::class);
+    Route::post('/create', \App\Domain\Users\Actions\CreateEndUserApi::class);
+    Route::post('/upsert', \App\Domain\Users\Actions\UpsertEndUserApi::class);
+    Route::post('/batchupsert', \App\Domain\Users\Actions\BatchUpsertEndUserApi::class);
 });
 
 

@@ -7,7 +7,7 @@ namespace App\Domain\Chat\Actions;
 use App\Domain\Chat\Aggregates\ChatMessageAggregate;
 use App\Domain\Chat\Models\Chat;
 use App\Domain\Chat\Models\ChatMessage;
-use App\Domain\Chat\Models\ChatParticipants;
+use App\Domain\Chat\Models\ChatParticipant;
 use App\Domain\Notifications\Actions\CreateNotification;
 use App\Domain\Notifications\Notification;
 use App\Http\Middleware\InjectClientId;
@@ -39,7 +39,7 @@ class CreateMessage
     public function handle(int $user_id, array $payload): void
     {
         $id = Uuid::get();
-        $payload['chat_participant_id'] = ChatParticipants::getIdForChatUser($payload['chat_id'], $user_id);
+        $payload['chat_participant_id'] = ChatParticipant::getIdForChatUser($payload['chat_id'], $user_id);
         ChatMessageAggregate::retrieve($id)->create($payload)->persist();
 
         /** @var Chat $chat */
@@ -48,10 +48,10 @@ class CreateMessage
             'chat_id' => $payload['chat_id'],
             'participant_id' => $payload['chat_participant_id'],
             'message' => ChatMessage::find($id),
-            'type' => Notification::TYPE_NEW_MESSAGE,
+            'type' => Notification::TYPE_NEW_CHAT_MESSAGE,
         ];
 
-        $chat->participants->each(static fn (ChatParticipants $p) => CreateNotification::run($data, $p->user));
+        $chat->participants->each(static fn (ChatParticipant $p) => CreateNotification::run($data, $p->user));
     }
 
     public function getControllerMiddleware(): array

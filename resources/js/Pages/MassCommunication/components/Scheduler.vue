@@ -330,7 +330,7 @@ const saveCampaign = async () => {
         console.log("sending campaign", fmtCampaign);
 
         /** route helpers */
-        //debugger;
+
         let action = props.isNew ? "store" : "update";
         let campType = props.campaignType === "drip" ? "drip" : "scheduled";
         let endp = `mass-comms.${campType}-campaigns.${action}`;

@@ -7,27 +7,25 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
 use App\Domain\Teams\Actions\AddTeamMember;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Aggregates\UserAggregate;
+use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
-use App\Domain\Users\PasswordValidationRules;
-use App\Domain\Users\UserAggregate;
-use App\Enums\StatesEnum;
+use App\Domain\Users\ValidationRules;
+use App\Enums\UserTypesEnum;
 use App\Http\Middleware\InjectClientId;
-
-use function bcrypt;
-
+use App\Support\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
-use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
 class CreateUser implements CreatesNewUsers
 {
-    use PasswordValidationRules;
     use AsAction;
 
     protected $command;
@@ -44,6 +42,7 @@ class CreateUser implements CreatesNewUsers
                             {--role= : the role of the user}
                             {--client= : the uuid of the client to assign }
                             {--homeclub= : the gymrevenue_id of the home_club to assign }
+                            {--type= : the type of user }
     ';
 
     /**
@@ -56,72 +55,58 @@ class CreateUser implements CreatesNewUsers
     public function handle(array $payload): User
     {
         if (array_key_exists('password', $payload)) {
-            $payload['password'] = bcrypt($payload['password']);
+            $payload['password'] = Hash::make($payload['password']);
         }
 
-//        $id = Uuid::new();//we should use uuid here, but then we'd have to change all the bouncer tables to use uuid instead of bigint;
-        $id = (User::withoutGlobalScopes()->max('id') ?? 0) + 1;
-
-        $user_aggy = UserAggregate::retrieve($id)
-            ->create($payload)->persist();
-
+        $id = Uuid::new();
+        $user_aggy = UserAggregate::retrieve($id)->create($payload)->persist();
         $created_user = User::findOrFail($id);
+        if ($this->getUserTypeFromPayload($created_user, $payload) == UserTypesEnum::EMPLOYEE) {
+            $user_teams = $payload['team_ids'] ?? (array_key_exists('team_id', $payload) ? [$payload['team_id']] : []);
+            foreach ($user_teams as $i => $team_id) {
+                /**
+                 * Since the user needs to have their team added in a single transaction in createUser
+                 * A projector won't get executed (for now) but an apply function will run on the next retrieval
+                 */
 
-
-        $user_teams = $payload['team_ids'] ?? (array_key_exists('team_id', $payload) ? [$payload['team_id']] : []);
-        foreach ($user_teams as $i => $team_id) {
-            // Since the user needs to have their team added in a single transaction in createUser
-            // A projector won't get executed (for now) but an apply function will run on the next retrieval
-//            $team_name = Team::getTeamName($team_id);
-            AddTeamMember::run(Team::findOrFail($team_id), $created_user);
-//            $team_client = Team::getClientFromTeamId($team_id);
-//            $team_client_id = ($team_client) ? $team_client->id : null;
-//            $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
+                // $team_name = Team::getTeamName($team_id);
+                AddTeamMember::run(Team::findOrFail($team_id), $created_user);
+                // $team_client = Team::getClientFromTeamId($team_id);
+                // $team_client_id = ($team_client) ? $team_client->id : null;
+                // $user_aggy = $user_aggy->addToTeam($team_id, $team_name, $team_client_id);
+            }
         }
 
-
-        $should_send_welcome_email = $payload['send_welcome_email'] ?? false;//TODO:checkbox on create userform to send email or not
-        if ($should_send_welcome_email) {
+        /** @TODO:checkbox on create userform to send email or not */
+        if (isset($payload['send_welcome_email'])) {
             UserAggregate::retrieve($created_user->id)->sendWelcomeEmail()->persist();
         }
+
+        ReflectUserData::run($created_user);
 
         return $created_user;
     }
 
     /**
-     * Get the validation rules that apply to the action.
+     * Custom validation based on user_type
      *
      * @return array
      */
     public function rules(): array
     {
-        return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'alternate_email' => ['sometimes', 'required', 'email'],
-            'address1' => ['required'],
-            'address2' => ['sometimes', 'nullable'],
-            'city' => ['required'],
-            'state' => ['required', 'max:2', new Enum(StatesEnum::class)],
-            'zip' => ['required'],
-            'notes' => ['sometimes'] ,
-            'start_date' => ['sometimes'] ,
-            'end_date' => ['sometimes'] ,
-            'termination_date' => ['sometimes'] ,
-            'client_id' => ['sometimes', 'nullable','string', 'max:255', 'exists:clients,id'],
-            'team_id' => ['required', 'string', 'exists:teams,id'],
-            'role_id' => ['required', 'integer', 'exists:roles,id'],
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
-            'phone' => ['sometimes', 'digits:10'], //should be required, but seeders don't have phones.
-            'home_location_id' => ['sometimes', 'exists:locations,gymrevenue_id'], //should be required if client_id provided. how to do?,
-            'manager' => ['sometimes', 'nullable', 'in:Senior Manager, Manager'],
-            'departments' => ['sometimes', 'nullable'],
-            'positions' => ['sometimes', 'nullable'],
-            'ec_first_name' => ['sometimes', 'string', 'max:255'],
-            'ec_last_name' => ['sometimes', 'string', 'max:255'],
-            'ec_phone' => ['sometimes', 'digits:10'],
-        ];
+        $current_route = Route::currentRouteName();
+
+        if ($current_route == 'users.store') {
+            $user_type = UserTypesEnum::EMPLOYEE;
+        } elseif ($current_route == 'data.leads.store') {
+            $user_type = UserTypesEnum::LEAD;
+        } elseif ($current_route == 'data.members.store') {
+            $user_type = UserTypesEnum::MEMBER;
+        } else {
+            $user_type = UserTypesEnum::CUSTOMER;
+        }
+
+        return ValidationRules::getValidationRules($user_type, true);
     }
 
     public function getControllerMiddleware(): array
@@ -129,11 +114,60 @@ class CreateUser implements CreatesNewUsers
         return [InjectClientId::class];
     }
 
+    /**
+     * Transform the request object in
+     * preparation for validation
+     *
+     * @param ActionRequest $request
+     */
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $request = $this->mergeUserTypeToRequest($request);
+
+        if ($request->user_type == UserTypesEnum::LEAD) {
+            /** @TODO: Need to update with what entry_source data should be */
+            $request->merge(['entry_source' => json_encode(['id' => 'some id', 'metadata' => ['something' => 'yes', 'something_else' => 'also yes']])]);
+        }
+
+        $request->mergeIfMissing([
+            'started_at' => $request->start_date,
+            'ended_at' => $request->end_date,
+            'terminated_at' => $request->termination_date,
+        ]);
+    }
+
+    /**
+     * Adds the user type to the request object
+     * based on the route name of the request
+     *
+     * @param ActionRequest $request
+     *
+     * @return ActionRequest $request
+     */
+    private function mergeUserTypeToRequest(ActionRequest $request): ActionRequest
+    {
+        $current_route = Route::currentRouteName();
+
+        if ($current_route == 'users.store') {
+            $request->merge(['user_type' => UserTypesEnum::EMPLOYEE]);
+        } elseif ($current_route == 'data.leads.store') {
+            $request->merge(['user_type' => UserTypesEnum::LEAD]);
+        } elseif ($current_route == 'data.members.store') {
+            $request->merge(['user_type' => UserTypesEnum::MEMBER]);
+        } else {
+            $request->merge(['user_type' => UserTypesEnum::CUSTOMER]);
+        }
+
+        return $request;
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
 
-        return $current_user->can('users.create', User::class);
+        return $request->user_type == UserTypesEnum::EMPLOYEE ?
+            $current_user->can('users.create', User::class) :
+            $current_user->can('endusers.create', EndUser::class);
     }
 
     public function asController(ActionRequest $request): User
@@ -145,42 +179,48 @@ class CreateUser implements CreatesNewUsers
 
     public function htmlResponse(User $user): RedirectResponse
     {
-        Alert::success("User '{$user->name}' was created")->flash();
+        $type = $user->user_type == UserTypesEnum::EMPLOYEE->value ? 'User' : ucwords($user->user_type->value);
+        Alert::success("{$type} '{$user->name}' was created")->flash();
 
-        return Redirect::route('users.edit', $user->id);
+        return $user->user_type == UserTypesEnum::EMPLOYEE ?
+            Redirect::route('users.edit', $user->id) :
+            Redirect::back();
     }
 
     public function asCommand(Command $command): void
     {
         $this->command = $command;
-        $first_name = $this->getFirstname();
-        $last_name = $this->getLastname();
-        $email = $this->getEmail($first_name);
-        $client = $this->getClient($first_name);
-        $role = $this->getRole($first_name, $client);
-        $home_location = $this->getHomeLocation($first_name, $client);
+        $payload = $this->constructPayloadForRunningCommand();
+        $role = $payload['rold_id'] ?? 'enduser';
+        $user_type = $this->getUserTypeFromPayload(null, $payload)->value;
 
-        $team_id = 1;//capeandbay team
-        if ($client) {
-            // Get the client's default-team name in client_details
-            $client_model = Client::whereId($client)->first();
-            // Use that to find the team record in teams to get its ID
-            $team_id = Team::find($client_model->home_team_id)->id;
+        $this->command->warn("Creating new {$role} {$payload['first_name']}
+            @{$payload['email']} for client_id {$payload['client_id']} as {$user_type}");
+        $this->handle($payload);
+    }
+
+    /**
+     * Constructs an assoc array to be used as the payload
+     * when creating user using artisan command
+     *
+     * @return array $payload
+     */
+    private function constructPayloadForRunningCommand(): array
+    {
+        $payload = ['password' => 'Hello123!'];
+        $payload['first_name'] = $this->getFirstname();
+        $payload['client_id'] = $this->getClient($payload['first_name']);
+        $payload['email'] = $this->getEmail($payload['first_name']);
+        $payload['last_name'] = $this->getLastname();
+        $payload['home_club'] = $this->getHomeLocation($payload['first_name'], $payload['client_id']);
+        $payload['user_type'] = $this->getUserType();
+
+        if ($payload['user_type'] === UserTypesEnum::EMPLOYEE) {
+            $payload['role_id'] = $this->getRole($payload['first_name'], $payload['client_id']);
+            $payload['team_id'] = $this->getUserTeamID($payload['client_id']);
         }
 
-        $this->command->warn("Creating new {$role} {$first_name} @{$email} for client_id {$client}");
-        $this->handle(
-            [
-                'email' => $email,
-                'client_id' => $client,
-                'role_id' => $role,
-                'first_name' => $first_name,
-                'last_name' => $last_name,
-                'password' => 'Hello123!',
-                'team_id' => $team_id,
-                'home_club' => $home_location,
-            ]
-        );
+        return $payload;
     }
 
     private function getFirstname(): string
@@ -288,6 +328,37 @@ class CreateUser implements CreatesNewUsers
         return $selected_home_location;
     }
 
+    private function getUserType(): string
+    {
+        $types = array_column(UserTypesEnum::cases(), 'value');
+        $user_type = $this->command->option('type');
+        if (! in_array($user_type, $types)) {
+            return UserTypesEnum::EMPLOYEE;
+        }
+
+        return $user_type;
+    }
+
+    /**
+     * Get the client's default-team name in client_details
+     * and use that to find the team record in teams to
+     * get its ID, otherwise return capeandbay team
+     *
+     * @param string $client
+     *
+     * @return string $team_id
+     */
+    private function getUserTeamID(string $client): string
+    {
+        if ($client) {
+            $client_model = Client::whereId($client)->first();
+
+            return Team::find($client_model->home_team_id)->id;
+        }
+
+        return 1;
+    }
+
     /**
      * Create a newly registered user  (fortify contract).
      *
@@ -297,5 +368,26 @@ class CreateUser implements CreatesNewUsers
     public function create(array $input)
     {
         return $this->handle($input);
+    }
+
+    protected function getUserTypeFromPayload(?User $user, array $data): UserTypesEnum
+    {
+        if ($user !== null) {
+            $default_type = $user->user_type;
+        } else {
+            $default_type = UserTypesEnum::LEAD;
+        }
+
+        if (array_key_exists('user_type', $data)) {
+            if (gettype($data['user_type']) == 'string') {
+                $data['user_type'] = UserTypesEnum::getByValue($data['user_type']);
+            }
+
+            $user_type = array_key_exists('user_type', $data) ?
+                $data['user_type'] : $default_type;
+        }
+
+        return in_array($user_type, UserTypesEnum::cases()) ?
+            $user_type : UserTypesEnum::LEAD;
     }
 }

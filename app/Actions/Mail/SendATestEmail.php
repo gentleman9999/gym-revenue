@@ -5,6 +5,7 @@ namespace App\Actions\Mail;
 use App\Aggregates\Users\UserAggregate;
 use App\Domain\Clients\Projections\ClientDetail;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
+use App\Support\CurrentInfoRetriever;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SendATestEmail
@@ -39,13 +40,7 @@ class SendATestEmail
             $email_template_record = EmailTemplate::find($data['templateId']);
 
             if (! is_null($email_template_record)) {
-                $session_team = session()->get('current_team');
-                if ($session_team && array_key_exists('id', $session_team)) {
-                    $team_id = $session_team['id'];
-                } else {
-                    $team_id = $user->default_team_id;
-                }
-                $current_team_id = $team_id;
+                $current_team_id = CurrentInfoRetriever::getCurrentTeamID();
 
                 $client_id = null;
                 if (! is_null($current_team_id)) {

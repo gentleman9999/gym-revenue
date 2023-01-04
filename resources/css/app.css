@@ -133,3 +133,7 @@
 .drawer.drawer-end .drawer-toggle:checked ~ .drawer-side {
     @apply fixed top-0 right-0 w-full h-full;
 }
+
+.multiselect-wrapper {
+    @apply w-full;
+}

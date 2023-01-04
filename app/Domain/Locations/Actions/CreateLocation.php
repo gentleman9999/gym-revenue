@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
@@ -7,6 +9,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
+use App\Rules\Zip;
 use App\Support\Uuid;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -36,7 +39,7 @@ class CreateLocation
             'address2' => [],
             'latitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'longitude' => ['required', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
-            'zip' => ['required', 'size:5'],
+            'zip' => ['required', 'size:5', new Zip()],
             'phone' => [],
             'poc_first' => [],
             'poc_phone' => [],
@@ -46,12 +49,15 @@ class CreateLocation
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
             'location_type' => ['required',  new Enum(LocationTypeEnum::class)],
+            'presale_opened_at' => ['sometimes'],
+            'presale_started_at' => [],
+            'capacity' => ['required','integer'],
         ];
     }
 
     public function handle(array $data): Location
     {
-        $id = Uuid::new();//we should use uuid here
+        $id = Uuid::get();//we should use uuid here
         $gymrevenue_id = GenerateGymRevenueId::run($data['client_id']);
         $data['gymrevenue_id'] = $gymrevenue_id;
         LocationAggregate::retrieve($id)->create($data)->persist();

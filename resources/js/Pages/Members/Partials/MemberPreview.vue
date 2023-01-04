@@ -14,7 +14,7 @@
         <member-preview-item
             class="field col-span-6 md:col-span-3"
             label="Phone 1"
-            :value="data.member.primary_phone"
+            :value="data.member.phone"
         />
         <member-preview-item
             class="field col-span-6 md:col-span-3"

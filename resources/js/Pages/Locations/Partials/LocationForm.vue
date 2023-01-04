@@ -211,6 +211,16 @@
                     class="mt-2"
                 />
             </div>
+            <div class="col-span-6 md:col-span-2">
+                <jet-label for="capacity" value="Capacity" />
+                <input
+                    id="capacity"
+                    type="text"
+                    class="block w-full mt-1"
+                    v-model="form.capacity"
+                />
+                <jet-input-error :message="form.errors.capacity" class="mt-2" />
+            </div>
 
             <input id="client_id" type="hidden" v-model="form.client_id" />
             <jet-input-error :message="form.errors.client_id" class="mt-2" />
@@ -308,6 +318,7 @@ export default {
                 location_type: "",
                 latitude: null,
                 longitude: null,
+                capacity: "",
             };
             operation = "Create";
         } else {
@@ -321,6 +332,7 @@ export default {
             location.address2 = location.address2;
             location.latitude = location.latitude;
             location.longitude = location.longitude;
+            location.capacity = location.capacity;
         }
 
         const transformData = (data) => ({
@@ -332,7 +344,8 @@ export default {
         const form = useGymRevForm(location);
 
         const isFormValid = computed(
-            () => form.isDirty && form.location_type.trim()?.length
+            () => form.isDirty
+            // && form.location_type.trim()?.length
         );
 
         //

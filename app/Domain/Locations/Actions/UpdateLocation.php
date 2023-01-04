@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations\Actions;
 
 use App\Domain\Locations\LocationAggregate;
@@ -7,6 +9,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Enums\LocationTypeEnum;
 use App\Enums\StatesEnum;
 use App\Http\Middleware\InjectClientId;
+use App\Rules\Zip;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Enum;
@@ -33,9 +36,9 @@ class UpdateLocation
 //            'client_id' => ['sometimes', 'exists:clients,id'],
             'address1' => ['sometimes','max:200'],
             'address2' => [],
+            'zip' => ['sometimes', 'required', 'size:5', new Zip()],
             'latitude' => ['sometimes', 'numeric', 'regex:/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
             'longitude' => ['sometimes', 'numeric', 'regex:/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/'],
-            'zip' => ['sometimes', 'size:5'],
             'phone' => ['sometimes', ],
             'poc_first' => ['sometimes', ],
             'poc_phone' => ['sometimes', ],
@@ -44,6 +47,9 @@ class UpdateLocation
             'gymrevenue_id' => ['sometimes', 'nullable', 'exists:locations,gymrevenue_id'],
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'location_type' => ['sometimes',  new Enum(LocationTypeEnum::class)],
+            'presale_opened_at' => ['sometimes'],
+            'presale_started_at' => ['sometimes'],
+            'capacity' => ['sometimes','integer'],
         ];
     }
 

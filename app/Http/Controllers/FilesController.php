@@ -6,11 +6,13 @@ use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Roles\Role;
 use App\Domain\Teams\Models\Team;
+use App\Domain\Users\Models\Employee;
 use App\Domain\Users\Models\User;
 use App\Enums\SecurityGroupEnum;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Position;
+use App\Support\CurrentInfoRetriever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -35,9 +37,9 @@ class FilesController extends Controller
         if ($isSearching) {
             $files = File::with('client')
                     ->whereClientId($client_id)
-                    ->whereUserId(null)
-                    ->whereHidden(false)
-                    ->whereEntityType(null)
+                    //->whereUserId(null)
+                    ->whereIsHidden(false)
+                    ->whereFileableId($client_id)
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
                     ->paginate($page_count)
@@ -46,10 +48,10 @@ class FilesController extends Controller
             if ($security_group === SecurityGroupEnum::ADMIN || $security_group === SecurityGroupEnum::ACCOUNT_OWNER) {
                 $files = File::with('client')
                     ->whereClientId($client_id)
-                    ->whereUserId(null)
-                    ->whereHidden(false)
+                    //->whereUserId(null)
+                    ->whereIsHidden(false)
                     ->whereFolder(null)
-                    ->whereEntityType(null)
+                    ->whereFileableId($client_id)
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
                     ->paginate($page_count)
@@ -57,10 +59,10 @@ class FilesController extends Controller
             } else {
                 $files = File::with('client')
                     ->whereClientId($client_id)
-                    ->whereUserId(null)
-                    ->whereHidden(false)
+                    //->whereUserId(null)
+                    ->whereIsHidden(false)
                     ->whereFolder(null)
-                    ->whereEntityType(null)
+                    ->whereFileableId($client_id)
                     ->where('permissions', 'like', '%'.strtolower(str_replace(' ', '_', $roles[0])).'%')
                     ->filter($request->only('search', 'trashed'))
                     ->sort()
@@ -75,7 +77,7 @@ class FilesController extends Controller
 
 
 
-        $user = User::whereId($request->user()->id)->with('teams', 'positions', 'departments')->first();
+        $user = Employee::whereId($request->user()->id)->with('teams', 'positions', 'departments')->first();
 
         /**
         * Folder permissions to determine if you can see the folder
@@ -126,7 +128,7 @@ class FilesController extends Controller
             }
 
             if ($folder->location_ids) {
-                if (in_array($user->current_location_id, $folder->location_ids)) {
+                if (in_array(CurrentInfoRetriever::getCurrentLocationID(), $folder->location_ids)) {
                     $shouldForgetFolder = false;
                 }
                 $hasPermissionsSet = true;
@@ -144,8 +146,9 @@ class FilesController extends Controller
             'positions' => Position::all(),
             'roles' => Role::all(),
             'locations' => Location::all(),
-            'users' => User::all(),
+            'users' => Employee::all(),
             'teams' => Team::all(),
+            'uploadFileRoute' => 'files.store',
         ]);
     }
 

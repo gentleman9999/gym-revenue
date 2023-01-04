@@ -159,12 +159,21 @@ import UploadIcon from "./UploadIcon.vue";
 
 import Vapor from "laravel-vapor";
 import { Inertia } from "@inertiajs/inertia";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 const props = defineProps({
     user: { type: Object },
     formSubmitOptions: { type: Object },
     handleCancel: { type: Function },
+    uploadFileRoute: {
+        type: String,
+        required: true,
+    },
 });
+
+const page = usePage();
+const uploadFileRoute =
+    page.props.value.uploadFileRoute || props.uploadFileRoute;
 
 const defaultHandleCancel = () => {
     Inertia.visit(route("files"));
@@ -247,8 +256,7 @@ const formSubmitOptions = props?.formSubmitOptions || {};
 const handleSubmit = () => {
     const payload = allFiles.value;
     payload.forEach((file) => (file.visibility = form.visibility));
-
-    Inertia.post(route("files.store"), payload, {
+    Inertia.post(route(uploadFileRoute), payload, {
         onSuccess: () => {
             emit("submitted");
             form.reset();

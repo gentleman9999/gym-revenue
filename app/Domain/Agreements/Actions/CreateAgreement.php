@@ -20,7 +20,9 @@ class CreateAgreement
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'billing_schedule_id' => ['required', 'exists:billing_schedules,id'],
             'created_by' => 'required',
-            'agreement_json' => 'required',
+            'end_user_id' => ['required','exists:end_users,id'],
+            'agreement_template_id' => ['required', 'exists:agreement_templates,id'],
+            'agreement_json' => ['sometimes', 'json'],
             'contract_id' => ['required', 'exists:contracts,id'],
         ];
     }
@@ -38,7 +40,6 @@ class CreateAgreement
             return throw new \Exception("Agreement Category, Gym Revenue Location or Billing Schedule Type is not valid for this contract");
         }
 
-        unset($data['contract_id']); // Removing from payload b'cus, contract id is dummy and contract_id is set with foregin constrant in agreement table'
         unset($data['billing_schedule_id']); // Don't have column in agreement table
 
         $id = Uuid::new();
