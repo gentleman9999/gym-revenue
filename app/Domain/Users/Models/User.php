@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Models;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
-use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Models\File;
-use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
@@ -363,14 +363,9 @@ class User extends Authenticatable
         return null;
     }
 
-    public function departments(): BelongsToMany
+    public function locationEmployees(): BelongsTo
     {
-        return $this->belongsToMany(Department::class, 'user_department', 'user_id', 'department_id');
-    }
-
-    public function positions(): BelongsToMany
-    {
-        return $this->belongsToMany(Position::class, 'user_position', 'user_id', 'position_id');
+        return $this->belongsTo(LocationEmployee::class, 'user_id', 'id');
     }
 
     /**

@@ -45,6 +45,7 @@
         "symfony/mailgun-mailer": "^6.1",
         "tightenco/ziggy": "^1.4",
         "twilio/sdk": "^6.31",
+        "tymon/jwt-auth": "^1.0",
         "wnx/sidecar-browsershot": "^1.1"
     },
     "require-dev": {

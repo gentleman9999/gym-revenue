@@ -158,7 +158,7 @@ class UsersController extends Controller
             return Redirect::back();
         }
 
-        $user->load('details', 'notes', 'files', 'contact_preference', 'positions', 'departments', 'emergencyContact');//TODO:get rid of loading all details here.
+        $user->load('details', 'notes', 'files', 'contact_preference', 'emergencyContact');//TODO:get rid of loading all details here.
 
         if ($me->id == $user->id) {
             return Redirect::route('profile.show');

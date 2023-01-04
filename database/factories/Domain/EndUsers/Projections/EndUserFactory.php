@@ -29,7 +29,7 @@ class EndUserFactory extends Factory
         $email = "{$username}@{$domain}";
 
         return [
-            'id' => Uuid::uuid4()->toString(),
+//            'id' => Uuid::uuid4()->toString(),
             'client_id' => 0,
             'gr_location_id' => 'CB01',
             'first_name' => $first_name,

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Projectors;
 
+use App\Domain\LocationEmployees\Actions\CreateLocationEmployee;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Events\UserCreated;
@@ -66,9 +69,11 @@ class UserCrudProjector extends Projector
     public function onUserCreated(UserCreated $event): void
     {
         $data = $event->payload;
+
         if (array_key_exists('phone', $data)) {
             $data['phone'] = "{$data['phone']}";
         }
+
         //setup a transaction so we if we have errors, we don't get a half-baked user
         DB::transaction(function () use ($data, $event) {
             $user = new User();
@@ -82,17 +87,31 @@ class UserCrudProjector extends Projector
                 return in_array($key, (new User())->getFillable());
             }, ARRAY_FILTER_USE_KEY);
             $user->fill($user_table_data);
-
             $user->save();
             $user = User::findOrFail($event->aggregateRootUuid());
 
-            if (array_key_exists('positions', $data)) {
-                $this->syncUserPositions($user, $data);
+            if (array_key_exists('departments', $data)) {
+                $this->syncLocationEmployees($user, $data);
             }
 
-            if (array_key_exists('departments', $data)) {
-                $this->syncUserDepartments($user, $data);
+            $this->setUserDetails($user, $data);
+            $details = [
+                'contact_preference' => $data['contact_preference'] ?? 'sms', //default sms
+            ];
+
+            // Go through the details and create them in the user_details via the
+            // @todo - refactor other details like creating user, phone, etc to funnel through this little black hole here.
+            foreach ($details as $detail => $value) {
+                UserDetails::createOrUpdateRecord((string)$user->id, $detail, $value);
             }
+            $misc_details = [
+                'emergency_contact' => $data['emergency_contact'] ?? ['ec_first_name' => '', 'ec_last_name' => '', 'ec_phone' => ''],
+            ];
+            foreach ($misc_details as $misc_detail => $misc) {
+                UserDetails::createOrUpdateRecord((string)$user->id, $misc_detail, '', $misc);
+            }
+
+//            $client_id = $data['client_id'] ?? null;
 
             //TODO: use an action that trigger ES specific to note
             $notes = $data['notes'] ?? false;
@@ -155,12 +174,8 @@ class UserCrudProjector extends Projector
             $user->save();
             $user->updateOrFail($data);
 
-            if (array_key_exists('positions', $data) && $user->user_type === UserTypesEnum::EMPLOYEE) {
-                $this->syncUserPositions($user, $data, true);
-            }
-
-            if (array_key_exists('departments', $data) && $user->user_type === UserTypesEnum::EMPLOYEE) {
-                $this->syncUserDepartments($user, $data, true);
+            if (array_key_exists('departments', $data)) {
+                $this->syncLocationEmployees($user, $data);
             }
 
             $this->setUserDetails($user, $data, true);
@@ -217,38 +232,21 @@ class UserCrudProjector extends Projector
         $bad_user->terminate();
     }
 
-    protected function syncUserPositions(User $user, array $data, bool $is_updating = false): void
+    protected function syncLocationEmployees(User $user, array $data): void
     {
-        if (count($data) == count($data, COUNT_RECURSIVE)) {
-            if ($is_updating) {
-                $user->positions()->sync($data['positions']);
-            }
-        } else {
-            //ARRAY IS MULTIDEM
-            if ($is_updating) {
-                $user->positions()->sync($data['positions']);
-            } else {
-                $user->positions()->sync($data['positions'][0]);
-            }
-        }
-    }
+        $location_employee_data['location_id'] = '';
+        $location_employee_data['client_id'] = $user->client_id;
+        $location_employee_data['user_id'] = $user->id;
+        $location_employee_data['primary_supervisor_user_id'] = '';
 
-    protected function syncUserDepartments(User $user, array $data, bool $is_updating): void
-    {
-        if (count($data) == count($data, COUNT_RECURSIVE)) {
-            if ($is_updating) {
-                $user->departments()->sync($data['departments']);
+        if (count($data) != count($data, COUNT_RECURSIVE)) {
+            if (array_key_exists('departments', $data)) {
+                foreach ($data['departments'] as $dept) {
+                    $location_employee_data['department_id'] = $dept['department'];
+                    $location_employee_data['position_id'] = $dept['position'];
+                    CreateLocationEmployee::run($location_employee_data);
+                }
             }
-        } else {
-            //ARRAY IS MULTIDEM
-            $depts = [];
-            $positions = [];
-            foreach ($data['departments'] as $dept) {
-                $depts[] = $dept['department'];
-                $positions[] = $dept['position'];
-            }
-            $user->departments()->sync($depts);
-            $user->positions()->sync($positions);
         }
     }
 

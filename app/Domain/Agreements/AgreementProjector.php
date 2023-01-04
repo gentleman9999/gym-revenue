@@ -16,6 +16,7 @@ use App\Domain\Users\Actions\UpdateUser;
 use App\Domain\Users\Models\Customer;
 use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\Member;
+use App\Domain\Users\Models\User;
 use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\DB;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -83,8 +84,10 @@ class AgreementProjector extends Projector
 
         /** Convert user type to customer/member */
         if ($active) {
+            $user = User::find($event->payload['end_user_id']);
+
             UpdateUser::run(
-                $event->payload['end_user_id'],
+                $user,
                 [
                     'user_type' => $is_membership_agreement ?
                         UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER,

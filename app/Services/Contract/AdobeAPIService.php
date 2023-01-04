@@ -87,7 +87,7 @@ class AdobeAPIService
 
             return $this->getAssetId();
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('Token was not created');
         }
     }
 
@@ -109,9 +109,10 @@ class AdobeAPIService
             $this->asset_id = $response->assetID;
             $upload_uri = $response->uploadUri;
 
+            //TODO: why does getAssetId have a side effect of uploading a file?
             return $this->uploadWordFile($upload_uri, $media_type);
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('Asset Id was not created');
         }
     }
 
@@ -128,7 +129,7 @@ class AdobeAPIService
         if ($response->getStatusCode() == 200) {
             return $this->convertIntoPDF();
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('Template file not uploaded for conversion');
         }
     }
 
@@ -152,9 +153,7 @@ class AdobeAPIService
 
             return $this->checkFileStatus();
         } else {
-            dd($response->body());
-
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('File did not converted in PDF');
         }
     }
 
@@ -180,7 +179,7 @@ class AdobeAPIService
                 throw new \ErrorException('Cannot convert given file type');
             }
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('File status of converted file was not found');
         }
     }
 
@@ -226,7 +225,7 @@ class AdobeAPIService
                 throw new \ErrorException('Unable to upload file in s3 bucket');
             }
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('PDF was not downloaded successfully');
         }
     }
 }

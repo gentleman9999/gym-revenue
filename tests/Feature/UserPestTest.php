@@ -35,7 +35,7 @@ it('should have an update user event', function () {
     $user = UserUtility::createUserWithoutTeam();
 
     //run the update user action
-    UpdateUser::run($user->id, [
+    UpdateUser::run($user, [
         'first_name' => $first_name,
         'last_name' => $last_name,
     ]);
@@ -120,7 +120,7 @@ it('should update the user data', function () {
     $user = UserUtility::createUserWithTeam();
 
     //run the update user action
-    UpdateUser::run($user->id, [
+    UpdateUser::run($user, [
         'first_name' => $first_name,
         'last_name' => $last_name,
     ]);

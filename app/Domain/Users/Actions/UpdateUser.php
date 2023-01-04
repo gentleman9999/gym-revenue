@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Aggregates\UserAggregate;
@@ -28,13 +30,13 @@ class UpdateUser implements UpdatesUserProfileInformation
 
     private bool $updatingSelf = false;
 
-    public function handle(string $id, array $payload): User
+    public function handle(User $user, array $payload): User
     {
-        $previous_type = $this->getPreviousUserType($id);
+        $previous_type = $this->getPreviousUserType((string)$user->id);
         if (array_key_exists('password', $payload)) {
             $payload['password'] = bcrypt($payload['password']);
         }
-        $misc = (new UserDetails())->whereUserId($id)->whereField('emergency_contact')->first()?->misc ?: [];
+        $misc = (new UserDetails())->whereUserId($user->id)->whereField('emergency_contact')->first()?->misc ?: [];
         $new_ec = [
             'ec_first_name' => $payload['ec_first_name'] ?? ($misc['ec_first_name'] ?? null),
             'ec_last_name' => $payload['ec_last_name'] ?? ($misc['ec_last_name'] ?? null),
@@ -42,15 +44,15 @@ class UpdateUser implements UpdatesUserProfileInformation
         ];
 
         if (! empty(array_filter($new_ec))) {
-            UserDetails::createOrUpdateRecord($id, 'emergency_contact', '', $new_ec, true);
+            UserDetails::createOrUpdateRecord((string)$user->id, 'emergency_contact', '', $new_ec, true);
         }
 
-        UserAggregate::retrieve($id)->update($payload)->persist();
+        UserAggregate::retrieve((string)$user->id)->update($payload)->persist();
 
         if ($this->updatingSelf) {
-            $user = User::withoutGlobalScopes()->findOrFail($id);
+            $user = User::withoutGlobalScopes()->findOrFail($user->id);
         } else {
-            $user = User::findOrFail($id);
+            $user = User::findOrFail($user->id);
         }
 
         ReflectUserData::run($user, $previous_type);
@@ -126,7 +128,7 @@ class UpdateUser implements UpdatesUserProfileInformation
     public function asController(ActionRequest $request, User $user): User
     {
         return $this->handle(
-            $user->id,
+            $user,
             $request->validated(),
         );
     }
@@ -153,7 +155,7 @@ class UpdateUser implements UpdatesUserProfileInformation
         $this->updatingSelf = true;
         $input['client_id'] = $user->client_id;
         $input['id'] = $user->id;
-        $this->handle($input['id'], $input);
+        $this->handle($user, $input);
     }
 
     /**

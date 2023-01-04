@@ -54,7 +54,7 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
                 ->first();
         }
         if (is_null($lead)) {
-            $aggy = UserAggregate::retrieve($id);
+            $aggy = UserAggregate::retrieve((string)$id);
             $aggy->create($data);
         } else {
             $old_data = $lead->toArray();
@@ -65,7 +65,7 @@ abstract class UpsertEndUserApi extends BaseEndUserAction
         try {
             $aggy->persist();
         } catch (\Exception $e) {
-            Log::error($e->message);
+            Log::error($e->getMessage());
         }
 
         return EndUser::findOrFail($id);
