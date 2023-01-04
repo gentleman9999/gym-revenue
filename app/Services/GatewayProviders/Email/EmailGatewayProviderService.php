@@ -10,6 +10,9 @@ use App\Services\GatewayProviders\GatewayProviderService;
 use App\Services\GatewayProviders\Profiles\Email\EmailGatewayProvider;
 use App\Services\GatewayProviders\Profiles\Email\Mailgun;
 
+/**
+ * @deprecated
+ */
 class EmailGatewayProviderService extends GatewayProviderService
 {
     protected $provider_type_slug = 'email';

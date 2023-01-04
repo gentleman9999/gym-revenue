@@ -107,7 +107,7 @@ class BouncerAbilitiesSeeder extends Seeder
             $roles_allowed_to_contact_endusers = ['Account Owner', 'Location Manager', 'Sales Rep', 'Employee'];
             foreach ($roles_allowed_to_contact_endusers as $role) {
                 VarDumper::dump("Allowing $role to contact endusers for teams");
-                Bouncer::allow($role)->to('enduser.contact', EndUser::class);
+                Bouncer::allow($role)->to('endusers.contact', EndUser::class);
             }
             Bouncer::allow('Account Owner')->to('manage-client-settings');
         }

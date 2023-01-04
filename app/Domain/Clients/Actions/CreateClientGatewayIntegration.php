@@ -48,7 +48,9 @@ class CreateClientGatewayIntegration
         foreach ($clients as $client) {
             foreach ($gateways as $gateway) {
                 $name = "{$client->name}({$gateway->name})";
-                $this->handle($client, $gateway, $command->ask("Enter gateway integration name for {$name}:"));
+                $integration_name = $command->ask("Enter gateway integration nickname for {$name}");
+                $this->handle($client, $gateway, $integration_name ?? $gateway->name);
+
                 $message .= "{$name} integration created.\n";
             }
         }

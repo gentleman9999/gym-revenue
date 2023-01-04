@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Events;
 
+use App\Domain\Users\Models\EndUser;
 use App\StorableEvents\GymRevCrudEvent;
 
 class EndUserClaimedByRep extends GymRevCrudEvent

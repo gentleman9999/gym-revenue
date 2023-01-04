@@ -10,6 +10,7 @@ use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
+use App\Interfaces\PhoneInterface;
 use App\Models\File;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
@@ -46,7 +47,7 @@ use Silber\Bouncer\Database\Role;
  *
  * @method static UserFactory factory()
  */
-class User extends Authenticatable
+class User extends Authenticatable implements PhoneInterface
 {
     use HasTeams;
     use HasFactory;
@@ -389,6 +390,11 @@ class User extends Authenticatable
             $this->user_type,
             [UserTypesEnum::LEAD, UserTypesEnum::CUSTOMER, UserTypesEnum::MEMBER]
         );
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phone;
     }
 
     public function files(): MorphMany

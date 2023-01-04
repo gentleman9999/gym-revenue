@@ -89,12 +89,12 @@ class LeadsController extends Controller
 
         $current_team = CurrentInfoRetriever::getCurrentTeam();
         $x = ['name' => null, 'id' => null];
-        $team_users = Employee::whereIn('id', $current_team->team_users()->get()->pluck('user_id')->toArray());
+        $team_users = Employee::whereIn('id', $current_team->team_users()->get()->pluck('user_id')->toArray())->get();
         $available_lead_owners = [];
         foreach ($team_users as $team_user) {
             $available_lead_owners[] = [
-                'name' => $team_user->user->name,
-                "id" => $team_user->user->id,
+                'name' => $team_user->name,
+                "id" => $team_user->id,
             ];
         }
 
@@ -485,8 +485,6 @@ class LeadsController extends Controller
             }
         }
 
-//        return Redirect::route('data.leads.show', ['id' => $lead_id, 'activeDetailIndex' => 0]);
-//        return redirect()->back()->with('selectedLeadDetailIndex', '0');
         return Redirect::back()->with('selectedLeadDetailIndex', 0);
     }
 
