@@ -8,10 +8,13 @@ use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
 use App\Enums\SecurityGroupEnum;
+
 use function auth;
+
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+
 use function redirect;
 use function request;
 use function response;

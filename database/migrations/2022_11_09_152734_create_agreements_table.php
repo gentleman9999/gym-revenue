@@ -30,6 +30,7 @@ return new class () extends Migration {
                         ->on('contracts')
                         ->cascadeOnDelete();
             $table->boolean('active')->default(false);
+            $table->timestamp('signed_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

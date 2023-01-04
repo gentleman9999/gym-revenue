@@ -3,6 +3,7 @@
 namespace App\Domain\Users\Actions;
 
 use function __;
+
 use App\Domain\Users\Aggregates\UserAggregate;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\PasswordValidationRules;

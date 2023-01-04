@@ -46,7 +46,6 @@ class CreateTeamTest extends TestCase
 
     protected function allowEditInGroup($group, $role, $client)
     {
-
         // Convert the $group array into a Collection
         $groups = collect($group);
 

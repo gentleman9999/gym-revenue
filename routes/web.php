@@ -498,6 +498,12 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-documents')-
     });
 });
 
+
+Route::middleware(['auth:sanctum', 'verified'])->prefix('agreement')->group(function () {
+    Route::post('/pdf/sign', \App\Domain\Agreements\Actions\SignAgreement::class)->name('agreement.pdf.sign');
+    Route::get('/pdf/{agreement_id}', \App\Http\Controllers\AgreementController::class . '@viewAgreementPDF')->name('agreement.pdf');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])->prefix('structured-document-requests')->group(function () {
     Route::post('/', \App\Domain\StructuredDocumentRequests\Actions\CreateStructuredDocumentRequest::class)->name('structured-document-request.store');
     Route::put('/{structured_document_request}', \App\Domain\StructuredDocumentRequests\Actions\UpdateStructuredDocumentRequest::class)->name('structured-document-request.update');

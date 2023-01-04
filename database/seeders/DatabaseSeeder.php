@@ -134,10 +134,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Users Seeder');
         $this->call(ClientUserSeeder::class);
 
-        // This seeder generates dummy End Users for each client
-        VarDumper::dump('Running End Users Dummy Data Seeder');
-        $this->call(EndUserSeeder::class);
-
         VarDumper::dump('Running Agreement Templates Data Seeder');
         $this->call(AgreementTemplatesSeeder::class);
 
@@ -149,6 +145,10 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Contract PDF Data Seeder');
         $this->call(ClientContractSeeder::class);
+
+        // This seeder generates dummy End Users for each client
+        VarDumper::dump('Running End Users Dummy Data Seeder');
+        $this->call(EndUserSeeder::class);
 
         VarDumper::dump('Running Agreements Data Seeder');
         $this->call(AgreementsSeeder::class);

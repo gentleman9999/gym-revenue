@@ -11,6 +11,7 @@ use Laravel\Jetstream\Contracts\DeletesUsers;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
+
 use function request;
 
 class DeleteUser implements DeletesUsers

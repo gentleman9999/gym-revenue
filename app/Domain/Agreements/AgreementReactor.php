@@ -42,7 +42,7 @@ class AgreementReactor extends Reactor implements ShouldQueue
         $client_info->setEntityId($event->aggregateRootUuid());
         $client_info->setTemplateCategory($agreement->category->name);
         $client_info->setDateCreated(Carbon::now()->format('Y/m/d'));
-        $client_info->setEndUserName($agreement->endUser->name);
+        $client_info->setEndUserName($event->payload['end_user_id']);
         $client_info->setLocation($locations);
         $client_info->setJsonData($json_key);
 

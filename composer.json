@@ -35,6 +35,8 @@
         "pusher/pusher-php-server": "^7.0",
         "sendgrid/sendgrid": "^8.0",
         "sentry/sentry-laravel": "^3.0",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi-fpdf": "^2.3",
         "silber/bouncer": "^v1.0.0",
         "spatie/browsershot": "^3.54",
         "spatie/laravel-event-sourcing": "^7.2",

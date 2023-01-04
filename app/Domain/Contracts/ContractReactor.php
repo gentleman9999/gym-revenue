@@ -45,12 +45,6 @@ class ContractReactor extends Reactor
         Cache::put($cache_key, $result);
         //TODO: we need to save a copy of the generated PDF in s3, and store a ref in the contract table
         //TODO: error handling
-//            if (!$result->status) {
-////                        UpdateContract::run($contract, ['pdf_file' => $result]);
-//                VarDumper::dump("PDF for " . $client->name . ' was not created due to error: ' . $result->message);
-//            } else {
-//                VarDumper::dump("PDF for " . $client->name . ' is created successfully');
-//            }
     }
 
 //    public function onContractUpdated(ContractUpdated $event): void

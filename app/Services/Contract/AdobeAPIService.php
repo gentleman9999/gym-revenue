@@ -87,8 +87,6 @@ class AdobeAPIService
 
             return $this->getAssetId();
         } else {
-            dd($response->body());
-
             throw new \ErrorException('PDF not created successfully');
         }
     }
@@ -212,9 +210,9 @@ class AdobeAPIService
                 $file_table_data['key'] = $file_key;
                 $file_table_data['size'] = $response->header('Content-Length');
                 $file_table_data['bucket'] = 's3';
-                $file_table_data['entity_type'] = Contract::class;
-                $file_table_data['entity_id'] = $this->client_data['entity_id'];
-                $file_table_data['hidden'] = false;
+                $file_table_data['fileable_type'] = Contract::class;
+                $file_table_data['fileable_id'] = $this->client_data['entity_id'];
+                $file_table_data['is_hidden'] = false;
                 $file_table_data['type'] = 'pdf';
 
                 $file = File::create($file_table_data);
