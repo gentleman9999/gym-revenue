@@ -1,4 +1,4 @@
-input UserInput {
+input UserInput @validator {
     id: ID
     first_name: String
     last_name: String
@@ -23,7 +23,7 @@ input UserInput {
     departments: [ID]
     positions: [ID]
 }
-input NoteInput {
+input NoteInput @validator {
     note: String
     title: String
 }

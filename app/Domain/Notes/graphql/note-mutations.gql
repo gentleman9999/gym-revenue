@@ -1,12 +1,8 @@
 extend type Mutation {
-    createNote(
-        input: CreateNoteInput! @spread,
-    ): Note!
-    @inject(context: "user.client_id", name: "created_by_user_id")
+    createNote(input: CreateNoteInput @spread): Note!
+        @inject(context: "user.client_id", name: "created_by_user_id")
 
-    updateNote(
-        input: UpdateNoteInput! @spread,
-    ): Note!
-    @inject(context: "user.client_id", name: "created_by_user_id")
-    @inject(context: "user.id", name: "user_id")
+    updateNote(input: UpdateNoteInput @spread): Note!
+        @inject(context: "user.client_id", name: "created_by_user_id")
+        @inject(context: "user.id", name: "user_id")
 }

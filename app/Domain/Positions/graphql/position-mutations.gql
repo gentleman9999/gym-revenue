@@ -1,14 +1,7 @@
 extend type Mutation {
-    createPosition(
-        name: String,
-        departments: [ID],
-    ): Position!
-    @inject(context: "user.client_id", name: "client_id")
-    
-    updatePosition(
-        id: ID,
-        name: String,
-        departments: [ID],
-    ): Position!
-    @inject(context: "user.client_id", name: "client_id")
+    createPosition(input: CreatePositionInput @spread): Position!
+        @inject(context: "user.client_id", name: "client_id")
+
+    updatePosition(input: UpdatePositionInput @spread): Position!
+        @inject(context: "user.client_id", name: "client_id")
 }

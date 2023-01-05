@@ -4,3 +4,14 @@ input PositionFilter {
     state: String
     client_id: ID
 }
+
+input CreatePositionInput @validator {
+    name: String
+    departments: [ID]
+}
+
+input UpdatePositionInput @validator {
+    id: ID
+    name: String
+    departments: [ID]
+}
