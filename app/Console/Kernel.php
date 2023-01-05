@@ -8,6 +8,7 @@ use App\Domain\Reminders\Actions\CheckReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\App;
+use App\Domain\Tasks\Actions\CheckTaskReminder;
 
 class Kernel extends ConsoleKernel
 {
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new CheckScheduledCampaigns())->everyMinute()->withoutOverlapping();
         $schedule->job(new CheckReminders())->everyMinute()->withoutOverlapping();
         $schedule->job(new CheckOverdueTasks())->everyMinute()->withoutOverlapping();
+        $schedule->job(new CheckTaskReminder())->everyMinute()->withoutOverlapping();
     }
 
     /**
