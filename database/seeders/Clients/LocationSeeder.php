@@ -180,16 +180,6 @@ class LocationSeeder extends Seeder
                 ],
                 [
                     'client' => 'Stencils',
-                    'name' => 'Stencils 3',
-                    'state' => 'CA',
-                    'city' => 'San Jose',
-                    'zip' => '94088',
-                    'location_no' => 'ST03',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'ST09'
-                ],
-                [
-                    'client' => 'Stencils',
                     'name' => 'Stencils @ Microsoft',
                     'state' => 'Wa',
                     'city' => 'Redmond',
@@ -225,15 +215,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'PF03',
                     'location_type' => LocationTypeEnum::STORE,
                     //'gymrevenue_id' => 'PF28'
-                ],
-                [
-                    'client' => 'Sci-Fi Purple Gyms',
-                    'state' => 'FL',
-                    'city' => 'Callahan',
-                    'zip' => '32011',
-                    'location_no' => 'PF04',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'PF29'
                 ],
             ];
         }
