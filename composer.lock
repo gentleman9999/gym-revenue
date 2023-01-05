@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40eb473faed34e593f1cffdb31de7f25",
+    "content-hash": "8a2bfaecece18e8a51709e544aa409d3",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3539,16 +3539,16 @@
         },
         {
             "name": "laravel/vapor-core",
-            "version": "v2.26.0",
+            "version": "v2.26.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/vapor-core.git",
-                "reference": "887890d8d6846a9d67f63bede4c9f996d44b8156"
+                "reference": "323cd74b7c37132203d86303859a4cb46e3156d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/vapor-core/zipball/887890d8d6846a9d67f63bede4c9f996d44b8156",
-                "reference": "887890d8d6846a9d67f63bede4c9f996d44b8156",
+                "url": "https://api.github.com/repos/laravel/vapor-core/zipball/323cd74b7c37132203d86303859a4cb46e3156d2",
+                "reference": "323cd74b7c37132203d86303859a4cb46e3156d2",
                 "shasum": ""
             },
             "require": {
@@ -3604,9 +3604,9 @@
                 "vapor"
             ],
             "support": {
-                "source": "https://github.com/laravel/vapor-core/tree/v2.26.0"
+                "source": "https://github.com/laravel/vapor-core/tree/v2.26.1"
             },
-            "time": "2022-11-28T14:36:39+00:00"
+            "time": "2023-01-04T20:04:33+00:00"
         },
         {
             "name": "lcobucci/clock",
