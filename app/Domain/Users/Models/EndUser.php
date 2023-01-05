@@ -51,11 +51,13 @@ class EndUser extends User
         return $this->details()->whereField('claimed');
     }
 
+    //TODO: should utilize a relationship
     public function getOwnerUserIdAttribute(): ?string
     {
-        return $this->detail()->where('field', 'owner_user_id')->first()->value;
+        return $this->detail()->where('field', 'owner_user_id')->first()->value ?? null;
     }
 
+    //TODO: should utilize a relationship
     public function getOwnerAttribute(): ?Employee
     {
         return Employee::find($this->owner_user_id);
@@ -65,22 +67,6 @@ class EndUser extends User
     {
         return $this->detail()->whereField('updated')->whereActive(1)
             ->orderBy('created_at', 'DESC');
-    }
-
-    public function determineEndUserType(): string
-    {
-        $type = Lead::class;
-        $agreements = Agreement::whereEndUserId($this->id)->get();
-        foreach ($agreements as $agreement) {
-            if ($agreement->active) {
-                $type = Member::class;
-            }
-            if ($type != Member::class) {
-                $type = Customer::class;
-            }
-        }
-
-        return $type;
     }
 
     public function scopeFilter($query, array $filters): void

@@ -95,43 +95,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'FT18',
                     'location_type' => LocationType::STORE,
                 ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 7',
-                    'state' => 'TX',
-                    'city' => 'Abbott',
-                    'zip' => '76621',
-                    'location_no' => 'FT19',
-                    'location_type' => LocationType::STORE,
-                ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 8',
-                    'state' => 'TX',
-                    'city' => 'Abernathy',
-                    'zip' => '79311',
-                    'location_no' => 'TR40',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'FT20'
-                ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 9',
-                    'state' => 'TX',
-                    'city' => 'Abbott',
-                    'zip' => '76621',
-                    'location_no' => 'FT21',
-                    'location_type' => LocationType::STORE,
-                ],
-                [
-                    'client' => 'FitnessTruth',
-                    'name' => 'FitnessTruth 10',
-                    'state' => 'TN',
-                    'city' => 'Adams',
-                    'zip' => '37010',
-                    'location_no' => 'FT22',
-                    'location_type' => LocationType::STORE,
-                ],
                 // The Z
                 [
                     'client' => 'The Z',
@@ -142,16 +105,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'TZ01',
                     'location_type' => LocationType::STORE,
                     //'gymrevenue_id' => 'TZ01'
-                ],
-                [
-                    'client' => 'The Z',
-                    'name' => 'Zoo 2',
-                    'state' => 'HI',
-                    'city' => 'Honolulu',
-                    'zip' => '96795',
-                    'location_no' => 'TZ02',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'TZ02'
                 ],
                 [
                     'client' => 'The Z',
@@ -172,16 +125,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'TZ04',
                     'location_type' => LocationType::STORE,
                     // 'gymrevenue_id' => 'TZ04'
-                ],
-                [
-                    'client' => 'The Z',
-                    'name' => 'Zoo 5',
-                    'state' => 'HI',
-                    'city' => 'Honolulu',
-                    'zip' => '96798',
-                    'location_no' => 'TZ05',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'TZ05'
                 ],
                 [
                     'client' => 'The Z',
@@ -217,41 +160,11 @@ class LocationSeeder extends Seeder
                 ],
                 [
                     'client' => 'Stencils',
-                    'name' => 'Stencils 3',
-                    'state' => 'CA',
-                    'city' => 'San Jose',
-                    'zip' => '94088',
-                    'location_no' => 'ST03',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'ST09'
-                ],
-                [
-                    'client' => 'Stencils',
-                    'name' => 'Stencils 4',
-                    'state' => 'OR',
-                    'city' => 'Portland',
-                    'zip' => '97035',
-                    'location_no' => 'ST05',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'ST10'
-                ],
-                [
-                    'client' => 'Stencils',
                     'name' => 'Stencils @ Microsoft',
                     'state' => 'Wa',
                     'city' => 'Redmond',
                     'zip' => '98052',
                     'location_no' => 'STMS',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'ST11'
-                ],
-                [
-                    'client' => 'Stencils',
-                    'name' => 'Stencils 5',
-                    'state' => 'OR',
-                    'city' => 'Portland',
-                    'zip' => '97035',
-                    'location_no' => 'ST05',
                     'location_type' => LocationType::STORE,
                     //'gymrevenue_id' => 'ST11'
                 ],
@@ -282,15 +195,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'PF03',
                     'location_type' => LocationType::STORE,
                     //'gymrevenue_id' => 'PF28'
-                ],
-                [
-                    'client' => 'Sci-Fi Purple Gyms',
-                    'state' => 'FL',
-                    'city' => 'Callahan',
-                    'zip' => '32011',
-                    'location_no' => 'PF04',
-                    'location_type' => LocationType::STORE,
-                    //'gymrevenue_id' => 'PF29'
                 ],
             ];
         }
@@ -323,6 +227,18 @@ class LocationSeeder extends Seeder
 
             $location['name'] = $location['name'] ?? $location['client'] . " " . ($idx + 1);
             $location['client_id'] = $client->id;
+
+            $min_opened_at = Carbon::now()->subDays(3650)->timestamp;
+            $max_opened_at = Carbon::now()->subDays(365)->timestamp;
+            $val_opened_at = rand($min_opened_at, $max_opened_at);
+            $opened_at = date('Y-m-d H:i:s', $val_opened_at);
+            $location['opened_at'] = $opened_at;
+
+            $date_opened_at = \DateTime::createFromFormat("Y-m-d H:i:s", $opened_at);
+            $min_presale_opened_at = Carbon::create($date_opened_at->format("Y"), $date_opened_at->format("m"), $date_opened_at->format("d"))->timestamp;
+            $val_presale_opened_at = rand($min_presale_opened_at, $max_opened_at);
+            $presale_opened_at = date('Y-m-d H:i:s', $val_presale_opened_at);
+            $location['presale_opened_at'] = $presale_opened_at;
 
             $min = Carbon::now()->subDays(365)->timestamp;
             $max = Carbon::now()->timestamp;

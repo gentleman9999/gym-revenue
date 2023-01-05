@@ -18,7 +18,6 @@ class CalendarEventTypeSeeder extends Seeder
     {
         {
             // Get all the Clients
-            VarDumper::dump('Getting Clients');
             $clients = Client::whereActive(1)->get();
 
             $types = [

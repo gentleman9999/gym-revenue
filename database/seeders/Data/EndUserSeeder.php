@@ -18,15 +18,14 @@ class EndUserSeeder extends Seeder
      */
     public function run()
     {
-        $amountOfLeads = 20;
+        $amount_of_leads = 20;
         if (env('QUICK_SEED')) {
-            $amountOfLeads = 2;
+            $amount_of_leads = 3;
         }
 
         if (env('RAPID_SEED') === true) {
-            $amountOfLeads = 1;
+            $amount_of_leads = 1;
         }
-        VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)->get();
 
@@ -35,6 +34,7 @@ class EndUserSeeder extends Seeder
                 VarDumper::dump($client->name);
                 // For each client, get all the locations
                 if (count($client->locations) > 0) {
+                    VarDumper::dump('Generating End Users for '.$client->name.'!');
                     foreach ($client->locations as $idx => $location) {
                         // For each location, MAKE 25 users, don't create
                         foreach ([
@@ -43,23 +43,22 @@ class EndUserSeeder extends Seeder
                                 UserTypesEnum::MEMBER,
                             ] as $user_type
                         ) {
-                            $prospects = User::factory()->count($amountOfLeads)->make();
+                            $end_users = User::factory()->count($amount_of_leads)->make();
 
-                            VarDumper::dump('Generating End Users for '.$client->name.'!');
-                            foreach ($prospects as $prospect) {
-                                $prospect_data = $prospect->toArray();
-                                $prospect_data['client_id'] = $client->id;
-                                $prospect_data['home_location_id'] = $location->gymrevenue_id;
-                                $prospect_data['user_type'] = $user_type;
-                                $prospect_data['password'] = 'Hello123!';
+                            foreach ($end_users as $end_user) {
+                                $end_user_data = $end_user->toArray();
+                                $end_user_data['client_id'] = $client->id;
+                                $end_user_data['home_location_id'] = $location->gymrevenue_id;
+                                $end_user_data['user_type'] = $user_type;
+                                $end_user_data['password'] = 'Hello123!';
 
                                 if ($user_type == 'lead') {
-                                    $prospect_data['opportunity'] = rand(0, 3);
-                                    $prospect_data['opportunity'] = $prospect_data['opportunity'] == 0 ?
-                                        null : $prospect_data['opportunity'];
+                                    $end_user_data['opportunity'] = rand(0, 3);
+                                    $end_user_data['opportunity'] = $end_user_data['opportunity'] == 0 ?
+                                        null : $end_user_data['opportunity'];
                                 }
 
-                                CreateUser::run($prospect_data);
+                                CreateUser::run($end_user_data);
                             }
                         }
                     }

@@ -28,6 +28,7 @@ use Database\Seeders\Data\EndUserSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
+use Database\Seeders\Data\NicknameSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
 use Database\Seeders\GatewayProviders\ProviderTypeSeeder;
@@ -134,10 +135,6 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Users Seeder');
         $this->call(ClientUserSeeder::class);
 
-        // This seeder generates dummy End Users for each client
-        VarDumper::dump('Running End Users Dummy Data Seeder');
-        $this->call(EndUserSeeder::class);
-
         VarDumper::dump('Running Agreement Templates Data Seeder');
         $this->call(AgreementTemplatesSeeder::class);
 
@@ -149,6 +146,10 @@ class DatabaseSeeder extends Seeder
 
         VarDumper::dump('Running Client Contract PDF Data Seeder');
         $this->call(ClientContractSeeder::class);
+
+        // This seeder generates dummy End Users for each client
+        VarDumper::dump('Running End Users Dummy Data Seeder');
+        $this->call(EndUserSeeder::class);
 
         VarDumper::dump('Running Agreements Data Seeder');
         $this->call(AgreementsSeeder::class);
@@ -191,6 +192,11 @@ class DatabaseSeeder extends Seeder
             VarDumper::dump('Running Drip Campaign Seeder');
             $this->call(DripCampaignSeeder::class);
         }
+
+        // Nickname Seeder
+        VarDumper::dump('Nickname Seeder');
+        $this->call(NicknameSeeder::class);
+
         Cache::put('is_seeding', false);
     }
 }

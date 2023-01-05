@@ -23,8 +23,8 @@
         "laravel/jetstream": "^2.4",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/vapor-cli": "^1.40.0",
-        "laravel/vapor-core": "^2.15",
+        "laravel/vapor-cli": "^1.50",
+        "laravel/vapor-core": "^2.26",
         "league/flysystem-aws-s3-v3": "~3.0",
         "lorisleiva/laravel-actions": "2.4.3",
         "maatwebsite/excel": "^3.1",
@@ -38,6 +38,8 @@
         "pusher/pusher-php-server": "^7.0",
         "sendgrid/sendgrid": "^8.0",
         "sentry/sentry-laravel": "^3.0",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi-fpdf": "^2.3",
         "silber/bouncer": "^v1.0.0",
         "spatie/browsershot": "^3.54",
         "spatie/laravel-event-sourcing": "^7.2",
@@ -46,6 +48,7 @@
         "symfony/mailgun-mailer": "^6.1",
         "tightenco/ziggy": "^1.4",
         "twilio/sdk": "^6.31",
+        "tymon/jwt-auth": "^1.0",
         "wnx/sidecar-browsershot": "^1.1"
     },
     "require-dev": {

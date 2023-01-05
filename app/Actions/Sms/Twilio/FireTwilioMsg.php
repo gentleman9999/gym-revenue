@@ -1,49 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Sms\Twilio;
 
+use App\Domain\Templates\Services\TemplateParserService;
+use App\Domain\Users\Models\User;
+use Illuminate\Console\Command;
 use Lorisleiva\Actions\Action;
-use Twilio\Rest\Client as Twilio;
+use Lorisleiva\Actions\Concerns\AsAction;
+use Twilio\Rest\Api\V2010\Account\MessageInstance;
 
 class FireTwilioMsg extends Action
 {
-    protected $getAttributesFromConstructor = ['phone_number','msg'];
+    use AsAction;
+    public string $commandSignature = 'sms-test {phone}';
 
-    /**
-     * Determine if the user is authorized to make this action.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function handle(User $user, string $message): MessageInstance
     {
-        return true;
+        return $user->client->getTwilioService()
+            ->sendMessage($user, (new TemplateParserService($message))->swapTokens(['user' => $user]));
     }
 
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-     */
-    public function rules()
+    public function asCommand(Command $command): void
     {
-        return [];
-    }
+        $user = User::wherePhone($command->argument('phone'))->firstOrFail();
 
-    /**
-     * Execute the action and return a result.
-     * @param string $msg
-     * @param string $phone_number
-     * @return mixed
-     */
-    public function handle(string $phone_number, string $msg)
-    {
-        $sid = env('TWILIO_SID');
-        $token = env('TWILIO_TOKEN');
-        $sms_client = new Twilio($sid, $token);
-        $payload = ['from' => env('TWILIO_NO'), 'body' => $msg, 'statusCallBack' => env('TWILIO_STATUS_CALLBACK_DOMAIN').'/api/twilio/statusCallBack'];
-        $message = $sms_client->messages->create($phone_number, $payload);
-        info('Message - ', $message->toArray());
-
-        return $message;
+        $this->handle($user, '{{user.first_name}} {{ user.last_name}} {{test.name}}');
     }
 }

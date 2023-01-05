@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Events;
 
+use App\Domain\EndUsers\Projections\EndUser;
 use App\StorableEvents\GymRevCrudEvent;
 
 class EndUserWasTextMessagedByRep extends GymRevCrudEvent

@@ -9,7 +9,6 @@ use App\Domain\Email\EmailAggregate;
 use App\Domain\Templates\EmailTemplates\Projections\EmailTemplate;
 use App\Domain\Users\Models\User;
 use App\Models\GatewayProviders\GatewayProvider;
-use App\Models\Utility\AppState;
 use App\Support\Uuid;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -25,26 +24,22 @@ class FireTestEmailMessage implements CreatesTeams
 
     public function handle(string $template_id, User $user): bool
     {
-        if (AppState::isSimuationMode()) {
-            $user->email = env('TEST_EMAIL');
-        }
-
-        /** @var EmailTemplate $template */
-        $template = EmailTemplate::find($template_id);
-
-        $mailgunResponse = MailgunSend::run([$user->email], 'Test Message', $template->parseMarkup(['user' => $user]));
+        $message = EmailTemplate::find($template_id)->parseMarkup(['user' => $user]);
+        $mail = MailgunSend::run([$user], 'Test Message', $message);
         $id = (string) Uuid::new();
         $gateway = GatewayProvider::whereName('Mailgun')->first();
+
         $payload = [
             'id' => $id,
             'client_id' => $user->client_id,
-            'message_id' => substr($mailgunResponse->getId(), 1, -1),
+            'message_id' => substr($mail->getId(), 1, -1),
             'recipient_type' => User::class,
             'recipient_id' => $user->id,
             'recipient_email' => $user->email,
             'gateway_id' => $gateway->id,
             'initiated_at' => Carbon::now(),
         ];
+
         EmailAggregate::retrieve($id)->emailLog($payload)->persist();
 
         return true;

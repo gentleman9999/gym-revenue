@@ -5,6 +5,7 @@ namespace App\Domain\Users;
 use App\Enums\StatesEnum;
 use App\Enums\UserGenderEnum;
 use App\Enums\UserTypesEnum;
+use App\Rules\Zip;
 use Illuminate\Validation\Rules\Enum;
 
 class ValidationRules
@@ -65,7 +66,7 @@ class ValidationRules
         $rules = self::getbaseValidationRules($validation_req);
         $rules['gender'] = [$validation_req, new Enum(UserGenderEnum::class)];
         $rules['address1'] = [$validation_req];
-        $rules['zip'] = [$validation_req, 'size:5'];
+        $rules['zip'] = [$validation_req, 'size:5', new Zip()];
         $rules['city'] = [$validation_req, 'max:30'];
         $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
         $rules['team_id'] = [];
@@ -86,7 +87,7 @@ class ValidationRules
         $rules = self::getbaseValidationRules($validation_req);
         $rules['date_of_birth'] = [$validation_req, 'date_format:Y-m-d H:i:s'];
         $rules['address1'] = [$validation_req];
-        $rules['zip'] = [$validation_req, 'size:5'];
+        $rules['zip'] = [$validation_req, 'size:5', new Zip()];
         $rules['city'] = [$validation_req, 'max:30'];
         $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
 
@@ -105,7 +106,7 @@ class ValidationRules
         $rules = self::getbaseValidationRules($validation_req);
         $rules['date_of_birth'] = [$validation_req, 'date_format:Y-m-d H:i:s'];
         $rules['address1'] = [$validation_req];
-        $rules['zip'] = [$validation_req, 'size:5'];
+        $rules['zip'] = [$validation_req, 'size:5', new Zip()];
         $rules['city'] = [$validation_req, 'max:30'];
         $rules['state'] = [$validation_req, 'size:2', new Enum(StatesEnum::class)];
 

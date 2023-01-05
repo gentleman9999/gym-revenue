@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\SMS\Actions;
 
 use App\Actions\Sms\Twilio\FireTwilioMsg;
@@ -18,17 +20,14 @@ class FireTestMessage
 {
     use AsAction;
 
-    public function handle($user): bool
+    public function handle(User $user): bool
     {
-        $client_id = $user->client_id;
-
-        $test = FireTwilioMsg::run($user->phone, 'Test Message');
-
-        $id = Uuid::new();
+        $test = FireTwilioMsg::run($user, 'Test Message');
+        $id = Uuid::get();
         $gateway = GatewayProvider::whereName('Twilio SMS')->first();
         $payload = [
             'id' => $id,
-            'client_id' => $client_id,
+            'client_id' => $user->client_id,
             'message_id' => $test->sid,
             'recipient_type' => User::class,
             'recipient_id' => $user->id,

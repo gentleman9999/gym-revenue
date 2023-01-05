@@ -41,6 +41,7 @@ class LocationFactory extends Factory
             'location_type' => LocationType::STORE,
             'presale_started_at' => $this->faker->dateTimeBetween('-365 days', now()),
             'capacity' => rand(100, 500),
+            'presale_opened_at' => $this->faker->dateTimeBetween('-365 days', now()),
         ];
     }
 }

@@ -13,7 +13,6 @@ class AgreementCategoriesSeeder extends Seeder
     {
         $amountOfAgreementCategories = ['Membership', 'Personal Training'];
 
-        VarDumper::dump('Getting Clients');
         // Get all the Clients
         $clients = Client::whereActive(1)
             ->get();

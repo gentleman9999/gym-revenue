@@ -43,7 +43,6 @@ class UserFactory extends Factory
             'city' => $this->faker->city,
             'state' => $this->faker->stateAbbr,
             'zip' => substr($this->faker->postcode, 0, 5),
-            'alternate_email' => $this->faker->email,
             'email' => "{$first_name}.{$last_name}@{$this->faker->freeEmailDomain}",
             'phone' => $phone,
             'user_type' => UserTypesEnum::EMPLOYEE,

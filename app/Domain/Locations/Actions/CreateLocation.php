@@ -47,6 +47,7 @@ class CreateLocation extends GymRevAction
             'default_team_id' => ['sometimes', 'nullable', 'exists:teams,id'],
             'shouldCreateTeam' => ['sometimes', 'boolean'],
             'location_type' => ['required',  new Enum(LocationType::class)],
+            'presale_opened_at' => ['sometimes'],
             'presale_started_at' => [],
             'capacity' => ['required','integer'],
         ];

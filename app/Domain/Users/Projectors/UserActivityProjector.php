@@ -98,8 +98,8 @@ class UserActivityProjector extends Projector
 
     public function onEndUserWasEmailedByRep(EndUserWasEmailedByRep $event): void
     {
-        $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
-        if (($this->getModel())::class !== $event->getEntity() || ! $end_user->isEndUser()) {
+        $end_user = User::findOrFail($event->aggregateRootUuid());
+        if (! $end_user->isEndUser()) {
             return;
         }
         $user = User::find($event->userId());
@@ -107,7 +107,7 @@ class UserActivityProjector extends Projector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        $emailed = ($end_user::getDetailsModel())->createOrUpdateRecord(
+        (new UserDetails())->createOrUpdateRecord(
             $end_user->id,
             UserDetailsFieldEnum::EMAILED_BY_REP->value,
             $event->modifiedBy(),
@@ -117,14 +117,14 @@ class UserActivityProjector extends Projector
 
     public function onEndUserWasTextMessagedByRep(EndUserWasTextMessagedByRep $event): void
     {
-        $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
-        if (($this->getModel())::class !== $event->getEntity() || ! $end_user->isEndUser()) {
+        $end_user = User::findOrFail($event->aggregateRootUuid());
+        if (! $end_user->isEndUser()) {
             return;
         }
 
         $misc = $event->payload;
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord(
+        (new UserDetails())->createOrUpdateRecord(
             $end_user->id,
             UserDetailsFieldEnum::SMS_BY_REP->value,
             $event->modifiedBy(),
@@ -134,8 +134,8 @@ class UserActivityProjector extends Projector
 
     public function onEndUserWasCalledByRep(EndUserWasCalledByRep $event): void
     {
-        $end_user = $this->getModel()::findOrFail($event->aggregateRootUuid())->writeable();
-        if (($this->getModel())::class !== $event->getEntity() || ! $end_user->isEndUser()) {
+        $end_user = User::findOrFail($event->aggregateRootUuid());
+        if (! $end_user->isEndUser()) {
             return;
         }
         $user = User::find($event->modifiedBy());
@@ -143,7 +143,7 @@ class UserActivityProjector extends Projector
         $misc = $event->payload;
         $misc['user_email'] = $user->email;
 
-        ($end_user::getDetailsModel())->createOrUpdateRecord(
+        (new UserDetails())->createOrUpdateRecord(
             $end_user->id,
             UserDetailsFieldEnum::CALLED_BY_REP->value,
             $event->modifiedBy(),

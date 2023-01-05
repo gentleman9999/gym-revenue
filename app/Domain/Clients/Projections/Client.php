@@ -7,7 +7,6 @@ use App\Domain\Clients\Models\ClientGatewayIntegration;
 use App\Domain\Clients\Models\ClientGatewaySetting;
 use App\Domain\Clients\Models\ClientSocialMedia;
 use App\Domain\Conversations\Twilio\Actions\AddConversationAgent;
-use App\Domain\Conversations\Twilio\Exceptions\ConversationException;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
 use App\Domain\LeadSources\LeadSource;
 use App\Domain\LeadTypes\LeadType;
@@ -25,6 +24,7 @@ use App\Models\Endusers\MembershipType;
 use App\Models\File;
 use App\Models\GatewayProviders\GatewayProvider;
 use App\Models\GymRevProjection;
+use App\Services\MailgunService;
 use App\Services\TwilioService;
 use Database\Factories\ClientFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -37,7 +37,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use RuntimeException;
-use Twilio\Exceptions\ConfigurationException;
 
 /**
  * @property Collection       $gatewaySettings
@@ -198,12 +197,18 @@ class Client extends GymRevProjection
 
     /**
      * @return TwilioService
-     * @throws ConversationException
-     * @throws ConfigurationException
      */
     public function getTwilioService(): TwilioService
     {
         return TwilioService::get($this);
+    }
+
+    /**
+     * @return MailgunService
+     */
+    public function getMailGunService(): MailgunService
+    {
+        return MailgunService::get($this);
     }
 
     /**
@@ -241,8 +246,8 @@ class Client extends GymRevProjection
 
     public function getGatewayProviderBySlug(string $slug): GatewayProvider
     {
+        // IF YOU RUN INTO THIS ERROR: TRY RUNNING "artisan client:create-gateway"
         return $this->gatewayIntegration()->where(['slug' => $slug])->first() ?: throw new RuntimeException(
-            // IF YOU RUN INTO THIS ERROR: TRY RUNNING "artisan client:create-gateway"
             "No client integration configured for provider '{$slug}'"
         );
     }

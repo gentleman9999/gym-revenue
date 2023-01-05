@@ -87,9 +87,7 @@ class AdobeAPIService
 
             return $this->getAssetId();
         } else {
-            dd($response->body());
-
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('Token was not created');
         }
     }
 
@@ -111,9 +109,10 @@ class AdobeAPIService
             $this->asset_id = $response->assetID;
             $upload_uri = $response->uploadUri;
 
+            //TODO: why does getAssetId have a side effect of uploading a file?
             return $this->uploadWordFile($upload_uri, $media_type);
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('Asset Id was not created');
         }
     }
 
@@ -130,7 +129,7 @@ class AdobeAPIService
         if ($response->getStatusCode() == 200) {
             return $this->convertIntoPDF();
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('Template file not uploaded for conversion');
         }
     }
 
@@ -154,9 +153,7 @@ class AdobeAPIService
 
             return $this->checkFileStatus();
         } else {
-            dd($response->body());
-
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('File did not converted in PDF');
         }
     }
 
@@ -182,7 +179,7 @@ class AdobeAPIService
                 throw new \ErrorException('Cannot convert given file type');
             }
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('File status of converted file was not found');
         }
     }
 
@@ -204,7 +201,7 @@ class AdobeAPIService
                 //Store file data in File table.
                 $file_table_data['id'] = Uuid::get();
                 $file_table_data['client_id'] = $this->client_data['client_id'];
-                $file_table_data['user_id'] = $this->client_data['end_user_id'];
+                $file_table_data['user_id'] = $this->client_data['user_id'];
                 $file_table_data['filename'] = $file_name;
                 $file_table_data['original_filename'] = $file_name;
                 $file_table_data['extension'] = 'pdf';
@@ -212,9 +209,9 @@ class AdobeAPIService
                 $file_table_data['key'] = $file_key;
                 $file_table_data['size'] = $response->header('Content-Length');
                 $file_table_data['bucket'] = 's3';
-                $file_table_data['entity_type'] = Contract::class;
-                $file_table_data['entity_id'] = $this->client_data['entity_id'];
-                $file_table_data['hidden'] = false;
+                $file_table_data['fileable_type'] = Contract::class;
+                $file_table_data['fileable_id'] = $this->client_data['entity_id'];
+                $file_table_data['is_hidden'] = false;
                 $file_table_data['type'] = 'pdf';
 
                 $file = File::create($file_table_data);
@@ -228,7 +225,7 @@ class AdobeAPIService
                 throw new \ErrorException('Unable to upload file in s3 bucket');
             }
         } else {
-            throw new \ErrorException('PDF not created successfully');
+            throw new \ErrorException('PDF was not downloaded successfully');
         }
     }
 }
