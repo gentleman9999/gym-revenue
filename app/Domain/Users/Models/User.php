@@ -8,12 +8,14 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
+use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Interfaces\PhoneInterface;
 use App\Models\File;
+use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
@@ -432,6 +434,16 @@ class User extends Authenticatable implements PhoneInterface
     public function getDeletedAtColumn(): string
     {
         return 'terminated_at';
+    }
+
+    public function positions(): BelongsToMany
+    {
+        return $this->belongsToMany(Position::class, 'location_employees', 'user_id', 'position_id')->withoutGlobalScopes()->where('positions.client_id', '=', 'location_employees.client_id');
+    }
+
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'location_employees', 'user_id', 'department_id')->withoutGlobalScopes()->where('departments.client_id', '=', 'location_employees.client_id');
     }
 
     public static function determineUserType(string $user_id): UserTypesEnum

@@ -50,11 +50,13 @@ class EndUser extends User
         return $this->details()->whereField('claimed');
     }
 
+    //TODO: should utilize a relationship
     public function getOwnerUserIdAttribute(): ?string
     {
-        return $this->detail()->where('field', 'owner_user_id')->first()->value;
+        return $this->detail()->where('field', 'owner_user_id')->first()->value ?? null;
     }
 
+    //TODO: should utilize a relationship
     public function getOwnerAttribute(): ?Employee
     {
         return Employee::find($this->owner_user_id);
