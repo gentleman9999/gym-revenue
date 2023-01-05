@@ -162,13 +162,9 @@ const LEADS = gql`
                 first_name
                 last_name
                 opportunity
-                #                lead_type: leadType {
-                #                    id
-                #                    name
-                #                }
-                #                home_location {
-                #                    name
-                #                }
+                home_location {
+                    name
+                }
                 owner_user_id
             }
             paginatorInfo {
