@@ -108,16 +108,6 @@ class LocationSeeder extends Seeder
                 ],
                 [
                     'client' => 'The Z',
-                    'name' => 'Zoo 2',
-                    'state' => 'HI',
-                    'city' => 'Honolulu',
-                    'zip' => '96795',
-                    'location_no' => 'TZ02',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'TZ02'
-                ],
-                [
-                    'client' => 'The Z',
                     'name' => 'Zoo 3',
                     'state' => 'HI',
                     'city' => 'Honolulu',
@@ -135,16 +125,6 @@ class LocationSeeder extends Seeder
                     'location_no' => 'TZ04',
                     'location_type' => LocationTypeEnum::STORE,
                     // 'gymrevenue_id' => 'TZ04'
-                ],
-                [
-                    'client' => 'The Z',
-                    'name' => 'Zoo 5',
-                    'state' => 'HI',
-                    'city' => 'Honolulu',
-                    'zip' => '96798',
-                    'location_no' => 'TZ05',
-                    'location_type' => LocationTypeEnum::STORE,
-                    //'gymrevenue_id' => 'TZ05'
                 ],
                 [
                     'client' => 'The Z',
