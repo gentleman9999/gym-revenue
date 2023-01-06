@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Domain\Tasks\Actions;
 
-use Carbon\Carbon;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Symfony\Component\VarDumper\VarDumper;
-use App\Domain\Reminders\Actions\CreateReminder;
 use App\Domain\Notifications\Actions\CreateNotification;
 use App\Domain\Notifications\Notification;
-use Illuminate\Support\Str;
+use App\Domain\Reminders\Actions\CreateReminder;
 use App\Domain\Users\Models\User;
 use App\Models\Tasks;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class CheckTaskReminder
 {
@@ -28,20 +26,20 @@ class CheckTaskReminder
         Log::debug("checking for upcoming tasks");
 
         $date = now()->subMinutes(30)->format('Y-m-d H:i');
-        
+
         $tasks = Tasks::where('due_at', 'like', '%' . $date . '%')->get();
 
-        if(!empty($tasks)) {
+        if (! empty($tasks)) {
             foreach ($tasks as $task) {
                 $user = User::findOrFail($task->user_id);
-                if(!empty($user)) {
+                if (! empty($user)) {
                     CreateReminder::run([
                         'entity_type' => 'Task Reminder',
                         'entity_id' => Str::random(10),
                         'user_id' => $task->user_id,
                         'name' => $user->first_name . ' ' . $user->last_name,
                         'remind_time' => 0,
-                        'triggered_at' => now()
+                        'triggered_at' => now(),
                     ]);
 
                     CreateNotification::run([
@@ -51,7 +49,6 @@ class CheckTaskReminder
                 }
             }
         }
-
     }
 
     //command for ez development testing

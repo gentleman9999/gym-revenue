@@ -20,7 +20,7 @@ class AgreementTemplatesSeeder extends Seeder
         }
         // Get all the Clients
         $agreement_availability_random = AgreementAvailabilityEnum::asArray();
-        $clients = Client::whereActive(1)
+        $clients = Client::with('locations')->whereActive(1)
             ->get();
         if (count($clients) > 0) {
             foreach ($clients as $client) {

@@ -5,10 +5,10 @@ namespace App\Console;
 use App\Domain\CalendarEvents\Actions\CheckOverdueTasks;
 use App\Domain\Campaigns\ScheduledCampaigns\Actions\CheckScheduledCampaigns;
 use App\Domain\Reminders\Actions\CheckReminders;
+use App\Domain\Tasks\Actions\CheckTaskReminder;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\App;
-use App\Domain\Tasks\Actions\CheckTaskReminder;
 
 class Kernel extends ConsoleKernel
 {

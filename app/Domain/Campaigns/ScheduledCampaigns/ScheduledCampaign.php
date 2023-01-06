@@ -87,6 +87,11 @@ class ScheduledCampaign extends Projection
         return 1;
     }
 
+    public function getEntity(): string
+    {
+        return ScheduledCampaign::class;
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

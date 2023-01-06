@@ -46,84 +46,83 @@ class EmailGatewayProviderService extends GatewayProviderService
             $provider = $model->value;
         }
         switch ($provider) {
-                case 'default_cnb':
-                    /*
-                    $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
-                        ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('mailgun')->first();
+            case 'default_cnb':
+                /*
+                $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
+                    ->whereNickname($model->value)->whereActive(1)->whereGateway_slug('mailgun')->first();
 
-                    if(!is_null($client_integration_record))
+                if(!is_null($client_integration_record))
+                {
+                    $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
+                        ->with('details')->first();
+
+                    if(!is_null($gateway_provider_record))
                     {
-                        $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
-                            ->with('details')->first();
-
-                        if(!is_null($gateway_provider_record))
+                        $deets = [];
+                        foreach ($gateway_provider_record->details as $detail)
                         {
-                            $deets = [];
-                            foreach ($gateway_provider_record->details as $detail)
+                            if($detail->detail == 'access_credential')
                             {
-                                if($detail->detail == 'access_credential')
-                                {
-                                    if($detail->value == 'mailgun_domain')
-                                        $deets['mailgun_domain'] = $detail->misc['value'];
+                                if($detail->value == 'mailgun_domain')
+                                    $deets['mailgun_domain'] = $detail->misc['value'];
 
-                                    if($detail->value == 'mailgun_secret')
-                                        $deets['mailgun_secret'] = $detail->misc['value'];
+                                if($detail->value == 'mailgun_secret')
+                                    $deets['mailgun_secret'] = $detail->misc['value'];
 
-                                    if($detail->value == 'mailgun_endpoint')
-                                        $deets['mailgun_endpoint'] = $detail->misc['value'];
+                                if($detail->value == 'mailgun_endpoint')
+                                    $deets['mailgun_endpoint'] = $detail->misc['value'];
 
-                                    if($detail->value == 'mailgun_from_addr')
-                                        $deets['mailgun_from_addr'] = $detail->misc['value'];
-                                }
+                                if($detail->value == 'mailgun_from_addr')
+                                    $deets['mailgun_from_addr'] = $detail->misc['value'];
                             }
                         }
-                    }*/
-                    $deets = [
-                        'mailgun_domain' => env('MAILGUN_DOMAIN'),
-                        'mailgun_secret' => env('MAILGUN_SECRET'),
-                        'mailgun_endpoint' => env('MAILGUN_ENDPOINT'),
-                        'mailgun_from_addr' => env('MAIL_FROM_ADDRESS'),
-                    ];
-                    $results = new Mailgun($deets, $user_id);
+                    }
+                }*/
+                $deets = [
+                    'mailgun_domain' => env('MAILGUN_DOMAIN'),
+                    'mailgun_secret' => env('MAILGUN_SECRET'),
+                    'mailgun_endpoint' => env('MAILGUN_ENDPOINT'),
+                    'mailgun_from_addr' => env('MAIL_FROM_ADDRESS'),
+                ];
+                $results = new Mailgun($deets, $user_id);
 
-                    break;
+                break;
                 // default will be the slug name given to the
                 // client_gateway_integrations configuration
 
-                default:
-                    $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
-                        ->whereNickname($model->value)->whereActive(1)->first(); //This needs to find the correct gateway_slug, right now it doesn't
+            default:
+                $client_integration_record = ClientGatewayIntegration::whereClientId($this->client->id)
+                    ->whereNickname($model->value)->whereActive(1)->first(); //This needs to find the correct gateway_slug, right now it doesn't
 
-                    if (! is_null($client_integration_record)) {
-                        $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
-                            ->with('details')->first();
+                if (! is_null($client_integration_record)) {
+                    $gateway_provider_record = GatewayProvider::whereSlug($client_integration_record->gateway_slug)
+                        ->with('details')->first();
 
-                        if (! is_null($gateway_provider_record)) {
-                            $deets = [];
-                            foreach ($gateway_provider_record->details as $detail) {
-                                if ($detail->detail == 'access_credential') {
-                                    if ($detail->value == 'mailgun_domain') {
-                                        $deets['mailgun_domain'] = $detail->misc['value'];
-                                    }
+                    if (! is_null($gateway_provider_record)) {
+                        $deets = [];
+                        foreach ($gateway_provider_record->details as $detail) {
+                            if ($detail->detail == 'access_credential') {
+                                if ($detail->value == 'mailgun_domain') {
+                                    $deets['mailgun_domain'] = $detail->misc['value'];
+                                }
 
-                                    if ($detail->value == 'mailgun_secret') {
-                                        $deets['mailgun_secret'] = $detail->misc['value'];
-                                    }
+                                if ($detail->value == 'mailgun_secret') {
+                                    $deets['mailgun_secret'] = $detail->misc['value'];
+                                }
 
-                                    if ($detail->value == 'mailgun_endpoint') {
-                                        $deets['mailgun_endpoint'] = $detail->misc['value'];
-                                    }
+                                if ($detail->value == 'mailgun_endpoint') {
+                                    $deets['mailgun_endpoint'] = $detail->misc['value'];
+                                }
 
-                                    if ($detail->value == 'mailgun_from_addr') {
-                                        $deets['mailgun_from_addr'] = $detail->misc['value'];
-                                    }
+                                if ($detail->value == 'mailgun_from_addr') {
+                                    $deets['mailgun_from_addr'] = $detail->misc['value'];
                                 }
                             }
-                            //$gateway = new $gateway_provider_record->profile_class();
                         }
+                        //$gateway = new $gateway_provider_record->profile_class();
                     }
-
-            }
+                }
+        }
 
 
         return $results;

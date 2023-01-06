@@ -45,7 +45,6 @@ class DeleteChatParticipant
 
 
         $chat->participants->each(static function (ChatParticipant $participant) use ($data, $participant_user_id) {
-
             // Notify deleted participant to remove chat
             if ($participant->user_id === $participant_user_id) {
                 CreateNotification::run(['type' => Notification::TYPE_DELETED_CHAT] + $data, $participant->user);

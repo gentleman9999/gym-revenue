@@ -23,7 +23,8 @@ class CalendarEventSeeder extends Seeder
             $amountOfEvents = 2;
         }
         // Get all the Clients
-        $clients = Client::whereActive(1)->get();
+        VarDumper::dump('Getting Clients');
+        $clients = Client::with('users')->whereActive(1)->get();
 
         /** Modify the below date range to change when the calendar events will populate for testing since time doesn't stand still. */
         $datestart = strtotime('2022-08-01');

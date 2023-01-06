@@ -21,7 +21,7 @@ class AgreementsSeeder extends Seeder
             $amount_of_agreements = 2;
         }
         // Get all the Clients
-        $clients = Client::whereActive(1)
+        $clients = Client::with('employees', 'locations', 'members', 'customers')->whereActive(1)
             ->get();
         if (count($clients) > 0) {
             foreach ($clients as $client) {

@@ -27,7 +27,7 @@ class EndUserSeeder extends Seeder
             $amount_of_leads = 1;
         }
         // Get all the Clients
-        $clients = Client::whereActive(1)->get();
+        $clients = Client::with('locations')->whereActive(1)->get();
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
