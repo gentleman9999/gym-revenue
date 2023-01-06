@@ -206,7 +206,7 @@ export default defineComponent({
                 // transform: data=>data?.lead_type
             },
             {
-                name: "owner_user_id",
+                name: "owner.id",
                 label: "Status",
                 component: LeadAvailabilityBadge,
                 export: (data) => (!!data ? "Claimed" : "Available"),
@@ -225,7 +225,7 @@ export default defineComponent({
                 },
                 shouldRender: ({ data }) => {
                     return (
-                        data?.owner_user_id === page.props.value.user.id &&
+                        data?.owner?.id === page.props.value.user.id &&
                         !data?.unsubscribed_comms
                     );
                 },

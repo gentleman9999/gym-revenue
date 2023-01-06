@@ -75,14 +75,14 @@
             <Button
                 size="xs"
                 primary
-                v-else-if="data.lead.owner_user_id === $page.props.user.id"
+                v-else-if="data.lead.owner?.id === $page.props.user.id"
                 @click="handleContact"
                 >Contact</Button
             >
             <Button
                 size="xs"
                 primary
-                v-else-if="!data.lead.owner_user_id"
+                v-else-if="!data.lead.owner?.id"
                 @click="handleClaim"
                 >Claim</Button
             >
