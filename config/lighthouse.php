@@ -189,7 +189,15 @@ return [
         'unions' => 'App\\GraphQL\\Unions',
         'scalars' => 'App\\GraphQL\\Scalars',
         'directives' => ['App\\GraphQL\\Directives'],
-        'validators' => ['App\\GraphQL\\Validators'],
+        'validators' => [
+            'App\\GraphQL\\Validators',
+            'App\\Domain\\Locations\\Validators',
+            'App\\Domain\\Files\\Validators',
+            'App\\Domain\\Notes\\Validators',
+            'App\\Domain\\Positions\\Validators',
+            'App\\Domain\\Users\\Validators',
+            'App\\Domain\\Templates\\EmailTemplates\\Validators',
+        ],
     ],
 
     /*

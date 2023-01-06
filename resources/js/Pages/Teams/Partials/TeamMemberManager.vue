@@ -329,7 +329,14 @@
 
 <script setup>
 import { ref } from "vue";
+import * as _ from "lodash";
 import { computed } from "@vue/reactivity";
+import { Inertia } from "@inertiajs/inertia";
+import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { useMutation } from "@vue/apollo-composable";
+import mutations from "@/gql/mutations";
+
 import JetActionMessage from "@/Jetstream/ActionMessage.vue";
 import JetActionSection from "@/Jetstream/ActionSection.vue";
 import Button from "@/Components/Button.vue";
@@ -343,10 +350,6 @@ import JetLabel from "@/Jetstream/Label.vue";
 import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder.vue";
 import Multiselect from "@vueform/multiselect";
-
-import { getDefaultMultiselectTWClasses, useGymRevForm } from "@/utils";
-import { Inertia } from "@inertiajs/inertia";
-import { usePage } from "@inertiajs/inertia-vue3";
 
 const props = defineProps({
     team: {
@@ -386,6 +389,9 @@ const managingRoleFor = ref(null);
 const confirmingLeavingTeam = ref(false);
 const teamMemberBeingRemoved = ref(null);
 const multiselectClasses = ref(getDefaultMultiselectTWClasses());
+
+let teamClone = _.cloneDeep(props.team);
+
 async function addTeamMember() {
     addTeamMemberForm.post(route("team-member.store", props.team.id));
 }
