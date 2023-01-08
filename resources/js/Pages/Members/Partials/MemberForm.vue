@@ -169,13 +169,13 @@
 
             <div
                 class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.agreement_number"
+                v-if="member?.agreement_number"
             >
                 <jet-label for="agreement_number" value="Agreement Number" />
                 <input
                     disabled
                     type="text"
-                    v-model="customer.agreement_number"
+                    v-model="member.agreement_number"
                     class="opacity-70"
                     id="agreement_number"
                 />
@@ -183,24 +183,24 @@
 
             <div
                 class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.external_id"
+                v-if="member?.external_id"
             >
                 <jet-label for="external_id" value="External ID" />
                 <input
                     disabled
                     type="text"
-                    v-model="customer.external_id"
+                    v-model="member.external_id"
                     class="opacity-70"
                     id="external_id"
                 />
             </div>
             <div
                 class="form-control md:col-span-2 col-span-6"
-                v-if="customer?.misc"
+                v-if="member?.misc"
             >
                 <jet-label for="json_viewer" value="Additional Data" />
                 <vue-json-pretty
-                    :data="customer.misc"
+                    :data="member.misc"
                     id="json_viewer"
                     class="bg-base-200 border border-2 border-base-content border-opacity-10 rounded-lg p-2"
                 />
@@ -377,7 +377,10 @@ library.add(faUserCircle);
 const props = defineProps({
     member: {
         type: Object,
-        default: {},
+        default: {
+            id: "",
+            notes: { title: "", note: "" },
+        },
     },
     interactionCount: {
         type: [Number, String],
@@ -392,13 +395,19 @@ const emit = defineEmits(["close"]);
 const page = usePage();
 
 const { mutate: updateNote } = useMutation(mutations.note.update);
-const { mutate: updateMember } = useMutation(mutations.note.update); // still note for now to get rid of errors
+const { mutate: createFile } = useMutation(mutations.file.create);
+const { mutate: createMember } = useMutation(mutations.member.create);
+const { mutate: updateMember } = useMutation(mutations.member.update); // still note for now to get rid of errors
 
-let member = _.cloneDeep(props.member);
+let member = _.cloneDeep({ ...props.member, notes: { title: "", note: "" } });
 
-const form = useGymRevForm(member);
+const form = useGymRevForm({ ...member });
 const fileForm = useGymRevForm({ file: null });
 const validStateSelections = ref(preformattedForSelect);
+
+const operFn = computed(() => {
+    return props.member.id === "" ? createMember : updateMember;
+});
 
 /** Update a note to "seen" */
 const handleNoteExpansion = async (note) => {
@@ -427,24 +436,17 @@ const handleFileChange = async () => {
         bucket: response.bucket,
     };
 
-    // here we call the mutation
-    //         {
-    //     id: response.uuid,
-    //     key: response.key,
-    //     filename: fileForm.file.name,
-    //     original_filename: fileForm.file.name,
-    //     extension: response.extension,
-    //     bucket: response.bucket,
-    //     size: fileForm.file.size,
-    //     entity_id: member.id,
-    //     /*client_id: page.props.value.user.client_id,*/
-    //     user_id: page.props.value.user.id,
-    // },
+    await createFile({
+        ...res,
+        filename: fileForm.file.name,
+        original_filename: fileForm.file.name,
+        size: fileForm.file.size,
+    });
 };
 
 /** Form submission */
 const handleSubmit = async () => {
-    await updateMember({
+    await operFn.value({
         ...form,
         date_of_birth: transformDate(form.date_of_birth),
     });

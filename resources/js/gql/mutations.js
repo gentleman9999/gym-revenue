@@ -107,6 +107,23 @@ const role = {
     `,
 };
 
+const member = {
+    create: gql`
+        mutation createMember($first_name: String) {
+            createMember(first_name: $first_name) {
+                id
+            }
+        }
+    `,
+    update: gql`
+        mutation updateMember($id: ID, $first_name: String) {
+            updateMember(id: $id, first_name: $first_name) {
+                id
+            }
+        }
+    `,
+};
+
 const user = {
     create: gql`
         mutation createUser($input: UserInput) {
@@ -393,4 +410,5 @@ export default {
     customer,
     profile,
     profile_photo,
+    member,
 };
