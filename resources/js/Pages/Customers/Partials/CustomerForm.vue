@@ -2,7 +2,7 @@
     <div class="col-span-6 flex flex-col items-center gap-4 mb-4">
         <div
             class="w-32 h-32 rounded-full overflow-hidden border"
-            :style="() => resolveStyle(form['opportunity'])"
+            :style="() => resolveBorderColorLevel(form['opportunity'])"
         >
             <img
                 v-if="fileForm.url"
@@ -34,7 +34,7 @@
             />
         </label>
     </div>
-    <jet-form-section @submitted="handleOperation">
+    <jet-form-section @submitted="handleSubmit">
         <template #form>
             <div class="form-control col-span-6 md:col-span-2">
                 <jet-label for="first_name" value="First Name" />
@@ -275,7 +275,7 @@
                 >
                     <div
                         class="collapse-title text-sm font-medium"
-                        v-on:click="notesExpanded(note)"
+                        v-on:click="handleNoteExpansion(note)"
                     >
                         > {{ note.title }}
                         <div
@@ -328,6 +328,7 @@ import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import { transformDate } from "@/utils/transformDate";
 import { preformattedForSelect } from "@/utils/formatters/states";
 import { getDefaultMultiselectTWClasses } from "@/utils";
+import { resolveBorderColorLevel } from "@/utils/resolvers/warningLevelToStyle";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 
@@ -377,23 +378,17 @@ const props = defineProps({
 
 const validStateSelections = ref(preformattedForSelect);
 
-function notesExpanded(note) {
-    axios.post(route("note.seen"), {
-        client_id: props.clientId,
-        note: note,
-    });
-}
-
 const { mutate: createCustomer } = useMutation(mutations.customer.create);
 const { mutate: updateCustomer } = useMutation(mutations.customer.update);
+const { mutate: updateNote } = useMutation(mutations.note.update);
 
 let customer = _.cloneDeep(props.customer);
+const form = useGymRevForm(customer);
+const fileForm = useGymRevForm({ file: null });
 
 const operFn = computed(() => {
     return props.customer?.id ? updateCustomer : createCustomer;
 });
-
-const form = useGymRevForm(customer);
 
 const resolveStyle = (level) => {
     return {
@@ -409,12 +404,21 @@ const resolveStyle = (level) => {
     };
 };
 
-const fileForm = useGymRevForm({ file: null });
-
-const handleOperation = async () => {
+/** Form submission */
+const handleSubmit = async () => {
     await operFn.value({
         ...form,
         date_of_birth: transformDate(form.date_of_birth),
+    });
+
+    emit("close");
+};
+
+/** Update a note to "seen" */
+const handleNoteExpansion = async (note) => {
+    await updateNote({
+        client_id: props.clientId,
+        note: note,
     });
 
     emit("close");

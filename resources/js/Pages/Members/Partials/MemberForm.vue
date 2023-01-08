@@ -2,7 +2,7 @@
     <div class="col-span-6 flex flex-col items-center gap-4 mb-4">
         <div
             class="w-32 h-32 rounded-full overflow-hidden border"
-            :style="borderStyle"
+            :style="resolveBorderColorLevel(form['opportunity'])"
         >
             <img
                 v-if="fileForm.url"
@@ -300,7 +300,7 @@
                 >
                     <div
                         class="collapse-title text-sm font-medium"
-                        v-on:click="notesExpanded(note)"
+                        v-on:click="handleNoteExpansion(note)"
                     >
                         > {{ note.title }}
                         <div
@@ -319,45 +319,6 @@
                     </div>
                 </div>
             </template>
-
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="form-divider"-->
-            <!--            />-->
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-2"-->
-            <!--            >-->
-            <!--                Times Emailed:-->
-            <!--                <span class="badge badge-success badge-outline">-->
-            <!--                    {{ interactionCount.emailedCount }}-->
-            <!--                </span>-->
-            <!--            </div>-->
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-2"-->
-            <!--            >-->
-            <!--                Times Called:-->
-            <!--                <span class="badge badge-error badge-outline">-->
-            <!--                    {{ interactionCount.calledCount }}-->
-            <!--                </span>-->
-            <!--            </div>-->
-            <!--            <div-->
-            <!--                v-if="typeof interactionCount !== 'undefined'"-->
-            <!--                class="col-span-2"-->
-            <!--            >-->
-            <!--                Times Text Messaged:-->
-            <!--                <span class="badge badge-info badge-outline">-->
-            <!--                    {{ interactionCount.smsCount }}-->
-            <!--                </span>-->
-            <!--            </div>-->
-
-            <!--            <div class="form-divider" />-->
-            <!--            <div class="col-span-6">-->
-            <!--                <label v-if="operation === 'Update'">-->
-            <!--                    {{ lastUpdated }}-->
-            <!--                </label>-->
-            <!--            </div>-->
         </template>
 
         <template #actions>
@@ -383,217 +344,115 @@
     </jet-form-section>
 </template>
 
-<script>
+<script setup>
+import * as _ from "lodash";
+import "@vuepic/vue-datepicker/dist/main.css";
 import { computed, watchEffect } from "vue";
 import { useGymRevForm } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
+import { transformDate } from "@/utils/transformDate";
+import { useGoBack } from "@/utils";
+import { getDefaultMultiselectTWClasses } from "@/utils";
+import { resolveBorderColorLevel } from "@/utils/resolvers/warningLevelToStyle";
+import { preformattedForSelect } from "@/utils/formatters/states";
+import { usePage } from "@inertiajs/inertia-vue3";
+
 import Vapor from "laravel-vapor";
 import Button from "@/Components/Button.vue";
 import JetFormSection from "@/Jetstream/FormSection.vue";
 import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
-import { useGoBack } from "@/utils";
 import DatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
-import { transformDate } from "@/utils/transformDate";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import * as _ from "lodash";
-import { usePage } from "@inertiajs/inertia-vue3";
 import states from "@/Pages/Comms/States/statesOfUnited";
 import Multiselect from "@vueform/multiselect";
-import { getDefaultMultiselectTWClasses } from "@/utils";
+
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
 
 library.add(faUserCircle);
 
-export default {
-    components: {
-        Button,
-        JetFormSection,
-        FontAwesomeIcon,
-        JetInputError,
-        JetLabel,
-        DatePicker,
-        PhoneInput,
-        Multiselect,
+const props = defineProps({
+    member: {
+        type: Object,
+        default: {},
     },
-    props: ["member", "interactionCount", "locations"],
-    setup(props, context) {
-        const page = usePage();
-        function notesExpanded(note) {
-            axios.post(route("note.seen"), {
-                note: note,
-            });
-        }
-        let member = _.cloneDeep(props.member);
-        let operation = "Update";
-        let memberData = null;
-        if (!member) {
-            memberData = {
-                first_name: "",
-                middle_name: "",
-                last_name: "",
-                email: "",
-                phone: "",
-                alternate_phone: "",
-                club_id: "",
-                client_id: props.clientId,
-                home_location_id: null,
-                profile_picture: null,
-                gender: "",
-                date_of_birth: null,
-                notes: { title: "", note: "" },
-                address1: "",
-                address2: "",
-                zip: "",
-                state: "",
-                city: "",
-            };
-            operation = "Create";
-        } else {
-            memberData = {
-                first_name: member.first_name,
-                middle_name: member.middle_name,
-                last_name: member.last_name,
-                email: member.email,
-                phone: member.phone,
-                alternate_phone: member.alternate_phone,
-                club_id: member.club_id,
-                home_location_id: member.home_location_id,
-                profile_picture: null,
-                gender: member.gender,
-                notes: { title: "", note: "" },
-                date_of_birth: member.date_of_birth,
-                address1: member.address1,
-                address2: member.address2,
-                zip: member.zip,
-                state: member.state,
-                city: member.city,
-                locations: member.locations,
-            };
-        }
-        const borderStyle = computed(() => {
-            let color = "transparent";
-            switch (form["opportunity"]) {
-                case 3:
-                    color = "green";
-                    break;
-
-                case 2:
-                    color = "yellow";
-                    break;
-
-                case 1:
-                    color = "red";
-                    break;
-            }
-            return {
-                "border-color": color,
-                "border-width": "5px",
-            };
-        });
-        const lastUpdated = computed(() =>
-            "last_updated" in member && member.last_updated
-                ? `Last Updated by ${member.last_updated.value} at ${new Date(
-                      member.last_updated.updated_at
-                  ).toLocaleDateString("en-US")}`
-                : "This member has never been updated"
-        );
-        const form = useGymRevForm(memberData);
-        const fileForm = useGymRevForm({ file: null });
-
-        const transformFormSubmission = (data) => {
-            if (!data.notes?.title) {
-                delete data.notes;
-            }
-            data.date_of_birth = transformDate(data.date_of_birth);
-            return data;
-        };
-
-        let handleSubmit = () =>
-            form
-                .dirty()
-                .transform(transformFormSubmission)
-                .put(route("data.members.update", member.id), {
-                    preserveState: false,
-                });
-        if (operation === "Create") {
-            handleSubmit = () =>
-                form
-                    .transform(transformFormSubmission)
-                    .post(route("data.members.store"), {
-                        onSuccess: () => (form.notes = { title: "", note: "" }),
-                    });
-        }
-
-        const goBack = useGoBack(route("data.members"));
-
-        watchEffect(async () => {
-            console.log("file Changed!", fileForm.file);
-            if (!fileForm.file) {
-                return;
-            }
-            try {
-                // uploadProgress.value=0;
-                let response = await Vapor.store(fileForm.file, {
-                    // visibility: form.isPublic ? 'public-read' : null,
-                    visibility: "public-read",
-                    // progress: (progress) => {
-                    //     uploadProgress.value = Math.round(progress * 100);
-                    // },
-                });
-                fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
-
-                form.profile_picture = {
-                    uuid: response.uuid,
-                    key: response.key,
-                    extension: response.extension,
-                    bucket: response.bucket,
-                };
-                let pfpResponse = await axios.post(
-                    route("data.members.upload.profile.picture"),
-                    [
-                        {
-                            id: response.uuid,
-                            key: response.key,
-                            filename: fileForm.file.name,
-                            original_filename: fileForm.file.name,
-                            extension: response.extension,
-                            bucket: response.bucket,
-                            size: fileForm.file.size,
-                            entity_id: member.id,
-                            /*client_id: page.props.value.user.client_id,*/
-                            user_id: page.props.value.user.id,
-                        },
-                    ]
-                );
-            } catch (e) {
-                console.error(e);
-                // uploadProgress.value = -1;
-            }
-        });
-
-        let optionsStates = [];
-        for (let x in states) {
-            optionsStates.push(states[x].abbreviation);
-        }
-
-        return {
-            form,
-            fileForm,
-            buttonText: operation,
-            optionStates: optionsStates,
-            handleSubmit,
-            goBack,
-            lastUpdated,
-            operation,
-            notesExpanded,
-            borderStyle,
-            multiselectClasses: getDefaultMultiselectTWClasses(),
-        };
+    interactionCount: {
+        type: [Number, String],
     },
+    locations: {
+        type: [Array, Object, String],
+    },
+});
+
+const emit = defineEmits(["close"]);
+
+const page = usePage();
+
+const { mutate: updateNote } = useMutation(mutations.note.update);
+const { mutate: updateMember } = useMutation(mutations.note.update); // still note for now to get rid of errors
+
+let member = _.cloneDeep(props.member);
+
+const form = useGymRevForm(member);
+const fileForm = useGymRevForm({ file: null });
+const validStateSelections = ref(preformattedForSelect);
+
+/** Update a note to "seen" */
+const handleNoteExpansion = async (note) => {
+    await updateNote({
+        client_id: props.clientId,
+        note: note,
+    });
+
+    emit("close");
 };
+
+/** File Input event handler */
+const handleFileChange = async () => {
+    if (!fileForm.file) return;
+
+    const res = await Vapor.store(fileForm.file, {
+        visibility: "public-read",
+    });
+
+    fileForm.url = `https://${response.bucket}.s3.amazonaws.com/${response.key}`;
+
+    form.profile_picture = {
+        uuid: response.uuid,
+        key: response.key,
+        extension: response.extension,
+        bucket: response.bucket,
+    };
+
+    // here we call the mutation
+    //         {
+    //     id: response.uuid,
+    //     key: response.key,
+    //     filename: fileForm.file.name,
+    //     original_filename: fileForm.file.name,
+    //     extension: response.extension,
+    //     bucket: response.bucket,
+    //     size: fileForm.file.size,
+    //     entity_id: member.id,
+    //     /*client_id: page.props.value.user.client_id,*/
+    //     user_id: page.props.value.user.id,
+    // },
+};
+
+/** Form submission */
+const handleSubmit = async () => {
+    await updateMember({
+        ...form,
+        date_of_birth: transformDate(form.date_of_birth),
+    });
+
+    form.notes = { title: "", note: "" };
+};
+
+// const goBack = useGoBack(route("data.members"));
 </script>
 
 <style scoped>
