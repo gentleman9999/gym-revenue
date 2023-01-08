@@ -37,6 +37,27 @@ const position = {
     `,
 };
 
+const profile = {
+    update: gql`
+        mutation updateProfile($name: String) {
+            updateProfile(name: $name) {
+                id
+                name
+            }
+        }
+    `,
+};
+
+const profile_photo = {
+    delete: gql`
+        mutation deleteProfilePhoto($id: ID) {
+            deleteProfilePhoto(id: $id) {
+                id
+            }
+        }
+    `,
+};
+
 const role = {
     create: gql`
         mutation createRole(
@@ -370,4 +391,6 @@ export default {
     folder,
     file,
     customer,
+    profile,
+    profile_photo,
 };

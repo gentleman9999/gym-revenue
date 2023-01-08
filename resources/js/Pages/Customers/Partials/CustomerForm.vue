@@ -126,16 +126,15 @@
             </div>
             <div class="col-span-3 md:col-span-2">
                 <jet-label for="state" value="State" />
-                <select id="state" v-model="form.state">
-                    <option value="">State</option>
-                    <option
-                        v-for="st in validStateSelections"
-                        :key="st.value"
-                        :value="st.label"
-                    >
-                        {{ st.label }}
-                    </option>
-                </select>
+                <multiselect
+                    id="state"
+                    class="mt-1 multiselect"
+                    v-model="form.state"
+                    :searchable="true"
+                    :create-option="true"
+                    :options="validStateSelections"
+                    :classes="getDefaultMultiselectTWClasses()"
+                />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
             <div class="col-span-3 md:col-span-2">
@@ -208,25 +207,7 @@
 
             <div class="form-divider" />
             <div class="form-control md:col-span-2 col-span-6">
-                <!-- <jet-label for="club_id" value="Club" />
-                <select
-                    class=""
-                    v-model="form['home_location_id']"
-                    required
-                    id="club_id"
-                >
-                    <option value="">Select a Club</option>
-                    <option
-                        v-for="(name, clubId) in locations"
-                        :value="clubId"
-                        :key="clubId"
-                    >
-                        {{ name }}
-                    </option>
-                </select> -->
-
                 <ClubSelect v-model="form['home_location_id']" />
-
                 <jet-input-error
                     :message="form.errors['home_location_id']"
                     class="mt-2"
@@ -345,6 +326,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUserCircle } from "@fortawesome/pro-solid-svg-icons";
 import { transformDate } from "@/utils/transformDate";
+import { preformattedForSelect } from "@/utils/formatters/states";
+import { getDefaultMultiselectTWClasses } from "@/utils";
 import { useMutation } from "@vue/apollo-composable";
 import mutations from "@/gql/mutations";
 
@@ -356,7 +339,6 @@ import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import states from "@/Pages/Comms/States/statesOfUnited";
 import Multiselect from "@vueform/multiselect";
 import ClubSelect from "@/Pages/Locations/Partials/ClubSelect.vue";
 
@@ -393,7 +375,7 @@ const props = defineProps({
     },
 });
 
-const validStateSelections = ref([]);
+const validStateSelections = ref(preformattedForSelect);
 
 function notesExpanded(note) {
     axios.post(route("note.seen"), {
@@ -407,9 +389,8 @@ const { mutate: updateCustomer } = useMutation(mutations.customer.update);
 
 let customer = _.cloneDeep(props.customer);
 
-let operation = ref("Update");
 const operFn = computed(() => {
-    return operation.value === "Update" ? updateCustomer : createCustomer;
+    return props.customer?.id ? updateCustomer : createCustomer;
 });
 
 const form = useGymRevForm(customer);
@@ -440,8 +421,7 @@ const handleOperation = async () => {
 };
 
 /**
- * this can be refactored into another component - todo
- * for now it breaks form
+ * do not remove this
  */
 // watchEffect(async () => {
 //     if (!fileForm.file) return;
@@ -463,27 +443,7 @@ const handleOperation = async () => {
 //     }
 // });
 
-const formatStatesForSelect = (data) => {
-    if (!data instanceof Array) return;
-    return data.map((st) => {
-        return {
-            value: st?.name,
-            label: st?.abbreviation?.toUpperCase(),
-        };
-    });
-};
-
 // const optionsStates = ref([...states.map((s) => s.abbreviation)]);
-
-onMounted(() => {
-    if (!props.customer?.id) operation.value = "Create";
-
-    validStateSelections.value = formatStatesForSelect(states);
-
-    // for (let x in states) {
-    //     optionsStates.value.push(states[x].abbreviation);
-    // }
-});
 </script>
 
 <style scoped>
