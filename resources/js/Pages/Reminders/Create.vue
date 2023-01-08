@@ -5,48 +5,26 @@
 
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <security-role-form
+            <reminder-form
                 :client-id="$page.props.user.client_id"
-                :available-roles="availableRoles"
-                :available-abilities="availableAbilities"
-                :security-groups="securityGroups"
+                :reminder="reminder"
             />
         </div>
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import Button from "@/Components/Button.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
-
-import JetInputError from "@/Jetstream/InputError.vue";
-import JetLabel from "@/Jetstream/Label.vue";
-
 import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
 
-export default defineComponent({
-    components: {
-        ReminderForm,
-        LayoutHeader,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-    },
-    props: {
-        availableRoles: {
-            type: Array,
-            default: [],
-        },
-        availableAbilities: {
-            type: Array,
-            default: [],
-        },
-        securityGroups: {
-            type: Array,
-            default: [],
+const props = defineProps({
+    reminder: {
+        type: Object,
+        default: {
+            name: "",
+            description: "",
+            remind_time: new Date().getDate + 7,
+            triggered_at: new Date().getDate + 14,
         },
     },
 });

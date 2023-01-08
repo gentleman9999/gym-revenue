@@ -14,32 +14,14 @@
     </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import LayoutHeader from "@/Layouts/LayoutHeader.vue";
-import Button from "@/Components/Button.vue";
-import JetFormSection from "@/Jetstream/FormSection.vue";
-import JetInputError from "@/Jetstream/InputError.vue";
-import JetLabel from "@/Jetstream/Label.vue";
-import JetBarIcon from "@/Components/JetBarIcon.vue";
-
 import ReminderForm from "@/Pages/Reminders/Partials/ReminderForm.vue";
 
-export default defineComponent({
-    components: {
-        ReminderForm,
-        LayoutHeader,
-        Button,
-        JetFormSection,
-        JetInputError,
-        JetLabel,
-        JetBarIcon,
-    },
-    props: {
-        reminder: {
-            type: Object,
-            required: true,
-        },
+const props = defineProps({
+    reminder: {
+        type: Object,
+        required: true,
     },
 });
 </script>

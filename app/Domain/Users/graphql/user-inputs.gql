@@ -27,3 +27,18 @@ input NoteInput @validator {
     note: String
     title: String
 }
+
+input CustomerInput {
+    id: ID
+    email: String
+    first_name: String
+    last_name: String
+    phone: String
+    user_type: String
+    gender: String
+    date_of_birth: DateTime
+    address1: String
+    zip: String
+    city: String
+    state: String
+}

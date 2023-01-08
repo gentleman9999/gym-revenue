@@ -45,7 +45,7 @@
         <template #actions>
             <Button
                 type="button"
-                @click="handleClickCancel"
+                @click="$emit('close')"
                 :class="{ 'opacity-25': form.processing }"
                 error
                 outline
@@ -78,6 +78,9 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import { Inertia } from "@inertiajs/inertia";
 
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
+
 const props = defineProps({
     reminder: {
         type: Object,
@@ -90,22 +93,22 @@ const props = defineProps({
     },
 });
 
-const reminderState = ref(props.reminder);
-const operation = computed(() => {
-    return props.reminder.id === "" ? "Create" : "Update";
+const emit = defineEmits(["close"]);
+
+const { mutate: createReminder } = useMutation(mutations.reminder.create);
+const { mutate: updateReminder } = useMutation(mutations.reminder.update);
+
+const operFn = computed(() => {
+    return props.reminder.id === "" ? createReminder : updateReminder;
 });
 
 const form = useGymRevForm(props.reminder);
 
-const handleSubmit = () => {
-    let endpoint =
-        operation.value === "Create" ? "reminders.store" : "reminders.update";
-    let fn = operation.value === "Create" ? form.dirty()["put"] : form["post"];
+const handleSubmit = async () => {
+    await operFn.value({
+        ...form,
+    });
 
-    fn(endpoint);
-};
-
-const handleClickCancel = () => {
-    Inertia.visit(route("reminders"));
+    emit("close");
 };
 </script>

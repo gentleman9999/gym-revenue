@@ -105,6 +105,27 @@ const user = {
     `,
 };
 
+const customer = {
+    create: gql`
+        mutation createCustomer($input: CustomerInput) {
+            createCustomer(input: $input) {
+                id
+                first_name
+                last_name
+            }
+        }
+    `,
+    update: gql`
+        mutation updateCustomer($input: CustomerInput) {
+            updateCustomer(input: $input) {
+                id
+                first_name
+                last_name
+            }
+        }
+    `,
+};
+
 const team = {
     create: gql`
         mutation createTeam($name: String, $positions: [ID]) {
@@ -348,4 +369,5 @@ export default {
     note,
     folder,
     file,
+    customer,
 };

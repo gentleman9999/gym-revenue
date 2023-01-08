@@ -509,7 +509,7 @@ const CUSTOMER_PREVIEW = gql`
             first_name
             last_name
             email
-            primary_phone
+            phone
             alternate_phone
             gender
             date_of_birth
@@ -536,7 +536,7 @@ const CUSTOMER_EDIT = gql`
             middle_name
             last_name
             email
-            primary_phone
+            phone
             alternate_phone
             gender
             date_of_birth
@@ -567,6 +567,31 @@ const CUSTOMER_EDIT = gql`
 
 const CUSTOMER_CREATE = gql`
     query Customer {
+        customer {
+            email
+            first_name
+            last_name
+            phone
+            user_type
+            gender
+            date_of_birth
+            address1
+            zip
+            city
+            state
+            client {
+                id
+            }
+            home_location {
+                id
+            }
+            notes {
+                id
+                title
+                note
+                read
+            }
+        }
         locations(first: 100) {
             data {
                 id
@@ -1001,6 +1026,27 @@ const REMINDER_EDIT = gql`
     }
 `;
 
+const REMINDER_CREATE = gql`
+    query Reminder(
+        $name: String
+        $description: String
+        $remind_time: String
+        $triggered_at: DateTime
+    ) {
+        reminder(
+            name: $name
+            description: $description
+            remind_time: $remind_time
+            triggered_at: $triggered_at
+        ) {
+            id
+            name
+            description
+            remind_time
+        }
+    }
+`;
+
 const TASKS = gql`
     query TasksQuery($param: TaskParam, $pagination: PaginationInput) {
         tasks: tasksQuery(param: $param, pagination: $pagination) {
@@ -1185,6 +1231,7 @@ export default {
     },
     reminder: {
         edit: REMINDER_EDIT,
+        create: REMINDER_CREATE,
     },
     event: {
         get: CALENDAR_EVENT_GET,
