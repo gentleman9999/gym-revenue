@@ -637,6 +637,7 @@ const TEAM_EDIT = gql`
             }
             locations {
                 id
+                name
             }
         }
         availableLocations: locations(first: 100) {

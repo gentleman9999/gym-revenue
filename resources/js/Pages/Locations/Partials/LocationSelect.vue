@@ -21,6 +21,8 @@
                     :create-option="true"
                     :options="formatLocationSelect(data.locations.data)"
                     :classes="getDefaultMultiselectTWClasses()"
+                    :valueProp="'value'"
+                    :label="'label'"
                 />
             </template>
         </template>
@@ -37,7 +39,7 @@ import Multiselect from "@vueform/multiselect";
 
 const props = defineProps({
     modelValue: {
-        type: String,
+        type: [String, Array, Object],
         default: "",
     },
 });

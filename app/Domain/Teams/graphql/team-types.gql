@@ -6,11 +6,11 @@ type Team {
     updated_at: DateTime
     users: [User]! @hasMany
     user: TeamUser @hasMany
-    locations: [Location]! @hasMany
+    locations: [Location] @hasMany
     client: Client @belongsTo
     client_id: ID
 }
 
 type TeamUser {
-    user:User @belongsTo
+    user: User @belongsTo
 }

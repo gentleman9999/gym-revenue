@@ -1,16 +1,16 @@
 type Location {
-    id: ID!
-    gymrevenue_id: String!
-    location_no: String!
-    location_type: LocationType!
-    name: String!
-    city: String!
-    state: String!
-    active: Boolean!
-    zip: String!
-    address1: String!
+    id: ID
+    gymrevenue_id: String
+    location_no: String
+    location_type: LocationType
+    name: String
+    city: String
+    state: String
+    active: Boolean
+    zip: String
+    address1: String
     address2: String
-    phone: String!
+    phone: String
     open_date: DateTime
     close_date: DateTime
     latitude: Int
@@ -21,8 +21,8 @@ type Location {
     details: [LocationDetails] @hasMany
 }
 
-type LocationDetails{
-    id: ID!
-    field: String!
+type LocationDetails {
+    id: ID
+    field: String
     value: String
 }

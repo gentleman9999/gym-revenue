@@ -1,5 +1,5 @@
 <template>
-    <jet-form-section @submitted="handleSubmit">
+    <jet-form-section @submitted="handleOperation">
         <template #title> Team Details</template>
 
         <template #description>
@@ -47,6 +47,7 @@
 
 <script setup>
 import * as _ from "lodash";
+import { ref, computed, onMounted, watch } from "vue";
 import mutations from "@/gql/mutations";
 import { useGymRevForm } from "@/utils";
 import { useMutation } from "@vue/apollo-composable";
@@ -61,42 +62,46 @@ import JetLabel from "@/Jetstream/Label.vue";
 const props = defineProps({
     team: {
         type: Object,
+        default: {
+            name: "",
+            locations: [],
+        },
     },
 });
 
-const emit = defineEmits(["close"]);
+const formatLocationSelectArray = (data) => {
+    if (!data instanceof Array) return [];
+    return data.map((location) => {
+        return {
+            value: location.id,
+            label: "placeholder name", // location.name when seeder is fixed
+        };
+    });
+};
 
-let operation = "Update";
-let team = _.cloneDeep(props.team);
-if (!team) {
-    team = {
-        name: "",
-        locations: [],
-    };
-    operation = "Create";
-} else {
-    team.locations = team.locations.map((detail) => detail.value);
-}
-const form = useGymRevForm(team);
+const operation = ref("Update");
+
+const emit = defineEmits(["close"]);
+const form = useGymRevForm({
+    ...props.team,
+});
 
 const { mutate: createTeam } = useMutation(mutations.team.create);
 const { mutate: updateTeam } = useMutation(mutations.team.update);
 
-let handleSubmit = async () => {
-    await updateTeam({
-        id: team.id,
-        name: form.name,
-        positions: form.positions,
+const operFn = computed(() => {
+    return operation.value === "Update" ? updateTeam : createTeam;
+});
+
+const handleOperation = async () => {
+    await operFn.value({
+        ...form,
     });
+
     emit("close");
 };
-if (operation === "Create") {
-    handleSubmit = async () => {
-        await createTeam({
-            name: form.name,
-            positions: form.positions,
-        });
-        emit("close");
-    };
-}
+
+onMounted(() => {
+    if (!props.team.id) operation.value = "Create";
+});
 </script>
