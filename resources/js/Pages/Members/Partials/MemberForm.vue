@@ -133,8 +133,8 @@
                     v-model="form.state"
                     :searchable="true"
                     :create-option="true"
-                    :options="optionStates"
-                    :classes="multiselectClasses"
+                    :options="validStateSelections"
+                    :classes="getDefaultMultiselectTWClasses()"
                 />
                 <jet-input-error :message="form.errors.state" class="mt-2" />
             </div>
@@ -347,7 +347,7 @@
 <script setup>
 import * as _ from "lodash";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { computed, watchEffect } from "vue";
+import { computed, watchEffect, ref } from "vue";
 import { useGymRevForm } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -366,7 +366,7 @@ import JetInputError from "@/Jetstream/InputError.vue";
 import JetLabel from "@/Jetstream/Label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import PhoneInput from "@/Components/PhoneInput.vue";
-import states from "@/Pages/Comms/States/statesOfUnited";
+
 import Multiselect from "@vueform/multiselect";
 
 import mutations from "@/gql/mutations";
