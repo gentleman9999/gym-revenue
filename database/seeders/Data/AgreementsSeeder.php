@@ -43,6 +43,7 @@ class AgreementsSeeder extends Seeder
                     // For each client, get all the locations
                     if (count($client->locations) > 0) {
                         foreach ($client->locations as $idx => $location) {
+                            VarDumper::dump('Creating Agreements for ' . $client->name . ' on Location '.$location->name.'!');
                             for ($x = 0; $x <= $amount_of_agreements; $x++) {
                                 $enduser_id = $endusers[array_rand($endusers, 1)];
                                 $agreement_data['client_id'] = $client->id;
@@ -57,6 +58,7 @@ class AgreementsSeeder extends Seeder
                                 $agreement_data['contract_id'] = $contract_id;
                                 $agreement = CreateAgreement::run($agreement_data);
 
+                                VarDumper::dump('Signing Agreements for ' . $client->name . '!');
                                 $sign_agreement_data['id'] = $agreement->id;
                                 $sign_agreement_data['user_id'] = $enduser_id;
                                 $sign_agreement_data['active'] = true;

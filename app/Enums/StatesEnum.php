@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum StatesEnum : string
+enum StatesEnum: string
 {
     case AL = 'AL';
     case AK = 'AK';
