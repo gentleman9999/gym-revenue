@@ -6,6 +6,7 @@ import {
 } from "./templates/email";
 import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
+import { AUDIENCES, AUDIENCE_EDIT } from "./campaigns/audiences";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -1180,6 +1181,9 @@ const TOPOL_API_KEY = gql`
 `;
 
 export default {
+    audience: {
+        edit: AUDIENCE_EDIT,
+    },
     user: {
         preview: USER_PREVIEW,
         edit: USER_EDIT,
@@ -1250,6 +1254,7 @@ export default {
         edit: CALENDAR_EVENT_GET,
     },
     TOPOL_API_KEY,
+    audiences: AUDIENCES,
     emailTemplates: EMAIL_TEMPLATES,
     smsTemplates: SMS_TEMPLATES,
     callTemplates: CALL_TEMPLATES,

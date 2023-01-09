@@ -7,10 +7,27 @@ type Audience {
     deleted_at: DateTime
     updated_at: DateTime
     editable: Int
-    entity: String
 }
 
 type AudienceTargets {
     lead_type_id: [ID]
     membership_type_id: [ID]
+}
+
+type LeadTypes {
+    id: ID
+    client_id: ID
+    name: String
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}
+
+type MemberTypes {
+    id: ID
+    client_id: ID
+    name: String
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
 }

@@ -2,6 +2,7 @@ type DripCampaign {
     id: ID!
     client_id: ID
     name: String
+    days: [DripCampaignDay] @hasMany
     audience_id: String
     start_at: DateTime
     end_at: DateTime

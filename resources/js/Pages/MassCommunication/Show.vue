@@ -111,6 +111,8 @@ const props = defineProps({
     },
 });
 
+const selectedTab = ref("scheduled");
+
 const dripV = ref(false);
 const scheduleV = ref(false);
 
