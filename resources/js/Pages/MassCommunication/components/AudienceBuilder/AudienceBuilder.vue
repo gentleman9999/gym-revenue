@@ -181,12 +181,12 @@ const handleSave = async () => {
     }
 
     try {
-        let filters = { lead_type_id: selectedIds.value };
-        let entity = "App\\Domain\\EndUsers\\Leads\\Projections\\Lead";
-        if (entityTab.value === "members") {
-            filters = { membership_type_id: selectedIds.value };
-            entity = "App\\Domain\\EndUsers\\Members\\Projections\\Member";
-        }
+        let filters = { type_id: selectedIds.value };
+        let entity = ""; //"App\\Domain\\EndUsers\\Leads\\Projections\\Lead";
+        // if (entityTab.value === "members") {
+        //     filters = { membership_type_id: selectedIds.value };
+        //     entity = "App\\Domain\\EndUsers\\Members\\Projections\\Member";
+        // }
         const moddedAudience = {
             id: props.audience.id,
             name: titleVal.value,

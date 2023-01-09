@@ -63,7 +63,7 @@ function handleSendingText() {
     loading.value = true;
 
     axios
-        .post("/comms/sms-templates/test", {
+        .post(route("mass-comms.sms-templates.test-msg"), {
             templateId: props.templateId,
         })
         .then(({ data }) => {
