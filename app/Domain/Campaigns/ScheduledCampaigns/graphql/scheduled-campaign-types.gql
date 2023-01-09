@@ -1,0 +1,15 @@
+type ScheduledCampaign {
+    id: ID
+    client_id: ID
+    name: String
+    audience_id: String
+    send_at: DateTime
+    completed_at: DateTime
+    status: String
+    email_template_id: String
+    sms_template_id: String
+    call_template_id: String
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}

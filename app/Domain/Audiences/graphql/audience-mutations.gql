@@ -1,0 +1,7 @@
+extend type Mutation {
+    "Create an Audience"
+    createAudience(audience: CreateAudienceInput!): Audience!
+
+    "Update an Audience"
+    updateAudience(audience: UpdateAudienceInput!): Audience!
+}

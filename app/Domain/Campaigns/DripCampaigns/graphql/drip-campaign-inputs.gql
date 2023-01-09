@@ -1,0 +1,22 @@
+input CreateDripCampaignInput {
+    name: String
+    audience_id: String
+    campaignType: String
+    days: [CampaignDayInput]
+}
+
+input UpdateDripCampaignInput {
+    id: ID
+    name: String
+    audience_id: String
+    campaignType: String
+    days: [CampaignDayInput]
+}
+
+input CampaignDayInput {
+    call: String
+    date: DateTime
+    day_in_campaign: Int
+    email: String
+    sms: String
+}

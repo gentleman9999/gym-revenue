@@ -1,0 +1,8 @@
+extend type Query {
+    audiences(
+        filter: AudienceFilter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [Audience!]! @paginate(defaultCount: 25)
+
+    audience(id: ID @eq): Audience @find
+}

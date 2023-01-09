@@ -1,0 +1,25 @@
+type DripCampaign {
+    id: ID!
+    client_id: ID
+    name: String
+    audience_id: String
+    start_at: DateTime
+    end_at: DateTime
+    completed_at: DateTime
+    status: String
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+type DripCampaignDay {
+    id: ID!
+    drip_campaign_id: String
+    day_of_campaign: Int
+    email_template_id: String
+    sms_template_id: String
+    call_template_id: String
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}

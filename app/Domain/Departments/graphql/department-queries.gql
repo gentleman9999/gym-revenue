@@ -4,16 +4,11 @@ extend type Query {
         filter: DepartmentFilter @scope
         orderBy: [OrderByClause!] @orderBy
     ): [Department!]!
-    @paginate(defaultCount: 10)
-        @can(ability: "departments.read", model: "App\\Domain\\Departments\\Department")
+        @paginate(defaultCount: 10)
+        @can(
+            ability: "departments.read"
+            model: "App\\Domain\\Departments\\Department"
+        )
 
-    department(
-        id: ID @eq
-    ): Department @find
-}
-
-input DepartmentFilter {
-    search: String
-    trashed: String
-    state: String
+    department(id: ID @eq): Department @find
 }

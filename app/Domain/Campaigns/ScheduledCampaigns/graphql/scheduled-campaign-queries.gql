@@ -1,0 +1,10 @@
+extend type Query {
+    "Queries scheduled campaigns according to optional input filter"
+    scheduledCampaigns(
+        filter: Filter @scope
+        orderBy: [OrderByClause!] @orderBy
+    ): [ScheduledCampaign!]! @paginate(defaultCount: 10)
+
+    "Finds a single scheduled campaign by ID"
+    scheduledCampaign(id: ID @eq): ScheduledCampaign @find
+}

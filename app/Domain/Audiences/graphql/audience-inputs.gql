@@ -1,0 +1,22 @@
+input AudienceFilter {
+    search: String
+    trashed: String
+    state: String
+    client_id: ID
+}
+
+input CreateAudienceInput {
+    name: String
+    filters: AudienceFiltersInput
+}
+
+input UpdateAudienceInput {
+    id: ID
+    name: String
+    filters: AudienceFiltersInput
+}
+
+input AudienceFiltersInput {
+    lead_type_id: [ID]
+    membership_type_id: [ID]
+}
