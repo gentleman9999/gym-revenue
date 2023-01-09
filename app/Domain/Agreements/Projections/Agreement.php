@@ -21,7 +21,7 @@ class Agreement extends GymRevProjection
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'user_id', 'agreement_template_id', 'active'];
+    protected $fillable = ['client_id', 'gr_location_id', 'created_by', 'agreement_category_id', 'user_id', 'agreement_template_id', 'active', 'contract_file_id'];
 
     protected static function booted(): void
     {

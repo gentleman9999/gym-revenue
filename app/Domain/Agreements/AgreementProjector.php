@@ -13,9 +13,6 @@ use App\Domain\Agreements\Events\AgreementTrashed;
 use App\Domain\Agreements\Events\AgreementUpdated;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Users\Actions\UpdateUser;
-use App\Domain\Users\Models\Customer;
-use App\Domain\Users\Models\EndUser;
-use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Enums\UserTypesEnum;
 use Illuminate\Support\Facades\DB;
@@ -96,23 +93,5 @@ class AgreementProjector extends Projector
                 'user_type' => $is_membership_agreement ? UserTypesEnum::MEMBER : UserTypesEnum::CUSTOMER,
                 ]);
         }
-    }
-
-    /**
-     * @param $end_user
-     * @param $type
-     * @return void
-     */
-    public function fill(EndUser $end_user, Customer|Member $type): void
-    {
-        $fillables = $end_user->getFillable();
-        $fillable_data = array_filter($end_user->toArray(), function ($key) use ($fillables) {
-            return in_array($key, $fillables);
-        }, ARRAY_FILTER_USE_KEY);
-        $type->id = $end_user->id;
-        $type->client_id = $end_user->client_id;
-        $type->email = $end_user->email;
-        $type->fill($fillable_data);
-        $type->save();
     }
 }

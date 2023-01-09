@@ -50,11 +50,16 @@ function signedAgreement($data)
 
 function agreementTemplate(Client $client, Location $location)
 {
-    $agreement_data['client_id'] = $client->id;
+    $client_id = $client->id;
+    $billingSchedule = billingSchedule($client_id);
+
+    $agreement_data['client_id'] = $client_id;
     $agreement_data['gr_location_id'] = $location->gymrevenue_id;
     $agreement_data['agreement_name'] = 'test contract for '.$client->name;
     $agreement_data['agreement_json'] = json_encode($client);
     $agreement_data['availability'] = randomAgreementAvailability();
+    $agreement_data['billing_schedule_id'] = $billingSchedule->id;
+    $agreement_data['contract_id'] = Uuid::new();
 
     return CreateAgreementTemplate::run($agreement_data);
 }
@@ -65,9 +70,9 @@ function randomAgreementAvailability()
     return $agreement_availability_random[array_rand($agreement_availability_random)];
 }
 
-function billingSchedule(Client $client)
+function billingSchedule($client_id)
 {
-    $billing_schedule['client_id'] = $client->id;
+    $billing_schedule['client_id'] = $client_id;
     $billing_schedule['type'] = BillingScheduleTypesEnum::PAID_IN_FULL;
     $billing_schedule['is_open_ended'] = false;
     $billing_schedule['is_renewable'] = false;
@@ -87,8 +92,6 @@ function makeAgreement(array $data)
     $agreement_data['created_by'] = $data['created_by'];
     $agreement_data['user_id'] = $data['end_user_id'];
     $agreement_data['agreement_template_id'] = $data['agreement_template_id'];
-    $agreement_data['billing_schedule_id'] = $data['billing_schedule_id'];
-    $agreement_data['contract_id'] = Uuid::new();
     $agreement_data['agreement_json'] = json_encode([]);
     $agreement_data['active'] = true;
 
@@ -222,11 +225,8 @@ it('should create task with leads, members and users', function () {
         $users[] = $u->id;
     }
 
-
     $agreementTemplate = agreementTemplate($client, $location);
     $agreementCategory = AgreementCategory::where('client_id', $client->id)->first()->toArray();
-
-    $billingSchedule = billingSchedule($client);
 
     for ($c = 0;$c < sizeof($endUsers);$c++) {
         if ($c % 2 == 0) {
@@ -238,7 +238,6 @@ it('should create task with leads, members and users', function () {
                 'created_by' => $user->id,
                 'end_user_id' => $endUsers[$c],
                 'agreement_template_id' => $agreementTemplate->id,
-                'billing_schedule_id' => $billingSchedule->id,
             ]);
         }
     }
@@ -476,8 +475,6 @@ it('should create task with members only', function () {
     $agreementTemplate = agreementTemplate($client, $location);
     $agreementCategory = AgreementCategory::where('client_id', $client->id)->first()->toArray();
 
-    $billingSchedule = billingSchedule($client);
-
     for ($c = 0;$c < sizeof($endUsers);$c++) {
         $agreement = makeAgreement([
             'client_id' => $client->id,
@@ -486,7 +483,6 @@ it('should create task with members only', function () {
             'created_by' => $user->id,
             'end_user_id' => $endUsers[$c],
             'agreement_template_id' => $agreementTemplate->id,
-            'billing_schedule_id' => $billingSchedule->id,
         ]);
         signedAgreement([
             'id' => $agreement->id,
