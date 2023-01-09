@@ -6,6 +6,5 @@ extend type Mutation {
         @inject(context: "user.client_id", name: "client_id")
 
     # createCustomer(input: CustomerInput): Customer!
-
     # updateCustomer(input: CustomerInput): Customer!
 }

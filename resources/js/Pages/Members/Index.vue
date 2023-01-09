@@ -36,7 +36,7 @@
         :fields="fields"
         :base-route="baseRoute"
         :top-actions="{
-            create: { label: 'Add Member' },
+            create: false,
         }"
         :actions="actions"
         :preview-component="MemberPreview"

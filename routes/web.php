@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/', \App\Http\Controllers\Data\LeadsController::class . '@index')->name('data.leads');
         Route::get('/claimed', \App\Http\Controllers\Data\LeadsController::class . '@claimed')->name('data.leads.claimed');
         Route::get('/create', \App\Http\Controllers\Data\LeadsController::class . '@create')->name('data.leads.create');
-        Route::post('/create', \App\Domain\Users\Actions\CreateUser::class)->name('data.leads.store');
+        // Route::post('/create', \App\Domain\Users\Actions\CreateUser::class)->name('data.leads.store');
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@show')->name('data.leads.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@edit')->name('data.leads.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.leads.update');
@@ -79,7 +79,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('members')->group(function () {
         Route::get('/', \App\Http\Controllers\Data\MembersController::class . '@index')->name('data.members');
         Route::get('/create', \App\Http\Controllers\Data\MembersController::class . '@create')->name('data.members.create');
-        Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.members.store');
+        // Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.members.store');
         Route::get('/show/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@show')->name('data.members.show');
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.members.update');
@@ -94,7 +94,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
     Route::prefix('customers')->group(function () {
         Route::get('/', \App\Domain\Users\Actions\GetCustomers::class)->name('data.customers');
         Route::get('/create', \App\Domain\Users\Actions\GetCreateCustomer::class)->name('data.customers.create');
-        Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.customers.store');
+        // Route::post('/', \App\Domain\Users\Actions\CreateUser::class)->name('data.customers.store');
         Route::get('/show/{end_user}', \App\Domain\Users\Actions\ShowCustomer::class)->name('data.customers.show');
         Route::get('/edit/{end_user}', \App\Domain\Users\Actions\EditCustomer::class)->name('data.customers.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.customers.update');

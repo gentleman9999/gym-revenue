@@ -396,9 +396,11 @@ const page = usePage();
 
 const { mutate: updateNote } = useMutation(mutations.note.update);
 const { mutate: createFile } = useMutation(mutations.file.create);
-const { mutate: createMember } = useMutation(mutations.member.create);
-const { mutate: updateMember } = useMutation(mutations.member.update); // still note for now to get rid of errors
+// const { mutate: createMember } = useMutation(mutations.member.create);
+const { mutate: updateMember } = useMutation(mutations.user.update);
 
+// notes come back as an array with all the notes the user has, it needs to be an object
+// for the form for new note creation
 let member = _.cloneDeep({ ...props.member, notes: { title: "", note: "" } });
 
 const form = useGymRevForm({ ...member });
@@ -406,7 +408,8 @@ const fileForm = useGymRevForm({ file: null });
 const validStateSelections = ref(preformattedForSelect);
 
 const operFn = computed(() => {
-    return props.member.id === "" ? createMember : updateMember;
+    // return props.member.id === "" ? createMember : updateMember;
+    return updateMember;
 });
 
 /** Update a note to "seen" */

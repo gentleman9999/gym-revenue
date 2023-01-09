@@ -38,7 +38,7 @@
         :fields="fields"
         :base-route="baseRoute"
         :top-actions="{
-            create: { label: 'Add Customer' },
+            create: false,
         }"
         :actions="actions"
         :preview-component="CustomerPreview"

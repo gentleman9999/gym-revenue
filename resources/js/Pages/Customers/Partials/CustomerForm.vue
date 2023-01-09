@@ -378,7 +378,7 @@ const props = defineProps({
 
 const validStateSelections = ref(preformattedForSelect);
 
-const { mutate: createCustomer } = useMutation(mutations.customer.create);
+// const { mutate: createCustomer } = useMutation(mutations.customer.create);
 const { mutate: updateCustomer } = useMutation(mutations.customer.update);
 const { mutate: updateNote } = useMutation(mutations.note.update);
 
@@ -387,22 +387,9 @@ const form = useGymRevForm(customer);
 const fileForm = useGymRevForm({ file: null });
 
 const operFn = computed(() => {
-    return props.customer?.id ? updateCustomer : createCustomer;
+    // return props.customer?.id ? updateCustomer : createCustomer;
+    return updateCustomer;
 });
-
-const resolveStyle = (level) => {
-    return {
-        "border-color":
-            level === "High"
-                ? "green"
-                : level === "Medium"
-                ? "yellow"
-                : level === "Low"
-                ? "red"
-                : "transparent",
-        "border-width": "5px",
-    };
-};
 
 /** Form submission */
 const handleSubmit = async () => {
