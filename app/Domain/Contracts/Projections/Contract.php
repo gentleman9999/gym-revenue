@@ -10,11 +10,14 @@ use App\Scopes\ClientScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Overtrue\LaravelVersionable\Versionable;
 
 class Contract extends GymRevProjection
 {
     use HasFactory;
     use SoftDeletes;
+    /** @see https://github.com/overtrue/laravel-versionable */
+    use Versionable;
 
     protected $fillable = ['client_id', 'name'];
 

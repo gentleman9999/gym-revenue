@@ -19,6 +19,7 @@ use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -63,6 +64,13 @@ class User extends Authenticatable implements PhoneInterface
     use TwoFactorAuthenticatable;
     use Sortable;
     use SoftDeletes;
+    use Uuid;
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     /**
      * Define the table name so that all
@@ -80,7 +88,7 @@ class User extends Authenticatable implements PhoneInterface
     protected $fillable = [
         'first_name', 'middle_name', 'last_name', 'phone', 'alternate_phone',
         'date_of_birth', 'gender', 'occupation', 'employer', 'address1', 'address2',
-        'zip', 'city', 'state', 'drivers_license_number', 'unsubscribed_email',
+        'zip', 'city', 'state', 'email', 'drivers_license_number', 'unsubscribed_email',
         'unsubscribed_sms', 'obfuscated_at',
     ];
 
