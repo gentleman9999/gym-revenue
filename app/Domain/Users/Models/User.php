@@ -318,7 +318,9 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getRole(): Role|string|null
     {
-        return $this->getRoles()[0] ?? null;
+        return $this->role ?? null;
+//        return Role::find($this->role->id);
+//        return $this->getRoles()[0] ?? null;
 //        if(!$roles || !count($roles)){
 //            return null;
 //        }
@@ -362,7 +364,8 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getRoleAttribute()
     {
-        return  $this->roles[0]->name ?? "";
+        return "Admin";
+//        return  $this->roles[0]->name ?? "";
     }
 
     public function getIsManagerAttribute()
