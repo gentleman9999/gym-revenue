@@ -36,7 +36,7 @@ class CreateMessage
         ];
     }
 
-    public function handle(int $user_id, array $payload): void
+    public function handle(string $user_id, array $payload): void
     {
         $id = Uuid::get();
         $payload['chat_participant_id'] = ChatParticipant::getIdForChatUser($payload['chat_id'], $user_id);

@@ -88,8 +88,7 @@
         @confirm="handleConfirmDelete"
         @cancel="confirmDelete = null"
     >
-        Are you sure you want to delete user '{{ confirmDelete.name }}'? This
-        action is permanent, and cannot be undone.
+        Are you sure you want to terminate user '{{ confirmDelete.name }}'?
     </confirm>
 
     <daisy-modal
@@ -154,7 +153,7 @@ export default defineComponent({
             confirmDelete.value = user;
         };
         const handleConfirmDelete = () => {
-            Inertia.delete(route("users.delete", confirmDelete.value.id));
+            Inertia.delete(route("users.terminate", confirmDelete.value.id));
             confirmDelete.value = null;
         };
 
@@ -199,7 +198,7 @@ export default defineComponent({
         }
 
         const shouldShowDelete = ({ data }) =>
-            (abilities.value.includes("users.delete") ||
+            (abilities.value.includes("users.trash") ||
                 abilities.value.includes("*")) &&
             data?.teams?.find((team) => team.id === teamId.value)?.pivot
                 ?.role !== "Account Owner";
@@ -213,8 +212,8 @@ export default defineComponent({
         const actions = {
             trash: false,
             restore: false,
-            delete: {
-                label: "Delete",
+            terminate: {
+                label: "Terminate",
                 handler: ({ data }) => handleClickDelete(data),
                 shouldRender: shouldShowDelete,
             },

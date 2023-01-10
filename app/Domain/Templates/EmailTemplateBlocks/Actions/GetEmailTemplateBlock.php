@@ -17,11 +17,11 @@ class GetEmailTemplateBlock
     use AsAction;
 
     /**
-     * @param int $user_id
+     * @param string $user_id
      *
      * @return Collection
      */
-    public function handle(int $user_id): Collection
+    public function handle(string $user_id): Collection
     {
         return EmailTemplateBlock::where(['user_id' => $user_id])->get();
     }
