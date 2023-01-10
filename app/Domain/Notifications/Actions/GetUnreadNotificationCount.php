@@ -12,7 +12,7 @@ class GetUnreadNotificationCount
 {
     use AsAction;
 
-    public function handle(int $user_id): int
+    public function handle(string $user_id): int
     {
         return Notification::where(['user_id' => $user_id])->count();
     }

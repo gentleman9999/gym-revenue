@@ -68,8 +68,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::post('/sources/update', \App\Domain\LeadSources\Actions\UpdateLeadSources::class)->name('data.leads.sources.update');
         Route::get('/statuses', \App\Http\Controllers\Data\LeadsController::class . '@statuses')->name('data.leads.statuses');
         Route::post('/statuses/update', \App\Domain\LeadStatuses\Actions\UpdateLeadStatuses::class)->name('data.leads.statuses.update');
-        Route::delete('/delete/{user}', \App\Domain\Users\Actions\DeleteUser::class)->name('data.leads.trash');
-        Route::post('/delete/{user}/restore', \App\Domain\Users\Actions\RestoreUser::class)->withTrashed()->name('data.leads.restore');
+        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('data.leads.terminate');
+        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('data.leads.reinstate');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\LeadsController::class . '@view')->name('data.leads.view');
         Route::get('/export', \App\Http\Controllers\Data\LeadsController::class . '@export')->name('data.leads.export');
         Route::post('/upload', \App\Domain\Users\Actions\CreateFiles::class)->name('data.leads.upload');
@@ -84,8 +84,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/edit/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@edit')->name('data.members.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.members.update');
         Route::post('/contact/{end_user}', \App\Http\Controllers\Data\MembersController::class . '@contact')->name('data.members.contact');
-        Route::delete('/delete/{user}', \App\Domain\Users\Actions\DeleteUser::class)->name('data.members.trash');
-        Route::post('/delete/{user}/restore', \App\Domain\Users\Actions\RestoreUser::class)->withTrashed()->name('data.members.restore');
+        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('data.members.terminate');
+        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('data.members.reinstate');
         Route::get('/view/{endUser}', \App\Http\Controllers\Data\MembersController::class . '@view')->name('data.members.view');
         Route::get('/export', \App\Http\Controllers\Data\MembersController::class . '@export')->name('data.members.export');
         Route::post('/upload', \App\Domain\Users\Actions\CreateProfilePicture::class)->name('data.members.upload.profile.picture');
@@ -98,8 +98,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('data')->group(function 
         Route::get('/show/{end_user}', \App\Domain\Users\Actions\ShowCustomer::class)->name('data.customers.show');
         Route::get('/edit/{end_user}', \App\Domain\Users\Actions\EditCustomer::class)->name('data.customers.edit');
         Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('data.customers.update');
-        Route::delete('/delete/{endUser}', \App\Domain\Users\Actions\DeleteUser::class)->name('data.customers.trash');
-        Route::post('/delete/{endUser}/restore', \App\Domain\Users\Actions\RestoreUser::class)->withTrashed()->name('data.customers.restore');
+        Route::delete('/terminate/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('data.customers.terminate');
+        Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('data.customers.reinstate');
         Route::get('/view/{end_user}', \App\Domain\Users\Actions\ViewCustomer::class)->name('data.customers.view');
         Route::get('/export', \App\Domain\Users\Actions\ExportCustomer::class)->name('data.customers.export');
     });
@@ -192,7 +192,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('users')->group(function
     Route::get('/edit/{user}', \App\Http\Controllers\UsersController::class . '@edit')->name('users.edit');
     Route::get('/view/{user}', \App\Http\Controllers\UsersController::class . '@view')->name('users.view');
     Route::put('/{user}', \App\Domain\Users\Actions\UpdateUser::class)->name('users.update');
-    Route::delete('/{user}', \App\Domain\Users\Actions\DeleteUser::class)->name('users.delete');
+    Route::delete('delete/{user}', \App\Domain\Users\Actions\TerminateUser::class)->name('users.terminate');
+    Route::post('/terminate/{user}/reinstate', \App\Domain\Users\Actions\ReinstateUser::class)->withTrashed()->name('users.reinstate');
     Route::post('/{user}/documents', \App\Actions\Teams\UploadDocForUser::class . '@upload')->name('users.documents.create');
     Route::get('/export', \App\Http\Controllers\UsersController::class . '@export')->name('users.export');
 });

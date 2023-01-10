@@ -5,18 +5,18 @@ declare(strict_types=1);
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Actions\CreateTeam;
 use App\Domain\Teams\Models\Team;
-use App\Domain\Users\Actions\DeleteUser;
 use App\Domain\Users\Actions\GrantAccessToken;
 use App\Domain\Users\Actions\ImportUsers;
 use App\Domain\Users\Actions\ObfuscateUser;
 use App\Domain\Users\Actions\ResetUserPassword;
 use App\Domain\Users\Actions\SetCustomUserCrudColumns;
 use App\Domain\Users\Actions\SwitchTeam;
+use App\Domain\Users\Actions\TerminateUser;
 use App\Domain\Users\Actions\UpdateUser;
 use App\Domain\Users\Events\UserCreated;
-use App\Domain\Users\Events\UserDeleted;
 use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
+use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\ObfuscatedUser;
 use App\Domain\Users\Models\User;
@@ -45,14 +45,14 @@ it('should have an update user event', function () {
     $this->assertContains(UserUpdated::class, array_column($storedEvents, 'event_class'));
 });
 
-it('should have an delete user event', function () {
+it('should have a terminate user event', function () {
     //Given a new team and new user
     UserUtility::createRole(['name' => 'Admin']);
     $user = UserUtility::createUserWithTeam();
-    DeleteUser::run($user);
+    TerminateUser::run($user);
     $storedEvents = DB::table('stored_events')->get()->toArray();
 
-    $this->assertContains(UserDeleted::class, array_column($storedEvents, 'event_class'));
+    $this->assertContains(UserTerminated::class, array_column($storedEvents, 'event_class'));
 });
 
 it('should have a user created event', function () {
@@ -69,7 +69,7 @@ it('should allow the user to be deleted', function () {
     Bouncer::allow($role->name)->everything();
     $this->actingAs($user);
 
-    $this->delete("/users/{$user->id}", []);
+    $this->delete("/users/delete/{$user->id}", []);
 
     //There should not be any user models
     $this->assertEquals(User::count(), 0);
@@ -82,7 +82,7 @@ it('should not allow the user to be deleted', function () {
     $this->actingAs($user);
 
     //record should not be deleted
-    $this->delete('/users/' . rand(2, 20), []);
+    $this->delete('/users/delete/' . rand(2, 20), []);
 
     //There should be one model
     $this->assertNotEquals(User::count(), 0);
@@ -94,7 +94,7 @@ it('should be unauthorized for the action to be attempted', function () {
     $this->actingAs($user);
 
     //record should not be deleted
-    $response = $this->delete('/users/' . $user->id, []);
+    $response = $this->delete('/users/delete/' . $user->id, []);
 
     $response->assertStatus(403);
     //There should be one model
@@ -108,7 +108,7 @@ it('should return a 404 on delete', function () {
     $this->actingAs($user);
 
     //record should not be deleted
-    $response = $this->delete('/users/' . rand(2, 20), []);
+    $response = $this->delete('/users/delete/' . rand(2, 20), []);
 
     $response->assertStatus(404);
 });

@@ -10,7 +10,7 @@ class TrialMembershipTypeUpdated extends ShouldBeStored
     public $data;
     public $user;
 
-    public function __construct(string $client, array $data, int $user)
+    public function __construct(string $client, array $data, string $user)
     {
         $this->client = $client;
         $this->data = $data;

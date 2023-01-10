@@ -13,8 +13,8 @@ class TeamMemberController extends Controller
      * Update the given team member's role.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $teamId
-     * @param int $userId
+     * @param int $team_id
+     * @param string $user_id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $teamId, $userId)

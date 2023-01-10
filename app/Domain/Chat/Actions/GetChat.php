@@ -18,7 +18,7 @@ class GetChat
 
     public string $commandSignature = 'chat:get {user_id}';
 
-    public function handle(int $user_id): LengthAwarePaginator
+    public function handle(string $user_id): LengthAwarePaginator
     {
         return Chat::with(['participants.user', 'messages'])
             ->whereHas('participants', static fn (Builder $b) => $b->where(['user_id' => $user_id]))

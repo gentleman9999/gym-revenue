@@ -110,7 +110,7 @@ class CreateUsersTable extends Migration
         $table->timestamps();
         $table->timestamp('started_at')->nullable();
         $table->timestamp('ended_at')->nullable();
-        $table->timestamp('terminated_at')->nullable();
+        $table->softDeletes('terminated_at');
         $table->timestamp('obfuscated_at')->nullable();
     }
 

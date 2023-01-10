@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Templates\SmsTemplates\Projections;
 
 use App\Domain\Templates\Services\Interfaces\TemplateParserInterface;
@@ -8,9 +10,10 @@ use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class SmsTemplate extends GymRevProjection implements TemplateParserInterface
 {
@@ -18,7 +21,14 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
     use Sortable;
     use TemplateParserTrait;
 
-    protected $fillable = [ 'name', 'markup', 'active', 'team_id', 'created_by_user_id'];
+    protected $fillable = [
+        'name', 'markup', 'active', 'details',
+        'team_id', 'created_by_user_id',
+    ];
+
+    protected $casts = [
+        'details' => AsCollection::class,
+    ];
 
     protected static function booted(): void
     {
@@ -52,19 +62,9 @@ class SmsTemplate extends GymRevProjection implements TemplateParserInterface
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
 
-    public function details(): HasMany
-    {
-        return $this->hasMany(SmsTemplateDetails::class, 'sms_template_id', 'id');
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne(SmsTemplateDetails::class, 'sms_template_id', 'id');
-    }
-
     //TODO: SMS Templates should not know about gateways. Move logic to campaigns.
-    public function gateway(): HasOne
+    public function gateway(): Collection
     {
-        return $this->detail()->whereDetail('sms_gateway')->whereActive(1);
+        return new Collection($this->details->where('field', 'sms_gateway')->where('active', 1));
     }
 }

@@ -127,7 +127,8 @@ const props = defineProps({
 
 /** Component State */
 const entityTab = ref(
-    props?.audience?.entity === "App\\Domain\\Users\\Models\\Member"
+    props?.audience?.entity ===
+        "App\\Domain\\EndUsers\\Members\\Projections\\Member"
         ? "members"
         : "leads"
 );
@@ -180,7 +181,7 @@ const handleSave = async () => {
     }
 
     try {
-        let filters = { lead_type_id: selectedIds.value };
+        let filters = { type_id: selectedIds.value };
         let entity = "App\\Domain\\EndUsers\\Leads\\Projections\\Lead";
         if (entityTab.value === "members") {
             filters = { membership_type_id: selectedIds.value };

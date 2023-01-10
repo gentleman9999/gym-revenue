@@ -8,8 +8,7 @@ use App\Domain\Audiences\Actions\CreateAudience;
 use App\Domain\Clients\Events\ClientCreated;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Teams\Actions\CreateTeam;
-use App\Domain\Users\Models\Lead;
-use App\Domain\Users\Models\Member;
+use App\Domain\Users\Models\User;
 use Spatie\EventSourcing\EventHandlers\Reactors\Reactor;
 
 class ClientReactor extends Reactor
@@ -31,14 +30,14 @@ class ClientReactor extends Reactor
         CreateAudience::run([
             'client_id' => $client->id,
             'name' => 'All Leads',
-            'entity' => Lead::class,
+            'entity' => User::class,
             'editable' => false,
         ]);
 
         CreateAudience::run([
             'client_id' => $client->id,
             'name' => 'All Members',
-            'entity' => Member::class,
+            'entity' => User::class,
             'editable' => false,
         ]);
 

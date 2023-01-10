@@ -34,7 +34,7 @@ class ChatParticipant extends GymRevUuidProjection
         return $this->belongsTo(User::class);
     }
 
-    public static function getIdForChatUser(string $chat_id, int $user_id): string
+    public static function getIdForChatUser(string $chat_id, string $user_id): string
     {
         return static::where(['user_id' => $user_id, 'chat_id' => $chat_id])->first()->id;
     }

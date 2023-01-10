@@ -7,8 +7,6 @@ use App\Domain\Audiences\AudienceAggregate;
 //use App\Domain\Campaigns\DripCampaigns\DripCampaign;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\LeadTypes\LeadType;
-use App\Domain\Users\Models\Lead;
-use App\Domain\Users\Models\Member;
 use App\Domain\Users\Models\User;
 use App\Http\Middleware\InjectClientId;
 use App\Support\Uuid;
@@ -36,27 +34,24 @@ class CreateAudience
     {
         return [
             'name' => ['required', 'string'],
-            //'entity' => ['sometimes', 'string'],
+            'entity' => ['sometimes', 'string'],
             'filters' => ['required', 'array', 'min:1'],
             'client_id' => ['string', 'required'],
         ];
     }
 
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $request->merge(['entity' => User::class]);
+    }
+
     public function asCommand(Command $command): void
     {
-        $client_id = $this->getClient($command);
-        $name = $command->ask("Enter Audience Name");
-        $entity_alias = $command->choice("Audience Entity", ['Lead', 'Member']);
-
-        if ($entity_alias === 'Lead') {
-            $entity = Lead::class;
-        } elseif ($entity_alias === 'Member') {
-            $entity = Member::class;
-        }
-
-        $payload = compact('name', 'entity', 'client_id');
-
-        $audience = $this->handle($payload);
+        $audience = $this->handle([
+            'client_id' => $this->getClient($command),
+            'name' => $command->ask("Enter Audience Name"),
+            'entity' => User::class,
+        ]);
 
         $command->info('Created Audience ' . $audience->name);
     }
@@ -72,23 +67,16 @@ class CreateAudience
         $lead_type_ids = [];
         $member_type_ids = [];
         foreach ($data['filters']['type_id'] as $type_id) {
-            try {
-                LeadType::findOrFail($type_id);
+            if (LeadType::whereId($type_id)->exists()) {
                 $lead_type_ids[] = $type_id;
-            } catch (\Exception $e) {
+            } else {
                 $member_type_ids[] = $type_id;
             }
         }
-//        $data['entity'] = "";
-//        if (count($lead_type_ids) > 0) {
-//            $data['entity'] .= Lead::class;
-//        }
-//        if (count($member_type_ids) > 0) {
-//            $data['entity'] .= Member::class;
-//        }
+
         $data['filters']['lead_type_id'] = $lead_type_ids;
         $data['filters']['member_type_id'] = $member_type_ids;
-        $data['entity'] = User::class;
+
         unset($data['filters']['type_id']);
 
         return $this->handle(

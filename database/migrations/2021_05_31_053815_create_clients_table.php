@@ -19,6 +19,7 @@ class CreateClientsTable extends Migration
             $table->json('services');
             $table->string('prefix');
             $table->uuid('home_team_id')->nullable();
+            $table->jsonb('details')->nullable();
             $table->boolean('active')->default(1);
             $table->string('created_at')->nullable();
             $table->string('updated_at')->nullable();
