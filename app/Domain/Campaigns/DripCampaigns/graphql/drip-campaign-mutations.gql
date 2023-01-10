@@ -1,7 +1,7 @@
 extend type Mutation {
     "Creates a Drip Campaign"
-    createDripCampaign(campaign: CreateDripCampaignInput!): DripCampaign!
+    createDripCampaign(campaign: CreateDripCampaignInput): DripCampaign
 
     "Updates a Drip Campaign"
-    updateDripCampaign(campaign: UpdateDripCampaignInput!): DripCampaign!
+    updateDripCampaign(campaign: UpdateDripCampaignInput): DripCampaign
 }

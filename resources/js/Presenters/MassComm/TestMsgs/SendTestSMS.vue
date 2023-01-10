@@ -35,7 +35,6 @@
 
 <script setup>
 import { ref, defineEmits, onMounted, watch } from "vue";
-
 const props = defineProps({
     templateId: {
         type: String,
@@ -44,26 +43,22 @@ const props = defineProps({
         type: String,
     },
 });
-
 const showModal = ref(false);
 const loading = ref(false);
 const readyMsg = ref("Are you ready to send this message?");
 const done = ref(false);
 const emit = defineEmits(["close"]);
-
 watch([props.templateId], () => {
     alert("Fuck! " + props.templateId);
 });
-
 function handleCloseTextModal() {
     loading.value = false;
     emit("close");
 }
 function handleSendingText() {
     loading.value = true;
-
     axios
-        .post("/comms/sms-templates/test", {
+        .post(route("mass-comms.sms-templates.test-msg"), {
             templateId: props.templateId,
         })
         .then(({ data }) => {
@@ -81,7 +76,6 @@ function handleSendingText() {
             readyMsg.value = msg;
         });
 }
-
 onMounted(() => {
     showModal.value = true;
 });

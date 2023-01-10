@@ -125,6 +125,7 @@
         :lead-types="leadTypes"
         @canceled="cancelEditor"
         @save="updateAudiences"
+        @updated=""
     />
 </template>
 
@@ -135,6 +136,9 @@
 </style>
 
 <script setup>
+import * as _ from "lodash";
+import mutations from "@/gql/mutations";
+import { useMutation } from "@vue/apollo-composable";
 import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { toastError } from "@/utils/createToast";
@@ -163,6 +167,8 @@ const props = defineProps({
         default: null,
     },
 });
+
+const currentAudience = ref();
 
 const emit = defineEmits(["done"]);
 

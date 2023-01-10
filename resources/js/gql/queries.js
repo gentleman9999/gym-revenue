@@ -7,6 +7,16 @@ import {
 import { SMS_TEMPLATES, SMS_TEMPLATE_EDIT } from "./templates/sms";
 import { CALL_TEMPLATES, CALL_TEMPLATE_EDIT } from "./templates/call";
 import { AUDIENCES, AUDIENCE_EDIT } from "./campaigns/audiences";
+import {
+    DRIPCAMPAIGNS,
+    DRIPCAMPAIGN_EDIT,
+    DRIPCAMPAIGN_CREATE,
+} from "./campaigns/drip";
+import {
+    SCHEDULEDCAMPAIGNS,
+    SCHEDULEDCAMPAIGN_EDIT,
+    SCHEDULEDCAMPAIGN_CREATE,
+} from "./campaigns/scheduled";
 
 const USER_PREVIEW = gql`
     query User($id: ID) {
@@ -1253,6 +1263,17 @@ export default {
     task: {
         edit: CALENDAR_EVENT_GET,
     },
+    scheduledCampaign: {
+        edit: SCHEDULEDCAMPAIGN_EDIT,
+        create: SCHEDULEDCAMPAIGN_CREATE,
+    },
+    dripCampaign: {
+        edit: DRIPCAMPAIGN_EDIT,
+        create: DRIPCAMPAIGN_CREATE,
+    },
+
+    scheduledCampaigns: SCHEDULEDCAMPAIGNS,
+    dripCampaigns: DRIPCAMPAIGNS,
     TOPOL_API_KEY,
     audiences: AUDIENCES,
     emailTemplates: EMAIL_TEMPLATES,

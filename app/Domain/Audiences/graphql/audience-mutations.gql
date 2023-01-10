@@ -1,7 +1,8 @@
 extend type Mutation {
     "Create an Audience"
-    createAudience(audience: CreateAudienceInput!): Audience!
-
+    createAudience(audience: CreateAudienceInput): Audience
+        @inject(context: "user.client_id", name: "audience.client_id")
     "Update an Audience"
-    updateAudience(audience: UpdateAudienceInput!): Audience!
+    updateAudience(audience: UpdateAudienceInput): Audience
+        @inject(context: "user.client_id", name: "audience.client_id")
 }

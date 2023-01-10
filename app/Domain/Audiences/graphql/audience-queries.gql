@@ -1,8 +1,10 @@
 extend type Query {
     audiences(
-        filter: AudienceFilter @scope
+        filter: Filter @scope
         orderBy: [OrderByClause!] @orderBy
-    ): [Audience!]! @paginate(defaultCount: 25)
+    ): [Audience!]! @paginate(defaultCount: 10)
+}
 
+extend type Query {
     audience(id: ID @eq): Audience @find
 }

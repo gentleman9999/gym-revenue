@@ -63,6 +63,7 @@ const props = defineProps({
     team: {
         type: Object,
         default: {
+            id: "",
             name: "",
             locations: [],
         },
@@ -79,8 +80,6 @@ const formatLocationSelectArray = (data) => {
     });
 };
 
-const operation = ref("Update");
-
 const emit = defineEmits(["close"]);
 const form = useGymRevForm({
     ...props.team,
@@ -90,7 +89,7 @@ const { mutate: createTeam } = useMutation(mutations.team.create);
 const { mutate: updateTeam } = useMutation(mutations.team.update);
 
 const operFn = computed(() => {
-    return operation.value === "Update" ? updateTeam : createTeam;
+    return props.team.id === "" ? createTeam : updateTeam;
 });
 
 const handleOperation = async () => {
@@ -100,8 +99,4 @@ const handleOperation = async () => {
 
     emit("close");
 };
-
-onMounted(() => {
-    if (!props.team.id) operation.value = "Create";
-});
 </script>

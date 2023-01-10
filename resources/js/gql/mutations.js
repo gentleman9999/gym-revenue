@@ -1,5 +1,9 @@
 import gql from "graphql-tag";
 
+import { audience } from "./campaigns/audiences";
+import { scheduledCampaign } from "./campaigns/scheduled";
+import { dripCampaign } from "./campaigns/drip";
+
 const department = {
     create: gql`
         mutation createDepartment($name: String, $positions: [ID]) {
@@ -396,6 +400,9 @@ const file = {
     `,
 };
 export default {
+    audience,
+    scheduledCampaign,
+    dripCampaign,
     department,
     position,
     role,

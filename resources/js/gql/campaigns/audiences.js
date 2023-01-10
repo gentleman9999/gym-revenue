@@ -38,3 +38,30 @@ export const AUDIENCE_EDIT = gql`
         }
     }
 `;
+
+export const audience = {
+    create: gql`
+        mutation createAudience($audience: CreateAudienceInput) {
+            audience: createAudience(audience: $audience) {
+                id
+                name
+                filters {
+                    lead_type_id
+                    membership_type_id
+                }
+            }
+        }
+    `,
+    update: gql`
+        mutation updateAudience($audience: UpdateAudienceInput) {
+            updateAudience(audience: $audience) {
+                id
+                name
+                filters {
+                    lead_type_id
+                    membership_type_id
+                }
+            }
+        }
+    `,
+};
