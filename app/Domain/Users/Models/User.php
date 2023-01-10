@@ -327,7 +327,7 @@ class User extends Authenticatable implements PhoneInterface
 
     public function securityGroup(): ?SecurityGroupEnum
     {
-        $role = $this->role();
+        $role = $this->role;
         if (! $role) {
             return null;
         }

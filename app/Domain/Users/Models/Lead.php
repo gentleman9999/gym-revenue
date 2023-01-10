@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Domain\Users\Models;
 
-use App\Scopes\LeadUserScope;
+use App\Scopes\ClientScope;
 
 class Lead extends EndUser
 {
+    protected $table = 'leads';
+
     protected $appends = ['owner'];
 
     protected static function booted(): void
     {
         parent::booted();
-        static::addGlobalScope(new LeadUserScope());
+        static::addGlobalScope(new ClientScope());
     }
 
     public function scopeFilter($query, array $filters): void
