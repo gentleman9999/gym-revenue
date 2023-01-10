@@ -11,6 +11,7 @@ use App\Support\CurrentInfoRetriever;
 use function auth;
 
 use Lorisleiva\Actions\ActionRequest;
+
 use Lorisleiva\Actions\Concerns\AsAction;
 
 use function request;
@@ -84,13 +85,9 @@ class GetUsersToImpersonate
             $imp_users = $team->team_users()->get();
 
             foreach ($imp_users as $imp_user) {
-                if (! is_null($imp_user->user)) {
-                    $users[] = $imp_user->user;
-                } else {
-                    $users[] = User::withoutGlobalScopes()
-                        ->whereUserType(UserTypesEnum::EMPLOYEE)
-                        ->findOrFail($imp_user->user_id);
-                }
+                $users[] = User::with('roles')->withoutGlobalScopes()
+                    ->whereUserType(UserTypesEnum::EMPLOYEE)
+                    ->findOrFail($imp_user->user_id);
             }
 
             if (count($users) > 0) {

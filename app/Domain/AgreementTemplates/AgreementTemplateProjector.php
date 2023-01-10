@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\AgreementTemplates;
 
 use App\Domain\AgreementTemplates\Events\AgreementTemplateCreated;
@@ -26,9 +28,6 @@ class AgreementTemplateProjector extends Projector
             $agreement->id = $event->aggregateRootUuid();
             $agreement->client_id = $event->payload['client_id'];
             $agreement->save();
-            if (array_key_exists('billing_schedule', $event->payload)) {
-                $agreement->billingSchedule()->sync($event->payload['billing_schedule']);
-            }
         });
     }
 
@@ -49,9 +48,6 @@ class AgreementTemplateProjector extends Projector
 
     public function onAgreementTemplateUpdated(AgreementTemplateUpdated $event): void
     {
-        $agreement = AgreementTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->fill($event->payload)->save();
-        if (array_key_exists('billing_schedule', $event->payload)) {
-            $agreement->billingSchedule()->sync($event->payload['billing_schedule']);
-        }
+        AgreementTemplate::withTrashed()->findOrFail($event->aggregateRootUuid())->writeable()->fill($event->payload)->save();
     }
 }

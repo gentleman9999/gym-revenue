@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Bouncer;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
 
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Model::preventLazyLoading(! $this->app->isProduction());
         //Bouncer::useRoleModel(Role::class);
         if ($this->app->runningInConsole()) {
             Actions::registerCommands();

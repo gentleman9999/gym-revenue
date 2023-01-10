@@ -21,7 +21,6 @@ class BouncerAbilitiesSeeder extends Seeder
     {
         /** Admin */
         Bouncer::allow('Admin')->everything(); // I mean....right?
-
         $crud_models = collect([
             'users', 'locations', 'endusers', 'lead-statuses', 'lead-sources',
             'files', 'teams', 'tasks', 'calendar', 'roles', 'access_tokens', 'departments',

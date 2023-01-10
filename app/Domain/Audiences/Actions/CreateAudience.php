@@ -42,21 +42,18 @@ class CreateAudience
         ];
     }
 
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $request->merge(['entity' => User::class]);
+    }
+
     public function asCommand(Command $command): void
     {
-        $client_id = $this->getClient($command);
-        $name = $command->ask("Enter Audience Name");
-        $entity_alias = $command->choice("Audience Entity", ['Lead', 'Member']);
-
-        if ($entity_alias === 'Lead') {
-            $entity = Lead::class;
-        } elseif ($entity_alias === 'Member') {
-            $entity = Member::class;
-        }
-
-        $payload = compact('name', 'entity', 'client_id');
-
-        $audience = $this->handle($payload);
+        $audience = $this->handle([
+            'client_id' => $this->getClient($command),
+            'name' => $command->ask("Enter Audience Name"),
+            'entity' => User::class,
+        ]);
 
         $command->info('Created Audience ' . $audience->name);
     }

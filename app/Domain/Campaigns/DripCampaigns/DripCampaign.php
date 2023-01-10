@@ -88,6 +88,11 @@ class DripCampaign extends GymRevProjection
         return count($this->days);
     }
 
+    public function getEntity(): string
+    {
+        return DripCampaign::class;
+    }
+
     public function days()
     {
         return $this->hasMany(DripCampaignDay::class)->orderBy('day_of_campaign');

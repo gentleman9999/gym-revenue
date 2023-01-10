@@ -8,17 +8,16 @@ use App\Domain\Agreements\AgreementCategories\Projections\AgreementCategory;
 use App\Domain\Agreements\Projections\Agreement;
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Conversations\Twilio\Models\ClientConversation;
-use App\Domain\Departments\Department;
 use App\Domain\Locations\Projections\Location;
 use App\Domain\Teams\Models\Team;
 use App\Enums\SecurityGroupEnum;
 use App\Enums\UserTypesEnum;
 use App\Interfaces\PhoneInterface;
 use App\Models\File;
-use App\Models\Position;
 use App\Models\Traits\Sortable;
 use App\Scopes\ObfuscatedScope;
 use Database\Factories\UserFactory;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Uuid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -63,6 +62,13 @@ class User extends Authenticatable implements PhoneInterface
     use TwoFactorAuthenticatable;
     use Sortable;
     use SoftDeletes;
+    use Uuid;
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     /**
      * Define the table name so that all
@@ -80,7 +86,7 @@ class User extends Authenticatable implements PhoneInterface
     protected $fillable = [
         'first_name', 'middle_name', 'last_name', 'phone', 'alternate_phone',
         'date_of_birth', 'gender', 'occupation', 'employer', 'address1', 'address2',
-        'zip', 'city', 'state', 'drivers_license_number', 'unsubscribed_email',
+        'zip', 'city', 'state', 'email', 'drivers_license_number', 'unsubscribed_email',
         'unsubscribed_sms', 'obfuscated_at',
     ];
 
@@ -130,11 +136,6 @@ class User extends Authenticatable implements PhoneInterface
     protected $appends = [
         'profile_photo_url', 'name', 'role',
     ];
-
-    /**
-     * Override soft detele column name
-     */
-    public const DELETED_AT = 'terminated_at';
 
     /**
      * The "booted" method of the model.
@@ -317,7 +318,9 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getRole(): Role|string|null
     {
-        return $this->getRoles()[0] ?? null;
+        return $this->role ?? null;
+//        return Role::find($this->role->id);
+//        return $this->getRoles()[0] ?? null;
 //        if(!$roles || !count($roles)){
 //            return null;
 //        }
@@ -326,7 +329,7 @@ class User extends Authenticatable implements PhoneInterface
 
     public function securityGroup(): ?SecurityGroupEnum
     {
-        $role = $this->role();
+        $role = $this->role;
         if (! $role) {
             return null;
         }
@@ -361,7 +364,8 @@ class User extends Authenticatable implements PhoneInterface
 
     public function getRoleAttribute()
     {
-        return  $this->roles[0]->name ?? "";
+        return "Admin";
+//        return  $this->roles[0]->name ?? "";
     }
 
     public function getIsManagerAttribute()
@@ -439,6 +443,11 @@ class User extends Authenticatable implements PhoneInterface
     public function reinstate(): void
     {
         $this->restore();
+    }
+
+    public function terminated(): bool
+    {
+        return $this->trashed();
     }
 
     public function getDeletedAtColumn(): string

@@ -24,7 +24,9 @@ class ReflectUserData
         $cols = Schema::getColumnListing($user->getTable());
 
         foreach ($cols as $col) {
-            $reflection_model[$col] = $user[$col];
+            if ($col != 'created_at' && $col != 'updated_at') {
+                $reflection_model[$col] = $user[$col];
+            }
         }
 
         $reflection_model->save();
@@ -35,7 +37,7 @@ class ReflectUserData
         $reflection_model = $this->fetchReflectionModel($user_type, $id);
 
         if ($reflection_model == null) {
-            $reflection_model = $this->createReflectionModel($user_type);
+            $reflection_model = $this->createReflectionModel($user_type, $id);
         }
 
         return $reflection_model;
@@ -55,17 +57,17 @@ class ReflectUserData
         }
     }
 
-    protected function createReflectionModel(UserTypesEnum $user_type): Customer|Employee|Lead|Member
+    protected function createReflectionModel(UserTypesEnum $user_type, string $id): Customer|Employee|Lead|Member
     {
         switch ($user_type) {
             case UserTypesEnum::CUSTOMER:
-                return new Customer();
+                return Customer::withTrashed()->find($id) ?? new Customer();
             case UserTypesEnum::EMPLOYEE:
-                return new Employee();
+                return Employee::withTrashed()->find($id) ?? new Employee();
             case UserTypesEnum::MEMBER:
-                return new Member();
+                return Member::withTrashed()->find($id) ?? new Member();
             default:
-                return new Lead();
+                return Lead::withTrashed()->find($id) ?? new Lead();
         }
     }
 
@@ -75,7 +77,7 @@ class ReflectUserData
             $reflection_model = $this->fetchReflectionModel($previous_type, $user->id);
 
             if ($reflection_model) {
-                $reflection_model->forceDelete();
+                $reflection_model->delete();
             }
         }
     }

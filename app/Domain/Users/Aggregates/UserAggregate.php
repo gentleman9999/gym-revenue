@@ -19,10 +19,12 @@ use App\Domain\Users\Events\UserObfuscated;
 use App\Domain\Users\Events\UserPasswordUpdated;
 use App\Domain\Users\Events\UserReceivedEmail;
 use App\Domain\Users\Events\UserReceivedTextMsg;
+use App\Domain\Users\Events\UserReinstated;
 use App\Domain\Users\Events\UserSetCustomCrudColumns;
 use App\Domain\Users\Events\UsersImported;
 use App\Domain\Users\Events\UserStoppedBeingImpersonated;
 use App\Domain\Users\Events\UserStoppedImpersonatedAnother;
+use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Events\UserWasImpersonated;
 use App\Domain\Users\Events\UserWelcomeEmailSent;
@@ -196,16 +198,16 @@ class UserAggregate extends AggregateRoot
         return $this;
     }
 
-    public function trash(): static
+    public function terminate(): static
     {
-        $this->recordThat(new UserTrashed());
+        $this->recordThat(new UserTerminated());
 
         return $this;
     }
 
-    public function restore(): static
+    public function reinstate(): static
     {
-        $this->recordThat(new UserRestored());
+        $this->recordThat(new UserReinstated());
 
         return $this;
     }

@@ -8,7 +8,7 @@ use App\Domain\LocationEmployees\Actions\CreateLocationEmployee;
 use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Domain\Users\Events\UserCreated;
-use App\Domain\Users\Events\UserDeleted;
+use App\Domain\Users\Events\UserTerminated;
 use App\Domain\Users\Events\UserUpdated;
 use App\Domain\Users\Models\User;
 use App\Domain\Users\Models\UserDetails;
@@ -206,30 +206,24 @@ class UserCrudProjector extends Projector
         });
     }
 
-//    public function onUserTrashed(UserTrashed $event)
-//    {
-//        User::findOrFail($event->id)->delete();
-//    }
-//
-    public function onEndUserRestored(UserRestored $event)
+    public function onEndUserReinstated(UserReinstated $event): void
     {
-        $user = User::withTrashed()->findOrFail($event->id);
-        $user->reinstate();
+        User::withTrashed()->findOrFail($event->id)->reinstate();
     }
 
-    public function onUserDeleted(UserDeleted $event): void
+    public function onUserTerminated(UserTerminated $event): void
     {
         // Get the uer we're gonna delete
-        $bad_user = User::findOrFail($event->aggregateRootUuid());
+        $user = User::findOrFail($event->aggregateRootUuid());
         // @todo - add offboading logic here
 
         // starting with unassigning users from teams.
-        $teams = $bad_user->teams()->get();
+        $teams = $user->teams()->get();
         foreach ($teams as $team) {
-            $team->removeUser($bad_user);
+            $team->removeUser($user);
         }
 
-        $bad_user->terminate();
+        $user->terminate();
     }
 
     protected function syncLocationEmployees(User $user, array $data): void

@@ -30,6 +30,7 @@ class Notification extends GymRevProjection
     public const TYPE_DELETED_CHAT = 'DELETED_CHAT';
     public const TYPE_DEFAULT = 'DEFAULT_NOTIFICATION';
     public const TYPE_TASK_OVERDUE = 'TASK_OVERDUE';
+    public const TYPE_TASK_NOTIFICATION = 'TASK_NOTIFICATION';
 
     public const STATE_INFO = 'info';
     public const STATE_DEFAULT = 'default';

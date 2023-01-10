@@ -54,7 +54,7 @@ class UsersController extends Controller
                 // else - get the members of that team
                 $user_ids = TeamUser::whereTeamId($current_team->id)->get()->pluck('user_id')->toArray();
                 $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->whereIn('users.id', $user_ids)
-                    ->with(['teams', 'home_location'])
+                    ->with('teams', 'home_location', 'defaultTeam', 'defaultTeamDetail')
                     ->filter($request->only($filterKeys))
                     ->sort()
                     ->paginate(10)
@@ -71,7 +71,7 @@ class UsersController extends Controller
         } else {
             //cb team selected
             $team = CurrentInfoRetriever::getCurrentTeam();
-            $users = User::whereUserType(UserTypesEnum::EMPLOYEE)->with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
+            $users = User::with('defaultTeam')->whereUserType(UserTypesEnum::EMPLOYEE)->with('home_location')->whereHas('teams', function ($query) use ($request, $team) {
                 return $query->where('teams.id', '=', $team->id);
             })->filter($request->only($filterKeys))->sort()
                 ->paginate(10)->appends(request()->except('page'));

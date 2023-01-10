@@ -183,7 +183,7 @@ class Team extends JetstreamTeam
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(Jetstream::userModel(), Jetstream::membershipModel())
-//            ->withPivot('role')
+            ->with('roles')
             ->withTimestamps()
             ->as('membership');
     }

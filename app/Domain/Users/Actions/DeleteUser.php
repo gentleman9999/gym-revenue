@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Aggregates\UserAggregate;
+use App\Domain\Users\Models\EndUser;
 use App\Domain\Users\Models\User;
 use App\Enums\UserTypesEnum;
 use Illuminate\Http\RedirectResponse;
@@ -12,52 +15,30 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Prologue\Alerts\Facades\Alert;
 
-use function request;
-
 class DeleteUser implements DeletesUsers
 {
     use AsAction;
 
-    public function handle(User $user): User
+    public function handle(User $user): bool
     {
-        $user_id = $user->id ?? $user;
-        if (is_int($user)) {
-            $user = User::findOrFail($user_id);
-        }
-
-        UserAggregate::retrieve($user_id)->delete()->persist();
+        UserAggregate::retrieve($user->id)->delete()->persist();
         ReflectUserData::run($user);
 
-        return $user;
+        return true;
     }
 
     public function authorize(ActionRequest $request): bool
     {
         $current_user = $request->user();
-        if ($current_user->isClientUser() && $request->user->user_type != UserTypesEnum::EMPLOYEE) {
-            return false;
-        }
+        $user = $request->user;
 
-        return $current_user->can('users.delete', User::class);
+        return $user->user_type == UserTypesEnum::EMPLOYEE ?
+            $current_user->can('users.delete', User::class) && ! $current_user->isClientUser() && $user->terminated() :
+            $current_user->can('endusers.delete', EndUser::class) && $user->terminated();
     }
 
-    public function asController(ActionRequest $request, User $user): User
+    public function asController(ActionRequest $request, User $user): bool
     {
-        $me = request()->user();
-//        $non_admins = [];
-//
-//        foreach ($team_users as $team_user) {
-//            if (! $team_user->user->inSecurityGroup(SecurityGroupEnum::ADMIN)) {
-//                $non_admins[] = $team_user->id;
-//            }
-//        }
-//
-//        if (count($non_admins) < 1) {
-//            Alert::error("User '{$user->name}' cannot be deleted. Too few users found on team.")->flash();
-//
-//            return Redirect::back();
-//        }
-
         return $this->handle(
             $user,
         );
@@ -76,8 +57,8 @@ class DeleteUser implements DeletesUsers
      * @param mixed $user
      * @return void
      */
-    public function delete($user)
+    public function delete(User $user): User
     {
-        $this->handle($user);
+        return $user;
     }
 }

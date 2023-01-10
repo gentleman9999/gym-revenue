@@ -21,6 +21,7 @@ class CreateSmsTemplatesTable extends Migration
             $table->uuid('client_id')->nullable()->index();
             $table->uuid('team_id')->nullable();
             $table->string('created_by_user_id');
+            $table->jsonb('details')->nullable();
             $table->index(['client_id', 'team_id']);
             $table->index(['client_id', 'created_by_user_id']);
             $table->timestamps();

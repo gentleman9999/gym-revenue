@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\Data;
 
 use App\Domain\Clients\Projections\Client;
@@ -27,7 +29,7 @@ class EndUserSeeder extends Seeder
             $amount_of_leads = 1;
         }
         // Get all the Clients
-        $clients = Client::whereActive(1)->get();
+        $clients = Client::with('locations')->whereActive(1)->get();
 
         if (count($clients) > 0) {
             foreach ($clients as $client) {
@@ -47,6 +49,9 @@ class EndUserSeeder extends Seeder
 
                             foreach ($end_users as $end_user) {
                                 $end_user_data = $end_user->toArray();
+                                if (User::whereClientId($client->id)->whereEmail($end_user_data['email'])->exists()) {
+                                    continue;
+                                }
                                 $end_user_data['client_id'] = $client->id;
                                 $end_user_data['home_location_id'] = $location->gymrevenue_id;
                                 $end_user_data['user_type'] = $user_type;

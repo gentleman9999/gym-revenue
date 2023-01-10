@@ -25,8 +25,8 @@ class CreateGatewayProvidersTable extends Migration
             $table->float('provider_bulk_rate', 8, 2)->default(0.00);
             $table->float('gr_commission_rate', 8, 2)->default(0.00);
             $table->float('gr_commission_bulk_rate', 8, 2)->default(0.00);
-
             $table->longText('misc')->nullable();
+            $table->jsonb('details')->nullable();
             $table->boolean('active')->default(1);
             $table->timestamps();
             $table->softDeletes();

@@ -13,6 +13,7 @@ use App\Models\Endusers\MembershipType;
 use App\Support\CurrentInfoRetriever;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use ReflectionClass;
 
 //use App\Domain\Campaigns\ScheduledCampaigns\Actions\CreateScheduledCampaign;
 //use App\Domain\Campaigns\ScheduledCampaigns\Actions\UpdateScheduledCampaign;
@@ -49,7 +50,7 @@ class MassCommunicationController extends Controller
         }
     }
 
-    protected function getDashData(DripCampaign | ScheduledCampaign $Model)
+    protected function getDashData(DripCampaign | ScheduledCampaign $model): array
     {
         $audience = Audience::all();
         $member_types = MembershipType::all()->unique('name');
@@ -68,8 +69,12 @@ class MassCommunicationController extends Controller
             ->filter(request()->only('search', 'trashed'))
             ->sort()->get();
 
-        $campaigns = $Model::all();
-        $campaigns = $campaigns->toArray();
+        if ($model->getEntity() == DripCampaign::class) {
+            $campaigns = $model::with('days')->get();
+        } else {
+            $campaigns = $model::all();
+        }
+
 
         return
             [
@@ -83,7 +88,7 @@ class MassCommunicationController extends Controller
                 'member_types' => $member_types,
                 'lead_types' => $lead_types,
                 'campaigns' => $campaigns,
-                'type' => (new \ReflectionClass($Model))->getShortName(),
+                'type' => (new ReflectionClass($model))->getShortName(),
             ];
     }
 
