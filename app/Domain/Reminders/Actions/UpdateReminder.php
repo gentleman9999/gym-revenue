@@ -32,6 +32,7 @@ class UpdateReminder
 
     public function handle(Reminder $reminder, array $data)
     {
+        $data['id'] = $reminder->id;
         UserAggregate::retrieve($reminder->user_id)->updateReminder($data)->persist();
 
         return $reminder->refresh();

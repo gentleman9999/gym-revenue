@@ -20,7 +20,7 @@ class GymRevNotification extends Notification implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(public readonly int $user_id, array $payload)
+    public function __construct(public readonly string $user_id, array $payload)
     {
         // we are wrapping this is a "payload" because laravel have some reserved keys, e.g
         // "id" and "type", and so type and id gets overridden if specified.

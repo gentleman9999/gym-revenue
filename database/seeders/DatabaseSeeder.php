@@ -18,7 +18,6 @@ use Database\Seeders\Comm\ScheduledCampaignSeeder;
 use Database\Seeders\Comm\SMSTemplateSeeder;
 use Database\Seeders\Contract\ClientContractSeeder;
 use Database\Seeders\Data\AgreementsSeeder;
-use Database\Seeders\Data\AgreementTemplateBillingScheduleSeeder;
 use Database\Seeders\Data\AgreementTemplatesSeeder;
 use Database\Seeders\Data\BillingScheduleSeeder;
 use Database\Seeders\Data\CalendarEventSeeder;
@@ -28,6 +27,7 @@ use Database\Seeders\Data\EndUserSeeder;
 use Database\Seeders\Data\LeadSourceSeeder;
 use Database\Seeders\Data\LeadStatusSeeder;
 use Database\Seeders\Data\LeadTypeSeeder;
+use Database\Seeders\Data\MembershipTypeSeeder;
 use Database\Seeders\Data\NicknameSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderDetailsSeeder;
 use Database\Seeders\GatewayProviders\GatewayProviderSeeder;
@@ -112,8 +112,8 @@ class DatabaseSeeder extends Seeder
         $this->call(LeadTypeSeeder::class);
 
 //        // Default Membership Types for each client are seeded here.
-//        VarDumper::dump('Running Membership Type Seeder');
-//        $this->call(MembershipTypeSeeder::class);
+        VarDumper::dump('Running Membership Type Seeder');
+        $this->call(MembershipTypeSeeder::class);
 //
 //        // Default Trial Membership Types for each client are seeded here.
 //        VarDumper::dump('Trial Membership Type Seeder');
@@ -135,27 +135,21 @@ class DatabaseSeeder extends Seeder
         VarDumper::dump('Running Client Users Seeder');
         $this->call(ClientUserSeeder::class);
 
-        VarDumper::dump('Running Agreement Templates Data Seeder');
-        $this->call(AgreementTemplatesSeeder::class);
-
-        VarDumper::dump('Running Billing Schedule Data Seeder');
-        $this->call(BillingScheduleSeeder::class);
-
-//        VarDumper::dump('Running Agreements Category Seeder');
-//        $this->call(AgreementCategoriesSeeder::class);
-
-        VarDumper::dump('Running Client Contract PDF Data Seeder');
-        $this->call(ClientContractSeeder::class);
-
         // This seeder generates dummy End Users for each client
         VarDumper::dump('Running End Users Dummy Data Seeder');
         $this->call(EndUserSeeder::class);
 
+        VarDumper::dump('Running Billing Schedule Data Seeder');
+        $this->call(BillingScheduleSeeder::class);
+
+        VarDumper::dump('Running Client Contract PDF Data Seeder');
+        $this->call(ClientContractSeeder::class);
+
+        VarDumper::dump('Running Agreement Templates Data Seeder');
+        $this->call(AgreementTemplatesSeeder::class);
+
         VarDumper::dump('Running Agreements Data Seeder');
         $this->call(AgreementsSeeder::class);
-
-        VarDumper::dump('Running Agreement Template Billing Schedule Data Seeder');
-        $this->call(AgreementTemplateBillingScheduleSeeder::class);
 
         // This seeder generates dummy members for each client
         VarDumper::dump('Running Contract Gate Dummy Data Seeder');

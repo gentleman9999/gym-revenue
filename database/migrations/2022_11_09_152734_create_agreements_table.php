@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,11 +26,11 @@ return new class () extends Migration {
             $table->uuid('created_by');
             $table->uuid('user_id');
             $table->uuid('agreement_template_id');
-            $table->uuid('contract_id')->nullable();
-            $table->foreign('contract_id')
-                        ->references('id')
-                        ->on('contracts')
-                        ->cascadeOnDelete();
+            $table->uuid('contract_file_id')->nullable();
+            $table->foreign('contract_file_id')
+                ->references('id')
+                ->on('files')
+                ->cascadeOnDelete();
             $table->boolean('active')->default(false);
             $table->timestamp('signed_at')->nullable();
             $table->softDeletes();

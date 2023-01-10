@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Domain\CalendarEvents\Actions\CheckOverdueTasks;
 use App\Domain\Campaigns\ScheduledCampaigns\Actions\CheckScheduledCampaigns;
 use App\Domain\Reminders\Actions\CheckReminders;
+use App\Domain\Tasks\Actions\CheckTaskReminder;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\App;
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new CheckScheduledCampaigns())->everyMinute()->withoutOverlapping();
         $schedule->job(new CheckReminders())->everyMinute()->withoutOverlapping();
         $schedule->job(new CheckOverdueTasks())->everyMinute()->withoutOverlapping();
+        $schedule->job(new CheckTaskReminder())->everyMinute()->withoutOverlapping();
     }
 
     /**

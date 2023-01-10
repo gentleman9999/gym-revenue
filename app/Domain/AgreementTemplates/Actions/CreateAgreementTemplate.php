@@ -25,7 +25,8 @@ class CreateAgreementTemplate
     public function rules(): array
     {
         return [
-            'billing_schedule' => ['required, exists:agreement_template_billing_schedule'],
+            'billing_schedule_id' => ['required, exists:billing_schedules,id'],
+            'contract_id' => ['required, exists:contracts,id'],
             'agreement_json' => ['required','json'],
             'gr_location_id' => ['required', 'exists:locations,gymrevenue_id'],
             'is_not_billable' => ['sometimes', 'boolean'],

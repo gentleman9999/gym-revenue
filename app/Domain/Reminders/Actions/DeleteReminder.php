@@ -33,7 +33,7 @@ class DeleteReminder
         return true;
     }
 
-    public function asController(ActionRequest $request, Reminder $reminder): RedirectResponse
+    public function asController(Reminder $reminder): RedirectResponse
     {
         $this->handle(
             $reminder,
