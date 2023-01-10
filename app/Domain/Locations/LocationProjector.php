@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Locations;
 
 use App\Domain\Locations\Events\LocationClosed;
@@ -8,7 +10,6 @@ use App\Domain\Locations\Events\LocationDeleted;
 use App\Domain\Locations\Events\LocationReopened;
 use App\Domain\Locations\Events\LocationUpdated;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Locations\Projections\LocationDetails;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 use Spatie\EventSourcing\Facades\Projectionist;
 
@@ -17,7 +18,6 @@ class LocationProjector extends Projector
     public function onStartingEventReplay()
     {
         Location::truncate();
-        LocationDetails::truncate();
     }
     private $details = ['poc_first', 'poc_last', 'poc_phone'];
 
@@ -43,7 +43,7 @@ class LocationProjector extends Projector
         )->writeable()->save();
 
         foreach ($this->details as $field) {
-            LocationDetails::createOrUpdateRecord($event->aggregateRootUuid(), $field, $event->payload[$field] ?? null);
+            $location->addOrUpdateDetails($field, $event->payload[$field] ?? null);
         }
     }
 
@@ -54,11 +54,13 @@ class LocationProjector extends Projector
             return in_array($key, (new Location())->getFillable());
         }, ARRAY_FILTER_USE_KEY);
 
-        Location::findOrFail($event->aggregateRootUuid())->writeable()->updateOrFail($location_table_data);
+        $location = Location::findOrFail($event->aggregateRootUuid());
 
         foreach ($this->details as $field) {
-            LocationDetails::createOrUpdateRecord($event->aggregateRootUuid(), $field, $event->payload[$field] ?? null);
+            $location->addOrUpdateDetails($field, $event->payload[$field] ?? null);
         }
+
+        $location->writeable()->updateOrFail($location_table_data);
     }
 
     public function onLocationClosed(LocationClosed $event): void

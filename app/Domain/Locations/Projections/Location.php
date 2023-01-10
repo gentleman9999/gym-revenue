@@ -12,10 +12,10 @@ use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
 use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -35,7 +35,8 @@ class Location extends GymRevProjection
         'name', 'address1', 'address2', 'city', 'state', 'zip',
         'active', 'location_no', 'gymrevenue_id',
         'opened_at', 'closed_at', 'phone', 'default_team_id',
-        'location_type', 'latitude', 'longitude','capacity', 'presale_started_at', 'presale_opened_at',
+        'location_type', 'latitude', 'longitude','capacity',
+        'presale_started_at', 'presale_opened_at', 'details',
     ];
 
     protected static function booted(): void
@@ -45,6 +46,7 @@ class Location extends GymRevProjection
 
     protected $casts = [
         'location_type' => LocationTypeEnum::class,
+        'details' => AsCollection::class,
     ];
 
     protected const DELETED_AT = 'closed_at';
@@ -62,16 +64,6 @@ class Location extends GymRevProjection
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
-    }
-
-    public function details(): HasMany
-    {
-        return $this->hasMany(LocationDetails::class);
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne(LocationDetails::class);
     }
 
     public function scopeFilter($query, array $filters): void

@@ -36,6 +36,7 @@ class CreateLocationsTable extends Migration
             $table->timestamp('presale_started_at')->nullable();
             $table->timestamp('presale_opened_at')->nullable();
             $table->integer('capacity')->unsigned();
+            $table->jsonb('details')->nullable();
             $table->index(['client_id', 'gymrevenue_id']);
             $table->index(['client_id', 'location_no']);
             $table->unique(['client_id', 'name']);

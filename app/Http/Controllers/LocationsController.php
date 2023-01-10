@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\Clients\Projections\Client;
 use App\Domain\Locations\Projections\Location;
-use App\Domain\Locations\Projections\LocationDetails;
-use App\Domain\Teams\Models\Team;
 use App\Domain\Teams\Models\TeamDetail;
 use App\Enums\LocationTypeEnum;
 use App\Support\CurrentInfoRetriever;
@@ -80,18 +80,18 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        $locationDetails = LocationDetails::where('location_id', $location->id)->get();
+        $location_details = $location->details ?: [];
         $poc_first = $poc_last = $poc_phone = '';
 
-        foreach ($locationDetails as $locationitems) {
-            if ($locationitems->field == 'poc_first') {
-                $poc_first = $locationitems->value;
+        foreach ($location_details as $location_detail) {
+            if ($location_detail['field'] == 'poc_first') {
+                $poc_first = $location_detail['value'];
             }
-            if ($locationitems->field == 'poc_last') {
-                $poc_last = $locationitems->value;
+            if ($location_detail['field'] == 'poc_last') {
+                $poc_last = $location_detail['value'];
             }
-            if ($locationitems->field == 'poc_phone') {
-                $poc_phone = $locationitems->value;
+            if ($location_detail['field'] == 'poc_phone') {
+                $poc_phone = $location_detail['value'];
             }
         }
 
@@ -195,18 +195,18 @@ class LocationsController extends Controller
             return Redirect::back();
         }
 
-        $locationDetails = LocationDetails::where('location_id', $location->id)->get();
+        $location_details = $location->details;
         $poc_first = $poc_last = $poc_phone = '';
 
-        foreach ($locationDetails as $locationitems) {
-            if ($locationitems->field == 'poc_first') {
-                $poc_first = $locationitems->value;
+        foreach ($location_details as $location_detail) {
+            if ($location_detail['field'] == 'poc_first') {
+                $poc_first = $location_detail['value'];
             }
-            if ($locationitems->field == 'poc_last') {
-                $poc_last = $locationitems->value;
+            if ($location_detail['field'] == 'poc_last') {
+                $poc_last = $location_detail['value'];
             }
-            if ($locationitems->field == 'poc_phone') {
-                $poc_phone = $locationitems->value;
+            if ($location_detail['field'] == 'poc_phone') {
+                $poc_phone = $location_detail['value'];
             }
         }
 

@@ -8,9 +8,10 @@ use App\Domain\Users\Models\User;
 use App\Models\GymRevProjection;
 use App\Models\Traits\Sortable;
 use App\Scopes\ClientScope;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -23,11 +24,12 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
     use TemplateParserTrait;
 
     protected $fillable = [
-        'name', 'markup', 'subject', 'thumbnail',
+        'name', 'markup', 'subject', 'thumbnail', 'details',
         'json', 'active', 'team_id', 'created_by_user_id',
     ];
 
     protected $casts = [
+        'details' => AsCollection::class,
         'json' => 'array',
         'thumbnail' => 'array',
     ];
@@ -77,19 +79,9 @@ class EmailTemplate extends GymRevProjection implements TemplateParserInterface
         return $this->hasOne(User::class, 'id', 'created_by_user_id');
     }
 
-    public function details(): HasMany
+    public function gateway(): Collection
     {
-        return $this->hasMany(EmailTemplateDetails::class, 'email_template_id', 'id');
-    }
-
-    public function detail(): HasOne
-    {
-        return $this->hasOne(EmailTemplateDetails::class, 'email_template_id', 'id');
-    }
-
-    public function gateway(): HasOne
-    {
-        return $this->detail()->whereDetail('email_gateway')->whereActive(1);
+        return new Collection($this->details->where('field', 'email_gateway')->where('active', 1));
     }
 
     public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
